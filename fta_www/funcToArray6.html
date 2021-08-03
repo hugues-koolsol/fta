@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="fr">
+ <head>
+  <meta charset="utf8" />
+  <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="index.css" />
+<script type="text/javascript" src="js/core.js"></script>
+</head>
+<body>
+ 
+<textarea id="source" contenteditable></textarea>
+<button onclick="chargerCeSource()">charger ce source</button>
+<div id="divMessageTableau"></div>
+<div id="divMessageSource"></div>
+<div style="max-height:500px;overflow:scroll;">
+<table border="1" id="casDeTest"></table>
+</div>  
+<table border="1" id="arrayed"></table>
+<script type="text/javascript">
+"use strict";
+/*  
+document.addEventListener("DOMContentLoaded", function(event) { 
+
+  console.log('DOMContentLoaded first');
+  
+  document.body.style.backgroundColor='#eee'; // exécuté avant le chargement complet des images
+});
+
+window.addEventListener('load', function () {
+  console.log("finally all loaded!");
+  
+})
+*/
+////var t=`hellu('a')hello(' world''and me''123456.25'f2('and 
+//// you'))andMore(abc(def(ghi())))`;
+
+
+var bStopSiErreur=false;
+
+
+//====================================================================================================
+var t011=`h(
+ (i,
+  // zz
+  // zz
+  j
+  //zz
+  //zzu
+ )
+)`;
+
+//====================================================================================================
+var t012=`a(
+  e(
+    g(
+     h(i , 'j')
+    )
+  )
+),
+k(
+ l( 
+  'm' 
+ )
+)`;
+
+//====================================================================================================
+var t015=`a //b
+,c`;
+
+//====================================================================================================
+var t016=`a //b
+,c , d()`;
+
+//====================================================================================================
+var t017=`a
+//b
+//c 
+,d`;
+
+//====================================================================================================
+var t019=`a
+/*b(c)
+/*
+ d(e)
+*/ 
+*/
+,f`;
+
+//====================================================================================================
+var t020=`a,
+/*b
+*/
+c`;
+
+//====================================================================================================
+var t021=`a(
+/*b
+*/
+  c)`;
+  
+//====================================================================================================
+var t024=`a( b('c') ) , d() , e()`;
+
+//====================================================================================================
+var t025=`a( b , c(d) ) , k( l() ) , o()`;
+
+//====================================================================================================
+var t028=`a(
+  b(
+    // z
+    c(
+      // y
+      d(// x
+      ),
+/*
+/*
+w
+*/
+*/
+      e(// v
+      )
+    )// u
+  )
+),
+f(
+/*
+t  
+*/
+)//s
+,g// r`;
+
+//====================================================================================================
+var t029=`html(
+  ( lang , fr ),
+  head(
+    meta( ( charset , utf-8 ) ),
+    title(aa),
+    meta( ( description , hello ) )
+  ),
+  body(
+    div(
+      ( id , toto ),
+      ( class , 'tata tutu' ),
+      'div content',
+      ul(
+        li(li1),
+        li(li2),
+        li(li3)
+      )
+    )
+  )
+)`;
+
+//====================================================================================================
+var t030=`// line comment before 
+hellu( a,// hehe
+  b(c)// bleble
+),
+// tagada
+hello(
+  ' world',
+  and , me,
+  123456.25,
+  f2('and \\'s
+ you')
+),
+//end
+andMore( abc(
+    // aa
+    def(
+      // bb
+      ghi(// cc
+      )// dd
+    )
+  )
+),
+rah()// realend`;
+
+//====================================================================================================
+var t031=`// z
+a( b,// y
+  c(d)// x
+),
+e()// w`;
+
+//====================================================================================================
+var t032=`c(
+  ( d , e ),
+  ( e , f ),
+  'g'
+ )`;
+//====================================================================================================
+var t033=`src_html(
+  ( file_name , test ),
+  ( file_extension , html ),
+  html(
+    ( lang , fr ),
+    head(
+      meta( ( charset , utf8 ) ),
+      title(title),
+      meta( ( name , viewport ) , ( content , 'width=device-width, initial-scale=1' ) ),
+      script( ( type , 'text/javascript' ) , ( src , functToArray.js ) )
+    ),
+    body()
+  )
+)`;
+
+//====================================================================================================
+var t034=`a(
+  b(
+    c( d('e') , f(g) ),
+    h(
+      i( j(k) , l )
+    ),
+    m(
+      n(1) , A ),
+    o(
+      p(3) , 3 // _
+     ),
+    q(
+      r(4) , 5 // &
+     ),
+    s(
+      t(6) , 7 // $
+     )
+  ),
+  u(
+    v( w(x) , y('z') )
+  )
+)`;
+//====================================================================================================
+var t037=`/*
+a
+*/
+d(
+  ( e // ppppp
+    ,f ),
+  g(
+    h( ( i,
+        // zz
+        // zz
+        j
+        //zz
+        //zzu
+       )
+    ),
+    k(l
+
+      // m
+      // mm
+    ),
+    // aa
+    // bb
+    n(
+/*
+dedans
+*/
+    ),//aa
+    p(
+      // q
+      ( r , s )
+    )// t
+  )// uu
+)
+/*
+ouf, fin de la soupe de commentaires
+*/
+// fin`;
+
+
+
+//====================================================================================================
+var t038=`d(
+  ( e , f ),
+  g(
+    h( ( i , j , k , l ) ),
+    // cc
+    m(n),
+    o(),
+    p(
+      ( r , s )// aa
+    )// bb
+  )
+)`;
+
+//====================================================================================================
+var t039=`a(
+  b(
+    // z
+    c(
+      // y
+      e(// x
+      )
+    )// v
+  )
+)`;
+
+
+
+//====================================================================================================
+var t040=`a(
+  (),
+  'b'
+ )`;
+  
+//====================================================================================================
+var t041=`a(
+  b( ( c , '/' ) , ( d , e ) )
+)`;
+  
+//====================================================================================================
+var t042=`a(
+  b(
+    // c
+    d(// e
+    )// f
+  )
+),
+g()// h`;  
+//====================================================================================================
+var t043=`a(
+  b(
+    ( c( d , '' ) )
+  ),
+  alors()
+)`;
+
+var t044=`a
+
+//=======================
+//b
+
+
+,c , d()`;
+//====================================================================================================
+var t045=`a
+//=======================
+//b
+
+
+,c , d()`;
+//====================================================================================================
+//====================================================================================================
+var casDeTest=[
+
+ {rep: 0,test: `()`                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"","f",0,false,0,0]]},
+ {rep: 1,test: `a`                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a","c",0,false,0,0]]},
+ {rep: 2,test: `a b`                       , ret:true  , srcDiff:true  , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a","c",0,false,0,0],[2,"b","c",0,false,2,2]]},
+ {rep: 3,test: `a , b`                     , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,2,0,0,0],[1,"a","c",0,false,0,0,""," ","",0,0,1,0,0],[2,"b","c",0,false,4,4," ","","",0,0,2,0,0]]},
+ {rep: 4,test: `'a,b'`                     , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a,b","c",0,true,1,0]]},
+
+ {rep: 5,test: `'a,b' , c`                 , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,""," ","",0,2,0,0,0],[1,"a,b","c",0,true,1,3,"","","",0,0,1,0,0],[2,"c","c",0,false,8,8," ","","",0,0,2,0,0]]},
+ {rep: 6,test: `' a,b' , c`                , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,2,0,0,0],[1," a,b","c",0,true,1,4,""," ","",0,0,1,0,0],[2,"c","c",0,false,9,9," ","","",0,0,2,0,0]]},
+ {rep: 7,test: `' a,b' , 'c '`             , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,2,0,0,0],[1," a,b","c",0,true,1,4,""," ","",0,0,1,0,0],[2,"c ","c",0,true,10,4," ","","",0,0,2,0,0]]},
+ {rep: 8,test: `'a\\'b'`                   , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a'b","c",0,true,1,0]]},
+ {rep: 9,test: `'a\\'\\\\b'`               , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a'\\b","c",0,true,1,0]]},
+
+ {rep:10,test: `a('b\\'\\\\c')`            , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a","f",0,false,0,0],[2,"b'\\c","c",1,true,3,8]]},
+ {rep:11,test: `a( b(c) )`                 , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,1,1,0,0],[2,"b","f",1,false,3,3," "," ","",1,1,1,0,0],[3,"c","c",2,false,5,5,"","","",2,0,1,0,0]]},
+ {rep:12,test: `a( b(c) , d )`             , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,2,1,0,0],[2,"b","f",1,false,3,3," "," ","",1,1,1,0,0],[3,"c","c",2,false,5,5,"","","",2,0,1,0,0],[4,"d","c",1,false,10,10," "," ","",1,0,2,0,0]]},
+ {rep:13,test: `a( b('c\\'\\\\d') , e )`   , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,2,1,0,0],[2,"b","f",1,false,3,3," "," ","",1,1,1,0,0],[3,"c'\\d","c",2,true,6,11,"","","",2,0,1,0,0],[4,"e","c",1,false,17,17," "," ","",1,0,2,0,0]]},
+ {rep:14,test: `a( b('c\\'\\\\d') , e() )` , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,2,1,0,0],[2,"b","f",1,false,3,3," "," ","",1,1,1,0,0],[3,"c'\\d","c",2,true,6,11,"","","",2,0,1,0,0],[4,"e","f",1,false,17,17," "," ","",1,0,2,0,0]]},
+
+ {rep:15,test: t015                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,2,0,0,0],[1,"a","c",0,false,0,0,""," //b\n","",0,0,1,0,0],[2,"c","c",0,false,7,7,"","","",0,0,2,1,0]]},
+ {rep:16,test: t016                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0],[1,"a","c",0,false,0,0,""," //b\n","",0,0,1,0,0],[2,"c","c",0,false,7,7,""," ","",0,0,2,1,0],[3,"d","f",0,false,11,11," ","","",0,0,3,1,1]]},
+ {rep:17,test: t017                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,2,0,0,0],[1,"a","c",0,false,0,0,""," //b\n//c \n","",0,0,1,0,0],[2,"d","c",0,false,12,12,"","","",0,0,2,2,0]]},
+ {rep:18,test: `/*b*/a`                    , ret:false , srcDiff:false , c:''},
+ {rep:19,test: t019                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","",""],[1,"a","c",0,false,0,0,"","\n/*b(c)\n/*\n d(e)\n*/ \n*/\n",""],[2,"f","c",0,false,26,26,"","",""]]},
+  
+ {rep:20,test: t020                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,2,0,0,0],[1,"a","c",0,false,0,0,"","","",0,0,1,0,0],[2,"c","c",0,false,10,10,"\n/*b\n*/\n","","",0,0,2,3,0]]},
+ {rep:21,test: t021                        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,1,1,0,3],[2,"c","c",1,false,12,12,"\n/*b\n*/\n  ","","",1,0,1,3,0]]},
+ {rep:22,test:`a(,,b)`                     , ret:true  , srcDiff:true  , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a","f",0,false,0,0],[2,"b","c",1,false,4,4]]},
+ {rep:23,test:`a( () , () , b )`           , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,3,1,0,0],[2,"","f",1,false,0,0," "," ","",1,0,1,0,0],[3,"","f",1,false,0,0," "," ","",1,0,2,0,0],[4,"b","c",1,false,13,13," "," ","",1,0,3,0,0]]},
+ {rep:24,test:t024                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0],[1,"a","f",0,false,0,0,""," ","",0,1,1,0,0],[2,"b","f",1,false,3,3," "," ","",1,1,1,0,0],[3,"c","c",2,true,6,6,"","","",2,0,1,0,0],[4,"d","f",0,false,14,14," "," ","",0,0,2,0,0],[5,"e","f",0,false,20,20," ","","",0,0,3,0,0]]},
+ 
+ {rep:25,test:t025                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0],[1,"a","f",0,false,0,0,""," ","",0,2,1,0,0],[2,"b","c",1,false,3,3," "," ","",1,0,1,0,0],[3,"c","f",1,false,7,7," "," ","",1,1,2,0,0],[4,"d","c",2,false,9,9,"","","",3,0,1,0,0],[5,"k","f",0,false,16,16," "," ","",0,1,2,0,0],[6,"l","f",1,false,19,19," "," ","",5,0,1,0,0],[7,"o","f",0,false,27,27," ","","",0,0,3,0,0]]},  
+ {rep:26,test:`a( b , c(d) ) , k(l) , o()` , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0],[1,"a","f",0,false,0,0,""," ","",0,2,1,0,0],[2,"b","c",1,false,3,3," "," ","",1,0,1,0,0],[3,"c","f",1,false,7,7," "," ","",1,1,2,0,0],[4,"d","c",2,false,9,9,"","","",3,0,1,0,0],[5,"k","f",0,false,16,16," "," ","",0,1,2,0,0],[6,"l","c",1,false,18,18,"","","",5,0,1,0,0],[7,"o","f",0,false,23,23," ","","",0,0,3,0,0]]}, 
+ {rep:27,test:`a( b , () , d )`            , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,3,1,0,0],[2,"b","c",1,false,3,3," "," ","",1,0,1,0,0],[3,"","f",1,false,3,3," "," ","",1,0,2,0,0],[4,"d","c",1,false,12,12," "," ","",1,0,3,0,0]]}, 
+ {rep:28,test:t028                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","// r","",0,3,0,0,0],[1,"a","f",0,false,0,0,"","","",0,1,1,0,16],[2,"b","f",1,false,5,5,"\n  ","\n","",1,1,1,1,15],[3,"c","f",2,false,21,21,"\n    // z\n    ","// u\n  ","",2,2,1,3,14],[4,"d","f",3,false,41,41,"\n      // y\n      ","","// x\n      ",3,0,1,5,6],[5,"e","f",3,false,77,77,"\n/*\n/*\nw\n*/\n*/\n      ","\n    ","// v\n      ",3,0,2,12,13],[6,"f","f",0,false,109,109,"\n","//s\n","\n/*\nt  \n*/\n",0,0,2,17,21],[7,"g","c",0,false,128,128,"","","",0,0,3,22,0]]},
+ {rep:29,test:t029                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"html","f",0,false,0,3,"","","",0,3,1,0,19],[2,"","f",1,false,0,3,"\n  ","","",1,2,1,1,1],[3,"lang","c",2,false,10,13," "," ","",2,0,1,1,0],[4,"fr","c",2,false,17,18," "," ","",2,0,2,1,0],[5,"head","f",1,false,25,28,"\n  ","","",1,3,2,2,6],[6,"meta","f",2,false,35,38,"\n    ","","",5,1,1,3,3],[7,"","f",3,false,35,38," "," ","",6,2,1,3,3],[8,"charset","c",4,false,43,49," "," ","",7,0,1,3,0],[9,"utf-8","c",4,false,53,57," "," ","",7,0,2,3,0],[10,"title","f",2,false,68,72,"\n    ","","",5,1,2,4,4],[11,"aa","c",3,false,74,75,"","","",10,0,1,4,0],[12,"meta","f",2,false,83,86,"\n    ","\n  ","",5,1,3,5,5],[13,"","f",3,false,83,86," "," ","",12,2,1,5,5],[14,"description","c",4,false,91,101," "," ","",13,0,1,5,0],[15,"hello","c",4,false,105,109," "," ","",13,0,2,5,0],[16,"body","f",1,false,122,125,"\n  ","\n","",1,1,3,7,18],[17,"div","f",2,false,132,134,"\n    ","\n  ","",16,4,1,8,17],[18,"","f",3,false,132,134,"\n      ","","",17,2,1,9,9],[19,"id","c",4,false,145,146," "," ","",18,0,1,9,0],[20,"toto","c",4,false,150,153," "," ","",18,0,2,9,0],[21,"","f",3,false,150,153,"\n      ","","",17,2,2,10,10],[22,"class","c",4,false,166,170," "," ","",21,0,1,10,0],[23,"tata tutu","c",4,true,175,183," "," ","",21,0,2,10,0],[24,"div content","c",3,true,196,206,"\n      ","","",17,0,3,11,0],[25,"ul","f",3,false,216,217,"\n      ","\n    ","",17,3,4,12,16],[26,"li","f",4,false,228,229,"\n        ","","",25,1,1,13,13],[27,"li1","c",5,false,231,233,"","","",26,0,1,13,0],[28,"li","f",4,false,245,246,"\n        ","","",25,1,2,14,14],[29,"li2","c",5,false,248,250,"","","",28,0,1,14,0],[30,"li","f",4,false,262,263,"\n        ","\n      ","",25,1,3,15,15],[31,"li3","c",5,false,265,267,"","","",30,0,1,15,0]]},
+ 
+ {rep:30,test:t030                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","// realend","",0,4,0,0,0],[1,"hellu","f",0,false,24,28,"// line comment before \n","","",0,2,1,1,3],[2,"a","c",1,false,31,31," ","","",1,0,1,1,0],[3,"b","f",1,false,43,43,"// hehe\n  ","// bleble\n","",1,1,2,2,2],[4,"c","c",2,false,45,45,"","","",3,0,1,2,0],[5,"hello","f",0,false,70,74,"\n// tagada\n","","",0,5,2,5,11],[6," world","c",1,true,80,85,"\n  ","","",5,0,1,6,0],[7,"and","c",1,false,91,93,"\n  "," ","",5,0,2,7,0],[8,"me","c",1,false,97,98," ","","",5,0,3,7,0],[9,"123456.25","c",1,false,103,111,"\n  ","","",5,0,4,8,0],[10,"f2","f",1,false,116,117,"\n  ","\n","",5,1,5,9,10],[11,"and 's\n you","c",2,true,120,131,"","","",10,0,1,9,0],[12,"andMore","f",0,false,144,150,"\n//end\n","","",0,1,3,13,21],[13,"abc","f",1,false,153,155," ","\n","",12,1,1,13,20],[14,"def","f",2,false,172,174,"\n    // aa\n    ","\n  ","",13,1,1,15,19],[15,"ghi","f",3,false,195,197,"\n      // bb\n      ","// dd\n    ","// cc\n      ",14,0,1,17,18],[16,"rah","f",0,false,231,233,"\n","","",0,0,4,22,22]]},
+ {rep:31,test:t031                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","// w","",0,2,0,0,0],[1,"a","f",0,false,5,5,"// z\n","","",0,2,1,1,3],[2,"b","c",1,false,8,8," ","","",1,0,1,1,0],[3,"c","f",1,false,17,17,"// y\n  ","// x\n","",1,1,2,2,2],[4,"d","c",2,false,19,19,"","","",3,0,1,2,0],[5,"e","f",0,false,29,29,"\n","","",0,0,2,4,4]]},
+ {rep:32,test:t032                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"c","f",0,false,0,0,"","","",0,3,1,0,4],[2,"","f",1,false,0,0,"\n  ","","",1,2,1,1,1],[3,"d","c",2,false,7,7," "," ","",2,0,1,1,0],[4,"e","c",2,false,11,11," "," ","",2,0,2,1,0],[5,"","f",1,false,11,11,"\n  ","","",1,2,2,2,2],[6,"e","c",2,false,20,20," "," ","",5,0,1,2,0],[7,"f","c",2,false,24,24," "," ","",5,0,2,2,0],[8,"g","c",1,true,32,32,"\n  ","\n ","",1,0,3,3,0]]},
+ {rep:33,test:t033 , voirAussi:41          , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"src_html","f",0,false,0,7,"","","",0,3,1,0,13],[2,"","f",1,false,0,7,"\n  ","","",1,2,1,1,1],[3,"file_name","c",2,false,14,22," "," ","",2,0,1,1,0],[4,"test","c",2,false,26,29," "," ","",2,0,2,1,0],[5,"","f",1,false,26,29,"\n  ","","",1,2,2,2,2],[6,"file_extension","c",2,false,38,51," "," ","",5,0,1,2,0],[7,"html","c",2,false,55,58," "," ","",5,0,2,2,0],[8,"html","f",1,false,65,68,"\n  ","\n","",1,3,3,3,12],[9,"","f",2,false,65,68,"\n    ","","",8,2,1,4,4],[10,"lang","c",3,false,77,80," "," ","",9,0,1,4,0],[11,"fr","c",3,false,84,85," "," ","",9,0,2,4,0],[12,"head","f",2,false,94,97,"\n    ","","",8,4,2,5,10],[13,"meta","f",3,false,106,109,"\n      ","","",12,1,1,6,6],[14,"","f",4,false,106,109," "," ","",13,2,1,6,6],[15,"charset","c",5,false,114,120," "," ","",14,0,1,6,0],[16,"utf8","c",5,false,124,127," "," ","",14,0,2,6,0],[17,"title","f",3,false,140,144,"\n      ","","",12,1,2,7,7],[18,"title","c",4,false,146,150,"","","",17,0,1,7,0],[19,"meta","f",3,false,160,163,"\n      ","","",12,2,3,8,8],[20,"","f",4,false,160,163," "," ","",19,2,1,8,8],[21,"name","c",5,false,168,171," "," ","",20,0,1,8,0],[22,"viewport","c",5,false,175,182," "," ","",20,0,2,8,0],[23,"","f",4,false,175,182," "," ","",19,2,2,8,8],[24,"content","c",5,false,190,196," "," ","",23,0,1,8,0],[25,"width=device-width, initial-scale=1","c",5,true,201,235," "," ","",23,0,2,8,0],[26,"script","f",3,false,249,254,"\n      ","\n    ","",12,2,4,9,9],[27,"","f",4,false,249,254," "," ","",26,2,1,9,9],[28,"type","c",5,false,259,262," "," ","",27,0,1,9,0],[29,"text/javascript","c",5,true,267,281," "," ","",27,0,2,9,0],[30,"","f",4,false,267,281," "," ","",26,2,2,9,9],[31,"src","c",5,false,290,292," "," ","",30,0,1,9,0],[32,"functToArray.js","c",5,false,296,310," "," ","",30,0,2,9,0],[33,"body","f",2,false,327,330,"\n    ","\n  ","",8,0,3,11,11]]},
+ {rep:34,test:t034                         , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,2,1,0,21],[2,"b","f",1,false,5,5,"\n  ","","",1,6,1,1,17],[3,"c","f",2,false,12,12,"\n    ","","",2,2,1,2,2],[4,"d","f",3,false,15,15," "," ","",3,1,1,2,2],[5,"e","c",4,true,18,18,"","","",4,0,1,2,0],[6,"f","f",3,false,24,24," "," ","",3,1,2,2,2],[7,"g","c",4,false,26,26,"","","",6,0,1,2,0],[8,"h","f",2,false,36,36,"\n    ","","",2,1,2,3,5],[9,"i","f",3,false,45,45,"\n      ","\n    ","",8,2,1,4,4],[10,"j","f",4,false,48,48," "," ","",9,1,1,4,4],[11,"k","c",5,false,50,50,"","","",10,0,1,4,0],[12,"l","c",4,false,55,55," "," ","",9,0,2,4,0],[13,"m","f",2,false,70,70,"\n    ","","",2,2,3,6,7],[14,"n","f",3,false,79,79,"\n      "," ","",13,1,1,7,7],[15,"1","c",4,false,81,81,"","","",14,0,1,7,0],[16,"A","c",3,false,86,86," "," ","",13,0,2,7,0],[17,"o","f",2,false,95,95,"\n    ","","",2,2,4,8,10],[18,"p","f",3,false,104,104,"\n      "," ","",17,1,1,9,9],[19,"3","c",4,false,106,106,"","","",18,0,1,9,0],[20,"3","c",3,false,111,111," "," // _\n     ","",17,0,2,9,0],[21,"q","f",2,false,130,130,"\n    ","","",2,2,5,11,13],[22,"r","f",3,false,139,139,"\n      "," ","",21,1,1,12,12],[23,"4","c",4,false,141,141,"","","",22,0,1,12,0],[24,"5","c",3,false,146,146," "," // &\n     ","",21,0,2,12,0],[25,"s","f",2,false,165,165,"\n    ","\n  ","",2,2,6,14,16],[26,"t","f",3,false,174,174,"\n      "," ","",25,1,1,15,15],[27,"6","c",4,false,176,176,"","","",26,0,1,15,0],[28,"7","c",3,false,181,181," "," // $\n     ","",25,0,2,15,0],[29,"u","f",1,false,202,202,"\n  ","\n","",1,1,2,18,20],[30,"v","f",2,false,209,209,"\n    ","\n  ","",29,2,1,19,19],[31,"w","f",3,false,212,212," "," ","",30,1,1,19,19],[32,"x","c",4,false,214,214,"","","",31,0,1,19,0],[33,"y","f",3,false,219,219," "," ","",30,1,2,19,19],[34,"z","c",4,true,222,222,"","","",33,0,1,19,0]]},
+ 
+ {rep:35,test:`a(b(c`                    , ret:false , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a","f",0,false,0,0],[2,"b","f",1,false,2,2],[3,"c","c",2,false,4,4]]},
+ {rep:36,test:`a(b(c)))`                 , ret:false , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0],[1,"a","f",0,false,0,0],[2,"b","f",1,false,2,2],[3,"c","c",2,false,4,4]]},
+ {rep:37,test:t037                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","\n/*\nouf, fin de la soupe de commentaires\n*/\n// fin","",0,1,0,0,0,0,"/*\nouf, fin de la soupe de commentaires\n*/\n// fin","","","multi avec bloc","","",0,0],[1,"d","f",0,false,8,8,"/*\na\n*/\n","","",0,2,1,3,32,5,"","","/*\na\n*/","","","multi avec bloc",9,277],[2,"","f",1,false,8,8,"\n  ","","",1,2,1,4,5,2,"","","","","","",13,33],[3,"e","c",2,false,15,15," "," // ppppp\n    ","",2,0,1,4,0,1,"// ppppp","","","mono","","",13,0],[4,"f","c",2,false,31,31,""," ","",2,0,2,5,0,1,"","","","","","",13,0],[5,"g","f",1,false,38,38,"\n  ","// uu\n","",1,4,2,6,31,4,"// uu","","","mono","","",39,270],[6,"h","f",2,false,45,45,"\n    ","","",5,1,1,7,14,3,"","","","","","",46,131],[7,"","f",3,false,45,45," ","\n    ","",6,2,1,7,13,2,"","","","","","",48,125],[8,"i","c",4,false,50,50," ","","",7,0,1,7,0,1,"","","","","","",48,0],[9,"j","c",4,false,89,89,"\n        // zz\n        // zz\n        ","\n        //zz\n        //zzu\n       ","",7,0,2,10,0,1,["//zz","//zzu"],"",["// zz","// zz"],"multi sans bloc","","multi sans bloc",48,0],[10,"k","f",2,false,138,138,"\n    ","","",5,1,2,15,19,2,"","","","","","",139,170],[11,"l","c",3,false,140,140,"","\n\n      // m\n      // mm\n    ","",10,0,1,15,0,1,["","// m","// mm"],"","","multi sans bloc","","",139,0],[12,"n","f",2,false,197,197,"\n    // aa\n    // bb\n    ","","\n/*\ndedans\n*/\n    ",5,0,3,22,26,1,"","/*\ndedans\n*/",["// aa","// bb"],"","multi avec bloc","multi sans bloc",198,217],[13,"p","f",2,false,228,228,"//aa\n    ","// t\n  ","",5,1,4,27,30,3,"// t","","//aa","mono","","mono",229,262],[14,"","f",3,false,228,228,"\n      // q\n      ","\n    ","",13,2,1,29,29,2,"","","// q","","","mono",248,256],[15,"r","c",4,false,250,250," "," ","",14,0,1,29,0,1,"","","","","","",248,0],[16,"s","c",4,false,254,254," "," ","",14,0,2,29,0,1,"","","","","","",248,0]]},
+ {rep:38,test:t038                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"d","f",0,false,0,0,"","","",0,2,1,0,11],[2,"","f",1,false,0,0,"\n  ","","",1,2,1,1,1],[3,"e","c",2,false,7,7," "," ","",2,0,1,1,0],[4,"f","c",2,false,11,11," "," ","",2,0,2,1,0],[5,"g","f",1,false,18,18,"\n  ","\n","",1,4,2,2,10],[6,"h","f",2,false,25,25,"\n    ","","",5,1,1,3,3],[7,"","f",3,false,25,25," "," ","",6,4,1,3,3],[8,"i","c",4,false,30,30," "," ","",7,0,1,3,0],[9,"j","c",4,false,34,34," "," ","",7,0,2,3,0],[10,"k","c",4,false,38,38," "," ","",7,0,3,3,0],[11,"l","c",4,false,42,42," "," ","",7,0,4,3,0],[12,"m","f",2,false,63,63,"\n    // cc\n    ","","",5,1,2,5,5],[13,"n","c",3,false,65,65,"","","",12,0,1,5,0],[14,"o","f",2,false,73,73,"\n    ","","",5,0,3,6,6],[15,"p","f",2,false,82,82,"\n    ","// bb\n  ","",5,1,4,7,9],[16,"","f",3,false,82,82,"\n      ","// aa\n    ","",15,2,1,8,8],[17,"r","c",4,false,93,93," "," ","",16,0,1,8,0],[18,"s","c",4,false,97,97," "," ","",16,0,2,8,0]]},
+ {rep:39,test:t039                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,1,1,0,9],[2,"b","f",1,false,5,5,"\n  ","\n","",1,1,1,1,8],[3,"c","f",2,false,21,21,"\n    // z\n    ","// v\n  ","",2,1,1,3,7],[4,"e","f",3,false,41,41,"\n      // y\n      ","\n    ","// x\n      ",3,0,1,5,6]]},
+ 
+ {rep:40,test:t040                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,2,1,0,3],[2,"","f",1,false,0,0,"\n  ","","",1,0,1,1,1],[3,"b","c",1,true,12,12,"\n  ","\n","",1,0,2,2,0]]},
+ {rep:41,test:t041 , voirAussi:33        , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,1,1,0,2],[2,"b","f",1,false,5,5,"\n  ","\n","",1,2,1,1,1],[3,"","f",2,false,5,5," "," ","",2,2,1,1,1],[4,"c","c",3,false,10,10," "," ","",3,0,1,1,0],[5,"/","c",3,true,15,15," "," ","",3,0,2,1,0],[6,"","f",2,false,15,15," ","","",2,2,2,1,1],[7,"d","c",3,false,24,24," "," ","",6,0,1,1,0],[8,"e","c",3,false,28,28," ","","",6,0,2,1,0]]},
+ {rep:42,test:t042                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","// h","",0,2,0,0,0],[1,"a","f",0,false,0,0,"","","",0,1,1,0,6],[2,"b","f",1,false,5,5,"\n  ","\n","",1,1,1,1,5],[3,"d","f",2,false,21,21,"\n    // c\n    ","// f\n  ","// e\n    ",2,0,1,3,4],[4,"g","f",0,false,45,45,"\n","","",0,0,2,7,7]]},
+ {rep:43,test:t043                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,1,0,0,0],[1,"a","f",0,false,0,0,"","","",0,2,1,0,5],[2,"b","f",1,false,5,5,"\n  ","","",1,1,1,1,3],[3,"","f",2,false,5,5,"\n    ","\n  ","",2,1,1,2,2],[4,"c","f",3,false,14,14," "," ","",3,2,1,2,2],[5,"d","c",4,false,17,17," "," ","",4,0,1,2,0],[6,"","c",4,true,21,21," "," ","",4,0,2,2,0],[7,"alors","f",1,false,35,39,"\n  ","\n","",1,0,2,4,4]]},
+ {rep:44,test:t044                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0,0,"","","","","","",0,0],[1,"a","c",0,false,0,0,"","\n\n//=======================\n//b\n\n\n","",0,0,1,0,0,1,["","//=======================","//b","",""],"","","multi sans bloc","","",0,0],[2,"c","c",0,false,36,36,""," ","",0,0,2,6,0,1,"","","","","","",0,0],[3,"d","f",0,false,40,40," ","","",0,0,3,6,6,1,"","","","","","",41,42]]},
+
+ {rep:45,test:t045                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0,0,"","","","","","",0,0],[1,"a","c",0,false,0,0,"","\n//=======================\n//b\n\n\n","",0,0,1,0,0,1,["//=======================","//b","",""],"","","multi sans bloc","","",0,0],[2,"c","c",0,false,35,35,""," ","",0,0,2,5,0,1,"","","","","","",0,0],[3,"d","f",0,false,39,39," ","","",0,0,3,5,5,1,"","","","","","",40,41]]}, 
+
+
+  
+];
+
+
+// lignes à décommenter pour des tests unitaires
+/*
+var casDeTest=[
+ {rep:45,test:t045                       , ret:true  , srcDiff:false , c:'' , tab:[[0,"","INIT",-1,false,0,0,"","","",0,3,0,0,0,0,"","","","","","",0,0],[1,"a","c",0,false,0,0,"","\n//=======================\n//b\n\n\n","",0,0,1,0,0,1,["//=======================","//b","",""],"","","multi sans bloc","","",0,0],[2,"c","c",0,false,35,35,""," ","",0,0,2,5,0,1,"","","","","","",0,0],[3,"d","f",0,false,39,39," ","","",0,0,3,5,5,1,"","","","","","",40,41]]}, 
+];
+bStopSiErreur=false;
+*/
+
+//====================================================================================================
+//====================================================================================================
+//====================================================================================================
+//====================================================================================================
+
+var arr=null;
+document.getElementById('source').cols=80;
+afficherTableauCasDeTest(casDeTest);
+
+var lightTest=false;
+
+
+if(lightTest){
+ for(var i=0;i<casDeTest.length;i++){
+  document.getElementById('source').innerHTML=casDeTest[i].test.replace(/\\/g,'\\');
+  if(casDeTest[i].test.match(/\n/g)!==null){
+   document.getElementById('source').rows=(casDeTest[i].test.match(/\n/g)).length+1;
+  }else{
+   document.getElementById('source').rows=3;
+  }
+ 
+  arr=functionToArray(casDeTest[i].test);
+  console.log(casDeTest[i].test,arr.value,JSON.stringify(arr.value));
+  if(i==casDeTest.length-1){
+   voirTableau(arr.value , 'arrayed');
+  }
+  var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr.value);
+  if(sourceReconstruitAvecCommentaires.value==casDeTest[i].test){
+   console.log('%cYOUPIIIII','color:lime');
+  }else{
+   console.log('%cRahhhhh','color:red');
+   console.log(sourceReconstruitAvecCommentaires.status);
+   console.log('=====================================================');
+   console.log('reconstruit ="');
+   console.log('"'+sourceReconstruitAvecCommentaires.value+'"');
+   console.log('original ="');
+   console.log('"'+casDeTest[i].test+'"');
+   console.log(casDeTest[i].test.length , sourceReconstruitAvecCommentaires.value.length);
+   console.log('=====================================================');
+  }
+ }
+}
+if(!lightTest){
+ var retourTest=null;
+ var nombreDeTestsOK=0;
+ var debutTimer=performance.now();
+ for(var i=0;i<casDeTest.length;i++){
+  console.log('%c====================================================================','color:blue');
+  console.log('%ci='+i+',repere='+casDeTest[i].rep,'color:blue');
+  console.log('%c====================================================================','color:blue');
+
+  retourTest=chargerEtExcuter(i,false);
+  nombreDeTestsOK+=retourTest.nombreDeTestsOK;
+  console.log(',retourTest=',retourTest);
+ }
+ var finTimer=performance.now();
+ var couleurMessage='color:red';
+ if(casDeTest.length==nombreDeTestsOK){
+  couleurMessage='color:lime';
+ }
+ console.log('%c'+nombreDeTestsOK+' tests OK sur '+casDeTest.length + ' en ' + (parseInt((finTimer-debutTimer)*10,10)/10) + ' millisecondes',couleurMessage);
+ 
+}
+
+
+function voirTableauold(tableau){  
+ var enteteTableau=[
+  ['id','id'],
+  ['val','value'],
+  ['typ','type'],
+  ['niv','niveau'],
+  ['coQ','constante quotee'],
+  ['pre','premier'],
+  ['der','dernier'],
+  ['cAv','commentaire avant'],
+  ['cAp','commentaire apres'],
+  ['cDe','commentaire dedans'],
+  ['pId','Id du parent'],
+  ['nbE','nombre d\'enfants'],
+  ['nuE','numéro enfants'],
+  ['nli','numeroLigne'],
+  ['fPa','fermetureParenthese'],
+ ];
+
+//    console.log(tableau,JSON.stringify(tableau));  
+ var arrayed=document.getElementById('arrayed');
+ arrayed.innerHTML='';
+ var newTr= document.createElement("tr");
+ arrayed.appendChild(newTr);
+ for(var j=0;j<enteteTableau.length;j++){
+  var newTh= document.createElement("th");
+  newTh.title=enteteTableau[j][1];
+  newTh.style.fontSize='0.6em';
+  newTr.appendChild(newTh);
+  newTh.innerHTML=j+''+enteteTableau[j][0];
+ }
+ for(var k=0;k<tableau.length;k++){
+  var newTr= document.createElement("tr");
+  arrayed.appendChild(newTr);
+  for(var j=0;j<tableau[k].length;j++){
+   var newTd= document.createElement("td");
+   newTr.appendChild(newTd);
+   if(j>=10){
+    newTd.style.verticalAlign='top';
+    newTd.innerHTML=''+tableau[k][j]+'';
+   }else if(j>=7){
+    newTd.style.verticalAlign='top';
+    newTd.innerHTML='<pre>'+tableau[k][j].replace(/\n/g,'&#9166;\n').replace(/ /g,'&#9604;')+'</pre>';
+   }else if(j==2){
+    newTd.style.verticalAlign='top';
+    newTd.innerHTML='<pre>'+tableau[k][j].replace(/\n/g,'&#9166;\n')+'</pre>';
+   }else{
+    newTd.innerHTML='<span style="background:white;">'+tableau[k][j]+'</span>';
+   }
+  }
+ }
+}
+//======================================================================================================================   
+function chargerCeSource(){
+ var txtSource=document.getElementById('source').value;
+ arr=functionToArray(txtSource);
+ 
+ console.log('arr=',arr,txtSource,'\n\n\n'+txtSource.replace(/\n/g,'█').replace(/\r/g,'↵'),'\n\n',JSON.stringify(arr.value));
+ voirTableau(arr.value, 'arrayed');
+ var sourceReconstruitSansCommentaire=arrayToFunctNoComment(arr.value);
+ console.log('OK 1');
+ var tabReconstruit=functionToArray(sourceReconstruitSansCommentaire.value);
+ console.log('OK 2 sourceReconstruitSansCommentaire='+sourceReconstruitSansCommentaire.value,'\n',tabReconstruit.value,'\n\n');
+ 
+ var sourceNormalise=arrayToFunctNormalize(arr.value,true);
+ console.log('OK 3 sourceNormalise true=\n'+sourceNormalise.value,'\n\n');
+ 
+ 
+ var sourceNormalise=arrayToFunctNormalize(arr.value,false);
+ console.log('OK 3 sourceNormalise sans commentaires======'+sourceNormalise.value+'=====\n\n');
+ 
+ 
+}
+//======================================================================================================================   
+function chargerEtExcuter(i,bVoirTableau){
+ var nombreDeTestsOK=0;
+ var niveauAvertissementTableau='lime';
+ var niveauAvertissementSource='lime';
+ var messageTableau='';
+ var messageSource='';
+ var debutTimer=performance.now();
+ var arr=null;
+ var j,k;
+ 
+ document.getElementById('divMessageTableau').style.background='';
+ document.getElementById('divMessageSource').style.background='';
+ document.getElementById('divMessageTableau').innerHTML=messageTableau;
+ document.getElementById('divMessageSource').innerHTML=messageSource;
+
+ 
+ document.getElementById('source').cols=80;
+ document.getElementById('source').value='';
+ document.getElementById('source').value=casDeTest[i].test.replace(/\\/g,'\\');
+ if(casDeTest[i].test.match(/\n/g)!==null){
+  document.getElementById('source').rows=(casDeTest[i].test.match(/\n/g)).length+1;
+ }else{
+  document.getElementById('source').rows=3;  
+ }
+ if(bVoirTableau){
+  document.getElementById('car_de_test_'+i).style.backgroundColor='plum';  
+ }
+ 
+ 
+ arr=functionToArray(casDeTest[i].test);
+ 
+ console.log('arr=',arr,i,casDeTest[i],casDeTest[i].test,'\n\n\n'+casDeTest[i].test.replace(/\n/g,'█').replace(/\r/g,'↵'),'\n\n',JSON.stringify(arr.value));
+ 
+ if(arr.status!==false){
+  if(casDeTest.length==1){
+   console.log(casDeTest[i].test,arr.value,'\n',JSON.stringify(arr.value),'\n\n',JSON.stringify(casDeTest[i].tab));  
+  }
+ 
+  var tabEqual=true;
+  if(arr.value.length!=casDeTest[i].tab.length){
+   tabEqual=-1;
+  }else{
+   try{
+    for( var j=0;j<arr.value.length && tabEqual===true ;j++){
+     if(!( arr.value[j][0]==casDeTest[i].tab[j][0] // ind
+        && arr.value[j][1]==casDeTest[i].tab[j][1] // valeur
+        && arr.value[j][2]==casDeTest[i].tab[j][2] // type
+        && arr.value[j][3]==casDeTest[i].tab[j][3] // niveau
+        && arr.value[j][4]==casDeTest[i].tab[j][4] // constante quotee
+        && arr.value[j][5]==casDeTest[i].tab[j][5] // premier
+        && arr.value[j][6]==casDeTest[i].tab[j][6] // dernier
+     )){
+      tabEqual=j;
+     }
+    }
+   }catch(e){}
+  }
+  if(tabEqual===true){
+   console.log('++test OK');
+   nombreDeTestsOK++;
+  }else{
+   if(tabEqual==-1){
+    niveauAvertissementTableau='red';
+    messageTableau='tableau de retour différents ' + arr.value.length + ', taille tableau originale=' + casDeTest[i].tab.length ;
+    console.log('%ctest KO : '+messageTableau+' ','color:red','\n',arr.value,'\n\n\nretour=',JSON.stringify(arr.value),'\n\n\ntest=',JSON.stringify(casDeTest[i].tab),'\n',casDeTest[i].tab);
+   }else{
+   
+    niveauAvertissementTableau='orange';
+    messageTableau='tableau de retour différent à l\'indice:'+tabEqual;
+    console.log('++%ctest OK mais '+messageTableau,'color:orange','\n',JSON.stringify(arr.value[tabEqual]),'\n',JSON.stringify(casDeTest[i].tab[tabEqual]));
+    
+    if(bStopSiErreur){
+     bug();
+    }
+     
+    
+   }
+  }
+ 
+  var sourceReconstruitSansCommentaire=arrayToFunctNoComment(arr.value);
+  var tabReconstruit=functionToArray(sourceReconstruitSansCommentaire.value);
+  console.log('sourceReconstruitSansCommentaire='+sourceReconstruitSansCommentaire.value,'\n',tabReconstruit.value,'\n\n');
+  
+  var sourceNormalise=arrayToFunctNormalize(arr.value,true);
+//  console.log('sourceNormalise=\n'+sourceNormalise.value+'==============\n\n');
+  
+  
+  if(tabEqual===true){
+   try{
+    for( var j=0;j<arr.value.length && tabEqual===true ;j++){
+     if(!( tabReconstruit.value[j][0]==casDeTest[i].tab[j][0]
+        && tabReconstruit.value[j][1]==casDeTest[i].tab[j][1]
+        && tabReconstruit.value[j][2]==casDeTest[i].tab[j][2]
+        && tabReconstruit.value[j][3]==casDeTest[i].tab[j][3]
+        && tabReconstruit.value[j][4]==casDeTest[i].tab[j][4]
+     )){
+      tabEqual=j;
+     }
+    }
+   }catch(e){}
+   if(tabEqual===true){
+    console.log('%c=================++test reconstruit OK =================','color:green');
+   }else{
+    if(tabEqual==-1){
+     niveauAvertissementTableau='red';
+     messageTableau='le tableau reconstruit est différent du tableau original';
+     console.log('%ctest reconstruit KO : '+messageTableau+' ','color:red','\n',tabReconstruit.value,'\n\n\nretour=',JSON.stringify(tabReconstruit.value),'\n\n\ntest=',JSON.stringify(casDeTest[i].tab),'\n',casDeTest[i].tab);
+    }else{
+     niveauAvertissementTableau='orange';
+     messageTableau='le tableau reconstruit différent à l\'indice:'+tabEqual;
+     console.log('++%ctest reconstruit OK mais ','color:orange','\n',JSON.stringify(tabReconstruit.value[tabEqual]),'\n',JSON.stringify(casDeTest[i].tab[tabEqual]));
+    }
+   }
+   
+   var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr.value);
+   if(sourceReconstruitAvecCommentaires.value==casDeTest[i].test){
+    console.log('%cLes 2 sources, celui reconstruit et l\'original, sont egaux','color:lime');
+    if(sourceNormalise.value==casDeTest[i].test){
+     console.log('%cLes 2 sources, le normalisé et l\'original, sont egaux','color:lime');
+    }else{
+     console.log('%cle normalisé et l\'original sont différents','color:orange');
+     
+     var arrNorm=functionToArray(sourceNormalise.value);
+     var tabEqual=true;
+     if(arr.value.length!=arrNorm.value.length){
+      tabEqual=-1;
+     }else{
+      try{
+       for( var j=0;j<arr.value.length && tabEqual===true ;j++){
+        if(!( arr.value[j][0]==arrNorm.value[j][0] // ind
+           && arr.value[j][1]==arrNorm.value[j][1] // valeur
+           && arr.value[j][2]==arrNorm.value[j][2] // type
+           && arr.value[j][3]==arrNorm.value[j][3] // niveau
+           && arr.value[j][4]==arrNorm.value[j][4] // constante quotee
+        )){
+         if(tabEqual===true){
+          tabEqual=j;
+         }
+        }
+       }
+      }catch(e){}
+     }
+     if(tabEqual===true){
+      console.log('%cles tableaux de original et normalisé sont les mêmes','color:lime');
+      console.log('sourceNormalise.value=\n"'+sourceNormalise.value+'"\n');
+      console.log('casDeTest['+i+'].test=\n"'+casDeTest[i].test+'"\n');
+     }else{
+      console.log('%cATTENTION les tableaux de original et normalisé sont DIFFERENTS','color:red', 'tabEqual='+tabEqual);
+      nombreDeTestsOK--;
+      console.log(arr.value,arrNorm.value);
+      console.log('====normalise=\n'+sourceNormalise.value.replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'\n====original=\n'+casDeTest[i].test.replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'\n====');
+      for(var j=0;j<casDeTest[i].test.length;j++){
+       if(casDeTest[i].test.substr(j,1)!=sourceNormalise.value.substr(j,1)){
+        console.log('caractère"'+casDeTest[i].test.substr(j,1)+'" en position='+j);
+        k=j-10; 
+        if(k<0){
+         k=0;
+        }
+        console.log('près de "'+casDeTest[i].test.substr(k,20).replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'" dans originale'); // &#9166;
+        console.log('près de "'+sourceNormalise.value.substr(k,20).replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'" dans normalise'); // &#9166;
+         
+        break;
+       }
+      }
+     
+     }
+     
+     
+     if(bStopSiErreur){
+      bug();
+     }
+     
+
+    }
+   }else{
+    niveauAvertissementSource='orange';
+    messageSource='Attention, le source original et le source reconstruit sont légèrement différents';
+    console.log('%c'+messageSource,'color:orange');
+    console.log(sourceReconstruitAvecCommentaires.status);
+    console.log('=====================================================');
+    console.log('original ="');
+    console.log('"'+casDeTest[i].test+'"');
+    console.log('reconstruit ="');
+    console.log('"'+sourceReconstruitAvecCommentaires.value+'"');
+    console.log('=====================================================');
+    console.log('Longueur originale='+casDeTest[i].test.length+', longueur reconstruit='+sourceReconstruitAvecCommentaires.value.length);
+    console.log('=====================================================');
+    for(var j=0;j<casDeTest[i].test.length;j++){
+     if(casDeTest[i].test.substr(j,1)!=sourceReconstruitAvecCommentaires.value.substr(j,1)){
+      console.log('caractère"'+casDeTest[i].test.substr(j,1)+'" en position='+j);
+      var longueurDiffPair=40; // doit être pair
+      k=j-longueurDiffPair/2; 
+      if(k<0){
+       k=0;
+      }
+      console.log('près de "'+casDeTest[i].test.substr(k,longueurDiffPair).replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'" dans originale'); // &#9166;
+      console.log('près de "'+sourceReconstruitAvecCommentaires.value.substr(k,longueurDiffPair).replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'" dans reconstruit'); // &#9166;
+       
+      break;
+     }
+    }
+    console.log('=====================================================');
+   }
+   
+   
+  }
+  var finTimer=performance.now();
+  console.log('timer='+( parseInt((finTimer-debutTimer)*100)/100)+' millisecondes !');
+
+ }else{
+  if(casDeTest[i].ret==false){
+   niveauAvertissementTableau='orange';
+   messageTableau='Une erreur prévue a été détectée dans un tableau';
+   nombreDeTestsOK++;
+   console.log('%ctest OK car return false prévu : '+(arr.message?arr.message:''),'color:green');
+  }else{
+   niveauAvertissementTableau='red';
+   messageTableau='Il y a eu une erreur sur le tableau:';
+   console.error(arr);
+  }
+  
+  
+  
+ }
+ if(nombreDeTestsOK==1){
+  document.getElementById('tdid_'+i).innerHTML='OK';
+ }
+ if(bVoirTableau){
+  voirTableau(arr.value, 'arrayed');
+  document.getElementById('divMessageTableau').style.background=niveauAvertissementTableau;
+  document.getElementById('divMessageSource').style.background=niveauAvertissementSource;
+  document.getElementById('divMessageTableau').innerHTML=messageTableau;
+  document.getElementById('divMessageSource').innerHTML=messageSource;
+  window.scrollTo(0,0);
+ }
+ console.log('%c\n===========================================================================\n','color:blue;');
+
+ return {
+  nombreDeTestsOK            : nombreDeTestsOK            ,
+  niveauAvertissementTableau : niveauAvertissementTableau ,
+  niveauAvertissementSource  : niveauAvertissementSource  ,
+  messageTableau             : messageTableau             ,
+  messageSource              : messageSource
+  
+ };
+ 
+
+}
+//======================================================================================================================
+function afficherTableauCasDeTest(tableau){  
+ var enteteTableau=[
+  {head:'id',title:'id'},
+  {head:'tab',title:'retour attendu pour les tableaux'},
+  {head:'src',title:'retour attendu pour les sources'},
+  {head:'action',title:'action'},
+  {head:'contenu partiel',title:'100 premiers caractères du contenu'},
+  {head:'OK',title:'test OK'},
+ ];
+
+//    console.log(tableau,JSON.stringify(tableau));  
+ var tablecasDeTest=document.getElementById('casDeTest');
+ tablecasDeTest.innerHTML='';
+ var newTr= document.createElement("tr");
+ tablecasDeTest.appendChild(newTr);
+ for(var j=0;j<enteteTableau.length;j++){
+  var newTh= document.createElement("th");
+  newTh.title=enteteTableau[j].title;
+  newTr.appendChild(newTh);
+  newTh.innerHTML=enteteTableau[j].head;
+ }
+ for(var k=0;k<tableau.length;k++){
+  var newTr= document.createElement("tr");
+  newTr.id='car_de_test_'+k;
+  tablecasDeTest.appendChild(newTr);
+  
+  var newTd= document.createElement("td");
+  newTr.appendChild(newTd);
+  newTd.innerHTML=''+k+'';
+  
+  var newTd= document.createElement("td");
+  newTr.appendChild(newTd);
+  newTd.innerHTML='<span style="'+(tableau[k].ret?'background:white;':'background:red;')+'">'+tableau[k].ret+'</span>';
+
+  var newTd= document.createElement("td");
+  newTr.appendChild(newTd);
+  newTd.innerHTML='<span style="'+(tableau[k].srcDiff==false?'background:white;':'background:red;')+'">'+!tableau[k].srcDiff+'</span>';
+
+  var newTd= document.createElement("td");
+  newTr.appendChild(newTd);
+  newTd.innerHTML='<button onclick="chargerEtExcuter('+k+',true)">Charger</button>';
+
+  var newTd= document.createElement("td");
+  newTr.appendChild(newTd);
+  newTd.innerHTML='<span style="background:white;">'+tableau[k].test.substr(0,50)+'</span>';
+
+  var newTd= document.createElement("td");
+  newTd.id='tdid_'+k;
+  newTr.appendChild(newTd);
+  newTd.innerHTML='';
+
+ }
+}   
+
+</script>
+</body></html>
+<!--
+html(
+ (lang,fr),
+ head(
+  (headprop,hello),
+  title(aa), 
+  meta(
+   (description,hello)
+   (charset,utf-8)
+  )
+ ),
+ body(
+  div(
+   (id,toto),
+   (class,'\'tata tutu\''),
+   'div content',
+   ul(
+    li(li1),
+    li(li2),
+    li(li3)
+   )
+  )
+ )
+)
+-->        

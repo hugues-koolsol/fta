@@ -1,0 +1,60 @@
+html{-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+*, *:before, *:after {-webkit-box-sizing: inherit;-moz-box-sizing: inherit;box-sizing: inherit;margin:0;padding:0;border:0;}
+body{
+ font-family:verdana, arial, sans-serif;
+ font-size:16px;
+ border:0px red solid;
+}
+*{scrollbar-color: #34d3f7 #bfe8ff;}
+*::-webkit-scrollbar {width: 1.2em;background:#bfe8ff;}
+*::-webkit-scrollbar-thumb {background-color: #34d3f7;}
+*::-webkit-scrollbar-corner{background-color: #34d3f7;}
+*::-webkit-resizer{background-color: #34d3f7;}
+textarea{padding:3px;border:1px #eee inset;white-space: pre;overflow:scroll;}
+table,tr,td,th{border:1px blue solid;}
+button{padding:2px;border:2px outset #eee;}
+button:active{padding:2px;border:2px inset #eee;}
+input[type="text"],input[type="password"]{
+ font-size:1em;
+ padding: 2px;
+ border: 1px #eee inset;
+ background:#eee;
+}
+input[type="submit"]{
+ font-size: 1em;
+ padding: 2px;
+ border: 1px #ddd outset;
+ background: #eee;
+ width:  -moz-fit-content;
+ width: fit-content;
+}
+#loginbox{
+ max-width: 300px;
+ margin: auto; 
+ display:flex;
+ flex-direction: column;
+ flex-wrap: nowrap;
+ align-content: center;
+ justify-content: center;
+ border:1px red solid;
+ border-radius:3px;
+}
+#message_erreur{
+ color:red;
+ background:yellow;
+}
+.yyerror{
+ color:red;
+ background:yellow;
+}
+.yyinfo{
+ color:blue;
+ background:lawngreen;
+}
+.yywarning{
+ color:darkgreen;
+ background:orange;
+}
+.yytextSmall{
+ font-size:0.7em;
+}

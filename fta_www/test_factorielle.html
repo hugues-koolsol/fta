@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>test factorielle</title>
+    <meta name="description" content="a"></meta>
+    <link rel="stylesheet" href="index.css"></link>
+    <script type="text/javascript" src="js/core.js"></script>
+  </head>
+  <body><div>cette page affiche 120 !</div>
+    <script type="text/javascript" data-lang="fr">
+// = = = = <source javascript = = = =
+"use strict";
+
+
+// ========================================================
+// dans ce javascript, on définit une fonction factorielle
+
+function factorielle(nombre){
+  var a=0;
+  var b=0;
+  if((nombre == 0)){
+     a=1;
+  }else{
+     b=factorielle(nombre-1);
+     a=nombre*b;
+  }
+  return a;
+}
+
+// ========================================================
+// puis on l'utilise
+
+var valeur=5;
+valeur=factorielle(valeur);
+alert(valeur);
+// = = = = source javascript> = = = =
+
+    </script>
+  </body>
+</html>

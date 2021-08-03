@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+ <head>
+  <meta charset="utf-8" />
+  <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="index.css" />
+  <script type="text/javascript" src="js/core.js"></script>
+  <script type="text/javascript" defer src="js/php.js"></script>
+  <script type="text/javascript" defer src="js/javascript.js"></script>
+  <script type="text/javascript" defer src="js/html.js"></script>
+ </head>
+ <body>
+   <table>
+     <tr>
+       <td>
+         <button onclick="charger('source4.txt')">source4</button>
+       </td>
+       <td>
+         <textarea id="source" cols="100" rows="60"></textarea>
+         <br />
+         <button onclick="enregistrer()">Enregistrer</button>
+       </td>
+       <td style="vertical-align: text-top;">
+         <textarea id="normalise" cols="100" rows="10"></textarea>
+       </td>
+     </tr>
+     <tr>
+       <td colspan="3">
+         <div id="message_erreur"></div>
+       </td>
+     </tr>
+   </table>
+<script>
+"use strict";
+//=====================================================================================================================
+function ajusteTailles(normalise,source,texteSource){
+  var tab=texteSource.split('\n');
+  var largeur=0;
+  for(var i=0;i<tab.length;i++){
+   if(tab[i].length>largeur){
+    largeur=tab[i].length;
+   }
+  }
+  largeur+=5;
+  if(largeur>100 || largeur<=0){
+   largeur=100;
+  }
+  document.getElementById(normalise).cols=largeur;
+  var bou=document.getElementById(source).getBoundingClientRect();
+  document.getElementById(normalise).style.height=bou.height+'px';
+}
+//=====================================================================================================================
+function enregistrer(){
+ var source=document.getElementById("source");
+ document.getElementById('message_erreur').innerHTML='';
+ 
+ var testSourceReconstruit=compareSourceEtReconstruit(source.value);
+ var arr=functionToArray(source.value,true);
+ if(arr.status===true){
+  arr=functionToArray(source.value,false);
+  if(arr.status==true){
+   var srcNormalise=arrayToFunctNormalize(arr.value,true);
+   if(srcNormalise.status==true){
+    document.getElementById("normalise").value=srcNormalise.value;
+    ajusteTailles('normalise','source',srcNormalise.value);
+   }
+   arr=writePhpFile(source,arr);
+   if(arr.status == false){
+       console.log(arr);
+   }
+  }
+ }else{
+//  console.log(arr.levelError);
+  if(arr.levelError && arr.levelError===true){
+   document.getElementById('message_erreur').innerHTML+='\n'+arr.message;
+  }
+  if(arr.message && arr.message!==''){
+   document.getElementById('message_erreur').innerHTML+='\n'+arr.message;
+  }
+ 
+  var srcNormalise=arrayToFunctNormalize(arr.value,true);
+  if(srcNormalise.status==true){
+   document.getElementById("normalise").value=srcNormalise.value;
+   
+   ajusteTailles('normalise','source',srcNormalise.value);
+  }
+ }
+}
+function afficherFichierSource(source){
+ if(source.status==true){
+  document.getElementById('source').innerHTML=source.value;
+  var tab=source.value.split('\n');
+  var largeur=0;
+  for(var i=0;i<tab.length;i++){
+   if(tab[i].length>largeur){
+    largeur=tab[i].length;
+   }
+  }
+  largeur+=5;
+  if(largeur>100 || largeur<=0){
+   largeur=100;
+  }
+  document.getElementById('source').cols=largeur;
+ }else{
+  console.log(source);
+ }
+}
+function charger(nomsource){
+ chargerFichierSource(nomsource,afficherFichierSource,'source');
+}
+
+</script>
+</body></html>

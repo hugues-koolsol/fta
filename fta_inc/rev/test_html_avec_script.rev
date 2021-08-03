@@ -1,0 +1,148 @@
+/*
+Début de source
+Définition du fichier
+*/
+src_html(
+  ( file_name , test ),
+  ( file_extension , html ),
+  ( file_path , . ),
+/*
+ contenu du fichier
+*/ 
+  source( html(
+      ( lang , fr ),
+      head(
+        meta( ( charset , utf8 ) ),
+        title(a),
+        meta( ( name , description ) , ( content , 'a' ) ),
+        meta( ( name , viewport ) , ( content , 'width=device-width, initial-scale=1' ) ),
+        link( ( rel , 'stylesheet' ) , ( href , index.css ) ),
+        script( ( type , 'text/javascript' ) , ( src , functToArray.js ) )
+      ),
+      body(
+        script(
+          ( type , 'text/javascript' ),
+          ( data-lang , 'fr' ),
+          source(
+            fonction(
+              definition(
+                nom(espace2),
+                argument(i)
+              ),
+              contenu(
+                declare( t , '' ),
+                choix(
+                  si(
+                    condition( sup( i , 0 ) ),
+                    alors(
+                      appelf( r(t) , n(concat),
+                        p(t),
+                        p('\n'),
+                        p(
+                          appelf( n(repeat) , p(' ') , p(i) )
+                        )
+                      )
+                    )
+                  )
+                ),
+                appelf( n(return) , p(t) )
+              )
+            ),
+            fonction(
+              definition(
+                nom(enregistrer2),
+                argument(par1),
+                argument(par2)
+              ),
+              contenu(
+                declare( a , '' ),
+                declare( b , {} ),
+                declare( c , [] ),
+                declare( d , true ),
+                declare( e , 123.456 ),
+                declare( i , 0 ),
+                appelf( n(alert) , p('Fake') , r(b) ),
+                appelf( n(console.log) , p(b) ),
+                boucle(
+                  initialisation( affecte( i , 0 ) ),
+                  condition( inf( i , 5 ) ),
+                  increment( affecte( i , i+1 ) ),
+                  faire(
+                    appelf( n(dansFaireRetourneTrue) ),
+                    affecte( e , 456.789 )
+                  )
+                ),
+                choix(
+                  si(
+                    condition(
+                      (vrai),
+                      et(
+                        (
+                          appelf( n(test1) ),
+                          ou( (vrai) ),
+                          ou(
+                            appelf( n(test2) )
+                          )
+                        ),
+                        et( appelf( n(blabla) ) )
+                      )
+                    ),
+                    alors(
+                      appelf( n(alert) , p('OK1') )
+                    )
+                  ),
+                  sinonsi(
+                    condition( non( egal( true , d ) ) ),
+                    alors(
+                      appelf( n(alert) , p('OK2') )
+                    )
+                  ),
+                  sinon(
+                    alors(
+                      appelf( n(alert) , p('OK3') )
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          // on peut aussi ajouter du texte en dur !   
+          'function enregistrer(){
+     alert("Fake");
+    }
+   ' ),
+        textarea( ( id , montexte ) , '
+src_html(
+ (file_name,test),
+ (file_extension,html),
+ (file_path,.),
+ html(
+  (lang,fr),
+  head(
+   meta((charset,utf8)),
+   title(a),
+   meta((name,description),(content,\'a\')),
+  ),
+  body(
+   textarea(\'src_html(
+ (file_name,test),
+ (file_extension,html),
+ (file_path,.),
+ html()
+ )\'),
+   button(Enregistrer,(onclick,\'"enregistrer2()"\')),
+   script((type,\'text/javascript\'),\'"use strict";
+   function enregistrer(){
+    alert("Fake");
+   }\')
+  )
+ )
+)' )// fin du textarea
+      ),
+      button( Enregistrer , ( onclick , 'enregistrer2()' ) )
+    )
+  )
+)
+/*
+Fin de source
+*/

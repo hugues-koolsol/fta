@@ -1,0 +1,74 @@
+src_html(
+
+  // ===============================
+  // description du fichier produit
+
+  ( file_name , test_factorielle ),
+  ( file_extension , html ),
+  ( file_path , . ),
+
+  // ====================
+  // source de ce fichier
+
+  source(
+    html( ( lang , fr ) , (doctype),
+      head(
+        meta( ( charset , utf8 ) ),
+        meta( ( name , viewport ) , ( content , 'width=device-width, initial-scale=1' ) ),
+        title('test factorielle'),
+        meta( ( name , description ) , ( content , 'a' ) ),
+        link( ( rel , 'stylesheet' ) , ( href , index.css ) ),
+
+        // ===============================
+        // optionnel, c'est pour l'exemple
+        script( ( type , 'text/javascript' ) , ( src , 'js/core.js' ) )
+      ),
+      body(
+        div('cette page affiche 120 !'),
+
+        // ===
+        // dans ce html, on écrit du javascript
+
+        script(
+          ( type , 'text/javascript' ),
+          ( data-lang , 'fr' ),
+          source(
+
+            // ========================================================
+            // dans ce javascript, on définit une fonction factorielle
+
+            fonction(
+              definition( nom(factorielle) , argument(nombre) ),
+              contenu(
+                declare( a , 0 ) , declare( b , 0 ),
+                choix(
+                  si( condition( ( egal( nombre , 0 ) ) ) , alors( affecte( a , 1 ) ) ),
+                  sinon(
+                    alors(
+                      affecte( b , appelf( n(factorielle) , p(nombre-1) ) ),
+                      affecte( a , nombre*b )
+                    )
+                  )
+                ),
+                revenir(a)
+              )
+            ),
+
+            // ========================================================
+            // puis on l'utilise
+
+            declare( valeur , 5 ),
+            affecte( valeur , appelf( n(factorielle) , p(valeur) ) ),
+            appelf( n(alert) , p(valeur) )
+/*
+en lisp la fonction factorielle est comme ça
+(defun factorial (n)
+    (if (= n 0) 1
+        (* n (factorial (- n 1)))))
+*/            
+          )
+        )
+      )
+    )
+  )
+)

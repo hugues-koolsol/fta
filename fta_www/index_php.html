@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+ <head>
+  <meta charset="utf-8" />
+  <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="index.css" />
+  <script type="text/javascript" src="js/core.js"></script>
+  <script type="text/javascript" src="js/php.js" defer></script>
+ </head>
+ <body>
+   <table>
+     <tr>
+       <td>
+         <textarea id="source" cols="100" rows="60"></textarea>
+         <br />
+         <button onclick="enregistrer()">Enregistrer</button>
+       </td>
+       <td>
+         <textarea id="normalise" cols="100" rows="10"></textarea>
+       </td>
+     </tr>
+   </table>
+<script>
+"use strict";
+//=====================================================================================================================
+function enregistrer(){
+ var source=document.getElementById("source");
+ var testSourceReconstruit=compareSourceEtReconstruit(source.value);
+ var arr=functionToArray(source.value,true);
+ if(arr.status==false){
+  if(arr.levelError && arr.levelError==true){
+   arr=functionToArray(source.value,false);
+   if(arr.status==true){
+    var srcNormalise=arrayToFunctNormalize(arr.value,true);
+    if(srcNormalise.status==true){
+     document.getElementById("normalise").value=srcNormalise.value;
+    }
+   }
+  }else{
+   console.log(arr);
+  }
+ }else{
+  var srcNormalise=arrayToFunctNormalize(arr.value,true);
+  if(srcNormalise.status==true){
+   document.getElementById("normalise").value=srcNormalise.value;
+  }
+  arr=writePhpFile(source,arr);
+  if(arr.status == false){
+      console.log(arr);
+  }
+ }
+}
+function afficherFichierSource(source){
+ if(source.status==true){
+  document.getElementById('source').innerHTML=source.value;
+ }else{
+  console.log(source);
+ }
+}
+// déclenche une erreur
+chargerFichierSource('source3.txt',afficherFichierSource,'source');
+
+</script>
+</body></html>
