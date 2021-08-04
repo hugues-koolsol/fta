@@ -2,7 +2,7 @@ Un test pour transformer des fonctions imbriquées en tableau
 de façon à écrire des traitements et des données avec une syntaxe
 commune.
 
-La syntaxe et les mots clés sont loin d'être complètement définis mai c'est un exercice que je 
+La syntaxe et les mots clés sont loin d'être complètement définis.
 
 un exemple de fichier html contenant aussi du javascript est là :
 
