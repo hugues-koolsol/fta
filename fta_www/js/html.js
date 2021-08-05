@@ -43,9 +43,12 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
   return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs};
 
  }else{
-  
+  temp='';
   // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE 12numEnfant 13numLi 14ferPar 15prof
-  temp='<'+tab[id][1];
+  if(tab[id][1]=='title'){
+   temp+=espaces2(tab[id][3]);
+  }
+  temp+='<'+tab[id][1];
   doctype='';
   for(i=id+1;i<tab.length;i++){
    if(tab[i][10]==id){
@@ -96,6 +99,9 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
   if(contientEnfantsNonVides||contientConstantes){
    if(id>0){
     t+='>';
+    if(tab[id][1]=='body'){
+     t+=espaces2(tab[id][3]+1);
+    }
    }
    for(i=id+1;i<tab.length;i++){
     if(tab[i][10]==id){ // pour tous les enfants
@@ -139,7 +145,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
    }else{
     
     if(id>0){
-     if(tab[id][1]=='br' || tab[id][1]=='hr'){
+     if(tab[id][1]=='br' || tab[id][1]=='hr' || tab[id][1]=='meta'){
       t+=' />';
      }else{
       t+='></'+tab[id][1]+'>';

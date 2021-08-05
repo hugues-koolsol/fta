@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="utf8"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>test factorielle</title>
-    <meta name="description" content="a"></meta>
+    <meta charset="utf8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>test factorielle</title>
+    <meta name="description" content="a" />
     <link rel="stylesheet" href="index.css"></link>
     <script type="text/javascript" src="js/core.js"></script>
   </head>
-  <body><div>cette page affiche 120 !</div>
+  <body>
+    <div>cette page affiche 120 !</div>
+    <div id="resultat"></div>
     <script type="text/javascript" data-lang="fr">
 // = = = = <source javascript = = = =
 "use strict";
@@ -29,11 +32,21 @@ function factorielle(nombre){
 }
 
 // ========================================================
-// puis on l'utilise
+// puis on utilise cette fonction
 
+var zone={};
 var valeur=5;
+
+// ===============================================
+// on affecte la valeur factorielle(5) à la valeur
+
 valeur=factorielle(valeur);
-alert(valeur);
+
+// ===========================
+// puis on affiche le résultat
+
+zone=document.getElementById('resultat');
+zone.innerHTML=valeur;
 // = = = = source javascript> = = = =
 
     </script>

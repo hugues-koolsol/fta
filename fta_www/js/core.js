@@ -1914,6 +1914,29 @@ function functionToArray(o,exitOnLevelError){
        
        
        T[i][tabcommentairesAtraiter[l][2]]='multi avec bloc';
+       tabComm=T[i][tabcommentairesAtraiter[l][0]].split('\n');
+       for(j=0;j<tabComm.length;j++){
+        bContientAutreQueEspace=false;
+        for(k=0;k<tabComm[j].length;k++){
+         if(tabComm[j].substr(k,1)!=' '){
+          bContientAutreQueEspace=true;
+          break
+         }
+        }
+        if(bContientAutreQueEspace==false){
+         tabComm[j]='';
+        }
+       }
+       
+       
+       if(tabComm.length>0 && tabComm[0]==''){
+        tabComm.shift();
+       }
+       
+       if(tabComm.length>0 && tabComm[tabComm.length-1]==''){
+        tabComm.pop();
+       }
+       
        T[i][tabcommentairesAtraiter[l][1]]=tabComm.join('\n');
        
       }else{
