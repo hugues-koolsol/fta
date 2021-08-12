@@ -2,14 +2,18 @@ Un test pour transformer des fonctions imbriquées en tableau
 de façon à écrire des traitements et des données avec une syntaxe
 commune.
 
-La syntaxe et les mots clés sont loin d'être complètement définis.
+La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français :-).
 
-un exemple de fichier html contenant aussi du javascript est là :
+Un exemple de fichier produisant du html avec du javascript est là :
 
 https://github.com/hugues-koolsol/fta/blob/master/fta_inc/rev/test_factorielle.rev
 
+Le résultat produit est là:
 
-Un source écrit sous ce format
+https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html
+
+
+Brève description : un source est écrit sous ce format
 ```
 a(
   b( 
@@ -20,6 +24,8 @@ a(
 ```
 
 Après une analyse de la syntaxe de ce source, on obtient une représentation sous forme de table.
+
+Les données sont : id , nomElement, type, idDuParent, constanteQuotée
 
 Les .... représentent d'autres données non affichées çi dessous.
 
@@ -36,12 +42,6 @@ Les .... représentent d'autres données non affichées çi dessous.
  [8 , "f" ,"c"    ,3  ,false ,....]
 ]
 ```
-A partir du format tabulaire, on peut reconstituer le source.
+A partir du format tabulaire, on peut reconstituer le source et réciproquement.
 
 Ainsi, les programmes sources deviennent des données :-)
-
-Dans ces sources , il y a 4 fichiers principaux
-* fta_www/js/core.js qui analyse un source et construit un tableau et réciproquement
-* fta_www/js/javascript.js qui produit du javascript
-* fta_www/js/html.js qui produit du html
-* fta_www/js/php.js qui produit du php
