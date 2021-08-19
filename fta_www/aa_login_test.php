@@ -2,8 +2,8 @@
 define('BNF' , basename(__FILE__));
 require_once('aa_include.php');
 session_start();
-start_session_messages();
 if((isset($_POST)) && count($_POST) > 0){
+   start_session_messages();
    if((isset($_POST["login"])) && isset($_POST["password"])){
       if(($_POST["login"] == 'admin') && $_POST["password"] == 'admin'){
          
@@ -40,6 +40,7 @@ if((isset($_POST)) && count($_POST) > 0){
       unset($_SESSION[APP_KEY]["jobInit"]);
    }
    header(concat('Location: ',BNF));
+   exit(0);
 }
 
 //=============================================================
@@ -55,6 +56,7 @@ if((isset($_GET)) && count($_GET) > 0){
       unset($_SESSION[APP_KEY]["job"]);
       unset($_SESSION[APP_KEY]["jobInit"]);
       header(concat('Location: ',BNF));
+      exit(0);
    }
 }
 
@@ -90,13 +92,45 @@ EOT;
    // ... sinon on lui affiche un formulaire de connexion
    
    $o1=<<<EOT
-<form id="loginbox" method="post">
+<form id="loginbox" method="post" onsubmit="return checkSubmit()">
   <label for="login">login</label>
   <input type="text" name="login" id="login" value=""></input>
   <label for="password">password</label>
   <input type="password" name="password" id="password" value=""></input>
   <input type="submit" value="envoyer"></input>
 </form>
+<script type="text/javascript" data-lang="fr">
+// = = = = <source javascript = = = =
+"use strict";
+
+
+// ===========================================
+// dans ce javascript, on définit une fonction
+
+function checkSubmit(){
+  clearMessages();
+  var valRet=false;
+  var zoneLogin={};
+  var zonePassw={};
+  zoneLogin=document.getElementById('login');
+  zonePassw=document.getElementById('password');
+  try{
+    if((zonePassw.value == '')||zoneLogin.value == ''){
+       valRet=false;
+       global_messages.errors.push('Veuillez indiquer votre login et votre mot de passe.');
+       displayMessages();
+    }else{
+       valRet=true;
+    }
+  }catch(e){
+     global_messages.errors.push('Il y a eu un problème :-(');
+     displayMessages();
+  }
+  return valRet;
+}
+// = = = = source javascript> = = = =
+
+</script>
 EOT;
 }
 // ========================
@@ -104,4 +138,5 @@ EOT;
 $o1=concat($o1,html_footer1());
 print($o1);
 $o1='';
+clear_session_messages();
 ?>

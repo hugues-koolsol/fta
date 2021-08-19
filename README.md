@@ -25,7 +25,7 @@ a(
 
 Après une analyse de la syntaxe de ce source, on obtient une représentation sous forme de table.
 
-Les données sont : id , nomElement, type, idDuParent, constanteQuotée
+Les données sont : id , nomElement, type, idDuParent, constanteQuotée, ....
 
 Les .... représentent d'autres données non affichées çi dessous.
 
@@ -44,4 +44,4 @@ Les .... représentent d'autres données non affichées çi dessous.
 ```
 A partir du format tabulaire, on peut reconstituer le source et réciproquement.
 
-Ainsi, les programmes sources deviennent des données :-)
+Ainsi, les programmes sources deviennent des données arborescentes qu'on peut traiter en ajoutant, supprimant ou modifiant des éléments.

@@ -1,4 +1,9 @@
 src_php(
+
+  // ==============================================
+  // exemple de formulaire de login
+  // en php qui contient aussi du html qui contient du javascript
+
   ( file_name , aa_login_test ),
   ( file_extension , php ),
   ( file_path , . ),
@@ -7,7 +12,6 @@ src_php(
       definir( BNF , appelf( n(basename) , p(__FILE__) ) ),
       appelf( n(require_once) , p('aa_include.php') ),
       appelf( n(session_start) ),
-      appelf( n(start_session_messages) ),
       choix(
         si(
 
@@ -19,6 +23,7 @@ src_php(
             et( sup( appelf( n(count) , p($_POST) ) , 0 ) )
           ),
           alors(
+            appelf( n(start_session_messages) ),
             choix(
 
               // =================================================
@@ -32,6 +37,12 @@ src_php(
                 alors(
                   choix(
                     si(
+
+                      // ===============================================
+                      // ici on ne casse pas trop la tête,
+                      // le test de validité du login et du mot de passe
+                      // pourra avantageusement être remplacé
+
                       condition(
                         ( egal( $_POST["login"] , 'admin' ) ),
                         et( egal( $_POST["password"] , 'admin' ) )
@@ -92,7 +103,8 @@ src_php(
                   p(BNF)
                 )
               )
-            )
+            ),
+            sortir(0)
           )
         )
       ),
@@ -130,7 +142,8 @@ src_php(
                         p(BNF)
                       )
                     )
-                  )
+                  ),
+                  sortir(0)
                 )
               )
             )
@@ -200,6 +213,7 @@ src_php(
                 form(
                   ( id , loginbox ),
                   ( method , post ),
+                  ( onsubmit , 'return checkSubmit()' ),
                   label( ( for , login ) , 'login' ),
                   input(
                     ( type , text ),
@@ -215,6 +229,64 @@ src_php(
                     ( value , '' )
                   ),
                   input( ( type , submit ) , ( value , envoyer ) )
+                ),
+                script(
+                  ( type , 'text/javascript' ),
+                  ( data-lang , 'fr' ),
+                  source(
+
+                    // ===========================================
+                    // dans ce javascript, on définit une fonction
+
+                    fonction(
+                      definition( nom(checkSubmit) ),
+                      contenu(
+                        appelf( n(clearMessages) ),
+                        declare( valRet , faux ),
+                        declare( zoneLogin , {} ),
+                        declare( zonePassw , {} ),
+                        affecte( zoneLogin , appelf( n(document.getElementById) , p('login') ) ),
+                        affecte( zonePassw , appelf( n(document.getElementById) , p('password') ) ),
+                        essayer(
+                          faire(
+                            choix(
+                              si(
+                                condition(
+                                  ( egal( zonePassw.value , '' ) ),
+                                  ou( egal( zoneLogin.value , '' ) )
+                                ),
+                                alors(
+                                  affecte( valRet , faux ),
+                                  appelf(
+                                    n(global_messages.errors.push),
+                                    p('Veuillez indiquer votre login et votre mot de passe.')
+                                  ),
+                                  appelf( n(displayMessages) )
+                                )
+                              ),
+                              sinon(
+                                // todo essayer de virer le "alors" pour traiter l'erreur
+                                alors(
+                                  affecte( valRet , vrai )
+                                )
+                              )
+                            )
+                          ),
+                          sierreur(
+                            e,
+                            faire(
+                              appelf(
+                                n(global_messages.errors.push),
+                                p('Il y a eu un problème :-(')
+                              ),
+                              appelf( n(displayMessages) )
+                            )
+                          )
+                        ),
+                        revenir(valRet)
+                      )
+                    )
+                  )
                 )
               )
             )
@@ -226,7 +298,8 @@ src_php(
       appelf( n(concat) , r($o1) , p($o1) , p( appelf( n(html_footer1) ) ) ),
       appelf( n(print) , p($o1) ),
       // ... puis on le reinitialise
-      affecte( $o1 , '' )
+      affecte( $o1 , '' ),
+      appelf( n(clear_session_messages) )
     )// fin du php
   )
 )

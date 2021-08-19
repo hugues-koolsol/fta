@@ -50,7 +50,16 @@ function logerreur(o){
  }
  return o;
 }
-
+//=====================================================================================================================
+function displayMessages(){
+// console.log(global_messages);
+ for(var i=0;i<global_messages.errors.length;i++){
+  document.getElementById('global_messages').innerHTML+='<div class="yyerror">'+global_messages.errors[i]+'</div>';
+ }
+ for(var i=0;i<global_messages.lines.length;i++){
+  document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+')" class="yyerror">go to line '+global_messages.lines[i]+'</a>&nbsp;';
+ }
+}
 //=====================================================================================================================
 function echappConstante(t){
  return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
@@ -250,16 +259,6 @@ function compareSourceEtReconstruit(source){
    }
    return logerreur({status:false,message:'le source et le source reconstruits ne sont pas les mêmes',situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
   }
-}
-//=====================================================================================================================
-function displayMessages(){
-// console.log(global_messages);
- for(var i=0;i<global_messages.errors.length;i++){
-  document.getElementById('global_messages').innerHTML+='<div class="yyerror">'+global_messages.errors[i]+'</div>';
- }
- for(var i=0;i<global_messages.lines.length;i++){
-  document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+')" class="yyerror">go to line '+global_messages.lines[i]+'</a>&nbsp;';
- }
 }
 //=====================================================================================================================
 function display_ajax_error_in_cons(jsonRet) {

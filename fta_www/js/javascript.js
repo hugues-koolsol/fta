@@ -560,11 +560,14 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
        if(tab[j+1][2]=='c'){
         nomErreur=tab[j+1][1];
         if(tab[j+2][1]=='faire' && tab[j+2][2]=='f'){
-         obj=js_tabTojavascript1(tab,j+3,dansFonction,false,offsetLigne);
-         if(obj.status==true){
-          sierreur+=obj.value;
+         if(tab[j+2][11]==0){ // si la fonction faire n'a pas d'enfants 
          }else{
-          return logerreur({status:false,value:t,id:i,tab:tab,message:'problème sur le "sierreur" du "essayer" ' });
+          obj=js_tabTojavascript1(tab,j+3,dansFonction,false,offsetLigne);
+          if(obj.status==true){
+           sierreur+=obj.value;
+          }else{
+           return logerreur({status:false,value:t,id:i,tab:tab,message:'problème sur le "sierreur" du "essayer" ' });
+          }
          }
         }else{
          return logerreur({status:false,value:t,id:i,tab:tab,message:'problème sur le "sierreur" le deuxième argiment doit être "faire"' });
@@ -834,7 +837,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
 
-    t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : tab[i+2][1]+'');
+    t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':tab[i+2][1]) )+'');
     if(!dansInitialisation){
      t+=';';
     }

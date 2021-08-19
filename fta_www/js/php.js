@@ -65,12 +65,35 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
     i=reprise;
     
   
+  }else if(tab[i][1]=='sortir' && tab[i][2]=='f' ){  // i18
+  
+  
+   if(tab[i][11]==0){
+    t+=espaces(tab[i][3]);
+    t+='exit;'
+   }else if(tab[i][11]==1 && tab[i+1][2]=='c' ){
+    t+=espaces(tab[i][3]);
+    t+='exit(';
+    t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
+    t+=');'
+    i++;
+   }else{
+    t+=espaces(tab[i][3]);
+    t+='// todo 81 php.js sortir return args;';
+   }
+   
   }else if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
   
   
    if(tab[i][11]==0){
     t+=espaces(tab[i][3]);
     t+='return;'
+   }else if(tab[i][11]==1 && tab[i+1][2]=='c' ){
+    t+=espaces(tab[i][3]);
+    t+='return(';
+    t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
+    t+=');'
+    i++;
    }else{
     t+=espaces(tab[i][3]);
     t+='// todo 54 php.js revenir return args;';
@@ -573,7 +596,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
 
     obj=sousTableau(tab,i+2);
     if(obj.status===true){
-     obj=tabToHtml1(obj.value,1,offsetLigne);
+     obj=tabToHtml1(obj.value,0,offsetLigne);
      if(obj.status===true){
       t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
      }else{

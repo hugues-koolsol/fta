@@ -24,10 +24,15 @@ function start_session_messages(){
  $_SESSION[APP_KEY][MESSAGES]["comments"]=array();
 }
 //==================================================================================================
+function clear_session_messages(){
+ unset($_SESSION[APP_KEY][MESSAGES]);
+}
+//==================================================================================================
 function session_messages(){
  $t='';
  $u='';
  if(isset($_SESSION[APP_KEY][MESSAGES])){
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][MESSAGES] , true ) . '</pre>' ; exit(0);
   $u='';
   if(isset($_SESSION[APP_KEY][MESSAGES]["errors"])){
    foreach($_SESSION[APP_KEY][MESSAGES]["errors"] as $k1 => $v1){
@@ -36,10 +41,12 @@ function session_messages(){
     }
    }
   }
+  
   if($u!=''){
-   $t.='<div class="yymessageError">'.$u.'</div>';
+   $t.='<div class="yyerror">'.$u.'</div>';
   }
-  unset($_SESSION[APP_KEY][MESSAGES]);
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( var_export( $t , true ) ) . '</pre>' ; exit(0);
+//  
  }
  return $t;
 }
