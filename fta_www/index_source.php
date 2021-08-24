@@ -728,7 +728,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 <?php
-$a=array('js' => array('js/php.js','js/javascript.js','js/html.js'));
+$a=array('js' => array('js/php.js','js/javascript.js','js/html.js','js/sql.js'));
 $o1=concat($o1,html_footer1($a));
 print($o1);
 $o1='';

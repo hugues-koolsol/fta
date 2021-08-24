@@ -608,6 +608,22 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
      return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
     }
     
+   }else if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sql' ){
+
+    obj=sousTableau(tab,i+2);
+    if(obj.status===true){
+     obj=tabToSql1(obj.value,0,offsetLigne);
+     if(obj.status===true){
+      t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
+     }else{
+      return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
+     }
+//     console.log(obj);
+     
+    }else{
+     return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
+    }
+    
     
    }else{
     t+='//todo 568 php.js dans affecte 0 '+tab[i][1]+'';

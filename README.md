@@ -4,7 +4,7 @@ commune.
 
 La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français :-).
 
-Un exemple de fichier produisant du html avec du javascript est là:
+Un exemple de fichier produisant du html avec du javascript est là :
 
 https://github.com/hugues-koolsol/fta/blob/master/fta_inc/rev/test_factorielle.rev
 
