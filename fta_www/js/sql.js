@@ -15,6 +15,11 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
  var j=0;
  var k=0;
  var c='';
+ var nam='';
+ var oldnam='';
+ var list='';
+ var def='';
+ var uniq='';
  var obj=null;
  for(i=id+1;i<tab.length;i++){
   
@@ -22,7 +27,105 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
    
    
    
-   if(tab[i][1]=='use'){
+   if(tab[i][1]=='add_index'){
+     nam='';
+     list='';
+     uniq='';
+     def='';
+     for(j=i+1;j<tab.length;j++){
+      if(tab[j][3]==tab[i][3]+1){
+       if(tab[j][1]=='n' && tab[j][11]==1){
+        nam=tab[j+1][1];
+       }
+       if(tab[j][1]=='index_name' && tab[j][11]==1){
+        def=tab[j+1][1];
+       }
+       if(tab[j][1]=='unique' && tab[j][11]==0){
+        uniq=' UNIQUE';
+       }
+       if(tab[j][1]=='fields' && tab[j][11]>=1){
+        for(k=j+1;k<tab.length;k++){
+         if(tab[k][3]==tab[j][3]+1 && tab[k][10] == tab[j][0]  ){
+          list+=' `'+tab[k][1]+'` ,';
+         }
+        }
+       }
+      }
+     }
+     if(nam!='' && list!='' && def!=''){
+      t+='\n';
+      t+='ALTER TABLE `'+nam+'` ADD'+uniq+' `'+def+'` ('+list.substr(0,list.length-1)+');';
+     }
+   }else if(tab[i][1]=='change_field'){
+     nam='';
+     oldnam='';
+     def='';
+     for(j=i+1;j<tab.length;j++){
+      if(tab[j][3]==tab[i][3]+1){
+       if(tab[j][1]=='n' && tab[j][11]==1){
+        nam=tab[j+1][1];
+       }
+       if(tab[j][1]=='old_name' && tab[j][11]==1){
+        oldnam=tab[j+1][1];
+       }
+       
+       if(tab[j][1]=='new_def' ){
+        obj=sousTableau(tab,j);
+        if(obj.status===true){
+         inFieldDef=true;
+         obj=tabToSql0(obj.value,0,offsetLigne , inFieldDef);
+         inFieldDef=false;
+         if(obj.status===true){
+          
+          for(k=obj.value.length-1;k>=0;k--){
+           c=obj.value.substr(k,1);
+           if(c==','){
+            def=obj.value.substr(0,k);
+            break;
+           }
+          }
+          
+         }else{
+          return logerreur({status:false,value:t,id:i,message:'erreur dans un sql définit dans un php'});
+         }
+        }else{
+          return logerreur({status:false,value:t,id:i,message:'erreur dans un sql définit dans un php'});
+        }
+       }
+       
+      }
+     }
+     if(nam!='' && oldnam!=''){
+      t+='\n';
+      t+='ALTER TABLE `'+nam+'` CHANGE `'+oldnam+'` '+def+';';
+     }
+    
+    
+   }else if(tab[i][1]=='add_primary_key'){
+     // ALTER TABLE `fta`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);
+     nam='';
+     list='';
+     for(j=i+1;j<tab.length;j++){
+      if(tab[j][3]==tab[i][3]+1){
+       if(tab[j][1]=='n' && tab[j][11]==1){
+        nam=tab[j+1][1];
+       }
+       if(tab[j][1]=='fields' && tab[j][11]>=1){
+        for(k=j+1;k<tab.length;k++){
+         if(tab[k][3]==tab[j][3]+1 && tab[k][10] == tab[j][0]  ){
+          list+=' `'+tab[k][1]+'` ,';
+         }
+        }
+        break;
+       }
+      }
+     }
+     if(nam!='' && list!=''){
+      t+='\n';
+      t+='ALTER TABLE `'+nam+'` ADD PRIMARY KEY ('+list.substr(0,list.length-1)+');';
+     }
+    
+   }else if(tab[i][1]=='use'){
     
     
     if(tab[i][11]==1 && tab[i+1][2] == 'c'  ){
@@ -71,13 +174,15 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
        if(tab[j][1]=='n' && tab[j][11]==1 && tab[j+1][2]=='c'){
         t+=' `'+tab[j+1][1]+'`';
         j++;
+       }else if(tab[j][1]=='auto_increment' && tab[j][11]==0){
+        t+=' AUTO_INCREMENT';
        }else if(tab[j][1]=='unsigned' && tab[j][11]==0){
         t+=' UNSIGNED';
        }else if(tab[j][1]=='notnull' && tab[j][11]==0){
         t+=' NOT NULL';
        }else if(tab[j][1]=='default' && tab[j][11]==1){
         t+=' DEFAULT ';
-        t+=' \'TODO\' ';
+        t+=' \''+echappConstante(tab[j+1][1])+'\' ';
         j++;
        }else if(tab[j][1]=='type' && (tab[j][11]==1 || tab[j][11]==2) && tab[j+1][2]=='c'){
         if(tab[j][11]==1){

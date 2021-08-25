@@ -9,8 +9,13 @@ use `fta`;
 DROP TABLE IF EXISTS `tbl_user`;
 CREATE TABLE IF NOT EXISTS `tbl_user` (
  `fld_id_user` BIGINT UNSIGNED NOT NULL,
- `fld_name_user` VARCHAR(64) NOT NULL DEFAULT  'TODO' 
+ `fld_name_user` VARCHAR(64) NOT NULL DEFAULT  'admin' ,
+ `fld_password_user` VARCHAR(256) NOT NULL DEFAULT  'admin' 
 );
+ALTER TABLE `tbl_user` ADD PRIMARY KEY ( `fld_id_user` );
+ALTER TABLE `tbl_user` CHANGE `fld_id_user`  `fld_id_user` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tbl_user` ADD UNIQUE `idx_name` ( `fld_name_user` );
+set FOREIGN_KEY_CHECKS = 1;
 COMMIT;
 EOT;
 
