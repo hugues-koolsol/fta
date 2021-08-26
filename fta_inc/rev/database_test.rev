@@ -1,12 +1,4 @@
 src_php(
-/*
-
-
-SET FOREIGN_KEY_CHECKS=1;
-COMMIT;
-
-*/
-
   ( file_name , database_test ),
   ( file_extension , php ),
   ( file_path , . ),
@@ -39,16 +31,27 @@ COMMIT;
               collate(utf8mb4_general_ci)
             ),
             use(fta),
+
+            //==================================
+            //DROP TABLE IF EXISTS `bce_tbl__css`;
+
             drop_table(
               ifexists(),
               n(tbl_user)
             ),
 
-            // ==========================================
-            // tables
+            //=======================================================================
+            // CREATE TABLE IF NOT EXISTS `test` (
+            //   `fld_field` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            // ) AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
             create_table(
               ifnotexists(),
               n(tbl_user),
+              engine(InnoDB),
+              auto_increment(0),
+              charset(utf8mb4),
+              collate(utf8mb4_general_ci),
               fields(
                 field(
                   n(fld_id_user),
@@ -105,8 +108,8 @@ COMMIT;
         )
       ),
 
+      // =========
       // connexion
-      // $link = mysqli_connect($v1['server'],$v1['user'],$v1['password'],$v1['dbname']);
 
       affecte( $serveur , 'localhost:3308' ),
       affecte( $utilisateur , 'admin' ),
@@ -131,20 +134,83 @@ COMMIT;
         p($link),
         p('utf8mb4')
       ),
+
+      // =========================================
+      // execution de la requête et test de retour
+
       appelf(
         r($retourSql),
         n(mysqli_multi_query),
         p($link),
         p($src_create_database)
+      ),
+      appelf( r($testAppelSql) , n(mysqli_errno) , p($link) ),
+      choix(
+        si(
+          condition( egal( $testAppelSql , 0 ) ),
+          alors(
+            appelf( n(print) , p('OK CREATE') ),
+            appelf( n(mysqli_close) , p($link) )
+          )
+        ),
+        sinon(
+          alors( appelf( n(die) , p('KO CREATE') ) )
+        )
+      ),
+
+      // ============================================
+      // réouverture de la connexion 
+
+      appelf(
+        r($link),
+        n(mysqli_connect),
+        p($serveur),
+        p($utilisateur),
+        p($mdp)
+      ),
+      choix(
+        si(
+          condition( non($link) ),
+          alors(
+            appelf( n(die) , p( appelf( n(concat) , p(__LINE__) , p(__FILE__) ) ) )
+          )
+        )
+      ),
+      affecte(
+        $insertSql,
+        sql(
+          insert_into(
+            n(fta.tbl_user),
+            fields( fld_id_user , fld_name_user , fld_password_user ),
+            values(
+              ( 1 , 'admin' , 'admin' ),
+              ( 2 , 'user1' , 'user1' )
+            )
+          )
+        )
+      ),
+      appelf(
+        r($retourSql),
+        n(mysqli_query),
+        p($link),
+        p($insertSql)
+      ),
+      appelf( r($testAppelSql) , n(mysqli_errno) , p($link) ),
+      choix(
+        si(
+          condition( egal( $testAppelSql , 0 ) ),
+          alors(
+            appelf( n(print) , p('OK INSERT') )
+          )
+        ),
+        sinon(
+          alors( appelf( n(die) , p('KO INSERT') ) )
+        )
       )
     )
   )
 )
 /*
-DROP TABLE IF EXISTS `bce_tbl__css`;
-CREATE TABLE IF NOT EXISTS `bce_tbl__css` (
-  `fld_id_css` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bce_tbl__css` (`fld_id_css`, `fld_name_css`, `fld_active_css`, 
 `fld_json_css`, `fld_tsupd_css`, `fld_tscrt_css`, `fld_cntupd_css`) VALUES

@@ -14,12 +14,15 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
  var i=0;
  var j=0;
  var k=0;
+ var l=0;
  var c='';
  var nam='';
  var oldnam='';
  var list='';
  var def='';
  var uniq='';
+ var value='';
+ var values='';
  var obj=null;
  for(i=id+1;i<tab.length;i++){
   
@@ -27,7 +30,47 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
    
    
    
-   if(tab[i][1]=='add_index'){
+   if(tab[i][1]=='insert_into'){
+     nam='';
+     list='';
+     for(j=i+1;j<tab.length;j++){
+      if(tab[j][3]==tab[i][3]+1){
+       if(tab[j][1]=='n' && tab[j][11]==1){
+        nam=tab[j+1][1];
+       }
+       if(tab[j][1]=='fields' && tab[j][11]>=1){
+        for(k=j+1;k<tab.length;k++){
+         if(tab[k][3]==tab[j][3]+1 && tab[k][10] == tab[j][0]  ){
+          list+=' '+tab[k][1]+' ,';
+         }
+        }
+       }
+       if(tab[j][1]=='values' && tab[j][11]>=1){
+        values='';
+        for(k=j+1;k<tab.length;k++){
+         if(tab[k][3]==tab[j][3]+1 && tab[k][10] == tab[j][0] && tab[k][1]==''  ){
+          
+          value='';
+          for(l=k+1;l<tab.length && tab[l][10]==tab[k][0];l++){
+           if(value!=''){
+            value+=' , ';
+           }
+           value+='\''+echappConstante(tab[l][1])+'\'';
+          }
+          if(value!=''){
+           values+=' (';
+           values+=value+' ) ,';
+          }
+         }
+        }
+       }
+      }
+     }
+     if(nam!='' && list!=''){
+      t+='\n';
+      t+='INSERT INTO '+nam+' ('+list.substr(0,list.length-1)+') VALUES '+values.substr(values,values.length-1)+' ;';
+     }
+   }else if(tab[i][1]=='add_index'){
      nam='';
      list='';
      uniq='';
@@ -46,7 +89,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
        if(tab[j][1]=='fields' && tab[j][11]>=1){
         for(k=j+1;k<tab.length;k++){
          if(tab[k][3]==tab[j][3]+1 && tab[k][10] == tab[j][0]  ){
-          list+=' `'+tab[k][1]+'` ,';
+          list+=' '+tab[k][1]+' ,';
          }
         }
        }
@@ -54,7 +97,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
      }
      if(nam!='' && list!='' && def!=''){
       t+='\n';
-      t+='ALTER TABLE `'+nam+'` ADD'+uniq+' `'+def+'` ('+list.substr(0,list.length-1)+');';
+      t+='ALTER TABLE '+nam+' ADD'+uniq+' '+def+' ('+list.substr(0,list.length-1)+');';
      }
    }else if(tab[i][1]=='change_field'){
      nam='';
@@ -97,7 +140,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
      }
      if(nam!='' && oldnam!=''){
       t+='\n';
-      t+='ALTER TABLE `'+nam+'` CHANGE `'+oldnam+'` '+def+';';
+      t+='ALTER TABLE '+nam+' CHANGE '+oldnam+' '+def+';';
      }
     
     
@@ -113,7 +156,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
        if(tab[j][1]=='fields' && tab[j][11]>=1){
         for(k=j+1;k<tab.length;k++){
          if(tab[k][3]==tab[j][3]+1 && tab[k][10] == tab[j][0]  ){
-          list+=' `'+tab[k][1]+'` ,';
+          list+=' '+tab[k][1]+' ,';
          }
         }
         break;
@@ -122,7 +165,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
      }
      if(nam!='' && list!=''){
       t+='\n';
-      t+='ALTER TABLE `'+nam+'` ADD PRIMARY KEY ('+list.substr(0,list.length-1)+');';
+      t+='ALTER TABLE '+nam+' ADD PRIMARY KEY ('+list.substr(0,list.length-1)+');';
      }
     
    }else if(tab[i][1]=='use'){
@@ -130,7 +173,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
     
     if(tab[i][11]==1 && tab[i+1][2] == 'c'  ){
      t+='\n';
-     t+='use `'+tab[i+1][1]+'`;';
+     t+='use '+tab[i+1][1]+';';
      j++;
     }else{
         return logerreur({status:false,value:t,id:i,message:'erreur dans un sql(use) définit dans un php'});
@@ -172,7 +215,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
      if(tab[j][3]>tab[i][3]){
       if(tab[j][3]==tab[i][3]+1){
        if(tab[j][1]=='n' && tab[j][11]==1 && tab[j+1][2]=='c'){
-        t+=' `'+tab[j+1][1]+'`';
+        t+=' '+tab[j+1][1]+'';
         j++;
        }else if(tab[j][1]=='auto_increment' && tab[j][11]==0){
         t+=' AUTO_INCREMENT';
@@ -209,6 +252,10 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
     
    }else if(tab[i][1]=='create_table'){
 
+    var engine='';
+    var auto_increment=0;
+    var charset=0;
+    var collate=0;
     t+='\n';
     t+='CREATE TABLE';
     for(j=i+1;j<tab.length;j++){
@@ -218,8 +265,16 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
         t+=' IF EXISTS';
        }else if(tab[j][1]=='ifnotexists' && tab[j][11]==0){
         t+=' IF NOT EXISTS';
+       }else if(tab[j][1]=='engine' && tab[j][11]==1){
+        engine=' ENGINE='+tab[j+1][1]+'';
+       }else if(tab[j][1]=='auto_increment' && tab[j][11]==1){
+        auto_increment=' AUTO_INCREMENT='+tab[j+1][1]+'';
+       }else if(tab[j][1]=='charset' && tab[j][11]==1){
+        charset=' DEFAULT CHARSET='+tab[j+1][1]+'';
+       }else if(tab[j][1]=='collate' && tab[j][11]==1){
+        collate=' COLLATE='+tab[j+1][1]+'';
        }else if(tab[j][1]=='n' && tab[j][11]==1 && tab[j+1][2]=='c'){
-        t+=' `'+tab[j+1][1]+'`';
+        t+=' '+tab[j+1][1]+'';
         j++;
        }else if(tab[j][1]=='fields' && tab[j][11]>0  ){
         t+=' (';
@@ -249,7 +304,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
         
         
 //        t+=tab[j][1];
-        t+=')';
+        t+=')'+(engine==''?'':' ' + engine)+(auto_increment==''?'':' ' + auto_increment)+(charset==''?'':' ' + charset)+(collate==''?'':' ' + collate);
         for(k=j+1;k<tab.length;k++){
          if(tab[k][3]>tab[j][3]){
          }else{
@@ -280,7 +335,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
        }else if(tab[j][1]=='ifnotexists' && tab[j][11]==0){
         t+=' IF NOT EXISTS';
        }else if(tab[j][1]=='n' && tab[j][11]==1 && tab[j+1][2]=='c'){
-        t+=' `'+tab[j+1][1]+'`';
+        t+=' '+tab[j+1][1]+'';
         j++;
        }else{
         t+=' todo sql.js repere 49 '+tab[j][1];
@@ -304,7 +359,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
        }else if(tab[j][1]=='ifexists' && tab[j][11]==0){
         t+=' IF EXISTS';
        }else if(tab[j][1]=='n' && tab[j][11]==1 && tab[j+1][2]=='c'){
-        t+=' `'+tab[j+1][1]+'`';
+        t+=' '+tab[j+1][1]+'';
         j++;
        }else if(tab[j][1]=='charset' && tab[j][11]==1 && tab[j+1][2]=='c'){
         t+=' CHARACTER SET '+tab[j+1][1]+'';
