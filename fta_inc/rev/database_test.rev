@@ -184,7 +184,9 @@ src_php(
             fields( fld_id_user , fld_name_user , fld_password_user ),
             values(
               ( 1 , 'admin' , 'admin' ),
-              ( 2 , 'user1' , 'user1' )
+              ( 2 , 'user2' , 'user2' ),
+              ( 4 , 'user4' , 'user4' ),
+              ( 3 , 'user3' , 'user3' )
             )
           )
         )
@@ -206,15 +208,13 @@ src_php(
         sinon(
           alors( appelf( n(die) , p('KO INSERT') ) )
         )
+      ),
+      affecte( $username , 'admin' ),
+      affecte( $userpass , 'admin' ),
+      affecte(
+        $selectSql,
+        sqlref( 1 , p($username) , p($userpass) , p('toto') , p(0) )
       )
     )
   )
 )
-/*
-
-INSERT INTO `bce_tbl__css` (`fld_id_css`, `fld_name_css`, `fld_active_css`, 
-`fld_json_css`, `fld_tsupd_css`, `fld_tscrt_css`, `fld_cntupd_css`) VALUES
-(1, 'production', 1, 'gros json', 
-'2019-08-11 12:28:06', '2019-03-13 15:26:56', 67);
-
-*/

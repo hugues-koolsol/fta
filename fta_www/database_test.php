@@ -51,7 +51,7 @@ if( !($link)){
    die(concat(__LINE__,__FILE__));
 }
 $insertSql=<<<EOT
-INSERT INTO fta.tbl_user ( fld_id_user , fld_name_user , fld_password_user ) VALUES  ('1' , 'admin' , 'admin' ) , ('2' , 'user1' , 'user1' )  ;
+INSERT INTO fta.tbl_user ( fld_id_user , fld_name_user , fld_password_user ) VALUES  ('1' , 'admin' , 'admin' ) , ('2' , 'user2' , 'user2' ) , ('4' , 'user4' , 'user4' ) , ('3' , 'user3' , 'user3' )  ;
 EOT;
 $retourSql=mysqli_query($link,$insertSql);
 $testAppelSql=mysqli_errno($link);
@@ -60,4 +60,7 @@ if($testAppelSql == 0){
 }else{
    die('KO INSERT');
 }
+$username='admin';
+$userpass='admin';
+$selectSql='SELECT fld_id_user FROM `fta`.`tbl_user` `T0` WHERE `T0`.`fld_name_user` = '.addslashes($username).'  AND `T0`.`fld_password_user` = '.addslashes($userpass).'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
 ?>

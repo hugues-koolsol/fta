@@ -625,8 +625,65 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
     }
     
     
+   }else if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sqlref' ){
+    var numSql=0;
+    var strSql='';
+    var tabPar=[];
+    obj=sousTableau(tab,i+2);
+    if(obj.status===true){
+     for(j=1;j<obj.value.length;j++){
+      if(j==1){
+       var numSql=obj.value[j][1];
+       if(numSql=='1'){
+        strSql='SELECT fld_id_user ';
+        strSql+='FROM `fta`.`tbl_user` `T0` ';
+        strSql+='WHERE `T0`.`fld_name_user` = %%PAR0%% ';
+        strSql+=' AND `T0`.`fld_password_user` = %%PAR1%% ';
+        strSql+=' AND \\\'toto\\\' = %%PAR2%% ';
+        strSql+=' AND 0 = %%PAR3%% ';
+       }
+      }else{
+       if(obj.value[j][10]==0){
+        if(obj.value[j][1]=='p'){
+         tabPar.push([obj.value[j+1][1], obj.value[j+1][4] , isNaN(obj.value[j+1][1]) ])
+        }else{
+         return logerreur({status:false,value:t,id:i,message:'erreur dans un html sqlref dans un php'});
+        }
+       }
+      }
+     }
+    }else{
+     return logerreur({status:false,value:t,id:i,message:'erreur dans un html sqlref dans un php'});
+    }
+    if(numSql>0){
+     if(tabPar.length>0){
+      var toReplace='';
+      for(j=0;j<tabPar.length;j++){
+       if(tabPar[j][2]==false){ // isNaN
+        toReplace=new RegExp('%%PAR'+j+'%%');
+        strSql=strSql.replace(toReplace,tabPar[j][0]);
+       }else{
+        if(tabPar[j][1]==true){ // constante quotée
+         toReplace=new RegExp('%%PAR'+j+'%%');
+         strSql=strSql.replace(toReplace,'\\\''+tabPar[j][0]+'\\\'');
+        }else{
+         if(tabPar[j][0].substr(0,1)=='$'){ // variable php
+          toReplace=new RegExp('%%PAR'+j+'%%');
+          strSql=strSql.replace(toReplace,'\'.addslashes('+tabPar[j][0]+').\'');
+         }else{
+          return logerreur({status:false,value:t,id:i,message:'erreur dans un html sqlref dans un php'});
+         }
+        }
+       }
+      }
+     }
+//     console.log(tabPar);
+     t+=tab[i+1][1]+'=\''+strSql+'\';';
+    }else{
+     return logerreur({status:false,value:t,id:i,message:'erreur dans un html sqlref dans un php'});
+    }
    }else{
-    t+='//todo 568 php.js dans affecte 0 '+tab[i][1]+'';
+    t+='//todo 665 php.js dans affecte 0 '+tab[i][1]+'';
    }
    reprise=i+1;
    max=i+1;
