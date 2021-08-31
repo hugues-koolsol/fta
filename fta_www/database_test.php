@@ -1,4 +1,5 @@
 <?php
+require_once('aa_include.php');
 $src_create_database=<<<EOT
 set FOREIGN_KEY_CHECKS = 0;
 set AUTOCOMMIT = 0;
@@ -60,7 +61,38 @@ if($testAppelSql == 0){
 }else{
    die('KO INSERT');
 }
+
+//=========================================================
+// requete sur admin / admin
+
 $username='admin';
 $userpass='admin';
-$selectSql='SELECT fld_id_user FROM `fta`.`tbl_user` `T0` WHERE `T0`.`fld_name_user` = '.addslashes($username).'  AND `T0`.`fld_password_user` = '.addslashes($userpass).'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
+$selectSql='SELECT fld_id_user FROM `fta`.`tbl_user` `T0` WHERE `T0`.`fld_name_user` LIKE \''.addslashes($username).'\'  AND `T0`.`fld_password_user` LIKE \''.addslashes($userpass).'\'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
+$retourSql=mysqli_query($link,$selectSql);
+$testAppelSql=mysqli_errno($link);
+if($testAppelSql == 0){
+   print('OK SELECT');
+}else{
+   die('KO SELECT');
+}
+for($row=mysqli_fetch_row($retourSql);($row != NULL);$row=mysqli_fetch_row($retourSql)){
+  echo(concat('<br />userid=',$row[0],'<br />'));
+}
+
+//=========================================================
+// requete sur %user% / %user%
+
+$username='%user%';
+$userpass='%user%';
+$selectSql='SELECT fld_id_user FROM `fta`.`tbl_user` `T0` WHERE `T0`.`fld_name_user` LIKE \''.addslashes($username).'\'  AND `T0`.`fld_password_user` LIKE \''.addslashes($userpass).'\'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
+$retourSql=mysqli_query($link,$selectSql);
+$testAppelSql=mysqli_errno($link);
+if($testAppelSql == 0){
+   print('OK SELECT');
+}else{
+   die('KO SELECT');
+}
+for($row=mysqli_fetch_row($retourSql);($row != NULL);$row=mysqli_fetch_row($retourSql)){
+  echo(concat('<br />userid=',$row[0],'<br />'));
+}
 ?>

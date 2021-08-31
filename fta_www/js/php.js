@@ -4,7 +4,7 @@ function parsePhp0(tab,id,offsetLigne){
  var i=0;
  var t='';
  var obj={};
- var retJS=php_tabToPhp1(tab,1,false,false,offsetLigne);
+ var retJS=php_tabToPhp1(tab,1,false,false,offsetLigne,0);
  if(retJS.status===true){
   t+=retJS.value;
  }else{
@@ -14,7 +14,7 @@ function parsePhp0(tab,id,offsetLigne){
  return {status:true,value:t};
 }
 //=====================================================================================================================
-function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
+function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offsetColonne){
  var t='';
  var i=0;
  var j=0;
@@ -45,7 +45,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
     t+='\''+tab[i+1][1]+'\'';
     t+=' , ';
     if(tab[i+2][2]=='f' && tab[i+2][1] == 'appelf' ){
-     obj=php_traiteAppelFonction(tab,i+2,true);
+     obj=php_traiteAppelFonction(tab,i+2,true,offsetColonne);
      
      if(obj.status==true){
       t+=obj.value;
@@ -152,7 +152,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
      
      if(nomFonction!=''){
       t+='\nfunction '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
-      obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,offsetLigne);
+      obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,offsetLigne,offsetColonne);
       if(obj.status==true){
        t+=obj.value;
        t+='\n}';
@@ -173,7 +173,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
    
   }else if(tab[i][1]=='appelf' && tab[i][2]=='f'){ // i18
 
-   obj=php_traiteAppelFonction(tab,i,false);
+   obj=php_traiteAppelFonction(tab,i,dansInitialisation,offsetColonne);
    
    if(obj.status==true){
     t+=obj.value;
@@ -212,9 +212,14 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
    for(j=0; j<tabchoix.length;j++){
     if(tabchoix[j][1]=='initialisation'){ // i18
      
-     obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,offsetLigne);
+     obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,offsetLigne,offsetColonne);
      if(obj.status==true){
-      initialisation+=obj.value;
+      if(obj.value.substr(obj.value.length-1,1)==';'){
+       initialisation+=obj.value.substr(0,obj.value.length-1);
+      }else{
+       initialisation+=obj.value;
+      }
+      initialisation=initialisation.replace(/\n/g,'');
      }else{
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
      }
@@ -228,35 +233,44 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
 //      console.log(tab[tabchoix[j][0]],tab);
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
+     condition=condition.replace(/\n/g,'');
      
     }else if(tabchoix[j][1]=='increment'){ // i18
      
-     obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,offsetLigne);
+     obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,offsetLigne,offsetColonne);
      if(obj.status==true){
-      increment+=obj.value;
+      if(obj.value.substr(obj.value.length-1,1)==';'){
+       increment+=obj.value.substr(0,obj.value.length-1);
+      }else{
+       increment+=obj.value;
+      }
+      increment=increment.replace(/\n/g,'');
      }else{
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
      }
      
     }else if(tabchoix[j][1]=='faire'){ // i18
      
-     obj=php_tabToPhp1(tab,tabchoix[j][0],dansFonction,false,offsetLigne);
-     if(obj.status==true){
-      faire+=obj.value;
+     obj=sousTableau(tab,tabchoix[j][0]);
+     if(obj.status===true){
+//      console.log('obj=',obj);
+      offsetColonne+=2;
+      obj=php_tabToPhp1(obj.value,1,dansFonction,false,offsetLigne,offsetColonne);
+      offsetColonne-=2;
+      if(obj.status==true){
+       faire+=obj.value;
+      }else{
+       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
+      }
      }else{
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
      }
-     
     }
     
     
    }
    t+=espaces(tab[i][3]);
-   t+='for(';
-   t+=initialisation;
-   t+=';'+condition;
-   t+=';'+increment;
-   t+='){';
+   t+='for('+initialisation+';'+condition+';'+increment+'){';
    t+=faire;
    t+=espaces(tab[i][3]);
    t+='}';
@@ -279,7 +293,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
    for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
     if(tab[j][3]==tab[i][3]+1){
      if(tab[j][1]=='faire' && tab[j][2]=='f'){
-      obj=php_tabToPhp1(tab,j+1,dansFonction,false,offsetLigne);
+      obj=php_tabToPhp1(tab,j+1,dansFonction,false,offsetLigne,offsetColonne);
       if(obj.status==true){
        contenu+=obj.value;
       }else{
@@ -290,7 +304,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
        if(tab[j+1][2]=='c'){
         nomErreur=tab[j+1][1];
         if(tab[j+2][1]=='faire' && tab[j+2][2]=='f'){
-         obj=php_tabToPhp1(tab,j,dansFonction,false,offsetLigne);
+         obj=php_tabToPhp1(tab,j,dansFonction,false,offsetLigne,offsetColonne);
          if(obj.status==true){
           sierreur+=obj.value;
          }else{
@@ -424,7 +438,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
      
      
      if(tabchoix[j][2]>0){ // si on a trouve un "alors"
-      obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,offsetLigne);
+      obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,offsetLigne,offsetColonne);
       if(obj.status==true){
        t+=obj.value;
       }else{
@@ -457,7 +471,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
      
      
      if(tabchoix[j][2]>0){ // si on a trouve un "alors"
-      obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,offsetLigne);
+      obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,offsetLigne,offsetColonne);
       if(obj.status==true){
        t+=obj.value;
       }else{
@@ -477,7 +491,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
      t+=espaces(tab[i][3]);
      t+='}else{';
      if(tabchoix[j][2]>0){ // si on a trouve un "alors"
-      obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,offsetLigne);
+      obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,offsetLigne,offsetColonne);
       if(obj.status==true){
        t+=obj.value;
       }else{
@@ -528,7 +542,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
     }
    }
    if(positionContenu>0){
-    obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,offsetLigne);
+    obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,offsetLigne,offsetColonne);
     if(obj.status==true){
      if(!dansInitialisation){
       t+=espaces(tab[i][3]);
@@ -571,7 +585,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
    
    }else if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='appelf' ){
     
-    obj=php_traiteAppelFonction(tab,i+2,true);
+    obj=php_traiteAppelFonction(tab,i+2,true,offsetColonne);
     if(obj.status==true){
      t+=obj.value;
      if(!dansInitialisation){
@@ -637,8 +651,8 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
        if(numSql=='1'){
         strSql='SELECT fld_id_user ';
         strSql+='FROM `fta`.`tbl_user` `T0` ';
-        strSql+='WHERE `T0`.`fld_name_user` = %%PAR0%% ';
-        strSql+=' AND `T0`.`fld_password_user` = %%PAR1%% ';
+        strSql+='WHERE `T0`.`fld_name_user` LIKE \\\'%%PAR0%%\\\' ';
+        strSql+=' AND `T0`.`fld_password_user` LIKE \\\'%%PAR1%%\\\' ';
         strSql+=' AND \\\'toto\\\' = %%PAR2%% ';
         strSql+=' AND 0 = %%PAR3%% ';
        }
@@ -706,7 +720,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
     if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' ){
      if(tab[i+2][1]=='new' && tab[i+2][11]==1 && tab[i+3][1]=='appelf' ){
       t+='var '+tab[i+1][1]+'= new ';
-      obj=php_traiteAppelFonction(tab,i+3,true);
+      obj=php_traiteAppelFonction(tab,i+3,true,offsetColonne);
       if(obj.status==true){
        t+=obj.value+';';
       }else{
@@ -732,7 +746,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
   }else if(tab[i][1]=='php'  && tab[i][2]=='f'){
    obj=sousTableau(tab,i);
    if(obj.status==true){
-    obj=php_tabToPhp1(obj.value,1,false,false,offsetLigne);
+    obj=php_tabToPhp1(obj.value,1,false,false,offsetLigne,offsetColonne);
     if(obj.status==true){
      t+='<?'+'php'+obj.value+'\n?>';
     }else{
@@ -814,7 +828,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne){
 
 //=====================================================================================================================
 //=====================================================================================================================
-function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction){
+function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,offsetColonne){
  var t='';
  var j=0;
  var k=0;
@@ -859,7 +873,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction){
     if(obj.status==true){
      argumentsFonction+=','+obj.value+'';
     }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans php_traiteAppelFonction Objet il y a un problème'});
+     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans traiteAppelFonction Objet il y a un problème'});
     }
     
     
@@ -880,7 +894,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction){
      // cas ou le paramètre d'une fonction est une fonction
      if(tab[j][11]==1 && tab[j+1][2]=='f' ){
       if(tab[j+1][1]=='appelf'){ // i18
-       obj=php_traiteAppelFonction(tab,j+1,true);
+       obj=php_traiteAppelFonction(tab,j+1,true,offsetColonne);
        if(obj.status==true){
         argumentsFonction+=','+obj.value;
        }else{
@@ -894,7 +908,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction){
    }
   }
   if(!dansConditionOuDansFonction){
-   t+=espaces(tab[i][3]);
+   t+=espaces(tab[i][3]+offsetColonne);
   }
   t+=nomRetour!=''?nomRetour+'=':'';
   t+=nomFonction+'('+(argumentsFonction!==''?argumentsFonction.substr(1):'')+')';
@@ -1034,7 +1048,7 @@ function php_condition1(tab,id){
    }else if( tab[i][1]=='appelf'  && tab[i][2]=='f' ){ // i18
  
     
-    obj=php_traiteAppelFonction(tab,i,true);
+    obj=php_traiteAppelFonction(tab,i,true,offsetColonne);
     if(obj.status==true){
      t+=obj.value;
     }else{
@@ -1066,7 +1080,7 @@ function php_condition1(tab,id){
      }else{
       if(tab[tabPar[0]][2]=='f' && tab[tabPar[0]][1]=='appelf'){ // i18
 
-       obj=php_traiteAppelFonction(tab,tabPar[0],true);
+       obj=php_traiteAppelFonction(tab,tabPar[0],true,offsetColonne);
        if(obj.status==true){
         t+=obj.value;
        }else{
@@ -1105,7 +1119,7 @@ function php_condition1(tab,id){
      }else{
       if(tab[tabPar[1]][2]=='f' && tab[tabPar[1]][1]=='appelf'){ // i18
  
-       obj=php_traiteAppelFonction(tab,tabPar[1],true);
+       obj=php_traiteAppelFonction(tab,tabPar[1],true,offsetColonne);
        if(obj.status==true){
         t+=obj.value;
        }else{
