@@ -1048,7 +1048,7 @@ function php_condition1(tab,id){
    }else if( tab[i][1]=='appelf'  && tab[i][2]=='f' ){ // i18
  
     
-    obj=php_traiteAppelFonction(tab,i,true,offsetColonne);
+    obj=php_traiteAppelFonction(tab,i,true,0);//offsetColonne);
     if(obj.status==true){
      t+=obj.value;
     }else{
@@ -1080,7 +1080,7 @@ function php_condition1(tab,id){
      }else{
       if(tab[tabPar[0]][2]=='f' && tab[tabPar[0]][1]=='appelf'){ // i18
 
-       obj=php_traiteAppelFonction(tab,tabPar[0],true,offsetColonne);
+       obj=php_traiteAppelFonction(tab,tabPar[0],true,0); //offsetColonne);
        if(obj.status==true){
         t+=obj.value;
        }else{
@@ -1119,7 +1119,7 @@ function php_condition1(tab,id){
      }else{
       if(tab[tabPar[1]][2]=='f' && tab[tabPar[1]][1]=='appelf'){ // i18
  
-       obj=php_traiteAppelFonction(tab,tabPar[1],true,offsetColonne);
+       obj=php_traiteAppelFonction(tab,tabPar[1],true,0); //offsetColonne);
        if(obj.status==true){
         t+=obj.value;
        }else{

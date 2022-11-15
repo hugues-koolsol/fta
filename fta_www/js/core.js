@@ -763,14 +763,14 @@ function arrayToFunctNormalize(arr,bAvecCommentaires){
    if(arr[i][indLigneUniqDsAvantNettoye]!=''){
     if(arr[i][indLigneUniqDsAvantNettoye]=='multi sans bloc'){
      obj=commentairesComplementaires(arr,i);
-     t+=obj.complementCommentairesAvant;
+//     t+=obj.complementCommentairesAvant;
      
      
      for(j=0;j<arr[i][indCommentAvantNettoye].length;j++){
       if(arr[i][indCommentAvantNettoye][j]==''){
-       if(j>0){
+//       if(j>0){
         t+='\n';
-       }
+//       }
       }else{
        t+=espaces2(arr[i][3]);
        dernierNiveauEspace=arr[i][3];
@@ -1077,6 +1077,7 @@ function CommentairesApresDe(arr,j,indLigneUniqDsXxxNettoye,indCommentXxxNettoye
  var k=0;
  if(arr[j][indLigneUniqDsXxxNettoye]!=''){
   if(arr[j][indLigneUniqDsXxxNettoye]=='multi sans bloc'){
+   t+=espaces2(arr[j][3]);
    for(k=0;k<arr[j][indCommentXxxNettoye].length;k++){
     t+=arr[j][indCommentXxxNettoye][k];
     if(k==arr[j][indCommentXxxNettoye].length-1){
