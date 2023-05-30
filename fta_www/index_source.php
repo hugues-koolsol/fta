@@ -36,7 +36,7 @@ print($o1);$o1='';
          
        </td>
        <td>
-         <textarea id="zonesource" class="yytextSmall" cols="100" rows="60" spellcheck="false" style="height:85vh;"></textarea>
+         <textarea id="zonesource" class="yytextSmall" cols="100" rows="60" spellcheck="false" style="height:85vh;padding:3px;"></textarea>
        </td>
        <td style="vertical-align: text-top;">
          <textarea id="normalise" class="yytextSmall" cols="100" rows="10" spellcheck="false"></textarea>

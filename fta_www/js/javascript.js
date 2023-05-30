@@ -349,13 +349,29 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      if(tab[i+1][2]=='c'){
       t+=espaces(tab[id][3]);
       t+='return '+(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1]))))+';';
+     }else if(tab[i+1][2]=='f' && tab[i+1][1]=='appelf' ){
+      t+=espaces(tab[id][3]);
+      obj=js_traiteAppelFonction(tab,i+1,true,offsetLigne);
+      if(obj.status==true){
+       t+='return('+obj.value+');';
+      }else{
+       console.trace();
+       return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
+      }
+      
+      
+      
+//      t+='return todo()'+';';
+      console.trace();
      }else{
       t+=espaces(tab[id][3]);
       t+='// todo revenir return args;';
+      console.trace();
      }
     }else{
      t+=espaces(tab[id][3]);
      t+='// todo revenir return args;';
+     console.trace();
     }
     reprise=i+1;
     max=i+1;
@@ -510,7 +526,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      
     }else if(tabchoix[j][1]=='faire'){ // i18
      
-     obj=js_tabTojavascript1(tab,tabchoix[j][0],dansFonction,false,offsetLigne);
+     obj=js_tabTojavascript1(tab,tabchoix[j][0]+1,dansFonction,false,offsetLigne);
      if(obj.status==true){
       faire+=obj.value;
      }else{
