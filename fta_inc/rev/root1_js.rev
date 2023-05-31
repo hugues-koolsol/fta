@@ -1,0 +1,351 @@
+src_javascript(
+  ( file_name , core1 ),
+  ( file_extension , js ),
+  ( file_path , . ),
+  ( strict() ),
+  source(
+    declare( globale_LangueCourante , 'fr' ),
+    fonction(
+      definition(
+        nom(fta1),
+        argument(o),
+        argument(exitOnLevelError)
+      ),
+      contenu(
+        // =========================
+        // les chaines de caractères
+        // =========================
+        declare( t , '' ) , declare( texte , '' ) , declare( commentaire , '' ),
+        declare( c , '' ) , declare( c1 , '' ) , declare( c2 , '' ) , declare( cst , '' ),
+        declare( commentaireAvant , '' ) , declare( commentaireApres , '' ),
+        declare( commentaireDedans , '' ),
+        declare( typCommApNett , '' ) , declare( typCommDeNett , '' ),
+        declare( typCommAvNett , '' ),
+        declare( CommApNett , '' ) , declare( CommDeNett , '' ),
+        declare( CommAvNett , '' ),
+        // =========================
+        // les entiers
+        // =========================
+        declare( i , 0 ) , declare( j , 0 ) , declare( k , 0 ) , declare( l , 0 ),
+        declare( indice , 0 ) , declare( niveau , 0 ),
+        declare( niveauBloc , 0 ),
+        declare( premier , 0 ),
+        declare( dernier , 0 ),
+        declare( debutIgnore , 0 ),
+        declare( finIgnore , 0 ),
+        declare( numeroLigne , 0 ),
+        declare( parentId , 0 ),
+        declare( nombreEnfants , 0 ),
+        declare( numEnfant , 0 ),
+        declare( profondeur , 0 ),
+        declare( posOuvPar , 0 ),
+        declare( posFerPar , 0 ),
+        declare( numLigneFermeturePar , 0 ),
+        // =========================
+        // les booléens
+        // =========================
+        declare( dansCst , false ) , declare( dansTexte , false ),
+        declare( dansCommentaireLigne , false ) , declare( dansCommentaireBloc , false ),
+        declare( constanteQuotee , false ) , declare( faireCommentaire , true ),
+        declare( levelError , false ) , declare( dansIgnore , false ),
+        // =========================
+        // les autres
+        // =========================
+        declare( T , new( appelf( n(Array) ) ) ),
+        // =======================================================================
+        // initialisation du tableau contenant le source structuré en arborescence
+        // =======================================================================
+        appelf(
+          n(T.push),
+          p(
+            appelf(
+              n(array),
+              p(0),
+              p(texte),
+              p('INIT'),
+              p(-1),
+              p(constanteQuotee),
+              p(premier) , p(dernier),
+              p(commentaireAvant) , p(commentaireApres) , p(commentaireDedans),
+              p(0) , p(0) , p(0) , p(0),
+              p(numLigneFermeturePar),
+              p(profondeur),
+              p(typCommApNett) , p(typCommDeNett) , p(typCommAvNett),
+              p(CommApNett) , p(CommDeNett) , p(CommAvNett),
+              p(posOuvPar) , p(posFerPar)
+            )
+          )
+        ),
+        declare( l01 , o.length ),
+        boucle(
+          initialisation( affecte( i , 0 ) ),
+          condition( inf( i , l01 ) ),
+          increment( affecte( i , i+1 ) ),
+          faire(
+            affecte( c , appelf( n(o.substr) , p(i) , p(1) ) ),
+            choix(
+              si(
+                condition( ( egal( dansCst , true ) ) ),
+                alors(
+                  choix(
+                    si(
+                      condition( ( egal( c , '\'' ) ) ),
+                      alors(
+                        choix(
+                          si(
+                            condition( ( diff( i , l01-1 ) ) ),
+                            alors(
+                              affecte( c1 , appelf( n(o.substr) , p(i+1) , p(1) ) ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( c1 , ',' ) ),
+                                    ou( egal( c1 , '\t' ) ),
+                                    ou( egal( c1 , '\n' ) ),
+                                    ou( egal( c1 , '\r' ) ),
+                                    ou( egal( c1 , '/' ) ),
+                                    ou( egal( c1 , ' ' ) ),
+                                    ou( egal( c1 , ')' ) )
+                                  ),
+                                  alors(
+                                    affecte( dernier , i-1 )
+                                  )
+                                ),
+                                sinon(
+                                  alors(
+                                    affecte(
+                                      temp,
+                                      obj(
+                                        ( status , false ),
+                                        ( value , T ),
+                                        ( message , 'apres une constante, il doit y avoir un caractère d\'echappement' )
+                                      )
+                                    ),
+                                    revenir(
+                                      appelf( n(logerreur) , p(temp) )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        affecte( dansCst , false ),
+                        affecte( indice , indice+1 ),
+                        affecte( constanteQuotee , true ),
+                        choix(
+                          si(
+                            condition(
+                              ( egal( dansIgnore , true ) )
+                            ),
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( texte , '' ) )
+                                  ),
+                                  alors(
+                                    appelf(
+                                      r(commentaireAvant),
+                                      n(o.substr),
+                                      p(debutIgnore),
+                                      p(premier-debutIgnore)
+                                    )
+                                  )
+                                ),
+                                sinon(
+                                  alors(
+                                    appelf(
+                                      r(commentaireAvant),
+                                      n(o.substr),
+                                      p(debutIgnore),
+                                      p(premier-debutIgnore-1)
+                                    )
+                                  )
+                                )
+                              ),
+                              affecte( dansIgnore , false )
+                            )
+                          )
+                        ),
+                        appelf( r(numeroLigne) , n(calculNumLigne) , p(o) , p(premier) ),
+                        appelf(
+                          n(T.push),
+                          p(
+                            appelf(
+                              n(array),
+                              p(indice),
+                              p(texte),
+                              p('c'),
+                              p(niveau),
+                              p(constanteQuotee),
+                              p(premier) , p(dernier),
+                              p(commentaireAvant) , p(commentaireApres) , p(commentaireDedans),
+                              p(parentId) , p(nombreEnfants) , p(numEnfant) , p(numeroLigne),
+                              p(numLigneFermeturePar),
+                              p(profondeur),
+                              p(typCommApNett) , p(typCommDeNett) , p(typCommAvNett),
+                              p(CommApNett) , p(CommDeNett) , p(CommAvNett),
+                              p(posOuvPar) , p(posFerPar)
+                            )
+                          )
+                        ),
+                        affecte( texte , '' ),
+                        affecte( commentaireAvant , '' ),
+                        affecte( constanteQuotee , false )
+                      )
+                    ),
+                    sinonsi(
+                      condition(
+                        ( egal( c , '\\' ) )
+                      ),
+                      alors(
+                        choix(
+                          si(
+                            condition( ( egal( i , l01-1 ) ) ),
+                            alors(
+                              affecte(
+                                temp,
+                                obj(
+                                  ( status , false ),
+                                  ( value , T ),
+                                  ( message , 'un antislash ne doit pas terminer une fonction' )
+                                )
+                              ),
+                              revenir(
+                                appelf( n(logerreur) , p(temp) )
+                              )
+                            )
+                          ),
+                          sinon(
+                            alors(
+                              affecte( c1 , appelf( n(o.substr) , p(i+1) , p(1) ) ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( c1 , '\\' ) ),
+                                    ou( egal( c1 , '\'' ) )
+                                  ),
+                                  alors(
+                                    choix(
+                                      si(
+                                        condition(
+                                          ( egal( texte , '' ) )
+                                        ),
+                                        alors(
+                                          affecte( premier , i )
+                                        )
+                                      )
+                                    ),
+                                    affecte( texte , appelf( n(concat) , p(texte) , p(c1) ) ),
+                                    affecte( i , i+1 )
+                                  )
+                                ),
+                                sinon(
+                                  alors(
+                                    choix(
+                                      si(
+                                        condition(
+                                          ( egal( c1 , 'n' ) ),
+                                          ou( egal( c1 , 't' ) ),
+                                          ou( egal( c1 , 'r' ) )
+                                        ),
+                                        alors(
+                                          choix(
+                                            si(
+                                              condition(
+                                                ( egal( texte , '' ) )
+                                              ),
+                                              alors(
+                                                affecte( premier , i )
+                                              )
+                                            )
+                                          ),
+                                          affecte( texte , appelf( n(concat) , p('\\') , p(c1) ) ),
+                                          affecte( i , i+1 )
+                                        )
+                                      ),
+                                      sinon(
+                                        alors(
+                                          affecte(
+                                            temp,
+                                            obj(
+                                              ( status , false ),
+                                              ( value , T ),
+                                              ( message , 'un antislash doit être suivi par un autre antislash ou un apostrophe' )
+                                            )
+                                          ),
+                                          revenir(
+                                            appelf( n(logerreur) , p(temp) )
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    sinon(
+                      alors(
+                        choix(
+                          si(
+                            condition(
+                              ( egal( texte , '' ) )
+                            ),
+                            alors(
+                              affecte( premier , i )
+                            )
+                          )
+                        ),
+                        affecte( texte , appelf( n(concat) , p(texte) , p(c) ) )
+                      )
+                    )
+                  )
+                )
+              ),
+              sinonsi(
+                condition( ( egal( dansCommentaireLigne , true ) ) ),
+                alors()
+              )
+            )
+          )
+        )
+/*        
+        affecteFonction(
+          r.onreadystatechange,
+          contenu(
+            essayer(
+              faire(
+                // instructions
+              ),
+              sierreur(
+                e,
+                faire(
+                  // instructions
+                )
+              )
+            )
+          )
+        ),
+        appelf(
+          r(chaineAppelAjax),
+          n(concat),
+          p('ajax_param='),
+          p(
+            appelf(
+              n(encodeURIComponent),
+              p(
+                appelf( n(JSON.stringify) , p(ajax_param) )
+              )
+            )
+          )
+        )
+*/        
+      )
+    )
+  )
+)
