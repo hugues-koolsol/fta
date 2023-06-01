@@ -336,7 +336,15 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    }
   }
   
-  if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
+  if(tab[i][1]=='break' && tab[i][2]=='f' ){  // i18
+   if(tab[i][11]==0){
+     t+=espaces(tab[id][3]);
+     t+='break;'
+   }else{
+    console.trace();
+    return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans un break qui doit être sous le format break() strictement'});
+   }
+  }else if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
    if(tab[i][11]==0){
     try{
      t+=espaces(tab[id][3]);
@@ -358,11 +366,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
        console.trace();
        return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
       }
-      
-      
-      
-//      t+='return todo()'+';';
-      console.trace();
      }else{
       t+=espaces(tab[id][3]);
       t+='// todo revenir return args;';

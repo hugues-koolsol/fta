@@ -309,7 +309,92 @@ src_javascript(
               ),
               sinonsi(
                 condition( ( egal( dansCommentaireLigne , true ) ) ),
-                alors()
+                alors(
+                  boucle(
+                    initialisation( affecte( j , i ) ),
+                    condition( inf( j , l01 ) ),
+                    increment( affecte( j , j+1 ) ),
+                    faire(
+                      affecte( c1 , appelf( n(o.substr) , p(j) , p(1) ) ),
+                      choix(
+                        si(
+                          condition(
+                            ( egal( c1 , '\n' ) ),
+                            ou( egal( c1 , '\r' ) )
+                          ),
+                          alors(
+                            affecte( dansCommentaireLigne , false ),
+                            affecte( i , j ),
+                            break()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              ),
+              sinonsi(
+                condition( ( egal( dansCommentaireBloc , true ) ) ),
+                alors(
+                  boucle(
+                    initialisation( affecte( j , i ) ),
+                    condition( inf( j , l01-1 ) ),
+                    increment( affecte( j , j+1 ) ),
+                    faire(
+                      affecte( c1 , appelf( n(o.substr) , p(j) , p(1) ) ),
+                      affecte( c2 , appelf( n(o.substr) , p(j+1) , p(1) ) ),
+                      choix(
+                        si(
+                          condition(
+                            ( egal( c1 , '/' ) ),
+                            et( egal( c1 , '*' ) ),
+                            et(
+                              ( egal( i , 0 ) ),
+                              ou(
+                                egal( appelf( n(o.substr) , p(j-1) , p(1) ) , '\r' )
+                              ),
+                              ou(
+                                egal( appelf( n(o.substr) , p(j-1) , p(1) ) , '\n' )
+                              )
+                            )
+                          ),
+                          alors(
+                            affecte( niveauBloc , niveauBloc+1 )
+                          )
+                        ),
+                        sinonsi(
+                          condition(
+                            ( egal( c1 , '*' ) ),
+                            et( egal( c1 , '/' ) ),
+                            et(
+                              (
+                                egal( appelf( n(o.substr) , p(j-1) , p(1) ) , '\r' )
+                              ),
+                              ou(
+                                egal( appelf( n(o.substr) , p(j-1) , p(1) ) , '\n' )
+                              )
+                            )
+                          ),
+                          alors(
+                            affecte( niveauBloc , niveauBloc-1 )
+                          )
+                        )
+                      ),
+                      choix(
+                        si(
+                          condition(
+                            ( egal( niveauBloc , 0 ) )
+                          ),
+                          alors(
+                            affecte( dansCommentaireBloc , false ),
+                            affecte( i , j+1 ),
+                            break()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
               )
             )
           )
