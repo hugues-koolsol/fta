@@ -18,6 +18,8 @@ print($o1);$o1='';
         <button onclick="enregistrer()">Enregistrer</button>
         <a href="javascript:insertSource('choix');">Choix</a>
         <a href="javascript:insertSource('boucle');">Boucle</a>
+        <a href="javascript:insertSource('appelf');">appelf</a>
+        <a href="javascript:insertSource('affecte');">affecte</a>
         <a href="javascript:parentheses();" title="repérer la parenthèse fermante correspondante">(|...)</a>
         <a href="javascript:decaler('droite');">(|&gt;&gt;&gt;</a>
         <input type="text" id="nomDuSource" disabled="true" style="float:right;" />
@@ -188,7 +190,12 @@ function jumpToError(i){
  selectTextareaLine(document.getElementById('zonesource'),i)
 }
 //=====================================================================================================================
-function compareNormalise(zoneSource,zoneNormalisee){
+function reprendre(){
+ document.getElementById('zonesource').value=document.getElementById('normalise').value;
+}
+//=====================================================================================================================
+function compareNormalise(zoneSource,zoneNormalisee , comparaisonSourcesSansCommentairesOK ){
+ var lienReprendre='<div class="yywarning">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre le normalise</a></div>';
  var tab1=document.getElementById(zoneSource).value.split('\n');
  var tab2=document.getElementById(zoneNormalisee).value.split('\n');
  if(tab1.length==tab2.length){
@@ -198,7 +205,10 @@ function compareNormalise(zoneSource,zoneNormalisee){
     document.getElementById('global_messages').innerHTML+='<div class="yywarning">différence dans des sources en ligne '+(i+1)+'</div>';
     document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+tab1[i].replace(/ /g,'░')+'</div>';
     document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+tab2[i].replace(/ /g,'░')+'</div>';
-    return;
+    if(comparaisonSourcesSansCommentairesOK===true){
+     document.getElementById('global_messages').innerHTML+=lienReprendre;
+    }
+    return false;
    }
   }
   document.getElementById('global_messages').innerHTML+='<div class="yyinfo">Le source et le normalisé sont les mêmes</div>';
@@ -216,8 +226,13 @@ function compareNormalise(zoneSource,zoneNormalisee){
    }
   }
   document.getElementById('global_messages').innerHTML+='<div class="yywarning">différence dans des sources en ligne </div>';
+  if(comparaisonSourcesSansCommentairesOK===true){
+   document.getElementById('global_messages').innerHTML+=lienReprendre;
+  }
+  return false;
 
  }
+ return true;
 }
 //=====================================================================================================================
 function memeHauteur(normalise,source){
@@ -245,28 +260,47 @@ function ajusteTailleTextareaContenantSource(normalise){
 }
 //=====================================================================================================================
 function enregistrer(){
+ console.time();
+ console.timeLog();
+ var comparaisonSourcesSansCommentairesOK=false;
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  clearMessages();
  var source=document.getElementById("zonesource");
  document.getElementById('message_erreur').innerHTML='';
  
  var testSourceReconstruit=compareSourceEtReconstruit(source.value);
+ console.timeLog();
  if(testSourceReconstruit.status==true){
+  console.timeLog();
   var arr=functionToArray(source.value,true);
   voirTableau(arr.value,'arrayed');
   if(arr.status===true){
    arr=functionToArray(source.value,false);
    if(arr.status==true){
     var srcNormalise=arrayToFunctNormalize(arr.value,true);
+    console.timeLog();
     if(srcNormalise.status==true){
      document.getElementById("normalise").value=srcNormalise.value;
+    
+     var arrnorm=functionToArray(srcNormalise.value,true);
+     
+     var sourceNormSansCommentaires=arrayToFunctNoComment(arrnorm.value);
+     var sourceOriginalSansCommentaires=arrayToFunctNoComment(arr.value);
+    
+//     console.log( 'sourceNormSansCommentaires=' , sourceNormSansCommentaires.value , 'sourceOriginalSansCommentaires=' , sourceOriginalSansCommentaires.value );
+
+     if( sourceNormSansCommentaires.value == sourceOriginalSansCommentaires.value ){
+      comparaisonSourcesSansCommentairesOK=true;
+     }
+     console.timeLog();
      ajusteTailleTextareaContenantSource('normalise');
      memeHauteur('normalise','zonesource');
+     console.timeLog();
      arr=writeSourceFile(source,arr);
      if(arr.status == false){
       console.log(arr);
      }else{
-      compareNormalise('zonesource','normalise');
+      var retnorm=compareNormalise( 'zonesource' , 'normalise' , comparaisonSourcesSansCommentairesOK );
      }
     }else{
       console.log(arr);
@@ -286,6 +320,7 @@ function enregistrer(){
     ajusteTailleTextareaContenantSource('normalise');
     memeHauteur('normalise','zonesource');
    }
+   
   }
  }else{
   clearMessages();
@@ -298,12 +333,29 @@ function enregistrer(){
     var obj=convertSource(source,arr);
     ajusteTailleTextareaContenantSource('normalise');
     memeHauteur('normalise','zonesource');
-    compareNormalise('zonesource','normalise');
+    
+    var arrnorm=functionToArray(srcNormalise.value,true);
+    
+    var sourceNormSansCommentaires=arrayToFunctNoComment(arrnorm.value);
+    var sourceOriginalSansCommentaires=arrayToFunctNoComment(arr.value);
+   
+//     console.log( 'sourceNormSansCommentaires=' , sourceNormSansCommentaires.value , 'sourceOriginalSansCommentaires=' , sourceOriginalSansCommentaires.value );
+
+    if( sourceNormSansCommentaires.value == sourceOriginalSansCommentaires.value ){
+     comparaisonSourcesSansCommentairesOK=true;
+    }
+    
+    
+    
+    
+    var retnorm=compareNormalise( 'zonesource' , 'normalise' , comparaisonSourcesSansCommentairesOK );
    }else{
     debugger;
    }
   }
  }
+ console.timeLog();
+ 
  displayMessages()
 }
 //=====================================================================================================================
@@ -442,7 +494,7 @@ function insertSource(nomFonction){
  var toAdd='';
  var espaces='';
  var zoneSource=document.getElementById('zonesource');
- if(nomFonction=='choix' || nomFonction=='boucle' ){
+ if(nomFonction=='choix' || nomFonction=='boucle' || nomFonction=='appelf' || nomFonction=='affecte' ){
   if(global_editeur_derniere_valeur_selecStart==global_editeur_derniere_valeur_selectEnd){
    j=-1; 
    if(global_editeur_debut_texte_tab.length>0){
@@ -478,6 +530,7 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'    alors( affecte( a , 1 ) )';
      toAdd+='\n'+espaces+'  )';
      toAdd+='\n'+espaces+'),';
+     toAdd+='\n'+espaces+'affecte( apresChoix , 1 ),';
      
     }else if(nomFonction=='boucle'){
 
@@ -489,6 +542,21 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'    affecte( a , 1 )';
      toAdd+='\n'+espaces+'  )';
      toAdd+='\n'+espaces+'),';
+     toAdd+='\n'+espaces+'affecte( apresBoucle , 1 ),';
+
+    }else if(nomFonction=='appelf'){
+
+     toAdd =             'appelf(';
+     toAdd+='\n'+espaces+'  n( nomFonction ),';
+     toAdd+='\n'+espaces+'  r( variableDeRetour ),';
+     toAdd+='\n'+espaces+'  p( parametre1 ),';
+     toAdd+='\n'+espaces+'  p( parametre2 )';
+     toAdd+='\n'+espaces+'),';
+     toAdd+='\n'+espaces+'affecte( apresAppelF , 1 ),';
+
+    }else if(nomFonction=='affecte'){
+
+     toAdd =             'affecte( nomVariavle , valeurVariable ),';
 
     }
     t=global_editeur_debut_texte+toAdd+global_editeur_fin_texte;

@@ -77,6 +77,13 @@ src_javascript(
           )
         ),
         declare( l01 , o.length ),
+
+        // ====================================================================
+        // ====================================================================
+        // boucle principale sur tous les caractères du texte passé en argument
+        // ====================================================================
+        // ====================================================================
+
         boucle(
           initialisation( affecte( i , 0 ) ),
           condition( inf( i , l01 ) ),
@@ -395,6 +402,378 @@ src_javascript(
                     )
                   )
                 )
+              ),
+              sinon(
+                alors(
+                  choix(
+                    si(
+                      condition(
+                        ( egal( c , '(' ) )
+                      ),
+                      alors(
+                        affecte( posOuvPar , i ),
+                        choix(
+                          si(
+                            condition(
+                              ( egal( dansIgnore , true ) )
+                            ),
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( texte , '' ) )
+                                  ),
+                                  alors(
+                                    affecte(
+                                      commentaireAvant,
+                                      appelf(
+                                        n(o.substr),
+                                        p(debutIgnore),
+                                        p(i-debutIgnore)
+                                      )
+                                    )
+                                  )
+                                ),
+                                sinon(
+                                  alors(
+                                    affecte(
+                                      commentaireAvant,
+                                      appelf(
+                                        n(o.substr),
+                                        p(debutIgnore),
+                                        p(premier-debutIgnore)
+                                      )
+                                    )
+                                  )
+                                )
+                              ),
+                              affecte( dansIgnore , faux )
+                            )
+                          )
+                        ),
+                        affecte( indice , indice+1 ),
+                        choix(
+                          si(
+                            condition(
+                              non(
+                                egal( texte , '' )
+                              )
+                            ),
+                            alors(
+                              affecte(
+                                numeroLigne,
+                                appelf(
+                                  n(calculNumLigne),
+                                  p(o),
+                                  p(i)
+                                )
+                              )
+                            )
+                          ),
+                          sinon(
+                            alors(
+                              affecte(
+                                numeroLigne,
+                                appelf(
+                                  n(calculNumLigne),
+                                  p(o),
+                                  p(premier)
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        appelf(
+                          n(T.push),
+                          p(
+                            appelf(
+                              n(array),
+                              p(indice),
+                              p(texte),
+                              p('c'),
+                              p(niveau),
+                              p(constanteQuotee),
+                              p(premier) , p(dernier),
+                              p(commentaireAvant) , p(commentaireApres) , p(commentaireDedans),
+                              p(parentId) , p(nombreEnfants) , p(numEnfant) , p(numeroLigne),
+                              p(numLigneFermeturePar),
+                              p(profondeur),
+                              p(typCommApNett) , p(typCommDeNett) , p(typCommAvNett),
+                              p(CommApNett) , p(CommDeNett) , p(CommAvNett),
+                              p(posOuvPar) , p(posFerPar)
+                            )
+                          )
+                        ),
+                        boucle(
+                          initialisation( affecte( i , T.length-1 ) ),
+                          condition( sup( j , 0 ) ),
+                          increment( affecte( j , j-1 ) ),
+                          faire(
+                            affecte( l , T[j][3] ),
+                            boucle(
+                              initialisation( affecte( k , j ) ),
+                              condition( supeg( k , 0 ) ),
+                              increment( affecte( k , k-1 ) ),
+                              faire(
+                                affecte( T[j][10] , k ),
+                                break()
+                              )
+                            )
+                          )
+                        ),
+                        affecte( niveau , niveau+1 ),
+                        affecte( texte , '' ),
+                        affecte( commentaireAvant , '' ),
+                        affecte( commentaireApres , '' ),
+                        affecte( dansCst , faux ),
+                        affecte( dansTexte , faux ),
+                        affecte( dansCommentaireLigne , faux ),
+                        affecte( dansCommentaireBloc , faux )
+                      )
+                    ),
+                    sinonsi(
+                      condition(
+                        ( egal( c , ')' ) )
+                      ),
+                      alors(
+                        affecte( posFerPar , i ),
+                        affecte( faireCommentaire , vrai ),
+                        choix(
+                          si(
+                            condition(
+                              ( diff( texte , '' ) )
+                            ),
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    // une constante est le dernier paramètre d'une fonction 
+                                    // et ne comporte pa de virgule, ex : a((b c))
+                                    ( egal( dansIgnore , true ) )
+                                  ),
+                                  alors(
+                                    appelf(
+                                      n(o.substr),
+                                      r(commentaireAvant),
+                                      p(debutIgnore),
+                                      p(premier-debutIgnore)
+                                    )
+                                  )
+                                )
+                              ),
+                              affecte( indice , indice+1 ),
+                              appelf(
+                                n(calculNumLigne),
+                                r(numeroLigne),
+                                p(o),
+                                p(premier)
+                              ),
+                              appelf(
+                                n(T.push),
+                                p(
+                                  appelf(
+                                    n(array),
+                                    p(indice),
+                                    p(texte),
+                                    p('c'),
+                                    p(niveau),
+                                    p(constanteQuotee),
+                                    p(premier) , p(dernier),
+                                    p(commentaireAvant) , p(commentaireApres) , p(commentaireDedans),
+                                    p(parentId) , p(nombreEnfants) , p(numEnfant) , p(numeroLigne),
+                                    p(numLigneFermeturePar),
+                                    p(profondeur),
+                                    p(typCommApNett) , p(typCommDeNett) , p(typCommAvNett),
+                                    p(CommApNett) , p(CommDeNett) , p(CommAvNett),
+                                    p(posOuvPar) , p(posFerPar)
+                                  )
+                                )
+                              ),
+                              affecte( texte , '' ),
+                              affecte( commentaireAvant , '' ),
+                              affecte( faireCommentaire , faux )
+                            )
+                          )
+                        ),
+                        choix(
+                          si(
+                            condition(
+                              ( egal( dansIgnore , vrai ) ),
+                              et( egal( faireCommentaire , vrai ) )
+                            ),
+                            alors(
+                              affecte( a , 1 ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( sup( niveau , T[indice][3] ) )
+                                  ),
+                                  alors(
+                                    appelf(
+                                      n(o.substr),
+                                      r(commentaireDedans),
+                                      p(debutIgnore),
+                                      p(i-debutIgnore)
+                                    ),
+                                    affecte( T[indice][9] , commentaireDedans ),
+                                    affecte( commentaireDedans , '' ),
+                                    affecte( dansIgnore , false )
+                                  )
+                                ),
+                                sinon(
+                                  alors(
+                                    boucle(
+                                      initialisation( affecte( k , indice ) ),
+                                      condition( sup( k , 0 ) ),
+                                      increment( affecte( k , k-1 ) ),
+                                      faire(
+                                        choix(
+                                          si(
+                                            condition(
+                                              ( egal( T[k][3] , niveau ) )
+                                            ),
+                                            alors(
+                                              appelf(
+                                                n(o.substr),
+                                                r(commentaireApres),
+                                                p(debutIgnore),
+                                                p(i-debutIgnore)
+                                              ),
+                                              affecte( T[k][8] , commentaireApres ),
+                                              affecte( commentaireApres , '' ),
+                                              affecte( dansIgnore , false ),
+                                              break()
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        choix(
+                          si(
+                            condition(
+                              // si le dernier argument d'une fonction est une constante, 
+                              // il faut remonter pour chercher le commentaire apres
+
+                              ( egal( T[indice][2] , 'c' ) ),
+                              et( egal( niveau , T[indice][3] ) )
+                            ),
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( T[indice][4] , vrai ) )
+                                  ),
+                                  alors(
+                                    affecte( k , T[indice][6]+2 )
+                                  )
+                                ),
+                                sinon(
+                                  alors( affecte( k , T[indice][6]+1 ) )
+                                )
+                              ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( inf( k , i ) )
+                                  ),
+                                  alors(
+                                    appelf(
+                                      n(o.substr),
+                                      r(commentaireApres),
+                                      p(k),
+                                      p(i-k)
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        affecte( a , 1 ),
+                        appelf(
+                          n(calculNumLigne),
+                          r(numeroLigne),
+                          p(o),
+                          p(i)
+                        ),
+                        // recherche du numLiParent
+                        boucle(
+                          initialisation( affecte( j , indice ) ),
+                          condition( sup( j , 0 ) ),
+                          increment( affecte( j , j-1 ) ),
+                          faire(
+                            choix(
+                              si(
+                                condition(
+                                  ( egal( T[j][3] , niveau-1 ) )
+                                ),
+                                alors(
+                                  affecte( T[j][14] , numeroLigne ),
+                                  break()
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        affecte( niveau , niveau-1 )
+                        //
+                        // maj de la position de fermeture de la parenthèse
+                      )
+
+/*
+
+    niveau--;
+    for(j=indice;j>=0;j--){
+     if(T[j][3]==niveau && T[j][2]=='f' ){
+      T[j][23]=posFerPar;
+      break;
+     }
+    }
+    posFerPar=0;
+
+
+    dansCst=false;
+    dansTexte=false;
+    dansCommentaireLigne=false;
+    dansCommentaireBloc=false;
+*/                      
+                    ),
+                    sinonsi(
+                      condition( ( egal( c , '\\' ) ) ),
+                      alors( affecte( a , 1 ) )
+                    ),
+                    sinonsi(
+                      condition( ( egal( c , '\'' ) ) ),
+                      alors( affecte( a , 1 ) )
+                    ),
+                    sinonsi(
+                      condition( ( egal( c , '/' ) ) ),
+                      alors( affecte( a , 1 ) )
+                    ),
+                    sinonsi(
+                      condition( ( egal( c , ',' ) ) ),
+                      alors( affecte( a , 1 ) )
+                    ),
+                    sinonsi(
+                      condition(
+                        ( egal( c , ' ' ) ),
+                        ou( egal( c , '\t' ) ),
+                        ou( egal( c , '\r' ) ),
+                        ou( egal( c , '\n' ) )
+                      ),
+                      alors( affecte( a , 1 ) )
+                    ),
+                    sinon(
+                      alors( affecte( a , 1 ) )
+                    )
+                  )
+                )
               )
             )
           )
@@ -416,19 +795,6 @@ src_javascript(
             )
           )
         ),
-        appelf(
-          r(chaineAppelAjax),
-          n(concat),
-          p('ajax_param='),
-          p(
-            appelf(
-              n(encodeURIComponent),
-              p(
-                appelf( n(JSON.stringify) , p(ajax_param) )
-              )
-            )
-          )
-        )
 */        
       )
     )
