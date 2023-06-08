@@ -255,7 +255,7 @@ function js_condition0(tab,id,offsetLigne){
       t+=obj.value;
 
      }        
-    }else if(newTab[i][1]=='egal' || newTab[i][1]=='diff'  || newTab[i][1]=='sup'  || newTab[i][1]=='inf' || newTab[i][1]=='supeq'  || newTab[i][1]=='infeg' ){ // i18
+    }else if(newTab[i][1]=='egal' || newTab[i][1]=='diff'  || newTab[i][1]=='sup'  || newTab[i][1]=='inf' || newTab[i][1]=='supeg'  || newTab[i][1]=='infeg' ){ // i18
      if(!premiereCondition){
       return {status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est soit "()", soit [egal|sup|inf|diff]'};
      }else{
@@ -326,6 +326,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
 
 // t+='\n//hugues todo in loop';
  for(i=id;i<tab.length && tab[i][3]>=tab[id][3] ;i++){
+  
+  
+//  t+=espaces(tab[id][3]);
+//  t+='// commentaire de debut i='+i+', tab[i][1]="'+tab[i][1]+'"';
   
   // console.log(tab[i]);
   // 21ComAvan
@@ -676,6 +680,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
     if(tab[j][3]<=tab[i][3]+2){
      if( (tab[j][1]=='si' || tab[j][1]=='condition' || tab[j][1]=='alors' || tab[j][1]=='sinonsi' || tab[j][1]=='sinon' ) && tab[j][2]=='f' ){
       tabTemp.push(tab[j]);
+      
+//      t+=espaces(tab[id][3]);
+//      t+='// bloc '+tab[j][1]+' j=' + j+' tab[j][0]=' + tab[j][0];
+      
+      
      }else{
       return logerreur({status:false,value:t,id:i,tab:tab,message:'dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "'+tab[j][1]+'" '});
      }
@@ -700,8 +709,35 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    }
 
    for(j=0;j<tabchoix.length;j++){
+    
+    // hugues commentaire avant le si
+    if(tab[tabchoix[j][0]][21]=='multi sans bloc' && tab[tabchoix[j][0]][18].length>0){
+     for(var indComm=0;indComm<tab[tabchoix[j][0]][18].length;indComm++){
+      t+=espaces(tab[tabchoix[j][0]][3]-1);
+      t+=tab[tabchoix[j][0]][18][indComm];
+     }
+    }
+
     if(tabchoix[j][1]=='si'){
+     
+     
+     
+     
      t+=espaces(tab[id][3]);
+     
+     if(tab[tabchoix[j][0]+1][1]=='condition'){
+      
+      // hugues commentaire avant le condition
+      var indCommTemp=tabchoix[j][0]+1;
+      if(tab[indCommTemp][21]=='multi sans bloc' && tab[indCommTemp][18].length>0){
+       for(var indComm=0;indComm<tab[indCommTemp][18].length;indComm++){
+        t+=espaces(tab[indCommTemp][3]-2);
+        t+=tab[indCommTemp][18][indComm];
+       }
+       t+=espaces(tab[indCommTemp][3]-2);
+      }
+     }
+     
      t+='if(';
      
      obj=js_condition0(tab,tabchoix[j][0],offsetLigne);
@@ -736,6 +772,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      
     }else if(tabchoix[j][1]=='sinonsi'){
      
+     if(tab[tabchoix[j][0]+1][1]=='condition'){
+      
+      // hugues commentaire avant le condition
+      var indCommTemp=tabchoix[j][0]+1;
+      if(tab[indCommTemp][21]=='multi sans bloc' && tab[indCommTemp][18].length>0){
+       for(var indComm=0;indComm<tab[indCommTemp][18].length;indComm++){
+        t+=espaces(tab[indCommTemp][3]-2);
+        t+=tab[indCommTemp][18][indComm];
+       }
+       t+=espaces(tab[indCommTemp][3]-2);
+      }
+     }
+
      t+=espaces(tab[id][3]);
      t+='}else if(';
      obj=js_condition0(tab,tabchoix[j][0],offsetLigne);
@@ -778,6 +827,9 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      }
      t+=espaces(tab[id][3]);
      t+='}';
+//     t+=espaces(tab[id][3]);
+//     t+='// fin bloc else ' + id;
+     
     }
    }
 
@@ -974,6 +1026,35 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    t+=espaces(tab[id][3]);
    t+='//todo i='+i+', tab[i][1]="'+tab[i][1]+'"';
   }
+  // traitement des commentaires de fin
+  if(i+1<tab.length && dansInitialisation===false ){
+   
+   var niveauAChercher=tab[i+1][3]+1;
+//   t+=espaces(tab[id][3]);
+//   t+='// commentaire de fin i+1='+(i+1)+', tab[i+1][1]="'+tab[i+1][1]+'" niveauAChercher='+niveauAChercher+'';
+   
+   
+   for(var indNivTmp=i;indNivTmp>=0;indNivTmp--){
+    if(niveauAChercher==tab[indNivTmp][3]){
+     if(tab[indNivTmp][16].length>0){
+//      t+=espaces(tab[id][3]);
+//      t+='// commentaire de fin id='+id+'niveauAChercher='+(niveauAChercher)+', tab[indNivTmp][1]="'+tab[indNivTmp][1]+'" '+JSON.stringify(tab[indNivTmp])+'';
+      
+      if(tab[indNivTmp][19]=='multi sans bloc' && id-1==tab[indNivTmp][0]){
+       for(var indCom=0;indCom<tab[indNivTmp][16].length;indCom++){
+        t+=espaces(tab[indNivTmp][3]);
+        t+=tab[indNivTmp][16][indCom];
+       }
+      }
+     }
+     break;
+    }
+   }
+   
+   
+  }
+
+  
  }
  
  return {status:true,value:t};
