@@ -340,13 +340,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    }
   }
   
-  if(tab[i][1]=='break' && tab[i][2]=='f' ){  // i18
+  if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' ) && tab[i][2]=='f' ){  // i18
    if(tab[i][11]==0){
      t+=espaces(tab[id][3]);
-     t+='break;'
+     t+=tab[i][1]+';'
    }else{
     console.trace();
-    return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans un break qui doit être sous le format break() strictement'});
+    return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans un '+tab[i][1]+' qui doit être sous le format '+tab[i][1]+'() strictement'});
    }
   }else if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
    if(tab[i][11]==0){

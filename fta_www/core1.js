@@ -66,11 +66,17 @@ function fta1(o,exitOnLevelError){
   // ====================================================================
   // ====================================================================
   // boucle principale sur tous les caractères du texte passé en argument
+  // on commence par analyser les cas ou on est dans des chaines, puis on
+  // analyse les caractères
   // ====================================================================
   // ====================================================================
   
   for(i=0;i < l01;i=i+1){
     c=o.substr(i,1);
+    
+    // ==================
+    // dans une constante
+    // ==================
     if((dansCst == true)){
        if((c == '\'')){
           if((i != l01-1)){
@@ -129,6 +135,10 @@ function fta1(o,exitOnLevelError){
           }
           texte=concat(texte,c);
        }
+    // ========================================
+    // dans un commentaire de type ligne ( // )
+    // ========================================
+    
     }else if((dansCommentaireLigne == true)){
        for(j=i;j < l01;j=j+1){
          c1=o.substr(j,1);
@@ -138,6 +148,10 @@ function fta1(o,exitOnLevelError){
             break;
          }
        }
+    // =======================================
+    // dans un commentaire de type bloc ( /* )
+    // =======================================
+    
     }else if((dansCommentaireBloc == true)){
        for(j=i;j < l01-1;j=j+1){
          c1=o.substr(j,1);
@@ -154,6 +168,15 @@ function fta1(o,exitOnLevelError){
          }
        }
     }else{
+       // ==================================================
+       // ==================================================
+       // on n'est pas dans un commentaire ou une constante,  
+       // donc c'est un nouveau type qu'il faut détecter
+       // ==================================================
+       
+       //====================
+       // Parenthèse ouvrante
+       //====================
        if((c == '(')){
           posOuvPar=i;
           if((dansIgnore == true)){
@@ -186,6 +209,10 @@ function fta1(o,exitOnLevelError){
           dansTexte=false;
           dansCommentaireLigne=false;
           dansCommentaireBloc=false;
+       //====================
+       // Parenthèse fermante
+       //====================
+       
        }else if((c == ')')){
           posFerPar=i;
           faireCommentaire=true;
@@ -238,8 +265,24 @@ function fta1(o,exitOnLevelError){
             }
           }
           niveau=niveau-1;
+          //
+          // maj de la position de fermeture de la parenthèse
+          //
+          for(j=indice;j >= 0;j=j-1){
+            a=1;
+            if((T[j][3] == niveau)&&T[j][2] == ''){
+               T[j][23]=posFerPar;
+               break;
+            }
+          }
+          posFerPar=0;
+          dansCst=false;
+          dansTexte=false;
+          dansCommentaireLigne=false;
+          dansCommentaireBloc=false;
        }else if((c == '\\')){
-          a=1;
+          temp={'status':false,'value':T,'message':'un antislash doit être dans une constante'};
+          return(logerreur(temp));
        }else if((c == '\'')){
           a=1;
        }else if((c == '/')){

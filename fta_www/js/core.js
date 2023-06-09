@@ -220,12 +220,22 @@ function compareSourceEtReconstruit(source){
   var k=0;
   var arr=functionToArray(source,true);
   if(arr.status==true){
+   
+   var txt1=arrayToFunctNoComment(arr.value);
+//   console.log('txt1.value=' , txt1.value , 'source=' , source );
+   
    var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr.value);
+//   console.log(' sourceReconstruitAvecCommentaires=' , sourceReconstruitAvecCommentaires );
+   
+   
    if(sourceReconstruitAvecCommentaires.value==source){
  //   arguments.callee.caller.toString();
     return logerreur({status:true,situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
     console.log('%cLe source original et le source reconstruit sont les mêmes','color:lime');
    }else{
+    
+    
+    
     for(var j=0;j<source.length;j++){
      if(source.substr(j,1)!=sourceReconstruitAvecCommentaires.value.substr(j,1)){
       console.log('caractère"'+source.substr(j,1)+'" en position='+j);
@@ -1594,6 +1604,7 @@ function functionToArray(o,exitOnLevelError){
     }else{
      c1=o.substr(i+1,1);
      if(dansCst){
+      debugger; // vérifier si ce code est utile car dansCst a été traité plus haut
       if(c1=='\'' || c1=='\\'){
        if(texte==''){
         premier=i;

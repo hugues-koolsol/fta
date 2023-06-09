@@ -81,6 +81,8 @@ src_javascript(
         // ====================================================================
         // ====================================================================
         // boucle principale sur tous les caractères du texte passé en argument
+        // on commence par analyser les cas ou on est dans des chaines, puis on
+        // analyse les caractères
         // ====================================================================
         // ====================================================================
 
@@ -92,6 +94,9 @@ src_javascript(
             affecte( c , appelf( n(o.substr) , p(i) , p(1) ) ),
             choix(
               si(
+                // ==================
+                // dans une constante
+                // ==================
                 condition( ( egal( dansCst , true ) ) ),
                 alors(
                   choix(
@@ -315,6 +320,9 @@ src_javascript(
                 )
               ),
               sinonsi(
+                // ========================================
+                // dans un commentaire de type ligne ( // )
+                // ========================================
                 condition( ( egal( dansCommentaireLigne , true ) ) ),
                 alors(
                   boucle(
@@ -341,6 +349,9 @@ src_javascript(
                 )
               ),
               sinonsi(
+                // =======================================
+                // dans un commentaire de type bloc ( /* )
+                // =======================================
                 condition( ( egal( dansCommentaireBloc , true ) ) ),
                 alors(
                   boucle(
@@ -405,8 +416,16 @@ src_javascript(
               ),
               sinon(
                 alors(
+                  // ==================================================
+                  // ==================================================
+                  // on n'est pas dans un commentaire ou une constante,  
+                  // donc c'est un nouveau type qu'il faut détecter
+                  // ==================================================
                   choix(
                     si(
+                      //====================
+                      // Parenthèse ouvrante
+                      //====================
                       condition(
                         ( egal( c , '(' ) )
                       ),
@@ -532,6 +551,9 @@ src_javascript(
                       )
                     ),
                     sinonsi(
+                      //====================
+                      // Parenthèse fermante
+                      //====================
                       condition(
                         ( egal( c , ')' ) )
                       ),
@@ -721,32 +743,71 @@ src_javascript(
                             )
                           )
                         ),
-                        affecte( niveau , niveau-1 )
+                        affecte( niveau , niveau-1 ),
                         //
                         // maj de la position de fermeture de la parenthèse
+                        //
+                        boucle(
+                          initialisation( affecte( j , indice ) ),
+                          condition( supeg( j , 0 ) ),
+                          increment( affecte( j , j-1 ) ),
+                          faire(
+                            affecte( a , 1 ),
+                            choix(
+                              si(
+                                condition(
+                                  ( egal( T[j][3] , niveau ) ),
+                                  et( egal( T[j][2] , '' ) )
+                                ),
+                                alors(
+                                  affecte( T[j][23] , posFerPar ),
+                                  break()
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        affecte( posFerPar , 0 ),
+                        affecte( dansCst , false ),
+                        affecte( dansTexte , false ),
+                        affecte( dansCommentaireLigne , false ),
+                        affecte( dansCommentaireBloc , false )
                       )
-
-/*
-
-    niveau--;
-    for(j=indice;j>=0;j--){
-     if(T[j][3]==niveau && T[j][2]=='f' ){
-      T[j][23]=posFerPar;
-      break;
-     }
-    }
-    posFerPar=0;
-
-
-    dansCst=false;
-    dansTexte=false;
-    dansCommentaireLigne=false;
-    dansCommentaireBloc=false;
-*/                      
                     ),
                     sinonsi(
                       condition( ( egal( c , '\\' ) ) ),
-                      alors( affecte( a , 1 ) )
+                      alors(
+                        affecte(
+                          temp,
+                          obj(
+                            ( status , false ),
+                            ( value , T ),
+                            ( message , 'un antislash doit être dans une constante' )
+                          )
+                        )
+
+/*
+    if(i==l01-1){
+     return logerreur({status:false,value:T,message:''});
+    }else{
+     c1=o.substr(i+1,1);
+     if(dansCst){ // ici ça devrait être faux
+      if(c1=='\'' || c1=='\\'){
+       if(texte==''){
+        premier=i;
+       }
+       texte+=c1;
+       i++;
+      }else{
+       return logerreur({status:false,value:T,message:'un antislash dans une constante doit être suivi par un autre antislash ou par un caractère apostrophe'});
+      }
+     }else{
+      return logerreur({status:false,value:T,message:'un antislash doit être dans une constante'});
+     }
+    }
+
+*/                       
+                      )
                     ),
                     sinonsi(
                       condition( ( egal( c , '\'' ) ) ),
