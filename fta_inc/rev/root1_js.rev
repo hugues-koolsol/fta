@@ -775,6 +775,10 @@ src_javascript(
                       )
                     ),
                     sinonsi(
+                      //==========
+                      // antislash
+                      // TODO a revoir
+                      //==========
                       condition( ( egal( c , '\\' ) ) ),
                       alors(
                         affecte(
@@ -784,61 +788,317 @@ src_javascript(
                             ( value , T ),
                             ( message , 'un antislash doit être dans une constante' )
                           )
+                        ),
+                        revenir(
+                          appelf( n(logerreur) , p(temp) )
                         )
-
-/*
-    if(i==l01-1){
-     return logerreur({status:false,value:T,message:''});
-    }else{
-     c1=o.substr(i+1,1);
-     if(dansCst){ // ici ça devrait être faux
-      if(c1=='\'' || c1=='\\'){
-       if(texte==''){
-        premier=i;
-       }
-       texte+=c1;
-       i++;
-      }else{
-       return logerreur({status:false,value:T,message:'un antislash dans une constante doit être suivi par un autre antislash ou par un caractère apostrophe'});
-      }
-     }else{
-      return logerreur({status:false,value:T,message:'un antislash doit être dans une constante'});
-     }
-    }
-
-*/                       
                       )
                     ),
                     sinonsi(
+                      //===========
+                      // apostrophe
+                      //===========
                       condition( ( egal( c , '\'' ) ) ),
-                      alors( affecte( a , 1 ) )
+                      alors(
+                        affecte( premier , i ),
+                        choix(
+                          si(
+                            condition( ( egal( dansCst , vrai ) ) ),
+                            alors( affecte( dansCst , faux ) )
+                          ),
+                          sinon( alors( affecte( dansCst , vrai ) ) )
+                        )
+                      )
                     ),
                     sinonsi(
+                      //================================
+                      // slash donc début de commentaire
+                      //=================================
                       condition( ( egal( c , '/' ) ) ),
-                      alors( affecte( a , 1 ) )
-                    ),
-                    sinonsi(
-                      condition( ( egal( c , ',' ) ) ),
-                      alors( affecte( a , 1 ) )
-                    ),
-                    sinonsi(
-                      condition(
-                        ( egal( c , ' ' ) ),
-                        ou( egal( c , '\t' ) ),
-                        ou( egal( c , '\r' ) ),
-                        ou( egal( c , '\n' ) )
-                      ),
-                      alors( affecte( a , 1 ) )
-                    ),
-                    sinon(
-                      alors( affecte( a , 1 ) )
+                      alors(
+                        choix(
+                          si(
+                            condition(
+                              ( egal( i , l01-1 ) )
+                            ),
+                            alors(
+                              affecte(
+                                temp,
+                                obj(
+                                  ( status , false ),
+                                  ( value , T ),
+                                  ( message , 'un slash à la fin d\'une fonction n\'est pas autorisé' )
+                                )
+                              ),
+                              revenir(
+                                appelf( n(logerreur) , p(temp) )
+                              )
+                            )
+                          )
+                        ),
+                        affecte( c1 , appelf( n(o.substr) , p(i+1) , p(1) ) ),
+                        choix(
+                          si(
+                            condition(
+                              ( egal( c1 , '/' ) )
+                            ),
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    ( diff( texte , '' ) )
+                                  ),
+                                  alors(
+                                    affecte( indice , indice+1 ),
+                                    choix(
+                                      si(
+                                        condition(
+                                          ( egal( dansIgnore , true ) )
+                                        ),
+                                        alors(
+                                          appelf(
+                                            r(commentaireAvant),
+                                            n(o.substr),
+                                            p(debutIgnore),
+                                            p(premier-debutIgnore)
+                                          ),
+                                          affecte( debutIgnore , i )
+                                        )
+                                      )
+                                    ),
+                                    appelf(
+                                      r(numeroLigne),
+                                      n(calculNumLigne),
+                                      p(o),
+                                      p(premier)
+                                    ),
+                                    appelf(
+                                      n(T.push),
+                                      p(
+                                        appelf(
+                                          n(array),
+                                          p(indice),
+                                          p(texte),
+                                          p('c'),
+                                          p(niveau),
+                                          p(constanteQuotee),
+                                          p(premier) , p(dernier),
+                                          p(commentaireAvant) , p(commentaireApres) , p(commentaireDedans),
+                                          p(parentId) , p(nombreEnfants) , p(numEnfant) , p(numeroLigne),
+                                          p(numLigneFermeturePar),
+                                          p(profondeur),
+                                          p(typCommApNett) , p(typCommDeNett) , p(typCommAvNett),
+                                          p(CommApNett) , p(CommDeNett) , p(CommAvNett),
+                                          p(posOuvPar) , p(posFerPar)
+                                        )
+                                      )
+                                    ),
+                                    affecte( texte , '' ),
+                                    affecte( commentaireAvant , '' ),
+                                    affecte( commentaireApres , '' ),
+                                    affecte( dansCst , faux ),
+                                    affecte( dansTexte , faux ),
+                                    affecte( dansCommentaireLigne , faux ),
+                                    affecte( dansCommentaireBloc , faux )
+                                  )
+                                )
+                              ),
+                              affecte( dansCommentaireLigne , vrai ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( dansIgnore , faux ) )
+                                  ),
+                                  alors(
+                                    affecte( debutIgnore , i )
+                                  )
+                                )
+                              ),
+                              affecte( dansIgnore , vrai )
+                            )
+                          ),
+                          sinonsi(
+                            condition( ( egal( '*' , c1 ) ) ),
+                            alors(
+                              affecte( c1 , appelf( n(o.substr) , p(i-1) , p(1) ) ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( i , 0 ) ),
+                                    ou( egal( '\r' , c1 ) ),
+                                    ou( egal( '\n' , c1 ) )
+                                  ),
+                                  alors(
+                                    choix(
+                                      si(
+                                        condition(
+                                          ( egal( dansIgnore , faux ) )
+                                        ),
+                                        alors(
+                                          affecte( debutIgnore , i )
+                                        )
+                                      )
+                                    ),
+                                    affecte( dansIgnore , vrai ),
+                                    affecte( dansCommentaireBloc , true ),
+                                    affecte( i , i+1 ),
+                                    affecte( niveauBloc , 1 )
+                                  )
+                                ),
+                                sinon(
+                                  alors(
+                                    affecte(
+                                      temp,
+                                      obj(
+                                        ( status , false ),
+                                        ( value , T ),
+                                        ( message , 'un commentaire de bloc doit commencer en colonne 1' )
+                                      )
+                                    ),
+                                    revenir(
+                                      appelf( n(logerreur) , p(temp) )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          ),
+                          sinon(
+                            alors(
+                              affecte(
+                                temp,
+                                obj(
+                                  ( status , false ),
+                                  ( value , T ),
+                                  ( message , 'un slash doit être suivi d\'un caractère * pour commencer un commentaire' )
+                                )
+                              ),
+                              revenir(
+                                appelf( n(logerreur) , p(temp) )
+                              )
+                            )
+                          )
+                        ),
+                        affecte( apresChoix , 1 )
+                      )
                     )
+                  ),
+                  sinonsi(
+                    condition( ( egal( c , ',' ) ) ),
+                    alors(
+                      choix(
+                        si(
+                          condition(
+                            ( egal( texte , '' ) )
+                          ),
+                          alors(
+                            choix(
+                              si(
+                                condition(
+                                  ( egal( dansIgnore , vrai ) )
+                                ),
+                                alors(
+                                  affecte(
+                                    commentaireAvant,
+                                    appelf(
+                                      n(o.substr),
+                                      p(debutIgnore),
+                                      p(premier-debutIgnore)
+                                    )
+                                  ),
+                                  affecte( dansIgnore , false )
+                                )
+                              )
+                            ),
+                            affecte( indice , indice+1 ),
+                            affecte(
+                              numeroLigne,
+                              appelf(
+                                n(calculNumLigne),
+                                p(o),
+                                p(premier)
+                              )
+                            )
+                          )
+                        ),
+                        sinon(
+                          // todo
+                          // todo
+                          alors(
+                            choix(
+                              si(
+                                condition(
+                                  ( egal( dansIgnore , vrai ) )
+                                ),
+                                alors(
+                                  affecte(
+                                    commentaireApres,
+                                    appelf(
+                                      n(o.substr),
+                                      p(debutIgnore),
+                                      p(i-debutIgnore)
+                                    )
+                                  ),
+                                  choix(
+                                    si(
+                                      condition(
+                                        ( egal( T[indice][3] , niveau ) )
+                                      ),
+                                      alors(
+                                        affecte( T[indice][8] , commentaireApres )
+                                      )
+                                    ),
+                                    sinon(
+                                      alors(
+                                        affecte( a , 1 ),
+                                        boucle(
+                                          initialisation( affecte( j , indice-1 ) ),
+                                          condition( sup( j , 0 ) ),
+                                          increment( affecte( j , j-1 ) ),
+                                          faire(
+                                            affecte( a , 1 ),
+                                            choix(
+                                              si(
+                                                condition(
+                                                  ( egal( T[j][3] , niveau ) )
+                                                ),
+                                                alors(
+                                                  affecte( T[j][8] , commentaireApres )
+                                                )
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                  ),
+                                  affecte( dansIgnore , false )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  ),
+                  sinonsi(
+                    condition(
+                      ( egal( c , ' ' ) ),
+                      ou( egal( c , '\t' ) ),
+                      ou( egal( c , '\r' ) ),
+                      ou( egal( c , '\n' ) )
+                    ),
+                    alors( affecte( a , 1 ) )
+                  ),
+                  sinon(
+                    alors( affecte( a , 1 ) )
                   )
                 )
               )
             )
           )
         )
+      )
 /*        
         affecteFonction(
           r.onreadystatechange,
@@ -857,7 +1117,6 @@ src_javascript(
           )
         ),
 */        
-      )
     )
   )
 )

@@ -524,10 +524,14 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'  ),';
      toAdd+='\n'+espaces+'  sinonsi(';
      toAdd+='\n'+espaces+'    condition( (true) ),';
-     toAdd+='\n'+espaces+'    alors( affecte( a , 1 ) )';
+     toAdd+='\n'+espaces+'    alors(';
+     toAdd+='\n'+espaces+'      affecte( a , 1 ) ';
+     toAdd+='\n'+espaces+'    )';
      toAdd+='\n'+espaces+'  ),';
      toAdd+='\n'+espaces+'  sinon(';
-     toAdd+='\n'+espaces+'    alors( affecte( a , 1 ) )';
+     toAdd+='\n'+espaces+'    alors(';
+     toAdd+='\n'+espaces+'      affecte( a , 1 )';
+     toAdd+='\n'+espaces+'    )';
      toAdd+='\n'+espaces+'  )';
      toAdd+='\n'+espaces+'),';
      toAdd+='\n'+espaces+'affecte( apresChoix , 1 ),';

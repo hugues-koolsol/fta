@@ -280,20 +280,131 @@ function fta1(o,exitOnLevelError){
           dansTexte=false;
           dansCommentaireLigne=false;
           dansCommentaireBloc=false;
+       //==========
+       // antislash
+       // TODO a revoir
+       //==========
+       
        }else if((c == '\\')){
           temp={'status':false,'value':T,'message':'un antislash doit être dans une constante'};
           return(logerreur(temp));
+       //===========
+       // apostrophe
+       //===========
+       
        }else if((c == '\'')){
-          a=1;
+          premier=i;
+          if((dansCst == true)){
+             dansCst=false;
+          }else{
+             dansCst=true;
+          }
+       //================================
+       // slash donc début de commentaire
+       //=================================
+       
        }else if((c == '/')){
-          a=1;
-       }else if((c == ',')){
-          a=1;
-       }else if((c == ' ')||c == '\t'||c == '\r'||c == '\n'){
-          a=1;
-       }else{
-          a=1;
+          if((i == l01-1)){
+             temp={'status':false,'value':T,'message':'un slash à la fin d\'une fonction n\'est pas autorisé'};
+             return(logerreur(temp));
+          }
+          c1=o.substr(i+1,1);
+          if((c1 == '/')){
+             if((texte != '')){
+                indice=indice+1;
+                if((dansIgnore == true)){
+                   commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
+                   debutIgnore=i;
+                }
+                numeroLigne=calculNumLigne(o,premier);
+                T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+                texte='';
+                commentaireAvant='';
+                commentaireApres='';
+                dansCst=false;
+                dansTexte=false;
+                dansCommentaireLigne=false;
+                dansCommentaireBloc=false;
+             }
+             dansCommentaireLigne=true;
+             if((dansIgnore == false)){
+                debutIgnore=i;
+             }
+             dansIgnore=true;
+          }else if(('*' == c1)){
+             c1=o.substr(i-1,1);
+             if((i == 0)||'\r' == c1||'\n' == c1){
+                if((dansIgnore == false)){
+                   debutIgnore=i;
+                }
+                dansIgnore=true;
+                dansCommentaireBloc=true;
+                i=i+1;
+                niveauBloc=1;
+             }else{
+                temp={'status':false,'value':T,'message':'un commentaire de bloc doit commencer en colonne 1'};
+                return(logerreur(temp));
+             }
+          }else{
+             temp={'status':false,'value':T,'message':'un slash doit être suivi d\'un caractère * pour commencer un commentaire'};
+             return(logerreur(temp));
+          }
+          apresChoix=1;
        }
+       //todo i=1639, tab[i][1]="sinonsi"
+       //todo i=1640, tab[i][1]="condition"
+       //todo i=1641, tab[i][1]=""
+       //todo i=1642, tab[i][1]="egal"
+       //todo i=1643, tab[i][1]="c"
+       //todo i=1644, tab[i][1]=","
+       //todo i=1645, tab[i][1]="alors"
+       if((texte == '')){
+            if((dansIgnore == true)){
+               commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
+               dansIgnore=false;
+            }
+            indice=indice+1;
+            numeroLigne=calculNumLigne(o,premier);
+       }else{
+            if((dansIgnore == true)){
+               commentaireApres=o.substr(debutIgnore,i-debutIgnore);
+               if((T[indice][3] == niveau)){
+                  T[indice][8]=commentaireApres;
+               }else{
+                  a=1;
+                  for(j=indice-1;j > 0;j=j-1){
+                    a=1;
+                    if((T[j][3] == niveau)){
+                       T[j][8]=commentaireApres;
+                    }
+                  }
+               }
+               dansIgnore=false;
+            }
+       }
+       //todo i=1752, tab[i][1]="sinonsi"
+       //todo i=1753, tab[i][1]="condition"
+       //todo i=1754, tab[i][1]=""
+       //todo i=1755, tab[i][1]="egal"
+       //todo i=1756, tab[i][1]="c"
+       //todo i=1757, tab[i][1]=" "
+       //todo i=1758, tab[i][1]="ou"
+       //todo i=1759, tab[i][1]="egal"
+       //todo i=1760, tab[i][1]="c"
+       //todo i=1761, tab[i][1]="\t"
+       //todo i=1762, tab[i][1]="ou"
+       //todo i=1763, tab[i][1]="egal"
+       //todo i=1764, tab[i][1]="c"
+       //todo i=1765, tab[i][1]="\r"
+       //todo i=1766, tab[i][1]="ou"
+       //todo i=1767, tab[i][1]="egal"
+       //todo i=1768, tab[i][1]="c"
+       //todo i=1769, tab[i][1]="\n"
+       //todo i=1770, tab[i][1]="alors"
+       a=1;
+       //todo i=1774, tab[i][1]="sinon"
+       //todo i=1775, tab[i][1]="alors"
+       a=1;
     }
   }
 }
