@@ -811,11 +811,11 @@ src_javascript(
                       )
                     ),
                     sinonsi(
-                      //================================
-                      // slash donc début de commentaire
-                      //=================================
                       condition( ( egal( c , '/' ) ) ),
                       alors(
+                        //================================
+                        // slash donc début de commentaire
+                        //================================
                         choix(
                           si(
                             condition(
@@ -978,127 +978,128 @@ src_javascript(
                               )
                             )
                           )
-                        ),
-                        affecte( apresChoix , 1 )
+                        )
                       )
-                    )
-                  ),
-                  sinonsi(
-                    condition( ( egal( c , ',' ) ) ),
-                    alors(
-                      choix(
-                        si(
-                          condition(
-                            ( egal( texte , '' ) )
-                          ),
-                          alors(
-                            choix(
-                              si(
-                                condition(
-                                  ( egal( dansIgnore , vrai ) )
-                                ),
-                                alors(
-                                  affecte(
-                                    commentaireAvant,
-                                    appelf(
-                                      n(o.substr),
-                                      p(debutIgnore),
-                                      p(premier-debutIgnore)
-                                    )
-                                  ),
-                                  affecte( dansIgnore , false )
-                                )
-                              )
+                    ),
+                    sinonsi(
+                      condition( ( egal( c , ',' ) ) ),
+                      alors(
+                        //========================
+                        // virgule donc séparateur
+                        //========================
+                        choix(
+                          si(
+                            condition(
+                              ( egal( texte , '' ) )
                             ),
-                            affecte( indice , indice+1 ),
-                            affecte(
-                              numeroLigne,
-                              appelf(
-                                n(calculNumLigne),
-                                p(o),
-                                p(premier)
-                              )
-                            )
-                          )
-                        ),
-                        sinon(
-                          // todo
-                          // todo
-                          alors(
-                            choix(
-                              si(
-                                condition(
-                                  ( egal( dansIgnore , vrai ) )
-                                ),
-                                alors(
-                                  affecte(
-                                    commentaireApres,
-                                    appelf(
-                                      n(o.substr),
-                                      p(debutIgnore),
-                                      p(i-debutIgnore)
-                                    )
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( dansIgnore , vrai ) )
                                   ),
-                                  choix(
-                                    si(
-                                      condition(
-                                        ( egal( T[indice][3] , niveau ) )
-                                      ),
-                                      alors(
-                                        affecte( T[indice][8] , commentaireApres )
+                                  alors(
+                                    affecte(
+                                      commentaireAvant,
+                                      appelf(
+                                        n(o.substr),
+                                        p(debutIgnore),
+                                        p(premier-debutIgnore)
                                       )
                                     ),
-                                    sinon(
-                                      alors(
-                                        affecte( a , 1 ),
-                                        boucle(
-                                          initialisation( affecte( j , indice-1 ) ),
-                                          condition( sup( j , 0 ) ),
-                                          increment( affecte( j , j-1 ) ),
-                                          faire(
-                                            affecte( a , 1 ),
-                                            choix(
-                                              si(
-                                                condition(
-                                                  ( egal( T[j][3] , niveau ) )
-                                                ),
-                                                alors(
-                                                  affecte( T[j][8] , commentaireApres )
+                                    affecte( dansIgnore , false )
+                                  )
+                                )
+                              ),
+                              affecte( indice , indice+1 ),
+                              affecte(
+                                numeroLigne,
+                                appelf(
+                                  n(calculNumLigne),
+                                  p(o),
+                                  p(premier)
+                                )
+                              )
+                            )
+                          ),
+                          sinon(
+                            // todo
+                            // todo
+                            alors(
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( dansIgnore , vrai ) )
+                                  ),
+                                  alors(
+                                    affecte(
+                                      commentaireApres,
+                                      appelf(
+                                        n(o.substr),
+                                        p(debutIgnore),
+                                        p(i-debutIgnore)
+                                      )
+                                    ),
+                                    choix(
+                                      si(
+                                        condition(
+                                          ( egal( T[indice][3] , niveau ) )
+                                        ),
+                                        alors(
+                                          affecte( T[indice][8] , commentaireApres )
+                                        )
+                                      ),
+                                      sinon(
+                                        alors(
+                                          affecte( a , 1 ),
+                                          boucle(
+                                            initialisation( affecte( j , indice-1 ) ),
+                                            condition( sup( j , 0 ) ),
+                                            increment( affecte( j , j-1 ) ),
+                                            faire(
+                                              affecte( a , 1 ),
+                                              choix(
+                                                si(
+                                                  condition(
+                                                    ( egal( T[j][3] , niveau ) )
+                                                  ),
+                                                  alors(
+                                                    affecte( T[j][8] , commentaireApres )
+                                                  )
                                                 )
                                               )
                                             )
                                           )
                                         )
                                       )
-                                    )
-                                  ),
-                                  affecte( dansIgnore , false )
+                                    ),
+                                    affecte( dansIgnore , false )
+                                  )
                                 )
                               )
                             )
                           )
                         )
                       )
-                    )
-                  ),
-                  sinonsi(
-                    condition(
-                      ( egal( c , ' ' ) ),
-                      ou( egal( c , '\t' ) ),
-                      ou( egal( c , '\r' ) ),
-                      ou( egal( c , '\n' ) )
                     ),
-                    alors( affecte( a , 1 ) )
-                  ),
-                  sinon(
-                    alors( affecte( a , 1 ) )
+                    sinonsi(
+                      condition(
+                        ( egal( c , ' ' ) ),
+                        ou( egal( c , '\t' ) ),
+                        ou( egal( c , '\r' ) ),
+                        ou( egal( c , '\n' ) )
+                      ),
+                      alors( affecte( a , 1 ) )
+                    ),
+                    sinon(
+                      alors( affecte( a , 1 ) )
+                    )
                   )
                 )
               )
             )
           )
         )
-      )
 /*        
         affecteFonction(
           r.onreadystatechange,
@@ -1117,6 +1118,7 @@ src_javascript(
           )
         ),
 */        
+      )
     )
   )
 )
