@@ -1051,20 +1051,19 @@ src_javascript(
                                       ),
                                       sinon(
                                         alors(
-                                          affecte( a , 1 ),
                                           boucle(
                                             initialisation( affecte( j , indice-1 ) ),
                                             condition( sup( j , 0 ) ),
                                             increment( affecte( j , j-1 ) ),
                                             faire(
-                                              affecte( a , 1 ),
                                               choix(
                                                 si(
                                                   condition(
                                                     ( egal( T[j][3] , niveau ) )
                                                   ),
                                                   alors(
-                                                    affecte( T[j][8] , commentaireApres )
+                                                    affecte( T[j][8] , commentaireApres ),
+                                                    break()
                                                   )
                                                 )
                                               )
@@ -1079,7 +1078,14 @@ src_javascript(
                               )
                             )
                           )
-                        )
+                        ),
+                        affecte( texte , '' ),
+                        affecte( commentaireAvant , '' ),
+                        affecte( commentaireApres , '' ),
+                        affecte( dansCst , faux ),
+                        affecte( dansTexte , faux ),
+                        affecte( dansCommentaireLigne , faux ),
+                        affecte( dansCommentaireBloc , faux )
                       )
                     ),
                     sinonsi(
@@ -1089,7 +1095,90 @@ src_javascript(
                         ou( egal( c , '\r' ) ),
                         ou( egal( c , '\n' ) )
                       ),
-                      alors( affecte( a , 1 ) )
+                      alors(
+                        choix(
+                          si(
+                            condition(
+                              ( egal( texte , '' ) )
+                            ),
+                            alors(
+                              affecte( indice , indice+1 ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( dansIgnore , vrai ) )
+                                  ),
+                                  alors(
+                                    affecte(
+                                      commentaireAvant,
+                                      appelf(
+                                        n(o.substr),
+                                        p(debutIgnore),
+                                        p(premier-debutIgnore)
+                                      )
+                                    ),
+                                    affecte( debutIgnore , i )
+                                  )
+                                )
+                              ),
+                              affecte(
+                                numeroLigne,
+                                appelf(
+                                  n(calculNumLigne),
+                                  p(o),
+                                  p(premier)
+                                )
+                              ),
+                              appelf(
+                                n(T.push),
+                                p(
+                                  appelf(
+                                    n(array),
+                                    p(indice),
+                                    p(texte),
+                                    p('c'),
+                                    p(niveau),
+                                    p(constanteQuotee),
+                                    p(premier) , p(dernier),
+                                    p(commentaireAvant) , p(commentaireApres) , p(commentaireDedans),
+                                    p(parentId) , p(nombreEnfants) , p(numEnfant) , p(numeroLigne),
+                                    p(numLigneFermeturePar),
+                                    p(profondeur),
+                                    p(typCommApNett) , p(typCommDeNett) , p(typCommAvNett),
+                                    p(CommApNett) , p(CommDeNett) , p(CommAvNett),
+                                    p(posOuvPar) , p(posFerPar)
+                                  )
+                                )
+                              ),
+                              affecte( texte , '' ),
+                              affecte( commentaireAvant , '' ),
+                              affecte( commentaireApres , '' ),
+                              affecte( dansCst , faux ),
+                              affecte( dansTexte , faux ),
+                              affecte( dansCommentaireLigne , faux ),
+                              affecte( dansCommentaireBloc , faux ),
+                              choix(
+                                si(
+                                  condition(
+                                    ( egal( dansIgnore , faux ) )
+                                  ),
+                                  alors(
+                                    affecte( debutIgnore , i )
+                                  )
+                                )
+                              ),
+                              affecte( dansIgnore , vrai )
+                            )
+                          ),
+                          sinon(
+                            alors(
+                              affecte( a , 1 )
+                            )
+                          )
+                        ),
+                        affecte( apresChoix , 1 ),
+                        affecte( a , 1 )
+                      )
                     ),
                     sinon(
                       alors( affecte( a , 1 ) )

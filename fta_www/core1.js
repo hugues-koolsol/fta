@@ -300,6 +300,9 @@ function fta1(o,exitOnLevelError){
              dansCst=true;
           }
        }else if((c == '/')){
+          //================================
+          // slash donc début de commentaire
+          //================================
           if((i == l01-1)){
              temp={'status':false,'value':T,'message':'un slash à la fin d\'une fonction n\'est pas autorisé'};
              return(logerreur(temp));
@@ -362,21 +365,48 @@ function fta1(o,exitOnLevelError){
                 if((T[indice][3] == niveau)){
                    T[indice][8]=commentaireApres;
                 }else{
-                   a=1;
                    for(j=indice-1;j > 0;j=j-1){
-                     a=1;
                      if((T[j][3] == niveau)){
                         T[j][8]=commentaireApres;
+                        break;
                      }
                    }
                 }
                 dansIgnore=false;
              }
           }
+          texte='';
+          commentaireAvant='';
+          commentaireApres='';
+          dansCst=false;
+          dansTexte=false;
+          dansCommentaireLigne=false;
+          dansCommentaireBloc=false;
        }else if((c == ' ')||c == '\t'||c == '\r'||c == '\n'){
-          a=1;
+          if((texte == '')){
+             indice=indice+1;
+             if((dansIgnore == true)){
+                commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
+                debutIgnore=i;
+             }
+             numeroLigne=calculNumLigne(o,premier);
+             T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+             texte='';
+             commentaireAvant='';
+             commentaireApres='';
+             dansCst=false;
+             dansTexte=false;
+             dansCommentaireLigne=false;
+             dansCommentaireBloc=false;
+             if((dansIgnore == false)){
+                debutIgnore=i;
+             }
+             dansIgnore=true;
+          }else{
+             a=1;
+          }
        }else{
-          a=1;
+          dansTexte=true;
        }
     }
   }
