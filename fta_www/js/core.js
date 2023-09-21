@@ -11,12 +11,40 @@ var global_messages={
  'lines'      : [] ,
  'calls'      : ''
 };
+var global_enteteTableau=[
+ ['id','id'                                 ,''], // 00
+ ['val','value'                             ,''],
+ ['typ','type'                              ,''],
+ ['niv','niveau'                            ,''],
+ ['coQ','constante quotee'                  ,''],
+ ['pre','position du premier caractère'     ,''], // 05
+ ['der','position du dernier caractère'     ,''],
+ ['cAv','commentaire avant'                 ,''],
+ ['cAp','commentaire apres'                 ,''],
+ ['cDe','commentaire dedans'                ,''],
+ ['pId','Id du parent'                      ,''], // 10
+ ['nbE','nombre d\'enfants'                 ,''],
+ ['nuE','numéro enfants'                    ,''],
+ ['nli','numeroLigne'                       ,''],
+ ['lfP','numero ligne fermeture parenthese' ,''],
+ ['pro','profondeur'                        ,''], // 15
+ ['cpn','commentaire apres nettoye'         ,''],
+ ['cdn','commentaire dedans nettoye'        ,''],
+ ['cvn','commentaire avant nettoye'         ,''],
+ ['tcp','type commentaire apres nettoye'    ,''],
+ ['tcd','type commentaire dedans nettoye'   ,''], // 20
+ ['tcv','type commentaire avant nettoye'    ,''],
+ ['pop','position ouverture parenthese'     ,''],
+ ['pfp','position fermeture parenthese'     ,''],
+];
+
 var motscles_fr={
  vrai_true : 'vrai'
 };
 var motscles_en={
  vrai_true : 'true'
 };
+
 //=====================================================================================================================
 function clearMessages(){
  document.getElementById('global_messages').innerHTML='';
@@ -96,7 +124,8 @@ function voirTableau(tableau,nomTableParent){
  var c='';
  var k=0;
  var l=0;
- var enteteTableau=[
+/* 
+ var global_enteteTableau=[
   ['id','id'                                 ,''], // 00
   ['val','value'                             ,''],
   ['typ','type'                              ,''],
@@ -122,18 +151,18 @@ function voirTableau(tableau,nomTableParent){
   ['pop','position ouverture parenthese'     ,''],
   ['pfp','position fermeture parenthese'     ,''],
  ];
-
+*/
 //    console.log(tableau,JSON.stringify(tableau));  
  var arrayed=document.getElementById(nomTableParent);
  arrayed.innerHTML='';
  var newTr= document.createElement("tr");
  arrayed.appendChild(newTr);
- for(var j=0;j<enteteTableau.length;j++){
+ for(var j=0;j<global_enteteTableau.length;j++){
   var newTh= document.createElement("th");
-  newTh.title=enteteTableau[j][1];
+  newTh.title=global_enteteTableau[j][1];
   newTh.style.fontSize='0.6em';
   newTr.appendChild(newTh);
-  newTh.innerHTML=j+''+enteteTableau[j][0];
+  newTh.innerHTML=j+''+global_enteteTableau[j][0];
  }
  for(var k=0;k<tableau.length;k++){
   var newTr= document.createElement("tr");

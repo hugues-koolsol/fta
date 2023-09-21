@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="utf-8" />
+ <title>html home</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <nav>
+    <a href="index.html">html home</a>
+    <a href="index.php">php home</a>
+    <a href="todo.html">todo</a>
+    <a href="funcToArray6.html">funcToArray6</a>
+    <a href="aa_login.php">login</a>
+  </nav>
+  <h1>HTML HOME</h1>
+  <ul class="menu2">
+    <li><a href="index.html">html home</a></li>
+    <li><a href="index.php">php home</a></li>
+    <li><a href="index_php.html">index_php.html</a></li>
+    <li><a href="index_js.html">index_js.html</a></li>
+    <li><a href="indexfu.html">indexfu.html</a></li>
+    <li><a href="index_source.html">index_source.html</a></li>
+  </ul>
+  <textarea class="txtar1" id="txtar1" rows="4">a(
+ b(), // commentaire 1
+ c('ddd',eee) // commentaire 2
+)</textarea>
+  <a href="javascript:transform()">transform</a>
+  <div id="message1"></div>
+  <div id="resultat1"></div>
+  <script type="text/javascript" src="js/core.js"></script>
+<script type="text/javascript">
+function transform(){
+
+  document.getElementById('message1').innerHTML='';
+  document.getElementById('resultat1').innerHTML='';
+
+  var a=document.getElementById('txtar1');
+  
+  var lines = a.value.split(/\r|\r\n|\n/);
+  var count = lines.length;
+  a.setAttribute('rows',count);
+  
+  var b=functionToArray(a.value,true);
+  console.log('b=',b);
+  if(b.status===true){
+  
+    var parent=document.getElementById('resultat1');
+    var t1=document.createElement('table');
+    t1.setAttribute('class','tableau1');
+    
+    var tr1=document.createElement('tr');
+    for(var i=0;i<global_enteteTableau.length;i++){
+      var td1=document.createElement('td');
+      td1.innerHTML=global_enteteTableau[i][0];
+      td1.setAttribute('title',global_enteteTableau[i][1]);
+      tr1.appendChild(td1);
+    }
+    t1.appendChild(tr1);
+    
+   // 
+    for(var i=0;i<b.value.length;i++){
+      var tr1=document.createElement('tr');
+      for(var j=0;j<b.value[i].length;j++){
+        var td1=document.createElement('td');
+        td1.innerHTML=b.value[i][j];
+        td1.setAttribute('title',global_enteteTableau[j][1]);
+        tr1.appendChild(td1);
+      }
+      t1.appendChild(tr1);
+    }
+    document.getElementById('resultat1').appendChild(t1);
+//    parent.appendChild(t1);
+    
+    var t2=document.createElement('table');
+    t2.setAttribute('class','tableau2');
+    var tr1=document.createElement('tr');
+    var td1=document.createElement('td');
+    var numeroLigne=0;
+    td1.innerHTML=numeroLigne;
+    tr1.appendChild(td1);
+    var debut=0;
+    for(var i=0;i<a.value.length;i++){
+    
+
+      var td1=document.createElement('td');
+      td1.innerHTML=a.value.substr(i,1).replace(/\n/,'\\n').replace(/\r/,'\\r').replace(' ','&nbsp;');
+      tr1.appendChild(td1);
+      
+      if(a.value.substr(i,1)==='\n'){
+       t2.appendChild(tr1);
+       
+       
+       var tr1=document.createElement('tr');
+       var td1=document.createElement('td');
+       td1.setAttribute('class','td2');
+       td1.innerHTML='&nbsp;';
+       tr1.appendChild(td1);
+       
+       for(var j=debut;j<i;j++){
+         var td1=document.createElement('td');
+         td1.setAttribute('class','td2');
+         td1.innerHTML=j;
+         tr1.appendChild(td1);
+       }
+       var td1=document.createElement('td');
+       td1.setAttribute('class','td2');
+       td1.innerHTML=i;
+       tr1.appendChild(td1);
+       debut=i+1;
+       
+       
+       t2.appendChild(tr1);
+       
+       
+       var tr1=document.createElement('tr');
+       numeroLigne++;
+       var td1=document.createElement('td');
+       td1.innerHTML=numeroLigne;
+       tr1.appendChild(td1);
+       t2.appendChild(tr1);
+      }
+     
+    }
+    t2.appendChild(tr1);
+    
+    
+    var tr1=document.createElement('tr');
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    
+    for(var j=debut;j<a.value.length;j++){
+      var td1=document.createElement('td');
+      td1.setAttribute('class','td2');
+      td1.innerHTML=j;
+      tr1.appendChild(td1);
+    }
+    t2.appendChild(tr1);
+    
+/*    
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML=i;
+    tr1.appendChild(td1);
+*/    
+    
+    
+    
+    document.getElementById('resultat1').appendChild(t2);
+    
+    
+    
+//    child.addEventListener('click' , myFunct, false ); 
+  
+  }else{
+  }
+ 
+ 
+ 
+ 
+}
+transform();
+</script>
+  
+</body></html>

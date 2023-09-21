@@ -75,7 +75,8 @@ function html_header1($p=array()){
  $t.=' </head>'.CRLF;
  $t.=' <body>'.CRLF;
  $t.=' <nav>'.CRLF;
- $t.='   <a href="index.php">home</a>'.CRLF;
+ $t.='   <a href="index.html">html home</a>'.CRLF;
+ $t.='   <a href="index.php">php home</a>'.CRLF;
  $t.='   <a href="todo.html">todo</a>'.CRLF;
  $t.='   <a href="funcToArray6.html">funcToArray6</a>'.CRLF; 
  if(isset($_SESSION[APP_KEY]["user"]) && 1 === $_SESSION[APP_KEY]["user"]){
