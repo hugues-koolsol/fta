@@ -83,5 +83,9 @@ input[type="submit"]{
 .td2{
  font-size:0.5rem;
  border:none;
- 
+}
+.td3{
+ font-size:0.5rem;
+ border:none;
+ color:red;
 }

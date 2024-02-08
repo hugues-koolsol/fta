@@ -25,14 +25,37 @@
   </ul>
   <textarea class="txtar1" id="txtar1" rows="4">a(
  b(), // commentaire 1
- c('ddd',eee) // commentaire 2
-)</textarea>
+ c(' ddd  ',eee) // commentaire 2
+) // Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍</textarea>
   <a href="javascript:transform()">transform</a>
   <div id="message1"></div>
   <div id="resultat1"></div>
   <script type="text/javascript" src="js/core.js"></script>
 <script type="text/javascript">
+
+
+function iterateCharacters(str) {
+// https://stackoverflow.com/questions/63905684/how-can-a-3-byte-wide-utf-8-character-only-use-a-single-utf-16-code-unit
+  var out=[];
+  let te = new TextEncoder();
+  let totalBytes = 0;
+  let position=0;
+
+  let arr = [...str];
+  for (let i = 0; i < arr.length; i++) {
+    let bytes = te.encode(arr[i]).length;
+    let length = arr[i].length;
+    totalBytes += bytes;
+    out.push([arr[i],bytes,position]);
+    position+=bytes;
+  }
+  return out;  
+}
+
+
+
 function transform(){
+  //"àà"
 
   document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
@@ -51,6 +74,7 @@ function transform(){
     var t1=document.createElement('table');
     t1.setAttribute('class','tableau1');
     
+    // entete de tableau
     var tr1=document.createElement('tr');
     for(var i=0;i<global_enteteTableau.length;i++){
       var td1=document.createElement('td');
@@ -65,7 +89,7 @@ function transform(){
       var tr1=document.createElement('tr');
       for(var j=0;j<b.value[i].length;j++){
         var td1=document.createElement('td');
-        td1.innerHTML=b.value[i][j];
+        td1.innerHTML=String(b.value[i][j]).replace(/ /g,'░');
         td1.setAttribute('title',global_enteteTableau[j][1]);
         tr1.appendChild(td1);
       }
@@ -82,16 +106,19 @@ function transform(){
     td1.innerHTML=numeroLigne;
     tr1.appendChild(td1);
     var debut=0;
-    for(var i=0;i<a.value.length;i++){
+    console.log(a.value);
     
-
+    var out=iterateCharacters(a.value);
+    console.log(out);
+    console.log('a.value.length=',a.value.length);
+    for(var i=0;i<out.length;i++){
       var td1=document.createElement('td');
-      td1.innerHTML=a.value.substr(i,1).replace(/\n/,'\\n').replace(/\r/,'\\r').replace(' ','&nbsp;');
+      td1.innerHTML=out[i][0].replace('\n','\\n');
       tr1.appendChild(td1);
       
-      if(a.value.substr(i,1)==='\n'){
+      
+      if(out[i][0]==='\n'){
        t2.appendChild(tr1);
-       
        
        var tr1=document.createElement('tr');
        var td1=document.createElement('td');
@@ -101,17 +128,20 @@ function transform(){
        
        for(var j=debut;j<i;j++){
          var td1=document.createElement('td');
-         td1.setAttribute('class','td2');
-         td1.innerHTML=j;
+         if(out[j][1]==1){
+          td1.setAttribute('class','td2');
+         }else{
+          td1.setAttribute('class','td3');
+         }
+         td1.innerHTML=out[j][2];
          tr1.appendChild(td1);
        }
        var td1=document.createElement('td');
        td1.setAttribute('class','td2');
-       td1.innerHTML=i;
+       td1.innerHTML=out[j][2];
        tr1.appendChild(td1);
        debut=i+1;
-       
-       
+
        t2.appendChild(tr1);
        
        
@@ -121,9 +151,13 @@ function transform(){
        td1.innerHTML=numeroLigne;
        tr1.appendChild(td1);
        t2.appendChild(tr1);
+       
       }
-     
+      
     }
+
+    t2.appendChild(tr1);
+
     t2.appendChild(tr1);
     
     
@@ -133,10 +167,14 @@ function transform(){
     td1.innerHTML='&nbsp;';
     tr1.appendChild(td1);
     
-    for(var j=debut;j<a.value.length;j++){
+    for(var j=debut;j<out.length;j++){
       var td1=document.createElement('td');
-      td1.setAttribute('class','td2');
-      td1.innerHTML=j;
+      if(out[j][1]==1){
+       td1.setAttribute('class','td2');
+      }else{
+       td1.setAttribute('class','td3');
+      }
+      td1.innerHTML=out[j][2];
       tr1.appendChild(td1);
     }
     t2.appendChild(tr1);
