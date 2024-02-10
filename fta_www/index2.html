@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="utf-8" />
+ <title>html home</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <nav>
+    <a href="index.html">html home</a>
+    <a href="index.php">php home</a>
+    <a href="todo.html">todo</a>
+    <a href="funcToArray6.html">funcToArray6</a>
+    <a href="aa_login.php">login</a>
+  </nav>
+  <h1>HTML HOME  &#128169;</h1>
+  <ul class="menu2">
+    <li><a href="index.html">html home</a></li>
+    <li><a href="index.php">php home</a></li>
+    <li><a href="index_php.html">index_php.html</a></li>
+    <li><a href="index_js.html">index_js.html</a></li>
+    <li><a href="indexfu.html">indexfu.html</a></li>
+    <li><a href="index_source.html">index_source.html</a></li>
+  </ul>
+  <textarea class="txtar1" id="txtar1" rows="4">a(
+ b(), // commentaire 1
+ c(' ddd  ',eee) // commentaire 2
+) // Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍</textarea>
+  <a href="javascript:transform()">transform</a>
+  <div id="message1"></div>
+  <div id="resultat1"></div>
+  <script type="text/javascript" src="js/core2.js"></script>
+<script type="text/javascript">
+
+
+function iterateCharacters(str) {
+// https://stackoverflow.com/questions/63905684/how-can-a-3-byte-wide-utf-8-character-only-use-a-single-utf-16-code-unit
+  var out=[];
+  let te = new TextEncoder();
+  let position=0;
+  let arr = [...str];
+  for (let i = 0; i < arr.length; i++) {
+    let bytes = te.encode(arr[i]).length;
+    let length = arr[i].length;
+    out.push([arr[i],bytes,position]);
+    position+=bytes;
+  }
+  return out;  
+}
+
+function microtime(getAsFloat) {
+    var s, now, multiplier;
+
+    if(typeof performance !== 'undefined' && performance.now) {
+        now = (performance.now() + performance.timing.navigationStart) / 1000;
+        multiplier = 1e6; // 1,000,000 for microseconds
+    }
+    else {
+        now = (Date.now ? Date.now() : new Date().getTime()) / 1000;
+        multiplier = 1e3; // 1,000
+    }
+
+    // Getting microtime as a float is easy
+    if(getAsFloat) {
+        return now;
+    }
+
+    // Dirty trick to only get the integer part
+    s = now | 0;
+
+    return (Math.round((now - s) * multiplier ) / multiplier ) + ' ' + s;
+}
+
+function transform(){
+  //"àà"
+
+
+  document.getElementById('message1').innerHTML='';
+  document.getElementById('resultat1').innerHTML='';
+
+  var a=document.getElementById('txtar1');
+  
+  var lines = a.value.split(/\r|\r\n|\n/);
+  var count = lines.length;
+  a.setAttribute('rows',count+1);
+  
+  
+  
+  var startMicro=microtime(true);
+  var out=iterateCharacters(a.value);
+  var endMicro=microtime(true);
+  
+  console.log('endMicro=',((endMicro-startMicro)*1000)+' ms');
+ 
+  console.log('out=',out);
+ 
+}
+transform();
+</script>
+  
+</body></html>
