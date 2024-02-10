@@ -89,3 +89,16 @@ input[type="submit"]{
  border:none;
  color:red;
 }
+.td4{
+ font-size:0.5rem;
+ border:none;
+ color:red;
+ background:yellow;
+ font-weight:bold;
+}
+.td5{
+ font-size:0.5rem;
+ border:none;
+ color:red;
+ font-weight:bold;
+}

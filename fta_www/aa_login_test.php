@@ -1,11 +1,19 @@
 <?php
+//================================================
+//================================================
+function rechargerPageCourante(){
+  header(concat('Location: ',BNF));
+  exit(0);
+}
+//================================================
+//================================================
 define('BNF' , basename(__FILE__));
 require_once('aa_include.php');
 session_start();
 if((isset($_POST)) && count($_POST) > 0){
    start_session_messages();
    if((isset($_POST["login"])) && isset($_POST["password"])){
-      if(($_POST["login"] == 'admin') && $_POST["password"] == 'admin'){
+      if(('admin' == $_POST["login"]) && $_POST["password"] == 'admin'){
          
          // =============================
          // ... soit login et password sont bons
@@ -39,8 +47,7 @@ if((isset($_POST)) && count($_POST) > 0){
       unset($_SESSION[APP_KEY]["job"]);
       unset($_SESSION[APP_KEY]["jobInit"]);
    }
-   header(concat('Location: ',BNF));
-   exit(0);
+   rechargerPageCourante();
 }
 
 //=============================================================
@@ -55,8 +62,7 @@ if((isset($_GET)) && count($_GET) > 0){
       unset($_SESSION[APP_KEY]["groupInit"]);
       unset($_SESSION[APP_KEY]["job"]);
       unset($_SESSION[APP_KEY]["jobInit"]);
-      header(concat('Location: ',BNF));
-      exit(0);
+      rechargerPageCourante();
    }
 }
 

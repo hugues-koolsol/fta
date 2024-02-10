@@ -14,7 +14,7 @@
     <a href="funcToArray6.html">funcToArray6</a>
     <a href="aa_login.php">login</a>
   </nav>
-  <h1>HTML HOME</h1>
+  <h1>HTML HOME  &#128169;</h1>
   <ul class="menu2">
     <li><a href="index.html">html home</a></li>
     <li><a href="index.php">php home</a></li>
@@ -24,9 +24,9 @@
     <li><a href="index_source.html">index_source.html</a></li>
   </ul>
   <textarea class="txtar1" id="txtar1" rows="4">a(
- b(), // commentaire 1
- c(' ddd  ',eee) // commentaire 2
-) // Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍</textarea>
+ b(), // comment 1
+ c(' ddd  ',eee) // comment 2
+) // Iñtërnâtiônaàà̀lizætiøn ☃ ❤ 💩 😁 👍</textarea>
   <a href="javascript:transform()">transform</a>
   <div id="message1"></div>
   <div id="resultat1"></div>
@@ -38,24 +38,24 @@ function iterateCharacters(str) {
 // https://stackoverflow.com/questions/63905684/how-can-a-3-byte-wide-utf-8-character-only-use-a-single-utf-16-code-unit
   var out=[];
   let te = new TextEncoder();
-  let totalBytes = 0;
   let position=0;
-
+  let position2=0;
   let arr = [...str];
   for (let i = 0; i < arr.length; i++) {
     let bytes = te.encode(arr[i]).length;
     let length = arr[i].length;
-    totalBytes += bytes;
-    out.push([arr[i],bytes,position]);
+    out.push([arr[i],bytes,position,position2]);
     position+=bytes;
+    position2+=(bytes==4?2:1);
   }
-  return out;  
+  return {'out':out,'position':position,'position2':position2};  
 }
 
 
 
 function transform(){
   //"àà"
+  var out=[];
 
   document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
@@ -64,7 +64,7 @@ function transform(){
   
   var lines = a.value.split(/\r|\r\n|\n/);
   var count = lines.length;
-  a.setAttribute('rows',count);
+  a.setAttribute('rows',count+1);
   
   var b=functionToArray(a.value,true);
   console.log('b=',b);
@@ -108,12 +108,14 @@ function transform(){
     var debut=0;
     console.log(a.value);
     
-    var out=iterateCharacters(a.value);
+    var outo=iterateCharacters(a.value);
+    out=outo.out;
     console.log(out);
     console.log('a.value.length=',a.value.length);
     for(var i=0;i<out.length;i++){
       var td1=document.createElement('td');
       td1.innerHTML=out[i][0].replace('\n','\\n');
+      td1.title='&#'+out[i][0].codePointAt(0)+'; ('+out[i][1]+')';
       tr1.appendChild(td1);
       
       
@@ -130,19 +132,87 @@ function transform(){
          var td1=document.createElement('td');
          if(out[j][1]==1){
           td1.setAttribute('class','td2');
+         }else if(out[j][1]==3  ){
+          td1.setAttribute('class','td5');
+         }else if( out[j][1]==4 ){
+          td1.setAttribute('class','td4');
          }else{
           td1.setAttribute('class','td3');
          }
          td1.innerHTML=out[j][2];
          tr1.appendChild(td1);
        }
+       // position du backslash n
        var td1=document.createElement('td');
        td1.setAttribute('class','td2');
-       td1.innerHTML=out[j][2];
+       td1.innerHTML=out[j][2]+'';
        tr1.appendChild(td1);
-       debut=i+1;
 
        t2.appendChild(tr1);
+       
+       
+       var tr1=document.createElement('tr');
+       var td1=document.createElement('td');
+       td1.setAttribute('class','td2');
+       td1.innerHTML='&nbsp;';
+       tr1.appendChild(td1);
+       
+       for(var j=debut;j<i;j++){
+         var td1=document.createElement('td');
+         if(out[j][1]==1){
+          td1.setAttribute('class','td2');
+         }else if(out[j][1]==3  ){
+          td1.setAttribute('class','td5');
+         }else if( out[j][1]==4 ){
+          td1.setAttribute('class','td4');
+         }else{
+          td1.setAttribute('class','td3');
+         }
+         td1.innerHTML=j;
+         tr1.appendChild(td1);
+       }
+       // position du backslash n
+       var td1=document.createElement('td');
+       td1.setAttribute('class','td2');
+       td1.innerHTML=j+'';
+       tr1.appendChild(td1);
+       
+       t2.appendChild(tr1);
+       
+       
+       var tr1=document.createElement('tr');
+       var td1=document.createElement('td');
+       td1.setAttribute('class','td2');
+       td1.innerHTML='&nbsp;';
+       tr1.appendChild(td1);
+       
+       for(var j=debut;j<i;j++){
+         var td1=document.createElement('td');
+         if(out[j][1]==1){
+          td1.setAttribute('class','td2');
+         }else if(out[j][1]==3  ){
+          td1.setAttribute('class','td5');
+         }else if( out[j][1]==4 ){
+          td1.setAttribute('class','td4');
+         }else{
+          td1.setAttribute('class','td3');
+         }
+         td1.innerHTML=out[j][3]+'';
+         tr1.appendChild(td1);
+       }
+       // position du backslash n
+       var td1=document.createElement('td');
+       td1.setAttribute('class','td2');
+       td1.innerHTML=out[j][3]+'';
+       tr1.appendChild(td1);
+       
+       t2.appendChild(tr1);
+       
+       
+       
+       
+       debut=i+1;
+
        
        
        var tr1=document.createElement('tr');
@@ -158,7 +228,6 @@ function transform(){
 
     t2.appendChild(tr1);
 
-    t2.appendChild(tr1);
     
     
     var tr1=document.createElement('tr');
@@ -171,6 +240,10 @@ function transform(){
       var td1=document.createElement('td');
       if(out[j][1]==1){
        td1.setAttribute('class','td2');
+      }else if(out[j][1]==3  ){
+       td1.setAttribute('class','td5');
+      }else if( out[j][1]==4 ){
+       td1.setAttribute('class','td4');
       }else{
        td1.setAttribute('class','td3');
       }
@@ -178,6 +251,55 @@ function transform(){
       tr1.appendChild(td1);
     }
     t2.appendChild(tr1);
+    
+    var tr1=document.createElement('tr');
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    
+    for(var j=debut;j<i;j++){
+      var td1=document.createElement('td');
+      if(out[j][1]==1){
+       td1.setAttribute('class','td2');
+      }else if(out[j][1]==3  ){
+       td1.setAttribute('class','td5');
+      }else if( out[j][1]==4 ){
+       td1.setAttribute('class','td4');
+      }else{
+       td1.setAttribute('class','td3');
+      }
+      td1.innerHTML=j;
+      tr1.appendChild(td1);
+    }
+    
+    t2.appendChild(tr1);
+    
+    
+    
+    var tr1=document.createElement('tr');
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    
+    for(var j=debut;j<i;j++){
+      var td1=document.createElement('td');
+      if(out[j][1]==1){
+       td1.setAttribute('class','td2');
+      }else if(out[j][1]==3  ){
+       td1.setAttribute('class','td5');
+      }else if( out[j][1]==4 ){
+       td1.setAttribute('class','td4');
+      }else{
+       td1.setAttribute('class','td3');
+      }
+      td1.innerHTML=out[j][3];
+      tr1.appendChild(td1);
+    }
+    
+    t2.appendChild(tr1);
+    
     
 /*    
     var td1=document.createElement('td');
@@ -189,6 +311,12 @@ function transform(){
     
     
     document.getElementById('resultat1').appendChild(t2);
+    var sp1=document.createElement('span');
+    
+    var longueurDernierCaractere=out[out.length-1][1]==4?2:1;
+    
+    sp1.innerHTML='a.value.length='+a.value.length + ' , out.length=' + out.length + ' , outo.position=' + outo.position + ' , dernier caractère:' + a.value.substr( a.value.length-longueurDernierCaractere,longueurDernierCaractere) ;
+    document.getElementById('resultat1').appendChild(sp1);
     
     
     
