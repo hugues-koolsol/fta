@@ -23,11 +23,26 @@
     <li><a href="indexfu.html">indexfu.html</a></li>
     <li><a href="index_source.html">index_source.html</a></li>
   </ul>
-  <textarea class="txtar1" id="txtar1" rows="4">a(
- b( // test 👍
- ), // comment 1
- c(' ddd  ',eee) // comment 2
-) // Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍</textarea>
+  <textarea class="txtar1" id="txtar1" rows="4">     // debut
+a(
+   // test 👍
+ b(xx()
+     //aa
+), 
+ // comment 1
+ c(
+  ' dd  ',   
+ // bla
+   // blu
+  ee,
+  2
+  // @
+ ) 
+// comment 2
+), 
+   // Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍
+f(g),
+//👍</textarea>
   <a href="javascript:transform()">transform</a>
   <div id="message1"></div>
   <div id="resultat1"></div>
@@ -114,6 +129,35 @@ function transform(){
   if(b.status===true){
   
     var parent=document.getElementById('resultat1');
+    
+
+    var a2fnc2=arrayToFunctNoComment2(b.value,true)
+    var dia2fnc2=document.createElement('pre');
+    if(a2fnc2.status===true){
+     dia2fnc2.innerHTML='<hr  />arrayToFunctNoComment2:\n'+a2fnc2.value;
+    }else{
+     dia2fnc2.innerHTML='<hr />arrayToFunctNoComment2:'+a2fnc2.message;
+    }
+    document.getElementById('resultat1').appendChild(dia2fnc2);
+    
+
+
+    
+    
+    var a2fn=arrayToFunctNormalize(b.value,false)
+    var di3=document.createElement('pre');
+    if(a2fn.status===true){
+     
+     di3.innerHTML='<hr />'+a2fn.value+''+(a2fn.value==a.value?'<br /><b style="color:green;">identiques :-)</b>':'<br /><b style="color:red;">différents :-(</b')+'';
+    }else{
+     di3.innerHTML='<hr />'+a2fn.message;
+    }
+    document.getElementById('resultat1').appendChild(di3);
+    
+    
+    
+    
+    
     var t1=document.createElement('table');
     t1.setAttribute('class','tableau1');
     
@@ -132,13 +176,16 @@ function transform(){
       var tr1=document.createElement('tr');
       for(var j=0;j<b.value[i].length;j++){
         var td1=document.createElement('td');
-        if(j==1 || ( j>=7 && j<=9 ) ){
-         td1.innerHTML=String(b.value[i][j]).replace(/ /g,'░');
+        if(j==1 || ( j>=7 && j<=9 ) ){ // pour les valeurs et les commentaires
+         td1.innerHTML=String(b.value[i][j]).replace(/ /g,'░').replace(/\n/g,'\\n\n');
          td1.style.whiteSpace='pre-wrap';
+         td1.style.verticalAlign='baseline';
+        }else if(j==4){ // constante quotée
+         td1.innerHTML=b.value[i][j]===true?'1':'';;
         }else{
          td1.innerHTML=String(b.value[i][j]).replace(/ /g,'░');
         }
-        td1.setAttribute('title',global_enteteTableau[j][1]);
+        td1.setAttribute('title',global_enteteTableau[j][1] + '(' + j + ')');
         tr1.appendChild(td1);
       }
       t1.appendChild(tr1);
@@ -320,7 +367,6 @@ function transform(){
     
     document.getElementById('resultat1').appendChild(t2);
     var sp1=document.createElement('span');
-    
     var longueurDernierCaractere=out[out.length-1][1]==4?2:1;
     
     sp1.innerHTML='a.value.length='+a.value.length + ' , out.length=' + out.length + ' , dernier caractère:' + a.value.substr( a.value.length-longueurDernierCaractere,longueurDernierCaractere) ;
@@ -328,9 +374,52 @@ function transform(){
     
     
     
+    
+    
+    var a2fnc=arrayToFunctNoComment(b.value)
+    var di1=document.createElement('div');
+    if(a2fnc.status===true){
+     di1.innerHTML='<hr  />'+a2fnc.value;
+    }else{
+     di1.innerHTML='<hr />'+a2fnc.message;
+    }
+    document.getElementById('resultat1').appendChild(di1);
+    
+    
+    
+    
+    var a2fc=arrayToFunctWidthComment(b.value)
+    var di2=document.createElement('pre');
+    if(a2fc.status===true){
+     
+     di2.innerHTML='<hr />'+a2fc.value+''+(a2fc.value==a.value?'<br /><b style="color:green;">identiques :-)</b>':'')+'';
+    }else{
+     di2.innerHTML='<hr />'+a2fc.message;
+    }
+    document.getElementById('resultat1').appendChild(di2);
+    
+    
+    var a2fn=arrayToFunctNormalize(b.value,false)
+    var di3=document.createElement('pre');
+    if(a2fn.status===true){
+     
+     di3.innerHTML='<hr />'+a2fn.value+''+(a2fn.value==a.value?'<br /><b style="color:green;">identiques :-)</b>':'<br /><b style="color:red;">différents :-(</b')+'';
+    }else{
+     di3.innerHTML='<hr />'+a2fn.message;
+    }
+    document.getElementById('resultat1').appendChild(di3);
+    
+    
+
+    
+    
 //    child.addEventListener('click' , myFunct, false ); 
   
   }else{
+    var sp1=document.createElement('span');
+    sp1.style.color='red';
+    sp1.innerHTML=b.message;
+    document.getElementById('resultat1').appendChild(sp1);
   }
 
   
