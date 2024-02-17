@@ -1,6 +1,7 @@
 "use strict";
 
 // (typeof(b),egal('undefined')),et(d,egal(true))
+var DEBUTCOMMENTAIRE='#';
 var globale_LangueCourante='fr';
 var global_messages={
  'e500logged' : false ,
@@ -558,129 +559,48 @@ function writeSourceFile(source,objArr){
  }
  return;
 }
-//=====================================================================================================================
-function commentairesComplementaires(arr,i){
- var j=0;
- var lignesDansCommentaireOriginal=[];
- var ret={
-  complementCommentairesAvant:'',
-  complementCommentairesApres:''
- }
- ret.complementCommentairesAvant='';
- ret.complementCommentairesApres='';
- lignesDansCommentaireOriginal=arr[i][7].split('\n');
- if(lignesDansCommentaireOriginal.length>0){
-  if(lignesDansCommentaireOriginal.length!=arr[i][18].length){
-   for(j=0;j<lignesDansCommentaireOriginal.length;j++){
-    lignesDansCommentaireOriginal[j]=lignesDansCommentaireOriginal[j].replace(/ /g,'');
-   }
-   for(j=0;j<lignesDansCommentaireOriginal.length;j++){
-    if(lignesDansCommentaireOriginal[j]==''){
-     ret.complementCommentairesAvant+='\n';
-    }else{
-     break;
-    }
-   }
-   for(j=lignesDansCommentaireOriginal.length-1;j>=0;j--){
-    if(lignesDansCommentaireOriginal[j]==''){
-     ret.complementCommentairesApres+='\n';
-    }else{
-     break;
-    }
-   }
-  }
- }
- if(ret.complementCommentairesAvant!=''){
-  ret.complementCommentairesAvant=ret.complementCommentairesAvant.substr(0,ret.complementCommentairesAvant.length-1);
- }
- if(ret.complementCommentairesApres!=''){
-  ret.complementCommentairesApres=ret.complementCommentairesApres.substr(0,ret.complementCommentairesApres.length-1);
- }
 
- return ret; 
-}
 
 
 //=====================================================================================================================
-function traiteLignesCommentaireAvant(s,indiceTableau,niveau,premiereFonction){
+function traiteCommentaire2(arr,ind){
  var t='';
- var niveauCommentaireBloc=0;
- var testIndice=-1;
- if(indiceTableau===testIndice){
-//  console.error('s=',s);
+ var tab=arr[ind][13].split('\n');
+ var numTest=-1;
+ if(ind==numTest){
+  console.log('"'+arr[ind][13]+'"');
  }
- var a=s.split('\n');
- if(indiceTableau===testIndice){
-  console.error('a=',a);
- }
- 
- for( var i=0;i<a.length;i++){
-  var l=a[i];
-  if(l.substr(0,2)=='/*'){
-   niveauCommentaireBloc++;
-  }
-  
-  if(niveauCommentaireBloc==0){
-   var nl='';
-   for(var j=0;j<l.length;j++){
-    if(l.substr(j,1)==' ' || l.substr(j,1)=='\n'){
-    }else{
-     nl=l.substr(j);
-     break;
-    }
-   }
-   a[i]=nl;
-  }
-  if(l.substr(0,2)=='*/'){
-   niveauCommentaireBloc--;
-  }
-  
- }
- if(indiceTableau===testIndice){
-  console.error('a=',a);
- }
- // on enlève le premier
- if(a.length>=2 && premiereFonction===false){
-  if( a[0].length>=2 && a[0].substr(0,2)=='/*'){
-  }else{
-   a.splice(0, 1);
-  }
- }
- // on enlève le dernier
- if(a.length>=2){
-  if(a[a.length-1].length>=2 && a[a.length-1].substr(0,2)=='*/'){
-  }else{
-   a.pop();
-  }
- }
- for( var i=0;i<a.length;i++){
-  if(a[i].length>=2 && a[i].substr(0,2)=='/*'){
-   niveauCommentaireBloc++;
-  }
-
-  if(niveauCommentaireBloc==0){
-   if(niveau>0){
-    a[i]='  '.repeat(niveau)+a[i];
+ var l01=tab.length;
+ for(var i=1;i<l01;i++){
+  t='';
+  for(var j=0;j<tab[i].length;j++){
+   if(tab[i].substr(j,1)==' '){
+   }else{
+    t+=tab[i].substr(j);
+    break;
    }
   }
-  if(a[i].length>=2 && a[i].substr(0,2)=='*/'){
-   niveauCommentaireBloc--;
+  if(i==l01-1){
+   t='  '.repeat(arr[ind][3])+t;
+  }else{
+   if(t!==''){
+    t='  '.repeat(arr[ind][3]+1)+t;
+   }
   }
+  if(ind==numTest){
+   console.log('t="'+t+'"');
+  }
+  tab[i]=t;
  }
- if(indiceTableau===testIndice){
-  console.error('a=',a);
+ if(ind==numTest){
+  console.log('tab=',tab);
  }
- var plusieursLignes=a.length>1?true:false;
- t+=a.join('\n');
- var desSlash=t.indexOf('//')>=0?true:false;
-// t+=
- return {'text':t,'plusieursLignes':plusieursLignes,'desSlash':desSlash}
+ t=tab.join('\n');
+ return t;
 }
 
-
-
 //=====================================================================================================================
-function a2FRNoComment(arr,parentId,retourLigne,debut){
+function a2F1(arr,parentId,retourLigne,debut,coloration){
  var t='';
  var profondeurLimite=3;
  var nombreEnfantsLimite=3;
@@ -691,11 +611,12 @@ function a2FRNoComment(arr,parentId,retourLigne,debut){
 
    if(retourLigne==true && arr[parentId][10]>profondeurLimite){
     forcerRetourLigne=true;
-   }else if(retourLigne==true && ( arr[parentId][2]=='f' || arr[parentId][2]=='INIT' ) && arr[parentId][8]<=nombreEnfantsLimite && arr[parentId][10]<=profondeurLimite ){ // && arr[i][9]==1
+//   }else if(retourLigne==true && ( arr[parentId][2]=='f' || arr[parentId][2]=='INIT' ) && arr[parentId][8]<=nombreEnfantsLimite && arr[parentId][10]<=profondeurLimite ){ // && arr[i][9]==1
+   }else if(retourLigne==true && ( arr[parentId][2]=='f' || arr[parentId][2]=='INIT' )  ){ // && arr[i][9]==1
     // si c'est la premier enfant d'une fonction, on teste si il existe des enfants de type commentaires
     for(var j=debut;j<l01;j++){
      if(arr[j][3]>arr[parentId][3]){ // si le niveau est supérieur au niveau du parent
-      if(arr[j][3]<=arr[parentId][3]+profondeurLimite && arr[j][1]=='c' && arr[j][2]=='f' ){
+      if(arr[j][3]<=arr[parentId][3]+profondeurLimite && arr[j][1]==DEBUTCOMMENTAIRE && arr[j][2]=='f' ){
        forcerRetourLigne=true;
        break;
       }
@@ -740,14 +661,22 @@ function a2FRNoComment(arr,parentId,retourLigne,debut){
      t+=arr[i][1];
     }
    }else if(arr[i][2]=='f'){
-    if(arr[i][1]=='c'){
-     if(retourLigne){
-      t+=arr[i][1]+'('+arr[i][13]+')';
+    if(arr[i][1]==DEBUTCOMMENTAIRE){
+     if(coloration){
+      if(retourLigne){
+       t+='<span style="color:darkgreen;background-color:lightgrey;">'+arr[i][1]+'('+traiteCommentaire2(arr,i)+')</span>';
+      }else{
+       t+='<span style="color:darkgreen;background-color:lightgrey;">'+arr[i][1]+'()</span>';
+      }
      }else{
-      t+=arr[i][1]+'()';
+      if(retourLigne){
+       t+=''+arr[i][1]+'('+traiteCommentaire2(arr,i)+')';
+      }else{
+       t+=''+arr[i][1]+'()';
+      }
      }
     }else{
-     var obj=a2FRNoComment(arr,i,retourLigne,i+1);
+     var obj=a2F1(arr,i,retourLigne,i+1,coloration);
      if(obj.status===true){
       t+=arr[i][1]+'(';
       t+=obj.value;
@@ -772,16 +701,18 @@ function a2FRNoComment(arr,parentId,retourLigne,debut){
    
   }
  }
+/* 
  if(retourLigne==true){
   console.log('sans commentaires t=\''+t+'\'');
  }
+*/ 
  return {status:true,value:t,forcerRetourLigne:forcerRetourLigne};
  
 }
 //=====================================================================================================================
-function arrayToFunctNoComment2(arr,retourLigne){
+function arrayToFunct1(arr,retourLigne,coloration){
  var t='';
- var obj=a2FRNoComment(arr,0,retourLigne,1);
+ var obj=a2F1(arr,0,retourLigne,1,coloration);
  if(obj.status===true){
 //  console.log('obj.value='+obj.value);
  }
@@ -885,9 +816,6 @@ var global_enteteTableau=[
  ['coQ','constante quotee'                  ,''],
  ['pre','position du premier caractère'     ,''], // 05
  ['der','position du dernier caractère'     ,''],
-// ['cAv','commentaire avant'                 ,''],
-// ['cAp','commentaire apres'                 ,''],
-// ['cDe','commentaire dedans'                ,''],
  ['pId','Id du parent'                      ,''], 
  ['nbE','nombre d\'enfants'                 ,''],
  ['nuE','numéro enfants'                    ,''],
@@ -944,9 +872,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
  
  
  
- //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  10pId	11nbE 12numEnfant  13profond  14OuvePar 15FerPar
+ //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm
 
- T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar));
+ T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar,''));
  
  // o
  var l01=tableauEntree.length;
@@ -986,7 +914,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
       }
      // c'est bon
      }else{
-      return logerreur({status:false,value:T,message:'apres une constante, il doit y avoir un caractère d\'echappement '});
+      return logerreur({status:false,value:T,message:'apres une constante, il doit y avoir un caractère d\'echappement en i='+i});
      }
     }
     dansCst=false;
@@ -1000,7 +928,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     if(niveau==0){
      return logerreur({status:false,value:T,message:'0 la racine ne peut pas contenir des constantes en i='+i});
     }
-    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar));
+    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     texte='';
     constanteQuotee=false;
     
@@ -1041,11 +969,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     dansIgnore=false;
     
     indice++;
-    if(texte=='c'){
+    if(texte==DEBUTCOMMENTAIRE){
      dsComment=true;
      niveauDebutCommentaire=niveau;
     }
-    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar));
+    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     for(j=T.length-1;j>0;j--){
      l=T[j][3];
      for(k=j;k>=0;k--){
@@ -1070,7 +998,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      if(niveau==0){
       return logerreur({status:false,value:T,message:'1 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0,''));
      texte='';
      faireCommentaire=false;
     }
@@ -1144,7 +1072,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
       numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'3 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     }else{
      dansIgnore=false;
      if(T[indice][2]=='f'){
@@ -1174,7 +1102,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
 //     numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'4 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
      texte='';
      dansCst=false;
      dansTexte=false;
@@ -1240,7 +1168,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
    numeroLigne=calculNumLigne2(tableauEntree,premier);
    return logerreur({status:false,value:T,message:'5 la racine ne peut pas contenir des constantes en i='+i});
   }
-  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar));
+  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
  }
 
  if(dansIgnore===true){

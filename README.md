@@ -15,6 +15,7 @@ https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html
 
 Brève description : un source est écrit sous ce format
 ```
+#(ceci est un arbre)
 a(
   b( 
     ( c , '/' ) , 
@@ -23,25 +24,35 @@ a(
 )
 ```
 
-Après une analyse de la syntaxe de ce source, on obtient une représentation sous forme de table.
+Après une analyse de la syntaxe de ce source, on obtient une représentation sous forme tabulaire.
 
-Les données sont : id , nomElement, type, idDuParent, constanteQuotée, ....
+Les données sont : 
+id , nom , type, niveau , constante quotée, position du premier caractère,
+position du dernier caractère, id du parent, nombre d'éléments dans la fonction,
+numéro d'élément dans la fonction , profondeur de la fonction
+position ouverture parenthèse, position fermeture parenthèse,
+commentaire
 
-Les .... représentent d'autres données non affichées çi dessous.
+Les commentaires sont inclus dans la fonction spéciale "#"
+
+
+
 
 ```
 [
- [0 , ""  ,"INIT" ,-1 ,false ,....],
- [1 , "a" ,"f"    ,0  ,false ,....],
- [2 , "b" ,"f"    ,1  ,false ,....],
- [3 , ""  ,"f"    ,2  ,false ,....],
- [4 , "c" ,"c"    ,3  ,false ,....],
- [5 , "/" ,"c"    ,3  ,true  ,....],
- [6 , "d" ,"f"    ,2  ,false ,....],
- [7 , "e" ,"c"    ,3  ,false ,....],
- [8 , "f" ,"c"    ,3  ,false ,....]
+ [0 , "" , "INIT" , -1 , false , 0  , 0  , 0 , 2 , 0 , 0 , 0  , 0  , ""] , 
+ [1 , "#" , "f"   , 0  , false , 0  , 0  , 0 , 0 , 1 , 0 , 1  , 0  , "ceci est un arbre"] , 
+ [2 , "a" , "f"   , 0  , false , 21 , 21 , 0 , 1 , 2 , 3 , 22 , 69 , ""] , 
+ [3 , "b" , "f"   , 1  , false , 26 , 26 , 2 , 2 , 1 , 2 , 27 , 67 , ""] , 
+ [4 , ""  , "f"   , 2  , false , 26 , 26 , 3 , 2 , 1 , 1 , 34 , 44 , ""] , 
+ [5 , "c" , "c"   , 3  , false , 36 , 36 , 4 , 0 , 1 , 0 , 34 , 0  , ""] , 
+ [6 , "/" , "c"   , 3  , true  , 41 , 41 , 4 , 0 , 2 , 0 , 34 , 0  , ""] , 
+ [7 , "d" , "f"   , 2  , false , 53 , 53 , 3 , 2 , 2 , 1 , 54 , 62 , ""] , 
+ [8 , "e" , "c"   , 3  , false , 56 , 56 , 7 , 0 , 1 , 0 , 54 , 0  , ""] , 
+ [9 , "f" , "c"   , 3  , false , 60 , 60 , 7 , 0 , 2 , 0 , 54 , 0  , ""]
 ]
 ```
+
 A partir du format tabulaire, on peut reconstituer le source et réciproquement.
 
-Ainsi, les programmes sources deviennent des données arborescentes qu'on peut traiter en ajoutant, supprimant ou modifiant des éléments.
+Ainsi, les programmes sources deviennent des données qu'on peut traiter informatiquement en ajoutant, supprimant ou modifiant des éléments.
