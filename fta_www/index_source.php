@@ -532,9 +532,10 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'    alors(';
      toAdd+='\n'+espaces+'      affecte( a , 1 )';
      toAdd+='\n'+espaces+'    )';
-     toAdd+='\n'+espaces+'  ),// finsinon';
+     toAdd+='\n'+espaces+'    #(finsinon)';
+     toAdd+='\n'+espaces+'  ),';
      toAdd+='\n'+espaces+'),';
-     toAdd+='\n'+espaces+'//finchoix suite du source';
+     toAdd+='\n'+espaces+'#(finchoix suite du source)';
      toAdd+='\n'+espaces+'affecte( apresChoix , 1 ),';
      
     }else if(nomFonction=='boucle'){
@@ -547,7 +548,7 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'    affecte( a , 1 )';
      toAdd+='\n'+espaces+'  )';
      toAdd+='\n'+espaces+'),';
-     toAdd+='\n'+espaces+'// fin boucle, suite du source';
+     toAdd+='\n'+espaces+'#(fin boucle, suite du source)';
 
     }else if(nomFonction=='appelf'){
 

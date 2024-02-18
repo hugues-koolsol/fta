@@ -285,31 +285,6 @@ function js_condition0(tab,id,offsetLigne){
  return {status:true,value:t};
 }
 //=====================================================================================================================
-function placeCommentaires(tab,i,nouvelleLigneAvant){
-
-  var t='';
-  if(tab[i][21]!='multi sans bloc'){
-   return t;
-  }
-  var j=0;
-  var obj={};
-  obj=commentairesComplementaires(tab,i);
-  t+=obj.complementCommentairesAvant;
-  for(j=0;j<tab[i][18].length;j++){
-   if(t!=''){
-    t+=espaces2(tab[i][3]);
-   }
-   t+=tab[i][18][j];
-  }
-  t+=obj.complementCommentairesApres;
-  if(nouvelleLigneAvant && t!=''){
-   if(t.substr(0,1)!=='\n'){
-    t='\n'+t;
-   }
-  }
-  return t;
-}
-//=====================================================================================================================
 function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne){
  var t='';
  var i=0;
@@ -431,7 +406,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      
      
      if(nomFonction!=''){
-//      t+=placeCommentaires(tab,i,true);
       
       
       
@@ -982,7 +956,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
   
   //=====================================================================================
   }else if(tab[i][1]=='declare'  && tab[i][2]=='f'){ // i18
-//   t+=placeCommentaires(tab,i,false);
    t+=espaces(tab[id][3]);
    if(tab[i][11]==2 ){
     if(tab[i+1][2]=='c' && tab[i+2][2]=='c' ){

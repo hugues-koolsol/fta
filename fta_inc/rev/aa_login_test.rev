@@ -9,6 +9,26 @@ src_php(
   ( file_path , . ),
   source(
     php(
+      //================================================
+      //================================================
+      fonction(
+        definition( nom(rechargerPageCourante) ),
+        contenu(
+          appelf(
+            n(header),
+            p(
+              appelf(
+                n(concat),
+                p('Location: '),
+                p(BNF)
+              )
+            )
+          ),
+          sortir(0)
+        )
+      ),
+      //================================================
+      //================================================
       definir( BNF , appelf( n(basename) , p(__FILE__) ) ),
       appelf( n(require_once) , p('aa_include.php') ),
       appelf( n(session_start) ),
@@ -44,7 +64,7 @@ src_php(
                       // pourra avantageusement être remplacé
 
                       condition(
-                        ( egal( $_POST["login"] , 'admin' ) ),
+                        ( egal( 'admin' , $_POST["login"] ) ),
                         et( egal( $_POST["password"] , 'admin' ) )
                       ),
                       alors(
@@ -95,16 +115,8 @@ src_php(
               )
             ),
             appelf(
-              n(header),
-              p(
-                appelf(
-                  n(concat),
-                  p('Location: '),
-                  p(BNF)
-                )
-              )
-            ),
-            sortir(0)
+              n(rechargerPageCourante)
+            )
           )
         )
       ),
@@ -134,16 +146,8 @@ src_php(
                   appelf( n(unset) , p($_SESSION[APP_KEY]["job"]) ),
                   appelf( n(unset) , p($_SESSION[APP_KEY]["jobInit"]) ),
                   appelf(
-                    n(header),
-                    p(
-                      appelf(
-                        n(concat),
-                        p('Location: '),
-                        p(BNF)
-                      )
-                    )
-                  ),
-                  sortir(0)
+                    n(rechargerPageCourante)
+                  )
                 )
               )
             )

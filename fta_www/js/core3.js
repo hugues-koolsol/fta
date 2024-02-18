@@ -43,6 +43,10 @@ function logerreur(o){
     if(o.message!=''){
      global_messages.infos.push(o.message)
     }
+   }else if(o.hasOwnProperty('warning')){
+    if(o.warning!=''){
+     global_messages.warnings.push(o.warning)
+    }
    }else{
    }
   }
@@ -57,6 +61,9 @@ function displayMessages(){
 // console.log(global_messages);
  for(var i=0;i<global_messages.errors.length;i++){
   document.getElementById('global_messages').innerHTML+='<div class="yyerror">'+global_messages.errors[i]+'</div>';
+ }
+ for(var i=0;i<global_messages.warnings.length;i++){
+  document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+global_messages.warnings[i]+'</div>';
  }
  for(var i=0;i<global_messages.lines.length;i++){
   document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+')" class="yyerror">go to line '+global_messages.lines[i]+'</a>&nbsp;';
@@ -438,8 +445,10 @@ function convertSource(source,objArr){
      retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
     }else if(type_source=='src_php'  && (file_extension=='php')){
      retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
+    }else if(type_source=='#'){
+     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
     }else{
-     return logerreur({status:false,id:0,message:'type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
+     return logerreur({status:false,id:0,message:'file core , fonction convertSource type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
     }
     
     if(retProgrammeSource.status===true){
@@ -710,74 +719,55 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
  
 }
 //=====================================================================================================================
-function arrayToFunct1(arr,retourLigne,coloration){
+function arrayToFunct1(matrice,retourLigne,coloration){
  var t='';
- var obj=a2F1(arr,0,retourLigne,1,coloration);
+ var obj=a2F1(matrice,0,retourLigne,1,coloration);
  if(obj.status===true){
 //  console.log('obj.value='+obj.value);
  }
  return obj;
 }
 //=====================================================================================================================
-function arrayToFunctNoComment(arr){
- var t='';
- var niveau=-1;
- var i,j,k;
- var prochainNiveauATraiter=-1;
- var le=arr.length;
- for(i=1;i<le;i++){
- 
-  if(arr[i][3]<=niveau){ // on doit fermer des parenthèses !
-   prochainNiveauATraiter=arr[i-1][3]-1;
-   if(arr[i-1][2]=='f'){
-    t+=')';
-//    prochainNiveauATraiter=arr[i-1][3];
-   }
-   if(arr[i][3]!=arr[i-1][3]){
-    for(j=i-1;j>0 && arr[j][3]>=arr[i][3] ;j--){
-     if(arr[j][2]=='f' && prochainNiveauATraiter==arr[j][3]){
-      t+=')';
-      prochainNiveauATraiter--;
-      if(arr[j][3]==arr[i][3]){
-       break;
-      }
-     }
-    }
-   }
+function arrayToFunctNormalize(matrice,bAvecCommentaires){
+ var out=arrayToFunct1(matrice,bAvecCommentaires,false);
+ return out;  
+}
+
+//=====================================================================================================================
+function arrayToFunctWidthComment(matrice){
+ var out=arrayToFunct1(matrice,true,false);
+ return out; 
+}
+
+//=====================================================================================================================
+function arrayToFunctNoComment(matrice){
+ var out=arrayToFunct1(matrice,true,false);
+ return out;
+}
+
+//=====================================================================================================================
+function functionToArray(src,exitOnLevelError){
+ var tableau1=iterateCharacters(src);
+ var matriceFonction=functionToArray2(tableau1.out,exitOnLevelError);
+ return matriceFonction;
+
+}
+//=====================================================================================================================
+function iterateCharacters(str){
+// https://stackoverflow.com/questions/63905684/how-can-a-3-byte-wide-utf-8-character-only-use-a-single-utf-16-code-unit
+  var out=[];
+  let te = new TextEncoder();
+  let position=0;
+  let position2=0;
+  let arr = [...str];
+  for (let i = 0; i < arr.length; i++) {
+    let bytes = te.encode(arr[i]).length;
+    let length = arr[i].length;
+    out.push([arr[i],bytes,position,position2]);
+    position+=bytes;
+    position2+=(bytes==4?2:1);
   }
-  if(i>1&&arr[i][3]<=niveau){
-   t+=',';
-  }
-  if(arr[i][2]=='f'){
-   t+=arr[i][1]+'(';
-  }else if(arr[i][2]=='c'){
-   if(arr[i][4]===true){
-    t+='\''+echappConstante(arr[i][1])+'\'';
-   }else{
-    t+=''+arr[i][1]+'';
-   }
-  }else{
-   return logerreur({status:false,message:'type non prévu dans arrayToFunctNoComment'});
-  }
-  niveau=arr[i][3];
- }
- 
- if(i>0&&arr[i-1][3]>=0){
-  prochainNiveauATraiter=arr[le-1][3]-1;
-  if(arr[le-1][2]=='f'){
-   t+=')';
-//   prochainNiveauATraiter=arr[le-1][3];
-  }
-  if(arr[le-1][3]>0){
-   for(j=le-1;j>0&&arr[j][3]>=0;j--){
-    if(arr[j][2]=='f' && prochainNiveauATraiter==arr[j][3] ){
-     t+=')';
-     prochainNiveauATraiter--;
-    }
-   }
-  }
- }
- return {status:true,value:t};
+  return {'out':out,'position':position,'position2':position2};  
 }
 
 //=====================================================================================================================
@@ -823,6 +813,7 @@ var global_enteteTableau=[
  ['pop','position ouverture parenthese'     ,''],
  ['pfp','position fermeture parenthese'     ,''], 
  ['com','commentaire'                       ,''], 
+ ['sui','niveau suivant'                    ,''], 
  
 ];
 // 7 8 9 out
@@ -872,9 +863,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
  
  
  
- //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm
+ //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm 14nivSuiv
 
- T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar,''));
+ T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar,''    ,0));
  
  // o
  var l01=tableauEntree.length;
@@ -928,7 +919,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     if(niveau==0){
      return logerreur({status:false,value:T,message:'0 la racine ne peut pas contenir des constantes en i='+i});
     }
-    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
     texte='';
     constanteQuotee=false;
     
@@ -973,7 +964,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      dsComment=true;
      niveauDebutCommentaire=niveau;
     }
-    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
     for(j=T.length-1;j>0;j--){
      l=T[j][3];
      for(k=j;k>=0;k--){
@@ -998,7 +989,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      if(niveau==0){
       return logerreur({status:false,value:T,message:'1 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0,''));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0,'',0));
      texte='';
      faireCommentaire=false;
     }
@@ -1072,7 +1063,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
       numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'3 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
     }else{
      dansIgnore=false;
      if(T[indice][2]=='f'){
@@ -1102,7 +1093,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
 //     numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'4 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
      texte='';
      dansCst=false;
      dansTexte=false;
@@ -1168,7 +1159,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
    numeroLigne=calculNumLigne2(tableauEntree,premier);
    return logerreur({status:false,value:T,message:'5 la racine ne peut pas contenir des constantes en i='+i});
   }
-  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
  }
 
  if(dansIgnore===true){
@@ -1182,6 +1173,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
   }
   
  }
+ // mise à jour de l'id du parent[7] et du nombre d'éléments[8] 
  for(i=T.length-1;i>0;i--){
   niveau=T[i][3];
   for(j=i;j>=0;j--){
@@ -1190,6 +1182,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     T[j][8]++;
     break;
    }
+  }
+  if(i-1>=1){
+   T[i-1][14]=T[i][3];
   }
  }
 // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE 12numEnfant 13numLi 14ferPar 15prof

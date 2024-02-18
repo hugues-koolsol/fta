@@ -124,22 +124,6 @@ blu),
 <script type="text/javascript">
 
 
-function iterateCharacters(str) {
-// https://stackoverflow.com/questions/63905684/how-can-a-3-byte-wide-utf-8-character-only-use-a-single-utf-16-code-unit
-  var out=[];
-  let te = new TextEncoder();
-  let position=0;
-  let position2=0;
-  let arr = [...str];
-  for (let i = 0; i < arr.length; i++) {
-    let bytes = te.encode(arr[i]).length;
-    let length = arr[i].length;
-    out.push([arr[i],bytes,position,position2]);
-    position+=bytes;
-    position2+=(bytes==4?2:1);
-  }
-  return {'out':out,'position':position,'position2':position2};  
-}
 
 function transform(){
   //"àà"

@@ -1,52 +1,43 @@
 src_php(
-  ( file_name , test ),
-  ( file_extension , php ),
-  ( file_path , . ),
+  (file_name , test),
+  (file_extension , php),
+  (file_path , .),
   source(
     php(
       fonction(
-        definition( nom(getFileContent) , adresseArgument($data) ),
+        definition(nom(getFileContent) , adresseArgument($data)),
         contenu(
           choix(
-            // on interdit un ".." dans le chemin de fichier en lecture
-            // sauf si c'est le super utilisateur          
+            #(on interdit un ".." dans le chemin de fichier en lecture),
+            #(sauf si c'est le super utilisateur),
             si(
               condition(
                 (
-                  diff_stricte(
-                    faux,
-                    appelf( n(strpos) , p($data[INPUT]["fileName"]) , p('..') )
-                  )
+                  diff_stricte(faux , appelf(n(strpos) , p($data[INPUT]["fileName"]) , p('..')))
                 ),
-                ou(
-                  diff_stricte( 1 , $_SESSION[APP_KEY]["userLoginId"] )
-                )
+                ou(diff_stricte(1 , $_SESSION[APP_KEY]["userLoginId"]))
               ),
-              alors( affecte( $data[MESSAGES][] , 'cannot read a file containing ".."' ) )
+              alors(affecte($data[MESSAGES][] , 'cannot read a file containing ".."'))
             ),
+            #(sinon on le lit),
             sinon(
               alors(
                 choix(
                   si(
-                    condition( ( diff( $data[INPUT]["fileName"] , '' ) ) ),
+                    condition((diff($data[INPUT]["fileName"] , ''))),
                     alors(
-                      affecte( $filefullpath , $data[INPUT]["fileName"] ),
-                      appelf( r($contenu) , n(file_get_contents) , p($filefullpath) ),
+                      affecte($filefullpath , $data[INPUT]["fileName"]),
+                      appelf(r($contenu) , n(file_get_contents) , p($filefullpath)),
                       choix(
                         si(
-                          condition( ( diff_stricte( faux , $contenu ) ) ),
-                          alors(
-                            affecte( $data[VALUE] , $contenu ),
-                            affecte( $data[STATUS] , 'OK' )
-                          )
+                          condition((diff_stricte(faux , $contenu))),
+                          alors(affecte($data[VALUE] , $contenu) , affecte($data[STATUS] , 'OK'))
                         ),
-                        sinon( alors( affecte( $data[MESSAGES][] , 'cannot read the file' ) ) )
+                        sinon(alors(affecte($data[MESSAGES][] , 'cannot read the file')))
                       )
                     )
                   ),
-                  sinon(
-                    alors( affecte( $data[MESSAGES][] , 'file name must be given' ) )
-                  )
+                  sinon(alors(affecte($data[MESSAGES][] , 'file name must be given')))
                 )
               )
             )

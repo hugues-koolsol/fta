@@ -1,5 +1,11 @@
+
+<!--avant php, c'est un commentaire à éviter-->
 <?php
+/*premier commentaire php avant la définition de la fonction */
+
 function getFileContent(&$data){
+  /* on interdit un ".." dans le chemin de fichier en lecture */
+  /* sauf si c'est le super utilisateur */
   if((false !== strpos($data[INPUT]["fileName"],'..')) || 1 !== $_SESSION[APP_KEY]["userLoginId"]){
      $data[MESSAGES][]='cannot read a file containing ".."';
   }else{
