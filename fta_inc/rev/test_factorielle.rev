@@ -1,96 +1,99 @@
 src_html(
-
-  // ===============================
-  // description du fichier produit
-
-  ( file_name , test_factorielle ),
-  ( file_extension , html ),
-  ( file_path , . ),
-
-  // ====================
-  // source de ce fichier
-
+  #( 
+    =============================== 
+    description du fichier produit 
+  ),
+  (file_name , test_factorielle),
+  (file_extension , html),
+  (file_path , .),
+  #( 
+    ====================
+    source de ce fichier
+  ),
   source(
-
-    // le source est une page html
-    // on met une option (doctype) pour inscrire un <!DOCTYPE>
-
-    html( ( lang , fr ) , (doctype),
+    html(
+      (lang , fr),
+      (doctype),
       head(
-        meta( ( charset , utf8 ) ),
-        meta( ( name , viewport ) , ( content , 'width=device-width, initial-scale=1' ) ),
+        meta((charset , utf8)),
+        meta((name , viewport) , (content , 'width=device-width, initial-scale=1')),
         title('test factorielle'),
-        meta( ( name , description ) , ( content , 'a' ) ),
-        link( ( rel , 'stylesheet' ) , ( href , index.css ) ),
-
-        // ===============================
-        // optionnel, c'est pour l'exemple
-        script( ( type , 'text/javascript' ) , ( src , 'js/core.js' ) )
+        meta((name , description) , (content , 'a')),
+        link((rel , 'stylesheet') , (href , index.css)),
+        #( 
+          ====================================================
+          script optionnel ici, c'est seulement pour l'exemple
+          ====================================================
+        ),
+        script((type , 'text/javascript') , (src , 'js/core3.js'))
       ),
       body(
-        div('cette page affiche 120 !'),
-        div( ( id , resultat ) ),
-
-        // ===
-        // dans ce html, on écrit du javascript
-
+        div('Si cette page fonctionne, il y aura écrit "120" ci dessous !'),
+        div((id , resultat)),
+        #(
+          ====================================
+          dans ce html, on écrit du javascript
+          ====================================
+        ),
         script(
-          ( type , 'text/javascript' ),
-          ( data-lang , 'fr' ),
+          (type , 'text/javascript'),
+          (data-lang , 'fr'),
           source(
-
-            // ========================================================
-            // dans ce javascript, on définit une fonction factorielle
-
+            #( 
+              ========================================================
+              dans ce javascript, on définit une fonction factorielle
+              ========================================================
+            ),
             fonction(
-              definition( nom(factorielle) , argument(nombre) ),
+              definition(nom(factorielle) , argument(nombre)),
               contenu(
-                declare( a , 0 ) , declare( b , 0 ),
+                declare(a , 0),
+                declare(b , 0),
                 choix(
-                  si( condition( ( egal( nombre , 0 ) ) ) , alors( affecte( a , 1 ) ) ),
+                  si(
+                    condition((egal(nombre , 0))),
+                    alors(affecte(a , 1))
+                  ),
                   sinon(
                     alors(
-                      affecte( b , appelf( n(factorielle) , p(nombre-1) ) ),
-                      affecte( a , nombre*b )
+                      affecte(b , appelf(n(factorielle) , p(nombre-1))),
+                      affecte(a , nombre*b)
                     )
                   )
                 ),
                 revenir(a)
               )
             ),
+            #( 
+              ========================================================
+              puis on utilise cette fonction
+              ========================================================
+            ),
+            declare(zone , {}),
+            declare(valeur , 5),
+            #( ===============================================),
+            #( on affecte la valeur factorielle(5) à la valeur),
+            affecte(valeur , appelf(n(factorielle) , p(valeur))),
+            #( ===========================),
+            #( puis on affiche le résultat),
+            affecte(zone , appelf(n(document.getElementById) , p('resultat'))),
+            affecte(zone.innerHTML , valeur),
+            #(            
 
-            // ========================================================
-            // puis on utilise cette fonction
+              en lisp la fonction factorielle est ecrite comme ça :
+              =================================================
+              (defun factorial (n) ( if (<= n 1) (1) ( * n ( factorial (- n 1) ) ) ) )
+              =================================================
+              Je trouve cette syntaxe un peu bizarre car le if qui contient 
+              -une condition
+              -une valeur si frai
+              -une valeur si faux
+              n'inclut pas ces 3 éléments dans des parenthèses
 
-            declare( zone , {} ),
-            declare( valeur , 5 ),
-
-            // ===============================================
-            // on affecte la valeur factorielle(5) à la valeur
-
-            affecte( valeur , appelf( n(factorielle) , p(valeur) ) ),
-
-            // ===========================
-            // puis on affiche le résultat
-
-            affecte( zone , appelf( n(document.getElementById) , p('resultat') ) ),
-            affecte( zone.innerHTML , valeur )
-/*
-
-//            appelf( n(alert) , p(valeur) )
-
-en lisp la fonction factorielle est ecrite comme ça :
-=================================================
-(defun factorial (n)
-    (if (= n 0) 1
-        (* n (factorial (- n 1)))))
-=================================================
-Je trouve cette syntaxe un peu bizarre.
-
-Même si la définition de la fonction factorielle plus haut est plus verbeuse que
-celle écrite en lisp, je la préfère. 
-Ce n'est que mon avis et ce n'est qu'une question de goût !
-*/            
+              Même si la définition de la fonction factorielle plus haut est plus verbeuse que
+              celle écrite en lisp, je la préfère. 
+              Ce n'est que mon avis et ce n'est qu'une question de goût !
+            )
           )
         )
       )

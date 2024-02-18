@@ -445,8 +445,8 @@ function convertSource(source,objArr){
      retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
     }else if(type_source=='src_php'  && (file_extension=='php')){
      retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
-    }else if(type_source=='#'){
-     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
+//    }else if(type_source=='#'){
+//     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
     }else{
      return logerreur({status:false,id:0,message:'file core , fonction convertSource type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
     }

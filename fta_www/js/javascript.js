@@ -1,5 +1,50 @@
 "use strict";
+/*
+var global_enteteTableau=[
+ ['id','id'                                 ,''], // 00
+ ['val','value'                             ,''],
+ ['typ','type'                              ,''],
+ ['niv','niveau'                            ,''],
+ ['coQ','constante quotee'                  ,''],
+ ['pre','position du premier caractère'     ,''], // 05
+ ['der','position du dernier caractère'     ,''],
+ ['pId','Id du parent'                      ,''], // 10 ->  7
+ ['nbE','nombre d\'enfants'                 ,''], // 11 ->  8
+ ['nuE','numéro enfants'                    ,''], // 12 ->  9
+ ['pro','profondeur'                        ,''], // 15 -> 10
+ ['pop','position ouverture parenthese'     ,''], // 22 -> 11
+ ['pfp','position fermeture parenthese'     ,''], // 23 -> 12
+ ['com','commentaire'                       ,''],  
+ 
+];
 
+var global_enteteTableau=[
+ ['id','id'                                 ,''], // 00
+ ['val','value'                             ,''],
+ ['typ','type'                              ,''],
+ ['niv','niveau'                            ,''],
+ ['coQ','constante quotee'                  ,''],
+ ['pre','position du premier caractère'     ,''], // 05
+ ['der','position du dernier caractère'     ,''],
+ ['cAv','commentaire avant'                 ,''], // 7
+ ['cAp','commentaire apres'                 ,''], // 8
+ ['cDe','commentaire dedans'                ,''], //
+ ['pId','Id du parent'                      ,''], // 10
+ ['nbE','nombre d\'enfants'                 ,''], // 11
+ ['nuE','numéro enfants'                    ,''], // 12
+ ['nli','numeroLigne'                       ,''], // 13
+ ['lfP','numero ligne fermeture parenthese' ,''],
+ ['pro','profondeur'                        ,''], // 15
+ ['cpn','commentaire apres nettoye'         ,''],
+ ['cdn','commentaire dedans nettoye'        ,''],
+ ['cvn','commentaire avant nettoye'         ,''],
+ ['tcp','type commentaire apres nettoye'    ,''],
+ ['tcd','type commentaire dedans nettoye'   ,''], // 20
+ ['tcv','type commentaire avant nettoye'    ,''],
+ ['pop','position ouverture parenthese'     ,''],
+ ['pfp','position fermeture parenthese'     ,''],
+];
+*/
 //=====================================================================================================================
 function parseJavascript0(tab,id,offsetLigne){
  var i=0;
@@ -53,7 +98,7 @@ function js_condition1(tab,id,offsetLigne){
   }  
  }else{
   for(i=id;i<max;i++){
-   if((tab[i][1]=='non' || tab[i][1]=='et' || tab[i][1]=='ou' || (premiereCondition==true && tab[i][1]=='' ) ) && tab[i][11]>0 && tab[i][2]=='f'){ //i18
+   if((tab[i][1]=='non' || tab[i][1]=='et' || tab[i][1]=='ou' || (premiereCondition==true && tab[i][1]=='' ) ) && tab[i][8]>0 && tab[i][2]=='f'){ //i18
     if(tab[i][1]=='non'){
      t+='!';
     }else if(tab[i][1]=='et'){ // i18
@@ -90,7 +135,7 @@ function js_condition1(tab,id,offsetLigne){
     
     
     
-   }else if(tab[i][1]=='' && tab[i][11]>0  && tab[i][2]=='f' ){
+   }else if(tab[i][1]=='' && tab[i][8]>0  && tab[i][2]=='f' ){
     obj=js_condition1(tab,i+1,offsetLigne);
     if(obj.status==false){
      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition'});
@@ -113,7 +158,7 @@ function js_condition1(tab,id,offsetLigne){
     
     
    }else if( (tab[i][1]=='egal' || tab[i][1]=='diff' || tab[i][1]=='sup' || tab[i][1]=='inf'|| tab[i][1]=='supeg' || tab[i][1]=='infeg' ) && tab[i][2]=='f' ){
-    if(tab[i][11]==2){
+    if(tab[i][8]==2){
      // trouver les 2 paramètres de la fonction
      tabPar=[];
      for(j=id+1;j<=max;j++){
@@ -316,7 +361,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
   }
   
   if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' ) && tab[i][2]=='f' ){  // i18
-   if(tab[i][11]==0){
+   if(tab[i][8]==0){
      t+=espaces(tab[id][3]);
      t+=tab[i][1]+';'
    }else{
@@ -324,7 +369,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
     return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans un '+tab[i][1]+' qui doit être sous le format '+tab[i][1]+'() strictement'});
    }
   }else if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
-   if(tab[i][11]==0){
+   if(tab[i][8]==0){
     try{
      t+=espaces(tab[id][3]);
      t+='return;'
@@ -332,7 +377,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      debugger;
     }
    }else{
-    if(tab[i][11]==1){    
+    if(tab[i][8]==1){    
      if(tab[i+1][2]=='c'){
       t+=espaces(tab[id][3]);
       t+='return '+(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1]))))+';';
@@ -385,7 +430,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
     if(positionDeclarationFonction>=0 && positionContenu>=0){
      for(j=positionDeclarationFonction+1;j<tab.length && tab[j][3]>tab[positionDeclarationFonction][3];j++){
       if(tab[j][1]=='nom' && tab[j][3]==tab[positionDeclarationFonction][3]+1){  // i18
-       if(tab[j][11]==1){
+       if(tab[j][8]==1){
         nomFonction=tab[j+1][1];
        }else{
         return {status:false,value:t,id:id,tab:tab,message:'le nom de la fonction doit être sous la forme  n(xxx) '};
@@ -396,7 +441,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      argumentsFonction='';
      for(j=positionDeclarationFonction+1;j<tab.length && tab[j][3]>tab[positionDeclarationFonction][3];j++){
       if(tab[j][1]=='argument' && tab[j][3]==tab[positionDeclarationFonction][3]+1){  // i18
-       if(tab[j][11]==1){
+       if(tab[j][8]==1){
         argumentsFonction+=','+tab[j+1][1];
        }else{
         return {status:false,value:t,id:id,tab:tab,message:'les arguments passés à la fonction doivent être sous la forme  a(xxx) '};
@@ -410,7 +455,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
       
       
       t+='\nfunction '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
-      if(tab[positionContenu][11]==0){
+      if(tab[positionContenu][8]==0){
        t+='\n';
        t+='  // void';
        t+='\n}';
@@ -553,11 +598,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
        return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le contenu du "essayer" ' });
       }
      }else if(tab[j][1]=='sierreur' && tab[j][2]=='f'){
-      if(tab[j][11]==2){
+      if(tab[j][8]==2){
        if(tab[j+1][2]=='c'){
         nomErreur=tab[j+1][1];
         if(tab[j+2][1]=='faire' && tab[j+2][2]=='f'){
-         if(tab[j+2][11]==0){ // si la fonction faire n'a pas d'enfants 
+         if(tab[j+2][8]==0){ // si la fonction faire n'a pas d'enfants 
          }else{
           obj=js_tabTojavascript1(tab,j+3,dansFonction,false,offsetLigne);
           if(obj.status==true){
@@ -608,7 +653,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      if(tab[j][1]=='si'){ // i18
       tabchoix.push([j,tab[j][1],0]); // position type position du contenu du alors
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le si
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][11]>0){ // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){ // i18
         tabchoix[tabchoix.length-1][2]=k+1;
         break;
        }
@@ -620,7 +665,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
       aDesSinonSi=true;
       tabchoix.push([j,tab[j][1],0]);
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le sinonsi
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][11]>0){  // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){  // i18
         tabchoix[tabchoix.length-1][2]=k+1;
         break;
        }
@@ -632,7 +677,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
       aUnSinon=true;
       tabchoix.push([j,tab[j][1],0]);
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le sinon
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][11]>0){  // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){  // i18
         tabchoix[tabchoix.length-1][2]=k+1;
         break;
        }
@@ -819,7 +864,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
 
   }else if(tab[i][1]=='affecteFonction'  && tab[i][2]=='f'){ // i18
 
-   if(tab[i+1][2]=='c' && tab[i][11]>=2 ){
+   if(tab[i+1][2]=='c' && tab[i][8]>=2 ){
    }else{
      return logerreur({status:false,value:t,id:id,tab:tab,message:'dans affecteFonction il faut au moins deux parametres affecteFonction(xxx,[p(yyy),]contenu())'});
    }
@@ -837,7 +882,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      positionContenu=j;
     }else{
      if( tab[j][1]=='p' && tab[j][3]==tab[i][3]+1){
-      if( tab[j][11]==1 && tab[j+1][2]=='c' ){
+      if( tab[j][8]==1 && tab[j+1][2]=='c' ){
        argumentsFonction+=','+tab[j+1][1];
       }else{
        return logerreur({status:false,value:t,id:i,tab:tab,message:'dans affecteFonction, les parametres doivent être des variables affecteFonction(xxx,[p(yyy),]contenu()) '});
@@ -879,7 +924,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    if(!dansInitialisation){
     t+=espaces(tab[id][3]);
    }
-   if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
+   if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
 
     t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':tab[i+2][1]) )+'');
@@ -887,7 +932,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      t+=';';
     }
    
-   }else if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='appelf' ){
+   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='appelf' ){
     
     obj=js_traiteAppelFonction(tab,i+2,true,offsetLigne);
     if(obj.status==true){
@@ -899,14 +944,14 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      return logerreur({status:false,value:t,id:id,tab:tab,message:'dans appelf de affecte il faut un nom de fonction à appeler n(xxxx)'});
     }
 
-   }else if(tab[i][11]==2 && tab[i+1][2]=='f' && tab[i+1][1]=='appelf' ){
+   }else if(tab[i][8]==2 && tab[i+1][2]=='f' && tab[i+1][1]=='appelf' ){
     
     obj=js_traiteAppelFonction(tab,i+1,true,offsetLigne);
     if(obj.status==true){
      t+=''+obj.value+'=';
      // trouver 'x' dans "affecte( appelf(...) , x )"
      for(j=i+1;j<tab.length;j++){
-      if(tab[j][10]==i && tab[j][12]=='2'){
+      if(tab[j][7]==i && tab[j][9]=='2'){
        if(tab[j][2]=='c'){
         t+=(tab[j][4]===true?'\''+echappConstante(tab[j][1])+'\'' : (tab[j][1]=='vrai'?'true':(tab[j][1]=='faux'?'false':(tab[j][1]))));        
        }else{
@@ -933,7 +978,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
     }
 
 
-   }else if(tab[i][11]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='obj' ){
+   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='obj' ){
     
     obj=js_traiteDefinitionObjet(tab,i+2,true);
     if(obj.status==true){
@@ -957,7 +1002,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
   //=====================================================================================
   }else if(tab[i][1]=='declare'  && tab[i][2]=='f'){ // i18
    t+=espaces(tab[id][3]);
-   if(tab[i][11]==2 ){
+   if(tab[i][8]==2 ){
     if(tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
      // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
      if( (tab[i+2][1]=='vrai' || tab[i+2][1]=='faux' ) && tab[i+2][4]===false){
@@ -967,7 +1012,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      }
     }else{
      if(tab[i+1][2]=='c' && tab[i+2][2]=='f' ){
-      if(tab[i+2][1]=='new' && tab[i+2][11]==1 && tab[i+3][1]=='appelf' ){
+      if(tab[i+2][1]=='new' && tab[i+2][8]==1 && tab[i+3][1]=='appelf' ){
        t+='var '+tab[i+1][1]+'= new ';
        obj=js_traiteAppelFonction(tab,i+3,true,offsetLigne);
        if(obj.status==true){
@@ -995,6 +1040,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    i=reprise;
    
    
+  //=====================================================================================
+  }else if(tab[i][1]=='#'  && tab[i][2]=='f'){
+   t+=espaces(tab[id][3]);
+   t+='/* '+tab[i][13]+' */';
   }else{
    t+=espaces(tab[id][3]);
    t+='//todo i='+i+', tab[i][1]="'+tab[i][1]+'"';
@@ -1003,27 +1052,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
   if(i+1<tab.length && dansInitialisation===false ){
    
    var niveauAChercher=tab[i+1][3]+1;
-//   t+=espaces(tab[id][3]);
-//   t+='// commentaire de fin i+1='+(i+1)+', tab[i+1][1]="'+tab[i+1][1]+'" niveauAChercher='+niveauAChercher+'';
-   
-   
-   for(var indNivTmp=i;indNivTmp>=0;indNivTmp--){
-    if(niveauAChercher==tab[indNivTmp][3]){
-     if(tab[indNivTmp][16].length>0){
-//      t+=espaces(tab[id][3]);
-//      t+='// commentaire de fin id='+id+'niveauAChercher='+(niveauAChercher)+', tab[indNivTmp][1]="'+tab[indNivTmp][1]+'" '+JSON.stringify(tab[indNivTmp])+'';
-      
-      if(tab[indNivTmp][19]=='multi sans bloc' && id-1==tab[indNivTmp][0]){
-       for(var indCom=0;indCom<tab[indNivTmp][16].length;indCom++){
-        t+=espaces(tab[indNivTmp][3]);
-        t+=tab[indNivTmp][16][indCom];
-       }
-      }
-     }
-     break;
-    }
-   }
-   
    
   }
 
@@ -1042,7 +1070,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction){ // id = p
  for(j=id+1;j<tab.length && tab[j][3]>tab[id][3];j++){
   if(tab[j][3]==tab[id][3]+1){
    if(tab[j][1]=='' && tab[j][2]=='f'){
-    if(tab[j][11]==2){
+    if(tab[j][8]==2){
      if(tab[j+2][1]=='obj'){
       obj=js_traiteDefinitionObjet(tab,j+2,true);
       if(obj.status==true){
@@ -1086,7 +1114,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,offsetLigne){
  for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
   if(tab[j][1]=='n' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
    positionAppelFonction=j;
-   if(tab[j][11]==1){
+   if(tab[j][8]==1){
     nomFonction=tab[j+1][1];
    }
    break;
@@ -1097,7 +1125,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,offsetLigne){
   positionRetour=-1;
   for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
    if(tab[j][1]=='r' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
-    if(tab[j][11]==1){
+    if(tab[j][8]==1){
      nomRetour=tab[j+1][1];
     }
     positionRetour=j;
@@ -1128,11 +1156,11 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,offsetLigne){
    }else if(tab[j][1]=='prop' && tab[j][3]==tab[i][3]+1){
     // la propriété est à un niveau +1 de l'appelf ( document.getElementById(toto).propriete )
     
-    if(tab[j][11]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
+    if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
      proprietesFonction+='.'+( tab[j+1][4]==true ? '\''+echappConstante(tab[j+1][1])+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'false':tab[j+1][1])) );
     }else{
      // cas ou le paramètre d'une fonction est une fonction
-     if(tab[j][11]==1 && tab[j+1][2]=='f' ){
+     if(tab[j][8]==1 && tab[j+1][2]=='f' ){
       if(tab[j+1][1]=='appelf'){ // i18
        obj=js_traiteAppelFonction(tab,j+1,true,offsetLigne);
        if(obj.status==true){
@@ -1152,13 +1180,13 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,offsetLigne){
     // le paramètre est à un niveau +1 de l'appelf
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
 
-    if(tab[j][11]==0 && tab[j+1][2]=='f' ){ // le paramètre est une fonction vide
+    if(tab[j][8]==0 && tab[j+1][2]=='f' ){ // le paramètre est une fonction vide
      argumentsFonction+=',';
-    }else if(tab[j][11]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
+    }else if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
      argumentsFonction+=','+( tab[j+1][4]==true ? '\''+echappConstante(tab[j+1][1])+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'false':tab[j+1][1])) );
     }else{
      // cas ou le paramètre d'une fonction est une fonction
-     if(tab[j][11]==1 && tab[j+1][2]=='f' ){
+     if(tab[j][8]==1 && tab[j+1][2]=='f' ){
       if(tab[j+1][1]=='appelf'){ // i18
        obj=js_traiteAppelFonction(tab,j+1,true,offsetLigne);
        if(obj.status==true){

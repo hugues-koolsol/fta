@@ -53,7 +53,16 @@ var global_enteteTableau=[
 */
 //=====================================================================================================================
 function tabToHtml1(tab,id,offsetLigne){
- var ob=tabToHtml0(tab,id,false,false,false,offsetLigne);
+ // recherche du premier tag "html"
+ var startId=id;
+ for(var i=id;i<tab.length;i++){
+   if(tab[i][1]=='html'){
+    startId=i;
+    break;
+   }
+ }
+ 
+ var ob=tabToHtml0(tab,startId,false,false,false,offsetLigne);
  return ob;
 }
 //=====================================================================================================================
@@ -84,8 +93,8 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
   t+='\n';
   t+='// = = = = <source javascript = = = =\n';
   t+='"use strict";\n';
-  console.error('todo')
-  bug();
+//  console.error('todo')
+//  bug();
   ob=parseJavascript0(tab,id,offsetLigne+tab[id][13]);
   if(ob.status===true){
    t+=ob.value;
@@ -99,11 +108,15 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
  }else{
   temp='';
 
-  if(id==1 && tab[id][1]=='html'){
+  if(tab[id][1]=='html'){
   }else{
    t+=espaces2(tab[id][3]);
   }
-  temp+='<'+tab[id][1];
+  if(tab[id][1]=='#'){
+   temp+='<!-- '+tab[id][13];
+  }else{
+   temp+='<'+tab[id][1];
+  }
   doctype='';
   for(i=id+1;i<tab.length;i++){
    if(tab[i][7]==id){
@@ -198,7 +211,9 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
    }else{
     
     if(id>0){
-     if(tab[id][1]=='br' || tab[id][1]=='hr' || tab[id][1]=='meta' || tab[id][1]=='link' ){
+     if(tab[id][1]=='#'){
+      t+=' -->';
+     }else if(tab[id][1]=='br' || tab[id][1]=='hr' || tab[id][1]=='meta' || tab[id][1]=='link' ){
       t+=' />';
      }else{
       t+='></'+tab[id][1]+'>';
