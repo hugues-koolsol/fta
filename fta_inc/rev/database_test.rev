@@ -1,51 +1,48 @@
 src_php(
-  ( file_name , database_test ),
-  ( file_extension , php ),
-  ( file_path , . ),
+  (file_name , database_test),
+  (file_extension , php),
+  (file_path , .),
   source(
     php(
-      appelf( n(require_once) , p('aa_include.php') ),
+      appelf(n(require_once) , p('aa_include.php')),
       affecte(
         $src_create_database,
         sql(
-
-          // ==========================
-          // SET FOREIGN_KEY_CHECKS=0;
-          // SET AUTOCOMMIT = 0;
-          // START TRANSACTION;
-
-          set( FOREIGN_KEY_CHECKS , 0 ),
-          set( AUTOCOMMIT , 0 ),
+          #(
+            // ==========================
+            // SET FOREIGN_KEY_CHECKS=0;
+            // SET AUTOCOMMIT = 0;
+            // START TRANSACTION;
+          ),
+          set(FOREIGN_KEY_CHECKS , 0),
+          set(AUTOCOMMIT , 0),
           transaction(
-
-            // ==========================================================            
-            // SET time_zone = "+00:00";
-            // CREATE DATABASE IF NOT EXISTS `fta` DEFAULT CHARACTER SET utf8 
-            //       COLLATE utf8_general_ci;
-            // USE fta;
-
-            set( time_zone , '+00:00' ),
+            #(
+              // ==========================================================            
+              // SET time_zone = "+00:00";
+              // CREATE DATABASE IF NOT EXISTS `fta` DEFAULT CHARACTER SET utf8 
+              //       COLLATE utf8_general_ci;
+              // USE fta;
+            ),
+            set(time_zone , '+00:00'),
             create_database(
               ifnotexists(),
-              n(fta),
+              n(ftatest),
               charset(utf8mb4),
               collate(utf8mb4_general_ci)
             ),
             use(fta),
-
-            //==================================
-            //DROP TABLE IF EXISTS `bce_tbl__css`;
-
-            drop_table(
-              ifexists(),
-              n(tbl_user)
+            #(
+              //==================================
+              //DROP TABLE IF EXISTS `tbl_user`;
             ),
-
-            //=======================================================================
-            // CREATE TABLE IF NOT EXISTS `test` (
-            //   `fld_field` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            // ) AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+            drop_table(ifexists() , n(tbl_user)),
+            #(
+              //=======================================================================
+              // CREATE TABLE IF NOT EXISTS `test` (
+              //   `fld_field` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+              // ) AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            ),
             create_table(
               ifnotexists(),
               n(tbl_user),
@@ -62,59 +59,61 @@ src_php(
                 ),
                 field(
                   n(fld_name_user),
-                  type( VARCHAR , 64 ),
+                  type(VARCHAR , 64),
                   notnull(),
                   default('admin')
                 ),
                 field(
                   n(fld_password_user),
-                  type( VARCHAR , 256 ),
+                  type(VARCHAR , 256),
                   notnull(),
                   default('admin')
                 )
               )
             ),
-            // ===================================================================
-            // ALTER TABLE `fta`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);
-            add_primary_key(
-              n(tbl_user),
-              fields(fld_id_user)
+            #(            
+              // ===================================================================
+            // ALTER TABLE `fta`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);),
+            add_primary_key(n(tbl_user) , fields(fld_id_user)),
+            #(            
+              // ===================================================================
+              // ALTER TABLE `tbl_user` CHANGE `fld_id_user` `fld_id_user` 
+              // BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
             ),
-            // ===================================================================
-            // ALTER TABLE `tbl_user` CHANGE `fld_id_user` `fld_id_user` 
-            // BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
             change_field(
               n(tbl_user),
               old_name(fld_id_user),
               new_def(
                 field(
                   n(fld_id_user),
-                  type( bigint , 20 ),
+                  type(bigint , 20),
                   unsigned(),
                   notnull(),
                   auto_increment()
                 )
               )
             ),
-            // ===================================================================
-            // ALTER TABLE `fta`.`tbl_user` ADD UNIQUE `idx_name` (`fld_name_user`);
+            #(            
+              // ===================================================================
+              // ALTER TABLE `fta`.`tbl_user` ADD UNIQUE `idx_name` (`fld_name_user`);
+            ),
             add_index(
               n(tbl_user),
               unique(),
               index_name(idx_name),
               fields(fld_name_user)
             ),
-            set( FOREIGN_KEY_CHECKS , 1 )
+            set(FOREIGN_KEY_CHECKS , 1)
           )
         )
       ),
-
-      // =========
-      // connexion
-
-      affecte( $serveur , 'localhost:3308' ),
-      affecte( $utilisateur , 'admin' ),
-      affecte( $mdp , 'admin' ),
+      #(
+        // =========
+        // connexion
+      ),
+      affecte($serveur , 'localhost:3308'),
+      affecte($utilisateur , 'admin'),
+      affecte($mdp , 'admin'),
       appelf(
         r($link),
         n(mysqli_connect),
@@ -124,44 +123,40 @@ src_php(
       ),
       choix(
         si(
-          condition( non($link) ),
+          condition(non($link)),
           alors(
-            appelf( n(die) , p( appelf( n(concat) , p(__LINE__) , p(__FILE__) ) ) )
+            appelf(
+              n(die),
+              p(appelf(n(concat) , p(__LINE__) , p(__FILE__)))
+            )
           )
         )
       ),
-      appelf(
-        n(mysqli_set_charset),
-        p($link),
-        p('utf8mb4')
+      appelf(n(mysqli_set_charset) , p($link) , p('utf8mb4')),
+      #(
+        // =========================================
+        // execution de la requête et test de retour
       ),
-
-      // =========================================
-      // execution de la requête et test de retour
-
       appelf(
         r($retourSql),
         n(mysqli_multi_query),
         p($link),
         p($src_create_database)
       ),
-      appelf( r($testAppelSql) , n(mysqli_errno) , p($link) ),
+      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
       choix(
         si(
-          condition( egal( $testAppelSql , 0 ) ),
-          alors(
-            appelf( n(print) , p('OK CREATE') ),
-            appelf( n(mysqli_close) , p($link) )
-          )
+          condition(egal($testAppelSql , 0)),
+          alors(appelf(n(print) , p('OK CREATE')) , appelf(n(mysqli_close) , p($link)))
         ),
         sinon(
-          alors( appelf( n(die) , p('KO CREATE') ) )
+          alors(appelf(n(die) , p('KO CREATE')))
         )
       ),
-
-      // ============================================
-      // réouverture de la connexion 
-
+      #(
+        // ============================================
+        // réouverture de la connexion 
+      ),
       appelf(
         r($link),
         n(mysqli_connect),
@@ -171,9 +166,12 @@ src_php(
       ),
       choix(
         si(
-          condition( non($link) ),
+          condition(non($link)),
           alors(
-            appelf( n(die) , p( appelf( n(concat) , p(__LINE__) , p(__FILE__) ) ) )
+            appelf(
+              n(die),
+              p(appelf(n(concat) , p(__LINE__) , p(__FILE__)))
+            )
           )
         )
       ),
@@ -182,12 +180,12 @@ src_php(
         sql(
           insert_into(
             n(fta.tbl_user),
-            fields( fld_id_user , fld_name_user , fld_password_user ),
+            fields(fld_id_user , fld_name_user , fld_password_user),
             values(
-              ( 1 , 'admin' , 'admin' ),
-              ( 2 , 'user2' , 'user2' ),
-              ( 4 , 'user4' , 'user4' ),
-              ( 3 , 'user3' , 'user3' )
+              (1 , 'admin' , 'admin'),
+              (2 , 'user2' , 'user2'),
+              (4 , 'user4' , 'user4'),
+              (3 , 'user3' , 'user3')
             )
           )
         )
@@ -198,27 +196,31 @@ src_php(
         p($link),
         p($insertSql)
       ),
-      appelf( r($testAppelSql) , n(mysqli_errno) , p($link) ),
+      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
       choix(
         si(
-          condition( egal( $testAppelSql , 0 ) ),
-          alors(
-            appelf( n(print) , p('OK INSERT') )
-          )
+          condition(egal($testAppelSql , 0)),
+          alors(appelf(n(print) , p('OK INSERT')))
         ),
         sinon(
-          alors( appelf( n(die) , p('KO INSERT') ) )
+          alors(appelf(n(die) , p('KO INSERT')))
         )
       ),
-
-      //=========================================================
-      // requete sur admin / admin
-
-      affecte( $username , 'admin' ),
-      affecte( $userpass , 'admin' ),
+      #(
+        //=========================================================
+        // requete sur admin / admin
+      ),
+      affecte($username , 'admin'),
+      affecte($userpass , 'admin'),
       affecte(
         $selectSql,
-        sqlref( 1 , p($username) , p($userpass) , p('toto') , p(0) )
+        sqlref(
+          1,
+          p($username),
+          p($userpass),
+          p('toto'),
+          p(0)
+        )
       ),
       appelf(
         r($retourSql),
@@ -226,37 +228,49 @@ src_php(
         p($link),
         p($selectSql)
       ),
-      appelf( r($testAppelSql) , n(mysqli_errno) , p($link) ),
+      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
       choix(
         si(
-          condition( egal( $testAppelSql , 0 ) ),
-          alors(
-            appelf( n(print) , p('OK SELECT') )
-          )
+          condition(egal($testAppelSql , 0)),
+          alors(appelf(n(print) , p('OK SELECT')))
         ),
         sinon(
-          alors( appelf( n(die) , p('KO SELECT') ) )
+          alors(appelf(n(die) , p('KO SELECT')))
         )
       ),
       boucle(
-        initialisation(
-          appelf( r($row) , n(mysqli_fetch_row) , p($retourSql) )
-        ),
-        condition( ( diff( $row , NULL ) ) ),
-        increment( appelf( r($row) , n(mysqli_fetch_row) , p($retourSql) ) ),
+        initialisation(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
+        condition((diff($row , NULL))),
+        increment(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
         faire(
-          appelf( n(echo) , p( appelf( n(concat) , p('<br />userid=') , p($row[0]) , p('<br />') ) ) )
+          appelf(
+            n(echo),
+            p(
+              appelf(
+                n(concat),
+                p('<br />userid='),
+                p($row[0]),
+                p('<br />')
+              )
+            )
+          )
         )
       ),
-
-      //=========================================================
-      // requete sur %user% / %user%
-
-      affecte( $username , '%user%' ),
-      affecte( $userpass , '%user%' ),
+      #(
+        //=========================================================
+        // requete sur %user% / %user%
+      ),
+      affecte($username , '%user%'),
+      affecte($userpass , '%user%'),
       affecte(
         $selectSql,
-        sqlref( 1 , p($username) , p($userpass) , p('toto') , p(0) )
+        sqlref(
+          1,
+          p($username),
+          p($userpass),
+          p('toto'),
+          p(0)
+        )
       ),
       appelf(
         r($retourSql),
@@ -264,26 +278,32 @@ src_php(
         p($link),
         p($selectSql)
       ),
-      appelf( r($testAppelSql) , n(mysqli_errno) , p($link) ),
+      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
       choix(
         si(
-          condition( egal( $testAppelSql , 0 ) ),
-          alors(
-            appelf( n(print) , p('OK SELECT') )
-          )
+          condition(egal($testAppelSql , 0)),
+          alors(appelf(n(print) , p('OK SELECT')))
         ),
         sinon(
-          alors( appelf( n(die) , p('KO SELECT') ) )
+          alors(appelf(n(die) , p('KO SELECT')))
         )
       ),
       boucle(
-        initialisation(
-          appelf( r($row) , n(mysqli_fetch_row) , p($retourSql) )
-        ),
-        condition( ( diff( $row , NULL ) ) ),
-        increment( appelf( r($row) , n(mysqli_fetch_row) , p($retourSql) ) ),
+        initialisation(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
+        condition((diff($row , NULL))),
+        increment(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
         faire(
-          appelf( n(echo) , p( appelf( n(concat) , p('<br />userid=') , p($row[0]) , p('<br />') ) ) )
+          appelf(
+            n(echo),
+            p(
+              appelf(
+                n(concat),
+                p('<br />userid='),
+                p($row[0]),
+                p('<br />')
+              )
+            )
+          )
         )
       )
     )

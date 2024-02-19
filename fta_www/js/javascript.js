@@ -697,15 +697,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    var tabTemp=[];
    for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
     if(tab[j][3]<=tab[i][3]+2){
-     if( (tab[j][1]=='si' || tab[j][1]=='condition' || tab[j][1]=='alors' || tab[j][1]=='sinonsi' || tab[j][1]=='sinon' ) && tab[j][2]=='f' ){
-      tabTemp.push(tab[j]);
+     if( (tab[j][1]=='si' || tab[j][1]=='condition' || tab[j][1]=='alors' || tab[j][1]=='sinonsi' || tab[j][1]=='sinon' || tab[j][1]=='#' ) && tab[j][2]=='f' ){
+      if(tab[j][1]=='#'){
+      }else{
+       tabTemp.push(tab[j]);
+      }
       
 //      t+=espaces(tab[id][3]);
 //      t+='// bloc '+tab[j][1]+' j=' + j+' tab[j][0]=' + tab[j][0];
       
       
      }else{
-      return logerreur({status:false,value:t,id:i,tab:tab,message:'dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "'+tab[j][1]+'" '});
+      return logerreur({status:false,value:t,id:i,tab:tab,message:'file javascript.js : dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "'+tab[j][1]+'" '});
      }
     }
    }

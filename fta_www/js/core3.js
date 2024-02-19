@@ -312,6 +312,9 @@ function loadRevFile(nomFichierSource,fntSiOk,nomZone){
    var jsonRet=JSON.parse(r.responseText);
    if(jsonRet.status=='OK'){
     fntSiOk({status:true,value:jsonRet.value,nomZone:nomZone,nomFichierSource:nomFichierSource});
+    try{
+     localStorage.setItem("fta_dernier_fichier_charge", nomFichierSource);
+    }catch(e){}
     return;
    }else{
     display_ajax_error_in_cons(jsonRet);
@@ -393,10 +396,28 @@ function convertSource(source,objArr){
  var tabConcatFichier=[];
  var retProgrammeSource={};
  var obj={};
+ var l01=objArr.value.length;
+ for(var i=1;i<l01;i++){
+  if(objArr.value[i][3]==0){
+   if(objArr.value[i][1]=='#'){
+   }else if(objArr.value[i][1]=='src_javascript' ){
+    type_source=objArr.value[i][1];
+    break;
+   }else if(objArr.value[i][1]=='src_html'){
+    type_source=objArr.value[i][1];
+    break;
+   }else if(objArr.value[i][1]=='src_php'){
+    type_source=objArr.value[i][1];
+    break;
+   }
+  }
+ }
+ if(type_source==''){
+  return logerreur({status:false,message:'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" ou bien "src_php" '});
+ }
  
- type_source=objArr.value[1][1];
  
- for(var i=0;i<objArr.value.length;i++){
+ for(var i=0;i<l01;i++){
   if(objArr.value[i][2]=='f' && objArr.value[i][3]==1 && objArr.value[i][1]==''){ //fonctions de niveau 1 vides
    for(var j=i;j<objArr.value.length;j++){
     if(objArr.value[j][7]==objArr.value[i][0] && objArr.value[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
@@ -445,14 +466,12 @@ function convertSource(source,objArr){
      retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
     }else if(type_source=='src_php'  && (file_extension=='php')){
      retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
-//    }else if(type_source=='#'){
-//     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
     }else{
-     return logerreur({status:false,id:0,message:'file core , fonction convertSource type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
+     return logerreur({status:false,id:0,message:'file core , fonction convertSource : type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
     }
     
     if(retProgrammeSource.status===true){
-     return logerreur({status:true,value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension});
+     return logerreur({status:true,value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
     }else{
      return logerreur({status:false,message:"",value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension});
     }
@@ -533,8 +552,8 @@ function writeSourceFile(source,objArr){
    try{
     var jsonRet=JSON.parse(r.responseText);
     if(jsonRet.status=='OK'){
-     if(tabConcatFichier.length>0){
-      concateneFichiers(tabConcatFichier,file_name,file_extension,file_path)
+     if(obj.tabConcatFichier.length>0){
+      concateneFichiers(obj.tabConcatFichier,obj.file_name,obj.file_extension,obj.file_path)
      }
      return;
     }else{
@@ -760,7 +779,8 @@ function iterateCharacters(str){
   let position=0;
   let position2=0;
   let arr = [...str];
-  for (let i = 0; i < arr.length; i++) {
+  var l01=arr.length;
+  for(let i=0;i<l01;i++){
     let bytes = te.encode(arr[i]).length;
     let length = arr[i].length;
     out.push([arr[i],bytes,position,position2]);
@@ -812,9 +832,7 @@ var global_enteteTableau=[
  ['pro','profondeur'                        ,''], // 10
  ['pop','position ouverture parenthese'     ,''],
  ['pfp','position fermeture parenthese'     ,''], 
- ['com','commentaire'                       ,''], 
- ['sui','niveau suivant'                    ,''], 
- 
+ ['com','commentaire'                       ,''],  
 ];
 // 7 8 9 out
 // 10 11 12 13 14 15 deviennent 
@@ -863,9 +881,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
  
  
  
- //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm 14nivSuiv
+ //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm
 
- T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar,''    ,0));
+ T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar,''    ));
  
  // o
  var l01=tableauEntree.length;
@@ -919,7 +937,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     if(niveau==0){
      return logerreur({status:false,value:T,message:'0 la racine ne peut pas contenir des constantes en i='+i});
     }
-    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
+    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     texte='';
     constanteQuotee=false;
     
@@ -964,7 +982,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      dsComment=true;
      niveauDebutCommentaire=niveau;
     }
-    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
+    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     for(j=T.length-1;j>0;j--){
      l=T[j][3];
      for(k=j;k>=0;k--){
@@ -989,7 +1007,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      if(niveau==0){
       return logerreur({status:false,value:T,message:'1 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0,'',0));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0,''));
      texte='';
      faireCommentaire=false;
     }
@@ -1063,7 +1081,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
       numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'3 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     }else{
      dansIgnore=false;
      if(T[indice][2]=='f'){
@@ -1093,7 +1111,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
 //     numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'4 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
      texte='';
      dansCst=false;
      dansTexte=false;
@@ -1159,7 +1177,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
    numeroLigne=calculNumLigne2(tableauEntree,premier);
    return logerreur({status:false,value:T,message:'5 la racine ne peut pas contenir des constantes en i='+i});
   }
-  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,'',0));
+  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
  }
 
  if(dansIgnore===true){
@@ -1182,9 +1200,6 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     T[j][8]++;
     break;
    }
-  }
-  if(i-1>=1){
-   T[i-1][14]=T[i][3];
   }
  }
 // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE 12numEnfant 13numLi 14ferPar 15prof

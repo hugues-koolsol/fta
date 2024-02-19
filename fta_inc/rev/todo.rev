@@ -17,13 +17,17 @@ src_html(
       body(
         hr(),
         table(
+          tr(td(99) , td('recharger le dernier source chargé')),
+          tr(td(99) , td('selectionner un bloc et le mettre en commentaire')),
           tr(td(99) , td('ajouter les commentaires au php et au js')),
+          tr(td(99) , td('dans index_source, afficher le source produit et les tableaux')),
           tr(td(99) , td('capturer les erreur php')),
-          tr(td(99) , td('enregistrer fichier .rev')),
-          tr(td(99) , td('décaler des sources')),
-          tr(td(99) , td('correspondances parenthèses'))
+          tr(td(00) , td('enregistrer fichier .rev')),
+          tr(td(00) , td('décaler des sources')),
+          tr(td(00) , td('correspondances parenthèses'))
         ),
-        a((href , index_source.php) , index_source)
+        a((style , 'margin:5px;') , (href , index_source.php) , index_source),
+        a((href , index.html) , index.html)
       )
     )
   )

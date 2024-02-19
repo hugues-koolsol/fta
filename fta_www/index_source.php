@@ -22,6 +22,7 @@ print($o1);$o1='';
         <a href="javascript:insertSource('affecte');">affecte</a>
         <a href="javascript:parentheses();" title="repérer la parenthèse fermante correspondante">(|...)</a>
         <a href="javascript:decaler('droite');">(|&gt;&gt;&gt;</a>
+        <a href="javascript:mettreEnCommentaire();">#()</a>
         <input type="text" id="nomDuSource" disabled="true" style="float:right;" />
         <button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" style="float:right;" data-fichiertexte="" >sauvegarder le texte normalise</button>         
        </td>
@@ -260,6 +261,9 @@ function ajusteTailleTextareaContenantSource(normalise){
 }
 //=====================================================================================================================
 function enregistrer(){
+ try{
+  console.timeEnd();
+ }catch(e){}
  console.time();
  console.timeLog();
  var comparaisonSourcesSansCommentairesOK=false;
@@ -485,6 +489,78 @@ function getCaretCoordinates(element, position){ //, options) {
 
   return coordinates;
 }
+
+function createSelection(field, start, end) {
+    if( field.createTextRange ) {
+        var selRange = field.createTextRange();
+        selRange.collapse(true);
+        selRange.moveStart('character', start);
+        selRange.moveEnd('character', end-start);
+        selRange.select();
+    } else if( field.setSelectionRange ) {
+        field.setSelectionRange(start, end);
+    } else if( field.selectionStart ) {
+        field.selectionStart = start;
+        field.selectionEnd = end;
+    }
+    field.focus();
+} 
+
+//=====================================================================================================================
+function mettreEnCommentaire(){
+ var zoneSource=document.getElementById('zonesource');
+ console.log(zoneSource.selectionStart , zoneSource.selectionEnd);
+ var debut=0;
+ var fin=zoneSource.value.length;
+ var obj=iterateCharacters(zoneSource.value);
+ console.log('obj=',obj);
+ for( var i=zoneSource.selectionStart-1;i>=0;i--){
+  if(obj.out[i][0]=='\n'){
+   debut=i+1;
+   break;
+  }
+  if(i==0){
+   debut=0;
+   break;
+  }
+ }
+ var debutBoucle=zoneSource.selectionEnd;
+ if(zoneSource.selectionEnd>1){
+  if(zoneSource.value.substr(zoneSource.selectionEnd-1,1)=='\n'){
+   debutBoucle=zoneSource.selectionEnd-1;
+  }
+ }
+ for( var i=debutBoucle;i<obj.out.length;i++){
+  console.log('i='+i+' , c="'+obj.out[i][0]+'"');
+  if(obj.out[i][0]=='\n'){
+   fin=i;
+   break;
+  }else if(i==obj.out.length-1){
+   fin=i;
+   break;
+  }
+ }
+ //le dernier caractère n'est pas un '\n'
+ console.log('debut='+debut+', fin='+fin);
+ var txtDeb=zoneSource.value.substr(0,debut);
+ var selectionARemplacer=zoneSource.value.substr(debut,fin-debut);
+ var txtFin=zoneSource.value.substr(fin);
+ console.log('\n======\ntxtDeb="'+txtDeb+'"\n\n\nselectionARemplacer="'+selectionARemplacer+'"\n\n\ntxtFin="'+txtFin+'"');
+ 
+ var nouveauCommentaire='#('+selectionARemplacer+')';
+ if(txtFin!==''){
+//  nouveauCommentaire+='\n';
+ }
+ var nouveauTexte=txtDeb+nouveauCommentaire+txtFin;
+ 
+ console.log('nouveauTexte="'+nouveauTexte+'"');
+ zoneSource.value=nouveauTexte;
+ createSelection(zoneSource,debut,fin+3);
+ 
+ 
+ 
+ 
+}
 //=====================================================================================================================
 function insertSource(nomFonction){
  var i=0;
@@ -638,6 +714,7 @@ document.getElementById('normalise').onkeydown=function(e){
 //=====================================================================================================================
 document.getElementById('zonesource').onkeyup=analyseKeyUp;
 function analyseKeyUp(e){
+// console.log( 'e=' , e );
 // console.log('avant tout: this.scrollTop='+this.scrollTop+', global_editeur_scrolltop='+global_editeur_scrolltop+','+document.getElementById('zonesource').scrollTop);
 // console.log('e.keyCode='+e.keyCode);
 // initialisationEditeur();
@@ -793,8 +870,17 @@ function chargerLaListeDesSourcesRev(){
  
 }
 //=====================================================================================================================
+function chargerLeDernierSourceChargePrecedemment(){
+ var fta_dernier_fichier_charge=localStorage.getItem("fta_dernier_fichier_charge");
+ console.log('fta_dernier_fichier_charge=' , fta_dernier_fichier_charge );
+ if(fta_dernier_fichier_charge!==null){
+  loadRevFile(fta_dernier_fichier_charge,afficherFichierSource,'zonesource');
+ }
+}
+//=====================================================================================================================
 document.addEventListener("DOMContentLoaded", function () {
   chargerLaListeDesSourcesRev('source1.txt');
+  chargerLeDernierSourceChargePrecedemment()
   // Your code goes here
 });
 
