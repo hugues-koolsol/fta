@@ -1,24 +1,35 @@
 <?php
-//================================================
-//================================================
+/*      
+    //================================================
+    //================================================
+  */
+
 function rechargerPageCourante(){
   header(concat('Location: ',BNF));
   exit(0);
 }
-//================================================
-//================================================
+/*
+    //================================================
+    //================================================
+  */
+
 define('BNF' , basename(__FILE__));
 require_once('aa_include.php');
 session_start();
 if((isset($_POST)) && count($_POST) > 0){
    start_session_messages();
+   /* 
+            // =================================================
+            // si les données login et password sont renseignées
+           */
    if((isset($_POST["login"])) && isset($_POST["password"])){
       if(('admin' == $_POST["login"]) && $_POST["password"] == 'admin'){
-         
-         // =============================
-         // ... soit login et password sont bons
-         // et on met les données en session
-         
+/*
+                      // =============================
+                      // ... soit login et password sont bons
+                      // et on met les données en session
+                    */
+
          $_SESSION[APP_KEY]["user"]=1;
          $_SESSION[APP_KEY]["userInit"]=1;
          $_SESSION[APP_KEY]["group"]=1;
@@ -26,11 +37,12 @@ if((isset($_POST)) && count($_POST) > 0){
          $_SESSION[APP_KEY]["job"]=1;
          $_SESSION[APP_KEY]["jobInit"]=1;
       }else{
-         
-         // =============================
-         // ... soit login et password sont KO
-         // et on retire les données de la session
-         
+/*
+                      // =============================
+                      // ... soit login et password sont KO
+                      // et on retire les données de la session
+                    */
+
          unset($_SESSION[APP_KEY]["user"]);
          unset($_SESSION[APP_KEY]["userInit"]);
          unset($_SESSION[APP_KEY]["group"]);
@@ -49,10 +61,11 @@ if((isset($_POST)) && count($_POST) > 0){
    }
    rechargerPageCourante();
 }
-
-//=============================================================
-// si on appel cette page en GET avec une (a)action=logout,
-// on sort et on redirige sur cette page
+/*
+    //=============================================================
+    // si on appel cette page en GET avec une (a)action=logout,
+    // on sort et on redirige sur cette page
+  */
 
 if((isset($_GET)) && count($_GET) > 0){
    if((isset($_GET["a"])) && $_GET["a"] == 'logout'){
@@ -65,43 +78,75 @@ if((isset($_GET)) && count($_GET) > 0){
       rechargerPageCourante();
    }
 }
+/*
+    // ======================================================== 
+    // affichage de l'html 
+    // ========================================================
+  */
 
-// ======================================================== 
-// affichage de l'html 
-// ========================================================
-
-$o1='';
+$o1=' ';
 $a=array( 'title' => 'login', 'description' => 'login');
+/*
+    /*
+    //ou bien 
+    affecte($a , []),
+    appelf(n(pushkv) , p($a) , p('title') , p('login')),
+    appelf(n(pushkv) , p($a) , p('description') , p('login')),
+    */
+  */
+
 $o1=html_header1($a);
 $o1=concat($o1,session_messages());
+/*
+    // ========================================================
+    // on imprime le l'entête ...
+  */
 
-// ========================================================
-// on imprime le l'entête ...
 print($o1);
-$o1='';
-// ======================================================== 
-// l'utilisateur est-il déjà connecté ? ...
+/*      
+    //,  ...   puis,       on,
+    le,
+    reinitialise,
+  */
+
+$o1=' ';
+/*
+    // ======================================================== 
+    // l'utilisateur est-il déjà connecté ? ...
+  */
+
 if((isset($_SESSION[APP_KEY]["user"])) && 1 == $_SESSION[APP_KEY]["user"]){
-   
-   // ======================================================== 
-   // ... si oui on lui affiche un formulaire de deconnexion
-   
+/*
+          // ======================================================== 
+          // ... si oui on lui affiche un formulaire de deconnexion
+        */
+
    $o1=<<<EOT
-<form id="loginbox" method="post"><span>logout</span>
+
+<form id="loginbox" method="post">
+  <span>
+    logout
+  </span>
   <input type="hidden" name="logout" id="logout" value=""></input>
   <input type="submit" value="envoyer"></input>
 </form>
 EOT;
 }else{
-   
-   // ======================================================== 
-   // ... sinon on lui affiche un formulaire de connexion
-   
+/*
+          // ======================================================== 
+          // ... sinon on lui affiche un formulaire de connexion
+        */
+
    $o1=<<<EOT
+
 <form id="loginbox" method="post" onsubmit="return checkSubmit()">
-  <label for="login">login</label>
+  <label for="login">
+    login
+  </label>
   <input type="text" name="login" id="login" value=""></input>
-  <label for="password">password</label>
+  <label for="password">
+    password
+  </label>
   <input type="password" name="password" id="password" value=""></input>
   <input type="submit" value="envoyer"></input>
 </form>
@@ -109,10 +154,10 @@ EOT;
 // = = = = <source javascript = = = =
 "use strict";
 
-
-// ===========================================
-// dans ce javascript, on définit une fonction
-
+/* 
+      // ===========================================
+      // dans ce javascript, on définit une fonction
+     */
 function checkSubmit(){
   clearMessages();
   var valRet=false;
@@ -129,7 +174,7 @@ function checkSubmit(){
        valRet=true;
     }
   }catch(e){
-     global_messages.errors.push('Il y a eu un problème :-(');
+     global_messages.errors.push('Il y a eu un problème ');
      displayMessages();
   }
   return valRet;
@@ -139,10 +184,17 @@ function checkSubmit(){
 </script>
 EOT;
 }
-// ========================
-// on imprime le formulaire
+/*
+    // ========================
+    // on imprime le formulaire
+  */
+
 $o1=concat($o1,html_footer1());
 print($o1);
-$o1='';
+/*//  ..., puis on le reinitialise */
+
+$o1=' ';
 clear_session_messages();
+/*fin du php*/
+
 ?>

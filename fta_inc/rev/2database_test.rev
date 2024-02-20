@@ -1,0 +1,44 @@
+src_php(
+  (file_name , 2database_test),
+  (file_extension , php),
+  (file_path , .),
+  source(
+    php(
+      affecte(
+        $src_create_database,
+        sql(
+          transaction(
+            create_table(
+              n(tbl_user),
+              fields(
+                field(
+                  n(fld_id_user),
+                  type(BIGINT),
+                  unsigned(),
+                  notnull()
+                )
+              )
+            )
+          )
+        ),
+        choix(
+          si(
+            condition(
+              non((egal(vrai , vrai)) , et(egal(vrai , vrai)))
+            ),
+            alors(affecte(a , 1))
+          ),
+          sinonsi(condition((true)) , alors(affecte(a , 1))),
+          sinon(
+            alors(affecte(a , 1)),
+            #(finsinon)
+          )
+        ),
+        #(finchoix suite du source),
+        affecte(apresChoix , 1)
+      ),
+      html(div((id , toto) , hello))
+    ),
+    php(affecte($a , 1))
+  )
+)

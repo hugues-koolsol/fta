@@ -9,6 +9,7 @@ var global_messages={
  'warnings'   : [] ,
  'infos'      : [] ,
  'lines'      : [] ,
+ 'tabs'       : [] ,
  'calls'      : ''
 };
 
@@ -27,6 +28,7 @@ function clearMessages(){
   'warnings':[],
   'infos':[],
   'lines':[],
+  'tabs':[],
   'calls':''
  }
 }
@@ -51,6 +53,9 @@ function logerreur(o){
    }
   }
  }
+ if(o.hasOwnProperty('tabs')){
+  global_messages.tabs.push(o.tabs)
+ }
  if(o.line){
   global_messages.lines.push(o.line);
  }
@@ -66,7 +71,7 @@ function displayMessages(){
   document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+global_messages.warnings[i]+'</div>';
  }
  for(var i=0;i<global_messages.lines.length;i++){
-  document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+')" class="yyerror">go to line '+global_messages.lines[i]+'</a>&nbsp;';
+  document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+')" class="yyerror" style="border:2px red outset;">go to line '+global_messages.lines[i]+'</a>&nbsp;';
  }
 }
 //=====================================================================================================================
@@ -185,6 +190,7 @@ function sousTableau(tab,id){
   var retSource={};
 //  var premierIndice=id;
  // console.log('%c\n// sousTableau id='+id + ' ' + JSON.stringify(tab[id]),'color:plum');
+  console.log('dans sous tableau "'+tab[id][1]+'"');
   
   nouveauTab.push(tab[0]);
   nouveauTab[0][8]='';
@@ -202,19 +208,20 @@ function sousTableau(tab,id){
     }
   }
   retSource=arrayToFunctWidthComment(nouveauTab);
+//  console.log('retSource=',retSource);
   if(retSource.status===true){
     var arr2=functionToArray(retSource.value,true);
     if(arr2.status===true){
       return {status:true,value:arr2.value};
     }else{
       console.error(arr2);
-      return logerreur({status:false,value:nouveauTab,message:'impossible d\'extraire le sous-tableau'});
+      return logerreur({status:false,value:nouveauTab,message:'impossible d\'extraire le sous-tableau tab[id][1]="'+tab[id][1]+'"',tabs:nouveauTab});
     }
   }else{
     console.error(retSource);
   }
 
-  return logerreur({status:false,value:nouveauTab,message:'impossible d\'extraire le sous-tableau'});
+  return logerreur({status:false,value:nouveauTab,message:'impossible d\'extraire le sous-tableau tab[id][1]="'+tab[id][1]+'"',tabs:nouveauTab});
 }
 
 //=====================================================================================================================
@@ -446,8 +453,24 @@ function convertSource(source,objArr){
   }
   
  }
-
+ var t='';
  if(file_name!='' && file_path!='' && idJs>0){
+  
+  if(type_source=='src_php'  && (file_extension=='php')){
+   for(var i=idJs+1;i<objArr.value.length;i++){
+    if(objArr.value[i][7]==idJs && objArr.value[i][1]=='php'){
+     retProgrammeSource=parsePhp0(objArr.value,i,objArr.value[idJs][10]);
+     if(retProgrammeSource.status==true){
+      t+='<?php\n'+retProgrammeSource.value+'\n?>';
+      console.log('t=',t);
+     }else{
+      return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+     }
+    }
+   }
+   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+  }
+
   obj=sousTableau(objArr.value,idJs);
   if(obj.status==true){
   }else{
@@ -465,7 +488,7 @@ function convertSource(source,objArr){
     }else if(type_source=='src_html'  && (file_extension=='html')){
      retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
     }else if(type_source=='src_php'  && (file_extension=='php')){
-     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
+//     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
     }else{
      return logerreur({status:false,id:0,message:'file core , fonction convertSource : type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
     }
@@ -779,11 +802,13 @@ function iterateCharacters(str){
   let position=0;
   let position2=0;
   let arr = [...str];
+  var numLigne=0;
   var l01=arr.length;
   for(let i=0;i<l01;i++){
     let bytes = te.encode(arr[i]).length;
     let length = arr[i].length;
-    out.push([arr[i],bytes,position,position2]);
+    out.push([arr[i],bytes,position,position2,numLigne]);
+    if(arr[i]=='\n'){numLigne++};
     position+=bytes;
     position2+=(bytes==4?2:1);
   }
@@ -918,10 +943,6 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      
      if(c1==','||c1=='\t'||c1==' '||c1=='\n'||c1=='\r'||c1=='/'||c1==')'){
       dernier=i-1;
-      if(c1!=')'){
-//       i++;
-      }
-     // c'est bon
      }else{
       return logerreur({status:false,value:T,message:'apres une constante, il doit y avoir un caractère d\'echappement en i='+i});
      }
@@ -1079,7 +1100,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      indice++;
      if(niveau==0){
       numeroLigne=calculNumLigne2(tableauEntree,premier);
-      return logerreur({status:false,value:T,message:'3 la racine ne peut pas contenir des constantes en i='+i});
+      return logerreur({status:false,value:T,message:'3 la racine ne peut pas contenir des constantes en i='+i+', numeroLigne='+numeroLigne,tabs:T});
      }
      T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
     }else{

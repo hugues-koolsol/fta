@@ -52,7 +52,7 @@ var global_enteteTableau=[
 
 */
 //=====================================================================================================================
-function tabToHtml1(tab,id,offsetLigne){
+function tabToHtml1(tab,id,offsetLigne,noHead){
  // recherche du premier tag "html"
  var startId=id;
  for(var i=id;i<tab.length;i++){
@@ -62,11 +62,11 @@ function tabToHtml1(tab,id,offsetLigne){
    }
  }
  
- var ob=tabToHtml0(tab,startId,false,false,false,offsetLigne);
+ var ob=tabToHtml0(tab,startId,false,false,false,offsetLigne,noHead);
  return ob;
 }
 //=====================================================================================================================
-function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
+function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHead ){
  var t='';
  var i=0;
  var j=0;
@@ -115,7 +115,10 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
   if(tab[id][1]=='#'){
    temp+='<!-- '+tab[id][13];
   }else{
-   temp+='<'+tab[id][1];
+   if(noHead && tab[id][1]=='html'){
+   }else{
+    temp+='<'+tab[id][1];
+   }
   }
   doctype='';
   for(i=id+1;i<tab.length;i++){
@@ -129,6 +132,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
        }
       }else if(tab[i][8]==1 && tab[i+1][2]=='c' ){
        if(tab[i+1][1]=='doctype'){
+        
         doctype='<!DOCTYPE html>';
        }else{
         temp+=' '+tab[i+1][1]+''; // contenteditable , selected
@@ -166,13 +170,16 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
   }
   if(contientEnfantsNonVides||contientConstantes){
    if(id>0){
-    t+='>';
+    if(noHead && tab[id][1]=='html'){
+    }else{
+     t+='>';
+    }
    }
    for(i=id+1;i<tab.length;i++){
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
      
-      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,offsetLigne); // appel récursif
+      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,offsetLigne,noHead); // appel récursif
       
       if(ob.status===true){
        t+=ob.value;
@@ -198,8 +205,12 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ){
    }
 */   
    if(id>0){
-    t+=espaces2(tab[id][3]);
-    t+='</'+tab[id][1]+'>';
+    if(noHead && tab[id][1]=='html'){
+     t+='\n';
+    }else{
+     t+=espaces2(tab[id][3]);
+     t+='</'+tab[id][1]+'>';
+    }
    }
    if('script'==tab[id][1]){
     dansJs=false;

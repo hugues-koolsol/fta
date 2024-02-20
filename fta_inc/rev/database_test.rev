@@ -20,9 +20,9 @@ src_php(
             #(
               // ==========================================================            
               // SET time_zone = "+00:00";
-              // CREATE DATABASE IF NOT EXISTS `fta` DEFAULT CHARACTER SET utf8 
+              // CREATE DATABASE IF NOT EXISTS `ftatest` DEFAULT CHARACTER SET utf8 
               //       COLLATE utf8_general_ci;
-              // USE fta;
+              // USE ftatest;
             ),
             set(time_zone , '+00:00'),
             create_database(
@@ -31,7 +31,7 @@ src_php(
               charset(utf8mb4),
               collate(utf8mb4_general_ci)
             ),
-            use(fta),
+            use(ftatest),
             #(
               //==================================
               //DROP TABLE IF EXISTS `tbl_user`;
@@ -73,7 +73,7 @@ src_php(
             ),
             #(            
               // ===================================================================
-            // ALTER TABLE `fta`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);),
+            // ALTER TABLE `ftatest`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);),
             add_primary_key(n(tbl_user) , fields(fld_id_user)),
             #(            
               // ===================================================================
@@ -95,7 +95,7 @@ src_php(
             ),
             #(            
               // ===================================================================
-              // ALTER TABLE `fta`.`tbl_user` ADD UNIQUE `idx_name` (`fld_name_user`);
+              // ALTER TABLE `ftatest`.`tbl_user` ADD UNIQUE `idx_name` (`fld_name_user`);
             ),
             add_index(
               n(tbl_user),
@@ -154,9 +154,11 @@ src_php(
         )
       ),
       #(
-        // ============================================
-        // réouverture de la connexion 
+        ============================================
+        Réouverture de la connexion 
+        il faut attendre 100 ms car mysql n'arrive pas à terminer la transaction asynchrone
       ),
+      appelf(n(usleep) , p(100000)),
       appelf(
         r($link),
         n(mysqli_connect),
@@ -179,7 +181,7 @@ src_php(
         $insertSql,
         sql(
           insert_into(
-            n(fta.tbl_user),
+            n(ftatest.tbl_user),
             fields(fld_id_user , fld_name_user , fld_password_user),
             values(
               (1 , 'admin' , 'admin'),
@@ -215,7 +217,7 @@ src_php(
       affecte(
         $selectSql,
         sqlref(
-          1,
+          num(1),
           p($username),
           p($userpass),
           p('toto'),
@@ -265,7 +267,7 @@ src_php(
       affecte(
         $selectSql,
         sqlref(
-          1,
+          num(1),
           p($username),
           p($userpass),
           p('toto'),
