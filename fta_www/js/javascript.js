@@ -50,17 +50,13 @@ function parseJavascript0(tab,id,offsetLigne){
  var i=0;
  var t='';
  var obj={};
- obj=sousTableau(tab,id);
- if(obj.status==true){
-//  console.log('%c'+JSON.stringify(obj.value)+'\n','color:green');
-  var retJS=js_tabTojavascript1(obj.value,1,false,false,offsetLigne);
-  if(retJS.status===true){
-   t+=retJS.value;
+ var retJS=js_tabTojavascript1(tab,id,false,false,offsetLigne);
+ if(retJS.status===true){
+  t+=retJS.value;
 //   console.log('%c'+retJS.value,'color:blue');
-  }else{
-   console.error(retJS);
-   return {status:false,value:t};
-  }
+ }else{
+  console.error(retJS);
+  return {status:false,value:t};
  }
  return {status:true,value:t};
 }
@@ -261,71 +257,45 @@ function js_condition0(tab,id,offsetLigne){
  var obj={};
  
  for(i=id+1;i<tab.length && tab[i][3]>tab[id][3];i++){
-  if(tab[i][1]=='condition'){ // i18
-   obj=sousTableau(tab,i);
-   if(obj.status===true){
-    newTab=obj.value;
-//    console.log('newTab=',newTab);
-    break; // ne pas prendre les conditions plus loin dans la hierarchie
-   }else{
-    return logerreur({status:false,value:t,id:i,message:'erreur dans une condition'});
-   }   
-  }else if(tab[i][1]=='alors'){ // i18
-  }
- }
- if(newTab.length>0){
-  for(i=1;i<newTab.length;i++){
-   if(newTab[i][3]==0){
-    if(newTab[i][1]=='' || newTab[i][1]=='non'){
-     if(premiereCondition){
-//      t+=espaces(tab[id][3])+'// todo 1 "'+ newTab[i][1] + '", level='+ newTab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
-      obj=js_condition1(newTab,i,offsetLigne);
-      if(obj.status==false){
-       return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
-      }
-      t+=obj.value;
-      premiereCondition=false;
-     }else{
-      return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
+  if(tab[i][7]==tab[id][0]){
+   if(tab[i][1]=='' || tab[i][1]=='non'){
+    if(premiereCondition){
+     obj=js_condition1(tab,i,offsetLigne);
+     if(obj.status==false){
+      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
      }
-    }else if(newTab[i][1]=='et' || newTab[i][1]=='ou' ){ // i18
-     if(premiereCondition){
-      return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
-     }else{
-//      t+=espaces(tab[id][3])+'// todo 2 "'+ newTab[i][1] + '", level='+ newTab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
-      obj=js_condition1(newTab,i,offsetLigne);
-      if(obj.status==false){
-       return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
-      }
-      t+=obj.value;
-
-     }        
-    }else if(newTab[i][1]=='egal' || newTab[i][1]=='diff'  || newTab[i][1]=='sup'  || newTab[i][1]=='inf' || newTab[i][1]=='supeg'  || newTab[i][1]=='infeg' ){ // i18
-     if(!premiereCondition){
-      return {status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est soit "()", soit [egal|sup|inf|diff]'};
-     }else{
-//      t+=espaces(tab[id][3])+'// todo 2 "'+ newTab[i][1] + '", level='+ newTab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
-      obj=js_condition1(newTab,i,offsetLigne);
-      if(obj.status==false){
-       return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
-      }
-      t+=obj.value;
-     }        
+     t+=obj.value;
+     premiereCondition=false;
     }else{
-     return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou()'});
+     return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
     }
+   }else if(tab[i][1]=='et' || tab[i][1]=='ou' ){ // i18
+    if(premiereCondition){
+     return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
+    }else{
+     obj=js_condition1(tab,i,offsetLigne);
+     if(obj.status==false){
+      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
+     }
+     t+=obj.value;
+
+    }        
+   }else if(tab[i][1]=='egal' || tab[i][1]=='diff'  || tab[i][1]=='sup'  || tab[i][1]=='inf' || tab[i][1]=='supeg'  || tab[i][1]=='infeg' ){ // i18
+    if(!premiereCondition){
+     return {status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est soit "()", soit [egal|sup|inf|diff]'};
+    }else{
+     obj=js_condition1(tab,i,offsetLigne);
+     if(obj.status==false){
+      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
+     }
+     t+=obj.value;
+    }        
+   }else if(tab[i][1]=='#' ){ // i18
+   }else{
+    return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou()'});
    }
-//   console.log('\n=====js_condition0 inter==============\nt=',t,'\n===================\n');
   }
- }else{
-  t+='false'; 
  }
-// console.log('\n=======js_condition0 final============\nt=',t,'\n===================\n');
- 
- 
- 
- // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
- // (typeof(b),egal('undefined')),et(d,egal(true))
  
  return {status:true,value:t};
 }
@@ -533,7 +503,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      
     }else if(tabchoix[j][1]=='condition'){ // i18
      
-     obj=js_condition0(tab,i,offsetLigne);
+     obj=js_condition0(tab,tabchoix[j][0],offsetLigne);
      if(obj.status===true){
       condition+=obj.value;
      }else{
@@ -732,13 +702,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
 
    for(j=0;j<tabchoix.length;j++){
     
-    // hugues commentaire avant le si
-    if(tab[tabchoix[j][0]][21]=='multi sans bloc' && tab[tabchoix[j][0]][18].length>0){
-     for(var indComm=0;indComm<tab[tabchoix[j][0]][18].length;indComm++){
-      t+=espaces(tab[tabchoix[j][0]][3]-1);
-      t+=tab[tabchoix[j][0]][18][indComm];
-     }
-    }
 
     if(tabchoix[j][1]=='si'){
      
@@ -749,20 +712,21 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      
      if(tab[tabchoix[j][0]+1][1]=='condition'){
       
-      // hugues commentaire avant le condition
       var indCommTemp=tabchoix[j][0]+1;
-      if(tab[indCommTemp][21]=='multi sans bloc' && tab[indCommTemp][18].length>0){
-       for(var indComm=0;indComm<tab[indCommTemp][18].length;indComm++){
-        t+=espaces(tab[indCommTemp][3]-2);
-        t+=tab[indCommTemp][18][indComm];
-       }
-       t+=espaces(tab[indCommTemp][3]-2);
-      }
      }
      
      t+='if(';
+
+     var debutCondition=0;
+     for(var k=i+1;k<tab.length && tab[k][3]>tab[i][3];k++){
+      if(tab[k][1]=='condition'){
+       debutCondition=k;
+       break;
+      }
+     }
+
      
-     obj=js_condition0(tab,tabchoix[j][0],offsetLigne);
+     obj=js_condition0(tab,debutCondition,offsetLigne);
      if(obj.status===true){
       t+=obj.value;
      }else{

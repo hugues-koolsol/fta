@@ -462,15 +462,37 @@ function convertSource(source,objArr){
      retProgrammeSource=parsePhp0(objArr.value,i,objArr.value[idJs][10]);
      if(retProgrammeSource.status==true){
       t+='<?php\n'+retProgrammeSource.value+'\n?>';
-      console.log('t=',t);
+     }else{
+      return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+     }
+    }else if(objArr.value[i][7]==idJs && objArr.value[i][1]=='html'){
+     retProgrammeSource=tabToHtml1(objArr.value,i,objArr.value[idJs][10],true);
+     if(retProgrammeSource.status==true){
+      t+='\n'+retProgrammeSource.value+'\n';
      }else{
       return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
      }
     }
    }
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+  }else if(type_source=='src_javascript'  && (file_extension=='js')){
+   retProgrammeSource=parseJavascript0(objArr.value,idJs+1,objArr.value[idJs][10]);
+   if(retProgrammeSource.status==true){
+    t+=retProgrammeSource.value;
+   }else{
+    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+   }
+  }else if(type_source=='src_html'  && (file_extension=='html')){
+   retProgrammeSource=tabToHtml1(objArr.value,idJs+1,objArr.value[idJs][10]);
+   if(retProgrammeSource.status==true){
+    t+=retProgrammeSource.value;
+   }else{
+    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+   }
   }
-
+//console.log('t=',t);
+  return logerreur({status:true,value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+/*
   obj=sousTableau(objArr.value,idJs);
   if(obj.status==true){
   }else{
@@ -484,9 +506,9 @@ function convertSource(source,objArr){
    var arr2=functionToArray(retSource.value,true);
    if(arr2.status===true){
     if(type_source=='src_javascript' && (file_extension=='js') ){
-     retProgrammeSource=parseJavascript0(arr2.value,0,objArr.value[idJs][10]);
+//     retProgrammeSource=parseJavascript0(arr2.value,0,objArr.value[idJs][10]);
     }else if(type_source=='src_html'  && (file_extension=='html')){
-     retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
+//     retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
     }else if(type_source=='src_php'  && (file_extension=='php')){
 //     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
     }else{
@@ -504,6 +526,7 @@ function convertSource(source,objArr){
   }else{
    return logerreur({status:false,id:0,message:'erreur de reconstitution'});
   }
+*/  
  }else{
   return logerreur({status:false,id:0,message:'file_name, file_path and source must be filled'});
  }

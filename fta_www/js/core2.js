@@ -1233,7 +1233,7 @@ function traiteLignesCommentaireAvant(s,indiceTableau,niveau,premiereFonction){
  }
  // on enlève le dernier
  if(a.length>=2){
-  if(a[a.length-1].length>=2 && a.substr(0,2)=='*/'){
+  if(a[a.length-1].length>=2 && a[a.length-1].substr(0,2)=='*/'){
   }else{
    a.pop();
   }
@@ -1262,12 +1262,15 @@ function traiteLignesCommentaireAvant(s,indiceTableau,niveau,premiereFonction){
  return {'text':t,'plusieursLignes':plusieursLignes,'desSlash':desSlash}
 }
 //=====================================================================================================================
-function a2FWC(arr,parentId,retourLigne){
+function a2FWC(arr,parentId,retourLigne,forcerRetour){
  var t='';
+ var profondeurLimite=4;
+ var nombreEnfantsLimite=3;
+ var testFonction=2;
  for(var i=1;i<arr.length;i++){
   if(arr[i][10]==parentId){ // parent id
    if(arr[i][12]>1){ // numéro enfant
-    if( arr[parentId][2]=='f' && arr[parentId][11]<=2 && arr[parentId][13]<=1 ){ // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
+    if( arr[parentId][2]=='f' && arr[parentId][11]<=nombreEnfantsLimite && arr[parentId][13]<=profondeurLimite && !(forcerRetour>=0 && forcerRetour==arr[i][3]) ){ // si le parent est une fonction et que son nombre d'enfants est <=2 et que sa profondeur est <= 1
      t+=' , ';
     }else{
      t+=',';
@@ -1275,17 +1278,17 @@ function a2FWC(arr,parentId,retourLigne){
    }
    
    var commentaire=traiteLignesCommentaireAvant(arr[i][7],i,arr[i][3],(i==1?true:false));
-   if(false && i==3){
+   if(false && i==testFonction){
     console.log('commentaire=',commentaire);
    }
    if( !(commentaire.desSlash || commentaire.plusieursLignes )
     &&(
            (arr[parentId][2]=='INIT' && arr[i][12]==1 ) // première fonction à la racine
-        || (arr[parentId][2]=='f' && arr[parentId][11]<=2 && arr[parentId][13]<=1 ) // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
+        || (arr[parentId][2]=='f' && arr[parentId][11]<=nombreEnfantsLimite && arr[parentId][13]<=profondeurLimite && !(forcerRetour>=0 && forcerRetour==arr[i][3]) ) // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
     )
    ){ 
    }else{
-    if(commentaire.desSlash || commentaire.plusieursLignes){
+    if(commentaire.desSlash || commentaire.plusieursLignes  ){
      if(i!=1){
       t+='\n';
      }
@@ -1300,7 +1303,7 @@ function a2FWC(arr,parentId,retourLigne){
      t+=arr[i][1];
     }
     var commentaire=traiteLignesCommentaireAvant(arr[i][8],i,arr[i][3],(i==1?true:false));
-    if(false && i==4){
+    if(false && i==testFonction){
      console.log('commentaire=',commentaire);
     }
     if(commentaire.desSlash || commentaire.plusieursLignes ){
@@ -1308,11 +1311,29 @@ function a2FWC(arr,parentId,retourLigne){
     }
     
    }else if(arr[i][2]=='f'){
-    var obj=a2FWC(arr,i,retourLigne);
+    var obj=a2FWC(arr,i,retourLigne,arr[i][3]);
+    
     if(obj.status===true){
+     
+     var issetForcerRetour=false;
+     // si c'est une fonction et que son nombre d'enfants est <=2 et que sa profondeur est <= 1 mais elle contient des commentaires
+     // il faut la reconstruire en forcant les retour lignes
+     if( arr[i][2]=='f' && arr[i][11]<=nombreEnfantsLimite && arr[i][13]<=profondeurLimite){
+      if( ( obj.value.indexOf('//')>=0 || obj.value.indexOf('/*')>=0) && !(forcerRetour>=0 && forcerRetour==arr[i][3]) ){
+//       console.error('todo forcerretour pour le niveau arr[i]')
+       issetForcerRetour=true;
+       forcerRetour=arr[i][3]+1;
+       obj=a2FWC(arr,i,retourLigne,forcerRetour);
+      }else{
+       commentaire.desSlash=false;
+       commentaire.plusieursLignes=false;
+      }
+     }
+     
+     
      t+=arr[i][1]+'(';
      t+=obj.value;
-     if(false && i==2){
+     if(false && i==testFonction){
       console.log('t='+t);
      }
 
@@ -1322,7 +1343,7 @@ function a2FWC(arr,parentId,retourLigne){
       }else{
        if(
            !(commentaire.desSlash || commentaire.plusieursLignes)
-        && ( arr[i][2]=='f' && arr[i][11]<=2 && arr[i][13]<=1  )
+        && ( arr[i][2]=='f' && arr[i][11]<=nombreEnfantsLimite && arr[i][13]<=profondeurLimite && (forcerRetour>=0 && forcerRetour==arr[i][3]) )
        ){
        }else{
         t+=espaces2(arr[i][3]); // niveau
@@ -1332,13 +1353,17 @@ function a2FWC(arr,parentId,retourLigne){
      
      // commentaire dans la fonction
      var commentaire=traiteLignesCommentaireAvant(arr[i][9],i,arr[i][3]+1,(i==1?true:false));
-     if(false && i==3){
+     if(false && i==testFonction){
       console.log('commentaire=',commentaire);
      }
      if(commentaire.desSlash || commentaire.plusieursLignes ){
       t+='\n'+commentaire.text+espaces2(arr[i][3]);
      }
-
+/*     
+     if(obj.forcerRetour>=0 && issetForcerRetour==true){
+      t+=espaces2(arr[i][3]-1);
+     }
+*/     
      t+=')';
      // commentaire après la fonction et 
      var commentaire=traiteLignesCommentaireAvant(arr[i][8],i,arr[i][3],(i==1?true:false));
@@ -1358,21 +1383,17 @@ function a2FWC(arr,parentId,retourLigne){
    }else{
     return logerreur({status:false,message:'type non prévu dans a2FR pour i='+i});
    }
-   
   }
  }
-// console.log('t=\''+t+'\'');
- return {status:true,value:t};
+ console.log('avec commentaires t=\''+t+'\'');
+ return {status:true,value:t,forcerRetour:forcerRetour};
  
 }
 
 //=====================================================================================================================
 function arrayToFunctWithComment2(arr,retourLigne){
- var objStr={
-  'str':''
- };
  var t='';
- var obj=a2FWC(arr,0,objStr,retourLigne);
+ var obj=a2FWC(arr,0,retourLigne,-1);
  if(obj.status===true){
 //  console.log('obj.value='+obj.value);
  }
@@ -1380,12 +1401,14 @@ function arrayToFunctWithComment2(arr,retourLigne){
 }
 
 //=====================================================================================================================
-function a2FR(arr,parentId,retourLigne){
+function a2FRNoComment(arr,parentId,retourLigne){
  var t='';
+ var profondeurLimite=3;
+ var nombreEnfantsLimite=3;
  for(var i=1;i<arr.length;i++){
   if(arr[i][10]==parentId){ // parent id
    if(arr[i][12]>1){ // numéro enfant
-    if( retourLigne==true && arr[parentId][2]=='f' && arr[parentId][11]<=2 && arr[parentId][13]<=1 ){ // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
+    if( retourLigne==true && arr[parentId][2]=='f' && arr[parentId][11]<=nombreEnfantsLimite && arr[parentId][13]<=profondeurLimite ){ // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
      t+=' , ';
     }else{
      t+=',';
@@ -1394,7 +1417,7 @@ function a2FR(arr,parentId,retourLigne){
    if(retourLigne){
     if( 
         (arr[parentId][2]=='INIT' && arr[i][12]==1 ) // première fonction à la racine
-     || (arr[parentId][2]=='f' && arr[parentId][11]<=2 && arr[parentId][13]<=1 ) // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
+     || (arr[parentId][2]=='f' && arr[parentId][11]<=nombreEnfantsLimite && arr[parentId][13]<=profondeurLimite ) // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
     ){ 
     }else{
      t+=espaces2(arr[i][3]); // niveau
@@ -1407,21 +1430,15 @@ function a2FR(arr,parentId,retourLigne){
      t+=arr[i][1];
     }
    }else if(arr[i][2]=='f'){
-    var obj=a2FR(arr,i,retourLigne);
+    var obj=a2FRNoComment(arr,i,retourLigne);
     if(obj.status===true){
      t+=arr[i][1]+'(';
      t+=obj.value;
      
      if(retourLigne){
-      if(arr[i][13]==0){ // profondeur
+      if(arr[i][11]<=nombreEnfantsLimite && arr[i][13]<=profondeurLimite){
       }else{
-       if(arr[i][11]==1 && arr[i+1][2]=='c'){ // son nombre d'enfants est 1 et que son enfant est une constante
-       }else{
-        if(arr[i][2]=='f' && arr[i][11]<=2 && arr[i][13]<=1){
-        }else{
-         t+=espaces2(arr[i][3]); // niveau
-        }
-       }
+       t+=espaces2(arr[i][3]); // niveau
       }
      }
      t+=')';
@@ -1435,14 +1452,16 @@ function a2FR(arr,parentId,retourLigne){
    
   }
  }
-// console.log('t=\''+t+'\'');
+ if(retourLigne==true){
+  console.log('sans commentaires t=\''+t+'\'');
+ }
  return {status:true,value:t};
  
 }
 //=====================================================================================================================
 function arrayToFunctNoComment2(arr,retourLigne){
  var t='';
- var obj=a2FR(arr,0,retourLigne);
+ var obj=a2FRNoComment(arr,0,retourLigne);
  if(obj.status===true){
 //  console.log('obj.value='+obj.value);
  }

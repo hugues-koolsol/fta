@@ -279,7 +279,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
      
     }else if(tabchoix[j][1]=='condition'){ // i18
      
-     obj=php_condition0(tab,i);
+     obj=php_condition0(tab,tabchoix[j][0]);
      if(obj.status===true){
       condition+=obj.value;
      }else{
@@ -304,21 +304,15 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
      
     }else if(tabchoix[j][1]=='faire'){ // i18
      
-     obj=sousTableau(tab,tabchoix[j][0]);
-     if(obj.status===true){
-//      console.log('obj=',obj);
-      offsetColonne+=2;
-//      obj=php_tabToPhp1(obj.value,1,dansFonction,false,offsetLigne,offsetColonne);
-      obj=php_tabToPhp1(tab,j,dansFonction,false,offsetLigne,offsetColonne);
-      offsetColonne-=2;
-      if(obj.status==true){
-       faire+=obj.value;
-      }else{
-       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
-      }
+     offsetColonne+=2;
+     obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,false,offsetLigne,offsetColonne);
+     offsetColonne-=2;
+     if(obj.status==true){
+      faire+=obj.value;
      }else{
-       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
      }
+     
     }
     
     
@@ -516,10 +510,18 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
       }
      }
     }else if(tabchoix[j][1]=='si'){
+     
      t+=espaces(tab[i][3]);
      t+='if(';
      
-     obj=php_condition0(tab,tabchoix[j][0]);
+     var debutCondition=0;
+     for(var k=i+1;k<tab.length && tab[k][3]>tab[i][3];k++){
+      if(tab[k][1]=='condition'){
+       debutCondition=k;
+       break;
+      }
+     }
+     obj=php_condition0(tab,debutCondition);
      if(obj.status===true){
       t+=obj.value;
      }else{
@@ -553,7 +555,15 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
      
      t+=espaces(tab[i][3]);
      t+='}else if(';
-     obj=php_condition0(tab,tabchoix[j][0]);
+     
+     var debutCondition=0;
+     for(var k=i+1;k<tab.length && tab[k][3]>tab[i][3];k++){
+      if(tab[k][1]=='condition'){
+       debutCondition=k;
+       break;
+      }
+     }
+     obj=php_condition0(tab,debutCondition);
      if(obj.status===true){
       t+=obj.value;
      }else{
@@ -668,135 +678,122 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
    if(!dansInitialisation){
     t+=espaces(tab[i][3]);
    }
-   if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
-    // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
+   if(tab[i][8]==2){
+     if(tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
 
-    t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':(tab[i+2][1])))+'');
-    if(!dansInitialisation){
-     t+=';';
-    }
-   
-   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='appelf' ){
-    
-    obj=php_traiteAppelFonction(tab,i+2,true,offsetColonne);
-    if(obj.status==true){
-     t+=obj.value;
-     if(!dansInitialisation){
-      t+=';';
-     }
-    }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans appelf de affecte il faut un nom de fonction à appeler n(xxxx)'});
-    }
-
-
-   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='array' ){
-    
-    obj=php_traiteDefinitionTableau(tab,i+2,true);
-    if(obj.status==true){
-     t+=''+tab[i+1][1]+'='+obj.value+';';
-    }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans obj de affecte il y a un problème'});
-    }
-
-    
-   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='html' ){
-
-    obj=sousTableau(tab,i+2);
-    if(obj.status===true){
-     obj=tabToHtml1(obj.value,0,offsetLigne);
-     if(obj.status===true){
-      t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
-     }else{
-      return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
-     }
-//     console.log(obj);
+      t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':(tab[i+2][1])))+'');
+      if(!dansInitialisation){
+       t+=';';
+      }
      
-    }else{
-     return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
-    }
-    php_contexte_commentaire_html=false;
-
-    
-   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sql' ){
-
-    obj=sousTableau(tab,i+2);
-    if(obj.status===true){
-//     obj=tabToSql1(obj.value,0,offsetLigne);
-     obj=tabToSql1(tab,i+2,offsetLigne);
-     if(obj.status===true){
-      t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
-     }else{
-      return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
-     }
-//     console.log(obj);
-     
-    }else{
-     return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
-    }
-    
-    
-   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sqlref' ){
-    var numSql=0;
-    var strSql='';
-    var tabPar=[];
-    obj=sousTableau(tab,i+2);
-    if(obj.status===true){
-     for(j=1;j<obj.value.length;j++){
-      if(obj.value[j][1]=='num'){
-       var numSql=obj.value[j+1][1];
-       if(numSql=='1'){
-        strSql='SELECT fld_id_user ';
-        strSql+='FROM `fta`.`tbl_user` `T0` ';
-        strSql+='WHERE `T0`.`fld_name_user` LIKE \\\'%%PAR0%%\\\' ';
-        strSql+=' AND `T0`.`fld_password_user` LIKE \\\'%%PAR1%%\\\' ';
-        strSql+=' AND \\\'toto\\\' = %%PAR2%% ';
-        strSql+=' AND 0 = %%PAR3%% ';
-       }else{
-        strSql='SELECT 1 -- bidon ';
+     }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='appelf' ){
+      t+=''+tab[i+1][1]+'=';
+      obj=php_traiteAppelFonction(tab,i+2,true,offsetColonne);
+      if(obj.status==true){
+       t+=obj.value;
+       if(!dansInitialisation){
+        t+=';';
        }
       }else{
-       if(obj.value[j][7]==0){
-        if(obj.value[j][1]=='p'){
-         tabPar.push([obj.value[j+1][1], obj.value[j+1][4] , isNaN(obj.value[j+1][1]) ])
-        }else{
-         return logerreur({status:false,value:t,id:i,message:'erreur sur la fonction sqlref '});
-        }
-       }
+       return logerreur({status:false,value:t,id:id,tab:tab,message:'dans appelf de affecte il faut un nom de fonction à appeler n(xxxx)'});
       }
-     }
-    }else{
-     return logerreur({status:false,value:t,id:i,message:'erreur dans un sqlref dans un php'});
-    }
-    if(numSql>0){
-     if(tabPar.length>0){
-      var toReplace='';
-      for(j=0;j<tabPar.length;j++){
-       if(tabPar[j][2]==false){ // isNaN
-        toReplace=new RegExp('%%PAR'+j+'%%');
-        strSql=strSql.replace(toReplace,tabPar[j][0]);
+
+
+     }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='array' ){
+      
+      obj=php_traiteDefinitionTableau(tab,i+2,true);
+      if(obj.status==true){
+       t+=''+tab[i+1][1]+'='+obj.value+';';
+      }else{
+       return logerreur({status:false,value:t,id:id,tab:tab,message:'dans obj de affecte il y a un problème'});
+      }
+
+      
+     }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='html' ){
+
+       php_contexte_commentaire_html=false;
+       obj=tabToHtml1(tab,i+2,offsetLigne,true);
+       if(obj.status===true){
+        t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
        }else{
-        if(tabPar[j][1]==true){ // constante quotée
-         toReplace=new RegExp('%%PAR'+j+'%%');
-         strSql=strSql.replace(toReplace,'\\\''+tabPar[j][0]+'\\\'');
+        return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
+       }
+       php_contexte_commentaire_html=false;
+
+      
+     }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sql' ){
+
+       obj=tabToSql1(tab,i+2,offsetLigne);
+       if(obj.status===true){
+        t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
+       }else{
+        return logerreur({status:false,value:t,id:i,message:'erreur dans un html définit dans un php'});
+       }
+      
+      
+     }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sqlref' ){
+      var numSql=0;
+      var strSql='';
+      var tabPar=[];
+      
+      for(j=i+3;j<tab.length && tab[j][3]>tab[i+2][3];j++){
+       if(tab[j][1]=='num'){
+        var numSql=tab[j+1][1];
+        if(numSql=='1'){
+         strSql='SELECT fld_id_user ';
+         strSql+='FROM `fta`.`tbl_user` `T0` ';
+         strSql+='WHERE `T0`.`fld_name_user` LIKE \\\'%%PAR0%%\\\' ';
+         strSql+=' AND `T0`.`fld_password_user` LIKE \\\'%%PAR1%%\\\' ';
+         strSql+=' AND \\\'toto\\\' = %%PAR2%% ';
+         strSql+=' AND 0 = %%PAR3%% ';
         }else{
-         if(tabPar[j][0].substr(0,1)=='$'){ // variable php
-          toReplace=new RegExp('%%PAR'+j+'%%');
-          strSql=strSql.replace(toReplace,'\'.addslashes('+tabPar[j][0]+').\'');
+         strSql='SELECT 1 -- bidon ';
+        }
+       }else{
+        if(tab[j][7]==tab[i+2][0]){
+         if(tab[j][1]=='p'){
+          tabPar.push([tab[j+1][1], tab[j+1][4] , isNaN(tab[j+1][1]) ])
          }else{
-          return logerreur({status:false,value:t,id:i,message:'erreur dans un html sqlref dans un php'});
+          return logerreur({status:false,value:t,id:i,message:'erreur sur la fonction sqlref '});
          }
         }
        }
       }
-     }
-//     console.log(tabPar);
-     t+=tab[i+1][1]+'=\''+strSql+'\';';
-    }else{
-     return logerreur({status:false,value:t,id:i,message:'erreur dans un sqlref , le paramètre num doit exister'});
-    }
+
+      if(numSql>0){
+       if(tabPar.length>0){
+        var toReplace='';
+        for(j=0;j<tabPar.length;j++){
+         if(tabPar[j][2]==false){ // isNaN
+          toReplace=new RegExp('%%PAR'+j+'%%');
+          strSql=strSql.replace(toReplace,tabPar[j][0]);
+         }else{
+          if(tabPar[j][1]==true){ // constante quotée
+           toReplace=new RegExp('%%PAR'+j+'%%');
+           strSql=strSql.replace(toReplace,'\\\''+tabPar[j][0]+'\\\'');
+          }else{
+           if(tabPar[j][0].substr(0,1)=='$'){ // variable php
+            toReplace=new RegExp('%%PAR'+j+'%%');
+            strSql=strSql.replace(toReplace,'\'.addslashes('+tabPar[j][0]+').\'');
+           }else{
+            return logerreur({status:false,value:t,id:i,message:'erreur dans un html sqlref dans un php'});
+           }
+          }
+         }
+        }
+       }
+  //     console.log(tabPar);
+       t+=tab[i+1][1]+'=\''+strSql+'\';';
+      }else{
+       return logerreur({status:false,value:t,id:i,message:'erreur dans un sqlref , le paramètre num doit exister'});
+      }
+     }else{
+      return logerreur({status:false,value:t,id:i,message:'php.js cas non prévu dans affecte "'+tab[i+2][1]+'"'});
+     }    
    }else{
-    t+='//todo 665 php.js dans affecte 0 '+tab[i][1]+'';
+    return logerreur({status:false,value:t,id:i,message:'php.js affecte ne doit contenir que 2 arguments'});
    }
+
    reprise=i+1;
    max=i+1;
    for(j=max;j<tab.length && tab[j][3]>tab[i][3];j++){
@@ -841,21 +838,17 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
    
    
   }else if(tab[i][1]=='php'  && tab[i][2]=='f'){
+
+   debugger; // on ne devrait pas passer par là
    php_contexte_commentaire_html=false;
-   obj=sousTableau(tab,i);
+   obj=php_tabToPhp1(obj.value,i,false,false,offsetLigne,offsetColonne);
    if(obj.status==true){
-    php_contexte_commentaire_html=false;
-    obj=php_tabToPhp1(obj.value,1,false,false,offsetLigne,offsetColonne);
-    if(obj.status==true){
-     t+='<?'+'php'+obj.value+'\n?>';
-     php_contexte_commentaire_html=true;
-    }else{
-     return logerreur({status:false,value:t,id:i,message:'erreur dans un php en 621'});     
-    }
-    
+    t+='<?'+'php'+obj.value+'\n?>';
+    php_contexte_commentaire_html=true;
    }else{
-    return logerreur({status:false,value:t,id:i,message:'erreur dans un php en 860'});     
+    return logerreur({status:false,value:t,id:i,message:'erreur dans un php en 621'});     
    }
+    
    reprise=i+1;
    max=i+1;
    for(j=max;j<tab.length && tab[j][3]>tab[i][3];j++){
@@ -1271,71 +1264,74 @@ function php_condition0(tab,id){
  var obj={};
  
  for(i=id+1;i<tab.length && tab[i][3]>tab[id][3];i++){
-  if(tab[i][1]=='condition'){ // i18
-   obj=sousTableau(tab,i);
-   if(obj.status===true){
-    newTab=obj.value;
-//    console.log('newTab=',newTab);
-    break; // ne pas prendre les conditions plus loin dans la hierarchie
-   }else{
-    return logerreur({status:false,value:t,id:i,message:'erreur dans une condition'});
-   }   
-  }else if(tab[i][1]=='alors'){ // i18
-  }
- }
- if(newTab.length>0){
-  for(i=1;i<newTab.length;i++){
-   if(newTab[i][3]==0){
-    if(newTab[i][1]=='' || newTab[i][1]=='non'){
-     if(premiereCondition){
-//      t+=espaces(tab[id][3])+'// todo 1 "'+ newTab[i][1] + '", level='+ newTab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
-      obj=php_condition1(newTab,i);
-      if(obj.status==false){
-       return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
-      }
-      t+=obj.value;
-      premiereCondition=false;
-     }else{
-      return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
+  
+   if(tab[i][1]=='' || tab[i][1]=='non'){
+    
+    if(premiereCondition){
+//      t+=espaces(tab[id][3])+'// todo 1 "'+ tab[i][1] + '", level='+ tab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
+     obj=php_condition1(tab,i);
+     if(obj.status==false){
+      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
      }
-    }else if(newTab[i][1]=='et' || newTab[i][1]=='ou' ){ // i18
-     if(premiereCondition){
-      return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
-     }else{
-//      t+=espaces(tab[id][3])+'// todo 2 "'+ newTab[i][1] + '", level='+ newTab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
-      obj=php_condition1(newTab,i);
-      if(obj.status==false){
-       return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
-      }
-      t+=obj.value;
-
-     }        
-    }else if(newTab[i][1]=='egal' || newTab[i][1]=='diff' || newTab[i][1]=='diff_stricte'  || newTab[i][1]=='sup'  || newTab[i][1]=='inf' || newTab[i][1]=='supeq'  || newTab[i][1]=='infeg' ){ // i18
-     if(!premiereCondition){
-      return {status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est soit "()", soit [egal|sup|inf|diff]'};
-     }else{
-//      t+=espaces(tab[id][3])+'// todo 2 "'+ newTab[i][1] + '", level='+ newTab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
-      obj=php_condition1(newTab,i);
-      if(obj.status==false){
-       return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
-      }
-      t+=obj.value;
-     }        
+     t+=obj.value;
+     premiereCondition=false;
+     var reprise=i+1;
+     var max=i+1;
+     for(j=max;j<tab.length && tab[j][3]>tab[i][3];j++){
+      reprise=j;
+     }
+     i=reprise;
+     
     }else{
-     return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou()'});
+     return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
     }
+    
+   }else if(tab[i][1]=='et' || tab[i][1]=='ou' ){ // i18
+   
+    if(premiereCondition){
+     return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
+    }else{
+//      t+=espaces(tab[id][3])+'// todo 2 "'+ tab[i][1] + '", level='+ tab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
+     obj=php_condition1(tab,i);
+     if(obj.status==false){
+      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
+     }
+     t+=obj.value;
+     var reprise=i+1;
+     var max=i+1;
+     for(j=max;j<tab.length && tab[j][3]>tab[i][3];j++){
+      reprise=j;
+     }
+     i=reprise;
+
+    }        
+    
+   }else if(tab[i][1]=='egal' || tab[i][1]=='diff' || tab[i][1]=='diff_stricte'  || tab[i][1]=='sup'  || tab[i][1]=='inf' || tab[i][1]=='supeq'  || tab[i][1]=='infeg' ){ // i18
+   
+    if(!premiereCondition){
+     return {status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est soit "()", soit [egal|sup|inf|diff]'};
+    }else{
+//      t+=espaces(tab[id][3])+'// todo 2 "'+ tab[i][1] + '", level='+ tab[i][3] + ' in (typeof(b),egal(\'undefined\')),et(d,egal(true))' ;      
+     obj=php_condition1(tab,i);
+     if(obj.status==false){
+      return logerreur({status:false,value:t,id:id,message:'erreur dans une condition racine'});
+     }
+     t+=obj.value;
+     
+     var reprise=i+1;
+     var max=i+1;
+     for(j=max;j<tab.length && tab[j][3]>tab[i][3];j++){
+      reprise=j;
+     }
+     i=reprise;
+     
+     
+    }        
+   }else if(tab[i][1]=='#'){
+   }else{
+    return logerreur({status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou()'});
    }
-//   console.log('\n=====php_condition0 inter==============\nt=',t,'\n===================\n');
-  }
- }else{
-  t+='false'; 
  }
-// console.log('\n=======php_condition0 final============\nt=',t,'\n===================\n');
- 
- 
- 
- // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
- // (typeof(b),egal('undefined')),et(d,egal(true))
  
  return {status:true,value:t};
 }
