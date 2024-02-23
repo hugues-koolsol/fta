@@ -10,7 +10,11 @@ var global_messages={
  'infos'      : [] ,
  'lines'      : [] ,
  'tabs'       : [] ,
- 'calls'      : ''
+ 'calls'      : '',
+ 'data':{
+  'matrice':[],
+  'tableau':[],
+  }
 };
 
 var motscles_fr={
@@ -29,7 +33,12 @@ function clearMessages(){
   'infos':[],
   'lines':[],
   'tabs':[],
-  'calls':''
+  'ids':[],
+  'calls':'',
+  'data':{
+   'matrice':[],
+   'tableau':[],
+  }
  }
 }
 //=====================================================================================================================
@@ -38,7 +47,9 @@ function logerreur(o){
   if(o.status===false){
    if(o.hasOwnProperty('message')){
     global_messages.errors.push(o.message)
-   }else{
+   }
+   if(o.hasOwnProperty('id')){
+    global_messages.ids.push(o.id)
    }
   }else{
    if(o.hasOwnProperty('message')){
@@ -70,9 +81,34 @@ function displayMessages(){
  for(var i=0;i<global_messages.warnings.length;i++){
   document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+global_messages.warnings[i]+'</div>';
  }
+ for(var i=0;i<global_messages.infos.length;i++){
+  document.getElementById('global_messages').innerHTML+='<div class="yyinfo">'+global_messages.infos[i]+'</div>';
+ }
  for(var i=0;i<global_messages.lines.length;i++){
   document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+')" class="yyerror" style="border:2px red outset;">go to line '+global_messages.lines[i]+'</a>&nbsp;';
  }
+ var numLignePrecedente=-1;
+ for(var i=0;i<global_messages.ids.length;i++){
+  var id=global_messages.ids[i];
+  if(id<global_messages.data.matrice.value.length){
+   var ligneMatrice=global_messages.data.matrice.value[id];
+   var caractereDebut=ligneMatrice[5];
+   var numeroDeLigne=0;
+   for(var j=caractereDebut;j>=0;j--){
+    if(global_messages.data.tableau.out[j][0]=='\n'){
+     numeroDeLigne++;
+    }
+   }
+  }
+  if(numeroDeLigne>0){
+   if(numeroDeLigne!=numLignePrecedente){
+    document.getElementById('global_messages').innerHTML+='<a href="javascript:jumpToError('+(numeroDeLigne+1)+')" class="yyerror" style="border:2px red outset;">go to line '+numeroDeLigne+'</a>&nbsp;';
+    numLignePrecedente=numeroDeLigne;
+   }
+  }
+  
+ }
+ 
 }
 //=====================================================================================================================
 function echappConstante(t){
@@ -182,47 +218,6 @@ function voirTableau(tableau,nomTableParent){
  }
 }
 
-//=====================================================================================================================
-function sousTableau(tab,id){
-  var i=0,j=0;
-  var nouveauTab=[];
-  var sousTab=[];
-  var retSource={};
-//  var premierIndice=id;
- // console.log('%c\n// sousTableau id='+id + ' ' + JSON.stringify(tab[id]),'color:plum');
-  console.log('dans sous tableau "'+tab[id][1]+'"');
-  
-  nouveauTab.push(tab[0]);
-  nouveauTab[0][8]='';
-  
-  for(i=id+1;i<tab.length && tab[i][3]>tab[id][3];i++){
-    sousTab=[];
-    for(j=0;j<tab[i].length;j++){
-     sousTab.push(tab[i][j]);
-    }
-    nouveauTab.push(sousTab);
-    if(i==id+1){
-     nouveauTab[nouveauTab.length-1][7]=0;
-    }else{
-     nouveauTab[nouveauTab.length-1][7]=nouveauTab[nouveauTab.length-1][7]-id;
-    }
-  }
-  retSource=arrayToFunctWidthComment(nouveauTab);
-//  console.log('retSource=',retSource);
-  if(retSource.status===true){
-    var arr2=functionToArray(retSource.value,true);
-    if(arr2.status===true){
-      return {status:true,value:arr2.value};
-    }else{
-      console.error(arr2);
-      return logerreur({status:false,value:nouveauTab,message:'impossible d\'extraire le sous-tableau tab[id][1]="'+tab[id][1]+'"',tabs:nouveauTab});
-    }
-  }else{
-    console.error(retSource);
-  }
-
-  return logerreur({status:false,value:nouveauTab,message:'impossible d\'extraire le sous-tableau tab[id][1]="'+tab[id][1]+'"',tabs:nouveauTab});
-}
 
 //=====================================================================================================================
 function compareSourceEtReconstruit(source){
@@ -237,12 +232,8 @@ function compareSourceEtReconstruit(source){
    
    var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr.value);
 //   console.log(' sourceReconstruitAvecCommentaires=' , sourceReconstruitAvecCommentaires );
-   
-   
    if(sourceReconstruitAvecCommentaires.value==source){
- //   arguments.callee.caller.toString();
     return logerreur({status:true,situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
-    console.log('%cLe source original et le source reconstruit sont les mêmes','color:lime');
    }else{
     
     
@@ -393,7 +384,7 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
  
 }
 //=====================================================================================================================
-function convertSource(source,objArr){
+function convertSource(objMatSrc){
  var message='';
  var file_name='';
  var file_extension='';
@@ -403,18 +394,18 @@ function convertSource(source,objArr){
  var tabConcatFichier=[];
  var retProgrammeSource={};
  var obj={};
- var l01=objArr.value.length;
+ var l01=objMatSrc.value.length;
  for(var i=1;i<l01;i++){
-  if(objArr.value[i][3]==0){
-   if(objArr.value[i][1]=='#'){
-   }else if(objArr.value[i][1]=='src_javascript' ){
-    type_source=objArr.value[i][1];
+  if(objMatSrc.value[i][3]==0){
+   if(objMatSrc.value[i][1]=='#'){
+   }else if(objMatSrc.value[i][1]=='src_javascript' ){
+    type_source=objMatSrc.value[i][1];
     break;
-   }else if(objArr.value[i][1]=='src_html'){
-    type_source=objArr.value[i][1];
+   }else if(objMatSrc.value[i][1]=='src_html'){
+    type_source=objMatSrc.value[i][1];
     break;
-   }else if(objArr.value[i][1]=='src_php'){
-    type_source=objArr.value[i][1];
+   }else if(objMatSrc.value[i][1]=='src_php'){
+    type_source=objMatSrc.value[i][1];
     break;
    }
   }
@@ -425,31 +416,31 @@ function convertSource(source,objArr){
  
  
  for(var i=0;i<l01;i++){
-  if(objArr.value[i][2]=='f' && objArr.value[i][3]==1 && objArr.value[i][1]==''){ //fonctions de niveau 1 vides
-   for(var j=i;j<objArr.value.length;j++){
-    if(objArr.value[j][7]==objArr.value[i][0] && objArr.value[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
-//       console.log(JSON.stringify(objArr.value[j]));
-     if(objArr.value[j][1]=='file_name' && objArr.value[j+1][1]!=''){
-      file_name=objArr.value[j+1][1];
+  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]==''){ //fonctions de niveau 1 vides
+   for(var j=i;j<objMatSrc.value.length;j++){
+    if(objMatSrc.value[j][7]==objMatSrc.value[i][0] && objMatSrc.value[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
+//       console.log(JSON.stringify(objMatSrc.value[j]));
+     if(objMatSrc.value[j][1]=='file_name' && objMatSrc.value[j+1][1]!=''){
+      file_name=objMatSrc.value[j+1][1];
      }
-     if(objArr.value[j][1]=='file_extension' && objArr.value[j+1][1]!=''){
-      file_extension=objArr.value[j+1][1];
+     if(objMatSrc.value[j][1]=='file_extension' && objMatSrc.value[j+1][1]!=''){
+      file_extension=objMatSrc.value[j+1][1];
      }
-     if(objArr.value[j][1]=='file_path' && objArr.value[j+1][1]!=''){
-      file_path=objArr.value[j+1][1];
+     if(objMatSrc.value[j][1]=='file_path' && objMatSrc.value[j+1][1]!=''){
+      file_path=objMatSrc.value[j+1][1];
      }
     }
    }
   }
-  if(objArr.value[i][2]=='f' && objArr.value[i][3]==1 && objArr.value[i][1]=='source'){ // fonction de niveau 1 = source
+  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]=='source'){ // fonction de niveau 1 = source
    if(idJs==-1){
     idJs=i;
    }else{
     idJs=-2;
    }
   }
-  if(objArr.value[i][2]=='f' && objArr.value[i][3]==1 && objArr.value[i][1]=='concatFichier' && objArr.value[i][8]==1){
-   tabConcatFichier.push(objArr.value[i+1][1])
+  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]=='concatFichier' && objMatSrc.value[i][8]==1){
+   tabConcatFichier.push(objMatSrc.value[i+1][1])
   }
   
  }
@@ -457,16 +448,18 @@ function convertSource(source,objArr){
  if(file_name!='' && file_path!='' && idJs>0){
   
   if(type_source=='src_php'  && (file_extension=='php')){
-   for(var i=idJs+1;i<objArr.value.length;i++){
-    if(objArr.value[i][7]==idJs && objArr.value[i][1]=='php'){
-     retProgrammeSource=parsePhp0(objArr.value,i,objArr.value[idJs][10]);
+   for(var i=idJs+1;i<objMatSrc.value.length;i++){
+    if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='php'){
+     php_contexte_commentaire_html=false;
+     retProgrammeSource=parsePhp0(objMatSrc.value,i,objMatSrc.value[idJs][10]);
      if(retProgrammeSource.status==true){
       t+='<?php\n'+retProgrammeSource.value+'\n?>';
      }else{
       return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
      }
-    }else if(objArr.value[i][7]==idJs && objArr.value[i][1]=='html'){
-     retProgrammeSource=tabToHtml1(objArr.value,i,objArr.value[idJs][10],true);
+    }else if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='html'){
+     php_contexte_commentaire_html=true;
+     retProgrammeSource=tabToHtml1(objMatSrc.value,i,objMatSrc.value[idJs][10],true);
      if(retProgrammeSource.status==true){
       t+='\n'+retProgrammeSource.value+'\n';
      }else{
@@ -476,14 +469,14 @@ function convertSource(source,objArr){
    }
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){
-   retProgrammeSource=parseJavascript0(objArr.value,idJs+1,objArr.value[idJs][10]);
+   retProgrammeSource=parseJavascript0(objMatSrc.value,idJs+1,objMatSrc.value[idJs][10]);
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{
     return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
    }
   }else if(type_source=='src_html'  && (file_extension=='html')){
-   retProgrammeSource=tabToHtml1(objArr.value,idJs+1,objArr.value[idJs][10]);
+   retProgrammeSource=tabToHtml1(objMatSrc.value,idJs+1,objMatSrc.value[idJs][10]);
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{
@@ -492,41 +485,6 @@ function convertSource(source,objArr){
   }
 //console.log('t=',t);
   return logerreur({status:true,value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
-/*
-  obj=sousTableau(objArr.value,idJs);
-  if(obj.status==true){
-  }else{
-   console.error(obj);
-   return;
-  }
-  
-  var retSource=arrayToFunctWidthComment(obj.value);
-  
-  if(retSource.status===true){
-   var arr2=functionToArray(retSource.value,true);
-   if(arr2.status===true){
-    if(type_source=='src_javascript' && (file_extension=='js') ){
-//     retProgrammeSource=parseJavascript0(arr2.value,0,objArr.value[idJs][10]);
-    }else if(type_source=='src_html'  && (file_extension=='html')){
-//     retProgrammeSource=tabToHtml1(arr2.value,1,objArr.value[idJs][10]);
-    }else if(type_source=='src_php'  && (file_extension=='php')){
-//     retProgrammeSource=parsePhp0(arr2.value,1,objArr.value[idJs][10]);
-    }else{
-     return logerreur({status:false,id:0,message:'file core , fonction convertSource : type de source "'+type_source+'" pour l\'extension "'+file_extension+'" non prévu'});
-    }
-    
-    if(retProgrammeSource.status===true){
-     return logerreur({status:true,value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
-    }else{
-     return logerreur({status:false,message:"",value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension});
-    }
-   }else{
-    return logerreur({status:false,id:0,message:'erreur de conversion functionToArray'});
-   }
-  }else{
-   return logerreur({status:false,id:0,message:'erreur de reconstitution'});
-  }
-*/  
  }else{
   return logerreur({status:false,id:0,message:'file_name, file_path and source must be filled'});
  }
@@ -587,7 +545,9 @@ function writeSourceFile(source,objArr){
  var tabConcatFichier=[];
  var retProgrammeSource={};
  var obj={};
+ var startMicro=performance.now();
  obj=convertSource(source,objArr);
+ var endMicro=performance.now();  console.log('conversion du source rev en source programme endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
  if(obj.status==true){
   var r = new XMLHttpRequest();
   r.open("POST",'za_ajax.php?'+type_source,true);
@@ -814,9 +774,184 @@ function arrayToFunctNoComment(matrice){
 function functionToArray(src,exitOnLevelError){
  var tableau1=iterateCharacters(src);
  var matriceFonction=functionToArray2(tableau1.out,exitOnLevelError);
+ global_messages.data.matrice=matriceFonction;
+ global_messages.data.tableau=tableau1;
  return matriceFonction;
+}
+
+//===============================================================================================================
+function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
+
+ t2.setAttribute('class','tableau2');
+ var tr1=document.createElement('tr');
+ var td1=document.createElement('td');
+ var numeroLigne=0;
+ td1.innerHTML=numeroLigne;
+ tr1.appendChild(td1);
+ var out=[];
+ var debut=0;
+//    console.log(texteSource); // a
+ 
+ if(objTableau===null){
+  console.log('texteSource.length=',texteSource.length);
+  var outo=iterateCharacters(texteSource);
+  out=outo.out;
+ }else{
+  out=objTableau.out; 
+ }
+//    console.log(out);
+ for(var i=0;i<out.length;i++){
+   var td1=document.createElement('td');
+   if(false && out[i][0]==='\n'){
+    td1.innerHTML=out[i][0].replace('\n','\\n'); //+''+out[i][4];
+   }else{
+    td1.innerHTML=out[i][0].replace('\n','\\n');
+   }
+   td1.title='&#'+out[i][0].codePointAt(0)+'; ('+out[i][1]+')';
+   tr1.appendChild(td1);
+   
+   
+   if(out[i][0]==='\n'){
+    t2.appendChild(tr1);
+    
+    // indice dans tableau = première ligne des chiffres
+    var tr1=document.createElement('tr');
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    
+    for(var j=debut;j<i;j++){
+      var td1=document.createElement('td');
+      if(out[j][1]==1){
+       td1.setAttribute('class','td2');
+      }else if(out[j][1]==3  ){
+       td1.setAttribute('class','td5');
+      }else if( out[j][1]==4 ){
+       td1.setAttribute('class','td4');
+      }else{
+       td1.setAttribute('class','td3');
+      }
+      td1.innerHTML=j;
+      tr1.appendChild(td1);
+    }
+    // position du backslash n
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML=j+'';
+    tr1.appendChild(td1);
+    
+    t2.appendChild(tr1);
+    
+
+
+    
+    // position dans la chaine = deuxième ligne des chiffres
+
+    var tr1=document.createElement('tr');
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    
+    for(var j=debut;j<i;j++){
+      var td1=document.createElement('td');
+      if(out[j][1]==1){
+       td1.setAttribute('class','td2');
+      }else if(out[j][1]==3  ){
+       td1.setAttribute('class','td5');
+      }else if( out[j][1]==4 ){
+       td1.setAttribute('class','td4');
+      }else{
+       td1.setAttribute('class','td3');
+      }
+      td1.innerHTML=out[j][3]+'';
+      tr1.appendChild(td1);
+    }
+    // position du backslash n
+    var td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML=out[j][3]+'';
+    tr1.appendChild(td1);
+    
+    t2.appendChild(tr1);
+    
+    
+
+    // fin des lignes 
+    
+    
+    debut=i+1;
+
+    
+    
+    var tr1=document.createElement('tr');
+    numeroLigne++;
+    var td1=document.createElement('td');
+    td1.innerHTML=numeroLigne;
+    tr1.appendChild(td1);
+    t2.appendChild(tr1);
+    
+   }
+   
+ }
+
+ t2.appendChild(tr1);
+
+
+ 
+ var tr1=document.createElement('tr');
+ var td1=document.createElement('td');
+ td1.setAttribute('class','td2');
+ td1.innerHTML='&nbsp;';
+ tr1.appendChild(td1);
+ 
+ for(var j=debut;j<i;j++){
+   var td1=document.createElement('td');
+   if(out[j][1]==1){
+    td1.setAttribute('class','td2');
+   }else if(out[j][1]==3  ){
+    td1.setAttribute('class','td5');
+   }else if( out[j][1]==4 ){
+    td1.setAttribute('class','td4');
+   }else{
+    td1.setAttribute('class','td3');
+   }
+   td1.innerHTML=j;
+   tr1.appendChild(td1);
+ }
+ 
+ t2.appendChild(tr1);
+ 
+ 
+
+ 
+ var tr1=document.createElement('tr');
+ var td1=document.createElement('td');
+ td1.setAttribute('class','td2');
+ td1.innerHTML='&nbsp;';
+ tr1.appendChild(td1);
+ 
+ for(var j=debut;j<i;j++){
+   var td1=document.createElement('td');
+   if(out[j][1]==1){
+    td1.setAttribute('class','td2');
+   }else if(out[j][1]==3  ){
+    td1.setAttribute('class','td5');
+   }else if( out[j][1]==4 ){
+    td1.setAttribute('class','td4');
+   }else{
+    td1.setAttribute('class','td3');
+   }
+   td1.innerHTML=out[j][3];
+   tr1.appendChild(td1);
+ }
+ 
+ t2.appendChild(tr1);
 
 }
+
+
 //=====================================================================================================================
 function iterateCharacters(str){
 // https://stackoverflow.com/questions/63905684/how-can-a-3-byte-wide-utf-8-character-only-use-a-single-utf-16-code-unit
@@ -835,7 +970,7 @@ function iterateCharacters(str){
     position+=bytes;
     position2+=(bytes==4?2:1);
   }
-  return {'out':out,'position':position,'position2':position2};  
+  return {'out':out,'position':position,'position2':position2,'numLigne':numLigne};  
 }
 
 //=====================================================================================================================
@@ -967,7 +1102,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
      if(c1==','||c1=='\t'||c1==' '||c1=='\n'||c1=='\r'||c1=='/'||c1==')'){
       dernier=i-1;
      }else{
-      return logerreur({status:false,value:T,message:'apres une constante, il doit y avoir un caractère d\'echappement en i='+i});
+      return logerreur({status:false,id:T.length-1,value:T,message:'0 apres une constante, il doit y avoir un caractère d\'echappement en i='+i});
      }
     }
     dansCst=false;

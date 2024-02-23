@@ -17,33 +17,6 @@ var global_enteteTableau=[
  ['com','commentaire'                       ,''],  
  
 ];
-
-var global_enteteTableau=[
- ['id' ,'id'                                ,''], // 00
- ['val','value'                             ,''],
- ['typ','type'                              ,''],
- ['niv','niveau'                            ,''],
- ['coQ','constante quotee'                  ,''],
- ['pre','position du premier caractère'     ,''], // 05
- ['der','position du dernier caractère'     ,''],
- ['cAv','commentaire avant'                 ,''], // 7
- ['cAp','commentaire apres'                 ,''], // 8
- ['cDe','commentaire dedans'                ,''], //
- ['pId','Id du parent'                      ,''], // 10
- ['nbE','nombre d\'enfants'                 ,''], // 11
- ['nuE','numéro enfants'                    ,''], // 12
- ['nli','numeroLigne'                       ,''], // 13
- ['lfP','numero ligne fermeture parenthese' ,''],
- ['pro','profondeur'                        ,''], // 15
- ['cpn','commentaire apres nettoye'         ,''],
- ['cdn','commentaire dedans nettoye'        ,''],
- ['cvn','commentaire avant nettoye'         ,''],
- ['tcp','type commentaire apres nettoye'    ,''],
- ['tcd','type commentaire dedans nettoye'   ,''], // 20
- ['tcv','type commentaire avant nettoye'    ,''],
- ['pop','position ouverture parenthese'     ,''],
- ['pfp','position fermeture parenthese'     ,''],
-];
 */
 var php_contexte_commentaire_html=true;
 //=====================================================================================================================
@@ -284,7 +257,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
       condition+=obj.value;
      }else{
 //      console.log(tab[tabchoix[j][0]],tab);
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'1 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      condition=condition.replace(/\n/g,'');
      
@@ -526,7 +499,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
       t+=obj.value;
      }else{
 //      console.log(tab[tabchoix[j][0]],tab);
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      t+='){';
      
@@ -568,7 +541,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
       t+=obj.value;
      }else{
 //      console.log(tab[tabchoix[j][0]],tab);
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'3 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      t+='){';
      
@@ -909,6 +882,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
      t+='\n/*'+tab[i][13]+'*/\n';
     }
   }else{
+   return logerreur({status:false,value:t,id:i,message:'erreur ( php.js ) la fonction "'+tab[i][1]+'" n\'est pas définie'});     
    t+=espaces(tab[i][3]);
    
    t+='//todo php.js 861 i='+i+', tab[i][1]='+tab[i][1]+'\n';

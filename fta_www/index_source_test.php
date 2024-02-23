@@ -4,17 +4,17 @@
    require_once('aa_include.php');
    session_start();
    start_session_messages();
-<!--      // ======================================================== 
-      // affichage de l'entête html -->
+/*      // ======================================================== 
+      // affichage de l'entête html */
 
    $o1='';
    $a=array( 'title' => 'accueil', 'description' => 'accueil');
    $o1=html_header1($a);
    $o1=concat($o1,session_messages());
-<!--      //      on imprime le texte ...,-->
+/*      //      on imprime le texte ...,*/
 
    print($o1);
-<!--      //  ... puis on le reinitialise,-->
+/*      //  ... puis on le reinitialise,*/
 
    $o1='';
 ?>
@@ -187,7 +187,7 @@ function charger(nomsource){
    $a=array( 'js' => array( 'js/php.js', 'js/javascript.js', 'js/html.js'));
    $o1=concat($o1,html_footer1($a));
    print($o1);
-<!--      // ... puis on le reinitialise-->
+/*      // ... puis on le reinitialise*/
 
    $o1='';
 ?>

@@ -508,7 +508,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
       condition+=obj.value;
      }else{
 //      console.log(tab[tabchoix[j][0]],tab);
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'1 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      
     }else if(tabchoix[j][1]=='increment'){ // i18
@@ -664,9 +664,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
    
    
    // tests divers
+
    var tabTemp=[];
    for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
-    if(tab[j][3]<=tab[i][3]+2){
+    if(tab[i][0]==tab[tab[j][7]][7] || tab[i][0]==tab[j][7]){
      if( (tab[j][1]=='si' || tab[j][1]=='condition' || tab[j][1]=='alors' || tab[j][1]=='sinonsi' || tab[j][1]=='sinon' || tab[j][1]=='#' ) && tab[j][2]=='f' ){
       if(tab[j][1]=='#'){
       }else{
@@ -678,7 +679,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
       
       
      }else{
-      return logerreur({status:false,value:t,id:i,tab:tab,message:'file javascript.js : dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "'+tab[j][1]+'" '});
+      return logerreur({status:false,value:t,id:j,tab:tab,message:'file javascript.js : dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "'+JSON.stringify(tab[j])+'" '});
      }
     }
    }
@@ -688,7 +689,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      if(tabTemp[j][1]=='si' && tabTemp[j+1][1]=='condition' && tabTemp[j+2][1]=='alors'){
       j+=2;
      }else{
-      return logerreur({status:false,value:t,id:i,tab:tab,message:'un choix doit contenir au moins un "si" , une "condition" et un "alors" en première position'});
+      return logerreur({status:false,value:t,id:tabTemp[j][0],tab:tab,message:'un choix doit contenir au moins un "si" , une "condition" et un "alors" en première position [""]'});
      }
     }else{
      if(tabTemp[j][1]=='sinon'){
@@ -731,7 +732,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
       t+=obj.value;
      }else{
 //      console.log(tab[tabchoix[j][0]],tab);
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      t+='){';
      
@@ -758,27 +759,24 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
      
     }else if(tabchoix[j][1]=='sinonsi'){
      
-     if(tab[tabchoix[j][0]+1][1]=='condition'){
-      
-      // hugues commentaire avant le condition
-      var indCommTemp=tabchoix[j][0]+1;
-      if(tab[indCommTemp][21]=='multi sans bloc' && tab[indCommTemp][18].length>0){
-       for(var indComm=0;indComm<tab[indCommTemp][18].length;indComm++){
-        t+=espaces(tab[indCommTemp][3]-2);
-        t+=tab[indCommTemp][18][indComm];
-       }
-       t+=espaces(tab[indCommTemp][3]-2);
-      }
-     }
-
      t+=espaces(tab[id][3]);
      t+='}else if(';
-     obj=js_condition0(tab,tabchoix[j][0],offsetLigne);
+     
+     var debutCondition=0;
+     for(var k=i+1;k<tab.length && tab[k][3]>tab[i][3];k++){
+      if(tab[k][1]=='condition'){
+       debutCondition=k;
+       break;
+      }
+     }
+     
+     
+     obj=js_condition0(tab,debutCondition,offsetLigne);
      if(obj.status===true){
       t+=obj.value;
      }else{
 //      console.log(tab[tabchoix[j][0]],tab);
-      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur la condition du choix en indice '+tabchoix[j][0] });
+      return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'3 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      t+='){';
      
@@ -1014,6 +1012,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,offsetLigne)
   }else{
    t+=espaces(tab[id][3]);
    t+='//todo i='+i+', tab[i][1]="'+tab[i][1]+'"';
+   logerreur({status:false,value:t,id:i,tab:tab,message:' traitement non prévu '+JSON.stringify(tab[i])});
   }
   // traitement des commentaires de fin
   if(i+1<tab.length && dansInitialisation===false ){

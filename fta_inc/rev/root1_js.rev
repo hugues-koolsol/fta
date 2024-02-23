@@ -12,9 +12,11 @@ src_javascript(
         argument(exitOnLevelError)
       ),
       contenu(
+        #(
         // =========================
         // les chaines de caractères
         // =========================
+        )
         declare( t , '' ) , declare( texte , '' ) , declare( commentaire , '' ),
         declare( c , '' ) , declare( c1 , '' ) , declare( c2 , '' ) , declare( cst , '' ),
         declare( commentaireAvant , '' ) , declare( commentaireApres , '' ),
@@ -23,9 +25,11 @@ src_javascript(
         declare( typCommAvNett , '' ),
         declare( CommApNett , '' ) , declare( CommDeNett , '' ),
         declare( CommAvNett , '' ),
-        // =========================
-        // les entiers
-        // =========================
+        #(
+         // =========================
+         // les entiers
+         // =========================
+        ),
         declare( i , 0 ) , declare( j , 0 ) , declare( k , 0 ) , declare( l , 0 ),
         declare( indice , 0 ) , declare( niveau , 0 ),
         declare( niveauBloc , 0 ),
@@ -41,20 +45,26 @@ src_javascript(
         declare( posOuvPar , 0 ),
         declare( posFerPar , 0 ),
         declare( numLigneFermeturePar , 0 ),
-        // =========================
-        // les booléens
-        // =========================
+        #(
+         // =========================
+         // les booléens
+         // =========================
+        ),
         declare( dansCst , false ) , declare( dansTexte , false ),
         declare( dansCommentaireLigne , false ) , declare( dansCommentaireBloc , false ),
         declare( constanteQuotee , false ) , declare( faireCommentaire , true ),
         declare( levelError , false ) , declare( dansIgnore , false ),
+        #(
         // =========================
         // les autres
         // =========================
+        )
         declare( T , new( appelf( n(Array) ) ) ),
+        #(
         // =======================================================================
         // initialisation du tableau contenant le source structuré en arborescence
         // =======================================================================
+        )
         appelf(
           n(T.push),
           p(
@@ -77,7 +87,7 @@ src_javascript(
           )
         ),
         declare( l01 , o.length ),
-
+        #(
         // ====================================================================
         // ====================================================================
         // boucle principale sur tous les caractères du texte passé en argument
@@ -85,7 +95,7 @@ src_javascript(
         // analyse les caractères
         // ====================================================================
         // ====================================================================
-
+        ),
         boucle(
           initialisation( affecte( i , 0 ) ),
           condition( inf( i , l01 ) ),
@@ -94,9 +104,11 @@ src_javascript(
             affecte( c , appelf( n(o.substr) , p(i) , p(1) ) ),
             choix(
               si(
-                // ==================
-                // dans une constante
-                // ==================
+                #(
+                  // ==================
+                  // dans une constante
+                  // ==================
+                ),
                 condition( ( egal( dansCst , true ) ) ),
                 alors(
                   choix(
@@ -320,9 +332,11 @@ src_javascript(
                 )
               ),
               sinonsi(
-                // ========================================
-                // dans un commentaire de type ligne ( // )
-                // ========================================
+                #(
+                 // ========================================
+                 // dans un commentaire de type ligne ( // )
+                 // ========================================
+                ),
                 condition( ( egal( dansCommentaireLigne , true ) ) ),
                 alors(
                   boucle(
@@ -349,9 +363,11 @@ src_javascript(
                 )
               ),
               sinonsi(
-                // =======================================
-                // dans un commentaire de type bloc ( /* )
-                // =======================================
+                #(
+                  // =======================================
+                  // dans un commentaire de type bloc ( /* )
+                  // =======================================
+                ),
                 condition( ( egal( dansCommentaireBloc , true ) ) ),
                 alors(
                   boucle(
@@ -416,16 +432,19 @@ src_javascript(
               ),
               sinon(
                 alors(
-                  // ==================================================
+                  #(
                   // ==================================================
                   // on n'est pas dans un commentaire ou une constante,  
                   // donc c'est un nouveau type qu'il faut détecter
                   // ==================================================
+                  ),
                   choix(
                     si(
-                      //====================
-                      // Parenthèse ouvrante
-                      //====================
+                      #(
+                       //====================
+                       // Parenthèse ouvrante
+                       //====================
+                      ),
                       condition(
                         ( egal( c , '(' ) )
                       ),
@@ -551,9 +570,11 @@ src_javascript(
                       )
                     ),
                     sinonsi(
-                      //====================
-                      // Parenthèse fermante
-                      //====================
+                      #(
+                        //====================
+                        // Parenthèse fermante
+                        //====================
+                      ),
                       condition(
                         ( egal( c , ')' ) )
                       ),
@@ -569,9 +590,11 @@ src_javascript(
                               choix(
                                 si(
                                   condition(
-                                    // une constante est le dernier paramètre d'une fonction 
-                                    // et ne comporte pa de virgule, ex : a((b c))
-                                    ( egal( dansIgnore , true ) )
+                                    #(
+                                      une constante est le dernier paramètre d'une fonction 
+                                      et ne comporte pa de virgule, ex : a((b c))
+                                     ( egal( dansIgnore , true ) )
+                                    )
                                   ),
                                   alors(
                                     appelf(
@@ -679,9 +702,10 @@ src_javascript(
                         choix(
                           si(
                             condition(
-                              // si le dernier argument d'une fonction est une constante, 
-                              // il faut remonter pour chercher le commentaire apres
-
+                              #(
+                                si le dernier argument d'une fonction est une constante, 
+                                il faut remonter pour chercher le commentaire apres
+                              ),
                               ( egal( T[indice][2] , 'c' ) ),
                               et( egal( niveau , T[indice][3] ) )
                             ),
@@ -724,7 +748,7 @@ src_javascript(
                           p(o),
                           p(i)
                         ),
-                        // recherche du numLiParent
+                        #(// recherche du numLiParent)
                         boucle(
                           initialisation( affecte( j , indice ) ),
                           condition( sup( j , 0 ) ),
@@ -744,9 +768,11 @@ src_javascript(
                           )
                         ),
                         affecte( niveau , niveau-1 ),
+                        #(
                         //
                         // maj de la position de fermeture de la parenthèse
                         //
+                        )
                         boucle(
                           initialisation( affecte( j , indice ) ),
                           condition( supeg( j , 0 ) ),
@@ -775,10 +801,12 @@ src_javascript(
                       )
                     ),
                     sinonsi(
-                      //==========
-                      // antislash
-                      // TODO a revoir
-                      //==========
+                      #(
+                        //==========
+                        // antislash
+                        // TODO a revoir
+                        //==========
+                      ),
                       condition( ( egal( c , '\\' ) ) ),
                       alors(
                         affecte(
@@ -795,9 +823,11 @@ src_javascript(
                       )
                     ),
                     sinonsi(
-                      //===========
-                      // apostrophe
-                      //===========
+                      #(
+                       //===========
+                       // apostrophe
+                       //===========
+                      ),
                       condition( ( egal( c , '\'' ) ) ),
                       alors(
                         affecte( premier , i ),
@@ -813,9 +843,11 @@ src_javascript(
                     sinonsi(
                       condition( ( egal( c , '/' ) ) ),
                       alors(
+                        #(
                         //================================
                         // slash donc début de commentaire
                         //================================
+                        ),
                         choix(
                           si(
                             condition(
@@ -984,9 +1016,11 @@ src_javascript(
                     sinonsi(
                       condition( ( egal( c , ',' ) ) ),
                       alors(
+                        #(
                         //========================
                         // virgule donc séparateur
                         //========================
+                        )
                         choix(
                           si(
                             condition(
@@ -1023,8 +1057,10 @@ src_javascript(
                             )
                           ),
                           sinon(
-                            // todo
-                            // todo
+                            #(
+                              // todo
+                              // todo
+                            ),
                             alors(
                               choix(
                                 si(
@@ -1189,6 +1225,7 @@ src_javascript(
             )
           )
         )
+        #(
 /*        
         affecteFonction(
           r.onreadystatechange,
@@ -1207,6 +1244,7 @@ src_javascript(
           )
         ),
 */        
+)
       )
     )
   )

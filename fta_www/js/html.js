@@ -18,38 +18,6 @@ var global_enteteTableau=[
  ['com','commentaire'                       ,''],  
  
 ];
-
-var global_enteteTableau=[
- ['id','id'                                 ,''], // 00
- ['val','value'                             ,''],
- ['typ','type'                              ,''],
- ['niv','niveau'                            ,''],
- ['coQ','constante quotee'                  ,''],
- ['pre','position du premier caractère'     ,''], // 05
- ['der','position du dernier caractère'     ,''],
- ['cAv','commentaire avant'                 ,''], // 7
- ['cAp','commentaire apres'                 ,''], // 8
- ['cDe','commentaire dedans'                ,''], //
- ['pId','Id du parent'                      ,''], // 10
- ['nbE','nombre d\'enfants'                 ,''], // 11
- ['nuE','numéro enfants'                    ,''], // 12
- ['nli','numeroLigne'                       ,''], // 13
- ['lfP','numero ligne fermeture parenthese' ,''],
- ['pro','profondeur'                        ,''], // 15
- ['cpn','commentaire apres nettoye'         ,''],
- ['cdn','commentaire dedans nettoye'        ,''],
- ['cvn','commentaire avant nettoye'         ,''],
- ['tcp','type commentaire apres nettoye'    ,''],
- ['tcd','type commentaire dedans nettoye'   ,''], // 20
- ['tcv','type commentaire avant nettoye'    ,''],
- ['pop','position ouverture parenthese'     ,''],
- ['pfp','position fermeture parenthese'     ,''],
-];
-
-
-
-
-
 */
 //=====================================================================================================================
 function tabToHtml1(tab,id,offsetLigne,noHead){
@@ -62,11 +30,11 @@ function tabToHtml1(tab,id,offsetLigne,noHead){
    }
  }
  
- var ob=tabToHtml0(tab,startId,false,false,false,offsetLigne,noHead);
+ var ob=tabToHtml0(tab,startId,false,false,false,offsetLigne,noHead,false);
  return ob;
 }
 //=====================================================================================================================
-function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHead ){
+function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHead , dansPhp ){
  var t='';
  var i=0;
  var j=0;
@@ -86,16 +54,35 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
  if(tab[id][1]=='script'){
   dansJs=true;
  }
+ if(tab[id][1]=='php'){
+  dansPhp=true;
+ }
 
  // on écrit le début du tag ....
- if(dansJs&&tab[id][1]=='source'){ // i18
+ if(dansPhp&&tab[id][1]=='source'){ // i18
+  // analyse de source javascript
+  t+='<?php ';
+  ob=parseJavascript0(tab,id,offsetLigne+tab[id][13]);
+  parsePhp0(tab,id,0);
+  if(ob.status===true){
+   t+=ob.value;
+  }else{
+   return logerreur({status:false,value:t,message:'erreur de script dans un html'});
+  }
+  t+=' ?>';
+  
+  return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
+
+ }else if(dansJs&&tab[id][1]=='source'){ // i18
   // analyse de source javascript
   t+='\n';
   t+='// = = = = <source javascript = = = =\n';
   t+='"use strict";\n';
 //  console.error('todo')
 //  bug();
+  php_contexte_commentaire_html=false;
   ob=parseJavascript0(tab,id,offsetLigne+tab[id][13]);
+  php_contexte_commentaire_html=true;
   if(ob.status===true){
    t+=ob.value;
   }else{
@@ -103,7 +90,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
   }
   t+='\n// = = = = source javascript> = = = =\n';
   
-  return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs};
+  return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
 
  }else{
   temp='';
@@ -114,6 +101,8 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
   }
   if(tab[id][1]=='#'){
    temp+='<!-- '+tab[id][13];
+  }else if(tab[id][1]=='php'){
+   temp+='';
   }else{
    if(noHead && tab[id][1]=='html'){
    }else{
@@ -171,6 +160,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
   if(contientEnfantsNonVides||contientConstantes){
    if(id>0){
     if(noHead && tab[id][1]=='html'){
+    }else if(tab[id][1]=='php'){
     }else{
      t+='>';
     }
@@ -179,7 +169,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
      
-      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,offsetLigne,noHead); // appel récursif
+      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,offsetLigne,noHead,dansPhp); // appel récursif
       
       if(ob.status===true){
        t+=ob.value;
@@ -209,16 +199,25 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
      t+='\n';
     }else{
      t+=espaces2(tab[id][3]);
-     t+='</'+tab[id][1]+'>';
+     if(tab[id][1]=='php'){
+     }else{
+      t+='</'+tab[id][1]+'>';
+     }
     }
    }
    if('script'==tab[id][1]){
     dansJs=false;
    }
+   if('php'==tab[id][1]){
+    dansPhp=false;
+   }
   }else{
    if(tab[id][1]=='script'){
     t+='>'+'<'+'/script>';
     dansJs=false;
+   }else if(tab[id][1]=='php'){
+    t+='????PHP????'; //'>'+'<'+'/script>';
+    dansPhp=false;
    }else{
     
     if(id>0){

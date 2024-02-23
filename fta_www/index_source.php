@@ -16,6 +16,7 @@ print($o1);$o1='';
        <td></td>
        <td colspan="2">
         <button onclick="enregistrer()">Enregistrer</button>
+        <button onclick="enregistrer2()">Enr2</button>
         <a href="javascript:insertSource('choix');">Choix</a>
         <a href="javascript:insertSource('boucle');">Boucle</a>
         <a href="javascript:insertSource('appelf');">appelf</a>
@@ -52,7 +53,9 @@ print($o1);$o1='';
      </tr>
    </table>
    <table id="arrayed"></table>
-<script>
+   <div id="donneesComplementaires"></table>
+<script type="text/javascript">
+
 "use strict";
 
 var global_editeur_derniere_valeur_selecStart=0;
@@ -251,13 +254,124 @@ function ajusteTailleTextareaContenantSource(normalise){
     }
    }
    largeur+=5;
-   if(largeur>100 || largeur<=0){
+   if(largeur>100||largeur<=0){
     largeur=100;
    }
    document.getElementById(normalise).cols=largeur;
   }catch(e){
    //var tab=document.getElementById(normalise).innetHTML.split('\n');
   }
+}
+//=====================================================================================================================
+function enregistrer2(){
+ var sourcesCompactesIdentiques=false;
+ var sourcesIdentiques=false;
+ var conversion={'status':false};
+ clearMessages();
+ var zonedonneesComplementaires=document.getElementById('donneesComplementaires');
+ zonedonneesComplementaires.innerHTML='';
+ 
+ 
+ var a=document.getElementById('zonesource');
+ var startMicro=performance.now();
+ var tableau1=iterateCharacters(a.value);
+ global_messages.data.tableau=tableau1;
+ var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+
+//  console.log('tableau1.out=',tableau1.out);
+ 
+ var startMicro=performance.now();
+ var matriceFonction=functionToArray2(tableau1.out);
+ global_messages.data.matrice=matriceFonction;
+ var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+ console.log('matriceFonction=',matriceFonction);
+
+ if(matriceFonction.status===true){
+
+    var startMicro=performance.now();
+    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.value,true,false);
+    var endMicro=performance.now();  console.log('reconstitution du source endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+
+    var diResultatsCompactes=document.createElement('pre');
+    if(fonctionReecriteAvecRetour1.status===true){
+
+    
+     document.getElementById("normalise").value=fonctionReecriteAvecRetour1.value;
+     
+     ajusteTailleTextareaContenantSource('normalise');
+     memeHauteur('normalise','zonesource');
+
+
+     var startMicro=performance.now();
+     
+     
+     var compacteOriginal=arrayToFunct1(matriceFonction.value,false,false);
+     
+     
+     var tableau2=iterateCharacters(fonctionReecriteAvecRetour1.value);
+     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out);
+     var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
+     var endMicro=performance.now();  console.log('comparaison des compactés=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+     
+     
+     
+     if(compacteOriginal.status==true && compacteReecrit.status===true){
+      if(compacteOriginal.value == compacteReecrit.value){
+       sourcesCompactesIdentiques=true;
+       logerreur({status:true,message:'<b>👍 sources compactés Egaux</b>'});
+       var conversion=convertSource(matriceFonction);
+       
+      }else{
+       logerreur({status:false,message:'sources compactés différents'});
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.value;
+      }
+     
+     }else{
+      diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">compacteOriginal='+JSON.stringify(compacteOriginal)+'</b>';
+      diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br /><b style="color:red;">compacteReecrit='+JSON.stringify(compacteReecrit)+'</b>';
+     }
+     
+     var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.value,true,false);
+     
+    }else{
+      diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">Erreur de réécriture du source original</b>';
+    }
+    zonedonneesComplementaires.appendChild(diResultatsCompactes);
+    if(sourcesCompactesIdentiques){
+     if(a.value==fonctionReecriteAvecRetour1.value){
+      logerreur({status:true,message:'<b>👍👍 sources Egaux</b>'});
+      if(conversion.status==true){
+       var arr=writeSourceFile(matriceFonction);
+       if(arr.status == false){
+        logerreur({status:false,message:'il y a eu un problème d\'écriture sur disque'});
+        console.log(arr);
+       }else{
+        logerreur({status:true,message:'<b>👍👍👍 programme écrit sur disque</b>'});
+       }
+      }
+     }else{
+      
+      logerreur({status:false,message:'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre le normalise</a>  '});
+     }
+    }
+    
+    
+    
+    
+
+    
+ }
+/* 
+ var zoneTableauCaracteres=document.createElement('table');
+ ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,"",tableau1);
+ zonedonneesComplementaires.appendChild(zoneTableauCaracteres);
+*/ 
+ displayMessages()
+ 
+ 
+ 
 }
 //=====================================================================================================================
 function enregistrer(){
@@ -300,7 +414,7 @@ function enregistrer(){
      ajusteTailleTextareaContenantSource('normalise');
      memeHauteur('normalise','zonesource');
      console.timeLog();
-     arr=writeSourceFile(source,arr);
+     arr=writeSourceFile(arr);
      if(arr.status == false){
       console.log(arr);
      }else{
@@ -334,7 +448,7 @@ function enregistrer(){
    var srcNormalise=arrayToFunctNormalize(arr.value,true);
    if(srcNormalise.status==true){
     document.getElementById("normalise").value=srcNormalise.value;
-    var obj=convertSource(source,arr);
+    var obj=convertSource(arr);
     ajusteTailleTextareaContenantSource('normalise');
     memeHauteur('normalise','zonesource');
     

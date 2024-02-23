@@ -107,16 +107,18 @@ src_javascript(
           )
         ),
         #(
-          ===============================================================
+          =======================
           en cas d'erreur serveur
+          =======================
         ),
         affecteFonction(
           r.onerror,
           contenu(appelf(n(console.error) , p('e=') , p(r)) , revenir())
         ),
         #(
-          ==============================================================
+          =================
           en cas de timeout
+          =================
         ),
         affecteFonction(
           r.ontimeout,

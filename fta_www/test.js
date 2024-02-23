@@ -48,16 +48,18 @@ function chargerFichierSource(nomFichier,nomZone,fntSiOk){
       }
     }
     /* 
-          ===============================================================
+          =======================
           en cas d'erreur serveur
+          =======================
          */
     r.onerror=function(){
       console.error('e=',r);
       return;
     }
     /* 
-          ==============================================================
+          =================
           en cas de timeout
+          =================
          */
     r.ontimeout=function(){
       console.error('e=',r);
