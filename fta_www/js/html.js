@@ -81,7 +81,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
 //  console.error('todo')
 //  bug();
   php_contexte_commentaire_html=false;
-  ob=parseJavascript0(tab,id,offsetLigne+tab[id][13]);
+  ob=parseJavascript0(tab,id+1,offsetLigne+tab[id][13]);
   php_contexte_commentaire_html=true;
   if(ob.status===true){
    t+=ob.value;

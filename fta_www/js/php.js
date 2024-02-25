@@ -530,7 +530,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
      t+='}else if(';
      
      var debutCondition=0;
-     for(var k=i+1;k<tab.length && tab[k][3]>tab[i][3];k++){
+     for(var k=tabchoix[j][0];k<tab.length && tab[k][3]>tab[i][3];k++){
       if(tab[k][1]=='condition'){
        debutCondition=k;
        break;
@@ -882,7 +882,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,offsetLigne,offset
      t+='\n/*'+tab[i][13]+'*/\n';
     }
   }else{
-   return logerreur({status:false,value:t,id:i,message:'erreur ( php.js ) la fonction "'+tab[i][1]+'" n\'est pas définie'});     
+   logerreur({status:false,value:t,id:i,tab:tab,message:'php.js traitement non prévu '+JSON.stringify(tab[i])});
+
+//   return logerreur({status:false,value:t,id:i,message:'erreur ( php.js ) la fonction "'+tab[i][1]+'" n\'est pas définie'});     
    t+=espaces(tab[i][3]);
    
    t+='//todo php.js 861 i='+i+', tab[i][1]='+tab[i][1]+'\n';

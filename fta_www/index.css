@@ -28,6 +28,10 @@ input[type="submit"]{
  width:  -moz-fit-content;
  width: fit-content;
 }
+hr{
+ margin:5px;
+ border:1px grey solid;
+}
 #loginbox{
  max-width: 300px;
  margin: auto; 

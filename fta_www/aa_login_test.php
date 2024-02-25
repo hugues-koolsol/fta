@@ -1,13 +1,22 @@
 <?php
 
 /*      
-        //=========aa=====================================
+        //================================================
+        //========= recharger la page courante ===========
         //================================================
       */
 
 function rechargerPageCourante(){
      header(concat('Location: ',BNF));
      exit(0);
+}
+function supprimerLesValeursDeSession(){
+     unset($_SESSION[APP_KEY]["user"]);
+     unset($_SESSION[APP_KEY]["userInit"]);
+     unset($_SESSION[APP_KEY]["group"]);
+     unset($_SESSION[APP_KEY]["groupInit"]);
+     unset($_SESSION[APP_KEY]["job"]);
+     unset($_SESSION[APP_KEY]["jobInit"]);
 }
 /*
         //================================================
@@ -44,21 +53,11 @@ function rechargerPageCourante(){
                           // et on retire les données de la session
                         */
 
-            unset($_SESSION[APP_KEY]["user"]);
-            unset($_SESSION[APP_KEY]["userInit"]);
-            unset($_SESSION[APP_KEY]["group"]);
-            unset($_SESSION[APP_KEY]["groupInit"]);
-            unset($_SESSION[APP_KEY]["job"]);
-            unset($_SESSION[APP_KEY]["jobInit"]);
-            $_SESSION[APP_KEY][MESSAGES]["errors"][]='ERROR';
+            supprimerLesValeursDeSession();
+            $_SESSION[APP_KEY][MESSAGES]["errors"][]='ERROR : login ou password faux';
          }
-      }else if((isset($_POST["login"])) && isset($_POST["password"])){
-         unset($_SESSION[APP_KEY]["user"]);
-         unset($_SESSION[APP_KEY]["userInit"]);
-         unset($_SESSION[APP_KEY]["group"]);
-         unset($_SESSION[APP_KEY]["groupInit"]);
-         unset($_SESSION[APP_KEY]["job"]);
-         unset($_SESSION[APP_KEY]["jobInit"]);
+      }else if((isset($_POST["logout"]))){
+         supprimerLesValeursDeSession();
       }
       rechargerPageCourante();
    }
@@ -154,8 +153,7 @@ EOT;
 // = = = = <source javascript = = = =
 "use strict";
 
-         //todo i=421, tab[i][1]="source"
-         /* 
+          /* 
                       // ===========================================
                       // dans ce javascript, on définit une fonction
                      */

@@ -24,12 +24,43 @@
     <li><a href="index_source.html">index_source.html</a></li>
   </ul>
   
-  <textarea class="txtar1" id="txtar1" rows="4">a(
- 'a,b' , 
- // test
- c
+<textarea class="txtar1" id="txtar1" rows="5">a(
+  // =========================
+  b( 
+ //
+c , d( e(  ) ) ),
 )</textarea>
+  
+<!--  
+<textarea class="txtar1" id="txtar1" rows="5">a(
+  // aa
+  b(
+    'c\'\\d') , e
+)</textarea>  
+-->
 
+<!--
+<textarea class="txtar1" id="txtar1" rows="5">a(
+  // =========================
+  b( c , d( e( f(g) ) ) ),
+)</textarea>
+-->
+  
+<!--  
+<textarea class="txtar1" id="txtar1" rows="5">a(
+  // 
+  b(c,''),
+  d(e(f))
+)</textarea>
+-->
+
+<!--
+<textarea class="txtar1" id="txtar1" rows="4">a(
+  'a,b',
+  // test
+  c
+)</textarea>
+-->
 
 <!-- 
   <textarea class="txtar1" id="txtar1" rows="4">// début
@@ -44,7 +75,7 @@ a(
     xx(
       // dedans
 /*
- commentaire bloc
+   commentaire bloc
 /*
   commentaire bloc
 */
@@ -54,7 +85,7 @@ a(
     // bb
     5
     //cc
-  ),
+  ) , 
   // comment 1
   c(
     ' dd  ',
@@ -71,8 +102,8 @@ f(g)
 //👍😁💥💪👎☀🌞🟥🟩</textarea>
 -->
 
-
 <!--
+
   <textarea class="txtar1" id="txtar1" rows="4">src_javascript(
   ( file_name , core1 ),
   ( file_extension , js ),
@@ -1329,13 +1360,13 @@ function transform(){
   
   var startMicro=performance.now();
   var out1=iterateCharacters(a.value);
-  var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' );
+  var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
  
-  console.log('out1.out=',out1.out);
+//  console.log('out1.out=',out1.out);
   
   var startMicro=performance.now();
   var b=functionToArray2(out1.out);
-  var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' );
+  var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
 
 //  console.log(b);
@@ -1357,15 +1388,17 @@ function transform(){
     var endMicro=performance.now();  console.log('regénérations avec commentaires endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
     
     var dia2fwc2=document.createElement('pre');
-    if(a2fwc2.status===true){
-     dia2fwc2.innerHTML='<hr  />arrayToFunctWithComment2:\n'+a2fwc2.value;
-    }else{
-     dia2fwc2.innerHTML='<hr />arrayToFunctWithComment2:'+a2fwc2.message;
-    }
+    
     if(a2fwc2.status==true && a.value == a2fwc2.value ){
-     dia2fwc2.innerHTML=dia2fwc2.innerHTML+'<br /><b style="color:green;">👍 source et regénérés egaux</b>';
+     dia2fwc2.innerHTML=dia2fwc2.innerHTML+'<b style="color:green;">👍 source et regénérés egaux</b>';
     }else{
-     dia2fwc2.innerHTML=dia2fwc2.innerHTML+'<br /><b style="color:red;">source et regénérés différents</b>';
+     dia2fwc2.innerHTML=dia2fwc2.innerHTML+'<b style="color:red;">source et regénérés différents</b>';
+    }
+    
+    if(a2fwc2.status===true){
+     dia2fwc2.innerHTML=dia2fwc2.innerHTML+'<hr  />arrayToFunctWithComment2:\n'+a2fwc2.value;
+    }else{
+     dia2fwc2.innerHTML=dia2fwc2.innerHTML+'<hr />arrayToFunctWithComment2:'+a2fwc2.message;
     }
     
     
@@ -1390,15 +1423,15 @@ function transform(){
     document.getElementById('resultat1').appendChild(dia2fnc2);
     
 
-    var a2fnc2=arrayToFunctNoComment2(b.value,false)
+    var a2fnc2f=arrayToFunctNoComment2(b.value,false)
     var dia2fnc2=document.createElement('pre');
-    if(a2fnc2.status===true){
-     dia2fnc2.innerHTML='<hr  />arrayToFunctNoComment2 no return:\n'+a2fnc2.value;
+    if(a2fnc2f.status===true){
+     dia2fnc2.innerHTML='<hr  />arrayToFunctNoComment2 no return:\n'+a2fnc2f.value;
     }else{
-     dia2fnc2.innerHTML='<hr />arrayToFunctNoComment2:'+a2fnc2.message;
+     dia2fnc2.innerHTML='<hr />arrayToFunctNoComment2:'+a2fnc2f.message;
     }
     
-    if(d!==null && d.status==true && a2fnc2.status===true && a2fnc2.value == d.value){
+    if(d!==null && d.status==true && a2fnc2f.status===true && a2fnc2f.value == d.value){
      dia2fnc2.innerHTML=dia2fnc2.innerHTML+'<br /><b style="color:green;">👍 sources compactés Egaux</b>';
     }else{
      dia2fnc2.innerHTML=dia2fnc2.innerHTML+'<br /><b style="color:red;">sources compactés différents</b>';

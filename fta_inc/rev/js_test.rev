@@ -1,0 +1,75 @@
+src_javascript(
+  #(commentaire 00),
+  (file_name , js_test),
+  (file_extension , js),
+  (file_path , .),
+  (strict()),
+  source(
+    #(
+      =================
+      commentaire 10 OK
+      =================
+    ),
+    #(commentaire 11),
+    choix(
+      #(
+        =================
+        commentaire 20 OK
+        =================
+      ),
+      si(
+        #(commentaire 30 OK),
+        condition(
+          #(
+            =================
+            commentaire 40 OK
+            =================
+          ),
+          non(
+            #(commentaire 50 OK),
+            (
+              #(commentaire 60 OK),
+              egal(vrai , vrai)
+            ),
+            #(commentaire 51 OK),
+            et(
+              #(commentaire 61 OK),
+              egal(vrai , vrai)
+            )
+          ),
+          #(
+            =================
+            commentaire 41 OK
+            =================
+          ),
+          ou(egal(faux , vrai))
+        ),
+        alors(affecte(a , 1))
+      ),
+      #(
+        =================
+        commentaire 21 OK
+        =================
+      ),
+      sinonsi(
+        #(commentaire 31 OK),
+        condition(
+          #(commentaire 32 OK),
+          egal(true , faux)
+        ),
+        alors(affecte(a , 1))
+      ),
+      #(commentaire 22 OK),
+      sinon(
+        alors(affecte(a , 1)),
+        #(finsinon)
+      ),
+      #(commentaire 23 OK)
+    ),
+    #(commentaire 12),
+    affecte(apresChoix , 1),
+    #(commentaire 13),
+    affecte(a , 1),
+    #(commentaire 14)
+  )
+)

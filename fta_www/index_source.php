@@ -267,7 +267,11 @@ function enregistrer2(){
  var sourcesCompactesIdentiques=false;
  var sourcesIdentiques=false;
  var conversion={'status':false};
+ document.getElementById('sauvegarderLeNormalise').disabled=true;
  clearMessages();
+ 
+ document.getElementById('arrayed').innerHTML='';
+ 
  var zonedonneesComplementaires=document.getElementById('donneesComplementaires');
  zonedonneesComplementaires.innerHTML='';
  
@@ -342,6 +346,7 @@ function enregistrer2(){
     if(sourcesCompactesIdentiques){
      if(a.value==fonctionReecriteAvecRetour1.value){
       logerreur({status:true,message:'<b>👍👍 sources Egaux</b>'});
+      document.getElementById('sauvegarderLeNormalise').disabled=false;
       if(conversion.status==true){
        var arr=writeSourceFile(matriceFonction);
        if(arr.status == false){
@@ -349,6 +354,8 @@ function enregistrer2(){
         console.log(arr);
        }else{
         logerreur({status:true,message:'<b>👍👍👍 programme écrit sur disque</b>'});
+        document.getElementById('sauvegarderLeNormalise').disabled=false;
+
        }
       }
      }else{
@@ -363,11 +370,18 @@ function enregistrer2(){
 
     
  }
-/* 
+ 
+ var zoneContenantLeTableauCaracteres=document.createElement('div');
+ zoneContenantLeTableauCaracteres.style.display='none';
+ zoneContenantLeTableauCaracteres.id='zoneContenantLeTableauCaracteres';
+ 
  var zoneTableauCaracteres=document.createElement('table');
+/* 
  ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,"",tableau1);
- zonedonneesComplementaires.appendChild(zoneTableauCaracteres);
 */ 
+ zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);
+ zonedonneesComplementaires.appendChild(zoneContenantLeTableauCaracteres);
+
  displayMessages()
  
  

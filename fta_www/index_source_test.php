@@ -58,8 +58,7 @@
 // = = = = <source javascript = = = =
 "use strict";
 
-    //todo i=141, tab[i][1]="source"
-    /* 
+     /* 
             // ====================================================================
             // fonction met la zone normalisée à la même hauteur que la zone source
             // ====================================================================
@@ -75,7 +74,7 @@ function memeHauteur(normalise,source){
        t=concat(bou.height,'px');
        zonenormalisée.style.height=t;
 }
-    /* 
+     /* 
             // =====================================================
             // fonction qui ajuste la largeur d'une zone de textarea
             // =====================================================
@@ -98,7 +97,7 @@ function ajusteTailleTextareaContenantSource(nomZone){
        }
        zoneSource.cols=largeur;
 }
-    /* 
+     /* 
             // ==============================================
             // fonction qui convertit et enregistre le source
             // ==============================================
@@ -156,7 +155,7 @@ function enregistrer(){
           }
        }
 }
-    /* 
+     /* 
             // ========================================================
             // fonction appelée après le chargement du fichier source
             // ========================================================
@@ -169,7 +168,7 @@ function afficherFichierSource(source){
           console.log(source);
        }
 }
-    /* 
+     /* 
             // =============================================================================
             // fonction appelée quand on clique sur un bouton pour charger un fichier source
             // =============================================================================

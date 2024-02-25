@@ -13,11 +13,12 @@ src_php(
       //================================================
     ),
     php(
-      #(      
-        //=========aa=====================================
-        //================================================
-      ),
       fonction(
+        #(      
+          //================================================
+          //========= recharger la page courante ===========
+          //================================================
+        ),
         definition(nom(rechargerPageCourante)),
         contenu(
           appelf(
@@ -25,6 +26,17 @@ src_php(
             p(appelf(n(concat) , p('Location: ') , p(BNF)))
           ),
           sortir(0)
+        )
+      ),
+      fonction(
+        definition(nom(supprimerLesValeursDeSession)),
+        contenu(
+          appelf(n(unset) , p($_SESSION[APP_KEY]["user"])),
+          appelf(n(unset) , p($_SESSION[APP_KEY]["userInit"])),
+          appelf(n(unset) , p($_SESSION[APP_KEY]["group"])),
+          appelf(n(unset) , p($_SESSION[APP_KEY]["groupInit"])),
+          appelf(n(unset) , p($_SESSION[APP_KEY]["job"])),
+          appelf(n(unset) , p($_SESSION[APP_KEY]["jobInit"]))
         )
       ),
       #(
@@ -89,13 +101,8 @@ src_php(
                           // ... soit login et password sont KO
                           // et on retire les données de la session
                         ),
-                        appelf(n(unset) , p($_SESSION[APP_KEY]["user"])),
-                        appelf(n(unset) , p($_SESSION[APP_KEY]["userInit"])),
-                        appelf(n(unset) , p($_SESSION[APP_KEY]["group"])),
-                        appelf(n(unset) , p($_SESSION[APP_KEY]["groupInit"])),
-                        appelf(n(unset) , p($_SESSION[APP_KEY]["job"])),
-                        appelf(n(unset) , p($_SESSION[APP_KEY]["jobInit"])),
-                        affecte($_SESSION[APP_KEY][MESSAGES]["errors"][] , 'ERROR')
+                        appelf(n(supprimerLesValeursDeSession)),
+                        affecte($_SESSION[APP_KEY][MESSAGES]["errors"][] , 'ERROR : login ou password faux')
                       )
                     )
                   )
@@ -105,14 +112,7 @@ src_php(
                 condition(
                   (appelf(n(isset) , p($_POST["logout"])))
                 ),
-                alors(
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["user"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["userInit"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["group"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["groupInit"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["job"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["jobInit"]))
-                )
+                alors(appelf(n(supprimerLesValeursDeSession)))
               )
             ),
             appelf(n(rechargerPageCourante))
