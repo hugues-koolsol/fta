@@ -71,11 +71,12 @@ src_php(
                 )
               )
             ),
-            #(            
+            #(
               // ===================================================================
-            // ALTER TABLE `ftatest`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);),
+              // ALTER TABLE `ftatest`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);
+            ),
             add_primary_key(n(tbl_user) , fields(fld_id_user)),
-            #(            
+            #(
               // ===================================================================
               // ALTER TABLE `tbl_user` CHANGE `fld_id_user` `fld_id_user` 
               // BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
@@ -93,7 +94,7 @@ src_php(
                 )
               )
             ),
-            #(            
+            #(
               // ===================================================================
               // ALTER TABLE `ftatest`.`tbl_user` ADD UNIQUE `idx_name` (`fld_name_user`);
             ),

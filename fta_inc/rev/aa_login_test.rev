@@ -1,24 +1,20 @@
 src_php(
   #(
-    // ==============================================
-    // exemple de formulaire de login
-    // en php qui contient aussi du html qui contient du javascript
+    ==============================================
+    exemple de formulaire de login
+    en php qui contient aussi du html qui contient du javascript
   ),
   (file_name , aa_login_test),
   (file_extension , php),
   (file_path , .),
   source(
-    #(      
-      //=========bb=====================================
-      //================================================
-    ),
     php(
+      #(
+        =========================================================
+        ========= FONCTION recharger la page courante ===========
+        =========================================================
+      ),
       fonction(
-        #(      
-          //================================================
-          //========= recharger la page courante ===========
-          //================================================
-        ),
         definition(nom(rechargerPageCourante)),
         contenu(
           appelf(
@@ -27,6 +23,11 @@ src_php(
           ),
           sortir(0)
         )
+      ),
+      #(
+        =========================================================
+        ========= FONCTION supprimer les valeurs de session =====
+        =========================================================
       ),
       fonction(
         definition(nom(supprimerLesValeursDeSession)),
@@ -40,18 +41,20 @@ src_php(
         )
       ),
       #(
-        //================================================
-        //================================================
+        ================================================
+        ===== début du source ==========================
+        ================================================
       ),
       definir(BNF , appelf(n(basename) , p(__FILE__))),
       appelf(n(require_once) , p('aa_include.php')),
       appelf(n(session_start)),
+      #(
+        =====================
+        si on est en post ...
+        =====================
+      ),
       choix(
         si(
-          #(
-            // =====================
-            // si on est en post ...
-          ),
           condition(
             (appelf(n(isset) , p($_POST))),
             et(
@@ -62,8 +65,9 @@ src_php(
             appelf(n(start_session_messages)),
             choix(
               #(
-                // =================================================
-                // si les données login et password sont renseignées
+                =================================================
+                si les données login et password sont renseignées
+                =================================================
               ),
               si(
                 condition(
@@ -74,32 +78,37 @@ src_php(
                   choix(
                     si(
                       #(
-                        // ===============================================
-                        // ici on ne casse pas trop la tête,
-                        // le test de validité du login et du mot de passe
-                        // pourra avantageusement être remplacé
+                        ===============================================
+                        ici on ne casse pas trop la tête,
+                        le test de validité du login et du mot de passe
+                        pourra avantageusement être remplacé
+                        ===============================================
                       ),
                       condition((egal('admin' , $_POST["login"])) , et(egal($_POST["password"] , 'admin'))),
                       alors(
                         #(
-                          // =============================
-                          // ... soit login et password sont bons
-                          // et on met les données en session
+                          ====================================
+                          ... soit login et password sont bons
+                          et on met  les  données  en  session
+                          ====================================
                         ),
                         affecte($_SESSION[APP_KEY]["user"] , 1),
                         affecte($_SESSION[APP_KEY]["userInit"] , 1),
                         affecte($_SESSION[APP_KEY]["group"] , 1),
                         affecte($_SESSION[APP_KEY]["groupInit"] , 1),
                         affecte($_SESSION[APP_KEY]["job"] , 1),
-                        affecte($_SESSION[APP_KEY]["jobInit"] , 1)
+                        affecte($_SESSION[APP_KEY]["jobInit"] , 1),
+                        #(Puis on attend une petite seconde pour voir si l'utilisateur est patient),
+                        appelf(n(sleep) , p(1))
                       )
                     ),
                     sinon(
                       alors(
                         #(
-                          // =============================
-                          // ... soit login et password sont KO
-                          // et on retire les données de la session
+                          ======================================
+                          ... soit login et password sont KO
+                          et on retire les données de la session
+                          ======================================
                         ),
                         appelf(n(supprimerLesValeursDeSession)),
                         affecte($_SESSION[APP_KEY][MESSAGES]["errors"][] , 'ERROR : login ou password faux')
@@ -115,14 +124,23 @@ src_php(
                 alors(appelf(n(supprimerLesValeursDeSession)))
               )
             ),
+            #(
+              ========================================
+              TOUJOURS faire un redirect après un POST
+              ========================================
+            ),
             appelf(n(rechargerPageCourante))
           )
         )
       ),
+      #(),
+      #(),
+      #(),
       #(
-        //=============================================================
-        // si on appel cette page en GET avec une (a)action=logout,
+        //========================================================
+        // si on appel cette page en GET avec une (a)ction=logout,
         // on sort et on redirige sur cette page
+        //========================================================
       ),
       choix(
         si(
@@ -140,12 +158,8 @@ src_php(
                   et(egal($_GET["a"] , 'logout'))
                 ),
                 alors(
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["user"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["userInit"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["group"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["groupInit"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["job"])),
-                  appelf(n(unset) , p($_SESSION[APP_KEY]["jobInit"])),
+                  #(on supprime et on recharge),
+                  appelf(n(supprimerLesValeursDeSession)),
                   appelf(n(rechargerPageCourante))
                 )
               )
@@ -154,19 +168,19 @@ src_php(
         )
       ),
       #(
-        // ======================================================== 
-        // affichage de l'html 
-        // ========================================================
+        ======================================================== 
+        affichage de l'html 
+        ========================================================
       ),
-      affecte($o1 , ' '),
+      affecte($o1 , ''),
       affecte($a , array(('title' , 'login') , ('description' , 'login'))),
       #(
-        /*
-        //ou bien 
+        ==============================================================
+        ou bien 
         affecte($a , []),
         appelf(n(pushkv) , p($a) , p('title') , p('login')),
         appelf(n(pushkv) , p($a) , p('description') , p('login')),
-        */
+        ==============================================================
       ),
       appelf(r($o1) , n(html_header1) , p($a)),
       appelf(
@@ -176,19 +190,17 @@ src_php(
         p(appelf(n(session_messages)))
       ),
       #(
-        // ========================================================
-        // on imprime le l'entête ...
+        ========================================================
+        on imprime le l'entête ...
       ),
       appelf(n(print) , p($o1)),
-      #(      
-        //,  ...   puis,       on,
-        le,
-        reinitialise,
-      ),
-      affecte($o1 , ' '),
       #(
-        // ======================================================== 
-        // l'utilisateur est-il déjà connecté ? ...
+        ... puis on le reinitialise,
+      ),
+      affecte($o1 , ''),
+      #(
+        ======================================================== 
+        l'utilisateur est-il déjà connecté ? ...
       ),
       choix(
         si(
@@ -198,8 +210,9 @@ src_php(
           ),
           alors(
             #(
-              // ======================================================== 
-              // ... si oui on lui affiche un formulaire de deconnexion
+              ======================================================== 
+              ... si oui on lui affiche un formulaire de DEconnexion
+              ======================================================== 
             ),
             affecte(
               $o1,
@@ -223,8 +236,9 @@ src_php(
         sinon(
           alors(
             #(
-              // ======================================================== 
-              // ... sinon on lui affiche un formulaire de connexion
+              ======================================================== 
+              ... sinon on lui affiche un formulaire de connexion
+              ======================================================== 
             ),
             affecte(
               $o1,
@@ -254,8 +268,9 @@ src_php(
                   (data-lang , 'fr'),
                   source(
                     #(
-                      // ===========================================
-                      // dans ce javascript, on définit une fonction
+                      ===========================================
+                      dans ce javascript, on définit une fonction
+                      ===========================================
                     ),
                     fonction(
                       definition(nom(checkSubmit)),
@@ -295,8 +310,9 @@ src_php(
         )
       ),
       #(
-        // ========================
-        // on imprime le formulaire
+        ========================
+        on imprime le formulaire
+        ========================
       ),
       appelf(
         n(concat),
@@ -305,7 +321,7 @@ src_php(
         p(appelf(n(html_footer1)))
       ),
       appelf(n(print) , p($o1)),
-      #(//  ..., puis on le reinitialise ),
+      #(..., puis on le reinitialise ),
       affecte($o1 , ' '),
       appelf(n(clear_session_messages)),
       #(fin du php)

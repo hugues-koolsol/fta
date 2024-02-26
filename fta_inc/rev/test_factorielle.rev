@@ -1,12 +1,12 @@
 src_html(
-  #( 
+  #(
     =============================== 
     description du fichier produit 
   ),
   (file_name , test_factorielle),
   (file_extension , html),
   (file_path , .),
-  #( 
+  #(
     ====================
     source de ce fichier
   ),
@@ -20,11 +20,12 @@ src_html(
         title('test factorielle'),
         meta((name , description) , (content , 'a')),
         link((rel , 'stylesheet') , (href , index.css)),
-        #( 
+        #(
           ====================================================
           script optionnel ici, c'est seulement pour l'exemple
           ====================================================
         ),
+        #(test),
         script((type , 'text/javascript') , (src , 'js/core3.js'))
       ),
       body(
@@ -39,7 +40,7 @@ src_html(
           (type , 'text/javascript'),
           (data-lang , 'fr'),
           source(
-            #( 
+            #(
               ========================================================
               dans ce javascript, on définit une fonction factorielle
               ========================================================
@@ -64,25 +65,30 @@ src_html(
                 revenir(a)
               )
             ),
-            #( 
+            #(
               ========================================================
               puis on utilise cette fonction
               ========================================================
             ),
             declare(zone , {}),
             declare(valeur , 5),
-            #( ===============================================),
-            #( on affecte la valeur factorielle(5) à la valeur),
+            #(===============================================),
+            #(on affecte la valeur factorielle(5) à la valeur),
             affecte(valeur , appelf(n(factorielle) , p(valeur))),
-            #( ===========================),
-            #( puis on affiche le résultat),
+            #(===========================),
+            #(puis on affiche le résultat),
             affecte(zone , appelf(n(document.getElementById) , p('resultat'))),
             affecte(zone.innerHTML , valeur),
-            #(            
-
+            #(#
               en lisp la fonction factorielle est ecrite comme ça :
               =================================================
-              (defun factorial (n) ( if (<= n 1) (1) ( * n ( factorial (- n 1) ) ) ) )
+              (
+                defun factorial (n) ( 
+                 if (<= n 1) 
+                  (1) 
+                  ( * n ( factorial (- n 1) ) ) 
+                ) 
+              )
               =================================================
               Je trouve cette syntaxe un peu bizarre car le if qui contient 
               -une condition
@@ -95,8 +101,10 @@ src_html(
               Ce n'est que mon avis et ce n'est qu'une question de goût !
             )
           )
-        )
-      )
+        ),
+        #(dernière ligne du body)
+      ),
+      #(dernière ligne du html)
     )
   )
 )

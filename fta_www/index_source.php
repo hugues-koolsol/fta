@@ -348,7 +348,7 @@ function enregistrer2(){
       logerreur({status:true,message:'<b>👍👍 sources Egaux</b>'});
       document.getElementById('sauvegarderLeNormalise').disabled=false;
       if(conversion.status==true){
-       var arr=writeSourceFile(matriceFonction);
+       var arr=writeSourceFile(conversion);
        if(arr.status == false){
         logerreur({status:false,message:'il y a eu un problème d\'écriture sur disque'});
         console.log(arr);
@@ -384,112 +384,8 @@ function enregistrer2(){
 
  displayMessages()
  
- 
- 
 }
-//=====================================================================================================================
-function enregistrer(){
- try{
-  console.timeEnd();
- }catch(e){}
- console.time();
- console.timeLog();
- var comparaisonSourcesSansCommentairesOK=false;
- document.getElementById('sauvegarderLeNormalise').disabled=true;
- clearMessages();
- var source=document.getElementById("zonesource");
- document.getElementById('message_erreur').innerHTML='';
- 
- var testSourceReconstruit=compareSourceEtReconstruit(source.value);
- console.timeLog();
- if(testSourceReconstruit.status==true){
-  console.timeLog();
-  var arr=functionToArray(source.value,true);
-  voirTableau(arr.value,'arrayed');
-  if(arr.status===true){
-   arr=functionToArray(source.value,false);
-   if(arr.status==true){
-    var srcNormalise=arrayToFunctNormalize(arr.value,true);
-    console.timeLog();
-    if(srcNormalise.status==true){
-     document.getElementById("normalise").value=srcNormalise.value;
-    
-     var arrnorm=functionToArray(srcNormalise.value,true);
-     
-     var sourceNormSansCommentaires=arrayToFunctNoComment(arrnorm.value);
-     var sourceOriginalSansCommentaires=arrayToFunctNoComment(arr.value);
-    
-//     console.log( 'sourceNormSansCommentaires=' , sourceNormSansCommentaires.value , 'sourceOriginalSansCommentaires=' , sourceOriginalSansCommentaires.value );
 
-     if( sourceNormSansCommentaires.value == sourceOriginalSansCommentaires.value ){
-      comparaisonSourcesSansCommentairesOK=true;
-     }
-     console.timeLog();
-     ajusteTailleTextareaContenantSource('normalise');
-     memeHauteur('normalise','zonesource');
-     console.timeLog();
-     arr=writeSourceFile(arr);
-     if(arr.status == false){
-      console.log(arr);
-     }else{
-      var retnorm=compareNormalise( 'zonesource' , 'normalise' , comparaisonSourcesSansCommentairesOK );
-     }
-    }else{
-      console.log(arr);
-    }
-   }
-  }else{
-   if(arr.levelError && arr.levelError===true){
-    document.getElementById('message_erreur').innerHTML+='\n'+arr.message;
-   }
-   if(arr.message && arr.message!==''){
-    document.getElementById('message_erreur').innerHTML+='\n'+arr.message;
-   }
-  
-   var srcNormalise=arrayToFunctNormalize(arr.value,true);
-   if(srcNormalise.status==true){
-    document.getElementById("normalise").value=srcNormalise.value;
-    ajusteTailleTextareaContenantSource('normalise');
-    memeHauteur('normalise','zonesource');
-   }
-   
-  }
- }else{
-  clearMessages();
-  var arr=functionToArray(source.value,false);
-  if(arr.status===true){
-   voirTableau(arr.value,'arrayed');
-   var srcNormalise=arrayToFunctNormalize(arr.value,true);
-   if(srcNormalise.status==true){
-    document.getElementById("normalise").value=srcNormalise.value;
-    var obj=convertSource(arr);
-    ajusteTailleTextareaContenantSource('normalise');
-    memeHauteur('normalise','zonesource');
-    
-    var arrnorm=functionToArray(srcNormalise.value,true);
-    
-    var sourceNormSansCommentaires=arrayToFunctNoComment(arrnorm.value);
-    var sourceOriginalSansCommentaires=arrayToFunctNoComment(arr.value);
-   
-//     console.log( 'sourceNormSansCommentaires=' , sourceNormSansCommentaires.value , 'sourceOriginalSansCommentaires=' , sourceOriginalSansCommentaires.value );
-
-    if( sourceNormSansCommentaires.value == sourceOriginalSansCommentaires.value ){
-     comparaisonSourcesSansCommentairesOK=true;
-    }
-    
-    
-    
-    
-    var retnorm=compareNormalise( 'zonesource' , 'normalise' , comparaisonSourcesSansCommentairesOK );
-   }else{
-    debugger;
-   }
-  }
- }
- console.timeLog();
- 
- displayMessages()
-}
 //=====================================================================================================================
 function afficherFichierSource(source){
  if(source.status==true){

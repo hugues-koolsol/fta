@@ -416,21 +416,30 @@ function convertSource(objMatSrc){
  
  
  for(var i=0;i<l01;i++){
-  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]==''){ //fonctions de niveau 1 vides
-   for(var j=i;j<objMatSrc.value.length;j++){
-    if(objMatSrc.value[j][7]==objMatSrc.value[i][0] && objMatSrc.value[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
-//       console.log(JSON.stringify(objMatSrc.value[j]));
-     if(objMatSrc.value[j][1]=='file_name' && objMatSrc.value[j+1][1]!=''){
-      file_name=objMatSrc.value[j+1][1];
-     }
-     if(objMatSrc.value[j][1]=='file_extension' && objMatSrc.value[j+1][1]!=''){
-      file_extension=objMatSrc.value[j+1][1];
-     }
-     if(objMatSrc.value[j][1]=='file_path' && objMatSrc.value[j+1][1]!=''){
-      file_path=objMatSrc.value[j+1][1];
+  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1){
+   if( objMatSrc.value[i][1]==''){ //fonctions de niveau 1 vides
+    for(var j=i;j<objMatSrc.value.length;j++){
+     if(objMatSrc.value[j][7]==objMatSrc.value[i][0] && objMatSrc.value[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
+ //       console.log(JSON.stringify(objMatSrc.value[j]));
+      if(objMatSrc.value[j][1]=='file_name' && objMatSrc.value[j+1][1]!=''){
+       file_name=objMatSrc.value[j+1][1];
+      }
+      if(objMatSrc.value[j][1]=='file_extension' && objMatSrc.value[j+1][1]!=''){
+       file_extension=objMatSrc.value[j+1][1];
+      }
+      if(objMatSrc.value[j][1]=='file_path' && objMatSrc.value[j+1][1]!=''){
+       file_path=objMatSrc.value[j+1][1];
+      }
      }
     }
+   }else if( objMatSrc.value[i][1]!=''){ //fonctions de niveau 1 NON vides
+    if(objMatSrc.value[i][1]=='#'){
+    }else if(objMatSrc.value[i][1]=='source'){
+    }else{
+     return logerreur({status:false,id:i,message:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.value[i])});
+    }
    }
+
   }
   if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]=='source'){ // fonction de niveau 1 = source
    if(idJs==-1){
@@ -442,7 +451,6 @@ function convertSource(objMatSrc){
   if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]=='concatFichier' && objMatSrc.value[i][8]==1){
    tabConcatFichier.push(objMatSrc.value[i+1][1])
   }
-  
  }
  var t='';
  if(file_name!='' && file_path!='' && idJs>0){
@@ -451,7 +459,7 @@ function convertSource(objMatSrc){
    for(var i=idJs+1;i<objMatSrc.value.length;i++){
     if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='php'){
      php_contexte_commentaire_html=false;
-     retProgrammeSource=parsePhp0(objMatSrc.value,i,objMatSrc.value[idJs][10]);
+     retProgrammeSource=parsePhp0(objMatSrc.value , i , 0 );
      if(retProgrammeSource.status==true){
       t+='<?php\n'+retProgrammeSource.value+'\n?>';
      }else{
@@ -459,7 +467,8 @@ function convertSource(objMatSrc){
      }
     }else if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='html'){
      php_contexte_commentaire_html=true;
-     retProgrammeSource=tabToHtml1(objMatSrc.value,i,objMatSrc.value[idJs][10],true);
+     //                             tab             , id , offsetLigne               , noHead,niveau
+     retProgrammeSource=tabToHtml1( objMatSrc.value , i  , objMatSrc.value[idJs][10] , true  , 0    );
      if(retProgrammeSource.status==true){
       t+='\n'+retProgrammeSource.value+'\n';
      }else{
@@ -467,6 +476,8 @@ function convertSource(objMatSrc){
      }
     }
    }
+   t=t.replace(/\/\*\*\//g,'');
+   t=t.replace(/\?><\?php/g,'');
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){
    retProgrammeSource=parseJavascript0(objMatSrc.value ,idJs+1 , 0 );
@@ -475,16 +486,18 @@ function convertSource(objMatSrc){
    }else{
     return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
    }
+   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_html'  && (file_extension=='html')){
-   retProgrammeSource=tabToHtml1(objMatSrc.value,idJs+1,objMatSrc.value[idJs][10]);
+   //                             tab             , id     , offsetLigne               , noHead , niveau
+   retProgrammeSource=tabToHtml1( objMatSrc.value , idJs+1 , objMatSrc.value[idJs][10] , false  , 0      );
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{
     return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
    }
+   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }
 //console.log('t=',t);
-  return logerreur({status:true,value:retProgrammeSource.value,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
  }else{
   return logerreur({status:false,id:0,message:'file_name, file_path and source must be filled'});
  }
@@ -535,83 +548,100 @@ function writeRevFile(fileName, value){
  return logerreur({status:true});  
 }
 //=====================================================================================================================
-function writeSourceFile(source,objArr){
+function writeSourceFile(obj){
  var message='';
  var file_name='';
  var file_extension='';
  var file_path='';
  var type_source='';
  var idJs=-1;
- var tabConcatFichier=[];
- var retProgrammeSource={};
- var obj={};
- var startMicro=performance.now();
- obj=convertSource(source,objArr);
- var endMicro=performance.now();  console.log('conversion du source rev en source programme endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
- if(obj.status==true){
-  var r = new XMLHttpRequest();
-  r.open("POST",'za_ajax.php?'+type_source,true);
-  r.timeout=6000;
-  r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-  r.onreadystatechange = function () {
-   if (r.readyState != 4 || r.status != 200) return;
-   try{
-    var jsonRet=JSON.parse(r.responseText);
-    if(jsonRet.status=='OK'){
-     if(obj.tabConcatFichier.length>0){
-      concateneFichiers(obj.tabConcatFichier,obj.file_name,obj.file_extension,obj.file_path)
-     }
-     return;
-    }else{
-     display_ajax_error_in_cons(jsonRet);
-     console.log(r);
-     alert('BAD job !');
-     return;
+// var tabConcatFichier=[];
+// var obj={};
+
+ var r = new XMLHttpRequest();
+ r.open("POST",'za_ajax.php?'+type_source,true);
+ r.timeout=6000;
+ r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+ r.onreadystatechange = function () {
+  if (r.readyState != 4 || r.status != 200) return;
+  try{
+   var jsonRet=JSON.parse(r.responseText);
+   if(jsonRet.status=='OK'){
+    if(obj.tabConcatFichier.length>0){
+     concateneFichiers(obj.tabConcatFichier,obj.file_name,obj.file_extension,obj.file_path)
     }
-   }catch(e){
-    console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
+    return;
+   }else{
+    display_ajax_error_in_cons(jsonRet);
+    console.log(r);
+    alert('BAD job !');
     return;
    }
-  };
-  r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
-  r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
-  var ajax_param={
-   call:{
-    lib                       : 'core'   ,
-    file                      : 'file'  ,
-    funct                     : 'writeFile' ,
-   },
-   value                     : obj.value     ,
-   file_name                 : obj.file_name       ,
-   file_extension            : obj.file_extension  ,
-   file_path                 : obj.file_path       ,
+  }catch(e){
+   console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
+   return;
   }
-  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
-  return logerreur({status:true});  
- }else{
-  return logerreur({status:false});  
+ };
+ r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
+ r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
+ var ajax_param={
+  call:{
+   lib                       : 'core'   ,
+   file                      : 'file'  ,
+   funct                     : 'writeFile' ,
+  },
+  value                     : obj.value     ,
+  file_name                 : obj.file_name       ,
+  file_extension            : obj.file_extension  ,
+  file_path                 : obj.file_path       ,
  }
- return;
+ r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+ return logerreur({status:true});  
 }
-
-
-
 //=====================================================================================================================
 function traiteCommentaire2(texte,niveau,ind){
  var t='';
  var multiLigne=false;
  var ajouterUneLigneViergeALaFin=false;
  var ajouterUneLigneViergeAuDebut=false;
+ var numTest=-1;
  if(texte.indexOf('\n')>=0){
   multiLigne=true;
  }
  var tab=texte.split('\n');
- var numTest=-1;
+ var l01=tab.length;
+ if(multiLigne && texte.length>=1 && texte.substr(0,1)=='#'){
+  // trouver le premier non blanc
+  var t='';
+  var min=99999;
+  for(var i=1;i<l01;i++){
+   var ligne=tab[i];
+   for(j=0;j<ligne.length;j++){
+    if(ligne.substr(j,1)==' '){
+    }else{
+     if(j<min){
+      min=j
+     }
+     break;
+    }
+   }
+   
+  }
+  if(min>0){
+   for(var i=1;i<l01;i++){
+    tab[i]=tab[i].substr(min);
+   }
+   texte=tab.join('\n');
+  }
+  console.log( texte , min)
+  
+  
+  return texte;
+ }
  if(ind==numTest){
   console.log('"'+texte+'"');
  }
  var newTab=[];
- var l01=tab.length;
  for(var i=0;i<l01;i++){
     t='';
     // on envève les espaces au début
@@ -626,13 +656,85 @@ function traiteCommentaire2(texte,niveau,ind){
      if(t!=''){
       if(multiLigne){
        newTab.push('  '.repeat(niveau+1)+t);
-       newTab.push('  '.repeat(niveau));
+       newTab.push((niveau>=0?'  '.repeat(niveau):''));
       }else{
        newTab.push(t);
       }       
      }else{
       if(multiLigne){
-       newTab.push('  '.repeat(niveau));
+       newTab.push((niveau>=0?'  '.repeat(niveau):''));
+      }else{
+       newTab.push(t);
+      }
+     }
+    }else if(i==0){
+     if(t!==''){
+      if(multiLigne){
+       t='  '.repeat(niveau+1)+t;
+       newTab.unshift('');
+       newTab.push(t);
+      }else{
+       newTab.push(t);
+      }
+     }else{
+      newTab.push(t);
+     }
+    }else{
+     t='  '.repeat(niveau+1)+t;
+     newTab.push(t);
+    }
+    if(ind==numTest){
+     console.log('t="'+t+'"');
+    }
+    
+ }
+ if(ind==numTest){
+  console.log('tab=',tab);
+ }
+ t=newTab.join('\n');
+ return t;
+}
+
+//=====================================================================================================================
+function ttcomm1(texte,niveau,ind){
+ var t='';
+ var multiLigne=false;
+ var ajouterUneLigneViergeALaFin=false;
+ var ajouterUneLigneViergeAuDebut=false;
+ var numTest=-1;
+ if(texte.indexOf('\n')>=0){
+  multiLigne=true;
+ }
+ var tab=texte.split('\n');
+ var l01=tab.length;
+ if(multiLigne && texte.length>=1 && texte.substr(0,1)=='#'){
+  return texte;
+ }
+ if(ind==numTest){
+  console.log('"'+texte+'"');
+ }
+ var newTab=[];
+ for(var i=0;i<l01;i++){
+    t='';
+    // on envève les espaces au début
+    for(var j=0;j<tab[i].length;j++){
+     if(tab[i].substr(j,1)==' '){
+     }else{
+      t+=tab[i].substr(j);
+      break;
+     }
+    }
+    if(i==l01-1){
+     if(t!=''){
+      if(multiLigne){
+       newTab.push('  '.repeat(niveau+1)+t);
+       newTab.push((niveau>=0?'  '.repeat(niveau):''));
+      }else{
+       newTab.push(t);
+      }       
+     }else{
+      if(multiLigne){
+       newTab.push((niveau>=0?'  '.repeat(niveau):''));
       }else{
        newTab.push(t);
       }
@@ -730,13 +832,13 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     if(arr[i][1]==DEBUTCOMMENTAIRE){
      if(coloration){
       if(retourLigne){
-       t+='<span style="color:darkgreen;background-color:lightgrey;">'+arr[i][1]+'('+traiteCommentaire2(arr[i][13],arr[i][3],i)+')</span>';
+       t+='<span style="color:darkgreen;background-color:lightgrey;">'+arr[i][1]+'('+ttcomm1(arr[i][13],arr[i][3],i)+')</span>';
       }else{
        t+='<span style="color:darkgreen;background-color:lightgrey;">'+arr[i][1]+'()</span>';
       }
      }else{
       if(retourLigne){
-       t+=''+arr[i][1]+'('+traiteCommentaire2(arr[i][13],arr[i][3],i)+')';
+       t+=''+arr[i][1]+'('+ttcomm1(arr[i][13],arr[i][3],i)+')';
       }else{
        t+=''+arr[i][1]+'()';
       }

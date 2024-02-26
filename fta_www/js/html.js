@@ -20,7 +20,7 @@ var global_enteteTableau=[
 ];
 */
 //=====================================================================================================================
-function tabToHtml1(tab,id,offsetLigne,noHead){
+function tabToHtml1(tab,id,noHead,niveau){
  // recherche du premier tag "html"
  var startId=id;
  for(var i=id;i<tab.length;i++){
@@ -30,11 +30,11 @@ function tabToHtml1(tab,id,offsetLigne,noHead){
    }
  }
  
- var ob=tabToHtml0(tab,startId,false,false,false,offsetLigne,noHead,false);
+ var ob=tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
  return ob;
 }
 //=====================================================================================================================
-function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHead , dansPhp ){
+function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , niveau){
  var t='';
  var i=0;
  var j=0;
@@ -62,7 +62,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
  if(dansPhp&&tab[id][1]=='source'){ // i18
   // analyse de source javascript
   t+='<?php ';
-  ob=parseJavascript0(tab,id,offsetLigne+tab[id][13]);
+  ob=parseJavascript0(tab,id,0);
   parsePhp0(tab,id,0);
   if(ob.status===true){
    t+=ob.value;
@@ -81,7 +81,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
 //  console.error('todo')
 //  bug();
   php_contexte_commentaire_html=false;
-  ob=parseJavascript0(tab,id+1,offsetLigne+tab[id][13]);
+  ob=parseJavascript0(tab,id+1,0);
   php_contexte_commentaire_html=true;
   if(ob.status===true){
    t+=ob.value;
@@ -97,10 +97,10 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
 
   if(tab[id][1]=='html'){
   }else{
-   t+=espaces2(tab[id][3]);
+   t+=espaces2(niveau);
   }
   if(tab[id][1]=='#'){
-   temp+='<!-- '+tab[id][13];
+   temp+='<!-- '+traiteCommentaire2(tab[id][13],niveau,id);
   }else if(tab[id][1]=='php'){
    temp+='';
   }else{
@@ -127,10 +127,10 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
         temp+=' '+tab[i+1][1]+''; // contenteditable , selected
        }
       }else{
-       return logerreur({status:false,value:t,message:'1 les propriété d\'un tag html doivent contenir une ou deux constantes en ligne '+(tab[i][13]+offsetLigne),line:tab[i][13]+offsetLigne});  
+       return logerreur({status:false,id:i,value:t,message:'1 les propriété d\'un tag html doivent contenir une ou deux constantes'});  
       }
      }else{
-      return logerreur({status:false,value:t,message:'2 les propriété d\'un tag html doivent contenir une ou deux constantes en ligne '+(tab[i][13]+offsetLigne),line:tab[i][13]+offsetLigne});  
+      return logerreur({status:false,id:i,value:t,message:'2 les propriété d\'un tag html doivent contenir une ou deux constantes'});  
      }
     }
     if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...)
@@ -143,17 +143,11 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
   }
   if(tab[id][1]=='html' && doctype!='' ){
    if(id>0){
-    if(tab[id][15]>=niveauNouvelleLigne){
-//     t+=espaces2(tab[id][3]);
-    }
     t+=doctype+'\n';
     t+=temp;
    }
   }else{
    if(id>0){
-    if(tab[id][15]>=niveauNouvelleLigne){
-//     t+=espaces2(tab[id][3]);
-    }
     t+=temp;
    }
   }
@@ -168,8 +162,9 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
    for(i=id+1;i<tab.length;i++){
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
-     
-      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,offsetLigne,noHead,dansPhp); // appel récursif
+      niveau++;
+      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
+      niveau--;
       
       if(ob.status===true){
        t+=ob.value;
@@ -183,22 +178,17 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , offsetLigne ,noHea
       if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
       }else{
        // constante
-       t+=espaces2(tab[i][3]);
+       t+=espaces2(niveau+1);
        t+=tab[i][1];
       }
      }
     }
    }
-/*   
-   if(tab[id][3]>niveauNouvelleLigne){
-    t+=espaces2(tab[id][3]);
-   }
-*/   
    if(id>0){
     if(noHead && tab[id][1]=='html'){
      t+='\n';
     }else{
-     t+=espaces2(tab[id][3]);
+     t+=espaces2(niveau);
      if(tab[id][1]=='php'){
      }else{
       t+='</'+tab[id][1]+'>';

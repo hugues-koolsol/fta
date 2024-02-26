@@ -20,13 +20,13 @@ var global_enteteTableau=[
 
 */
 //=====================================================================================================================
-function tabToSql1(tab,id,offsetLigne){
+function tabToSql1(tab,id){
  
- var ob=tabToSql0(tab,id,offsetLigne,false);
+ var ob=tabToSql0(tab,id,false);
  return ob;
 }
 //=====================================================================================================================
-function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
+function tabToSql0( tab ,id , inFieldDef ){
  var t='';
  var i=0;
  var j=0;
@@ -131,7 +131,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
        
        if(tab[j][1]=='new_def' ){
         inFieldDef=true;
-        obj=tabToSql0(tab,j,offsetLigne , inFieldDef);
+        obj=tabToSql0(tab,j, inFieldDef);
         inFieldDef=false;
         if(obj.status===true){
          
@@ -292,7 +292,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
         t+=' (';
         
         inFieldDef=true;
-        obj=tabToSql0(tab,j,offsetLigne , inFieldDef);
+        obj=tabToSql0(tab,j, inFieldDef);
         inFieldDef=false;
         if(obj.status===true){
          t+='\n';
@@ -387,7 +387,7 @@ function tabToSql0( tab ,id , offsetLigne , inFieldDef ){
     
    }else if(tab[i][1]=='transaction'){
     
-    obj=tabToSql0(tab,i,offsetLigne , inFieldDef);
+    obj=tabToSql0(tab,i, inFieldDef);
     if(obj.status===true){
      t+='\n';
      t+='START TRANSACTION;';

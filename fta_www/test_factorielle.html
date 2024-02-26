@@ -1,82 +1,90 @@
 <!DOCTYPE html>
 <html lang="fr">
-      <head>
-        <meta charset="utf8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>
-          test factorielle
-        </title>
-        <meta name="description" content="a" />
-        <link rel="stylesheet" href="index.css" />
-        <!--  
-          ====================================================
-          script optionnel ici, c'est seulement pour l'exemple
-          ====================================================
-         -->
-        <script type="text/javascript" src="js/core3.js"></script>
-      </head>
-      <body>
-        <div>
-          Si cette page fonctionne, il y aura écrit "120" ci dessous !
-        </div>
-        <div id="resultat"></div>
-        <!-- 
-          ====================================
-          dans ce html, on écrit du javascript
-          ====================================
-         -->
-        <script type="text/javascript" data-lang="fr">
+  <head>
+    <meta charset="utf8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      test factorielle
+    </title>
+    <meta name="description" content="a" />
+    <link rel="stylesheet" href="index.css" />
+    <!-- 
+      ====================================================
+      script optionnel ici, c'est seulement pour l'exemple
+      ====================================================
+     -->
+    <!-- test -->
+    <script type="text/javascript" src="js/core3.js"></script>
+  </head>
+  <body>
+    <div>
+      Si cette page fonctionne, il y aura écrit "120" ci dessous !
+    </div>
+    <div id="resultat"></div>
+    <!-- 
+      ====================================
+      dans ce html, on écrit du javascript
+      ====================================
+     -->
+    <script type="text/javascript" data-lang="fr">
 // = = = = <source javascript = = = =
 "use strict";
 
-      /*  
-              ========================================================
-              dans ce javascript, on définit une fonction factorielle
-              ========================================================
-             */
+/*
+  ========================================================
+  dans ce javascript, on définit une fonction factorielle
+  ========================================================
+*/
 function factorielle(nombre){
-        var a=0;
-        var b=0;
-        if((nombre == 0)){
-           a=1;
-        }else{
-           b=factorielle(nombre-1);
-           a=nombre*b;
-        }
-        return a;
+  var a=0;
+  var b=0;
+  if((nombre == 0)){
+    a=1;
+  }else{
+    b=factorielle(nombre-1);
+    a=nombre*b;
+  }
+  return a;
 }
-      /*  
-              ========================================================
-              puis on utilise cette fonction
-              ========================================================
-             */
-      var zone={};
-      var valeur=5;
-      /*  =============================================== */
-      /*  on affecte la valeur factorielle(5) à la valeur */
-      valeur=factorielle(valeur);
-      /*  =========================== */
-      /*  puis on affiche le résultat */
-      zone=document.getElementById('resultat');
-      zone.innerHTML=valeur;
-      /*             
+/*
+  ========================================================
+  puis on utilise cette fonction
+  ========================================================
+*/
+var zone={};
+var valeur=5;
+/*===============================================*/
+/*on affecte la valeur factorielle(5) à la valeur*/
+valeur=factorielle(valeur);
+/*===========================*/
+/*puis on affiche le résultat*/
+zone=document.getElementById('resultat');
+zone.innerHTML=valeur;
+/*#
+en lisp la fonction factorielle est ecrite comme ça :
+=================================================
+(
+  defun factorial (n) ( 
+   if (<= n 1) 
+    (1) 
+    ( * n ( factorial (- n 1) ) ) 
+  ) 
+)
+=================================================
+Je trouve cette syntaxe un peu bizarre car le if qui contient 
+-une condition
+-une valeur si frai
+-une valeur si faux
+n'inclut pas ces 3 éléments dans des parenthèses
 
-              en lisp la fonction factorielle est ecrite comme ça :
-              =================================================
-              (defun factorial (n) ( if (<= n 1) (1) ( * n ( factorial (- n 1) ) ) ) )
-              =================================================
-              Je trouve cette syntaxe un peu bizarre car le if qui contient 
-              -une condition
-              -une valeur si frai
-              -une valeur si faux
-              n'inclut pas ces 3 éléments dans des parenthèses
-
-              Même si la définition de la fonction factorielle plus haut est plus verbeuse que
-              celle écrite en lisp, je la préfère. 
-              Ce n'est que mon avis et ce n'est qu'une question de goût !
-             */
+Même si la définition de la fonction factorielle plus haut est plus verbeuse que
+celle écrite en lisp, je la préfère. 
+Ce n'est que mon avis et ce n'est qu'une question de goût !
+*/
 // = = = = source javascript> = = = =
 
-        </script>
-      </body>
-    </html>
+    </script>
+    <!-- dernière ligne du body -->
+  </body>
+  <!-- dernière ligne du html -->
+</html>
