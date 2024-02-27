@@ -714,9 +714,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
        if(tab[j][1]=='num'){
         var numSql=tab[j+1][1];
         if(numSql=='1'){
-         strSql='SELECT fld_id_user ';
-         strSql+='FROM `fta`.`tbl_user` `T0` ';
-         strSql+='WHERE `T0`.`fld_name_user` LIKE \\\'%%PAR0%%\\\' ';
+         strSql='SELECT fld_id_user , fld_email_user , fld_password_user ';
+         strSql+='FROM `ftatest`.`tbl_user` `T0` ';
+         strSql+='WHERE `T0`.`fld_email_user` LIKE \\\'%%PAR0%%\\\' ';
          strSql+=' AND `T0`.`fld_password_user` LIKE \\\'%%PAR1%%\\\' ';
          strSql+=' AND \\\'toto\\\' = %%PAR2%% ';
          strSql+=' AND 0 = %%PAR3%% ';

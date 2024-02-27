@@ -15,8 +15,7 @@ print($o1);$o1='';
      <tr>
        <td></td>
        <td colspan="2">
-        <button onclick="enregistrer()">Enregistrer</button>
-        <button onclick="enregistrer2()">Enr2</button>
+        <button onclick="enregistrer2()">Enregistrer</button>
         <a href="javascript:insertSource('choix');">Choix</a>
         <a href="javascript:insertSource('boucle');">Boucle</a>
         <a href="javascript:insertSource('appelf');">appelf</a>

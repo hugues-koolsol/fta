@@ -51,7 +51,7 @@ function tabToSql0( tab ,id , inFieldDef ){
      nam='';
      list='';
      for(j=i+1;j<tab.length;j++){
-      if(tab[j][3]==tab[i][3]+1){
+      if(tab[j][7]==tab[i][0]){
        if(tab[j][1]=='n' && tab[j][8]==1){
         nam=tab[j+1][1];
        }
@@ -72,10 +72,14 @@ function tabToSql0( tab ,id , inFieldDef ){
            if(value!=''){
             value+=' , ';
            }
-           value+='\''+echappConstante(tab[l][1])+'\'';
+           if(tab[l][1]=='NULL'){
+            value+=''+echappConstante(tab[l][1])+'';
+           }else{
+            value+='\''+echappConstante(tab[l][1])+'\'';
+           }
           }
           if(value!=''){
-           values+=' (';
+           values+='\n (';
            values+=value+' ) ,';
           }
          }
@@ -93,7 +97,7 @@ function tabToSql0( tab ,id , inFieldDef ){
      uniq='';
      def='';
      for(j=i+1;j<tab.length;j++){
-      if(tab[j][3]==tab[i][3]+1){
+      if(tab[j][7]==tab[i][0]){
        if(tab[j][1]=='n' && tab[j][8]==1){
         nam=tab[j+1][1];
        }
@@ -121,7 +125,7 @@ function tabToSql0( tab ,id , inFieldDef ){
      oldnam='';
      def='';
      for(j=i+1;j<tab.length;j++){
-      if(tab[j][3]==tab[i][3]+1){
+      if(tab[j][7]==tab[i][0]){
        if(tab[j][1]=='n' && tab[j][8]==1){
         nam=tab[j+1][1];
        }
@@ -161,7 +165,7 @@ function tabToSql0( tab ,id , inFieldDef ){
      nam='';
      list='';
      for(j=i+1;j<tab.length;j++){
-      if(tab[j][3]==tab[i][3]+1){
+      if(tab[j][7]==tab[i][0]){
        if(tab[j][1]=='n' && tab[j][8]==1){
         nam=tab[j+1][1];
        }
@@ -196,10 +200,17 @@ function tabToSql0( tab ,id , inFieldDef ){
     if(tab[i][8]==2 && tab[i+1][2] == 'c' &&  tab[i+2][2] == 'c' ){
      
      t+='\n';
+     
      t+='set ';
-     t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : tab[i+1][1]);
-     t+=' = ';
-     t+=(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : tab[i+2][1]);
+     if(tab[i+1][1]=='NAMES'){
+      t+=tab[i+1][1];
+      t+='  ';
+      t+=tab[i+2][1];
+     }else{
+      t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : tab[i+1][1]);
+      t+=' = ';
+      t+=(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : tab[i+2][1]);
+     }
      t+=';';
     }else{
      t+='\n';

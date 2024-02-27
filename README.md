@@ -56,3 +56,56 @@ Les commentaires sont inclus dans la fonction spéciale "#"
 A partir du format tabulaire, on peut reconstituer le source et réciproquement.
 
 Ainsi, les programmes sources deviennent des données qu'on peut traiter informatiquement en ajoutant, supprimant ou modifiant des éléments.
+
+Les règles d'écriture des programmes sont limitées.
+
+1°) Racine
+
+La racine d'un programme ne peut contenir que des fonctions séparées par des virgules et pas de constantes:
+```
+a(),
+b(
+ c()
+)
+```
+est légal mais
+
+```
+a(),
+CeciEstUneErreur,
+c(d())
+
+```
+Ne l'est pas à cause de la constante "CeciEstUneErreur" qui est à la racine
+
+1°) les commentaires:
+
+La fonction # est une fonction spéciale dont le contenu est un commentaire
+
+```
+#( ceci est un commentaire de type ligne),
+a(),
+b(
+ #(
+  ceci est un 
+  commentaire de 
+  type "bloc" 
+  aligné à gauche
+ )
+ c(
+  #(#
+   ceci 
+    est
+     un commentaire de type "bloc non aligné"
+  )
+ )
+)
+```
+Les commentaires de type "ligne" ne contiennent qu'une seule ligne
+
+Les commentaires de type "bloc" sont sur plusieurs lignes, la première  et la dernière ligne sont vierges et le contenu est automatiquement aligné à gauche
+
+Les commentaires de type "bloc non aligné" commencent par un # suivent les règles de commentaires de type bloc mais ne sont pas alignés à gauche
+
+
+
