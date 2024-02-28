@@ -697,7 +697,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       
      }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='sql' ){
 
-       obj=tabToSql1(tab,i+2);
+       obj=tabToSql1(tab,i+2,niveau);
        if(obj.status===true){
         t+=''+tab[i+1][1]+'='+'<<<EOT'+obj.value+'\nEOT;';
        }else{
@@ -1136,7 +1136,7 @@ function php_condition1(tab,id,niveau){
     
     
     
-   }else if( (tab[i][1]=='egal' || tab[i][1]=='diff' || tab[i][1]=='diff_stricte' || tab[i][1]=='sup' || tab[i][1]=='inf'|| tab[i][1]=='supeg' || tab[i][1]=='infeg' ) && tab[i][2]=='f' ){
+   }else if( (tab[i][1]=='egal' || tab[i][1]=='egal_stricte' || tab[i][1]=='diff' || tab[i][1]=='diff_stricte' || tab[i][1]=='sup' || tab[i][1]=='inf'|| tab[i][1]=='supeg' || tab[i][1]=='infeg' ) && tab[i][2]=='f' ){
     if(tab[i][8]==2){
      // trouver les 2 paramètres de la fonction
      tabPar=[];
@@ -1171,6 +1171,8 @@ function php_condition1(tab,id,niveau){
      }
      if(tab[i][1]=='egal'){
       t+=' == ';
+     }else if(tab[i][1]=='egal_stricte'){
+      t+=' === ';
      }else if(tab[i][1]=='diff_stricte'){
       t+=' !== ';
      }else if(tab[i][1]=='diff'){
@@ -1222,6 +1224,7 @@ function php_condition1(tab,id,niveau){
      t+=''+tab[i][1];
     }
    }else{
+    logerreur({status:false,id:i,message:'erreur dans une condition ' + JSON.stringify(tab[i])});
     t+=' [ TODO in php_condition1 ]';
    }
   }
@@ -1282,7 +1285,7 @@ function php_condition0(tab,id,niveau){
 
     }        
     
-   }else if(tab[i][1]=='egal' || tab[i][1]=='diff' || tab[i][1]=='diff_stricte'  || tab[i][1]=='sup'  || tab[i][1]=='inf' || tab[i][1]=='supeq'  || tab[i][1]=='infeg' ){ // i18
+   }else if(tab[i][1]=='egal' || tab[i][1]=='egal_stricte' || tab[i][1]=='diff' || tab[i][1]=='diff_stricte'  || tab[i][1]=='sup'  || tab[i][1]=='inf' || tab[i][1]=='supeq'  || tab[i][1]=='infeg' ){ // i18
    
     if(!premiereCondition){
      return {status:false,value:t,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est soit "()", soit [egal|sup|inf|diff]'};

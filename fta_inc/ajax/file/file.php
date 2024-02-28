@@ -3,7 +3,7 @@
 function getFileContent(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['fileName'],'..')!==false){
-  $data['messages'][]='cannot open a file with ".." in the path';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open a file with ".." in the path';
  }else{
   if($data['input']['fileName']!=''){
    $filefullpath=$data['input']['fileName'];
@@ -34,7 +34,7 @@ function writeJsFile(&$data){
 function writeFile(&$data,&$extension){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false){
-  $data['messages'][]='cannot open the file';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
  }else{
   if(in_array($data['input']['file_extension'],$extension)){
    $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];
@@ -60,7 +60,7 @@ function writeFile(&$data,&$extension){
 function concatJsFile(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false){
-  $data['messages'][]='cannot open the file';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
  }else{
   if($data['input']['file_extension']=='js'){
    $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];

@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('Europe/Paris'); // todo put here your default timezone
+date_default_timezone_set('Europe/Paris'); // todo put here your default timezone (https://raw.githubusercontent.com/leon-do/Timezones/main/timezone.json)
 
 define('APP_KEY','fta');
 define('BACKUP_PATH' ,'..'.DIRECTORY_SEPARATOR.APP_KEY.'_backup');

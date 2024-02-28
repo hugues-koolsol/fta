@@ -1049,25 +1049,24 @@ src_javascript(
             )
           )
         ),
-        #(
-          /*        
+        #(#
           affecteFonction(
-          r.onreadystatechange,
-          contenu(
-          essayer(
-          faire(
-          // instructions
-          ),
-          sierreur(
-          e,
-          faire(
-          // instructions
+           r.onreadystatechange,
+           contenu(
+            essayer(
+             faire(
+              // instructions
+             ),
+             sierreur(
+              e,
+              faire(
+               // instructions
+              )
+             )
+            )
+           )
           )
-          )
-          )
-          )
-          ),
-          */        
+          // dernière ligne de commentaire
         )
       )
     )

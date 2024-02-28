@@ -55,7 +55,7 @@ function shutdownHandler(){ //will be called when php script ends.
 }
 function mylog($error, $errlvl){
  $ret=array('status' => 'KO','messages' => array() ); // messages must be in array
- $ret['messages'][]=$error; 
+ $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . $error; 
  header('Content-Type: application/json; charset=utf-8');
  echo json_encode($ret,JSON_FORCE_OBJECT);
  exit(0);
@@ -68,7 +68,7 @@ if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
   define('BNF' , '/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php' );
   if(!is_file(INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php')){
    $ret['status']='KO';
-   $ret['messages'][]='Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/ajax_'.$ret['input']['call']['funct'].'.php"';
+   $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/ajax_'.$ret['input']['call']['funct'].'.php"';
   }else{
    if(session_status()==PHP_SESSION_NONE){
     session_start();
@@ -86,11 +86,11 @@ if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
   }
  }else{
   $ret['status']='KO';
-  $ret['messages'][]='funct or lib is not defined in the input parameters : "'.var_export($ret['input'],true).'"';
+  $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret['input'],true).'"';
  }
 }else{
  $ret['status']='KO';
- $ret['messages'][]='post ajax_param is not defined : "'.var_export($_POST,true).'"'; 
+ $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'post ajax_param is not defined : "'.var_export($_POST,true).'"'; 
 }
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($ret,JSON_FORCE_OBJECT);

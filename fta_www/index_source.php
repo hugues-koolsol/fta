@@ -83,8 +83,11 @@ function sauvegardeTexteSource(){
    }
   }
   obj=writeRevFile(nomDuSource,document.getElementById('normalise').value);
+  
  }
  document.getElementById('sauvegarderLeNormalise').disabled=true;
+ document.getElementById('nomDuSource').disabled=true;
+ 
 }
 //=====================================================================================================================
 function decaler(direction){
@@ -267,6 +270,8 @@ function enregistrer2(){
  var sourcesIdentiques=false;
  var conversion={'status':false};
  document.getElementById('sauvegarderLeNormalise').disabled=true;
+ document.getElementById('nomDuSource').disabled=true;
+
  clearMessages();
  
  document.getElementById('arrayed').innerHTML='';
@@ -346,6 +351,7 @@ function enregistrer2(){
      if(a.value==fonctionReecriteAvecRetour1.value){
       logerreur({status:true,message:'<b>👍👍 sources Egaux</b>'});
       document.getElementById('sauvegarderLeNormalise').disabled=false;
+      document.getElementById('nomDuSource').disabled=false;
       if(conversion.status==true){
        var arr=writeSourceFile(conversion);
        if(arr.status == false){
@@ -354,6 +360,7 @@ function enregistrer2(){
        }else{
         logerreur({status:true,message:'<b>👍👍👍 programme écrit sur disque</b>'});
         document.getElementById('sauvegarderLeNormalise').disabled=false;
+        document.getElementById('nomDuSource').disabled=false;
 
        }
       }
@@ -395,7 +402,8 @@ function afficherFichierSource(source){
   document.getElementById('sauvegarderLeNormalise').disabled=true;
   document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',source.nomFichierSource);
   document.getElementById('nomDuSource').value=source.nomFichierSource;
-  
+  document.getElementById('nomDuSource').disabled=true;
+
  }else{
   console.log(source);
  }
@@ -404,6 +412,7 @@ function afficherFichierSource(source){
 function chargerFichierRev(nomFichierSource){
  clearMessages();
  document.getElementById('sauvegarderLeNormalise').disabled=true;
+ document.getElementById('nomDuSource').disabled=true;
  document.getElementById('normalise').value='';
  document.getElementById('zonesource').value='';
  loadRevFile(nomFichierSource,afficherFichierSource,'zonesource');

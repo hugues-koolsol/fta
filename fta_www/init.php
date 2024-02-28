@@ -1,63 +1,119 @@
 <?php
 
 require_once('aa_include.php');
-$src_create_database=<<<EOT
-/*constantes FOREIGN_KEY_CHECKS, AUTOCOMMIT*/
-set FOREIGN_KEY_CHECKS = 0;
-set AUTOCOMMIT = 0;
-set NAMES  utf8mb4 COLLATE utf8mb4_unicode_ci;
-/*TRANSACTION*/
-START TRANSACTION;
-  /*
-    // ==========================================================            
-    // SET time_zone = "+00:00";
-    // CREATE DATABASE IF NOT EXISTS `ftatest` DEFAULT CHARACTER SET utf8mb4
-    //       COLLATE utf8mb4_unicode_ci;
-    // USE ftatest;
-  */
-  set time_zone = '+00:00';
-  CREATE DATABASE IF NOT EXISTS ftatest CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-  use ftatest;
-  /*
-    //==================================
-    //DROP TABLE IF EXISTS `tbl_user`;
-    //==================================
-  */
-  DROP TABLE IF EXISTS tbl_user;
-  /*
-    //=======================================================================
-    // CREATE TABLE IF NOT EXISTS `tbl_user` (
-    //   `fld_field` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-    // ) AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    //=======================================================================
-  */
-  CREATE TABLE IF NOT EXISTS tbl_user (
-   fld_id_user BIGINT UNSIGNED NOT NULL,
-     fld_email_user VARCHAR(128) NOT NULL DEFAULT  '' ,
-     fld_password_user VARCHAR(256) NOT NULL DEFAULT  '' ,
-     fld_comment_user TEXT
-  )  ENGINE=InnoDB  AUTO_INCREMENT=0  DEFAULT CHARSET=utf8mb4  COLLATE=utf8mb4_unicode_ci;
-  /*
-    // ===================================================================
-    // ALTER TABLE `ftatest`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);
-    // ===================================================================
-  */
-  ALTER TABLE tbl_user ADD PRIMARY KEY ( fld_id_user );
-  /*
-    // ===================================================================
-    // ALTER TABLE `tbl_user` CHANGE `fld_id_user` `fld_id_user` 
-    // BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-  */
-  ALTER TABLE tbl_user CHANGE fld_id_user  fld_id_user bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-  /*
-    // ===================================================================
-    // ALTER TABLE `ftatest`.`tbl_user` ADD UNIQUE `idx_name` (`fld_email_user`);
-    // ===================================================================
-  */
-  ALTER TABLE tbl_user ADD UNIQUE idx_email ( fld_email_user );
-  set FOREIGN_KEY_CHECKS = 1;
-COMMIT;
-EOT;
+$src_create_database=file_get_contents('init.sql');
+if(($src_create_database === false)){
+  die('fichier init.sql non trouve');
+}
+/*finchoix suite du source*/
+apresChoix=1;
+/*###
+affecte(
+  $src_create_database,
+  sql(
+    #(constantes FOREIGN_KEY_CHECKS, AUTOCOMMIT),
+    set(FOREIGN_KEY_CHECKS , 0),
+    set(AUTOCOMMIT , 0),
+    set(NAMES , 'utf8mb4 COLLATE utf8mb4_unicode_ci'),
+    #(TRANSACTION),
+    transaction(
+      #(
+        // ==========================================================            
+        // SET time_zone = "+00:00";
+        // CREATE DATABASE IF NOT EXISTS `ftatest` DEFAULT CHARACTER SET utf8mb4
+        //       COLLATE utf8mb4_unicode_ci;
+        // USE ftatest;
+      ),
+      set(time_zone , '+00:00'),
+      create_database(
+        ifnotexists(),
+        n(ftatest),
+        charset(utf8mb4),
+        collate(utf8mb4_unicode_ci)
+      ),
+      use(ftatest),
+      #(
+        //==================================
+        //DROP TABLE IF EXISTS `tbl_user`;
+        //==================================
+      ),
+      drop_table(ifexists() , n(tbl_user)),
+      #(
+        //=======================================================================
+        // CREATE TABLE IF NOT EXISTS `tbl_user` (
+        //   `fld_field` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        // ) AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        //=======================================================================
+      ),
+      create_table(
+        ifnotexists(),
+        n(tbl_user),
+        engine(InnoDB),
+        auto_increment(0),
+        charset(utf8mb4),
+        collate(utf8mb4_unicode_ci),
+        fields(
+          field(
+            n(fld_id_user),
+            type(BIGINT),
+            unsigned(),
+            notnull()
+          ),
+          field(
+            n(fld_email_user),
+            type(VARCHAR , 128),
+            notnull(),
+            default('')
+          ),
+          field(
+            n(fld_password_user),
+            type(VARCHAR , 256),
+            notnull(),
+            default('')
+          ),
+          field(n(fld_comment_user) , type(TEXT))
+        )
+      ),
+      #(
+        // ===================================================================
+        // ALTER TABLE `ftatest`.`tbl_user` ADD PRIMARY KEY (`fld_id_user`);
+        // ===================================================================
+      ),
+      add_primary_key(n(tbl_user) , fields(fld_id_user)),
+      #(
+        // ===================================================================
+        // ALTER TABLE `tbl_user` CHANGE `fld_id_user` `fld_id_user` 
+        // BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+      ),
+      change_field(
+        n(tbl_user),
+        old_name(fld_id_user),
+        new_def(
+          field(
+            n(fld_id_user),
+            type(bigint , 20),
+            unsigned(),
+            notnull(),
+            auto_increment()
+          )
+        )
+      ),
+      #(
+        // ===================================================================
+        // ALTER TABLE `ftatest`.`tbl_user` ADD UNIQUE `idx_name` (`fld_email_user`);
+        // ===================================================================
+      ),
+      add_index(
+        n(tbl_user),
+        unique(),
+        index_name(idx_email),
+        fields(fld_email_user)
+      ),
+      set(FOREIGN_KEY_CHECKS , 1)
+    )
+  )
+),
+###*/
 /*
   // =========
   // connexion

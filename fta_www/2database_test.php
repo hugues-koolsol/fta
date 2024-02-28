@@ -9,7 +9,7 @@ if( !((true == true) && true == true) && (true == true)){
 }
 $username='admin';
 $userpass='admin';
-$selectSql='SELECT fld_id_user FROM `fta`.`tbl_user` `T0` WHERE `T0`.`fld_name_user` LIKE \''.addslashes($username).'\'  AND `T0`.`fld_password_user` LIKE \''.addslashes($userpass).'\'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
+$selectSql='SELECT fld_id_user , fld_email_user , fld_password_user FROM `ftatest`.`tbl_user` `T0` WHERE `T0`.`fld_email_user` LIKE \''.addslashes($username).'\'  AND `T0`.`fld_password_user` LIKE \''.addslashes($userpass).'\'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
 $contenuhtml=<<<EOT
   <div id="toto">
     hello
@@ -19,9 +19,9 @@ EOT;
 /*test2*/
 $src_create_database=<<<EOT
 START TRANSACTION;
-CREATE TABLE tbl_user (
- fld_id_user BIGINT UNSIGNED NOT NULL
-);
+  CREATE TABLE tbl_user (
+   fld_id_user BIGINT UNSIGNED NOT NULL
+  );
 COMMIT;
 EOT;
 $max=count($tab);

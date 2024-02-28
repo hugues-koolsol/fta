@@ -4,7 +4,7 @@
 function loadRevFile(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_name'],'..')!==false){
-  $data['messages'][]='cannot open the file';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
   return;
  }
  if($data['input']['file_name']!=''){
@@ -14,10 +14,10 @@ function loadRevFile(&$data){
    $data['value']=$contenu;
    $data['status']='OK';
   }else{
-   $data['messages'][]='cannot read the file';
+   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot read the file';
   }
  }else{
-  $data['messages'][]='file name must be given';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'file name must be given';
  }
 }
 //==========================================================================================================
@@ -34,22 +34,22 @@ function writeRevFile(&$data){
 // sleep(2);
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_name'],'..')){
-  $data['messages'][]='cannot write a file containing ".."';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write a file containing ".."';
   return;
  }
  
  if(substr($data['input']['file_name'],-4)!=='.rev'){
-  $data['messages'][]='The file must end with a .rev extension';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The file must end with a .rev extension';
   return;
  }
  for($i=0;$i<strlen($data['input']['file_name']);$i++){
   $c=substr($data['input']['file_name'],$i,1);
   if($c=='/' || $c=='\\' || $c==':' || $c=='*' || $c=='?' || $c=='"' || $c=='<' || $c=='>' || $c=='|'){
-   $data['messages'][]='The filename cannot contain character "'.$c.'"';
+   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
    return;
   }else{
    if(!(ord($c)>=32 && ord($c)<127)){
-    $data['messages'][]='The filename cannot contain character "'.$c.'"';
+    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
     return;
    }
   }
@@ -64,21 +64,25 @@ function writeRevFile(&$data){
    if(fclose($fd)){
     $data['status']='OK';
    }else{
-    $data['messages'][]='the file has not been closed';
+    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
    }
   }else{
-   $data['messages'][]='cannot write to the file';
+   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
   }
  }else{
-  $data['messages'][]='cannot open the file';
+  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
  }
 }
 //==========================================================================================================
 function writeFile(&$data){
 // sleep(2);
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
- if(strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false){
-  $data['messages'][]='cannot open the file';
+// if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_SESSION[APP_KEY]='.var_export($_SESSION[APP_KEY],true)."\r\n"); fclose($fd);}
+ if(
+  (strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false )
+  && ( 1 !== $_SESSION[APP_KEY]["user"] )
+ ){
+  $data['messages'][]=__FILE__ . ' ' . __LINE__ . ' ' . '1 cannot open the file';
  }else{
   $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];
   if(is_file($filefullpath)){   
@@ -90,13 +94,13 @@ function writeFile(&$data){
     if(fclose($fd)){
      $data['status']='OK';
     }else{
-     $data['messages'][]='the file has not been closed';
+     $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
     }
    }else{
-    $data['messages'][]='cannot write to the file';
+    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
    }
   }else{
-   $data['messages'][]='cannot open the file';
+   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
   }
  }
 }
@@ -115,16 +119,16 @@ function concatFile(&$data){
      if(fclose($fd)){
       $data['status']='OK';
      }else{
-      $data['messages'][]='the file has not been closed';
+      $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
      }
     }else{
-     $data['messages'][]='cannot write to the file';
+     $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
     }
    }else{
-    $data['messages'][]='cannot get content of "'.$filefullpath2.'"';     
+    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot get content of "'.$filefullpath2.'"';     
    }
   }else{
-   $data['messages'][]='cannot open the file';
+   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
   }
  }
 }

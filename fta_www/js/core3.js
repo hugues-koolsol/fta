@@ -407,11 +407,14 @@ function convertSource(objMatSrc){
    }else if(objMatSrc.value[i][1]=='src_php'){
     type_source=objMatSrc.value[i][1];
     break;
+   }else if(objMatSrc.value[i][1]=='src_sql'){
+    type_source=objMatSrc.value[i][1];
+    break;
    }
   }
  }
  if(type_source==''){
-  return logerreur({status:false,message:'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" ou bien "src_php" '});
+  return logerreur({status:false,message:'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '});
  }
  
  
@@ -435,6 +438,7 @@ function convertSource(objMatSrc){
    }else if( objMatSrc.value[i][1]!=''){ //fonctions de niveau 1 NON vides
     if(objMatSrc.value[i][1]=='#'){
     }else if(objMatSrc.value[i][1]=='source'){
+    }else if(objMatSrc.value[i][1]=='concatFichier'){
     }else{
      return logerreur({status:false,id:i,message:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.value[i])});
     }
@@ -467,8 +471,8 @@ function convertSource(objMatSrc){
      }
     }else if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='html'){
      php_contexte_commentaire_html=true;
-     //                             tab             , id , offsetLigne               , noHead,niveau
-     retProgrammeSource=tabToHtml1( objMatSrc.value , i  , objMatSrc.value[idJs][10] , true  , 0    );
+     //                             tab             , id , noHead , niveau
+     retProgrammeSource=tabToHtml1( objMatSrc.value , i  , true   , 0      );
      if(retProgrammeSource.status==true){
       t+='\n'+retProgrammeSource.value+'\n';
      }else{
@@ -484,16 +488,25 @@ function convertSource(objMatSrc){
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{
-    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un javascript'});
    }
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_html'  && (file_extension=='html')){
-   //                             tab             , id     , offsetLigne               , noHead , niveau
-   retProgrammeSource=tabToHtml1( objMatSrc.value , idJs+1 , objMatSrc.value[idJs][10] , false  , 0      );
+   //                             tab             , id     , noHead , niveau
+   retProgrammeSource=tabToHtml1( objMatSrc.value , idJs+1 , false  , 0      );
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{
-    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un html'});
+   }
+   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+  }else if(type_source=='src_sql'  && (file_extension=='sql')){
+   //                             tab             , id    , niveau
+   retProgrammeSource=tabToSql1( objMatSrc.value , idJs+1 , 0      );
+   if(retProgrammeSource.status==true){
+    t+=retProgrammeSource.value;
+   }else{
+    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un sql'});
    }
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }
@@ -550,9 +563,6 @@ function writeRevFile(fileName, value){
 //=====================================================================================================================
 function writeSourceFile(obj){
  var message='';
- var file_name='';
- var file_extension='';
- var file_path='';
  var type_source='';
  var idJs=-1;
 // var tabConcatFichier=[];

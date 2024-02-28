@@ -89,7 +89,7 @@ src_html(
               )
             )
           ),
-          #( on peut aussi ajouter du texte en dur !   ),
+          #(on peut aussi ajouter du texte en dur !   ),
           'function enregistrer(){
      alert("Fake");
     }
@@ -122,7 +122,7 @@ src_html(
   )
  )
 )'),
-        #( fin du textarea)
+        #(fin du textarea)
       ),
       button(Enregistrer , (onclick , 'enregistrer2()'))
     )

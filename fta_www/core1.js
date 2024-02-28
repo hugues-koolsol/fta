@@ -70,7 +70,7 @@ function fta1(o,exitOnLevelError){
     // initialisation du tableau contenant le source structuré en arborescence
     // =======================================================================
   */
-    T.push(array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,0,0,0,0,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+  T.push(array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,0,0,0,0,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
   var l01=o.length;
   /*
     // ====================================================================
@@ -81,7 +81,7 @@ function fta1(o,exitOnLevelError){
     // ====================================================================
     // ====================================================================
   */
- for(i=0;i < l01;i=i+1){
+  for(i=0;i < l01;i=i+1){
     c=o.substr(i,1);
       /*
         // ==================
@@ -105,14 +105,14 @@ function fta1(o,exitOnLevelError){
         constanteQuotee=true;
         if((dansIgnore == true)){
           if((texte == '')){
-                  commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
+            commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
           }else{
-                  commentaireAvant=o.substr(debutIgnore,premier-debutIgnore-1);
+            commentaireAvant=o.substr(debutIgnore,premier-debutIgnore-1);
           }
           dansIgnore=false;
         }
-            numeroLigne=calculNumLigne(o,premier);
-            T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+        numeroLigne=calculNumLigne(o,premier);
+        T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
         texte='';
         commentaireAvant='';
         constanteQuotee=false;
@@ -154,14 +154,14 @@ function fta1(o,exitOnLevelError){
       */
       
     }else if((dansCommentaireLigne == true)){
-   for(j=i;j < l01;j=j+1){
+      for(j=i;j < l01;j=j+1){
         c1=o.substr(j,1);
         if((c1 == '\n')||c1 == '\r'){
           dansCommentaireLigne=false;
           i=j;
           break;
         }
-   }
+      }
       /*
         // =======================================
         // dans un commentaire de type bloc ( /* )
@@ -169,7 +169,7 @@ function fta1(o,exitOnLevelError){
       */
       
     }else if((dansCommentaireBloc == true)){
-   for(j=i;j < l01-1;j=j+1){
+      for(j=i;j < l01-1;j=j+1){
         c1=o.substr(j,1);
         c2=o.substr(j+1,1);
         if((c1 == '/')&&c1 == '*'&&(i == 0)||o.substr(j-1,1) == '\r'||o.substr(j-1,1) == '\n'){
@@ -182,7 +182,7 @@ function fta1(o,exitOnLevelError){
           i=j+1;
           break;
         }
-   }
+      }
     }else{
       /*
         // ==================================================
@@ -212,14 +212,14 @@ function fta1(o,exitOnLevelError){
         }else{
           numeroLigne=calculNumLigne(o,premier);
         }
-            T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
-    for(i=T.length-1;j > 0;j=j-1){
+        T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+        for(i=T.length-1;j > 0;j=j-1){
           l=T[j][3];
-     for(k=j;k >= 0;k=k-1){
+          for(k=j;k >= 0;k=k-1){
             T[j][10]=k;
             break;
-     }
-    }
+          }
+        }
         niveau=niveau+1;
         texte='';
         commentaireAvant='';
@@ -245,11 +245,11 @@ function fta1(o,exitOnLevelError){
               ( egal( dansIgnore , true ) )
             */
             ){
-                  commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
+            commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
           }
           indice=indice+1;
-               numeroLigne=calculNumLigne(o,premier);
-               T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+          numeroLigne=calculNumLigne(o,premier);
+          T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
           texte='';
           commentaireAvant='';
           faireCommentaire=false;
@@ -257,20 +257,20 @@ function fta1(o,exitOnLevelError){
         if((dansIgnore == true)&&faireCommentaire == true){
           a=1;
           if((niveau > T[indice][3])){
-                  commentaireDedans=o.substr(debutIgnore,i-debutIgnore);
+            commentaireDedans=o.substr(debutIgnore,i-debutIgnore);
             T[indice][9]=commentaireDedans;
             commentaireDedans='';
             dansIgnore=false;
           }else{
-      for(k=indice;k > 0;k=k-1){
+            for(k=indice;k > 0;k=k-1){
               if((T[k][3] == niveau)){
-                       commentaireApres=o.substr(debutIgnore,i-debutIgnore);
+                commentaireApres=o.substr(debutIgnore,i-debutIgnore);
                 T[k][8]=commentaireApres;
                 commentaireApres='';
                 dansIgnore=false;
                 break;
               }
-      }
+            }
           }
         }
         if(
@@ -285,31 +285,31 @@ function fta1(o,exitOnLevelError){
             k=T[indice][6]+1;
           }
           if((k < i)){
-                  commentaireApres=o.substr(k,i-k);
+            commentaireApres=o.substr(k,i-k);
           }
         }
         a=1;
-            numeroLigne=calculNumLigne(o,i);
+        numeroLigne=calculNumLigne(o,i);
         /*// recherche du numLiParent*/
-    for(j=indice;j > 0;j=j-1){
+        for(j=indice;j > 0;j=j-1){
           if((T[j][3] == niveau-1)){
             T[j][14]=numeroLigne;
             break;
           }
-    }
+        }
         niveau=niveau-1;
         /*
           //
           // maj de la position de fermeture de la parenthèse
           //
         */
-    for(j=indice;j >= 0;j=j-1){
+        for(j=indice;j >= 0;j=j-1){
           a=1;
           if((T[j][3] == niveau)&&T[j][2] == ''){
             T[j][23]=posFerPar;
             break;
           }
-    }
+        }
         posFerPar=0;
         dansCst=false;
         dansTexte=false;
@@ -353,11 +353,11 @@ function fta1(o,exitOnLevelError){
           if((texte != '')){
             indice=indice+1;
             if((dansIgnore == true)){
-                     commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
+              commentaireAvant=o.substr(debutIgnore,premier-debutIgnore);
               debutIgnore=i;
             }
-                  numeroLigne=calculNumLigne(o,premier);
-                  T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+            numeroLigne=calculNumLigne(o,premier);
+            T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
             texte='';
             commentaireAvant='';
             commentaireApres='';
@@ -408,12 +408,12 @@ function fta1(o,exitOnLevelError){
             if((T[indice][3] == niveau)){
               T[indice][8]=commentaireApres;
             }else{
-       for(j=indice-1;j > 0;j=j-1){
+              for(j=indice-1;j > 0;j=j-1){
                 if((T[j][3] == niveau)){
                   T[j][8]=commentaireApres;
                   break;
                 }
-       }
+              }
             }
             dansIgnore=false;
           }
@@ -433,7 +433,7 @@ function fta1(o,exitOnLevelError){
             debutIgnore=i;
           }
           numeroLigne=calculNumLigne(o,premier);
-               T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
+          T.push(array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,commentaireAvant,commentaireApres,commentaireDedans,parentId,nombreEnfants,numEnfant,numeroLigne,numLigneFermeturePar,profondeur,typCommApNett,typCommDeNett,typCommAvNett,CommApNett,CommDeNett,CommAvNett,posOuvPar,posFerPar));
           texte='';
           commentaireAvant='';
           commentaireApres='';
@@ -454,25 +454,24 @@ function fta1(o,exitOnLevelError){
         a=1;
       }
     }
- }
-  /*
-    /*        
-    affecteFonction(
-    r.onreadystatechange,
-    contenu(
-    essayer(
-    faire(
+  }
+  /*#
+affecteFonction(
+ r.onreadystatechange,
+ contenu(
+  essayer(
+   faire(
     // instructions
-    ),
-    sierreur(
+   ),
+   sierreur(
     e,
     faire(
-    // instructions
+     // instructions
     )
-    )
-    )
-    )
-    ),
-    */        
-  */
+   )
+  )
+ )
+)
+// dernière ligne de commentaire
+*/
 }

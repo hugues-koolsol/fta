@@ -8,8 +8,10 @@ src_php(
       appelf(n(require_once) , p('aa_include.php')),
       appelf(n(session_start)),
       appelf(n(start_session_messages)),
-      #(      // ======================================================== 
-      // affichage de l'entête html ),
+      #(
+        // ======================================================== 
+        // affichage de l'entête html 
+      ),
       affecte($o1 , ''),
       affecte($a , array(('title' , 'accueil') , ('description' , 'accueil'))),
       appelf(r($o1) , n(html_header1) , p($a)),
@@ -19,16 +21,18 @@ src_php(
         p($o1),
         p(appelf(n(session_messages)))
       ),
-      #(      //      on imprime le texte ...,),
+      #(//      on imprime le texte ...,),
       appelf(n(print) , p($o1)),
-      #(      //  ... puis on le reinitialise,),
+      #(//  ... puis on le reinitialise,),
       affecte($o1 , '')
     ),
-    #(    // =====================================================
+    #(
+      // =====================================================
       // avec un peu de html
-    // =====================================================),
+      // =====================================================
+    ),
     html(
-      #(      // =====================================================),
+      #(// =====================================================),
       table(
         tr(
           td(button((onclick , 'charger(\'source4.txt\')') , 'source4') , button((onclick , 'charger(\'source5.txt\')') , 'source5') , button((onclick , 'charger(\'source6.txt\')') , 'source6')),
@@ -42,9 +46,11 @@ src_php(
           td((colspan , 3) , div((id , message_erreur)))
         )
       ),
-      #(      // =====================================================
+      #(
+        // =====================================================
         // et un javascript dans le html
-      // =====================================================),
+        // =====================================================
+      ),
       script(
         (type , 'text/javascript'),
         (data-lang , 'fr'),
@@ -118,7 +124,8 @@ src_php(
           fonction(
             definition(nom(enregistrer)),
             contenu(
-              #(              // =========================
+              #(
+                // =========================
                 // raz de la zone de message
               ),
               declare(zoneMessageErreur , null),
@@ -134,7 +141,8 @@ src_php(
               appelf(r(zoneSource) , n(document.getElementById) , p('zonesource')),
               #(
                 // ===============================================================
-              // on essaie de reconstruire la fonction pour détecter des erreurs),
+                // on essaie de reconstruire la fonction pour détecter des erreurs
+              ),
               declare(testSourceReconstruit , {}),
               appelf(r(testSourceReconstruit) , n(compareSourceEtReconstruit) , p(zoneSource.value)),
               #(
@@ -153,8 +161,10 @@ src_php(
                 si(
                   condition((egal(arr.status , vrai))),
                   alors(
-                    #(                    // =============================================================
-                    // si pas d'erreur on construit le source normalise),
+                    #(
+                      // =============================================================
+                      // si pas d'erreur on construit le source normalise
+                    ),
                     declare(sourceNormalisé , {}),
                     appelf(
                       r(sourceNormalisé),
@@ -293,9 +303,9 @@ src_php(
         p(appelf(n(html_footer1) , p($a)))
       ),
       appelf(n(print) , p($o1)),
-      #(      // ... puis on le reinitialise),
+      #(// ... puis on le reinitialise),
       affecte($o1 , '')
     ),
-    #(    // fin du php)
+    #(// fin du php)
   )
 )

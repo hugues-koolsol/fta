@@ -20,13 +20,13 @@ var global_enteteTableau=[
 
 */
 //=====================================================================================================================
-function tabToSql1(tab,id){
+function tabToSql1(tab,id , niveau){
  
- var ob=tabToSql0(tab,id,false);
+ var ob=tabToSql0(tab,id,false , niveau);
  return ob;
 }
 //=====================================================================================================================
-function tabToSql0( tab ,id , inFieldDef ){
+function tabToSql0( tab ,id , inFieldDef , niveau ){
  var t='';
  var i=0;
  var j=0;
@@ -79,7 +79,7 @@ function tabToSql0( tab ,id , inFieldDef ){
            }
           }
           if(value!=''){
-           values+='\n (';
+           values+=espaces2(niveau)+' (';
            values+=value+' ) ,';
           }
          }
@@ -88,7 +88,7 @@ function tabToSql0( tab ,id , inFieldDef ){
       }
      }
      if(nam!='' && list!=''){
-      t+='\n';
+      t+=espaces2(niveau);
       t+='INSERT INTO '+nam+' ('+list.substr(0,list.length-1)+') VALUES '+values.substr(values,values.length-1)+' ;';
      }
    }else if(tab[i][1]=='add_index'){
@@ -117,7 +117,7 @@ function tabToSql0( tab ,id , inFieldDef ){
       }
      }
      if(nam!='' && list!='' && def!=''){
-      t+='\n';
+      t+=espaces2(niveau);
       t+='ALTER TABLE '+nam+' ADD'+uniq+' '+def+' ('+list.substr(0,list.length-1)+');';
      }
    }else if(tab[i][1]=='change_field'){
@@ -135,7 +135,7 @@ function tabToSql0( tab ,id , inFieldDef ){
        
        if(tab[j][1]=='new_def' ){
         inFieldDef=true;
-        obj=tabToSql0(tab,j, inFieldDef);
+        obj=tabToSql0(tab,j, inFieldDef,niveau);
         inFieldDef=false;
         if(obj.status===true){
          
@@ -155,7 +155,7 @@ function tabToSql0( tab ,id , inFieldDef ){
       }
      }
      if(nam!='' && oldnam!=''){
-      t+='\n';
+      t+=espaces2(niveau);
       t+='ALTER TABLE '+nam+' CHANGE '+oldnam+' '+def+';';
      }
     
@@ -180,7 +180,7 @@ function tabToSql0( tab ,id , inFieldDef ){
       }
      }
      if(nam!='' && list!=''){
-      t+='\n';
+      t+=espaces2(niveau);
       t+='ALTER TABLE '+nam+' ADD PRIMARY KEY ('+list.substr(0,list.length-1)+');';
      }
     
@@ -188,7 +188,7 @@ function tabToSql0( tab ,id , inFieldDef ){
     
     
     if(tab[i][8]==1 && tab[i+1][2] == 'c'  ){
-     t+='\n';
+     t+=espaces2(niveau);
      t+='use '+tab[i+1][1]+';';
      j++;
     }else{
@@ -199,7 +199,7 @@ function tabToSql0( tab ,id , inFieldDef ){
 //    t+=espaces2(tab[i][3]);
     if(tab[i][8]==2 && tab[i+1][2] == 'c' &&  tab[i+2][2] == 'c' ){
      
-     t+='\n';
+     t+=espaces2(niveau);
      
      t+='set ';
      if(tab[i+1][1]=='NAMES'){
@@ -213,8 +213,7 @@ function tabToSql0( tab ,id , inFieldDef ){
      }
      t+=';';
     }else{
-     t+='\n';
-//     t+=espaces2(tab[i][3]);
+     t+=espaces2(niveau);
      t+='-- todo ligne 35 temp '+tab[i][1];
     }
     
@@ -240,6 +239,8 @@ function tabToSql0( tab ,id , inFieldDef ){
        if(tab[j][1]=='n' && tab[j][8]==1 && tab[j+1][2]=='c'){
         t+=' '+tab[j+1][1]+'';
         j++;
+       }else if(tab[j][1]=='#'){
+        t+='';
        }else if(tab[j][1]=='auto_increment' && tab[j][8]==0){
         t+=' AUTO_INCREMENT';
        }else if(tab[j][1]=='unsigned' && tab[j][8]==0){
@@ -258,10 +259,12 @@ function tabToSql0( tab ,id , inFieldDef ){
          t+=' '+tab[j+1][1]+'('+tab[j+2][1]+')';
          j+=2;
         }else{
-         t+=' todo sql.js repere 66 '+tab[j][1];
+         logerreur({status:false,id:i,message:'sql.js erreur dans un field'});
+         t+=' /* todo sql.js repere 66 '+tab[j][1] + ' */';
         }
        }else{
-        t+=' todo sql.js repere 69 '+tab[j][1];
+        logerreur({status:false,id:i,message:'sql.js erreur dans un field'});
+        t+='/* todo sql.js repere 69 '+tab[j][1] + ' */';
        }
       }
      }else{
@@ -269,7 +272,8 @@ function tabToSql0( tab ,id , inFieldDef ){
      }
     }
     
-    t+=',\n';
+    t+=',';
+    t+=espaces2(niveau);
     
     
     
@@ -279,7 +283,7 @@ function tabToSql0( tab ,id , inFieldDef ){
     var auto_increment=0;
     var charset=0;
     var collate=0;
-    t+='\n';
+    t+=espaces2(niveau);
     t+='CREATE TABLE';
     for(j=i+1;j<tab.length;j++){
      if(tab[j][3]>tab[i][3]){
@@ -303,14 +307,17 @@ function tabToSql0( tab ,id , inFieldDef ){
         t+=' (';
         
         inFieldDef=true;
-        obj=tabToSql0(tab,j, inFieldDef);
+        niveau++;
+        obj=tabToSql0(tab,j, inFieldDef,niveau);
+        niveau--;
         inFieldDef=false;
         if(obj.status===true){
-         t+='\n';
+         t+=espaces2(niveau);
          for(k=obj.value.length-1;k>=0;k--){
           c=obj.value.substr(k,1);
           if(c==','){
-           t+=obj.value.substr(0,k)+'\n';
+           t+=obj.value.substr(0,k);
+           t+=espaces2(niveau);
            break;
           }
          }
@@ -343,7 +350,7 @@ function tabToSql0( tab ,id , inFieldDef ){
     
    }else if(tab[i][1]=='drop_table'){
 
-    t+='\n';
+    t+=espaces2(niveau);
     t+='DROP TABLE';
     for(j=i+1;j<tab.length;j++){
      if(tab[j][3]>tab[i][3]){
@@ -367,7 +374,7 @@ function tabToSql0( tab ,id , inFieldDef ){
     
    }else if(tab[i][1]=='create_database'){
 
-    t+='\n';
+    t+=espaces2(niveau);
     t+='CREATE DATABASE';
     for(j=i+1;j<tab.length;j++){
      if(tab[j][3]>tab[i][3]){
@@ -397,23 +404,28 @@ function tabToSql0( tab ,id , inFieldDef ){
     
     
    }else if(tab[i][1]=='transaction'){
-    
-    obj=tabToSql0(tab,i, inFieldDef);
+    niveau++;
+    obj=tabToSql0(tab,i, inFieldDef,niveau);
+    niveau--;
     if(obj.status===true){
-     t+='\n';
+     t+=espaces2(niveau);
      t+='START TRANSACTION;';
      t+=obj.value;
-     t+='\nCOMMIT;';
+     t+=espaces2(niveau);
+     t+='COMMIT;';
     }else{
      return logerreur({status:false,value:t,id:i,message:'erreur dans un sql définit dans un php'});
     }
     
    }else if(tab[i][1]=='#'){
     
-    t+='\n/*'+tab[i][13]+'*/';
+    t+=espaces2(niveau);
+    t+='/*';
+    t+=traiteCommentaire2(tab[i][13],niveau,i);
+    t+='*/';
     
    }else{
-    t+=espaces2(tab[i][3]);
+    t+=espaces2(niveau);
     t+='-- todo repere fonction sql non prevue  "'+tab[i][1]+'"';
    }
   }

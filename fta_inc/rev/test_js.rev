@@ -25,9 +25,9 @@ src_javascript(
           r,
           new(appelf(n(XMLHttpRequest)))
         ),
-        #( timeout 6 secondes, on considère qu'il y a un problème au delà ),
+        #(timeout 6 secondes, on considère qu'il y a un problème au delà ),
         affecte(t.timeout , 6000),
-        #( on appel cette url en POST et en asynchrone ),
+        #(on appel cette url en POST et en asynchrone ),
         appelf(
           n(r.open),
           p('POST'),
