@@ -5,6 +5,56 @@ src_javascript(
   (file_path , .),
   (strict()),
   source(
+    #(
+      
+      
+      
+      
+      
+      
+      
+    ),
+    choix(
+      si(
+        condition((egal(T[indice][2] , 'f'))),
+        alors()
+      ),
+      sinon(
+        alors(
+          choix(
+            si(
+              condition((sup(T[indice][3] , niveau))),
+              alors(
+                #(ne rien faire)
+              )
+            ),
+            sinon(
+              alors(
+                affecte(
+                  temp,
+                  obj(
+                    (status , false),
+                    (value , T),
+                    (id , i),
+                    (message , 'une virgule ne doit pas être précédée d\'un vide')
+                  )
+                ),
+                revenir(appelf(n(logerreur) , p(temp)))
+              )
+            )
+          )
+        )
+      )
+    ),
+    #(
+      
+      
+      
+      
+      
+      
+      
+    ),
     affecte(apresAppelF , 1),
     #(
       ===============

@@ -111,6 +111,10 @@ function displayMessages(){
  
 }
 //=====================================================================================================================
+function dogid(n){
+ return document.getElementById(n);
+}
+//=====================================================================================================================
 function echappConstante(t){
  return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
 }
@@ -299,7 +303,7 @@ function display_ajax_error_in_cons(jsonRet) {
  
 }
 //=====================================================================================================================
-function loadRevFile(nomFichierSource,fntSiOk,nomZone){
+function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){
  var r = new XMLHttpRequest();
  r.open("POST",'za_ajax.php?loadRevFile',true);
  r.timeout=6000;
@@ -313,6 +317,10 @@ function loadRevFile(nomFichierSource,fntSiOk,nomZone){
     try{
      localStorage.setItem("fta_dernier_fichier_charge", nomFichierSource);
     }catch(e){}
+//    console.log('faireApres', faireApres , 'typeof faireApres' , typeof faireApres)
+    if(typeof faireApres =='function'){
+     faireApres();
+    }
     return;
    }else{
     display_ajax_error_in_cons(jsonRet);
@@ -643,7 +651,7 @@ function traiteCommentaire2(texte,niveau,ind){
    }
    texte=tab.join('\n');
   }
-  console.log( texte , min)
+//  console.log( texte , min)
   
   
   return texte;
@@ -1094,6 +1102,38 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
  t2.appendChild(tr1);
 
 }
+//=====================================================================================================================
+function ConstruitHtmlMatrice(t1,matriceFonction){
+ // entete de tableau de l'arbre
+ var tr1=document.createElement('tr');
+ for(var i=0;i<global_enteteTableau.length;i++){
+   var td1=document.createElement('td');
+   td1.innerHTML=i+global_enteteTableau[i][0];
+   td1.setAttribute('title',global_enteteTableau[i][1] + '(' + i + ')');
+   tr1.appendChild(td1);
+ }
+ t1.appendChild(tr1);
+ 
+ // arbre
+ for(var i=0;i<matriceFonction.value.length;i++){
+   var tr1=document.createElement('tr');
+   for(var j=0;j<matriceFonction.value[i].length;j++){
+     var td1=document.createElement('td');
+     if(j==1 || ( j>=10  ) ){ // pour les valeurs et les commentaires
+      td1.innerHTML=String(matriceFonction.value[i][j]).replace(/ /g,'░').replace(/\n/g,'¶');
+      td1.style.whiteSpace='pre-wrap';
+      td1.style.verticalAlign='baseline';
+     }else if(j==4){ // constante quotée
+      td1.innerHTML=matriceFonction.value[i][j]===true?'1':'';;
+     }else{
+      td1.innerHTML=String(matriceFonction.value[i][j]).replace(/ /g,'░');
+     }
+     td1.setAttribute('title',global_enteteTableau[j][1] + '(' + j + ')');
+     tr1.appendChild(td1);
+   }
+   t1.appendChild(tr1);
+ }
+}
 
 
 //=====================================================================================================================
@@ -1103,16 +1143,19 @@ function iterateCharacters(str){
   let te = new TextEncoder();
   let position=0;
   let position2=0;
+//  str=str.replace(/\u200B/g,''); // I do not like regex, they seem slower : dec 8203 = hex 200B = oct 20013 = bin 0010 0000 0000 1011
   let arr = [...str];
   var numLigne=0;
   var l01=arr.length;
   for(let i=0;i<l01;i++){
+   if(arr[i].charCodeAt(0)!=8203){  // I do not like regex, they seem slower : dec 8203 = hex 200B = oct 20013 = bin 0010 0000 0000 1011
     let bytes = te.encode(arr[i]).length;
     let length = arr[i].length;
     out.push([arr[i],bytes,position,position2,numLigne]);
     if(arr[i]=='\n'){numLigne++};
     position+=bytes;
     position2+=(bytes==4?2:1);
+   }
   }
   return {'out':out,'position':position,'position2':position2,'numLigne':numLigne};  
 }
@@ -1166,50 +1209,34 @@ var global_enteteTableau=[
 //  7  8  9 10 11 12 
 //=====================================================================================================================
 function functionToArray2(tableauEntree,exitOnLevelError){
- var t='';
+ 
  var texte='';
  var commentaire='';
  var c='',c1='',c2='';
- var T=new Array();
 
  var i=0,j=0,k=0,l=0;
  var indice=0;
  var niveau=0;
  var premier=0;
  var dernier=0;
- 
- var dansCst=false;
- var dansTexte=false;
- 
- var dsComment=false;
+ var numeroLigne=0;
+ var posOuvPar=0;
+ var posFerPar=0;
  var niveauDebutCommentaire=-1;
  var niveauDansCommentaire=0;
  
- 
- 
+ var dansCst=false;
+ var dsComment=false;
  var constanteQuotee=false;
  
+ var T=new Array();
  
- var debutIgnore=0;
- var finIgnore=0;
- var dansIgnore=false;
- var commentaireTexte='';
- var faireCommentaire=true;
- var numeroLigne=0;
- var parentId=0;
- var nombreEnfants=0;
- var numEnfant=0;
- 
- var levelError=false;
- var profondeur=0;
- var posOuvPar=0;
- var posFerPar=0;
  
  
  
  //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm
 
- T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,profondeur,posOuvPar,posFerPar,''    ));
+ T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0    ,0    ,0          ,0          ,posOuvPar,posFerPar,''    ));
  
  // o
  var l01=tableauEntree.length;
@@ -1219,7 +1246,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
   if(dsComment){
    if(c==')'){
     if( niveau==niveauDebutCommentaire+1 && niveauDansCommentaire==0){
+     posFerPar=i;
      T[T.length-1][13]=commentaire;
+     T[T.length-1][12]=posFerPar;
      commentaire='';
      dsComment=false;
      niveau--;
@@ -1238,53 +1267,47 @@ function functionToArray2(tableauEntree,exitOnLevelError){
    if(c=='\''){
     // si après une constante il n'y a pas de caractère d'échappement ou un commentaire, ce n'est pas bon
     if(i==l01-1){
-     // c'est bon
+     return logerreur({status:false,id:i,value:T,message:'-1 la racine ne peut pas contenir des constantes en i='+i});
+    }
+    c1=tableauEntree[i+1][0];
+    
+    if(c1==','||c1=='\t'||c1==' '||c1=='\n'||c1=='\r'||c1=='/'||c1==')'){
+     dernier=i-1;
     }else{
-     c1=tableauEntree[i+1][0];
-     
-     if(c1==','||c1=='\t'||c1==' '||c1=='\n'||c1=='\r'||c1=='/'||c1==')'){
-      dernier=i-1;
-     }else{
-      return logerreur({status:false,id:T.length-1,value:T,message:'0 apres une constante, il doit y avoir un caractère d\'echappement en i='+i});
-     }
+     return logerreur({status:false,id:T.length-1,value:T,message:'0 apres une constante, il doit y avoir un caractère d\'echappement en i='+i});
     }
     dansCst=false;
     indice++;
     constanteQuotee=true;
-    if(dansIgnore===true){
-     dansIgnore=false;
-    }
     
-//    numeroLigne=calculNumLigne2(tableauEntree,premier);
     if(niveau==0){
      return logerreur({status:false,value:T,message:'0 la racine ne peut pas contenir des constantes en i='+i});
     }
-    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
     texte='';
     constanteQuotee=false;
     
    }else if(c=='\\'){
     if(i==l01-1){
      return logerreur({status:false,value:T,message:'un antislash ne doit pas terminer une fonction'});
+    }
+    c1=tableauEntree[i+1][0]; //o.substr(i+1,1);
+    if(c1=='\\' || c1=='\''){
+     if(texte==''){
+      premier=i;
+     }
+     texte+=c1;
+     i++;
     }else{
-     c1=tableauEntree[i+1][0]; //o.substr(i+1,1);
-     if(c1=='\\' || c1=='\''){
+     if(c1=='n' || c1=='t' || c1=='r' ){
       if(texte==''){
        premier=i;
       }
-      texte+=c1;
+      texte+='\\'+c1;
       i++;
+      
      }else{
-      if(c1=='n' || c1=='t' || c1=='r' ){
-       if(texte==''){
-        premier=i;
-       }
-       texte+='\\'+c1;
-       i++;
-       
-      }else{
-       return logerreur({status:false,value:T,message:'un antislash doit être suivi par un autre antislash ou un apostrophe '});
-      }
+      return logerreur({status:false,value:T,message:'un antislash doit être suivi par un autre antislash ou un apostrophe '});
      }
     }
    }else{
@@ -1295,63 +1318,31 @@ function functionToArray2(tableauEntree,exitOnLevelError){
    }
    
   }else{
+   
    if(c=='('){
+    
     posOuvPar=i;
-    dansIgnore=false;
     
     indice++;
     if(texte==DEBUTCOMMENTAIRE){
      dsComment=true;
      niveauDebutCommentaire=niveau;
     }
-    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
-    for(j=T.length-1;j>0;j--){
-     l=T[j][3];
-     for(k=j;k>=0;k--){
-      if(T[k][3]==l-1){
-       T[j][7]=k;
-       break;
-      }
-     }
-    }
-    
+    T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
     niveau++;
     texte='';
     dansCst=false;
-    dansTexte=false;
+    
    }else if(c==')'){
     posFerPar=i;
     
-    faireCommentaire=true
     if(texte!=''){
-     dansIgnore=false;
-     indice++;
      if(niveau==0){
       return logerreur({status:false,value:T,message:'1 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,0,''));
+     indice++;
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
      texte='';
-     faireCommentaire=false;
-    }
-    if(dansIgnore===true && faireCommentaire===true){
-     if(niveau>T[indice][3]){
-      dansIgnore=false;
-     }else{
-      for(k=indice;k>0;k--){
-       if(T[k][3]==niveau){
-        dansIgnore=false;
-        break;
-       }
-      }
-     }
-    }
-    if(T[indice][2]=='c' && niveau==T[indice][3]){
-     // si le dernier argument d'une fonction est une constante, il faut remonter pour chercher le commentaire apres
-     if(T[indice][4]==true){ // si constante quotée
-      k=T[indice][6]+2; // ne pas prendre en compte la quote
-     }else{
-      k=T[indice][6]+1;
-     }
     }
     niveau--;
     // maj de la position de fermeture de la parenthèse
@@ -1365,29 +1356,17 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     
     
     dansCst=false;
-    dansTexte=false;
-//    console.log('niveau='+niveau);
+    
+    
+    
    }else if(c=='\\'){
-    if(i==l01-1){
-     return logerreur({status:false,value:T,message:'un antislash à la fin d\'une fonction n\'est pas autorisé'});
-    }else{
-     c1=tableauEntree[i+1][0];//o.substr(i+1,1);
-     if(dansCst){
-      debugger; // vérifier si ce code est utile car dansCst a été traité plus haut
-      if(c1=='\'' || c1=='\\'){
-       if(texte==''){
-        premier=i;
-       }
-       texte+=c1;
-       i++;
-      }else{
-       return logerreur({status:false,value:T,message:'un antislash dans une constante doit être suivi par un autre antislash ou par un caractère apostrophe'});
-      }
-     }else{
-      return logerreur({status:false,value:T,message:'un antislash doit être dans une constante'});
-     }
+    if(!dansCst){
+     return logerreur({status:false,value:T,message:'un antislash doit être dans une constante'});
     }
+
+
    }else if(c=='\''){
+    
     premier=i;
     if(dansCst){
      dansCst=false;
@@ -1397,15 +1376,13 @@ function functionToArray2(tableauEntree,exitOnLevelError){
 
    }else if(c==','){
     if(texte!=''){
-     dansIgnore=false;
      indice++;
      if(niveau==0){
       numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'3 la racine ne peut pas contenir des constantes en i='+i+', numeroLigne='+numeroLigne,tabs:T});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
     }else{
-     dansIgnore=false;
      if(T[indice][2]=='f'){
       // fin d'une fonction a(b),c
      }else{
@@ -1418,7 +1395,6 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     }
     texte='';
     dansCst=false;
-    dansTexte=false;
    }else if(c==' '||c=='\t'||c=='\r'||c=='\n'){
     // on ignore les espaces qui ne sont pas dans des constantes
     // mais si on n'est pas dans une constante, il se peut qu'on ai oublié une virgule.
@@ -1426,93 +1402,36 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     
     if(texte!=''){
      indice++;
-     if(dansIgnore===true){
-      debutIgnore=i;
-     }
      if(niveau==0){
-//     numeroLigne=calculNumLigne2(tableauEntree,premier);
       return logerreur({status:false,value:T,message:'4 la racine ne peut pas contenir des constantes en i='+i});
      }
-     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
      texte='';
      dansCst=false;
-     dansTexte=false;
-     if(dansIgnore===false){
-      debutIgnore=i;
-     }
-     dansIgnore=true;
-     
-    }else{
-     if(dansIgnore===false){
-      debutIgnore=i;
-     }
-     dansIgnore=true;
     }
     
    }else{
-    dansTexte=true;
     if(texte==''){
      premier=i;
-    }
-//    if(!( (c>='A' && c<='Z') || ( c >='a' && c <= 'z' ) || ( c >='0' && c <= '9' ) || c=='.' || c=='_' || c=='-' || c=='$' || c=='&' || c=='[' || c==']' || c=='{' || c=='}' || c=='"' || c==':' || c=='+' || c=='*' || c=='`' )){
-    if(!( c.charCodeAt(0)>=33 && c!='('  && c!=')'  && c!='\''   && c!='\\'  && c!='\n'  && c!='\t'  && c!=' ' )){
-     if(c.charCodeAt(0)==8203){
-      if(exitOnLevelError){
-       return logerreur({status:false,value:T,levelError:levelError,message:'charcode 8203 ( x200B ) detecté 1 '});
-      }
-     }
-     //Si ce n'est pas un caractère standard, on a peut être loupé un commentaire
-     if(dansIgnore===false){
-      debutIgnore=i;
-     }
-     if(premier>debutIgnore){
-      debugger; // alors il y a un problème qu'il reste à étudier mais il ne semble pas que je passe par là
-     }
-     
-     dansIgnore=true;
-    }
-    if(c.charCodeAt(0)==8203){
-     if(exitOnLevelError){
-      return logerreur({status:false,value:T,levelError:levelError,message:'charcode 8203 ( x200B ) detecté 2'});
-     }else{
-      global_messages.lines.push(i);
-     }
     }
     texte+=c;
     dernier=i;
    }
   }
  }
- if(niveau!=0){
-  levelError=true;
-  if(exitOnLevelError){
-   return logerreur({status:false,value:T,levelError:levelError,message:'des parenthèses ne correspondent pas'});
-  }
+ if(niveau!=0 && exitOnLevelError){
+   return logerreur({status:false,value:T,message:'des parenthèses ne correspondent pas'});
  }
 
  if(texte!=''){
-  if(dansIgnore===true){
-   debutIgnore=i;
-  }
   indice++;
   if(niveau==0){
    numeroLigne=calculNumLigne2(tableauEntree,premier);
    return logerreur({status:false,value:T,message:'5 la racine ne peut pas contenir des constantes en i='+i});
   }
-  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,parentId,nombreEnfants,numEnfant,profondeur,posOuvPar,posFerPar,''));
+  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
  }
-
- if(dansIgnore===true){
-  // ce sont les commentaires de fin
-  // on recherche la dernière fonction de niveau 0
-  for(i=T.length-1;i>0;i--){
-   if(T[i][3]==0 && T[i][2]=='f'){
-    T[i][8]=lignesTableauEnTexte(tableauEntree,debutIgnore,l01-debutIgnore);//o.substr(debutIgnore,l01-debutIgnore);
-    break;
-   }
-  }
-  
- }
+ 
  l01=T.length;
  // mise à jour de l'id du parent[7] et du nombre d'éléments[8] 
  for(i=l01-1;i>0;i--){
@@ -1525,7 +1444,8 @@ function functionToArray2(tableauEntree,exitOnLevelError){
    }
   }
  }
-// 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE 12numEnfant 13numLi 14ferPar 15prof
+ //           0id	1val	2typ	3niv	4coQ	          5pre	    6der	  7pId	 8nbE  9numEnfant  10profond  11OuvePar 12FerPar  13comm
+
 // numérotation des enfants
  var numEnfant=0; 
  for(i=0;i<l01;i++){
@@ -1538,7 +1458,6 @@ function functionToArray2(tableauEntree,exitOnLevelError){
   }
  }
 // profondeur des fonctions
- var nbNiveauxParentsARemonter=-1;
  for(i=l01-1;i>0;i--){
   if(T[i][2]=='c'){
    T[i][10]=0;
@@ -1556,6 +1475,6 @@ function functionToArray2(tableauEntree,exitOnLevelError){
  }
  // fin analyse
  
- return {status:true,value:T,levelError:levelError};
+ return {status:true,value:T};
  
 }

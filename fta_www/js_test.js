@@ -1,4 +1,31 @@
 
+/*
+  
+  
+  
+  
+  
+  
+  
+*/
+if((T[indice][2] == 'f')){
+}else{
+  if((T[indice][3] > niveau)){
+    /*ne rien faire*/
+  }else{
+    temp={'status':false,'value':T,'id':i,'message':'une virgule ne doit pas être précédée d\'un vide'};
+    return(logerreur(temp));
+  }
+}
+/*
+  
+  
+  
+  
+  
+  
+  
+*/
 apresAppelF=1;
 /*
   ===============

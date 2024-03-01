@@ -18,44 +18,44 @@ print($o1);
 $o1='';
 ?>
 
-    <!-- // ===================================================== -->
-    <table>
-      <tr>
-        <td>
-          <button onclick="charger('source4.txt')">
-            source4
+  <!-- // ===================================================== -->
+  <table>
+    <tr>
+      <td>
+        <button onclick="charger('source4.txt')">
+          source4
+        </button>
+        <button onclick="charger('source5.txt')">
+          source5
+        </button>
+        <button onclick="charger('source6.txt')">
+          source6
+        </button>
+      </td>
+      <td>
+        <textarea id="zonesource" cols="100" rows="60"></textarea>
+        <div>
+          <button onclick="enregistrer()">
+            Enregistrer
           </button>
-          <button onclick="charger('source5.txt')">
-            source5
-          </button>
-          <button onclick="charger('source6.txt')">
-            source6
-          </button>
-        </td>
-        <td>
-          <textarea id="zonesource" cols="100" rows="60"></textarea>
-          <div>
-            <button onclick="enregistrer()">
-              Enregistrer
-            </button>
-          </div>
-        </td>
-        <td style="vertical-align: text-top;">
-          <textarea id="normalise" cols="100" rows="10"></textarea>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <div id="message_erreur"></div>
-        </td>
-      </tr>
-    </table>
-    <!-- 
-      // =====================================================
-      // et un javascript dans le html
-      // =====================================================
-     -->
-    <script type="text/javascript" data-lang="fr">
+        </div>
+      </td>
+      <td style="vertical-align: text-top;">
+        <textarea id="normalise" cols="100" rows="10"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <div id="message_erreur"></div>
+      </td>
+    </tr>
+  </table>
+  <!-- 
+    // =====================================================
+    // et un javascript dans le html
+    // =====================================================
+   -->
+  <script type="text/javascript" data-lang="fr">
 // = = = = <source javascript = = = =
 "use strict";
 
@@ -184,7 +184,7 @@ function charger(nomsource){
 }
 // = = = = source javascript> = = = =
 
-    </script>
+  </script>
 
 <?php
 

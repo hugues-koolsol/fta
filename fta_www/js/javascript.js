@@ -217,6 +217,7 @@ function js_condition1(tab,id,niveau){
 //    console.log('apres traite commentaite2 tab['+i+'][13]='+tab[i][13],'\ncommt='+commt);
     t+='/*' + commt +'*/';
    }else{
+    logerreur({status:false,value:t,id:i,message:'les tests sont pour l\'instant egal,diff,sup,inf,supeg,infeg en non pas "'+tab[i][1]+'"' })
     t+=' /* TODO javascript ligne 213 */ ';
    }
   }
@@ -610,10 +611,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
     if(tab[j][3]==tab[i][3]+1){
      if(tab[j][1]=='si'){ // i18
-      tabchoix.push([j,tab[j][1],0,tab[j]]); // position type position du contenu du alors
+      tabchoix.push([j,tab[j][1],0,tab[j],0]); // position type position du contenu du alors
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le si
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){ // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1){ // i18 //  && tab[k][8]>0
         tabchoix[tabchoix.length-1][2]=k+1;
+        tabchoix[tabchoix.length-1][4]=tab[k][8]; // nombre d'enfants du alors
         break;
        }
        if(tab[k][3]<tab[j][3]){
@@ -622,10 +624,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
       }
      }else if(tab[j][1]=='sinonsi'){ // i18
       aDesSinonSi=true;
-      tabchoix.push([j,tab[j][1],0,tab[j]]);
+      tabchoix.push([j,tab[j][1],0,tab[j],0]);
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le sinonsi
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){  // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1){  // i18  && tab[k][8]>0
         tabchoix[tabchoix.length-1][2]=k+1;
+        tabchoix[tabchoix.length-1][4]=tab[k][8]; // nombre d'enfants du alors
         break;
        }
        if(tab[k][3]<tab[j][3]){
@@ -634,10 +637,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
       }
      }else if(tab[j][1]=='sinon'){  // i18
       aUnSinon=true;
-      tabchoix.push([j,tab[j][1],0,tab[j]]);
+      tabchoix.push([j,tab[j][1],0,tab[j],0]);
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le sinon
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){  // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1){  // i18  && tab[k][8]>0
         tabchoix[tabchoix.length-1][2]=k+1;
+        tabchoix[tabchoix.length-1][4]=tab[k][8]; // nombre d'enfants du alors
         break;
        }
        if(tab[k][3]<tab[j][3]){
@@ -764,7 +768,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      
      
      
-     if(tabchoix[j][2]>0){ // si on a trouve un "alors"
+     if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il n'est pas vide
       niveau++;
       obj=js_tabTojavascript1(tab,tabchoix[j][2],dansFonction,false,niveau);
       niveau--;
@@ -827,7 +831,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      t+='){';
      
      
-     if(tabchoix[j][2]>0){ // si on a trouve un "alors"
+     if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il n'est pas vide
       niveau++;
       obj=js_tabTojavascript1(tab,tabchoix[j][2],dansFonction,false,niveau);
       niveau--;
@@ -849,7 +853,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     }else{
      t+=espaces2(niveau);
      t+='}else{';
-     if(tabchoix[j][2]>0){ // si on a trouve un "alors"
+     if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il n'est pas vide
       niveau++;
       obj=js_tabTojavascript1(tab,tabchoix[j][2],dansFonction,false,niveau);
       niveau--;

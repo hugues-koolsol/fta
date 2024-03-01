@@ -111,7 +111,7 @@ blu),
     a(b())
   ),
   #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
-  f(g),
+  &#8203;f&#8203;(&#8203;g&#8203;)&#8203;,
   #(👍😁💥💪👎☀🌞🟥🟩)
 )</textarea>
 
@@ -120,7 +120,7 @@ blu),
   <a href="javascript:transform()">transform</a>
   <div id="message1"></div>
   <div id="resultat1"></div>
-  <script type="text/javascript" src="js/core3.js"></script>
+  <script type="text/javascript" src="js/core4.js"></script>
 <script type="text/javascript">
 
 
@@ -213,36 +213,10 @@ function transform(){
     var t1=document.createElement('table');
     t1.setAttribute('class','tableau1');
     
-    // entete de tableau de l'arbre
-    var tr1=document.createElement('tr');
-    for(var i=0;i<global_enteteTableau.length;i++){
-      var td1=document.createElement('td');
-      td1.innerHTML=global_enteteTableau[i][0];
-      td1.setAttribute('title',global_enteteTableau[i][1] + '(' + i + ')');
-      tr1.appendChild(td1);
-    }
-    t1.appendChild(tr1);
-    
-    // arbre
-    for(var i=0;i<matriceFonction.value.length;i++){
-      var tr1=document.createElement('tr');
-      for(var j=0;j<matriceFonction.value[i].length;j++){
-        var td1=document.createElement('td');
-        if(j==1 || ( j>=10  ) ){ // pour les valeurs et les commentaires
-         td1.innerHTML=String(matriceFonction.value[i][j]).replace(/ /g,'░').replace(/\n/g,'¶');
-         td1.style.whiteSpace='pre-wrap';
-         td1.style.verticalAlign='baseline';
-        }else if(j==4){ // constante quotée
-         td1.innerHTML=matriceFonction.value[i][j]===true?'1':'';;
-        }else{
-         td1.innerHTML=String(matriceFonction.value[i][j]).replace(/ /g,'░');
-        }
-        td1.setAttribute('title',global_enteteTableau[j][1] + '(' + j + ')');
-        tr1.appendChild(td1);
-      }
-      t1.appendChild(tr1);
-    }
+    ConstruitHtmlMatrice(t1,matriceFonction);
     document.getElementById('resultat1').appendChild(t1);
+    
+    
     var t2=document.createElement('table');
     
     ConstruitHtmlTableauCaracteres(t2,a.value,tableau1)

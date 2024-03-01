@@ -374,10 +374,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     if(tab[j][3]==tab[i][3]+1){
      
      if(tab[j][1]=='si'){ // i18
-      tabchoix.push([j,tab[j][1],0,[]]); // position type position du contenu du alors
+      tabchoix.push([j,tab[j][1],0,[],0]); // position type position du contenu du alors
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le si
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){ // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 ){ // i18
         tabchoix[tabchoix.length-1][2]=k+1;
+        tabchoix[tabchoix.length-1][4]=tab[k][8]; // nombre d'enfants du alors
         break;
        }
        if(tab[k][3]<tab[j][3]){
@@ -386,10 +387,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       }
      }else if(tab[j][1]=='sinonsi'){ // i18
       aDesSinonSi=true;
-      tabchoix.push([j,tab[j][1],0,[]]);
+      tabchoix.push([j,tab[j][1],0,[],0]);
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le sinonsi
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){  // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 ){  // i18
         tabchoix[tabchoix.length-1][2]=k+1;
+        tabchoix[tabchoix.length-1][4]=tab[k][8]; // nombre d'enfants du alors
         break;
        }
        if(tab[k][3]<tab[j][3]){
@@ -398,10 +400,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       }
      }else if(tab[j][1]=='sinon'){  // i18
       aUnSinon=true;
-      tabchoix.push([j,tab[j][1],0,[]]);
+      tabchoix.push([j,tab[j][1],0,[],0]);
       for(k=j+1;k<tab.length;k++){ // chercher la position du alors dans le sinon
-       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 && tab[k][8]>0){  // i18
+       if(tab[k][1]=='alors' && tab[k][3]==tab[j][3]+1 ){  // i18
         tabchoix[tabchoix.length-1][2]=k+1;
+        tabchoix[tabchoix.length-1][4]=tab[k][8]; // nombre d'enfants du alors
         break;
        }
        if(tab[k][3]<tab[j][3]){
@@ -412,7 +415,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       if(tabchoix.length==0){
        tabchoix.push([j,tab[j][1],0,[]]);
       }else{
-       tabchoix[tabchoix.length-1][3].push([j,tab[j][1],0,[]]);
+       tabchoix[tabchoix.length-1][3].push([j,tab[j][1],0,[],0]);
       }
      }else{
       return logerreur({status:false,value:t,id:id,tab:tab,message:'la syntaxe de choix est choix(si(condition(),alors()),sinonsi(condition(),alors()),sinon(alors()))'});
@@ -500,7 +503,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      
      
      
-     if(tabchoix[j][2]>0){ // si on a trouve un "alors"
+     if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
       niveau++;
       obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
       niveau--;
@@ -543,7 +546,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      t+='){';
      
      
-     if(tabchoix[j][2]>0){ // si on a trouve un "alors"
+     if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
       niveau++;
       obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
       niveau--;
@@ -565,7 +568,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     }else{
      t+=espaces2(niveau);
      t+='}else{';
-     if(tabchoix[j][2]>0){ // si on a trouve un "alors"
+     if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
       niveau++;
       obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
       niveau--;

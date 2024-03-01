@@ -30,21 +30,21 @@ $o1='';
 */
 ?>
 
-    <h1>
-      HOME
-    </h1>
-    <ul>
-      <li>
-        <a href="index_php.html">
-          index_php.html
-        </a>
-      </li>
-      <li>
-        <a href="index.html">
-          index.html
-        </a>
-      </li>
-    </ul>
+  <h1>
+    HOME
+  </h1>
+  <ul>
+    <li>
+      <a href="index_php.html">
+        index_php.html
+      </a>
+    </li>
+    <li>
+      <a href="index.html">
+        index.html
+      </a>
+    </li>
+  </ul>
 
 <?php
 

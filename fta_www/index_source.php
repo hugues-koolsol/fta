@@ -39,7 +39,7 @@ print($o1);$o1='';
          
        </td>
        <td>
-         <textarea id="zonesource" class="yytextSmall" cols="100" rows="60" spellcheck="false" style="height:85vh;padding:3px;"></textarea>
+         <textarea id="zonesource" class="yytextSmall" cols="100" rows="60" spellcheck="false" style="height:85vh;padding:3px 3px 3px 8px;"></textarea>
        </td>
        <td style="vertical-align: text-top;">
          <textarea id="normalise" class="yytextSmall" cols="100" rows="10" spellcheck="false"></textarea>
@@ -124,19 +124,15 @@ function parentheses(){
  if(global_editeur_derniere_valeur_selecStart<0){
   return;
  }
-// console.log('global_editeur_derniere_valeur_selecStart='+global_editeur_derniere_valeur_selecStart);
  var zoneSource=document.getElementById('zonesource');
  var texte=zoneSource.value;
  if(texte.substr(global_editeur_derniere_valeur_selecStart-1,1)=='('){
   var arr=functionToArray(texte,false);
-//  console.log(global_editeur_derniere_valeur_selecStart);
-//  console.log(arr);
   for(var i=0;i<arr.value.length;i++){
-   if(global_editeur_derniere_valeur_selecStart-1==arr.value[i][22]){
-//    console.log('i='+i+','+JSON.stringify(arr.value[i]))
+   if(global_editeur_derniere_valeur_selecStart-1==arr.value[i][11]){
     zoneSource.select();
     zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
-    zoneSource.selectionEnd=arr.value[i][23];
+    zoneSource.selectionEnd=arr.value[i][12];
     initialisationEditeur();
     return;
    }
@@ -284,7 +280,7 @@ function enregistrer2(){
  var startMicro=performance.now();
  var tableau1=iterateCharacters(a.value);
  global_messages.data.tableau=tableau1;
- var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+ var endMicro=performance.now();  console.log('\n\n=============\nmise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
 //  console.log('tableau1.out=',tableau1.out);
  
@@ -377,21 +373,77 @@ function enregistrer2(){
     
  }
  
+ var lienVoitTableau=document.createElement('a');
+ lienVoitTableau.innerHTML='Voir tableau';
+ lienVoitTableau.href='javascript:voirTableau1(0)';
+ lienVoitTableau.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
+ zonedonneesComplementaires.appendChild(lienVoitTableau);
+ 
+ var lienVoitMatrice=document.createElement('a');
+ lienVoitMatrice.innerHTML='Voir matrice';
+ lienVoitMatrice.href='javascript:voirMatrice1(0)';
+ lienVoitMatrice.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
+ zonedonneesComplementaires.appendChild(lienVoitMatrice);
+ 
  var zoneContenantLeTableauCaracteres=document.createElement('div');
  zoneContenantLeTableauCaracteres.style.display='none';
  zoneContenantLeTableauCaracteres.id='zoneContenantLeTableauCaracteres';
- 
- var zoneTableauCaracteres=document.createElement('table');
-/* 
- ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,"",tableau1);
-*/ 
- zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);
  zonedonneesComplementaires.appendChild(zoneContenantLeTableauCaracteres);
+
+ var zoneContenantLaMatrice=document.createElement('div');
+ zoneContenantLaMatrice.style.display='none';
+ zoneContenantLaMatrice.id='zoneContenantLaMatrice';
+ zoneContenantLaMatrice.className='tableau1';
+ zonedonneesComplementaires.appendChild(zoneContenantLaMatrice);
 
  displayMessages()
  
 }
+//=====================================================================================================================
+function voirMatrice1(){
+// console.log(global_messages.data.matrice);
 
+ var zoneContenantLaMatrice=dogid('zoneContenantLaMatrice')
+ if( zoneContenantLaMatrice && dogid('zoneContenantLaMatrice').innerHTML==''){
+  var zoneMatrice=document.createElement('table');
+  
+  ConstruitHtmlMatrice(zoneMatrice,global_messages.data.matrice);
+  
+  zoneContenantLaMatrice.appendChild(zoneMatrice);
+  zoneContenantLaMatrice.style.display='';
+ }else{
+  if(zoneContenantLaMatrice.style.display=='none'){
+   zoneContenantLaMatrice.style.display=''
+  }else{
+   zoneContenantLaMatrice.style.display='none'
+  }
+ }
+
+
+}
+//=====================================================================================================================
+function voirTableau1(){
+// console.log(global_messages.data.tableau);
+ 
+ var zoneContenantLeTableauCaracteres=dogid('zoneContenantLeTableauCaracteres')
+ if( zoneContenantLeTableauCaracteres && dogid('zoneContenantLeTableauCaracteres').innerHTML==''){
+  var zoneTableauCaracteres=document.createElement('table');
+  
+  ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,"",global_messages.data.tableau);
+  
+  zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);
+  zoneContenantLeTableauCaracteres.style.display='';
+ }else{
+  if(zoneContenantLeTableauCaracteres.style.display=='none'){
+   zoneContenantLeTableauCaracteres.style.display=''
+  }else{
+   zoneContenantLeTableauCaracteres.style.display='none'
+  }
+ }
+ 
+ 
+ 
+}
 //=====================================================================================================================
 function afficherFichierSource(source){
  if(source.status==true){
@@ -415,7 +467,7 @@ function chargerFichierRev(nomFichierSource){
  document.getElementById('nomDuSource').disabled=true;
  document.getElementById('normalise').value='';
  document.getElementById('zonesource').value='';
- loadRevFile(nomFichierSource,afficherFichierSource,'zonesource');
+ loadRevFile(nomFichierSource,afficherFichierSource,'zonesource',enregistrer2);
 }
 //=====================================================================================================================
 function getCaretCoordinates(element, position){ //, options) {
@@ -904,7 +956,7 @@ function chargerLaListeDesSourcesRev(){
 //=====================================================================================================================
 function chargerLeDernierSourceChargePrecedemment(){
  var fta_dernier_fichier_charge=localStorage.getItem("fta_dernier_fichier_charge");
- console.log('fta_dernier_fichier_charge=' , fta_dernier_fichier_charge );
+// console.log('fta_dernier_fichier_charge=' , fta_dernier_fichier_charge );
  if(fta_dernier_fichier_charge!==null){
   loadRevFile(fta_dernier_fichier_charge,afficherFichierSource,'zonesource');
  }
