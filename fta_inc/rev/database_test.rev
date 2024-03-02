@@ -1,20 +1,20 @@
 src_php(
-  (file_name , init),
-  (file_extension , php),
-  (file_path , .),
-  source(
-    php(
-      appelf(n(require_once) , p('aa_include.php')),
-      affecte($src_create_database , appelf(n(file_get_contents) , p('init.sql'))),
-      choix(
-        si(
-          condition((egal_stricte($src_create_database , faux))),
-          alors(appelf(n(die) , p('fichier init.sql non trouve')))
-        )
-      ),
-      #(finchoix suite du source),
-      affecte(apresChoix , 1),
-      #(###
+   (file_name , init),
+   (file_extension , php),
+   (file_path , .),
+   source(
+      php(
+         appelf(n(require_once) , p('aa_include.php')),
+         affecte($src_create_database , appelf(n(file_get_contents) , p('init.sql'))),
+         choix(
+            si(
+               condition((egal_stricte($src_create_database , faux))),
+               alors(appelf(n(die) , p('fichier init.sql non trouve')))
+            )
+         ),
+         #(finchoix suite du source),
+         affecte(apresChoix , 1),
+         #(###
       affecte(
         $src_create_database,
         sql(
@@ -121,278 +121,278 @@ src_php(
         )
       ),
       ###),
-      #(
-        // =========
-        // connexion
-      ),
-      affecte($serveur , 'localhost:3308'),
-      affecte($utilisateur , 'admin'),
-      affecte($mdp , 'admin'),
-      appelf(
-        r($link),
-        n(mysqli_connect),
-        p($serveur),
-        p($utilisateur),
-        p($mdp)
-      ),
-      choix(
-        si(
-          condition(non($link)),
-          alors(
-            appelf(
-              n(die),
-              p(
-                appelf(
-                  n(concat),
-                  p(__LINE__),
-                  ' ',
-                  p(__FILE__)
-                )
-              )
+         #(
+            // =========
+            // connexion
+         ),
+         affecte($serveur , 'localhost:3308'),
+         affecte($utilisateur , 'admin'),
+         affecte($mdp , 'admin'),
+         appelf(
+            r($link),
+            n(mysqli_connect),
+            p($serveur),
+            p($utilisateur),
+            p($mdp)
+         ),
+         choix(
+            si(
+               condition(non($link)),
+               alors(
+                  appelf(
+                     n(die),
+                     p(
+                        appelf(
+                           n(concat),
+                           p(__LINE__),
+                           ' ',
+                           p(__FILE__)
+                        )
+                     )
+                  )
+               )
             )
-          )
-        )
-      ),
-      appelf(n(mysqli_set_charset) , p($link) , p('utf8mb4')),
-      #(
-        // =========================================
-        // execution de la requête et test de retour
-      ),
-      appelf(
-        r($retourSql),
-        n(mysqli_multi_query),
-        p($link),
-        p($src_create_database)
-      ),
-      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
-      choix(
-        si(
-          condition(egal($testAppelSql , 0)),
-          alors(appelf(n(print) , p('OK CREATE<br />')) , appelf(n(mysqli_close) , p($link)))
-        ),
-        sinon(
-          alors(appelf(n(die) , p('KO CREATE<br />')))
-        )
-      ),
-      #(
-        ===================================================================================
-        Réouverture de la connexion 
-        il faut attendre 100 ms car mysql n'arrive pas à terminer la transaction asynchrone
-        ===================================================================================
-      ),
-      appelf(n(usleep) , p(100000)),
-      appelf(
-        r($link),
-        n(mysqli_connect),
-        p($serveur),
-        p($utilisateur),
-        p($mdp)
-      ),
-      choix(
-        si(
-          condition(non($link)),
-          alors(
-            appelf(
-              n(die),
-              p(appelf(n(concat) , p(__LINE__) , p(__FILE__)))
-            )
-          )
-        )
-      ),
-      #(
-        ===================================================================================
-        ne pas oublier de se remettre en utf8
-        ===================================================================================
-      ),
-      affecte($setnames , sql(set(NAMES , 'utf8mb4 COLLATE utf8mb4_unicode_ci'))),
-      appelf(
-        r($retourSql),
-        n(mysqli_query),
-        p($link),
-        p($setnames)
-      ),
-      affecte(
-        $insertSql,
-        sql(
-          insert_into(
-            n(ftatest.tbl_user),
-            fields(
-              fld_id_user,
-              fld_email_user,
-              fld_password_user,
-              fld_comment_user
+         ),
+         appelf(n(mysqli_set_charset) , p($link) , p('utf8mb4')),
+         #(
+            // =========================================
+            // execution de la requête et test de retour
+         ),
+         appelf(
+            r($retourSql),
+            n(mysqli_multi_query),
+            p($link),
+            p($src_create_database)
+         ),
+         appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
+         choix(
+            si(
+               condition(egal($testAppelSql , 0)),
+               alors(appelf(n(print) , p('OK CREATE<br />')) , appelf(n(mysqli_close) , p($link)))
             ),
-            values(
-              (
-                1,
-                'admin@example.com',
-                'admin',
-                'user with fld_id_user = 1 is "THE" admin'
-              ),
-              (
-                2,
-                'usér2@example.com',
-                'user2',
-                NULL
-              ),
-              (
-                3,
-                'usEr3@example.com',
-                'user3',
-                NULL
-              ),
-              (
-                4,
-                'us€r4@example.com',
-                'user4',
-                NULL
-              ),
-              (
-                5,
-                'user5@example.com',
-                'user5',
-                NULL
-              )
+            sinon(
+               alors(appelf(n(die) , p('KO CREATE<br />')))
             )
-          )
-        )
-      ),
-      appelf(
-        r($retourSql),
-        n(mysqli_query),
-        p($link),
-        p($insertSql)
-      ),
-      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
-      choix(
-        si(
-          condition(egal($testAppelSql , 0)),
-          alors(appelf(n(print) , p('OK INSERT<br />')))
-        ),
-        sinon(
-          alors(appelf(n(die) , p('KO INSERT<br />')))
-        )
-      ),
-      #(
-        //=========================================================
-        // requete sur admin / admin
-      ),
-      affecte($useremail , 'admin@example.com'),
-      affecte($userpass , 'admin'),
-      affecte(
-        $selectSql,
-        sqlref(
-          num(1),
-          p($useremail),
-          p($userpass),
-          p('toto'),
-          p(0)
-        )
-      ),
-      appelf(
-        r($retourSql),
-        n(mysqli_query),
-        p($link),
-        p($selectSql)
-      ),
-      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
-      choix(
-        si(
-          condition(egal($testAppelSql , 0)),
-          alors(appelf(n(print) , p('OK SELECT<br />')))
-        ),
-        sinon(
-          alors(appelf(n(die) , p('KO SELECT<br />')))
-        )
-      ),
-      boucle(
-        initialisation(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
-        condition((diff($row , NULL))),
-        increment(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
-        faire(
-          appelf(
-            n(echo),
-            p(
-              appelf(
-                n(concat),
-                p('<br />userid='),
-                p($row[0]),
-                p(' , useremail='),
-                p($row[1]),
-                p(' , userpassword='),
-                p($row[2]),
-                p('<br />')
-              )
+         ),
+         #(
+            ===================================================================================
+            Réouverture de la connexion 
+            il faut attendre 100 ms car mysql n'arrive pas à terminer la transaction asynchrone
+            ===================================================================================
+         ),
+         appelf(n(usleep) , p(100000)),
+         appelf(
+            r($link),
+            n(mysqli_connect),
+            p($serveur),
+            p($utilisateur),
+            p($mdp)
+         ),
+         choix(
+            si(
+               condition(non($link)),
+               alors(
+                  appelf(
+                     n(die),
+                     p(appelf(n(concat) , p(__LINE__) , p(__FILE__)))
+                  )
+               )
             )
-          )
-        )
-      ),
-      #(
-        //=========================================================
-        // requete sur %user% / %user%
-      ),
-      affecte($useremail , '%user%'),
-      affecte($userpass , '%user%'),
-      affecte(
-        $selectSql,
-        sqlref(
-          num(1),
-          p($useremail),
-          p($userpass),
-          p('toto'),
-          p(0)
-        )
-      ),
-      appelf(
-        r($retourSql),
-        n(mysqli_query),
-        p($link),
-        p($selectSql)
-      ),
-      appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
-      choix(
-        si(
-          condition(egal($testAppelSql , 0)),
-          alors(
-            appelf(
-              n(echo),
-              p(
-                appelf(
-                  n(concat),
-                  p('OK SELECT'),
-                  p($selectSql),
-                  p(<br , />)
-                )
-              )
+         ),
+         #(
+            ===================================================================================
+            ne pas oublier de se remettre en utf8
+            ===================================================================================
+         ),
+         affecte($setnames , sql(set(NAMES , 'utf8mb4 COLLATE utf8mb4_unicode_ci'))),
+         appelf(
+            r($retourSql),
+            n(mysqli_query),
+            p($link),
+            p($setnames)
+         ),
+         affecte(
+            $insertSql,
+            sql(
+               insert_into(
+                  n(ftatest.tbl_user),
+                  fields(
+                     fld_id_user,
+                     fld_email_user,
+                     fld_password_user,
+                     fld_comment_user
+                  ),
+                  values(
+                     (
+                        1,
+                        'admin@example.com',
+                        'admin',
+                        'user with fld_id_user = 1 is "THE" admin'
+                     ),
+                     (
+                        2,
+                        'usér2@example.com',
+                        'user2',
+                        NULL
+                     ),
+                     (
+                        3,
+                        'usEr3@example.com',
+                        'user3',
+                        NULL
+                     ),
+                     (
+                        4,
+                        'us€r4@example.com',
+                        'user4',
+                        NULL
+                     ),
+                     (
+                        5,
+                        'user5@example.com',
+                        'user5',
+                        NULL
+                     )
+                  )
+               )
             )
-          )
-        ),
-        sinon(
-          alors(appelf(n(die) , p('KO SELECT')))
-        )
-      ),
-      boucle(
-        initialisation(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
-        condition((diff($row , NULL))),
-        increment(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
-        faire(
-          appelf(
-            n(echo),
-            p(
-              appelf(
-                n(concat),
-                p('<br />userid='),
-                p($row[0]),
-                p(' , useremail='),
-                p($row[1]),
-                p(' , userpassword='),
-                p($row[2]),
-                p('<br />')
-              )
+         ),
+         appelf(
+            r($retourSql),
+            n(mysqli_query),
+            p($link),
+            p($insertSql)
+         ),
+         appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
+         choix(
+            si(
+               condition(egal($testAppelSql , 0)),
+               alors(appelf(n(print) , p('OK INSERT<br />')))
+            ),
+            sinon(
+               alors(appelf(n(die) , p('KO INSERT<br />')))
             )
-          )
-        )
+         ),
+         #(
+            //=========================================================
+            // requete sur admin / admin
+         ),
+         affecte($useremail , 'admin@example.com'),
+         affecte($userpass , 'admin'),
+         affecte(
+            $selectSql,
+            sqlref(
+               num(1),
+               p($useremail),
+               p($userpass),
+               p('toto'),
+               p(0)
+            )
+         ),
+         appelf(
+            r($retourSql),
+            n(mysqli_query),
+            p($link),
+            p($selectSql)
+         ),
+         appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
+         choix(
+            si(
+               condition(egal($testAppelSql , 0)),
+               alors(appelf(n(print) , p('OK SELECT<br />')))
+            ),
+            sinon(
+               alors(appelf(n(die) , p('KO SELECT<br />')))
+            )
+         ),
+         boucle(
+            initialisation(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
+            condition((diff($row , NULL))),
+            increment(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
+            faire(
+               appelf(
+                  n(echo),
+                  p(
+                     appelf(
+                        n(concat),
+                        p('<br />userid='),
+                        p($row[0]),
+                        p(' , useremail='),
+                        p($row[1]),
+                        p(' , userpassword='),
+                        p($row[2]),
+                        p('<br />')
+                     )
+                  )
+               )
+            )
+         ),
+         #(
+            //=========================================================
+            // requete sur %user% / %user%
+         ),
+         affecte($useremail , '%user%'),
+         affecte($userpass , '%user%'),
+         affecte(
+            $selectSql,
+            sqlref(
+               num(1),
+               p($useremail),
+               p($userpass),
+               p('toto'),
+               p(0)
+            )
+         ),
+         appelf(
+            r($retourSql),
+            n(mysqli_query),
+            p($link),
+            p($selectSql)
+         ),
+         appelf(r($testAppelSql) , n(mysqli_errno) , p($link)),
+         choix(
+            si(
+               condition(egal($testAppelSql , 0)),
+               alors(
+                  appelf(
+                     n(echo),
+                     p(
+                        appelf(
+                           n(concat),
+                           p('OK SELECT'),
+                           p($selectSql),
+                           p(<br , />)
+                        )
+                     )
+                  )
+               )
+            ),
+            sinon(
+               alors(appelf(n(die) , p('KO SELECT')))
+            )
+         ),
+         boucle(
+            initialisation(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
+            condition((diff($row , NULL))),
+            increment(appelf(r($row) , n(mysqli_fetch_row) , p($retourSql))),
+            faire(
+               appelf(
+                  n(echo),
+                  p(
+                     appelf(
+                        n(concat),
+                        p('<br />userid='),
+                        p($row[0]),
+                        p(' , useremail='),
+                        p($row[1]),
+                        p(' , userpassword='),
+                        p($row[2]),
+                        p('<br />')
+                     )
+                  )
+               )
+            )
+         )
       )
-    )
-  )
+   )
 )

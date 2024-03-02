@@ -1,330 +1,331 @@
 src_php(
-  #(
-    ==============================================
-    exemple de formulaire de login
-    en php qui contient aussi du html qui contient du javascript
-  ),
-  (file_name , aa_login_test),
-  (file_extension , php),
-  (file_path , .),
-  source(
-    php(
-      #(
-        =========================================================
-        ========= FONCTION recharger la page courante ===========
-        =========================================================
-      ),
-      fonction(
-        definition(nom(rechargerPageCourante)),
-        contenu(
-          appelf(
-            n(header),
-            p(appelf(n(concat) , p('Location: ') , p(BNF)))
-          ),
-          sortir(0)
-        )
-      ),
-      #(
-        =========================================================
-        ========= FONCTION supprimer les valeurs de session =====
-        =========================================================
-      ),
-      fonction(
-        definition(nom(supprimerLesValeursDeSession)),
-        contenu(
-          appelf(n(unset) , p($_SESSION[APP_KEY]["user"])),
-          appelf(n(unset) , p($_SESSION[APP_KEY]["userInit"])),
-          appelf(n(unset) , p($_SESSION[APP_KEY]["group"])),
-          appelf(n(unset) , p($_SESSION[APP_KEY]["groupInit"])),
-          appelf(n(unset) , p($_SESSION[APP_KEY]["job"])),
-          appelf(n(unset) , p($_SESSION[APP_KEY]["jobInit"]))
-        )
-      ),
-      #(
-        ================================================
-        ===== début du source ==========================
-        ================================================
-      ),
-      definir(BNF , appelf(n(basename) , p(__FILE__))),
-      appelf(n(require_once) , p('aa_include.php')),
-      appelf(n(session_start)),
-      #(
-        =====================
-        si on est en post ...
-        =====================
-      ),
-      choix(
-        si(
-          condition(
-            (appelf(n(isset) , p($_POST))),
-            et(
-              sup(appelf(n(count) , p($_POST)) , 0)
+   #(
+      ==============================================
+      exemple de formulaire de login
+      en php qui contient aussi du html qui contient du javascript
+   ),
+   (file_name , aa_login_test),
+   (file_extension , php),
+   (file_path , .),
+   source(
+      php(
+         #(
+            =========================================================
+            ========= FONCTION recharger la page courante ===========
+            =========================================================
+         ),
+         fonction(
+            definition(nom(rechargerPageCourante)),
+            contenu(
+               appelf(
+                  n(header),
+                  p(appelf(n(concat) , p('Location: ') , p(BNF)))
+               ),
+               sortir(0)
             )
-          ),
-          alors(
-            appelf(n(start_session_messages)),
-            choix(
-              #(
-                =================================================
-                si les données login et password sont renseignées
-                =================================================
-              ),
-              si(
-                condition(
-                  (appelf(n(isset) , p($_POST["login"]))),
-                  et(appelf(n(isset) , p($_POST["password"])))
-                ),
-                alors(
-                  choix(
-                    si(
-                      #(
-                        ===============================================
-                        ici on ne casse pas trop la tête,
-                        le test de validité du login et du mot de passe
-                        pourra avantageusement être remplacé
-                        ===============================================
-                      ),
-                      condition((egal('admin' , $_POST["login"])) , et(egal($_POST["password"] , 'admin'))),
-                      alors(
-                        #(
-                          ====================================
-                          ... soit login et password sont bons
-                          et on met  les  données  en  session
-                          ====================================
-                        ),
-                        affecte($_SESSION[APP_KEY]["user"] , 1),
-                        affecte($_SESSION[APP_KEY]["userInit"] , 1),
-                        affecte($_SESSION[APP_KEY]["group"] , 1),
-                        affecte($_SESSION[APP_KEY]["groupInit"] , 1),
-                        affecte($_SESSION[APP_KEY]["job"] , 1),
-                        affecte($_SESSION[APP_KEY]["jobInit"] , 1),
-                        #(Puis on attend une petite seconde pour voir si l'utilisateur est patient),
-                        appelf(n(sleep) , p(1))
-                      )
-                    ),
-                    sinon(
-                      alors(
-                        #(
-                          ======================================
-                          ... soit login et password sont KO
-                          et on retire les données de la session
-                          ======================================
-                        ),
-                        appelf(n(supprimerLesValeursDeSession)),
-                        affecte($_SESSION[APP_KEY][MESSAGES]["errors"][] , 'ERROR : login ou password faux')
-                      )
-                    )
+         ),
+         #(
+            =========================================================
+            ========= FONCTION supprimer les valeurs de session =====
+            =========================================================
+         ),
+         fonction(
+            definition(nom(supprimerLesValeursDeSession)),
+            contenu(
+               appelf(n(unset) , p($_SESSION[APP_KEY]["user"])),
+               appelf(n(unset) , p($_SESSION[APP_KEY]["userInit"])),
+               appelf(n(unset) , p($_SESSION[APP_KEY]["group"])),
+               appelf(n(unset) , p($_SESSION[APP_KEY]["groupInit"])),
+               appelf(n(unset) , p($_SESSION[APP_KEY]["job"])),
+               appelf(n(unset) , p($_SESSION[APP_KEY]["jobInit"]))
+            )
+         ),
+         #(
+            ================================================
+            ===== début du source ==========================
+            ================================================
+         ),
+         definir(BNF , appelf(n(basename) , p(__FILE__))),
+         appelf(n(require_once) , p('aa_include.php')),
+         appelf(n(session_start)),
+         #(
+            =====================
+            si on est en post ...
+            =====================
+         ),
+         choix(
+            si(
+               condition(
+                  (appelf(n(isset) , p($_POST))),
+                  et(
+                     sup(appelf(n(count) , p($_POST)) , 0)
                   )
-                )
-              ),
-              sinonsi(
-                condition(
-                  (appelf(n(isset) , p($_POST["logout"])))
-                ),
-                alors(appelf(n(supprimerLesValeursDeSession)))
-              )
-            ),
-            #(
-              ========================================
-              TOUJOURS faire un redirect après un POST
-              ========================================
-            ),
-            appelf(n(rechargerPageCourante))
-          )
-        )
-      ),
-      #(),
-      #(),
-      #(),
-      #(
-        //========================================================
-        // si on appel cette page en GET avec une (a)ction=logout,
-        // on sort et on redirige sur cette page
-        //========================================================
-      ),
-      choix(
-        si(
-          condition(
-            (appelf(n(isset) , p($_GET))),
-            et(
-              sup(appelf(n(count) , p($_GET)) , 0)
-            )
-          ),
-          alors(
-            choix(
-              si(
-                condition(
-                  (appelf(n(isset) , p($_GET["a"]))),
-                  et(egal($_GET["a"] , 'logout'))
-                ),
-                alors(
-                  #(on supprime et on recharge),
-                  appelf(n(supprimerLesValeursDeSession)),
-                  appelf(n(rechargerPageCourante))
-                )
-              )
-            )
-          )
-        )
-      ),
-      #(
-        ======================================================== 
-        affichage de l'html 
-        ========================================================
-      ),
-      affecte($o1 , ''),
-      affecte($a , array(('title' , 'login') , ('description' , 'login'))),
-      #(
-        ==============================================================
-        ou bien 
-        affecte($a , []),
-        appelf(n(pushkv) , p($a) , p('title') , p('login')),
-        appelf(n(pushkv) , p($a) , p('description') , p('login')),
-        ==============================================================
-      ),
-      appelf(r($o1) , n(html_header1) , p($a)),
-      appelf(
-        n(concat),
-        r($o1),
-        p($o1),
-        p(appelf(n(session_messages)))
-      ),
-      #(
-        ========================================================
-        on imprime le l'entête ...
-      ),
-      appelf(n(print) , p($o1)),
-      #(
-        ... puis on le reinitialise,
-      ),
-      affecte($o1 , ''),
-      #(
-        ======================================================== 
-        l'utilisateur est-il déjà connecté ? ...
-      ),
-      choix(
-        si(
-          condition(
-            (appelf(n(isset) , p($_SESSION[APP_KEY]["user"]))),
-            et(egal(1 , $_SESSION[APP_KEY]["user"]))
-          ),
-          alors(
-            #(
-              ======================================================== 
-              ... si oui on lui affiche un formulaire de DEconnexion
-              ======================================================== 
-            ),
-            affecte(
-              $o1,
-              html(
-                form(
-                  (id , loginbox),
-                  (method , post),
-                  span('logout'),
-                  input(
-                    (type , hidden),
-                    (name , logout),
-                    (id , logout),
-                    (value , '')
-                  ),
-                  input((type , submit) , (value , envoyer))
-                )
-              )
-            )
-          )
-        ),
-        sinon(
-          alors(
-            #(
-              ======================================================== 
-              ... sinon on lui affiche un formulaire de connexion
-              ======================================================== 
-            ),
-            affecte(
-              $o1,
-              html(
-                form(
-                  (id , loginbox),
-                  (method , post),
-                  (onsubmit , 'return checkSubmit()'),
-                  label((for , login) , 'login'),
-                  input(
-                    (type , text),
-                    (name , login),
-                    (id , login),
-                    (value , '')
-                  ),
-                  label((for , password) , 'password'),
-                  input(
-                    (type , password),
-                    (name , password),
-                    (id , password),
-                    (value , '')
-                  ),
-                  input((type , submit) , (value , envoyer))
-                ),
-                script(
-                  (type , 'text/javascript'),
-                  (data-lang , 'fr'),
-                  source(
-                    #(
-                      ===========================================
-                      dans ce javascript, on définit une fonction
-                      ===========================================
-                    ),
-                    fonction(
-                      definition(nom(checkSubmit)),
-                      contenu(
-                        appelf(n(clearMessages)),
-                        declare(valRet , faux),
-                        declare(zoneLogin , {}),
-                        declare(zonePassw , {}),
-                        affecte(zoneLogin , appelf(n(document.getElementById) , p('login'))),
-                        affecte(zonePassw , appelf(n(document.getElementById) , p('password'))),
-                        essayer(
-                          faire(
-                            choix(
+               ),
+               alors(
+                  appelf(n(start_session_messages)),
+                  choix(
+                     #(
+                        =================================================
+                        si les données login et password sont renseignées
+                        =================================================
+                     ),
+                     si(
+                        condition(
+                           (appelf(n(isset) , p($_POST["login"]))),
+                           et(appelf(n(isset) , p($_POST["password"])))
+                        ),
+                        alors(
+                           choix(
                               si(
-                                condition((egal(zonePassw.value , '')) , ou(egal(zoneLogin.value , ''))),
-                                alors(affecte(valRet , faux) , appelf(n(global_messages.errors.push) , p('Veuillez indiquer votre login et votre mot de passe.')) , appelf(n(displayMessages)))
+                                 #(
+                                    ===============================================
+                                    ici on ne casse pas trop la tête,
+                                    le test de validité du login et du mot de passe
+                                    pourra avantageusement être remplacé
+                                    ===============================================
+                                 ),
+                                 condition((egal('admin' , $_POST["login"])) , et(egal($_POST["password"] , 'admin'))),
+                                 alors(
+                                    #(
+                                       ====================================
+                                       ... soit login et password sont bons
+                                       et on met  les  données  en  session
+                                       ====================================
+                                    ),
+                                    affecte($_SESSION[APP_KEY]["user"] , 1),
+                                    affecte($_SESSION[APP_KEY]["userInit"] , 1),
+                                    affecte($_SESSION[APP_KEY]["group"] , 1),
+                                    affecte($_SESSION[APP_KEY]["groupInit"] , 1),
+                                    affecte($_SESSION[APP_KEY]["job"] , 1),
+                                    affecte($_SESSION[APP_KEY]["jobInit"] , 1),
+                                    #(Puis on attend une petite seconde pour voir si l'utilisateur est patient),
+                                    appelf(n(sleep) , p(1))
+                                 )
                               ),
                               sinon(
-                                #(// todo essayer de virer le "alors" pour traiter l'erreur),
-                                alors(affecte(valRet , vrai))
+                                 alors(
+                                    #(
+                                       ======================================
+                                       ... soit login et password sont KO
+                                       et on retire les données de la session
+                                       ======================================
+                                    ),
+                                    appelf(n(supprimerLesValeursDeSession)),
+                                    affecte($_SESSION[APP_KEY][MESSAGES]["errors"][] , 'ERROR : login ou password faux')
+                                 )
                               )
-                            )
-                          ),
-                          sierreur(
-                            e,
-                            faire(appelf(n(global_messages.errors.push) , p('Il y a eu un problème ')) , appelf(n(displayMessages)))
-                          )
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition(
+                           (appelf(n(isset) , p($_POST["logout"])))
                         ),
-                        revenir(valRet)
-                      )
-                    )
-                  )
-                )
-              )
+                        alors(appelf(n(supprimerLesValeursDeSession)))
+                     )
+                  ),
+                  #(
+                     ========================================
+                     TOUJOURS faire un redirect après un POST
+                     ========================================
+                  ),
+                  appelf(n(rechargerPageCourante))
+               )
             )
-          )
-        )
-      ),
-      #(
-        ========================
-        on imprime le formulaire
-        ========================
-      ),
-      appelf(
-        n(concat),
-        r($o1),
-        p($o1),
-        p(appelf(n(html_footer1)))
-      ),
-      appelf(n(print) , p($o1)),
-      #(..., puis on le reinitialise ),
-      affecte($o1 , ' '),
-      appelf(n(clear_session_messages)),
-      #(fin du php)
-    )
-  )
+         ),
+         #(),
+         #(),
+         #(),
+         #(
+            //========================================================
+            // si on appel cette page en GET avec une (a)ction=logout,
+            // on sort et on redirige sur cette page
+            //========================================================
+         ),
+         choix(
+            si(
+               condition(
+                  (appelf(n(isset) , p($_GET))),
+                  et(
+                     sup(appelf(n(count) , p($_GET)) , 0)
+                  )
+               ),
+               alors(
+                  choix(
+                     si(
+                        condition(
+                           (appelf(n(isset) , p($_GET["a"]))),
+                           et(egal($_GET["a"] , 'logout'))
+                        ),
+                        alors(
+                           #(on supprime et on recharge),
+                           appelf(n(supprimerLesValeursDeSession)),
+                           appelf(n(rechargerPageCourante))
+                        )
+                     )
+                  )
+               )
+            )
+         ),
+         #(
+            ======================================================== 
+            affichage de l'html 
+            ========================================================
+         ),
+         affecte($o1 , ''),
+         affecte($a , array(('title' , 'login') , ('description' , 'login'))),
+         #(
+            ==============================================================
+            ou bien 
+            affecte($a , []),
+            appelf(n(pushkv) , p($a) , p('title') , p('login')),
+            appelf(n(pushkv) , p($a) , p('description') , p('login')),
+            ==============================================================
+         ),
+         appelf(r($o1) , n(html_header1) , p($a)),
+         appelf(
+            n(concat),
+            r($o1),
+            p($o1),
+            p(appelf(n(session_messages)))
+         ),
+         #(
+            ========================================================
+            on imprime le l'entête ...
+         ),
+         appelf(n(print) , p($o1)),
+         #(
+            ... puis on le reinitialise,
+         ),
+         affecte($o1 , ''),
+         #(
+            ======================================================== 
+            l'utilisateur est-il déjà connecté ? ...
+            ======================================================== 
+         ),
+         choix(
+            si(
+               condition(
+                  (appelf(n(isset) , p($_SESSION[APP_KEY]["user"]))),
+                  et(egal(1 , $_SESSION[APP_KEY]["user"]))
+               ),
+               alors(
+                  #(
+                     ======================================================== 
+                     ... si oui on lui affiche un formulaire de DEconnexion
+                     ======================================================== 
+                  ),
+                  affecte(
+                     $o1,
+                     html(
+                        form(
+                           (id , loginbox),
+                           (method , post),
+                           span('logout'),
+                           input(
+                              (type , hidden),
+                              (name , logout),
+                              (id , logout),
+                              (value , '')
+                           ),
+                           input((type , submit) , (value , envoyer))
+                        )
+                     )
+                  )
+               )
+            ),
+            sinon(
+               alors(
+                  #(
+                     ======================================================== 
+                     ... sinon on lui affiche un formulaire de connexion
+                     ======================================================== 
+                  ),
+                  affecte(
+                     $o1,
+                     html(
+                        form(
+                           (id , loginbox),
+                           (method , post),
+                           (onsubmit , 'return checkSubmit()'),
+                           label((for , login) , 'login'),
+                           input(
+                              (type , text),
+                              (name , login),
+                              (id , login),
+                              (value , '')
+                           ),
+                           label((for , password) , 'password'),
+                           input(
+                              (type , password),
+                              (name , password),
+                              (id , password),
+                              (value , '')
+                           ),
+                           input((type , submit) , (value , envoyer))
+                        ),
+                        script(
+                           (type , 'text/javascript'),
+                           (data-lang , 'fr'),
+                           source(
+                              #(
+                                 ===========================================
+                                 dans ce javascript, on définit une fonction
+                                 ===========================================
+                              ),
+                              fonction(
+                                 definition(nom(checkSubmit)),
+                                 contenu(
+                                    appelf(n(clearMessages)),
+                                    declare(valRet , faux),
+                                    declare(zoneLogin , {}),
+                                    declare(zonePassw , {}),
+                                    affecte(zoneLogin , appelf(n(document.getElementById) , p('login'))),
+                                    affecte(zonePassw , appelf(n(document.getElementById) , p('password'))),
+                                    essayer(
+                                       faire(
+                                          choix(
+                                             si(
+                                                condition((egal(zonePassw.value , '')) , ou(egal(zoneLogin.value , ''))),
+                                                alors(affecte(valRet , faux) , appelf(n(global_messages.errors.push) , p('Veuillez indiquer votre login et votre mot de passe.')) , appelf(n(displayMessages)))
+                                             ),
+                                             sinon(
+                                                #(// todo essayer de virer le "alors" pour traiter l'erreur),
+                                                alors(affecte(valRet , vrai))
+                                             )
+                                          )
+                                       ),
+                                       sierreur(
+                                          e,
+                                          faire(appelf(n(global_messages.errors.push) , p('Il y a eu un problème ')) , appelf(n(displayMessages)))
+                                       )
+                                    ),
+                                    revenir(valRet)
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            )
+         ),
+         #(
+            ========================
+            on imprime le formulaire
+            ========================
+         ),
+         appelf(
+            n(concat),
+            r($o1),
+            p($o1),
+            p(appelf(n(html_footer1)))
+         ),
+         appelf(n(print) , p($o1)),
+         #(..., puis on le reinitialise ),
+         affecte($o1 , ' '),
+         appelf(n(clear_session_messages)),
+         #(fin du php)
+      )
+   )
 )

@@ -216,6 +216,17 @@ function transform(){
     ConstruitHtmlMatrice(t1,matriceFonction);
     document.getElementById('resultat1').appendChild(t1);
     
+    var startMicro=performance.now();
+    var matriceFonction=functionToArray2Old(tableau1.out);
+    var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+    var told1=document.createElement('table');
+    told1.setAttribute('class','tableau1');
+    
+    ConstruitHtmlMatrice(told1,matriceFonction);
+    document.getElementById('resultat1').appendChild(told1);
+    
+//    console.log('\nmatriceFonction='+JSON.stringify(matriceFonction.value))
+    
     
     var t2=document.createElement('table');
     

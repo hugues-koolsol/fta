@@ -75,9 +75,9 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
 
  }else if(dansJs&&tab[id][1]=='source'){ // i18
   // analyse de source javascript
-  t+='\n';
-  t+='// = = = = <source javascript = = = =\n';
-  t+='"use strict";\n';
+  t+=CRLF;
+  t+='// = = = = <source javascript = = = ='+CRLF;
+  t+='"use strict";'+CRLF;
 //  console.error('todo')
 //  bug();
   php_contexte_commentaire_html=false;
@@ -88,7 +88,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
   }else{
    return logerreur({status:false,value:t,message:'erreur de script dans un html'});
   }
-  t+='\n// = = = = source javascript> = = = =\n';
+  t+=CRLF+'// = = = = source javascript> = = = ='+CRLF;
   
   return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
 
@@ -97,7 +97,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
 
   if(tab[id][1]=='html'){
   }else{
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
   }
   if(tab[id][1]=='#'){
    temp+='<!-- '+traiteCommentaire2(tab[id][13],niveau,id);
@@ -143,7 +143,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
   }
   if(tab[id][1]=='html' && doctype!='' ){
    if(id>0){
-    t+=doctype+'\n';
+    t+=doctype+CRLF;
     t+=temp;
    }
   }else{
@@ -159,6 +159,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
      t+='>';
     }
    }
+   var contenuNiveauPlus1='';
    for(i=id+1;i<tab.length;i++){
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
@@ -178,20 +179,46 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
       if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
       }else{
        // constante
-       t+=espaces2(niveau+1);
+       t+=espacesn(true,niveau+1);
        t+=tab[i][1];
+       contenuNiveauPlus1=tab[i][1];
       }
      }
     }
    }
    if(id>0){
     if(noHead && tab[id][1]=='html'){
-     t+='\n';
+     t+=CRLF;
     }else{
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      if(tab[id][1]=='php'){
      }else{
       t+='</'+tab[id][1]+'>';
+      if((
+           tab[id][1]=='td' 
+        || tab[id][1]=='a' 
+        || tab[id][1]=='span' 
+        || tab[id][1]=='button' 
+        || tab[id][1]=='title' 
+        || tab[id][1]=='h1' 
+        || tab[id][1]=='h2' 
+        || tab[id][1]=='h3' 
+       ) && contenuNiveauPlus1!='' && contenuNiveauPlus1.indexOf('<')<0 ){
+       var tag=tab[id][1];
+       const re1 = new RegExp("\<"+tag+"(.*)\>\r\n[ \t]+","g");
+       const rp1 = '<'+tag+'$1>';
+       t=t.replace(re1,rp1);
+       const re2 = new RegExp("\r\n[ \t]+\<\/"+tag+"\>","g");
+       const rp2 = '</'+tag+'>';
+       t=t.replace(re2,rp2);
+       if(tab[id][1]=='td'){
+//        t=t.replace(/\<td(.*)\>\r\n[ \t]+/g,'<td$1>')
+//        t=t.replace(/\r\n[ \t]+\<\/td\>/g,'</td>')
+       }else if(tab[id][1]=='a'){
+//        t=t.replace(/\<a(.*)\>\r\n[ \t]+/g,'<a$1>')
+//        t=t.replace(/\r\n[ \t]+\<\/a\>/g,'</a>')
+       }
+      }
      }
     }
    }
@@ -213,7 +240,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
     if(id>0){
      if(tab[id][1]=='#'){
       t+=' -->';
-     }else if(tab[id][1]=='br' || tab[id][1]=='hr' || tab[id][1]=='meta' || tab[id][1]=='link' ){
+     }else if(tab[id][1]=='br' || tab[id][1]=='hr' || tab[id][1]=='meta' || tab[id][1]=='link' || tab[id][1]=='input' ){
       t+=' />';
      }else{
       t+='></'+tab[id][1]+'>';

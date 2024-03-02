@@ -2,6 +2,7 @@
 
 // (typeof(b),egal('undefined')),et(d,egal(true))
 var DEBUTCOMMENTAIRE='#';
+var CRLF='\r\n';
 var globale_LangueCourante='fr';
 var global_messages={
  'e500logged' : false ,
@@ -10,10 +11,12 @@ var global_messages={
  'infos'      : [] ,
  'lines'      : [] ,
  'tabs'       : [] ,
- 'calls'      : '',
+ 'ids'        : [] ,
+ 'calls'      : '' ,
  'data':{
   'matrice':[],
   'tableau':[],
+  'sourceGenere':'',
   }
 };
 
@@ -38,6 +41,7 @@ function clearMessages(){
   'data':{
    'matrice':[],
    'tableau':[],
+   'sourceGenere':'',
   }
  }
 }
@@ -135,6 +139,35 @@ function espaces(i){
  }
  return t;
 }
+var NBESPACESREV=3;
+var NBESPACESSOURCEPRODUIT=4;
+//=====================================================================================================================
+function espacesnrev(optionCRLF,i){
+ var t='';
+ if(optionCRLF){
+  t='\r\n';
+ }else{
+  t='\n';
+ }
+ if(i>0){
+  t+=' '.repeat(NBESPACESREV).repeat(i);
+ }
+ return t;
+}
+//=====================================================================================================================
+function espacesn(optionCRLF,i){
+ var t='';
+ if(optionCRLF){
+  t='\r\n';
+ }else{
+  t='\n';
+ }
+ if(i>0){
+  t+=' '.repeat(NBESPACESSOURCEPRODUIT).repeat(i);
+ }
+ return t;
+}
+
 //=====================================================================================================================
 function espaces2(i){
  var t='\n';
@@ -673,14 +706,14 @@ function traiteCommentaire2(texte,niveau,ind){
     if(i==l01-1){
      if(t!=''){
       if(multiLigne){
-       newTab.push('  '.repeat(niveau+1)+t);
+       newTab.push(' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau+1)+t);
        newTab.push((niveau>=0?'  '.repeat(niveau):''));
       }else{
        newTab.push(t);
       }       
      }else{
       if(multiLigne){
-       newTab.push((niveau>=0?'  '.repeat(niveau):''));
+       newTab.push((niveau>=0?' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau):''));
       }else{
        newTab.push(t);
       }
@@ -688,7 +721,7 @@ function traiteCommentaire2(texte,niveau,ind){
     }else if(i==0){
      if(t!==''){
       if(multiLigne){
-       t='  '.repeat(niveau+1)+t;
+       t=' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau+1)+t;
        newTab.unshift('');
        newTab.push(t);
       }else{
@@ -698,7 +731,9 @@ function traiteCommentaire2(texte,niveau,ind){
       newTab.push(t);
      }
     }else{
-     t='  '.repeat(niveau+1)+t;
+     if(niveau>0){
+      t=' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau)+t;
+     }
      newTab.push(t);
     }
     if(ind==numTest){
@@ -712,7 +747,10 @@ function traiteCommentaire2(texte,niveau,ind){
  t=newTab.join('\n');
  return t;
 }
-
+/*
+var NBESPACESREV=3;
+var NBESPACESSOURCEPRODUIT=4;
+*/
 //=====================================================================================================================
 function ttcomm1(texte,niveau,ind){
  var t='';
@@ -745,14 +783,14 @@ function ttcomm1(texte,niveau,ind){
     if(i==l01-1){
      if(t!=''){
       if(multiLigne){
-       newTab.push('  '.repeat(niveau+1)+t);
+       newTab.push(' '.repeat(NBESPACESREV).repeat(niveau+1)+t);
        newTab.push((niveau>=0?'  '.repeat(niveau):''));
       }else{
        newTab.push(t);
       }       
      }else{
       if(multiLigne){
-       newTab.push((niveau>=0?'  '.repeat(niveau):''));
+       newTab.push((niveau>=0?' '.repeat(NBESPACESREV).repeat(niveau):''));
       }else{
        newTab.push(t);
       }
@@ -760,7 +798,7 @@ function ttcomm1(texte,niveau,ind){
     }else if(i==0){
      if(t!==''){
       if(multiLigne){
-       t='  '.repeat(niveau+1)+t;
+       t=' '.repeat(NBESPACESREV).repeat(niveau+1)+t;
        newTab.unshift('');
        newTab.push(t);
       }else{
@@ -770,7 +808,7 @@ function ttcomm1(texte,niveau,ind){
       newTab.push(t);
      }
     }else{
-     t='  '.repeat(niveau+1)+t;
+     t=' '.repeat(NBESPACESREV).repeat(niveau+1)+t;
      newTab.push(t);
     }
     if(ind==numTest){
@@ -830,14 +868,14 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     }
    }
    if(forcerRetourLigne && arr[parentId][2]!='INIT' ){
-    t+=espaces2(arr[i][3]); // niveau
+    t+=espacesnrev(false,arr[i][3]); // niveau
    }else if(retourLigne){
     if( 
         (arr[parentId][2]=='INIT' && arr[i][9]==1 ) // première fonction à la racine
      || (arr[parentId][2]=='f' && arr[parentId][8]<=nombreEnfantsLimite && arr[parentId][10]<=profondeurLimite ) // si le parent est une fonction et que son nombre d'enfants est 1 et que sa profondeur est <= 1
     ){ 
     }else{
-     t+=espaces2(arr[i][3]); // niveau
+     t+=espacesnrev(false,arr[i][3]); // niveau
     }
    }
    if(arr[i][2]=='c'){
@@ -868,11 +906,11 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
       t+=obj.value;
       
       if(forcerRetourLigne && obj.forcerRetourLigne==true){
-        t+=espaces2(arr[i][3]); // niveau
+        t+=espacesnrev(false,arr[i][3]); // niveau
       }else if(retourLigne){
        if(arr[i][8]<=nombreEnfantsLimite && arr[i][10]<=profondeurLimite){
        }else{
-        t+=espaces2(arr[i][3]); // niveau
+        t+=espacesnrev(false,arr[i][3]); // niveau
        }
       }
       t+=')';
@@ -1208,7 +1246,7 @@ var global_enteteTableau=[
 // 10 11 12 13 14 15 deviennent 
 //  7  8  9 10 11 12 
 //=====================================================================================================================
-function functionToArray2(tableauEntree,exitOnLevelError){
+function functionToArray2Old(tableauEntree,exitOnLevelError){
  
  var texte='';
  var commentaire='';
@@ -1477,4 +1515,424 @@ function functionToArray2(tableauEntree,exitOnLevelError){
  
  return {status:true,value:T};
  
+}
+
+
+function functionToArray2(tableauEntree,exitOnLevelError){
+  /*
+    =========================
+    les chaines de caractères
+    =========================
+  */
+  var texte='';
+  var commentaire='';
+  var c='';
+  var c1='';
+  var c2='';
+  /*
+    =========================
+    les entiers
+    =========================
+  */
+  var i=0;
+  var j=0;
+  var k=0;
+  var l=0;
+  var indice=0;
+  var niveau=0;
+  var premier=0;
+  var dernier=0;
+  var numeroLigne=0;
+  var posOuvPar=0;
+  var posFerPar=0;
+  var niveauDebutCommentaire=0;
+  var niveauDansCommentaire=0;
+  /*
+    =========================
+    les booléens
+    =========================
+  */
+  var dansCst=false;
+  var dsComment=false;
+  var constanteQuotee=false;
+  /*
+    ====================================
+    Le tableau en sortie si tout va bien
+    ====================================
+  */
+  var T= new Array();
+  var temp={};
+  /*
+    =======================================================================
+    initialisation du tableau contenant le source structuré en arborescence
+    =======================================================================
+    0id    1val  2typ  3niv  4coQ
+    5pre   6der  7pId  8nbE  9numEnfant  
+    10pro 11OPa 12FPa 13comm
+  */
+  T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+  var l01=tableauEntree.length;
+  /*
+    // ====================================================================
+    // ====================================================================
+    // boucle principale sur tous les caractères du texte passé en argument
+    // on commence par analyser les cas ou on est dans des chaines, puis on
+    // analyse les caractères
+    // ====================================================================
+    // ====================================================================
+  */
+  for(i=0;i < l01;i=i+1){
+    c=tableauEntree[i][0];
+      /*
+        
+        
+        
+        ===================
+        Dans un commentaire
+        ===================
+      */
+      
+    if((dsComment)){
+      if((c == ')')){
+        if(((niveau == niveauDebutCommentaire+1)&&niveauDansCommentaire == 0)){
+          posFerPar=i;
+          T[T.length-1][13]=commentaire;
+          T[T.length-1][12]=posFerPar;
+          commentaire='';
+          dsComment=false;
+          niveau=niveau-1;
+        }else{
+          commentaire=concat(commentaire,c);
+          niveauDansCommentaire=niveauDansCommentaire-1;
+        }
+      }else if((c == '(')){
+        commentaire=concat(commentaire,c);
+        niveauDansCommentaire=niveauDansCommentaire+1;
+      }else{
+        commentaire=concat(commentaire,c);
+      }
+      /*
+        
+        
+        
+        ==================
+        dans une constante
+        ==================
+      */
+      
+    }else if((dansCst == true)){
+      if((c == '\'')){
+        if((i == l01-1)){
+          temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+          return(logerreur(temp));
+        }
+        c1=tableauEntree[i+1][0];
+        if((c1 == ',')||c1 == '\t'||c1 == '\n'||c1 == '\r'||c1 == '/'||c1 == ' '||c1 == ')'){
+          dernier=i-1;
+        }else{
+          temp={'status':false,'value':T,'id':i,'message':'apres une constante, il doit y avoir un caractère d\'echappement'};
+          return(logerreur(temp));
+        }
+        dansCst=false;
+        indice=indice+1;
+        constanteQuotee=true;
+        if((niveau == 0)){
+          temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+          return(logerreur(temp));
+        }
+        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+        texte='';
+        constanteQuotee=false;
+      }else if((c == '\\')){
+        if((i == l01-1)){
+          temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
+          return(logerreur(temp));
+        }
+        /*fin du choix*/
+        c1=tableauEntree[i+1][0];
+        if((c1 == '\\')||c1 == '\''){
+          if((texte == '')){
+            premier=i;
+          }
+          texte=concat(texte,c1);
+          i=i+1;
+        }else{
+          if((c1 == 'n')||c1 == 't'||c1 == 'r'){
+            if((texte == '')){
+              premier=i;
+            }
+            texte=concat(texte,'\\',c1);
+            i=i+1;
+          }else{
+            temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe'};
+            return(logerreur(temp));
+          }
+        }
+      }else{
+        if((texte == '')){
+          premier=i;
+        }
+        texte=concat(texte,c);
+      }
+    }else{
+      /*
+        
+        
+        
+        ==================================================
+        on n'est pas dans un commentaire ou une constante,  
+        donc c'est un nouveau type qu'il faut détecter
+        ==================================================
+      */
+      if((c == '(')){
+        /*
+          ====================
+          Parenthèse ouvrante
+          ====================
+          
+          
+        */
+        posOuvPar=i;
+        indice=indice+1;
+        if((texte == DEBUTCOMMENTAIRE)){
+          dsComment=true;
+          niveauDebutCommentaire=niveau;
+        }
+        T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+        niveau=niveau+1;
+        texte='';
+        dansCst=false;
+        /*
+          ==========================
+          FIN DE Parenthèse ouvrante
+          ==========================
+          
+          
+        */
+      }else if((c == ')')){
+        /*
+          
+          
+          ====================
+          Parenthèse fermante
+          ====================
+        */
+        posFerPar=i;
+        if((texte != '')){
+          if((niveau == 0)){
+            temp={'status':false,'value':T,'id':i,'message':'une fermeture de parenthése ne doit pas être au niveau 0'};
+            return(logerreur(temp));
+          }
+          indice=indice+1;
+          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+          texte='';
+        }
+        niveau=niveau-1;
+        /*
+          
+          maj de la position de fermeture de la parenthèse
+          
+        */
+        for(j=indice;j >= 0;j=j-1){
+          if((T[j][3] == niveau)&&T[j][2] == 'f'){
+            T[j][12]=posFerPar;
+            break;
+          }
+        }
+        posFerPar=0;
+        dansCst=false;
+        /*
+          ==========================
+          FIN de Parenthèse fermante
+          ==========================
+          
+          
+        */
+      }else if((c == '\\')){
+        /*
+          
+          
+          ===========
+          anti slash 
+          ===========
+        */
+        if(!(dansCst)){
+          temp={'status':false,'value':T,'id':i,'message':'un antislash doit être dans une constante'};
+          return(logerreur(temp));
+        }
+        /*
+          ===================
+          Fin d'un anti slash
+          ===================
+          
+          
+        */
+      }else if((c == '\'')){
+        /*
+          
+          
+          //===========
+          // apostrophe
+          //===========
+        */
+        premier=i;
+        if((dansCst == true)){
+          dansCst=false;
+        }else{
+          dansCst=true;
+        }
+        /*
+          //===============
+          // FIN apostrophe
+          //===============
+          
+          
+        */
+      }else if((c == ',')){
+        /*
+          
+          
+          //========================
+          // virgule donc séparateur
+          //========================
+        */
+        if((texte != '')){
+          indice=indice+1;
+          if((niveau == 0)){
+            temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
+            return(logerreur(temp));
+          }
+          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+        }else{
+          if((T[indice][2] == 'f')){
+            /*ne rien faire*/
+          }else{
+            if((T[indice][3] >= niveau)){
+              /*ne rien faire*/
+            }else{
+              temp={'status':false,'value':T,'id':i,'message':'une virgule ne doit pas être précédée d\'un vide'};
+              return(logerreur(temp));
+            }
+          }
+        }
+        texte='';
+        dansCst=false;
+        /*
+          //============================
+          // FIN virgule donc séparateur
+          //============================
+          
+          
+        */
+      }else if((c == ' ')||c == '\t'||c == '\r'||c == '\n'){
+        /*
+          
+          
+          =============================
+          caractères séparateurs de mot
+          =============================
+        */
+        if((texte != '')){
+          indice=indice+1;
+          if((niveau == 0)){
+            temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
+            return(logerreur(temp));
+          }
+          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+          texte='';
+          dansCst=false;
+        }
+        /*
+          ====================================
+          FIN de caractères séparateurs de mot
+          ====================================
+          
+          
+        */
+      }else{
+        if((texte == '')){
+          premier=i;
+        }
+        dernier=i;
+        texte=concat(texte,c);
+      }
+    }
+  }
+  /*
+    ========================================
+    on est en dehors de la boucle principale
+    ========================================
+  */
+  if((niveau != 0)&&exitOnLevelError){
+    temp={'status':false,'value':T,'message':'des parenthèses ne correspondent pas'};
+    return(logerreur(temp));
+  }
+  /**/
+  if((texte != '')){
+    indice=indice+1;
+    if((niveau == 0)){
+      temp={'status':false,'value':T,'message':'la racine ne peut pas contenir des constantes'};
+      return(logerreur(temp));
+    }
+    /*finchoix suite du source*/
+    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+  }
+  /*
+    
+    ==============================================================
+    // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
+    ============================================================== 
+  */
+  l01=T.length;
+  for(i=l01-1;i > 0;i=i-1){
+    niveau=T[i][3];
+    for(j=i;j >= 0;j=j-1){
+      if((T[j][3] == niveau-1)){
+        T[i][7]=j;
+        T[j][8]=T[j][8]+1;
+        break;
+      }
+    }
+  }
+  /*
+    
+    ============================== 
+    numérotation des enfants
+    numenfant = k
+    ==============================
+  */
+  k=0;
+  for(i=0;i < l01;i=i+1){
+    k=0;
+    for(j=i+1;j < l01;j=j+1){
+      if((T[j][7] == T[i][0])){
+        k=k+1;
+        T[j][9]=k;
+      }
+    }
+  }
+  /*
+    =======================================
+    profondeur des fonctions
+    k=remonterAuNiveau
+    l=idParent
+    =======================================
+  */
+  for(i=l01-1;i > 0;i=i-1){
+    if((T[i][2] == 'c')){
+      T[i][10]=0;
+    }
+    if((T[i][7] > 0)){
+      k=T[i][3];
+      l=T[i][7];
+      for(j=1;j <= k;j=j+1){
+        if((T[l][10] < j)){
+          T[l][10]=j;
+        }
+        l=T[l][7];
+      }
+    }
+  }
+  temp={'status':true,'value':T};
+  return temp;
 }

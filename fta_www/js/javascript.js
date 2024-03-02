@@ -211,7 +211,7 @@ function js_condition1(tab,id,niveau){
     }
    }else if(tab[i][1]=='#'  ){
     if(tab[i][13].indexOf('\n')>=0){
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
     }
     var commt=traiteCommentaire2(tab[i][13],niveau,i);
 //    console.log('apres traite commentaite2 tab['+i+'][13]='+tab[i][13],'\ncommt='+commt);
@@ -273,13 +273,13 @@ function js_condition0(tab,id,niveau){
     }        
    }else if(tab[i][1]=='#' ){ // i18
     if(tab[i][13].indexOf('\n')>=0){
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
     }
     var commt=traiteCommentaire2(tab[i][13],niveau,i);
 //    console.log('apres traite commentaite2 tab['+i+'][13]='+tab[i][13],'\ncommt='+commt);
     t+='/*' + commt +'*/';
     if(tab[i][13].indexOf('\n')>=0){
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
     }
     
     
@@ -311,7 +311,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
   
   if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' ) && tab[i][2]=='f' ){  // i18
    if(tab[i][8]==0){
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+=tab[i][1]+';'
    }else{
     console.trace();
@@ -320,7 +320,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
   }else if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
    if(tab[i][8]==0){
     try{
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+='return;'
     }catch(e){
      debugger;
@@ -328,10 +328,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    }else{
     if(tab[i][8]==1){    
      if(tab[i+1][2]=='c'){
-      t+=espaces2(niveau);
+      t+=espacesn(true,niveau);
       t+='return '+(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1]))))+';';
      }else if(tab[i+1][2]=='f' && tab[i+1][1]=='appelf' ){
-       t+=espaces2(niveau);
+       t+=espacesn(true,niveau);
       obj=js_traiteAppelFonction(tab,i+1,true,niveau);
       if(obj.status==true){
        t+='return('+obj.value+');';
@@ -340,13 +340,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
        return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
       }
      }else{
-       t+=espaces2(niveau);
+       t+=espacesn(true,niveau);
       t+='// todo revenir return args;';
       console.trace();
       return logerreur({status:false,value:t,id:i,tab:tab,message:'javascript non traité'});
      }
     }else{
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+='// todo revenir return args;';
      console.trace();
      return logerreur({status:false,value:t,id:i,tab:tab,message:'javascript non traité'});
@@ -520,14 +520,14 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     
     
    }
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    t+='for(';
    t+=initialisation;
    t+=';'+condition;
    t+=';'+increment;
    t+='){';
    t+=faire;
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    t+='}';
    
    
@@ -584,13 +584,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      }
     }
    }
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    t+='try{';
    t+=contenu;
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    t+='}catch('+nomErreur+'){';
    t+=sierreur;
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    t+='}';
    
   
@@ -711,13 +711,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
       
      // commentaire 2n
      if(tab[tabchoix[j][0]][13].indexOf('\n')>=0){
-      t+=espaces2(niveauSi);
+      t+=espacesn(true,niveauSi);
      }
      var commt=traiteCommentaire2(tab[tabchoix[j][0]][13],niveauSi,tabchoix[j][0]);
 //     console.log('apres traite commentaite2 tab['+tabchoix[j][0]+'][13]='+tab[tabchoix[j][0]][13],'\ncommt='+commt);
      t+='/*' + commt +'*/';
      if(tab[j][13].indexOf('\n')>=0){
-      t+=espaces2(niveauSi);
+      t+=espacesn(true,niveauSi);
      }
      
      
@@ -740,18 +740,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      for(var k=0;k<tabComment.length;k++){
 
       if(tabComment[k].indexOf('\n')>=0){
-       t+=espaces2(niveau+1);
+       t+=espacesn(true,niveau+1);
       }
       var commt=traiteCommentaire2(tabComment[k],niveau+1,tabchoix[j][0]);
 //      console.log('apres traite commentaite2 tabComment[k]='+tabComment[k],'\ncommt='+commt); // commentaire 30
       t+='/*' + commt +'*/';
       if(tabComment[k].indexOf('\n')>=0){
-       t+=espaces2(niveau+1);
+       t+=espacesn(true,niveau+1);
       }
       
      }
 
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+='if(';
 
 
@@ -784,7 +784,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      }else{
       if(aUnSinon){
       }else{
-       t+=espaces2(niveau);
+       t+=espacesn(true,niveau);
        t+='}';
       }
      }
@@ -805,18 +805,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      for(var k=0;k<tabComment.length;k++){
 
       if(tabComment[k].indexOf('\n')>=0){
-       t+=espaces2(niveau+1);
+       t+=espacesn(true,niveau+1);
       }
       var commt=traiteCommentaire2(tabComment[k],niveau+1,tabchoix[j][0]);
 //      console.log('apres traite commentaite2 tabComment[k]='+tabComment[k],'\ncommt='+commt); // commentaire 30
       t+='/*' + commt +'*/';
       if(tabComment[k].indexOf('\n')>=0){
-       t+=espaces2(niveau+1);
+       t+=espacesn(true,niveau+1);
       }
       
      }
 
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+='}else if(';
      
      niveau++
@@ -845,13 +845,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      if(aUnSinon){
      }else{
       if(j==tabchoix.length-1){ // si c'est le dernier sinonsi
-       t+=espaces2(niveau);
+       t+=espacesn(true,niveau);
        t+='}';
       }
      }
      
     }else{
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+='}else{';
      if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il n'est pas vide
       niveau++;
@@ -863,7 +863,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
        return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
       }
      }
-     t+=espaces2(niveau);
+     t+=espacesn(true,niveau);
      t+='}';
      
     }
@@ -913,13 +913,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     niveau--;
     if(obj.status==true){
      if(!dansInitialisation){
-      t+=espaces2(niveau);
+      t+=espacesn(true,niveau);
      }
      // r.onreadystatechange = function () {}
      t+=''+tab[i+1][1]+'=function('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
      t+=obj.value;
      if(!dansInitialisation){
-      t+=espaces2(niveau);
+      t+=espacesn(true,niveau);
      }
      t+='}'
     }else{
@@ -941,7 +941,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
   }else if(tab[i][1]=='affecte'  && tab[i][2]=='f'){ // i18
   
    if(!dansInitialisation){
-    t+=espaces2(niveau);
+    t+=espacesn(true,niveau);
    }
    if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
@@ -1020,7 +1020,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
   
   //=====================================================================================
   }else if(tab[i][1]=='declare'  && tab[i][2]=='f'){ // i18
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    if(tab[i][8]==2 ){
     if(tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
      // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
@@ -1040,6 +1040,8 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
         return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans une déclaration'});
        }
  //      t+='{};//todo declare 3 '+tab[i][1]+'';
+      }else if(tab[i+2][1]=='obj' && tab[i+2][8]==0){
+       t+='var '+tab[i+1][1]+'={};';
       }else{
        t+='//todo declare 2 '+tab[i][1]+'';
       }
@@ -1061,13 +1063,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    
   //=====================================================================================
   }else if(tab[i][1]=='#'  && tab[i][2]=='f'){
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    var commt=traiteCommentaire2(tab[i][13],niveau,i);
 //   console.log('apres traite commentaite2 tab['+i+'][13]='+tab[i][13],'\ncommt='+commt);
    t+='/*' + commt +'*/';
   //=====================================================================================
   }else{
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
    t+='//todo i='+i+', tab[i][1]="'+tab[i][1]+'"';
    logerreur({status:false,value:t,id:i,tab:tab,message:'javascript.js traitement non prévu '+JSON.stringify(tab[i])});
   }
@@ -1219,7 +1221,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
    }
   }
   if(!dansConditionOuDansFonction){
-   t+=espaces2(niveau);
+   t+=espacesn(true,niveau);
   }
   t+=nomRetour!=''?nomRetour+'=':'';
   t+=nomFonction;

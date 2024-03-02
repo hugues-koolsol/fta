@@ -1,248 +1,819 @@
 src_javascript(
-  (file_name , core1),
-  (file_extension , js),
-  (file_path , .),
-  (strict()),
-  source(
-    fonction(
-      definition(
-        nom(fta1),
-        #(Un tableau contenant le texte source),
-        argument(tableauEntree),
-        argument(exitOnLevelError)
-      ),
-      contenu(
-        #(
-          =========================
-          les chaines de caractères
-          =========================
-        ),
-        declare(texte , ''),
-        declare(commentaire , ''),
-        declare(c , ''),
-        declare(c1 , ''),
-        declare(c2 , ''),
-        #(
-          =========================
-          les entiers
-          =========================
-        ),
-        declare(i , 0),
-        declare(j , 0),
-        declare(k , 0),
-        declare(l , 0),
-        declare(indice , 0),
-        declare(niveau , 0),
-        declare(premier , 0),
-        declare(dernier , 0),
-        declare(numeroLigne , 0),
-        declare(posOuvPar , 0),
-        declare(posFerPar , 0),
-        declare(niveauDebutCommentaire , 0),
-        declare(niveauDansCommentaire , 0),
-        #(
-          =========================
-          les booléens
-          =========================
-        ),
-        declare(dansCst , false),
-        declare(dsComment , false),
-        declare(constanteQuotee , false),
-        #(
-          ====================================
-          Le tableau en sortie si tout va bien
-          ====================================
-        ),
-        declare(
-          T,
-          new(appelf(n(Array)))
-        ),
-        #(
-          =======================================================================
-          initialisation du tableau contenant le source structuré en arborescence
-          =======================================================================
-          0id    1val  2typ  3niv  4coQ
-          5pre   6der  7pId  8nbE  9numEnfant  
-          10pro 11OPa 12FPa 13comm
-        ),
-        appelf(
-          n(T.push),
-          p(
+   (file_name , core1),
+   (file_extension , js),
+   (file_path , .),
+   (strict()),
+   source(
+      fonction(
+         definition(
+            nom(fta1),
+            #(Un tableau contenant le texte source),
+            argument(tableauEntree),
+            argument(exitOnLevelError)
+         ),
+         contenu(
+            #(
+               =========================
+               les chaines de caractères
+               =========================
+            ),
+            declare(texte , ''),
+            declare(commentaire , ''),
+            declare(c , ''),
+            declare(c1 , ''),
+            declare(c2 , ''),
+            #(
+               =========================
+               les entiers
+               =========================
+            ),
+            declare(i , 0),
+            declare(j , 0),
+            declare(k , 0),
+            declare(l , 0),
+            declare(indice , 0),
+            declare(niveau , 0),
+            declare(premier , 0),
+            declare(dernier , 0),
+            declare(numeroLigne , 0),
+            declare(posOuvPar , 0),
+            declare(posFerPar , 0),
+            declare(niveauDebutCommentaire , 0),
+            declare(niveauDansCommentaire , 0),
+            #(
+               =========================
+               les booléens
+               =========================
+            ),
+            declare(dansCst , false),
+            declare(dsComment , false),
+            declare(constanteQuotee , false),
+            #(
+               ====================================
+               Le tableau en sortie si tout va bien
+               ====================================
+            ),
+            declare(
+               T,
+               new(appelf(n(Array)))
+            ),
+            declare(temp , obj()),
+            #(
+               =======================================================================
+               initialisation du tableau contenant le source structuré en arborescence
+               =======================================================================
+               0id    1val  2typ  3niv  4coQ
+               5pre   6der  7pId  8nbE  9numEnfant  
+               10pro 11OPa 12FPa 13comm
+            ),
             appelf(
-              n(array),
-              p(0),
-              p(texte),
-              p('INIT'),
-              p(-1),
-              p(constanteQuotee),
-              p(premier),
-              p(dernier),
-              p(0),
-              p(0),
-              p(0),
-              p(0),
-              p(posOuvPar),
-              p(posFerPar),
-              p('')
-            )
-          )
-        ),
-        declare(l01 , o.length),
-        #(
-          // ====================================================================
-          // ====================================================================
-          // boucle principale sur tous les caractères du texte passé en argument
-          // on commence par analyser les cas ou on est dans des chaines, puis on
-          // analyse les caractères
-          // ====================================================================
-          // ====================================================================
-        ),
-        boucle(
-          initialisation(affecte(i , 0)),
-          condition(inf(i , l01)),
-          increment(affecte(i , i+1)),
-          faire(
-            affecte(c , tableauEntree[i][0]),
-            choix(
-              si(
-                #(
-                  
-                  
-                  
-                  ===================
-                  Dans un commentaire
-                  ===================
-                ),
-                condition((dsComment)),
-                alors(
-                  choix(
-                    si(
-                      condition((egal(c , ')'))),
-                      alors(
-                        choix(
-                          si(
-                            condition(
-                              ((egal(niveau , niveauDebutCommentaire+1)) , et(egal(niveauDansCommentaire , 0)))
-                            ),
-                            alors(
-                              affecte(posFerPar , i),
-                              affecte(T[T.length-1][13] , commentaire),
-                              affecte(T[T.length-1][12] , posFerPar),
-                              affecte(commentaire , ''),
-                              affecte(dsComment , faux),
-                              affecte(niveau , niveau-1)
-                            )
-                          ),
-                          sinon(
-                            alors(
-                              affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c))),
-                              affecte(niveauDansCommentaire , niveauDansCommentaire-1)
-                            )
-                          )
-                        )
-                      )
-                    ),
-                    sinonsi(
-                      condition((egal(c , '('))),
-                      alors(
-                        affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c))),
-                        affecte(niveauDansCommentaire , niveauDansCommentaire+1)
-                      )
-                    ),
-                    sinon(
-                      alors(
-                        affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c)))
-                      )
-                    )
+               n(T.push),
+               p(
+                  appelf(
+                     n(Array),
+                     p(0),
+                     p(texte),
+                     p('INIT'),
+                     p(-1),
+                     p(constanteQuotee),
+                     p(premier),
+                     p(dernier),
+                     p(0),
+                     p(0),
+                     p(0),
+                     p(0),
+                     p(posOuvPar),
+                     p(posFerPar),
+                     p('')
                   )
-                )
-              ),
-              sinonsi(
-                #(
-                  
-                  
-                  
-                  ==================
-                  dans une constante
-                  ==================
-                ),
-                condition((egal(dansCst , true))),
-                alors(
+               )
+            ),
+            declare(l01 , tableauEntree.length),
+            #(
+               // ====================================================================
+               // ====================================================================
+               // boucle principale sur tous les caractères du texte passé en argument
+               // on commence par analyser les cas ou on est dans des chaines, puis on
+               // analyse les caractères
+               // ====================================================================
+               // ====================================================================
+            ),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , l01)),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(c , tableauEntree[i][0]),
                   choix(
-                    si(
-                      condition((egal(c , '\''))),
-                      alors(
-                        choix(
-                          si(
-                            condition((egal(i , l01-1))),
-                            alors(
-                              affecte(
-                                temp,
-                                obj(
-                                  (status , false),
-                                  (id , i),
-                                  (value , T),
-                                  (message , '-1 la racine ne peut pas contenir des constantes')
-                                )
+                     si(
+                        condition((dsComment)),
+                        alors(
+                           #(
+                              
+                              
+                              
+                              =============================
+                              Si on est dans un commentaire
+                              =============================
+                           ),
+                           choix(
+                              si(
+                                 condition((egal(c , ')'))),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition(
+                                             ((egal(niveau , niveauDebutCommentaire+1)) , et(egal(niveauDansCommentaire , 0)))
+                                          ),
+                                          alors(
+                                             affecte(posFerPar , i),
+                                             affecte(T[T.length-1][13] , commentaire),
+                                             affecte(T[T.length-1][12] , posFerPar),
+                                             affecte(commentaire , ''),
+                                             affecte(dsComment , faux),
+                                             affecte(niveau , niveau-1)
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c))),
+                                             affecte(niveauDansCommentaire , niveauDansCommentaire-1)
+                                          )
+                                       )
+                                    )
+                                 )
                               ),
-                              revenir(appelf(n(logerreur) , p(temp)))
-                            )
-                          )
-                        ),
-                        affecte(c1 , tableauEntree[i+1][0]),
-                        choix(
-                          si(
-                            condition(
-                              (egal(c1 , ',')),
-                              ou(egal(c1 , '\t')),
-                              ou(egal(c1 , '\n')),
-                              ou(egal(c1 , '\r')),
-                              ou(egal(c1 , '/')),
-                              ou(egal(c1 , ' ')),
-                              ou(egal(c1 , ')'))
-                            ),
-                            alors(affecte(dernier , i-1))
-                          ),
-                          sinon(
-                            alors(
-                              affecte(
-                                temp,
-                                obj(
-                                  (status , false),
-                                  (value , T),
-                                  (id , i),
-                                  (message , 'apres une constante, il doit y avoir un caractère d\'echappement')
-                                )
+                              sinonsi(
+                                 condition((egal(c , '('))),
+                                 alors(
+                                    affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c))),
+                                    affecte(niveauDansCommentaire , niveauDansCommentaire+1)
+                                 )
                               ),
-                              revenir(appelf(n(logerreur) , p(temp)))
-                            )
-                          )
-                        ),
-                        affecte(dansCst , false),
-                        affecte(indice , indice+1),
-                        affecte(constanteQuotee , true),
-                        choix(
-                          si(
-                            condition((egal(niveau , 0))),
-                            alors(
-                              affecte(
-                                temp,
-                                obj(
-                                  (status , false),
-                                  (id , i),
-                                  (value , T),
-                                  (message , '-1 la racine ne peut pas contenir des constantes')
-                                )
+                              sinon(
+                                 alors(
+                                    affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c)))
+                                 )
+                              )
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition((egal(dansCst , true))),
+                        alors(
+                           #(
+                              
+                              
+                              
+                              ==================
+                              dans une constante
+                              ==================
+                           ),
+                           choix(
+                              si(
+                                 condition((egal(c , '\''))),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition((egal(i , l01-1))),
+                                          alors(
+                                             affecte(
+                                                temp,
+                                                obj(
+                                                   (status , false),
+                                                   (id , i),
+                                                   (value , T),
+                                                   (message , '-1 la racine ne peut pas contenir des constantes')
+                                                )
+                                             ),
+                                             revenir(appelf(n(logerreur) , p(temp)))
+                                          )
+                                       )
+                                    ),
+                                    affecte(c1 , tableauEntree[i+1][0]),
+                                    choix(
+                                       si(
+                                          condition(
+                                             (egal(c1 , ',')),
+                                             ou(egal(c1 , '\t')),
+                                             ou(egal(c1 , '\n')),
+                                             ou(egal(c1 , '\r')),
+                                             ou(egal(c1 , '/')),
+                                             ou(egal(c1 , ' ')),
+                                             ou(egal(c1 , ')'))
+                                          ),
+                                          alors(affecte(dernier , i-1))
+                                       ),
+                                       sinon(
+                                          alors(
+                                             affecte(
+                                                temp,
+                                                obj(
+                                                   (status , false),
+                                                   (value , T),
+                                                   (id , i),
+                                                   (message , 'apres une constante, il doit y avoir un caractère d\'echappement')
+                                                )
+                                             ),
+                                             revenir(appelf(n(logerreur) , p(temp)))
+                                          )
+                                       )
+                                    ),
+                                    affecte(dansCst , false),
+                                    affecte(indice , indice+1),
+                                    affecte(constanteQuotee , true),
+                                    choix(
+                                       si(
+                                          condition((egal(niveau , 0))),
+                                          alors(
+                                             affecte(
+                                                temp,
+                                                obj(
+                                                   (status , false),
+                                                   (id , i),
+                                                   (value , T),
+                                                   (message , '-1 la racine ne peut pas contenir des constantes')
+                                                )
+                                             ),
+                                             revenir(appelf(n(logerreur) , p(temp)))
+                                          )
+                                       )
+                                    ),
+                                    appelf(
+                                       n(T.push),
+                                       p(
+                                          appelf(
+                                             n(Array),
+                                             p(indice),
+                                             p(texte),
+                                             p('c'),
+                                             p(niveau),
+                                             p(constanteQuotee),
+                                             p(premier),
+                                             p(dernier),
+                                             p(0),
+                                             p(0),
+                                             p(0),
+                                             p(0),
+                                             p(posOuvPar),
+                                             p(posFerPar),
+                                             p('')
+                                          )
+                                       )
+                                    ),
+                                    affecte(texte , ''),
+                                    affecte(constanteQuotee , false)
+                                 )
                               ),
+                              sinonsi(
+                                 condition((egal(c , '\\'))),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition((egal(i , l01-1))),
+                                          alors(
+                                             affecte(
+                                                temp,
+                                                obj(
+                                                   (status , false),
+                                                   (value , T),
+                                                   (id , i),
+                                                   (message , 'un antislash ne doit pas terminer une fonction')
+                                                )
+                                             ),
+                                             revenir(appelf(n(logerreur) , p(temp)))
+                                          )
+                                       )
+                                    ),
+                                    #(fin du choix),
+                                    affecte(c1 , tableauEntree[i+1][0]),
+                                    choix(
+                                       si(
+                                          condition((egal(c1 , '\\')) , ou(egal(c1 , '\''))),
+                                          alors(
+                                             choix(
+                                                si(
+                                                   condition((egal(texte , ''))),
+                                                   alors(affecte(premier , i))
+                                                )
+                                             ),
+                                             affecte(texte , appelf(n(concat) , p(texte) , p(c1))),
+                                             affecte(i , i+1)
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             choix(
+                                                si(
+                                                   condition((egal(c1 , 'n')) , ou(egal(c1 , 't')) , ou(egal(c1 , 'r'))),
+                                                   alors(
+                                                      choix(
+                                                         si(
+                                                            condition((egal(texte , ''))),
+                                                            alors(affecte(premier , i))
+                                                         )
+                                                      ),
+                                                      affecte(
+                                                         texte,
+                                                         appelf(
+                                                            n(concat),
+                                                            p(texte),
+                                                            p('\\'),
+                                                            p(c1)
+                                                         )
+                                                      ),
+                                                      affecte(i , i+1)
+                                                   )
+                                                ),
+                                                sinon(
+                                                   alors(
+                                                      affecte(
+                                                         temp,
+                                                         obj(
+                                                            (status , false),
+                                                            (value , T),
+                                                            (id , i),
+                                                            (message , 'un antislash doit être suivi par un autre antislash ou un apostrophe')
+                                                         )
+                                                      ),
+                                                      revenir(appelf(n(logerreur) , p(temp)))
+                                                   )
+                                                )
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              ),
+                              sinon(
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition((egal(texte , ''))),
+                                          alors(affecte(premier , i))
+                                       )
+                                    ),
+                                    affecte(texte , appelf(n(concat) , p(texte) , p(c)))
+                                 )
+                              )
+                           )
+                        )
+                     ),
+                     sinon(
+                        alors(
+                           #(
+                              
+                              
+                              
+                              ==================================================
+                              on n'est pas dans un commentaire ou une constante,  
+                              donc c'est un nouveau type qu'il faut détecter
+                              ==================================================
+                           ),
+                           choix(
+                              si(
+                                 condition((egal(c , '('))),
+                                 alors(
+                                    #(
+                                       ====================
+                                       Parenthèse ouvrante
+                                       ====================
+                                       
+                                       
+                                    ),
+                                    affecte(posOuvPar , i),
+                                    affecte(indice , indice+1),
+                                    choix(
+                                       si(
+                                          condition((egal(texte , DEBUTCOMMENTAIRE))),
+                                          alors(affecte(dsComment , vrai) , affecte(niveauDebutCommentaire , niveau))
+                                       )
+                                    ),
+                                    appelf(
+                                       n(T.push),
+                                       p(
+                                          appelf(
+                                             n(Array),
+                                             p(indice),
+                                             p(texte),
+                                             p('f'),
+                                             p(niveau),
+                                             p(constanteQuotee),
+                                             p(premier),
+                                             p(dernier),
+                                             p(0),
+                                             p(0),
+                                             p(0),
+                                             p(0),
+                                             p(posOuvPar),
+                                             p(posFerPar),
+                                             p('')
+                                          )
+                                       )
+                                    ),
+                                    affecte(niveau , niveau+1),
+                                    affecte(texte , ''),
+                                    affecte(dansCst , faux),
+                                    #(
+                                       ==========================
+                                       FIN DE Parenthèse ouvrante
+                                       ==========================
+                                       
+                                       
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition((egal(c , ')'))),
+                                 alors(
+                                    #(
+                                       
+                                       
+                                       ====================
+                                       Parenthèse fermante
+                                       ====================
+                                    ),
+                                    affecte(posFerPar , i),
+                                    choix(
+                                       si(
+                                          condition((diff(texte , ''))),
+                                          alors(
+                                             choix(
+                                                si(
+                                                   condition((egal(niveau , 0))),
+                                                   alors(
+                                                      affecte(
+                                                         temp,
+                                                         obj(
+                                                            (status , false),
+                                                            (value , T),
+                                                            (id , i),
+                                                            (message , 'une fermeture de parenthése ne doit pas être au niveau 0')
+                                                         )
+                                                      ),
+                                                      revenir(appelf(n(logerreur) , p(temp)))
+                                                   )
+                                                )
+                                             ),
+                                             affecte(indice , indice+1),
+                                             appelf(
+                                                n(T.push),
+                                                p(
+                                                   appelf(
+                                                      n(Array),
+                                                      p(indice),
+                                                      p(texte),
+                                                      p('c'),
+                                                      p(niveau),
+                                                      p(constanteQuotee),
+                                                      p(premier),
+                                                      p(dernier),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p('')
+                                                   )
+                                                )
+                                             ),
+                                             affecte(texte , '')
+                                          )
+                                       )
+                                    ),
+                                    affecte(niveau , niveau-1),
+                                    #(
+                                       
+                                       maj de la position de fermeture de la parenthèse
+                                       
+                                    ),
+                                    boucle(
+                                       initialisation(affecte(j , indice)),
+                                       condition(supeg(j , 0)),
+                                       increment(affecte(j , j-1)),
+                                       faire(
+                                          choix(
+                                             si(
+                                                condition((egal(T[j][3] , niveau)) , et(egal(T[j][2] , 'f'))),
+                                                alors(affecte(T[j][12] , posFerPar) , break())
+                                             )
+                                          )
+                                       )
+                                    ),
+                                    affecte(posFerPar , 0),
+                                    affecte(dansCst , false),
+                                    #(
+                                       ==========================
+                                       FIN de Parenthèse fermante
+                                       ==========================
+                                       
+                                       
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition((egal(c , '\\'))),
+                                 alors(
+                                    #(
+                                       
+                                       
+                                       ===========
+                                       anti slash 
+                                       ===========
+                                    ),
+                                    choix(
+                                       si(
+                                          condition(non(dansCst)),
+                                          alors(
+                                             affecte(
+                                                temp,
+                                                obj(
+                                                   (status , false),
+                                                   (value , T),
+                                                   (id , i),
+                                                   (message , 'un antislash doit être dans une constante')
+                                                )
+                                             ),
+                                             revenir(appelf(n(logerreur) , p(temp)))
+                                          )
+                                       )
+                                    ),
+                                    #(
+                                       ===================
+                                       Fin d'un anti slash
+                                       ===================
+                                       
+                                       
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition((egal(c , '\''))),
+                                 alors(
+                                    #(
+                                       
+                                       
+                                       //===========
+                                       // apostrophe
+                                       //===========
+                                    ),
+                                    affecte(premier , i),
+                                    choix(
+                                       si(
+                                          condition((egal(dansCst , vrai))),
+                                          alors(affecte(dansCst , faux))
+                                       ),
+                                       sinon(alors(affecte(dansCst , vrai)))
+                                    ),
+                                    #(
+                                       //===============
+                                       // FIN apostrophe
+                                       //===============
+                                       
+                                       
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition((egal(c , ','))),
+                                 alors(
+                                    #(
+                                       
+                                       
+                                       //========================
+                                       // virgule donc séparateur
+                                       //========================
+                                    ),
+                                    choix(
+                                       si(
+                                          condition((diff(texte , ''))),
+                                          alors(
+                                             affecte(indice , indice+1),
+                                             choix(
+                                                si(
+                                                   condition((egal(niveau , 0))),
+                                                   alors(
+                                                      affecte(
+                                                         temp,
+                                                         obj(
+                                                            (status , false),
+                                                            (value , T),
+                                                            (id , i),
+                                                            (message , 'la racine ne peut pas contenir des constantes')
+                                                         )
+                                                      ),
+                                                      revenir(appelf(n(logerreur) , p(temp)))
+                                                   )
+                                                )
+                                             ),
+                                             appelf(
+                                                n(T.push),
+                                                p(
+                                                   appelf(
+                                                      n(Array),
+                                                      p(indice),
+                                                      p(texte),
+                                                      p('c'),
+                                                      p(niveau),
+                                                      p(constanteQuotee),
+                                                      p(premier),
+                                                      p(dernier),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p('')
+                                                   )
+                                                )
+                                             )
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             choix(
+                                                si(
+                                                   condition((egal(T[indice][2] , 'f'))),
+                                                   alors(
+                                                      #(ne rien faire)
+                                                   )
+                                                ),
+                                                sinon(
+                                                   alors(
+                                                      choix(
+                                                         si(
+                                                            condition((supeg(T[indice][3] , niveau))),
+                                                            alors(
+                                                               #(ne rien faire)
+                                                            )
+                                                         ),
+                                                         sinon(
+                                                            alors(
+                                                               affecte(
+                                                                  temp,
+                                                                  obj(
+                                                                     (status , false),
+                                                                     (value , T),
+                                                                     (id , i),
+                                                                     (message , 'une virgule ne doit pas être précédée d\'un vide')
+                                                                  )
+                                                               ),
+                                                               revenir(appelf(n(logerreur) , p(temp)))
+                                                            )
+                                                         )
+                                                      )
+                                                   )
+                                                )
+                                             )
+                                          )
+                                       )
+                                    ),
+                                    affecte(texte , ''),
+                                    affecte(dansCst , faux),
+                                    #(
+                                       //============================
+                                       // FIN virgule donc séparateur
+                                       //============================
+                                       
+                                       
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition(
+                                    (egal(c , ' ')),
+                                    ou(egal(c , '\t')),
+                                    ou(egal(c , '\r')),
+                                    ou(egal(c , '\n'))
+                                 ),
+                                 alors(
+                                    #(
+                                       
+                                       
+                                       =============================
+                                       caractères séparateurs de mot
+                                       =============================
+                                    ),
+                                    choix(
+                                       si(
+                                          condition((diff(texte , ''))),
+                                          alors(
+                                             affecte(indice , indice+1),
+                                             choix(
+                                                si(
+                                                   condition((egal(niveau , 0))),
+                                                   alors(
+                                                      affecte(
+                                                         temp,
+                                                         obj(
+                                                            (status , false),
+                                                            (value , T),
+                                                            (id , i),
+                                                            (message , 'la racine ne peut pas contenir des constantes')
+                                                         )
+                                                      ),
+                                                      revenir(appelf(n(logerreur) , p(temp)))
+                                                   )
+                                                )
+                                             ),
+                                             appelf(
+                                                n(T.push),
+                                                p(
+                                                   appelf(
+                                                      n(Array),
+                                                      p(indice),
+                                                      p(texte),
+                                                      p('c'),
+                                                      p(niveau),
+                                                      p(constanteQuotee),
+                                                      p(premier),
+                                                      p(dernier),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p(0),
+                                                      p('')
+                                                   )
+                                                )
+                                             ),
+                                             affecte(texte , ''),
+                                             affecte(dansCst , faux)
+                                          )
+                                       )
+                                    ),
+                                    #(
+                                       ====================================
+                                       FIN de caractères séparateurs de mot
+                                       ====================================
+                                       
+                                       
+                                    )
+                                 )
+                              ),
+                              sinon(
+                                 #(
+                                    
+                                    
+                                    ==========================
+                                    tous les autres caractères
+                                    ==========================
+                                 ),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition((egal(texte , ''))),
+                                          alors(affecte(premier , i))
+                                       )
+                                    ),
+                                    affecte(dernier , i),
+                                    affecte(texte , appelf(n(concat) , p(texte) , p(c)))
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            ),
+            #(
+               ========================================
+               on est en dehors de la boucle principale
+               ========================================
+            ),
+            choix(
+               si(
+                  condition((diff(niveau , 0)) , et(exitOnLevelError)),
+                  alors(
+                     affecte(temp , obj((status , false) , (value , T) , (message , 'des parenthèses ne correspondent pas'))),
+                     revenir(appelf(n(logerreur) , p(temp)))
+                  )
+               )
+            ),
+            #(),
+            choix(
+               si(
+                  condition((diff(texte , ''))),
+                  alors(
+                     affecte(indice , indice+1),
+                     choix(
+                        si(
+                           condition((egal(niveau , 0))),
+                           alors(
+                              affecte(temp , obj((status , false) , (value , T) , (message , 'la racine ne peut pas contenir des constantes'))),
                               revenir(appelf(n(logerreur) , p(temp)))
-                            )
-                          )
-                        ),
-                        appelf(
-                          n(T.push),
-                          p(
-                            appelf(
-                              n(array),
+                           )
+                        )
+                     ),
+                     #(finchoix suite du source),
+                     appelf(
+                        n(T.push),
+                        p(
+                           appelf(
+                              n(Array),
                               p(indice),
                               p(texte),
                               p('c'),
@@ -254,538 +825,118 @@ src_javascript(
                               p(0),
                               p(0),
                               p(0),
-                              p(posOuvPar),
-                              p(posFerPar),
+                              p(0),
+                              p(0),
                               p('')
-                            )
-                          )
-                        ),
-                        affecte(texte , ''),
-                        affecte(constanteQuotee , false)
-                      )
-                    ),
-                    sinonsi(
-                      condition((egal(c , '\\'))),
-                      alors(
-                        choix(
-                          si(
-                            condition((egal(i , l01-1))),
-                            alors(
-                              affecte(
-                                temp,
-                                obj(
-                                  (status , false),
-                                  (value , T),
-                                  (id , i),
-                                  (message , 'un antislash ne doit pas terminer une fonction')
-                                )
-                              ),
-                              revenir(appelf(n(logerreur) , p(temp)))
-                            )
-                          )
-                        ),
-                        #(fin du choix),
-                        affecte(c1 , tableauEntree[i+1][0]),
-                        choix(
-                          si(
-                            condition((egal(c1 , '\\')) , ou(egal(c1 , '\''))),
-                            alors(
-                              choix(
-                                si(
-                                  condition((egal(texte , ''))),
-                                  alors(affecte(premier , i))
-                                )
-                              ),
-                              affecte(texte , appelf(n(concat) , p(texte) , p(c1))),
-                              affecte(i , i+1)
-                            )
-                          ),
-                          sinon(
-                            alors(
-                              choix(
-                                si(
-                                  condition((egal(c1 , 'n')) , ou(egal(c1 , 't')) , ou(egal(c1 , 'r'))),
-                                  alors(
-                                    choix(
-                                      si(
-                                        condition((egal(texte , ''))),
-                                        alors(affecte(premier , i))
-                                      )
-                                    ),
-                                    affecte(
-                                      texte,
-                                      appelf(
-                                        n(concat),
-                                        p(texte),
-                                        p('\\'),
-                                        p(c1)
-                                      )
-                                    ),
-                                    affecte(i , i+1)
-                                  )
-                                ),
-                                sinon(
-                                  alors(
-                                    affecte(
-                                      temp,
-                                      obj(
-                                        (status , false),
-                                        (value , T),
-                                        (id , i),
-                                        (message , 'un antislash doit être suivi par un autre antislash ou un apostrophe')
-                                      )
-                                    ),
-                                    revenir(appelf(n(logerreur) , p(temp)))
-                                  )
-                                )
-                              )
-                            )
-                          )
+                           )
                         )
-                      )
-                    ),
-                    sinon(
-                      alors(
-                        choix(
-                          si(
-                            condition((egal(texte , ''))),
-                            alors(affecte(premier , i))
-                          )
-                        ),
-                        affecte(texte , appelf(n(concat) , p(texte) , p(c)))
-                      )
-                    )
+                     )
                   )
-                )
-              ),
-              sinon(
-                alors(
-                  #(
-                    
-                    
-                    
-                    ==================================================
-                    on n'est pas dans un commentaire ou une constante,  
-                    donc c'est un nouveau type qu'il faut détecter
-                    ==================================================
+               )
+            ),
+            #(
+               
+               ==============================================================
+               // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
+               ============================================================== 
+            ),
+            affecte(l01 , T.length),
+            boucle(
+               initialisation(affecte(i , l01-1)),
+               condition(sup(i , 0)),
+               increment(affecte(i , i-1)),
+               faire(
+                  affecte(niveau , T[i][3]),
+                  boucle(
+                     initialisation(affecte(j , i)),
+                     condition(supeg(j , 0)),
+                     increment(affecte(j , j-1)),
+                     faire(
+                        choix(
+                           si(
+                              condition((egal(T[j][3] , niveau-1))),
+                              alors(affecte(T[i][7] , j) , affecte(T[j][8] , T[j][8]+1) , break())
+                           )
+                        )
+                     )
+                  )
+               )
+            ),
+            #(
+               
+               ============================== 
+               numérotation des enfants
+               numenfant = k
+               ==============================
+            ),
+            affecte(k , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , l01)),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(k , 0),
+                  boucle(
+                     initialisation(affecte(j , i+1)),
+                     condition(inf(j , l01)),
+                     increment(affecte(j , j+1)),
+                     faire(
+                        choix(
+                           si(
+                              condition((egal(T[j][7] , T[i][0]))),
+                              alors(affecte(k , k+1) , affecte(T[j][9] , k))
+                           )
+                        )
+                     )
+                  )
+               )
+            ),
+            #(
+               =======================================
+               profondeur des fonctions
+               k=remonterAuNiveau
+               l=idParent
+               =======================================
+            ),
+            boucle(
+               initialisation(affecte(i , l01-1)),
+               condition(sup(i , 0)),
+               increment(affecte(i , i-1)),
+               faire(
+                  choix(
+                     si(
+                        condition((egal(T[i][2] , 'c'))),
+                        alors(affecte(T[i][10] , 0))
+                     )
                   ),
                   choix(
-                    si(
-                      condition((egal(c , '('))),
-                      alors(
-                        #(
-                          ====================
-                          Parenthèse ouvrante
-                          ====================
-                          
-                          
-                        ),
-                        affecte(posOuvPar , i),
-                        affecte(indice , indice+1),
-                        choix(
-                          si(
-                            condition((egal(texte , DEBUTCOMMENTAIRE))),
-                            alors(affecte(dsComment , vrai) , affecte(niveauDebutCommentaire , niveau))
-                          )
-                        ),
-                        appelf(
-                          n(T.push),
-                          p(
-                            appelf(
-                              n(array),
-                              p(indice),
-                              p(texte),
-                              p('c'),
-                              p(niveau),
-                              p(constanteQuotee),
-                              p(premier),
-                              p(dernier),
-                              p(0),
-                              p(0),
-                              p(0),
-                              p(0),
-                              p(posOuvPar),
-                              p(posFerPar),
-                              p('')
-                            )
-                          )
-                        ),
-                        affecte(niveau , niveau+1),
-                        affecte(texte , ''),
-                        affecte(dansCst , faux),
-                        #(
-                          ==========================
-                          FIN DE Parenthèse ouvrante
-                          ==========================
-                          
-                          
-                        )
-                      )
-                    ),
-                    sinonsi(
-                      condition((egal(c , ')'))),
-                      alors(
-                        #(
-                          
-                          
-                          ====================
-                          Parenthèse fermante
-                          ====================
-                        ),
-                        affecte(posFerPar , i),
-                        choix(
-                          si(
-                            condition((diff(texte , ''))),
-                            alors(
-                              choix(
-                                si(
-                                  condition((egal(niveau , 0))),
-                                  alors(
-                                    affecte(
-                                      temp,
-                                      obj(
-                                        (status , false),
-                                        (value , T),
-                                        (id , i),
-                                        (message , 'une fermeture de parenthése ne doit pas être au niveau 0')
-                                      )
-                                    ),
-                                    revenir(appelf(n(logerreur) , p(temp)))
-                                  )
-                                )
-                              ),
-                              affecte(indice , indice+1),
-                              appelf(
-                                n(T.push),
-                                p(
-                                  appelf(
-                                    n(array),
-                                    p(indice),
-                                    p(texte),
-                                    p('c'),
-                                    p(niveau),
-                                    p(constanteQuotee),
-                                    p(premier),
-                                    p(dernier),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p('')
-                                  )
-                                )
-                              ),
-                              affecte(texte , '')
-                            )
-                          )
-                        ),
-                        affecte(niveau , niveau-1),
-                        #(
-                          
-                          maj de la position de fermeture de la parenthèse
-                          
-                        ),
-                        boucle(
-                          initialisation(affecte(j , indice)),
-                          condition(supeg(j , 0)),
-                          increment(affecte(j , j-1)),
-                          faire(
-                            affecte(a , 1),
-                            choix(
-                              si(
-                                condition((egal(T[j][3] , niveau)) , et(egal(T[j][2] , 'f'))),
-                                alors(affecte(T[j][12] , posFerPar) , break())
-                              )
-                            )
-                          )
-                        ),
-                        affecte(posFerPar , 0),
-                        affecte(dansCst , false),
-                        #(
-                          ==========================
-                          FIN de Parenthèse fermante
-                          ==========================
-                          
-                          
-                        )
-                      )
-                    ),
-                    sinonsi(
-                      condition((egal(c , '\\'))),
-                      alors(
-                        #(
-                          
-                          
-                          ===========
-                          anti slash 
-                          ===========
-                        ),
-                        choix(
-                          si(
-                            condition(non(dansCst)),
-                            alors(
-                              affecte(
-                                temp,
-                                obj(
-                                  (status , false),
-                                  (value , T),
-                                  (id , i),
-                                  (message , 'un antislash doit être dans une constante')
-                                )
-                              ),
-                              revenir(appelf(n(logerreur) , p(temp)))
-                            )
-                          )
-                        ),
-                        #(
-                          ===================
-                          Fin d'un anti slash
-                          ===================
-                          
-                          
-                        )
-                      )
-                    ),
-                    sinonsi(
-                      condition((egal(c , '\''))),
-                      alors(
-                        #(
-                          
-                          
-                          //===========
-                          // apostrophe
-                          //===========
-                        ),
-                        affecte(premier , i),
-                        choix(
-                          si(
-                            condition((egal(dansCst , vrai))),
-                            alors(affecte(dansCst , faux))
-                          ),
-                          sinon(alors(affecte(dansCst , vrai)))
-                        ),
-                        #(
-                          //===============
-                          // FIN apostrophe
-                          //===============
-                          
-                          
-                        )
-                      )
-                    ),
-                    sinonsi(
-                      condition((egal(c , ','))),
-                      alors(
-                        #(
-                          
-                          
-                          //========================
-                          // virgule donc séparateur
-                          //========================
-                        ),
-                        choix(
-                          si(
-                            condition((egal(texte , ''))),
-                            alors(
-                              affecte(indice , indice+1),
-                              choix(
-                                si(
-                                  condition((egal(niveau , 0))),
-                                  alors(
-                                    affecte(
-                                      temp,
-                                      obj(
-                                        (status , false),
-                                        (value , T),
-                                        (id , i),
-                                        (message , 'la racine ne peut pas contenir des constantes')
-                                      )
-                                    ),
-                                    revenir(appelf(n(logerreur) , p(temp)))
-                                  )
-                                )
-                              ),
-                              appelf(
-                                n(T.push),
-                                p(
-                                  appelf(
-                                    n(array),
-                                    p(indice),
-                                    p(texte),
-                                    p('c'),
-                                    p(niveau),
-                                    p(constanteQuotee),
-                                    p(premier),
-                                    p(dernier),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p('')
-                                  )
-                                )
-                              )
-                            )
-                          ),
-                          sinon(
-                            alors(
-                              choix(
-                                si(
-                                  condition((egal(T[indice][2] , 'f'))),
-                                  alors(
-                                    #(ne rien faire)
-                                  )
-                                ),
-                                sinon(
-                                  alors(
-                                    choix(
-                                      si(
-                                        condition((supeg(T[indice][3] , niveau))),
-                                        alors(
-                                          #(ne rien faire)
-                                        )
-                                      ),
-                                      sinon(
-                                        alors(
-                                          affecte(
-                                            temp,
-                                            obj(
-                                              (status , false),
-                                              (value , T),
-                                              (id , i),
-                                              (message , 'une virgule ne doit pas être précédée d\'un vide')
-                                            )
-                                          ),
-                                          revenir(appelf(n(logerreur) , p(temp)))
-                                        )
-                                      )
+                     si(
+                        condition((sup(T[i][7] , 0))),
+                        alors(
+                           affecte(k , T[i][3]),
+                           affecte(l , T[i][7]),
+                           boucle(
+                              initialisation(affecte(j , 1)),
+                              condition(infeg(j , k)),
+                              increment(affecte(j , j+1)),
+                              faire(
+                                 choix(
+                                    si(
+                                       condition((inf(T[l][10] , j))),
+                                       alors(affecte(T[l][10] , j))
                                     )
-                                  )
-                                )
+                                 ),
+                                 affecte(l , T[l][7])
                               )
-                            )
-                          )
-                        ),
-                        affecte(texte , ''),
-                        affecte(dansCst , faux),
-                        #(
-                          //============================
-                          // FIN virgule donc séparateur
-                          //============================
-                          
-                          
+                           )
                         )
-                      )
-                    ),
-                    sinonsi(
-                      condition(
-                        (egal(c , ' ')),
-                        ou(egal(c , '\t')),
-                        ou(egal(c , '\r')),
-                        ou(egal(c , '\n'))
-                      ),
-                      alors(
-                        #(
-                          
-                          
-                          =============================
-                          caractères séparateurs de mot
-                          =============================
-                        ),
-                        choix(
-                          si(
-                            condition((diff(texte , ''))),
-                            alors(
-                              affecte(indice , indice+1),
-                              choix(
-                                si(
-                                  condition((egal(niveau , 0))),
-                                  alors(
-                                    affecte(
-                                      temp,
-                                      obj(
-                                        (status , false),
-                                        (value , T),
-                                        (id , i),
-                                        (message , 'la racine ne peut pas contenir des constantes')
-                                      )
-                                    ),
-                                    revenir(appelf(n(logerreur) , p(temp)))
-                                  )
-                                )
-                              ),
-                              appelf(
-                                n(T.push),
-                                p(
-                                  appelf(
-                                    n(array),
-                                    p(indice),
-                                    p(texte),
-                                    p('c'),
-                                    p(niveau),
-                                    p(constanteQuotee),
-                                    p(premier),
-                                    p(dernier),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p(0),
-                                    p('')
-                                  )
-                                )
-                              ),
-                              affecte(texte , ''),
-                              affecte(dansCst , faux)
-                            )
-                          )
-                        ),
-                        #(
-                          ====================================
-                          FIN de caractères séparateurs de mot
-                          ====================================
-                          
-                          
-                        )
-                      )
-                    ),
-                    sinon(
-                      #(
-                        
-                        
-                        ==========================
-                        tous les autres caractères
-                        ==========================
-                      ),
-                      alors(
-                        affecte(a , 1),
-                        choix(
-                          si(
-                            condition((egal(texte , ''))),
-                            alors(affecte(premier , i))
-                          )
-                        ),
-                        affecte(dernier , i),
-                        affecte(texte , appelf(n(concat) , p(texte) , p(c)))
-                      )
-                    )
+                     )
                   )
-                )
-              )
-            )
-          )
-        ),
-        #(
-          ========================================
-          on est en dehors de la boucle principale
-          ========================================
-        )
+               )
+            ),
+            affecte(temp , obj((status , true) , (value , T))),
+            revenir(temp)
+         )
       )
-    )
-  )
+   )
 )

@@ -23,8 +23,8 @@ print($o1);$o1='';
         <a href="javascript:parentheses();" title="repérer la parenthèse fermante correspondante">(|...)</a>
         <a href="javascript:decaler('droite');">(|&gt;&gt;&gt;</a>
         <a href="javascript:mettreEnCommentaire();">#()</a>
-        <input type="text" id="nomDuSource" disabled="true" style="float:right;" />
-        <button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" style="float:right;" data-fichiertexte="" >sauvegarder le texte normalise</button>         
+        <input type="text" id="nomDuSource" disabled="true" style="" />
+        <button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" data-fichiertexte="" >sauvegarder le texte normalise</button>         
        </td>
      <tr>
        <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;">
@@ -349,6 +349,7 @@ function enregistrer2(){
       document.getElementById('sauvegarderLeNormalise').disabled=false;
       document.getElementById('nomDuSource').disabled=false;
       if(conversion.status==true){
+       global_messages.data.sourceGenere=conversion.value;
        var arr=writeSourceFile(conversion);
        if(arr.status == false){
         logerreur({status:false,message:'il y a eu un problème d\'écriture sur disque'});
@@ -384,6 +385,15 @@ function enregistrer2(){
  lienVoitMatrice.href='javascript:voirMatrice1(0)';
  lienVoitMatrice.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
  zonedonneesComplementaires.appendChild(lienVoitMatrice);
+
+ if(conversion.status==true){
+  var lienVoitSourceGenere=document.createElement('a');
+  lienVoitSourceGenere.innerHTML='Voir source généré';
+  lienVoitSourceGenere.href='javascript:voirSourceGenere(0)';
+  lienVoitSourceGenere.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
+  zonedonneesComplementaires.appendChild(lienVoitSourceGenere);
+ }
+
  
  var zoneContenantLeTableauCaracteres=document.createElement('div');
  zoneContenantLeTableauCaracteres.style.display='none';
@@ -395,10 +405,42 @@ function enregistrer2(){
  zoneContenantLaMatrice.id='zoneContenantLaMatrice';
  zoneContenantLaMatrice.className='tableau1';
  zonedonneesComplementaires.appendChild(zoneContenantLaMatrice);
+ 
+ if(conversion.status==true){
+  var zoneContenantLeSourceGenere=document.createElement('div');
+  zoneContenantLeSourceGenere.style.display='none';
+  zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
+  zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
+
+ } 
 
  displayMessages()
  
 }
+
+//=====================================================================================================================
+function voirSourceGenere(){
+ 
+ var zoneContenantLeSourceGenere=dogid('zoneContenantLeSourceGenere')
+ if( zoneContenantLeSourceGenere && zoneContenantLeSourceGenere.innerHTML==''){
+  var zoneSourceGenere=document.createElement('pre');
+  
+  zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replace(/</g,'&lt;');
+  
+  zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
+  zoneContenantLeSourceGenere.style.display='';
+ }else{
+  if(zoneContenantLeSourceGenere.style.display=='none'){
+   zoneContenantLeSourceGenere.style.display=''
+  }else{
+   zoneContenantLeSourceGenere.style.display='none'
+  }
+ }
+
+ 
+ 
+}
+
 //=====================================================================================================================
 function voirMatrice1(){
 // console.log(global_messages.data.matrice);
@@ -696,7 +738,6 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'  ),';
      toAdd+='\n'+espaces+'),';
      toAdd+='\n'+espaces+'#(finchoix suite du source)';
-     toAdd+='\n'+espaces+'affecte( apresChoix , 1 ),';
      
     }else if(nomFonction=='boucle'){
 
@@ -718,11 +759,11 @@ function insertSource(nomFonction){
      toAdd+='\n'+espaces+'  p( parametre1 ),';
      toAdd+='\n'+espaces+'  p( parametre2 )';
      toAdd+='\n'+espaces+'),';
-     toAdd+='\n'+espaces+'affecte( apresAppelF , 1 ),';
+     toAdd+='\n'+espaces+'#(fin appelf),';
 
     }else if(nomFonction=='affecte'){
 
-     toAdd =             'affecte( nomVariavle , valeurVariable ),';
+     toAdd =             'affecte( nomVariable , valeurVariable ),';
 
     }
     t=global_editeur_debut_texte+toAdd+global_editeur_fin_texte;

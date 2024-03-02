@@ -1,55 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>
-      test factorielle
-    </title>
-    <meta name="description" content="a" />
-    <link rel="stylesheet" href="index.css" />
-    <!-- 
-      ====================================================
-      script optionnel ici, c'est seulement pour l'exemple
-      ====================================================
-     -->
-    <!-- test -->
-    <script type="text/javascript" src="js/core3.js"></script>
-  </head>
-  <body>
-    <div>
-      Si cette page fonctionne, il y aura écrit "120" ci dessous !
-    </div>
-    <div id="resultat"></div>
-    <!-- 
-      ====================================
-      dans ce html, on écrit du javascript
-      ====================================
-     -->
-    <script type="text/javascript" data-lang="fr">
+    <head>
+        <meta charset="utf8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>test factorielle</title>
+        <meta name="description" content="a" />
+        <link rel="stylesheet" href="index.css" />
+        <!-- 
+        ====================================================
+        script optionnel ici, c'est seulement pour l'exemple
+        ====================================================
+         -->
+        <!-- test -->
+        <script type="text/javascript" src="js/core3.js"></script>
+    </head>
+    <body>
+        <div>
+            Si cette page fonctionne, il y aura écrit "120" ci dessous !
+        </div>
+        <div id="resultat"></div>
+        <!-- 
+        ====================================
+        dans ce html, on écrit du javascript
+        ====================================
+         -->
+        <script type="text/javascript" data-lang="fr">
 // = = = = <source javascript = = = =
 "use strict";
 
 /*
-  ========================================================
-  dans ce javascript, on définit une fonction factorielle
-  ========================================================
+========================================================
+dans ce javascript, on définit une fonction factorielle
+========================================================
 */
 function factorielle(nombre){
-  var a=0;
-  var b=0;
-  if((nombre == 0)){
-    a=1;
-  }else{
-    b=factorielle(nombre-1);
-    a=nombre*b;
-  }
-  return a;
+    var a=0;
+    var b=0;
+    if((nombre == 0)){
+        a=1;
+    }else{
+        b=factorielle(nombre-1);
+        a=nombre*b;
+    }
+    return a;
 }
 /*
-  ========================================================
-  puis on utilise cette fonction
-  ========================================================
+========================================================
+puis on utilise cette fonction
+========================================================
 */
 var zone={};
 var valeur=5;
@@ -83,8 +81,8 @@ Ce n'est que mon avis et ce n'est qu'une question de goût !
 */
 // = = = = source javascript> = = = =
 
-    </script>
-    <!-- dernière ligne du body -->
-  </body>
-  <!-- dernière ligne du html -->
+        </script>
+        <!-- dernière ligne du body -->
+    </body>
+    <!-- dernière ligne du html -->
 </html>

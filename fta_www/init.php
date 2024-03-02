@@ -3,7 +3,7 @@
 require_once('aa_include.php');
 $src_create_database=file_get_contents('init.sql');
 if(($src_create_database === false)){
-  die('fichier init.sql non trouve');
+    die('fichier init.sql non trouve');
 }
 /*finchoix suite du source*/
 apresChoix=1;
@@ -115,44 +115,44 @@ affecte(
 ),
 ###*/
 /*
-  // =========
-  // connexion
+// =========
+// connexion
 */
 $serveur='localhost:3308';
 $utilisateur='admin';
 $mdp='admin';
 $link=mysqli_connect($serveur,$utilisateur,$mdp);
 if( !($link)){
-  die(concat(__LINE__,__FILE__));
+    die(concat(__LINE__,__FILE__));
 }
 mysqli_set_charset($link,'utf8mb4');
 /*
-  // =========================================
-  // execution de la requête et test de retour
+// =========================================
+// execution de la requête et test de retour
 */
 $retourSql=mysqli_multi_query($link,$src_create_database);
 $testAppelSql=mysqli_errno($link);
 if($testAppelSql == 0){
-  print('OK CREATE<br />');
-  mysqli_close($link);
+    print('OK CREATE<br />');
+    mysqli_close($link);
 }else{
-  die('KO CREATE<br />');
+    die('KO CREATE<br />');
 }
 /*
-  ===================================================================================
-  Réouverture de la connexion 
-  il faut attendre 100 ms car mysql n'arrive pas à terminer la transaction asynchrone
-  ===================================================================================
+===================================================================================
+Réouverture de la connexion 
+il faut attendre 100 ms car mysql n'arrive pas à terminer la transaction asynchrone
+===================================================================================
 */
 usleep(100000);
 $link=mysqli_connect($serveur,$utilisateur,$mdp);
 if( !($link)){
-  die(concat(__LINE__,__FILE__));
+    die(concat(__LINE__,__FILE__));
 }
 /*
-  ===================================================================================
-  ne pas oublier de se remettre en utf8
-  ===================================================================================
+===================================================================================
+ne pas oublier de se remettre en utf8
+===================================================================================
 */
 $setnames=<<<EOT
 set NAMES  utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -169,13 +169,13 @@ EOT;
 $retourSql=mysqli_query($link,$insertSql);
 $testAppelSql=mysqli_errno($link);
 if($testAppelSql == 0){
-  print('OK INSERT<br />');
+    print('OK INSERT<br />');
 }else{
-  die('KO INSERT<br />');
+    die('KO INSERT<br />');
 }
 /*
-  //=========================================================
-  // requete sur admin / admin
+//=========================================================
+// requete sur admin / admin
 */
 $useremail='admin@example.com';
 $userpass='admin';
@@ -183,16 +183,16 @@ $selectSql='SELECT fld_id_user , fld_email_user , fld_password_user FROM `ftates
 $retourSql=mysqli_query($link,$selectSql);
 $testAppelSql=mysqli_errno($link);
 if($testAppelSql == 0){
-  print('OK SELECT<br />');
+    print('OK SELECT<br />');
 }else{
-  die('KO SELECT<br />');
+    die('KO SELECT<br />');
 }
 for($row=mysqli_fetch_row($retourSql);($row != NULL);$row=mysqli_fetch_row($retourSql)){
-  echo(concat('<br />userid=',$row[0],' , useremail=',$row[1],' , userpassword=',$row[2],'<br />'));
+    echo(concat('<br />userid=',$row[0],' , useremail=',$row[1],' , userpassword=',$row[2],'<br />'));
 }
 /*
-  //=========================================================
-  // requete sur %user% / %user%
+//=========================================================
+// requete sur %user% / %user%
 */
 $useremail='%user%';
 $userpass='%user%';
@@ -200,11 +200,11 @@ $selectSql='SELECT fld_id_user , fld_email_user , fld_password_user FROM `ftates
 $retourSql=mysqli_query($link,$selectSql);
 $testAppelSql=mysqli_errno($link);
 if($testAppelSql == 0){
-  echo(concat('OK SELECT',$selectSql));
+    echo(concat('OK SELECT',$selectSql));
 }else{
-  die('KO SELECT');
+    die('KO SELECT');
 }
 for($row=mysqli_fetch_row($retourSql);($row != NULL);$row=mysqli_fetch_row($retourSql)){
-  echo(concat('<br />userid=',$row[0],' , useremail=',$row[1],' , userpassword=',$row[2],'<br />'));
+    echo(concat('<br />userid=',$row[0],' , useremail=',$row[1],' , userpassword=',$row[2],'<br />'));
 }
 ?>

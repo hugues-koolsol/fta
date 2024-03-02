@@ -1,85 +1,85 @@
 src_html(
-  #(
-    =============================== 
-    description du fichier produit 
-  ),
-  (file_name , test_factorielle),
-  (file_extension , html),
-  (file_path , .),
-  #(
-    ====================
-    source de ce fichier
-  ),
-  source(
-    html(
-      (lang , fr),
-      (doctype),
-      head(
-        meta((charset , utf8)),
-        meta((name , viewport) , (content , 'width=device-width, initial-scale=1')),
-        title('test factorielle'),
-        meta((name , description) , (content , 'a')),
-        link((rel , 'stylesheet') , (href , index.css)),
-        #(
-          ====================================================
-          script optionnel ici, c'est seulement pour l'exemple
-          ====================================================
-        ),
-        #(test),
-        script((type , 'text/javascript') , (src , 'js/core3.js'))
-      ),
-      body(
-        div('Si cette page fonctionne, il y aura écrit "120" ci dessous !'),
-        div((id , resultat)),
-        #(
-          ====================================
-          dans ce html, on écrit du javascript
-          ====================================
-        ),
-        script(
-          (type , 'text/javascript'),
-          (data-lang , 'fr'),
-          source(
+   #(
+      =============================== 
+      description du fichier produit 
+   ),
+   (file_name , test_factorielle),
+   (file_extension , html),
+   (file_path , .),
+   #(
+      ====================
+      source de ce fichier
+   ),
+   source(
+      html(
+         (lang , fr),
+         (doctype),
+         head(
+            meta((charset , utf8)),
+            meta((name , viewport) , (content , 'width=device-width, initial-scale=1')),
+            title('test factorielle'),
+            meta((name , description) , (content , 'a')),
+            link((rel , 'stylesheet') , (href , index.css)),
             #(
-              ========================================================
-              dans ce javascript, on définit une fonction factorielle
-              ========================================================
+               ====================================================
+               script optionnel ici, c'est seulement pour l'exemple
+               ====================================================
             ),
-            fonction(
-              definition(nom(factorielle) , argument(nombre)),
-              contenu(
-                declare(a , 0),
-                declare(b , 0),
-                choix(
-                  si(
-                    condition((egal(nombre , 0))),
-                    alors(affecte(a , 1))
+            #(test),
+            script((type , 'text/javascript') , (src , 'js/core3.js'))
+         ),
+         body(
+            div('Si cette page fonctionne, il y aura écrit "120" ci dessous !'),
+            div((id , resultat)),
+            #(
+               ====================================
+               dans ce html, on écrit du javascript
+               ====================================
+            ),
+            script(
+               (type , 'text/javascript'),
+               (data-lang , 'fr'),
+               source(
+                  #(
+                     ========================================================
+                     dans ce javascript, on définit une fonction factorielle
+                     ========================================================
                   ),
-                  sinon(
-                    alors(
-                      affecte(b , appelf(n(factorielle) , p(nombre-1))),
-                      affecte(a , nombre*b)
-                    )
-                  )
-                ),
-                revenir(a)
-              )
-            ),
-            #(
-              ========================================================
-              puis on utilise cette fonction
-              ========================================================
-            ),
-            declare(zone , {}),
-            declare(valeur , 5),
-            #(===============================================),
-            #(on affecte la valeur factorielle(5) à la valeur),
-            affecte(valeur , appelf(n(factorielle) , p(valeur))),
-            #(===========================),
-            #(puis on affiche le résultat),
-            affecte(zone , appelf(n(document.getElementById) , p('resultat'))),
-            affecte(zone.innerHTML , valeur),
-            #(#
+                  fonction(
+                     definition(nom(factorielle) , argument(nombre)),
+                     contenu(
+                        declare(a , 0),
+                        declare(b , 0),
+                        choix(
+                           si(
+                              condition((egal(nombre , 0))),
+                              alors(affecte(a , 1))
+                           ),
+                           sinon(
+                              alors(
+                                 affecte(b , appelf(n(factorielle) , p(nombre-1))),
+                                 affecte(a , nombre*b)
+                              )
+                           )
+                        ),
+                        revenir(a)
+                     )
+                  ),
+                  #(
+                     ========================================================
+                     puis on utilise cette fonction
+                     ========================================================
+                  ),
+                  declare(zone , {}),
+                  declare(valeur , 5),
+                  #(===============================================),
+                  #(on affecte la valeur factorielle(5) à la valeur),
+                  affecte(valeur , appelf(n(factorielle) , p(valeur))),
+                  #(===========================),
+                  #(puis on affiche le résultat),
+                  affecte(zone , appelf(n(document.getElementById) , p('resultat'))),
+                  affecte(zone.innerHTML , valeur),
+                  #(#
               en lisp la fonction factorielle est ecrite comme ça :
               =================================================
               (
@@ -100,11 +100,11 @@ src_html(
               celle écrite en lisp, je la préfère. 
               Ce n'est que mon avis et ce n'est qu'une question de goût !
             )
-          )
-        ),
-        #(dernière ligne du body)
-      ),
-      #(dernière ligne du html)
-    )
-  )
+               )
+            ),
+            #(dernière ligne du body)
+         ),
+         #(dernière ligne du html)
+      )
+   )
 )

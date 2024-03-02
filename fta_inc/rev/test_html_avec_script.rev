@@ -89,8 +89,9 @@ src_html(
               )
             )
           ),
-          #(on peut aussi ajouter du texte en dur !   ),
-          'function enregistrer(){
+          #(on peut aussi ajouter du texte en dur  sur plusieurs lignes!   ),
+          '
+    function enregistrer(){
      alert("Fake");
     }
    '

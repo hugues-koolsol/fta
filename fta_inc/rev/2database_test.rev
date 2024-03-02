@@ -1,79 +1,79 @@
 src_php(
-  (file_name , 2database_test),
-  (file_extension , php),
-  (file_path , .),
-  source(
-    #(test1),
-    php(
-      choix(
-        si(
-          condition(
-            #(test1),
-            non((egal(vrai , vrai)) , et(egal(vrai , vrai))),
-            #(test2),
-            et((egal(vrai , vrai))),
-            #(test3)
-          ),
-          alors(affecte($a , 1))
-        ),
-        sinonsi(condition((true)) , alors(affecte($a , 1))),
-        sinon(
-          alors(affecte($a , 1)),
-          #(finsinon)
-        )
-      ),
-      affecte($username , 'admin'),
-      affecte($userpass , 'admin'),
-      affecte(
-        $selectSql,
-        sqlref(
-          num(1),
-          p($username),
-          p($userpass),
-          p('toto'),
-          p(0)
-        )
-      ),
-      affecte(
-        $contenuhtml,
-        html(div((id , toto) , hello))
-      ),
-      #(test2),
-      affecte(
-        $src_create_database,
-        sql(
-          transaction(
-            create_table(
-              n(tbl_user),
-              fields(
-                field(
-                  n(fld_id_user),
-                  type(BIGINT),
-                  unsigned(),
-                  notnull()
-                )
-              )
+   (file_name , 2database_test),
+   (file_extension , php),
+   (file_path , .),
+   source(
+      #(test1),
+      php(
+         choix(
+            si(
+               condition(
+                  #(test1),
+                  non((egal(vrai , vrai)) , et(egal(vrai , vrai))),
+                  #(test2),
+                  et((egal(vrai , vrai))),
+                  #(test3)
+               ),
+               alors(affecte($a , 1))
+            ),
+            sinonsi(condition((true)) , alors(affecte($a , 1))),
+            sinon(
+               alors(affecte($a , 1)),
+               #(finsinon)
             )
-          )
-        )
+         ),
+         affecte($username , 'admin'),
+         affecte($userpass , 'admin'),
+         affecte(
+            $selectSql,
+            sqlref(
+               num(1),
+               p($username),
+               p($userpass),
+               p('toto'),
+               p(0)
+            )
+         ),
+         affecte(
+            $contenuhtml,
+            html(div((id , toto) , hello))
+         ),
+         #(test2),
+         affecte(
+            $src_create_database,
+            sql(
+               transaction(
+                  create_table(
+                     n(tbl_user),
+                     fields(
+                        field(
+                           n(fld_id_user),
+                           type(BIGINT),
+                           unsigned(),
+                           notnull()
+                        )
+                     )
+                  )
+               )
+            )
+         ),
+         affecte($max , appelf(n(count) , p($tab))),
+         boucle(
+            initialisation(affecte($i , 0)),
+            condition(inf($i , $max)),
+            increment(affecte($i , $i+1)),
+            faire(
+               #(dans la boucle),
+               affecte($a , 1)
+            )
+         ),
+         #(fin boucle, suite du source),
+         #(finchoix suite du source),
+         affecte($apresChoix , 1),
+         html(div((id , toto) , hello))
       ),
-      affecte($max , appelf(n(count) , p($tab))),
-      boucle(
-        initialisation(affecte($i , 0)),
-        condition(inf($i , $max)),
-        increment(affecte($i , $i+1)),
-        faire(
-          #(dans la boucle),
-          affecte($a , 1)
-        )
-      ),
-      #(fin boucle, suite du source),
-      #(finchoix suite du source),
-      affecte($apresChoix , 1),
-      html(div((id , toto) , hello))
-    ),
-    #(autre php),
-    php(affecte($a , 1))
-  ),
-  #(fin)
+      #(autre php),
+      php(affecte($a , 1))
+   ),
+   #(fin)
 )

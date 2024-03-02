@@ -17,20 +17,24 @@ src_html(
       body(
         hr(),
         table(
-          tr(td(99) , td('mettre les source produit dans un textarea')),
-          tr(td(99) , td('mettre un php dans un html')),
-          tr(td(99) , td('vérifier que dans la définition de fonction il n\'y a pas de source en dehors de contenu() ')),
-          tr(td(99) , td('recharger le dernier source chargé')),
-          tr(td(99) , td('selectionner un bloc et le mettre en commentaire')),
-          tr(td(99) , td('ajouter les commentaires au php et au js')),
-          tr(td(99) , td('dans index_source, afficher le source produit et les tableaux')),
-          tr(td(99) , td('capturer les erreur php')),
-          tr(td(00) , td('enregistrer fichier .rev')),
-          tr(td(00) , td('décaler des sources')),
-          tr(td(00) , td('correspondances parenthèses'))
+          tr(td((style , 'color:red;') , 99) , td('mettre les source produit dans un textarea')),
+          tr(td(00) , td('mettre un php dans un html')),
+          tr(td(00) , td('mettre un php dans un html')),
+          tr(td(00) , td('vérifier que dans la définition de fonction il n\'y a pas de source en dehors de contenu() ')),
+          tr(td(00) , td('recharger le dernier source chargé')),
+          tr(td(00) , td('selectionner un bloc et le mettre en commentaire')),
+          tr(td(00) , td('ajouter les commentaires au php et au js')),
+          tr(
+            td(99),
+            td(span((style , 'color:red;background:yellow;') , 'dans index_source, afficher le source produit et les tableaux'))
+          ),
+          tr(td(00) , td('capturer les erreur php')),
+          tr(td(99) , td('enregistrer fichier .rev')),
+          tr(td(99) , td('décaler des sources')),
+          tr(td(99) , td('correspondances parenthèses'))
         ),
         a((style , 'margin:5px;border:2px red outset') , (href , index_source.php) , index_source),
-        a((href , index.html) , index.html)
+        a((style , 'margin:5px;border:2px red outset') , (href , index.html) , index.html)
       )
     )
   )
