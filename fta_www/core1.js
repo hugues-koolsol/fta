@@ -1,5 +1,80 @@
 
-function fta1(tableauEntree,exitOnLevelError){
+/*
+===========================================
+fonction qui transforme un texte en tableau
+===========================================
+*/
+function iterateCharacters(str){
+    var out= Array();
+    var te= new TextEncoder();
+    var i=0;
+    var bytes=0;
+    var length=0;
+    var numLigne=0;
+    var position=0;
+    var position2=0;
+    var arr= Array(...str);
+    var tableauBytes= Array();
+    var longueurBytes=0;
+    var l01=arr.length;
+    var codeCaractere='';
+    var retour={};
+    for(i=0;i < l01;i=i+1){
+        codeCaractere=arr[i].charCodeAt(0);
+        if((codeCaractere != 8203)){
+            tableauBytes=te.encode(arr[i]);
+            longueurBytes=tableauBytes.length;
+            out.push(
+                Array(arr[i],bytes,position,position2,numLigne)
+            );
+            if((arr[i] == '\n')){
+                numLigne=numLigne+1;
+            }
+            position=position+bytes;
+            position2=position2+1;
+            if((bytes == 4)){
+                position2=position2+1;
+            }
+            position=position+bytes;
+        }
+    }
+    retour={'out':out,'position':position,'position2':position2,'numLigne':numLigne};
+    return retour;
+}
+/*
+==================================================
+tableau retourné par l'analyse syntaxique 
+du texte en entrée de la fonction functionToArray2
+==================================================
+*/
+var global_enteteTableau= Array(
+    Array('id','id'),
+    Array('val','value'),
+    Array('typ','type'),
+    Array('niv','niveau'),
+    Array('coQ','constante quotée'),
+    Array('pre','position du premier caractère'),
+    Array('der','position du dernier caractère'),
+    Array('pId','Id du parent'),
+    Array('nbE','nombre d\'enfants'),
+    Array('nuE','numéro enfants'),
+    Array('pro','profondeur'),
+    Array('pop','position ouverture parenthese'),
+    Array('pfp','position fermeture parenthese'),
+    Array('com','commentaire')
+);
+/*
+===================================================
+===================================================
+===================================================
+===================================================
+fonction d'analyse syntaxique d'un programme source
+===================================================
+===================================================
+===================================================
+===================================================
+*/
+function functionToArray2(tableauEntree,exitOnLevelError){
     /*
     =========================
     les chaines de caractères
@@ -51,7 +126,9 @@ function fta1(tableauEntree,exitOnLevelError){
     5pre   6der  7pId  8nbE  9numEnfant  
     10pro 11OPa 12FPa 13comm
     */
-    T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+    T.push(
+        Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,'')
+    );
     var l01=tableauEntree.length;
     /*
     // ====================================================================
@@ -91,14 +168,22 @@ function fta1(tableauEntree,exitOnLevelError){
             }else{
                 commentaire=concat(commentaire,c);
             }
+            /*
+            =============================
+            FIN de Si on est dans un commentaire
+            =============================
+            
+            
+            
+            */
         }else if((dansCst == true)){
             /*
             
             
             
-            ==================
-            dans une constante
-            ==================
+            ============================
+            Si on est dans une constante
+            ============================
             */
             if((c == '\'')){
                 if((i == l01-1)){
@@ -119,7 +204,9 @@ function fta1(tableauEntree,exitOnLevelError){
                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
                     return(logerreur(temp));
                 }
-                T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                T.push(
+                    Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,'')
+                );
                 texte='';
                 constanteQuotee=false;
             }else if((c == '\\')){
@@ -127,7 +214,7 @@ function fta1(tableauEntree,exitOnLevelError){
                     temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
-                /*fin du choix*/
+                /**/
                 c1=tableauEntree[i+1][0];
                 if((c1 == '\\')||c1 == '\''){
                     if((texte == '')){
@@ -153,6 +240,14 @@ function fta1(tableauEntree,exitOnLevelError){
                 }
                 texte=concat(texte,c);
             }
+            /*
+            ===================================
+            Fin de Si on est dans une constante
+            ===================================
+            
+            
+            
+            */
         }else{
             /*
             
@@ -177,7 +272,9 @@ function fta1(tableauEntree,exitOnLevelError){
                     dsComment=true;
                     niveauDebutCommentaire=niveau;
                 }
-                T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                T.push(
+                    Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,'')
+                );
                 niveau=niveau+1;
                 texte='';
                 dansCst=false;
@@ -203,7 +300,9 @@ function fta1(tableauEntree,exitOnLevelError){
                         return(logerreur(temp));
                     }
                     indice=indice+1;
-                    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+                    T.push(
+                        Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,'')
+                    );
                     texte='';
                 }
                 niveau=niveau-1;
@@ -281,7 +380,9 @@ function fta1(tableauEntree,exitOnLevelError){
                         temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
-                    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+                    T.push(
+                        Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,'')
+                    );
                 }else{
                     if((T[indice][2] == 'f')){
                         /*ne rien faire*/
@@ -317,7 +418,9 @@ function fta1(tableauEntree,exitOnLevelError){
                         temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
-                    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+                    T.push(
+                        Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,'')
+                    );
                     texte='';
                     dansCst=false;
                 }
@@ -353,8 +456,10 @@ function fta1(tableauEntree,exitOnLevelError){
             temp={'status':false,'value':T,'message':'la racine ne peut pas contenir des constantes'};
             return(logerreur(temp));
         }
-        /*finchoix suite du source*/
-        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
+        /**/
+        T.push(
+            Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,'')
+        );
     }
     /*
     

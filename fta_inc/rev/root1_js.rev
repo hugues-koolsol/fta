@@ -4,9 +4,139 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      #(
+         ===========================================
+         fonction qui transforme un texte en tableau
+         ===========================================
+      ),
+      fonction(
+         definition(nom(iterateCharacters) , argument(str)),
+         contenu(
+            declare(out , appelf(n(Array))),
+            declare(
+               te,
+               new(appelf(n(TextEncoder)))
+            ),
+            declare(i , 0),
+            declare(bytes , 0),
+            declare(length , 0),
+            declare(numLigne , 0),
+            declare(position , 0),
+            declare(position2 , 0),
+            declare(arr , appelf(n(Array) , p(...str))),
+            declare(tableauBytes , appelf(n(Array))),
+            declare(longueurBytes , 0),
+            declare(l01 , arr.length),
+            declare(codeCaractere , ''),
+            declare(retour , obj()),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , l01)),
+               increment(affecte(i , i+1)),
+               faire(
+                  appelf(
+                     r(codeCaractere),
+                     element(arr[i]),
+                     n(charCodeAt),
+                     p(0)
+                  ),
+                  choix(
+                     si(
+                        condition((diff(codeCaractere , 8203))),
+                        alors(
+                           appelf(
+                              r(tableauBytes),
+                              element(te),
+                              n(encode),
+                              p(arr[i])
+                           ),
+                           affecte(longueurBytes , tableauBytes.length),
+                           appelf(
+                              n(push),
+                              element(out),
+                              p(
+                                 appelf(
+                                    n(Array),
+                                    p(arr[i]),
+                                    p(bytes),
+                                    p(position),
+                                    p(position2),
+                                    p(numLigne)
+                                 )
+                              )
+                           ),
+                           choix(
+                              si(
+                                 condition((egal(arr[i] , '\n'))),
+                                 alors(affecte(numLigne , numLigne+1))
+                              )
+                           ),
+                           affecte(position , position+bytes),
+                           affecte(position2 , position2+1),
+                           choix(
+                              si(
+                                 condition((egal(bytes , 4))),
+                                 alors(affecte(position2 , position2+1))
+                              )
+                           ),
+                           affecte(position , position+bytes)
+                        )
+                     )
+                  )
+               )
+            ),
+            affecte(
+               retour,
+               obj(
+                  (out , out),
+                  (position , position),
+                  (position2 , position2),
+                  (numLigne , numLigne)
+               )
+            ),
+            revenir(retour)
+         )
+      ),
+      #(
+         ==================================================
+         tableau retourné par l'analyse syntaxique 
+         du texte en entrée de la fonction functionToArray2
+         ==================================================
+      ),
+      declare(
+         global_enteteTableau,
+         appelf(
+            n(Array),
+            p(appelf(n(Array) , p('id') , p('id'))),
+            p(appelf(n(Array) , p('val') , p('value'))),
+            p(appelf(n(Array) , p('typ') , p('type'))),
+            p(appelf(n(Array) , p('niv') , p('niveau'))),
+            p(appelf(n(Array) , p('coQ') , p('constante quotée'))),
+            p(appelf(n(Array) , p('pre') , p('position du premier caractère'))),
+            p(appelf(n(Array) , p('der') , p('position du dernier caractère'))),
+            p(appelf(n(Array) , p('pId') , p('Id du parent'))),
+            p(appelf(n(Array) , p('nbE') , p('nombre d\'enfants'))),
+            p(appelf(n(Array) , p('nuE') , p('numéro enfants'))),
+            p(appelf(n(Array) , p('pro') , p('profondeur'))),
+            p(appelf(n(Array) , p('pop') , p('position ouverture parenthese'))),
+            p(appelf(n(Array) , p('pfp') , p('position fermeture parenthese'))),
+            p(appelf(n(Array) , p('com') , p('commentaire')))
+         )
+      ),
+      #(
+         ===================================================
+         ===================================================
+         ===================================================
+         ===================================================
+         fonction d'analyse syntaxique d'un programme source
+         ===================================================
+         ===================================================
+         ===================================================
+         ===================================================
+      ),
       fonction(
          definition(
-            nom(fta1),
+            nom(functionToArray2),
             #(Un tableau contenant le texte source),
             argument(tableauEntree),
             argument(exitOnLevelError)
@@ -67,7 +197,8 @@ src_javascript(
                10pro 11OPa 12FPa 13comm
             ),
             appelf(
-               n(T.push),
+               n(push),
+               element(T),
                p(
                   appelf(
                      n(Array),
@@ -155,6 +286,14 @@ src_javascript(
                                     affecte(commentaire , appelf(n(concat) , p(commentaire) , p(c)))
                                  )
                               )
+                           ),
+                           #(
+                              =============================
+                              FIN de Si on est dans un commentaire
+                              =============================
+                              
+                              
+                              
                            )
                         )
                      ),
@@ -165,9 +304,9 @@ src_javascript(
                               
                               
                               
-                              ==================
-                              dans une constante
-                              ==================
+                              ============================
+                              Si on est dans une constante
+                              ============================
                            ),
                            choix(
                               si(
@@ -240,7 +379,8 @@ src_javascript(
                                        )
                                     ),
                                     appelf(
-                                       n(T.push),
+                                       n(push),
+                                       element(T),
                                        p(
                                           appelf(
                                              n(Array),
@@ -285,7 +425,7 @@ src_javascript(
                                           )
                                        )
                                     ),
-                                    #(fin du choix),
+                                    #(),
                                     affecte(c1 , tableauEntree[i+1][0]),
                                     choix(
                                        si(
@@ -356,6 +496,14 @@ src_javascript(
                                     affecte(texte , appelf(n(concat) , p(texte) , p(c)))
                                  )
                               )
+                           ),
+                           #(
+                              ===================================
+                              Fin de Si on est dans une constante
+                              ===================================
+                              
+                              
+                              
                            )
                         )
                      ),
@@ -390,7 +538,8 @@ src_javascript(
                                        )
                                     ),
                                     appelf(
-                                       n(T.push),
+                                       n(push),
+                                       element(T),
                                        p(
                                           appelf(
                                              n(Array),
@@ -457,7 +606,8 @@ src_javascript(
                                              ),
                                              affecte(indice , indice+1),
                                              appelf(
-                                                n(T.push),
+                                                n(push),
+                                                element(T),
                                                 p(
                                                    appelf(
                                                       n(Array),
@@ -608,7 +758,8 @@ src_javascript(
                                                 )
                                              ),
                                              appelf(
-                                                n(T.push),
+                                                n(push),
+                                                element(T),
                                                 p(
                                                    appelf(
                                                       n(Array),
@@ -719,7 +870,8 @@ src_javascript(
                                                 )
                                              ),
                                              appelf(
-                                                n(T.push),
+                                                n(push),
+                                                element(T),
                                                 p(
                                                    appelf(
                                                       n(Array),
@@ -808,9 +960,10 @@ src_javascript(
                            )
                         )
                      ),
-                     #(finchoix suite du source),
+                     #(),
                      appelf(
-                        n(T.push),
+                        element(T),
+                        n(push),
                         p(
                            appelf(
                               n(Array),

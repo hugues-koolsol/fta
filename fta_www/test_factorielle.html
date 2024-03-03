@@ -18,7 +18,7 @@
         <div>
             Si cette page fonctionne, il y aura écrit "120" ci dessous !
         </div>
-        <div id="resultat"></div>
+        <div id="zoneResultat"></div>
         <!-- 
         ====================================
         dans ce html, on écrit du javascript
@@ -51,13 +51,20 @@ puis on utilise cette fonction
 */
 var zone={};
 var valeur=5;
-/*===============================================*/
-/*on affecte la valeur factorielle(5) à la valeur*/
-valeur=factorielle(valeur);
-/*===========================*/
-/*puis on affiche le résultat*/
-zone=document.getElementById('resultat');
-zone.innerHTML=valeur;
+var resultat=0;
+/*
+===============================================
+on affecte la valeur factorielle(5) à la valeur
+===============================================
+*/
+resultat=factorielle(valeur);
+/*
+===========================
+puis on affiche le résultat
+===========================
+*/
+zone=document.getElementById('zoneResultat');
+zone.innerHTML=resultat;
 /*#
 en lisp la fonction factorielle est ecrite comme ça :
 =================================================
@@ -71,8 +78,8 @@ en lisp la fonction factorielle est ecrite comme ça :
 =================================================
 Je trouve cette syntaxe un peu bizarre car le if qui contient 
 -une condition
--une valeur si frai
--une valeur si faux
+-une valeur si la condition est vraie
+-une valeur si la condition est fausse
 n'inclut pas ces 3 éléments dans des parenthèses
 
 Même si la définition de la fonction factorielle plus haut est plus verbeuse que
