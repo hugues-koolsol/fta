@@ -1,41 +1,41 @@
 src_html(
-  (file_name , todo),
-  (file_extension , html),
-  (file_path , .),
-  source(
-    html(
-      (lang , fr),
-      (doctype),
-      head(
-        meta((charset , utf8)),
-        meta((name , viewport) , (content , 'width=device-width, initial-scale=1')),
-        title(a),
-        meta((name , description) , (content , 'a')),
-        link((rel , 'stylesheet') , (href , index.css)),
-        script((type , 'text/javascript') , (src , functToArray.js))
-      ),
-      body(
-        hr(),
-        table(
-          tr(td((style , 'color:red;') , 99) , td('mettre les source produit dans un textarea')),
-          tr(td(00) , td('mettre un php dans un html')),
-          tr(td(00) , td('mettre un php dans un html')),
-          tr(td(00) , td('vérifier que dans la définition de fonction il n\'y a pas de source en dehors de contenu() ')),
-          tr(td(00) , td('recharger le dernier source chargé')),
-          tr(td(00) , td('selectionner un bloc et le mettre en commentaire')),
-          tr(td(00) , td('ajouter les commentaires au php et au js')),
-          tr(
-            td(99),
-            td(span((style , 'color:red;background:yellow;') , 'dans index_source, afficher le source produit et les tableaux'))
-          ),
-          tr(td(00) , td('capturer les erreur php')),
-          tr(td(99) , td('enregistrer fichier .rev')),
-          tr(td(99) , td('décaler des sources')),
-          tr(td(99) , td('correspondances parenthèses'))
-        ),
-        a((style , 'margin:5px;border:2px red outset') , (href , index_source.php) , index_source),
-        a((style , 'margin:5px;border:2px red outset') , (href , index.html) , index.html)
+   (file_name , todo),
+   (file_extension , html),
+   (file_path , .),
+   source(
+      html(
+         (lang , fr),
+         (doctype),
+         head(
+            meta((charset , utf8)),
+            meta((name , viewport) , (content , 'width=device-width, initial-scale=1')),
+            title(a),
+            meta((name , description) , (content , 'a')),
+            link((rel , 'stylesheet') , (href , index.css)),
+            script((type , 'text/javascript') , (src , functToArray.js))
+         ),
+         body(
+            hr(),
+            table(
+               tr(td((style , 'color:red;') , 99) , td('mettre les source produit dans un textarea')),
+               tr(td(00) , td('mettre un php dans un html')),
+               tr(td(00) , td('mettre un php dans un html')),
+               tr(td(00) , td('vérifier que dans la définition de fonction il n\'y a pas de source en dehors de contenu() ')),
+               tr(td(00) , td('recharger le dernier source chargé')),
+               tr(td(00) , td('selectionner un bloc et le mettre en commentaire')),
+               tr(td(00) , td('ajouter les commentaires au php et au js')),
+               tr(
+                  td(99),
+                  td(span((style , 'color:red;background:yellow;') , 'dans index_source, afficher le source produit et les tableaux'))
+               ),
+               tr(td(00) , td('capturer les erreur php')),
+               tr(td(99) , td('enregistrer fichier .rev')),
+               tr(td(99) , td('décaler des sources')),
+               tr(td(99) , td('correspondances parenthèses'))
+            ),
+            a((style , 'margin:5px;border:2px red outset') , (href , index_source.php) , index_source),
+            a((style , 'margin:5px;border:2px red outset') , (href , index.html) , index.html)
+         )
       )
-    )
-  )
+   )
 )

@@ -167,25 +167,25 @@ dans ce javascript, on définit une fonction
 ===========================================
 */
 function checkSubmit(){
-  clearMessages();
-  var valRet=false;
-  var zoneLogin={};
-  var zonePassw={};
-  zoneLogin=document.getElementById('login');
-  zonePassw=document.getElementById('password');
-  try{
-    if((zonePassw.value == '')||zoneLogin.value == ''){
-      valRet=false;
-      global_messages.errors.push('Veuillez indiquer votre login et votre mot de passe.');
-      displayMessages();
-    }else{
-      valRet=true;
+    clearMessages();
+    var valRet=false;
+    var zoneLogin={};
+    var zonePassw={};
+    zoneLogin=document.getElementById('login');
+    zonePassw=document.getElementById('password');
+    try{
+        if((zonePassw.value == '')||zoneLogin.value == ''){
+            valRet=false;
+            global_messages.errors.push('Veuillez indiquer votre login et votre mot de passe.');
+            displayMessages();
+        }else{
+            valRet=true;
+        }
+    }catch(e){
+        global_messages.errors.push('Il y a eu un problème ');
+        displayMessages();
     }
-  }catch(e){
-    global_messages.errors.push('Il y a eu un problème ');
-    displayMessages();
-  }
-  return valRet;
+    return valRet;
 }
 // = = = = source javascript> = = = =
 

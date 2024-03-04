@@ -120,7 +120,9 @@ function dogid(n){
 }
 //=====================================================================================================================
 function echappConstante(t){
- return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
+// return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
+// return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\''); //.replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
+ return t;
 }
 //=====================================================================================================================
 function concat(){
@@ -168,147 +170,6 @@ function espacesn(optionCRLF,i){
  return t;
 }
 
-//=====================================================================================================================
-function espaces2(i){
- var t='\n';
- if(i>0){
-  t+='  '.repeat(i);
- }
- return t;
-}
-//=====================================================================================================================
-function voirTableau(tableau,nomTableParent){
-//  0id	1val	2typ	3niv	4coQ	 5pre	 6der	 7cAv	 8cAp	 9cDe	 10pId	11nbE 12numEnfant 13profond 
-// 16CoApeNet 17ComDeNet 18ComAvNet 19TypComApre 20TypComDeda 21ComAvan 22OuvePar 23FerPar
- var c='';
- var k=0;
- var l=0;
-/* 
- var global_enteteTableau=[
-  ['id','id'                                 ,''], // 00
-  ['val','value'                             ,''],
-  ['typ','type'                              ,''],
-  ['niv','niveau'                            ,''],
-  ['coQ','constante quotee'                  ,''],
-  ['pre','position du premier caractère'     ,''], // 05
-  ['der','position du dernier caractère'     ,''],
-  ['cAv','commentaire avant'                 ,''],
-  ['cAp','commentaire apres'                 ,''],
-  ['cDe','commentaire dedans'                ,''],
-  ['pId','Id du parent'                      ,''], // 10
-  ['nbE','nombre d\'enfants'                 ,''],
-  ['nuE','numéro enfants'                    ,''],
-  ['nli','numeroLigne'                       ,''],
-  ['lfP','numero ligne fermeture parenthese' ,''],
-  ['pro','profondeur'                        ,''], // 15
-  ['pop','position ouverture parenthese'     ,''],
-  ['pfp','position fermeture parenthese'     ,''],
- ];
-*/
-//    console.log(tableau,JSON.stringify(tableau));  
- var arrayed=document.getElementById(nomTableParent);
- arrayed.innerHTML='';
- var newTr= document.createElement("tr");
- arrayed.appendChild(newTr);
- for(var j=0;j<global_enteteTableau.length;j++){
-  var newTh= document.createElement("th");
-  newTh.title=global_enteteTableau[j][1];
-  newTh.style.fontSize='0.6em';
-  newTr.appendChild(newTh);
-  newTh.innerHTML=j+''+global_enteteTableau[j][0];
- }
- for(var k=0;k<tableau.length;k++){
-  var newTr= document.createElement("tr");
-  arrayed.appendChild(newTr);
-  for(var j=0;j<tableau[k].length;j++){
-   var newTd= document.createElement("td");
-   if(typeof tableau[k][j] == 'string'){
-    for(l=0;l<tableau[k][j].length;l++){
-     c=tableau[k][j].substr(l,1);
-     if(c.charCodeAt(0)==8203){
-      newTd.style.backgroundColor='red';
-      break;
-     }
-    }
-   }
-   newTr.appendChild(newTd);
-   newTd.style.fontSize='0.6em';
-   if(j>=7){
-    newTd.style.verticalAlign='top';
-    if(typeof tableau[k][j] == 'string'){
-     newTd.innerHTML='<pre>'+tableau[k][j].replace(/\n/g,'&#9166;\n').replace(/ /g,'&#9604;')+'</pre>';
-    }else{
-     newTd.innerHTML=''+tableau[k][j]+'';
-    }
-/*    
-   if(j>=10){
-    newTd.style.verticalAlign='top';
-    newTd.innerHTML='<span>'+tableau[k][j]+'</span>';
-*/    
-   }else if(j==2){
-    newTd.style.verticalAlign='top';
-    newTd.innerHTML='<pre>'+tableau[k][j].replace(/\n/g,'&#9166;\n')+'</pre>';
-   }else{
-    newTd.innerHTML='<span style="background:white;">'+tableau[k][j]+'</span>';
-   }
-  }
- }
-}
-
-
-//=====================================================================================================================
-function compareSourceEtReconstruit(source){
-  var nbCar=200; // doit être pair
-  var i=0;
-  var k=0;
-  var arr=functionToArray(source,true);
-  if(arr.status==true){
-   
-   var txt1=arrayToFunctNoComment(arr.value);
-//   console.log('txt1.value=' , txt1.value , 'source=' , source );
-   
-   var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr.value);
-//   console.log(' sourceReconstruitAvecCommentaires=' , sourceReconstruitAvecCommentaires );
-   if(sourceReconstruitAvecCommentaires.value==source){
-    return logerreur({status:true,situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
-   }else{
-    
-    
-    
-    for(var j=0;j<source.length;j++){
-     if(source.substr(j,1)!=sourceReconstruitAvecCommentaires.value.substr(j,1)){
-      console.log('caractère"'+source.substr(j,1)+'" en position='+j);
-      k=j-nbCar/2; 
-      if(k<0){
-       k=0;
-      }
-      console.log('près de "'+source.substr(k,nbCar).replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'" dans originale'); // &#9166;
-      console.log('près de "'+sourceReconstruitAvecCommentaires.value.substr(k,nbCar).replace(/\n/g,'⏎').replace(/\r/g,'⏎')+'" dans reconstruit'); // &#9166;
-      return logerreur({status:false,message:'le source et le source reconstruits ne sont pas les mêmes',situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
-      break;
-     }
-    }
-    return logerreur({status:false,message:'le source et le source reconstruits ne sont pas les mêmes',situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
-   }
-  }else{
-   var arr2=functionToArray(source,false);
-   if(arr2.status==true){
-    var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr2.value);
-    if(sourceReconstruitAvecCommentaires.status==true){
-     document.getElementById('normalise').value=sourceReconstruitAvecCommentaires.value;
-     var tab1=sourceReconstruitAvecCommentaires.value.split('\n');
-     var tab0=source.split('\n');
-     for(i=0;i<tab1.length && i<tab0.length;i++){
-      if(tab1[i]!=tab0[i]){
-       global_messages.lines.push(i);
-       break;
-      }
-     }
-    }
-   }
-   return logerreur({status:false,message:'le source et le source reconstruits ne sont pas les mêmes',situation:{fichier:'core.js',fonction:'compareSourceEtReconstruit'}});
-  }
-}
 //=====================================================================================================================
 function display_ajax_error_in_cons(jsonRet) {
  var txt = '';
@@ -983,7 +844,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
 //    console.log(texteSource); // a
  
  if(objTableau===null){
-  console.log('texteSource.length=',texteSource.length);
+//  console.log('texteSource.length=',texteSource.length);
   var outo=iterateCharacters(texteSource);
   out=outo.out;
  }else{
@@ -992,11 +853,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
 //    console.log(out);
  for(var i=0;i<out.length;i++){
    var td1=document.createElement('td');
-   if(false && out[i][0]==='\n'){
-    td1.innerHTML=out[i][0].replace('\n','\\n'); //+''+out[i][4];
-   }else{
-    td1.innerHTML=out[i][0].replace('\n','\\n');
-   }
+   td1.innerHTML=out[i][0].replace('\n','\\n');
    td1.title='&#'+out[i][0].codePointAt(0)+'; ('+out[i][1]+')';
    tr1.appendChild(td1);
    
@@ -1062,8 +919,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     var td1=document.createElement('td');
     td1.setAttribute('class','td2');
     td1.innerHTML=out[j][3]+'';
-    tr1.appendChild(td1);
-    
+    tr1.appendChild(td1);    
     t2.appendChild(tr1);
     
     
@@ -1072,11 +928,9 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     
     
     debut=i+1;
-
-    
+    numeroLigne++;
     
     var tr1=document.createElement('tr');
-    numeroLigne++;
     var td1=document.createElement('td');
     td1.innerHTML=numeroLigne;
     tr1.appendChild(td1);
@@ -1325,7 +1179,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
           return(logerreur(temp));
         }
         c1=tableauEntree[i+1][0];
-        if((c1 == ',')||c1 == '\t'||c1 == '\n'||c1 == '\r'||c1 == '/'||c1 == ' '||c1 == ')'){
+        if( c1 == ',' ||c1 == '\t'||c1 == '\n'||c1 == '\r'||c1 == '/'||c1 == ' '||c1 == ')'){
           dernier=i-1;
         }else{
           temp={'status':false,'value':T,'id':i,'message':'apres une constante, il doit y avoir un caractère d\'echappement'};
@@ -1346,25 +1200,16 @@ function functionToArray2(tableauEntree,exitOnLevelError){
           temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
           return(logerreur(temp));
         }
-        /*fin du choix*/
         c1=tableauEntree[i+1][0];
-        if((c1 == '\\')||c1 == '\''){
+        if((c1 == '\\')||c1 == '\''|| c1 == 'n' || c1 == 't' || c1 == 'r'){ // TODO voir les cas vef
           if((texte == '')){
             premier=i;
           }
-          texte=concat(texte,c1);
+          texte=concat(texte,'\\',c1);
           i=i+1;
         }else{
-          if((c1 == 'n')||c1 == 't'||c1 == 'r'){
-            if((texte == '')){
-              premier=i;
-            }
-            texte=concat(texte,'\\',c1);
-            i=i+1;
-          }else{
-            temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe'};
-            return(logerreur(temp));
-          }
+          temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe'};
+          return(logerreur(temp));
         }
       }else{
         if((texte == '')){

@@ -6,6 +6,576 @@ src_javascript(
    source(
       #(
          ===========================================
+         fonction qui produit un tableau html de la
+         des caractères du source du programme
+         ===========================================
+      ),
+      fonction(
+         definition(
+            nom(ConstruitHtmlTableauCaracteres),
+            argument(t2),
+            argument(texteSource),
+            argument(objTableau)
+         ),
+         contenu(
+            declare(tr1 , obj()),
+            declare(td1 , obj()),
+            declare(numeroLigne , 0),
+            declare(debut , 0),
+            declare(i , 0),
+            declare(j , 0),
+            declare(tmps , ''),
+            declare(out , appelf(n(Array))),
+            appelf(
+               element(t2),
+               n(setAttribute),
+               p('class'),
+               p('tableau2')
+            ),
+            appelf(element(tr1) , n(document.createElement) , p('tr')),
+            appelf(element(td1) , n(document.createElement) , p('td')),
+            choix(
+               si(
+                  condition((egalstricte(objTableau , null))),
+                  alors(
+                     #(On construit le tableau à partir du texte source),
+                     declare(outo , obj()),
+                     appelf(r(outo) , n(iterateCharacters) , p(texteSource)),
+                     affecte(out , outo.out)
+                  )
+               ),
+               sinon(alors(affecte(out , objTableau.out)))
+            ),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , out.length)),
+               increment(affecte(i , i+1)),
+               faire(
+                  declare(tr1 , obj()),
+                  appelf(element(tr1) , n(document.createElement) , p('td')),
+                  appelf(
+                     r(td1.innerHTML),
+                     element(out[i][0]),
+                     n(replace),
+                     p('\n'),
+                     p('\\n')
+                  ),
+                  appelf(
+                     r(tmps),
+                     element(out[i][0]),
+                     n(codePointAt),
+                     p(0)
+                  ),
+                  appelf(
+                     r(td1.title),
+                     n(concat),
+                     p('&amp;#'),
+                     p(tmps),
+                     p('; ('),
+                     p(out[i][1]),
+                     p(')')
+                  ),
+                  appelf(element(tr1) , n(appendChild) , p(td1)),
+                  choix(
+                     si(
+                        condition((egal(out[i][0] , '\n'))),
+                        alors(
+                           #(
+                              ============================================
+                              Si on a un retour chariot, on écrit les 
+                              cases contenant les positions des caractères
+                              ============================================
+                           ),
+                           appelf(element(t2) , n(appendChild) , p(tr1)),
+                           #(
+                              
+                              
+                              =================================================
+                              indice dans tableau = première ligne des chiffres
+                              =================================================
+                           ),
+                           declare(tr1 , obj()),
+                           declare(td1 , obj()),
+                           appelf(r(tr1) , n(document.createElement) , p('tr')),
+                           appelf(r(td1) , n(document.createElement) , p('td')),
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td2')
+                           ),
+                           affecte(td1.innerHTML , '&nbsp;'),
+                           appelf(element(tr1) , n(appendChild) , p(td1)),
+                           boucle(
+                              initialisation(affecte(j , debut)),
+                              condition(inf(j , i)),
+                              increment(affecte(j , j+1)),
+                              faire(
+                                 declare(td1 , obj()),
+                                 appelf(r(td1) , n(document.createElement) , p('td')),
+                                 choix(
+                                    si(
+                                       condition((egal(out[j][1] , 1))),
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td2')
+                                          )
+                                       )
+                                    ),
+                                    sinonsi(
+                                       condition((egal(out[j][1] , 3))),
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td5')
+                                          )
+                                       )
+                                    ),
+                                    sinonsi(
+                                       condition((egal(out[j][1] , 4))),
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td4')
+                                          )
+                                       )
+                                    ),
+                                    sinon(
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td3')
+                                          )
+                                       )
+                                    )
+                                 ),
+                                 affecte(td1.innerHTML , j),
+                                 appelf(element(tr1) , n(appendChild) , p(td1))
+                              )
+                           ),
+                           #(
+                              
+                              =====================
+                              position du backslash
+                              =====================
+                           ),
+                           appelf(r(td1) , n(document.createElement) , p('td')),
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td2')
+                           ),
+                           affecte(td1.innerHTML , j),
+                           appelf(element(tr1) , n(appendChild) , p(td1)),
+                           appelf(element(t2) , n(appendChild) , p(tr1)),
+                           #(
+                              
+                              =====================================================
+                              position dans la chaine = deuxième ligne des chiffres
+                              =====================================================
+                           ),
+                           declare(tr1 , obj()),
+                           declare(td1 , obj()),
+                           appelf(r(tr1) , n(document.createElement) , p('tr')),
+                           appelf(r(td1) , n(document.createElement) , p('td')),
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td2')
+                           ),
+                           affecte(td1.innerHTML , '&nbsp;'),
+                           appelf(element(tr1) , n(appendChild) , p(td1)),
+                           boucle(
+                              initialisation(affecte(j , debut)),
+                              condition(inf(j , i)),
+                              increment(affecte(j , j+1)),
+                              faire(
+                                 declare(td1 , obj()),
+                                 appelf(r(td1) , n(document.createElement) , p('td')),
+                                 choix(
+                                    si(
+                                       condition((egal(out[j][1] , 1))),
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td2')
+                                          )
+                                       )
+                                    ),
+                                    sinonsi(
+                                       condition((egal(out[j][1] , 3))),
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td5')
+                                          )
+                                       )
+                                    ),
+                                    sinonsi(
+                                       condition((egal(out[j][1] , 4))),
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td4')
+                                          )
+                                       )
+                                    ),
+                                    sinon(
+                                       alors(
+                                          appelf(
+                                             element(td1),
+                                             n(setAttribute),
+                                             p('class'),
+                                             p('td3')
+                                          )
+                                       )
+                                    )
+                                 ),
+                                 affecte(td1.innerHTML , out[j][3]),
+                                 appelf(element(tr1) , n(appendChild) , p(td1))
+                              )
+                           ),
+                           #(
+                              
+                              =====================
+                              position du backslash
+                              =====================
+                           ),
+                           appelf(r(td1) , n(document.createElement) , p('td')),
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td2')
+                           ),
+                           affecte(td1.innerHTML , out[j][3]),
+                           appelf(element(tr1) , n(appendChild) , p(td1)),
+                           appelf(element(t2) , n(appendChild) , p(tr1)),
+                           #(
+                              
+                              
+                              ======================================
+                              fin des lignes contenant les positions
+                              ======================================
+                           ),
+                           affecte(debut , i+1),
+                           affecte(numeroLigne , numeroLigne+1),
+                           declare(tr1 , obj()),
+                           declare(td1 , obj()),
+                           appelf(r(tr1) , n(document.createElement) , p('tr')),
+                           appelf(r(td1) , n(document.createElement) , p('td')),
+                           affecte(td1.innerHTML , numeroLigne),
+                           appelf(element(t2) , n(appendChild) , p(tr1)),
+                           #(
+                              ============================================
+                              FIN Si on a un retour chariot, on écrit les 
+                              cases contenant les positions des caractères
+                              ============================================
+                           )
+                        )
+                     )
+                  ),
+                  #(dernière ligne de faire boucle)
+               )
+            ),
+            #(
+               dernière ligne des positions des caractères
+            ),
+            appelf(element(t2) , n(appendChild) , p(tr1)),
+            #(
+               
+               
+               =================================================
+               indice dans tableau = première ligne des chiffres
+               =================================================
+            ),
+            declare(tr1 , obj()),
+            declare(td1 , obj()),
+            appelf(r(tr1) , n(document.createElement) , p('tr')),
+            appelf(r(td1) , n(document.createElement) , p('td')),
+            appelf(
+               element(td1),
+               n(setAttribute),
+               p('class'),
+               p('td2')
+            ),
+            affecte(td1.innerHTML , '&nbsp;'),
+            appelf(element(tr1) , n(appendChild) , p(td1)),
+            boucle(
+               initialisation(affecte(j , debut)),
+               condition(inf(j , i)),
+               increment(affecte(j , j+1)),
+               faire(
+                  declare(td1 , obj()),
+                  appelf(r(td1) , n(document.createElement) , p('td')),
+                  choix(
+                     si(
+                        condition((egal(out[j][1] , 1))),
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td2')
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition((egal(out[j][1] , 3))),
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td5')
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition((egal(out[j][1] , 4))),
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td4')
+                           )
+                        )
+                     ),
+                     sinon(
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td3')
+                           )
+                        )
+                     )
+                  ),
+                  affecte(td1.innerHTML , j),
+                  appelf(element(tr1) , n(appendChild) , p(td1)),
+                  #(finchoix suite du source)
+               )
+            ),
+            #(
+               
+               =====================
+               pas de position du backslash
+               =====================
+            ),
+            appelf(element(t2) , n(appendChild) , p(tr1)),
+            #(
+               
+               =====================================================
+               position dans la chaine = deuxième ligne des chiffres
+               =====================================================
+            ),
+            declare(tr1 , obj()),
+            declare(td1 , obj()),
+            appelf(r(tr1) , n(document.createElement) , p('tr')),
+            appelf(r(td1) , n(document.createElement) , p('td')),
+            appelf(
+               element(td1),
+               n(setAttribute),
+               p('class'),
+               p('td2')
+            ),
+            affecte(td1.innerHTML , '&nbsp;'),
+            appelf(element(tr1) , n(appendChild) , p(td1)),
+            boucle(
+               initialisation(affecte(j , debut)),
+               condition(inf(j , i)),
+               increment(affecte(j , j+1)),
+               faire(
+                  declare(td1 , obj()),
+                  appelf(r(td1) , n(document.createElement) , p('td')),
+                  choix(
+                     si(
+                        condition((egal(out[j][1] , 1))),
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td2')
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition((egal(out[j][1] , 3))),
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td5')
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition((egal(out[j][1] , 4))),
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td4')
+                           )
+                        )
+                     ),
+                     sinon(
+                        alors(
+                           appelf(
+                              element(td1),
+                              n(setAttribute),
+                              p('class'),
+                              p('td3')
+                           )
+                        ),
+                        #(finsinon)
+                     )
+                  ),
+                  affecte(td1.innerHTML , out[j][3]),
+                  appelf(element(tr1) , n(appendChild) , p(td1)),
+                  #(finchoix suite du source)
+               )
+            ),
+            #(
+               
+               =====================
+               pas de position du backslash
+               =====================
+            ),
+            appelf(element(t2) , n(appendChild) , p(tr1))
+         )
+      ),
+      #(
+         ===========================================
+         fonction qui produit un tableau html de la
+         forme matricielle du programme
+         ===========================================
+      ),
+      fonction(
+         definition(nom(ConstruitHtmlMatrice) , argument(t1) , argument(matriceFonction)),
+         contenu(
+            #(),
+            declare(i , 0),
+            declare(j , 0),
+            declare(temp , ''),
+            declare(t1 , obj()),
+            declare(
+               r1,
+               new(appelf(n(RegExp) , p(' ') , p(g)))
+            ),
+            declare(
+               r2,
+               new(appelf(n(RegExp) , p('\n') , p(g)))
+            ),
+            affecte(t1 , appelf(n(document.createElement) , p(tr1))),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , matriceFonction.value.length)),
+               increment(affecte(i , i+1)),
+               faire(
+                  declare(tr1 , obj()),
+                  affecte(tr1 , appelf(n(document.createElement) , p(tr))),
+                  boucle(
+                     initialisation(affecte(j , 0)),
+                     condition(inf(j , matriceFonction.value[i].length)),
+                     increment(affecte(j , j+1)),
+                     faire(
+                        declare(td1 , obj()),
+                        affecte(td1 , appelf(n(document.createElement) , p(td))),
+                        choix(
+                           si(
+                              condition((egal(j , 1)) , ou(egal(j , 13))),
+                              alors(
+                                 affecte(temp , appelf(n(String) , p(matriceFonction.value[i][j]))),
+                                 affecte(
+                                    temp,
+                                    appelf(
+                                       n(replace),
+                                       element(temp),
+                                       p(r1),
+                                       p('░')
+                                    )
+                                 ),
+                                 affecte(
+                                    temp,
+                                    appelf(
+                                       n(replace),
+                                       element(temp),
+                                       p(r2),
+                                       p('¶')
+                                    )
+                                 ),
+                                 affecte(td1.style.whiteSpace , 'pre-wrap'),
+                                 affecte(td1.style.verticalAlign , 'baseline')
+                              )
+                           ),
+                           sinonsi(
+                              condition((egal(j , 4))),
+                              alors(
+                                 #(Constante quotée),
+                                 choix(
+                                    si(
+                                       condition((egal(matriceFonction.value[i][j] , true))),
+                                       alors(affecte(td1.innerHTML , '1'))
+                                    ),
+                                    sinon(alors(affecte(td1.innerHTML , '')))
+                                 )
+                              )
+                           ),
+                           sinon(
+                              alors(
+                                 affecte(td1.innerHTML , appelf(n(String) , p(matriceFonction.value[i][j])))
+                              )
+                           )
+                        ),
+                        affecte(
+                           temp,
+                           appelf(
+                              n(concat),
+                              p(global_enteteTableau[j][1]),
+                              p('('),
+                              p(j),
+                              p(')')
+                           )
+                        ),
+                        appelf(
+                           element(td1),
+                           n(setAttribute),
+                           p('title'),
+                           p(temp)
+                        ),
+                        appelf(element(tr1) , n(appendChild) , p(td1))
+                     )
+                  ),
+                  appelf(element(t1) , n(appendChild) , p(tr1))
+               )
+            )
+         )
+      ),
+      #(
+         ===========================================
          fonction qui transforme un texte en tableau
          ===========================================
       ),
@@ -429,7 +999,13 @@ src_javascript(
                                     affecte(c1 , tableauEntree[i+1][0]),
                                     choix(
                                        si(
-                                          condition((egal(c1 , '\\')) , ou(egal(c1 , '\''))),
+                                          condition(
+                                             (egal(c1 , '\\')),
+                                             ou(egal(c1 , '\'')),
+                                             ou(egal(c1 , 'n')),
+                                             ou(egal(c1 , 't')),
+                                             ou(egal(c1 , 'r'))
+                                          ),
                                           alors(
                                              choix(
                                                 si(
@@ -437,49 +1013,30 @@ src_javascript(
                                                    alors(affecte(premier , i))
                                                 )
                                              ),
-                                             affecte(texte , appelf(n(concat) , p(texte) , p(c1))),
+                                             affecte(
+                                                texte,
+                                                appelf(
+                                                   n(concat),
+                                                   p(texte),
+                                                   p('\\'),
+                                                   p(c1)
+                                                )
+                                             ),
                                              affecte(i , i+1)
                                           )
                                        ),
                                        sinon(
                                           alors(
-                                             choix(
-                                                si(
-                                                   condition((egal(c1 , 'n')) , ou(egal(c1 , 't')) , ou(egal(c1 , 'r'))),
-                                                   alors(
-                                                      choix(
-                                                         si(
-                                                            condition((egal(texte , ''))),
-                                                            alors(affecte(premier , i))
-                                                         )
-                                                      ),
-                                                      affecte(
-                                                         texte,
-                                                         appelf(
-                                                            n(concat),
-                                                            p(texte),
-                                                            p('\\'),
-                                                            p(c1)
-                                                         )
-                                                      ),
-                                                      affecte(i , i+1)
-                                                   )
-                                                ),
-                                                sinon(
-                                                   alors(
-                                                      affecte(
-                                                         temp,
-                                                         obj(
-                                                            (status , false),
-                                                            (value , T),
-                                                            (id , i),
-                                                            (message , 'un antislash doit être suivi par un autre antislash ou un apostrophe')
-                                                         )
-                                                      ),
-                                                      revenir(appelf(n(logerreur) , p(temp)))
-                                                   )
+                                             affecte(
+                                                temp,
+                                                obj(
+                                                   (status , false),
+                                                   (value , T),
+                                                   (id , i),
+                                                   (message , 'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r')
                                                 )
-                                             )
+                                             ),
+                                             revenir(appelf(n(logerreur) , p(temp)))
                                           )
                                        )
                                     )

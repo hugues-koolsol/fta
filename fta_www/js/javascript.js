@@ -126,7 +126,7 @@ function js_condition1(tab,id,niveau){
     
     
     
-   }else if( (tab[i][1]=='egal' || tab[i][1]=='diff' || tab[i][1]=='sup' || tab[i][1]=='inf'|| tab[i][1]=='supeg' || tab[i][1]=='infeg' ) && tab[i][2]=='f' ){
+   }else if( (tab[i][1]=='egal' || tab[i][1]=='egalstricte' || tab[i][1]=='diff' || tab[i][1]=='diffstricte' || tab[i][1]=='sup' || tab[i][1]=='inf'|| tab[i][1]=='supeg' || tab[i][1]=='infeg' ) && tab[i][2]=='f' ){
     if(tab[i][8]==2){
      // trouver les 2 paramètres de la fonction
      tabPar=[];
@@ -161,8 +161,12 @@ function js_condition1(tab,id,niveau){
      }
      if(tab[i][1]=='egal'){
       t+=' == ';
+     }else if(tab[i][1]=='egalstricte'){
+      t+=' === ';
      }else if(tab[i][1]=='diff'){
       t+=' != ';
+     }else if(tab[i][1]=='diffstricte'){
+      t+=' !== ';
      }else if(tab[i][1]=='sup'){
       t+=' > ';
      }else if(tab[i][1]=='inf'){
@@ -217,7 +221,7 @@ function js_condition1(tab,id,niveau){
 //    console.log('apres traite commentaite2 tab['+i+'][13]='+tab[i][13],'\ncommt='+commt);
     t+='/*' + commt +'*/';
    }else{
-    logerreur({status:false,value:t,id:i,message:'les tests sont pour l\'instant egal,diff,sup,inf,supeg,infeg en non pas "'+tab[i][1]+'"' })
+    logerreur({status:false,value:t,id:i,message:'les tests sont pour l\'instant egal,egalstricte,diff,diffstricte,sup,inf,supeg,infeg en non pas "'+tab[i][1]+'"' })
     t+=' /* TODO javascript ligne 213 */ ';
    }
   }
@@ -1171,6 +1175,18 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     break;
    }
   }
+  for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
+   if(tab[j][3]==tab[i][3]){
+    break;
+   }
+   if(tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
+    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='r' ){
+     continue;
+    }else{
+     logerreur({status:false,value:t,id:i,tab:tab,message:'les seuls paramètres de appelf sont n,p,r,element et non pas "'+tab[j][1]+'"'});
+    }
+   }
+  }
   argumentsFonction='';
   // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
   
@@ -1182,7 +1198,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     if(obj.status==true){
      argumentsFonction+=','+obj.value+'';
     }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteAppelFonction Objet il y a un problème'});
+     return logerreur({status:false,value:t,id:i,tab:tab,message:'dans js_traiteAppelFonction Objet il y a un problème'});
     }
     
     

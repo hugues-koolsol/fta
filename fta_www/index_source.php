@@ -425,7 +425,7 @@ function voirSourceGenere(){
  if( zoneContenantLeSourceGenere && zoneContenantLeSourceGenere.innerHTML==''){
   var zoneSourceGenere=document.createElement('pre');
   
-  zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replace(/</g,'&lt;');
+  zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/</g,'&gt;');
   
   zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
   zoneContenantLeSourceGenere.style.display='';
@@ -617,19 +617,19 @@ function getCaretCoordinates(element, position){ //, options) {
 }
 
 function createSelection(field, start, end) {
-    if( field.createTextRange ) {
-        var selRange = field.createTextRange();
-        selRange.collapse(true);
-        selRange.moveStart('character', start);
-        selRange.moveEnd('character', end-start);
-        selRange.select();
-    } else if( field.setSelectionRange ) {
-        field.setSelectionRange(start, end);
-    } else if( field.selectionStart ) {
-        field.selectionStart = start;
-        field.selectionEnd = end;
-    }
-    field.focus();
+ if( field.createTextRange ) {
+  var selRange = field.createTextRange();
+  selRange.collapse(true);
+  selRange.moveStart('character', start);
+  selRange.moveEnd('character', end-start);
+  selRange.select();
+ }else if( field.setSelectionRange ) {
+  field.setSelectionRange(start, end);
+ }else if( field.selectionStart ) {
+  field.selectionStart = start;
+  field.selectionEnd = end;
+ }
+ field.focus();
 } 
 
 //=====================================================================================================================
@@ -708,62 +708,63 @@ function insertSource(nomFonction){
       j=i;
      }
     }
-   }    
+   }
+   var de1=' '.repeat(NBESPACESREV); // décalage
    if(j<0 && espaces.length==k){
     if(nomFonction=='choix'){
      
      toAdd =             'choix(';
-     toAdd+='\n'+espaces+'  si(';
-     toAdd+='\n'+espaces+'    condition(';
-     toAdd+='\n'+espaces+'      non(';
-     toAdd+='\n'+espaces+'        ( egal( vrai , vrai ) ),';
-     toAdd+='\n'+espaces+'        et( egal( vrai , vrai ) )';
-     toAdd+='\n'+espaces+'      )';
-     toAdd+='\n'+espaces+'    ),';
-     toAdd+='\n'+espaces+'    alors(';
-     toAdd+='\n'+espaces+'      affecte( a , 1 )';
-     toAdd+='\n'+espaces+'    )';
-     toAdd+='\n'+espaces+'  ),';
-     toAdd+='\n'+espaces+'  sinonsi(';
-     toAdd+='\n'+espaces+'    condition( (true) ),';
-     toAdd+='\n'+espaces+'    alors(';
-     toAdd+='\n'+espaces+'      affecte( a , 1 ) ';
-     toAdd+='\n'+espaces+'    )';
-     toAdd+='\n'+espaces+'  ),';
-     toAdd+='\n'+espaces+'  sinon(';
-     toAdd+='\n'+espaces+'    alors(';
-     toAdd+='\n'+espaces+'      affecte( a , 1 )';
-     toAdd+='\n'+espaces+'    )';
-     toAdd+='\n'+espaces+'    #(finsinon)';
-     toAdd+='\n'+espaces+'  ),';
+     toAdd+='\n'+espaces+de1+'si(';
+     toAdd+='\n'+espaces+de1+de1+'condition(';
+     toAdd+='\n'+espaces+de1+de1+de1+'non(';
+     toAdd+='\n'+espaces+de1+de1+de1+de1+'( egal(vrai , vrai) ),';
+     toAdd+='\n'+espaces+de1+de1+de1+de1+'et( egal( vrai , vrai ) )';
+     toAdd+='\n'+espaces+de1+de1+de1+')';
+     toAdd+='\n'+espaces+de1+de1+'),';
+     toAdd+='\n'+espaces+de1+de1+'alors(';
+     toAdd+='\n'+espaces+de1+de1+de1+'affecte( a , 1 )';
+     toAdd+='\n'+espaces+de1+de1+')';
+     toAdd+='\n'+espaces+de1+'),';
+     toAdd+='\n'+espaces+de1+'sinonsi(';
+     toAdd+='\n'+espaces+de1+de1+'condition( (true) ),';
+     toAdd+='\n'+espaces+de1+de1+'alors(';
+     toAdd+='\n'+espaces+de1+de1+de1+'affecte(a , 1)';
+     toAdd+='\n'+espaces+de1+de1+')';
+     toAdd+='\n'+espaces+de1+'),';
+     toAdd+='\n'+espaces+de1+'sinon(';
+     toAdd+='\n'+espaces+de1+de1+'alors(';
+     toAdd+='\n'+espaces+de1+de1+de1+'affecte(a , 1)';
+     toAdd+='\n'+espaces+de1+de1+')';
+     toAdd+='\n'+espaces+de1+de1+'#(finsinon)';
+     toAdd+='\n'+espaces+de1+'),';
      toAdd+='\n'+espaces+'),';
      toAdd+='\n'+espaces+'#(finchoix suite du source)';
      
     }else if(nomFonction=='boucle'){
 
      toAdd =             'boucle(';
-     toAdd+='\n'+espaces+'  initialisation( affecte( i , 0 ) ),';
-     toAdd+='\n'+espaces+'  condition( inf( i , tab.length ) ),';
-     toAdd+='\n'+espaces+'  increment( affecte( i , i+1 ) ),';
-     toAdd+='\n'+espaces+'  faire(';
-     toAdd+='\n'+espaces+'    affecte( a , 1 )';
-     toAdd+='\n'+espaces+'  )';
+     toAdd+='\n'+espaces+de1+'initialisation(affecte(i , 0)),';
+     toAdd+='\n'+espaces+de1+'condition(inf(i , tab.length)),';
+     toAdd+='\n'+espaces+de1+'increment(affecte(i , i+1)),';
+     toAdd+='\n'+espaces+de1+'faire(';
+     toAdd+='\n'+espaces+de1+de1+'affecte(a , 1)';
+     toAdd+='\n'+espaces+de1+')';
      toAdd+='\n'+espaces+'),';
      toAdd+='\n'+espaces+'#(fin boucle, suite du source)';
 
     }else if(nomFonction=='appelf'){
 
      toAdd =             'appelf(';
-     toAdd+='\n'+espaces+'  n( nomFonction ),';
-     toAdd+='\n'+espaces+'  r( variableDeRetour ),';
-     toAdd+='\n'+espaces+'  p( parametre1 ),';
-     toAdd+='\n'+espaces+'  p( parametre2 )';
+     toAdd+='\n'+espaces+de1+'n(nomFonction),';
+     toAdd+='\n'+espaces+de1+'r(variableDeRetour),';
+     toAdd+='\n'+espaces+de1+'p(parametre1),';
+     toAdd+='\n'+espaces+de1+'p(parametre2)';
      toAdd+='\n'+espaces+'),';
      toAdd+='\n'+espaces+'#(fin appelf),';
 
     }else if(nomFonction=='affecte'){
 
-     toAdd =             'affecte( nomVariable , valeurVariable ),';
+     toAdd =             'affecte(nomVariable , valeurVariable),';
 
     }
     t=global_editeur_debut_texte+toAdd+global_editeur_fin_texte;
@@ -824,6 +825,7 @@ document.getElementById('zonesource').onclick=function(e){
 document.getElementById('zonesource').onkeydown=function(e){
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  global_editeur_scrolltop=this.scrollTop;
+// console.log('global_editeur_scrolltop=',global_editeur_scrolltop);
  return;
 }
 //=====================================================================================================================
@@ -884,9 +886,9 @@ function analyseKeyUp(e){
      if(textPrec.substr(textPrec.length-1,1)=='(' ){
       if(global_editeur_fin_texte.substr(0,1)==')'){
        offSetBack=toAdd.length+1;
-       toAdd+='  \n'+toAdd;
+       toAdd+=' '.repeat(NBESPACESREV)+'\n'+toAdd;
       }else{
-       toAdd+='  ';
+       toAdd+=' '.repeat(NBESPACESREV);
       }
      }else{
       if(global_editeur_fin_texte.substr(0,1)==')'){
@@ -913,7 +915,21 @@ function analyseKeyUp(e){
   }else{
 //   console.log('%cRaaaah','color:red');
   }
+ }else if(e.keyCode==86 && e.ctrlKey==true ){
+   // ctrl v
+   var zoneSource=document.getElementById('zonesource');
+//   console.log('zoneSource=',zoneSource , zoneSource.scrollTop);
+   setTimeout(
+    function(){
+//     console.log('global_editeur_scrolltop=',global_editeur_scrolltop);
+     zoneSource.scrollTop=global_editeur_scrolltop;
+    },
+   5
+  )
+   
+   
  }else{
+  global_editeur_scrolltop
   initialisationEditeur();
  }
  return false;

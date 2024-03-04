@@ -22,9 +22,9 @@ $o1='';
     <table>
         <tr>
             <td>
-                <button onclick="charger('source4.txt')">source4</button>
-                <button onclick="charger('source5.txt')">source5</button>
-                <button onclick="charger('source6.txt')">source6</button>
+                <button onclick="charger(\'source4.txt\')">source4</button>
+                <button onclick="charger(\'source5.txt\')">source5</button>
+                <button onclick="charger(\'source6.txt\')">source6</button>
             </td>
             <td>
                 <textarea id="zonesource" cols="100" rows="60"></textarea>

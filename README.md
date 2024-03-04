@@ -59,7 +59,7 @@ A partir du format tabulaire, on peut reconstituer le source et réciproquement.
 
 Ainsi, les programmes sources deviennent des données qu'on peut traiter informatiquement en ajoutant, supprimant ou modifiant des éléments.
 
-** Les règles d'écriture** des programmes sont limitées.
+**Les règles d'écriture** des programmes sont limitées.
 
 **1°) Racine**
 

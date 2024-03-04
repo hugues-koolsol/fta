@@ -9,13 +9,7 @@ if( !((true == true) && true == true) && (true == true)){
 }
 $username='admin';
 $userpass='admin';
-$selectSql='
-SELECT fld_id_user , fld_email_user , fld_password_user 
-FROM `ftatest`.`tbl_user` `T0` 
-WHERE `T0`.`fld_email_user`    LIKE \''.addslashes($username).'\'  
-AND   `T0`.`fld_password_user` LIKE \''.addslashes($userpass).'\'  
-AND   \'toto\' = \'toto\'  
-AND 0 = 0 ';
+$selectSql='SELECT fld_id_user , fld_email_user , fld_password_user FROM `ftatest`.`tbl_user` `T0` WHERE `T0`.`fld_email_user` LIKE \''.addslashes($username).'\'  AND `T0`.`fld_password_user` LIKE \''.addslashes($userpass).'\'  AND \'toto\' = \'toto\'  AND 0 = 0 ';
 $contenuhtml=<<<EOT
     <div id="toto">
         hello

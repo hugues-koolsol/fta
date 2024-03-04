@@ -1,6 +1,272 @@
 
 /*
 ===========================================
+fonction qui produit un tableau html de la
+des caractères du source du programme
+===========================================
+*/
+function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
+    var tr1={};
+    var td1={};
+    var numeroLigne=0;
+    var debut=0;
+    var i=0;
+    var j=0;
+    var tmps='';
+    var out= Array();
+    t2.setAttribute('class','tableau2');
+    tr1.document.createElement('tr');
+    td1.document.createElement('td');
+    if((objTableau === null)){
+        /*On construit le tableau à partir du texte source*/
+        var outo={};
+        outo=iterateCharacters(texteSource);
+        out=outo.out;
+    }else{
+        out=objTableau.out;
+    }
+    for(i=0;i < out.length;i=i+1){
+        var tr1={};
+        tr1.document.createElement('td');
+        td1.innerHTML=out[i][0].replace('\n','\\n');
+        tmps=out[i][0].codePointAt(0);
+        td1.title=concat('&amp;#',tmps,'; (',out[i][1],')');
+        tr1.appendChild(td1);
+        if((out[i][0] == '\n')){
+            /*
+            ============================================
+            Si on a un retour chariot, on écrit les 
+            cases contenant les positions des caractères
+            ============================================
+            */
+            t2.appendChild(tr1);
+            /*
+            
+            
+            =================================================
+            indice dans tableau = première ligne des chiffres
+            =================================================
+            */
+            var tr1={};
+            var td1={};
+            tr1=document.createElement('tr');
+            td1=document.createElement('td');
+            td1.setAttribute('class','td2');
+            td1.innerHTML='&nbsp;';
+            tr1.appendChild(td1);
+            for(j=debut;j < i;j=j+1){
+                var td1={};
+                td1=document.createElement('td');
+                if((out[j][1] == 1)){
+                    td1.setAttribute('class','td2');
+                }else if((out[j][1] == 3)){
+                    td1.setAttribute('class','td5');
+                }else if((out[j][1] == 4)){
+                    td1.setAttribute('class','td4');
+                }else{
+                    td1.setAttribute('class','td3');
+                }
+                td1.innerHTML=j;
+                tr1.appendChild(td1);
+            }
+            /*
+            
+            =====================
+            position du backslash
+            =====================
+            */
+            td1=document.createElement('td');
+            td1.setAttribute('class','td2');
+            td1.innerHTML=j;
+            tr1.appendChild(td1);
+            t2.appendChild(tr1);
+            /*
+            
+            =====================================================
+            position dans la chaine = deuxième ligne des chiffres
+            =====================================================
+            */
+            var tr1={};
+            var td1={};
+            tr1=document.createElement('tr');
+            td1=document.createElement('td');
+            td1.setAttribute('class','td2');
+            td1.innerHTML='&nbsp;';
+            tr1.appendChild(td1);
+            for(j=debut;j < i;j=j+1){
+                var td1={};
+                td1=document.createElement('td');
+                if((out[j][1] == 1)){
+                    td1.setAttribute('class','td2');
+                }else if((out[j][1] == 3)){
+                    td1.setAttribute('class','td5');
+                }else if((out[j][1] == 4)){
+                    td1.setAttribute('class','td4');
+                }else{
+                    td1.setAttribute('class','td3');
+                }
+                td1.innerHTML=out[j][3];
+                tr1.appendChild(td1);
+            }
+            /*
+            
+            =====================
+            position du backslash
+            =====================
+            */
+            td1=document.createElement('td');
+            td1.setAttribute('class','td2');
+            td1.innerHTML=out[j][3];
+            tr1.appendChild(td1);
+            t2.appendChild(tr1);
+            /*
+            
+            
+            ======================================
+            fin des lignes contenant les positions
+            ======================================
+            */
+            debut=i+1;
+            numeroLigne=numeroLigne+1;
+            var tr1={};
+            var td1={};
+            tr1=document.createElement('tr');
+            td1=document.createElement('td');
+            td1.innerHTML=numeroLigne;
+            t2.appendChild(tr1);
+            /*
+            ============================================
+            FIN Si on a un retour chariot, on écrit les 
+            cases contenant les positions des caractères
+            ============================================
+            */
+        }
+        /*dernière ligne de faire boucle*/
+    }
+    /*
+    dernière ligne des positions des caractères
+    */
+    t2.appendChild(tr1);
+    /*
+    
+    
+    =================================================
+    indice dans tableau = première ligne des chiffres
+    =================================================
+    */
+    var tr1={};
+    var td1={};
+    tr1=document.createElement('tr');
+    td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    for(j=debut;j < i;j=j+1){
+        var td1={};
+        td1=document.createElement('td');
+        if((out[j][1] == 1)){
+            td1.setAttribute('class','td2');
+        }else if((out[j][1] == 3)){
+            td1.setAttribute('class','td5');
+        }else if((out[j][1] == 4)){
+            td1.setAttribute('class','td4');
+        }else{
+            td1.setAttribute('class','td3');
+        }
+        td1.innerHTML=j;
+        tr1.appendChild(td1);
+        /*finchoix suite du source*/
+    }
+    /*
+    
+    =====================
+    pas de position du backslash
+    =====================
+    */
+    t2.appendChild(tr1);
+    /*
+    
+    =====================================================
+    position dans la chaine = deuxième ligne des chiffres
+    =====================================================
+    */
+    var tr1={};
+    var td1={};
+    tr1=document.createElement('tr');
+    td1=document.createElement('td');
+    td1.setAttribute('class','td2');
+    td1.innerHTML='&nbsp;';
+    tr1.appendChild(td1);
+    for(j=debut;j < i;j=j+1){
+        var td1={};
+        td1=document.createElement('td');
+        if((out[j][1] == 1)){
+            td1.setAttribute('class','td2');
+        }else if((out[j][1] == 3)){
+            td1.setAttribute('class','td5');
+        }else if((out[j][1] == 4)){
+            td1.setAttribute('class','td4');
+        }else{
+            td1.setAttribute('class','td3');
+        }
+        td1.innerHTML=out[j][3];
+        tr1.appendChild(td1);
+        /*finchoix suite du source*/
+    }
+    /*
+    
+    =====================
+    pas de position du backslash
+    =====================
+    */
+    t2.appendChild(tr1);
+}
+/*
+===========================================
+fonction qui produit un tableau html de la
+forme matricielle du programme
+===========================================
+*/
+function ConstruitHtmlMatrice(t1,matriceFonction){
+    /**/
+    var i=0;
+    var j=0;
+    var temp='';
+    var t1={};
+    var r1= new RegExp(' ',g);
+    var r2= new RegExp('\n',g);
+    t1=document.createElement(tr1);
+    for(i=0;i < matriceFonction.value.length;i=i+1){
+        var tr1={};
+        tr1=document.createElement(tr);
+        for(j=0;j < matriceFonction.value[i].length;j=j+1){
+            var td1={};
+            td1=document.createElement(td);
+            if((j == 1)||j == 13){
+                temp=String(matriceFonction.value[i][j]);
+                temp=temp.replace(r1,'░');
+                temp=temp.replace(r2,'¶');
+                td1.style.whiteSpace='pre-wrap';
+                td1.style.verticalAlign='baseline';
+            }else if((j == 4)){
+                /*Constante quotée*/
+                if((matriceFonction.value[i][j] == true)){
+                    td1.innerHTML='1';
+                }else{
+                    td1.innerHTML='';
+                }
+            }else{
+                td1.innerHTML=String(matriceFonction.value[i][j]);
+            }
+            temp=concat(global_enteteTableau[j][1],'(',j,')');
+            td1.setAttribute('title',temp);
+            tr1.appendChild(td1);
+        }
+        t1.appendChild(tr1);
+    }
+}
+/*
+===========================================
 fonction qui transforme un texte en tableau
 ===========================================
 */
@@ -216,23 +482,15 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                if((c1 == '\\')||c1 == '\''){
+                if((c1 == '\\')||c1 == '\''||c1 == 'n'||c1 == 't'||c1 == 'r'){
                     if((texte == '')){
                         premier=i;
                     }
-                    texte=concat(texte,c1);
+                    texte=concat(texte,'\\',c1);
                     i=i+1;
                 }else{
-                    if((c1 == 'n')||c1 == 't'||c1 == 'r'){
-                        if((texte == '')){
-                            premier=i;
-                        }
-                        texte=concat(texte,'\\',c1);
-                        i=i+1;
-                    }else{
-                        temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe'};
-                        return(logerreur(temp));
-                    }
+                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r'};
+                    return(logerreur(temp));
                 }
             }else{
                 if((texte == '')){

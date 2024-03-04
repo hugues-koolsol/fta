@@ -13,32 +13,34 @@
 "use strict";
 
 function espace2(i){
-  var t='';
-  if(i > 0){
-    t=concat(t,'\n',repeat(' ',i));
-  }
-  return(t);
+    var t='';
+    if(i > 0){
+        t=concat(t,'\n',
+            repeat(' ',i)
+        );
+    }
+    return(t);
 }
 function enregistrer2(par1,par2){
-  var a='';
-  var b={};
-  var c=[];
-  var d=true;
-  var e=123.456;
-  var i=0;
-  b=alert('Fake');
-  console.log(b);
-  for(i=0;i < 5;i=i+1){
-    dansFaireRetourneTrue();
-    e=456.789;
-  }
-  if((true)&&(test1()||(true)||test2())&&blabla()){
-    alert('OK1');
-  }else if(!(true == d)){
-    alert('OK2');
-  }else{
-    alert('OK3');
-  }
+    var a='';
+    var b={};
+    var c=[];
+    var d=true;
+    var e=123.456;
+    var i=0;
+    b=alert('Fake');
+    console.log(b);
+    for(i=0;i < 5;i=i+1){
+        dansFaireRetourneTrue();
+        e=456.789;
+    }
+    if((true)&&(test1()||(true)||test2())&&blabla()){
+        alert('OK1');
+    }else if(!(true == d)){
+        alert('OK2');
+    }else{
+        alert('OK3');
+    }
 }
 // = = = = source javascript> = = = =
 
@@ -60,20 +62,20 @@ src_html(
   head(
    meta((charset,utf8)),
    title(a),
-   meta((name,description),(content,'a')),
+   meta((name,description),(content,\'a\')),
   ),
   body(
-   textarea('src_html(
+   textarea(\'src_html(
  (file_name,test),
  (file_extension,html),
  (file_path,.),
  html()
- )'),
-   button(Enregistrer,(onclick,'"enregistrer2()"')),
-   script((type,'text/javascript'),'"use strict";
+ )\'),
+   button(Enregistrer,(onclick,\'"enregistrer2()"\')),
+   script((type,\'text/javascript\'),\'"use strict";
    function enregistrer(){
     alert("Fake");
-   }')
+   }\')
   )
  )
 )

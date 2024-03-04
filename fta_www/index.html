@@ -16,67 +16,8 @@
   </nav>
   <h1>HTML HOME  🌞</h1>
   <ul class="menu2">
-    <li><a href="index.html">html home</a></li>
-    <li><a href="index.php">php home</a></li>
-    <li><a href="index_php.html">index_php.html</a></li>
-    <li><a href="index_js.html">index_js.html</a></li>
-    <li><a href="indexfu.html">indexfu.html</a></li>
-    <li><a href="index_source.html">index_source.html</a></li>
+    <li><a href="javascript:chargerSourceDeTest()">source de test</a></li>
   </ul>
-<!--
-<textarea class="txtar1" id="txtar1" rows="6">#(=)
-a(
-  b( 
- #(//)
-c , d( e(  ) ) ),
-)</textarea>  
--->
-
-<!--
-<textarea class="txtar1" id="txtar1" rows="5">a(
-  //,
-  =========================,
-  b(
-    #(//),
-    c,
-    d(e())
-  )
-)</textarea>
--->
-
-  
-<!--
-<textarea class="txtar1" id="txtar1" rows="5">a(
-  // aa
-  b(
-    'c\'\\d') , e
-)</textarea>  
--->
-
-<!--
-<textarea class="txtar1" id="txtar1" rows="5">a(
-  // =========================
-  b( c , d( e( f(g) ) ) ),
-)</textarea>
--->
-  
-<!--  
-<textarea class="txtar1" id="txtar1" rows="5">a(
-  // 
-  b(c,''),
-  d(e(f))
-)</textarea>
--->
-
-<!--
-<textarea class="txtar1" id="txtar1" rows="4">a(
-  'a,b',
-  // test
-  c
-)</textarea>
--->
-
-
   <textarea class="txtar1" id="txtar1" rows="4">#( début aaaa  debut),
 a(
   #(test , 👍),
@@ -124,6 +65,57 @@ blu),
 <script type="text/javascript">
 
 
+//=====================================================================================================================
+function chargerSourceDeTest(){
+ var t=`#( début aaaa  debut),
+a(
+  #(test , 👍),
+  b(
+    xx(
+      y(
+        #(dedans
+          commentaire bloc
+        ),
+        t,
+        v),
+      #(aa),
+      xx(
+        #(dedans
+          commentaire bloc
+        )),
+      #( bb),
+      5,
+      #(cc
+      )
+    ),
+    #(comment 1),
+    y(
+      ' dd  ',
+      #( bla
+blu),
+      ee,
+      2,
+      #( @ )
+    ),
+    #( comment 2 ),
+    a(b())
+  ),
+  #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
+  &#8203;f&#8203;(&#8203;g&#8203;)&#8203;,
+  #(👍😁💥💪👎☀🌞🟥🟩)
+)`;
+ dogid('txtar1').value=t;
+}
+//=====================================================================================================================
+function chargerLeDernierSource(){
+ var fta_indexhtml_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_dernier_fichier_charge");
+// console.log('fta_indexhtml_dernier_fichier_charge=' , fta_indexhtml_dernier_fichier_charge );
+ if(fta_indexhtml_dernier_fichier_charge!==null){
+  dogid('txtar1').value=fta_indexhtml_dernier_fichier_charge;
+ }
+}
+//=====================================================================================================================
+
 
 function transform(){
   //"àà"
@@ -133,6 +125,9 @@ function transform(){
   document.getElementById('resultat1').innerHTML='';
 
   var a=document.getElementById('txtar1');
+  localStorage.setItem("fta_indexhtml_dernier_fichier_charge", a.value);
+  
+  
   
   var lines = a.value.split(/\r|\r\n|\n/);
   var count = lines.length;
@@ -216,15 +211,16 @@ function transform(){
     ConstruitHtmlMatrice(t1,matriceFonction);
     document.getElementById('resultat1').appendChild(t1);
     
+/*    
     var startMicro=performance.now();
-    var matriceFonction=functionToArray2Old(tableau1.out);
+    var matriceFonction=functionToArray2(tableau1.out);
     var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
     var told1=document.createElement('table');
     told1.setAttribute('class','tableau1');
     
     ConstruitHtmlMatrice(told1,matriceFonction);
     document.getElementById('resultat1').appendChild(told1);
-    
+*/
 //    console.log('\nmatriceFonction='+JSON.stringify(matriceFonction.value))
     
     
@@ -254,7 +250,7 @@ function transform(){
  
 }
 
-
+chargerLeDernierSource();
 transform();
 </script>
   

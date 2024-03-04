@@ -438,9 +438,6 @@ if(lightTest){
  
   arr=functionToArray(casDeTest[i].test);
   console.log(casDeTest[i].test,arr.value,JSON.stringify(arr.value));
-  if(i==casDeTest.length-1){
-   voirTableau(arr.value , 'arrayed');
-  }
   var sourceReconstruitAvecCommentaires=arrayToFunctWidthComment(arr.value);
   if(sourceReconstruitAvecCommentaires.value==casDeTest[i].test){
    console.log('%cYOUPIIIII','color:lime');
@@ -538,7 +535,6 @@ function chargerCeSource(){
  arr=functionToArray(txtSource);
  
  console.log('arr=',arr,txtSource,'\n\n\n'+txtSource.replace(/\n/g,'█').replace(/\r/g,'↵'),'\n\n',JSON.stringify(arr.value));
- voirTableau(arr.value, 'arrayed');
  var sourceReconstruitSansCommentaire=arrayToFunctNoComment(arr.value);
  console.log('OK 1');
  var tabReconstruit=functionToArray(sourceReconstruitSansCommentaire.value);
@@ -782,7 +778,6 @@ function chargerEtExcuter(i,bVoirTableau){
   document.getElementById('tdid_'+i).innerHTML='OK';
  }
  if(bVoirTableau){
-  voirTableau(arr.value, 'arrayed');
   document.getElementById('divMessageTableau').style.background=niveauAvertissementTableau;
   document.getElementById('divMessageSource').style.background=niveauAvertissementSource;
   document.getElementById('divMessageTableau').innerHTML=messageTableau;
