@@ -5,10 +5,291 @@ src_javascript(
    (strict()),
    source(
       #(
-         ===========================================
+         ==================================================================================
+         ==================================================================================
+         ==================================================================================
+         fonction qui reconstitue un texte source à partir du tableau 
+         représentant la matrice du programme
+         ==================================================================================
+         ==================================================================================
+         ==================================================================================
+      ),
+      fonction(
+         definition(
+            nom(a2F1),
+            argument(arr),
+            argument(parentId),
+            argument(retourLigne),
+            argument(debut),
+            argument(coloration)
+         ),
+         contenu(
+            #(
+               ========================================
+               Attention : cette fonction est récursive
+               ========================================
+            ),
+            declare(i , 0),
+            declare(j , 0),
+            declare(t , ''),
+            declare(profondeurLimite , 3),
+            declare(nombreEnfantsLimite , 3),
+            declare(forcerRetourLigne , faux),
+            declare(l01 , 0),
+            affecte(l01 , arr.length),
+            #(
+               =====================================================================
+               boucle principale qui commence à partir de "debut" passé en paramètre
+               =====================================================================
+            ),
+            boucle(
+               initialisation(affecte(i , debut)),
+               condition(inf(i , l01)),
+               increment(affecte(i , i+1)),
+               faire(
+                  #(
+                     on ne traite que les enfants et les éléments 
+                     dont le niveau est supérieur au niveau du parent
+                  ),
+                  choix(
+                     si(
+                        condition((egal(arr[i][7] , parentId))),
+                        alors(
+                           #(On va à la suite du programme)
+                        )
+                     ),
+                     sinonsi(
+                        condition((infeg(arr[i][3] , arr[parentId][3]))),
+                        alors(break())
+                     ),
+                     sinon(
+                        alors(
+                           #(
+                              on va dans la ligne suivante de la matrice 
+                              et on ne fait pas le traitement ci dessous 
+                           ),
+                           continue()
+                        )
+                     )
+                  ),
+                  #(
+                     On doit forcer le retour de ligne quand la
+                     profondeur est trop importante ou bien
+                     qu'il y a trop d'enfants ou bien qu'il
+                     y a des commentaires
+                  ),
+                  choix(
+                     si(
+                        condition((egal(retourLigne , vrai)) , et(sup(arr[parentId][10] , profondeurLimite))),
+                        alors(affecte(forcerRetourLigne , vrai))
+                     ),
+                     sinonsi(
+                        condition(
+                           (egal(retourLigne , vrai)),
+                           et(
+                              #(le type du parent est une fonction ou bien c'est la racine),
+                              (egal(arr[parentId][2] , 'f')),
+                              ou(egal(arr[parentId][2] , 'INIT'))
+                           )
+                        ),
+                        alors(
+                           #(
+                              Si c'est la premier enfant d'une fonction, 
+                              on teste si il existe des enfants de type commentaires
+                           ),
+                           boucle(
+                              initialisation(affecte(j , 0)),
+                              condition((inf(j , l01)) , et(sup(arr[j][3] , arr[parentId][3]))),
+                              increment(affecte(j , j+1)),
+                              faire(
+                                 choix(
+                                    si(
+                                       condition((egal(arr[j][1] , DEBUTCOMMENTAIRE)) , et(egal(arr[j][2] , 'f')) , et(inf(arr[j][3] , arr[parentId][3]+profondeurLimite))),
+                                       alors(
+                                          #(
+                                             il y a un commentaire
+                                             c'est une fonction
+                                             niveau inférieur à celui du parent + profondeur limite
+                                          ),
+                                          affecte(forcerRetourLigne , vrai),
+                                          break()
+                                       )
+                                    )
+                                 )
+                              )
+                           ),
+                           boucle(
+                              initialisation(affecte(j , 0)),
+                              condition((inf(j , l01)) , et(sup(arr[j][3] , arr[parentId][3]))),
+                              increment(affecte(j , j+1)),
+                              faire(
+                                 choix(
+                                    si(
+                                       condition((sup(arr[j][8] , nombreEnfantsLimite))),
+                                       alors(
+                                          #(
+                                             si le nombre d'enfants est supérieur à 3
+                                          ),
+                                          affecte(forcerRetourLigne , vrai),
+                                          break()
+                                       )
+                                    )
+                                 ),
+                                 #(finchoix suite du source),
+                                 affecte(a , 1)
+                              )
+                           ),
+                           #(
+                              ici la variable forcerRetourLigne est éventuellement mise à true 
+                              var condition1=arr[parentId][2]=='f' 
+                              && arr[parentId][8]<=nombreEnfantsLimite 
+                              && arr[parentId][10]<=profondeurLimite;
+                           ),
+                           affecte(
+                              condition1,
+                              condition((egal(arr[parentId][2] , 'f')) , et(infeg(arr[parentId][8] , nombreEnfantsLimite)) , et(infeg(arr[parentId][10] , profondeurLimite)))
+                           ),
+                           choix(
+                              si(
+                                 condition((egal(arr[i][9] , 1))),
+                                 alors(
+                                    #(!forcerRetourLigne && retourLigne==true && condition1),
+                                    choix(
+                                       si(
+                                          condition(non(forcerRetourLigne) , et(egal(retourLigne , true)) , et(condition1)),
+                                          alors(
+                                             affecte(t , appelf(n(concat) , p(t) , p(' , ')))
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             affecte(t , appelf(n(concat) , p(t) , p(',')))
+                                          ),
+                                          #(finsinon)
+                                       )
+                                    )
+                                 )
+                              )
+                           ),
+                           choix(
+                              si(
+                                 condition(
+                                    (((forcerRetourLigne)) , et(egal(arr[parentId][2] , 'INIT')))
+                                 ),
+                                 alors(
+                                    appelf(
+                                       r(t),
+                                       n(concat),
+                                       p(t),
+                                       p(appelf(n(espacesnrev) , p(false) , p(niveau)))
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition((retourLigne)),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition(
+                                             ((egal(arr[parentId][2] , 'INIT')) , et(egal(arr[i][9] , 1))),
+                                             ou(condition1)
+                                          ),
+                                          alors(
+                                             #(on ne fait rien)
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p(appelf(n(espacesnrev) , p(false) , p(niveau)))
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              )
+                           ),
+                           #(#
+   if(arr[i][2]=='c'){
+    if(coloration){
+     if(arr[i][4]===true){ // constante quotée
+      t+='\''+arr[i][1].replace(/&/,'&amp;').replace(/</,'&lt;').replace(/>/,'&gt;')+'\'';
+     }else{
+      t+=arr[i][1].replace(/&/,'&amp;').replace(/</,'&lt;').replace(/>/,'&gt;');
+     }
+    }else{
+     if(arr[i][4]===true){ // constante quotée
+      t+='\''+arr[i][1]+'\'';
+     }else{
+      t+=arr[i][1];
+     }
+    }
+   }
+                              
+                           ),
+                           choix(
+                              si(
+                                 condition((egal(arr[i][2] , 'c'))),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition(((coloration))),
+                                          alors(
+                                             choix(
+                                                si(
+                                                   condition((egal(arr[i][4] , true))),
+                                                   alors(
+                                                      appelf(
+                                                         r(t),
+                                                         n(concat),
+                                                         p('\''),
+                                                         p(appelf(n(strToHtml) , p(arr[i][1]))),
+                                                         p('\'')
+                                                      )
+                                                   )
+                                                ),
+                                                sinon(
+                                                   alors(
+                                                      appelf(
+                                                         r(t),
+                                                         n(concat),
+                                                         p('\''),
+                                                         p(appelf(n(strToHtml) , p(arr[i][1]))),
+                                                         p('\'')
+                                                      )
+                                                   ),
+                                                   #(finsinon)
+                                                )
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            )
+         )
+      ),
+      #(
+         
+         
+         
+         
+         ==========================================
+         ==========================================
+         ==========================================
          fonction qui produit un tableau html de la
          des caractères du source du programme
-         ===========================================
+         ==========================================
+         ==========================================
+         ==========================================
       ),
       fonction(
          definition(
@@ -18,12 +299,11 @@ src_javascript(
             argument(objTableau)
          ),
          contenu(
-            declare(tr1 , obj()),
-            declare(td1 , obj()),
             declare(numeroLigne , 0),
             declare(debut , 0),
             declare(i , 0),
             declare(j , 0),
+            declare(l01 , 0),
             declare(tmps , ''),
             declare(out , appelf(n(Array))),
             appelf(
@@ -32,8 +312,6 @@ src_javascript(
                p('class'),
                p('tableau2')
             ),
-            appelf(element(tr1) , n(document.createElement) , p('tr')),
-            appelf(element(td1) , n(document.createElement) , p('td')),
             choix(
                si(
                   condition((egalstricte(objTableau , null))),
@@ -46,13 +324,24 @@ src_javascript(
                ),
                sinon(alors(affecte(out , objTableau.out)))
             ),
+            #(
+               première case du tableau = numéro de ligne
+            ),
+            declare(tr1 , obj()),
+            declare(td1 , obj()),
+            appelf(r(tr1) , n(document.createElement) , p('tr')),
+            appelf(r(td1) , n(document.createElement) , p('td')),
+            affecte(td1.innerHTML , numeroLigne),
+            appelf(element(tr1) , n(appendChild) , p(td1)),
+            #(boucle principale),
+            affecte(l01 , out.length),
             boucle(
                initialisation(affecte(i , 0)),
-               condition(inf(i , out.length)),
+               condition(inf(i , l01)),
                increment(affecte(i , i+1)),
                faire(
-                  declare(tr1 , obj()),
-                  appelf(element(tr1) , n(document.createElement) , p('td')),
+                  declare(td1 , obj()),
+                  appelf(r(td1) , n(document.createElement) , p('td')),
                   appelf(
                      r(td1.innerHTML),
                      element(out[i][0]),
@@ -76,16 +365,16 @@ src_javascript(
                      p(')')
                   ),
                   appelf(element(tr1) , n(appendChild) , p(td1)),
+                  #(
+                     ============================================
+                     Si on a un retour chariot, on écrit les 
+                     cases contenant les positions des caractères
+                     ============================================
+                  ),
                   choix(
                      si(
                         condition((egal(out[i][0] , '\n'))),
                         alors(
-                           #(
-                              ============================================
-                              Si on a un retour chariot, on écrit les 
-                              cases contenant les positions des caractères
-                              ============================================
-                           ),
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
                               
@@ -168,6 +457,7 @@ src_javascript(
                               position du backslash
                               =====================
                            ),
+                           declare(td1 , obj()),
                            appelf(r(td1) , n(document.createElement) , p('td')),
                            appelf(
                               element(td1),
@@ -180,9 +470,10 @@ src_javascript(
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
                               
-                              =====================================================
+                              ========================================================
                               position dans la chaine = deuxième ligne des chiffres
-                              =====================================================
+                              car certains caractères utf8 sont codées sur 2 positions
+                              ========================================================
                            ),
                            declare(tr1 , obj()),
                            declare(td1 , obj()),
@@ -258,6 +549,7 @@ src_javascript(
                               position du backslash
                               =====================
                            ),
+                           declare(td1 , obj()),
                            appelf(r(td1) , n(document.createElement) , p('td')),
                            appelf(
                               element(td1),
@@ -282,6 +574,7 @@ src_javascript(
                            appelf(r(tr1) , n(document.createElement) , p('tr')),
                            appelf(r(td1) , n(document.createElement) , p('td')),
                            affecte(td1.innerHTML , numeroLigne),
+                           appelf(element(tr1) , n(appendChild) , p(td1)),
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
                               ============================================
@@ -375,15 +668,13 @@ src_javascript(
                   #(finchoix suite du source)
                )
             ),
+            appelf(element(t2) , n(appendChild) , p(tr1)),
             #(
-               
                =====================
                pas de position du backslash
                =====================
             ),
-            appelf(element(t2) , n(appendChild) , p(tr1)),
             #(
-               
                =====================================================
                position dans la chaine = deuxième ligne des chiffres
                =====================================================
@@ -458,20 +749,19 @@ src_javascript(
                   #(finchoix suite du source)
                )
             ),
-            #(
-               
-               =====================
-               pas de position du backslash
-               =====================
-            ),
+            #(et enfin, on ajoute la dernière ligne),
             appelf(element(t2) , n(appendChild) , p(tr1))
          )
       ),
       #(
-         ===========================================
+         ==========================================
+         ==========================================
+         ==========================================
          fonction qui produit un tableau html de la
          forme matricielle du programme
-         ===========================================
+         ==========================================
+         ==========================================
+         ==========================================
       ),
       fonction(
          definition(nom(ConstruitHtmlMatrice) , argument(t1) , argument(matriceFonction)),
@@ -479,35 +769,79 @@ src_javascript(
             #(),
             declare(i , 0),
             declare(j , 0),
+            declare(l01 , 0),
             declare(temp , ''),
-            declare(t1 , obj()),
+            declare(tr1 , obj()),
+            declare(td1 , obj()),
             declare(
                r1,
-               new(appelf(n(RegExp) , p(' ') , p(g)))
+               new(appelf(n(RegExp) , p(' ') , p('g')))
             ),
             declare(
                r2,
-               new(appelf(n(RegExp) , p('\n') , p(g)))
+               new(appelf(n(RegExp) , p('\n') , p('g')))
             ),
-            affecte(t1 , appelf(n(document.createElement) , p(tr1))),
+            appelf(r(tr1) , n(document.createElement) , p('tr')),
+            #(
+               =================
+               entête du tableau
+               =================
+            ),
+            affecte(l01 , global_enteteTableau.length),
             boucle(
                initialisation(affecte(i , 0)),
-               condition(inf(i , matriceFonction.value.length)),
+               condition(inf(i , l01)),
+               increment(affecte(i , i+1)),
+               faire(
+                  declare(td1 , obj()),
+                  appelf(r(td1) , n(document.createElement) , p('td')),
+                  affecte(td1.innerHTML , appelf(n(concat) , p(i) , p(global_enteteTableau[i][0]))),
+                  #(#                  td1.setAttribute('title',global_enteteTableau[i][1] + '(' + i + ')');),
+                  appelf(
+                     element(td1),
+                     n(setAttribute),
+                     p('title'),
+                     p(
+                        appelf(
+                           n(concat),
+                           p(global_enteteTableau[i][1]),
+                           p('('),
+                           p(i),
+                           p(')')
+                        )
+                     )
+                  ),
+                  appelf(element(tr1) , n(appendChild) , p(td1))
+               )
+            ),
+            appelf(element(t1) , n(appendChild) , p(tr1)),
+            #(
+               
+               
+               ===================
+               éléments du tableau
+               ===================
+            ),
+            affecte(l01 , matriceFonction.value.length),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , l01)),
                increment(affecte(i , i+1)),
                faire(
                   declare(tr1 , obj()),
-                  affecte(tr1 , appelf(n(document.createElement) , p(tr))),
+                  appelf(r(tr1) , n(document.createElement) , p('tr')),
                   boucle(
                      initialisation(affecte(j , 0)),
                      condition(inf(j , matriceFonction.value[i].length)),
                      increment(affecte(j , j+1)),
                      faire(
                         declare(td1 , obj()),
-                        affecte(td1 , appelf(n(document.createElement) , p(td))),
+                        appelf(r(td1) , n(document.createElement) , p('td')),
                         choix(
                            si(
                               condition((egal(j , 1)) , ou(egal(j , 13))),
                               alors(
+                                 #(Pour la valeur ou les commentaires),
                                  affecte(temp , appelf(n(String) , p(matriceFonction.value[i][j]))),
                                  affecte(
                                     temp,
@@ -527,6 +861,7 @@ src_javascript(
                                        p('¶')
                                     )
                                  ),
+                                 affecte(td1.innerHTML , temp),
                                  affecte(td1.style.whiteSpace , 'pre-wrap'),
                                  affecte(td1.style.verticalAlign , 'baseline')
                               )
@@ -534,7 +869,7 @@ src_javascript(
                            sinonsi(
                               condition((egal(j , 4))),
                               alors(
-                                 #(Constante quotée),
+                                 #(si la Constante est quotée),
                                  choix(
                                     si(
                                        condition((egal(matriceFonction.value[i][j] , true))),
@@ -576,7 +911,11 @@ src_javascript(
       ),
       #(
          ===========================================
+         ===========================================
+         ===========================================
          fonction qui transforme un texte en tableau
+         ===========================================
+         ===========================================
          ===========================================
       ),
       fonction(
@@ -588,7 +927,6 @@ src_javascript(
                new(appelf(n(TextEncoder)))
             ),
             declare(i , 0),
-            declare(bytes , 0),
             declare(length , 0),
             declare(numLigne , 0),
             declare(position , 0),
@@ -628,7 +966,7 @@ src_javascript(
                                  appelf(
                                     n(Array),
                                     p(arr[i]),
-                                    p(bytes),
+                                    p(longueurBytes),
                                     p(position),
                                     p(position2),
                                     p(numLigne)
@@ -641,15 +979,14 @@ src_javascript(
                                  alors(affecte(numLigne , numLigne+1))
                               )
                            ),
-                           affecte(position , position+bytes),
+                           affecte(position , position+longueurBytes),
                            affecte(position2 , position2+1),
                            choix(
                               si(
-                                 condition((egal(bytes , 4))),
+                                 condition((egal(longueurBytes , 4))),
                                  alors(affecte(position2 , position2+1))
                               )
-                           ),
-                           affecte(position , position+bytes)
+                           )
                         )
                      )
                   )
@@ -669,8 +1006,12 @@ src_javascript(
       ),
       #(
          ==================================================
+         ==================================================
+         ==================================================
          tableau retourné par l'analyse syntaxique 
          du texte en entrée de la fonction functionToArray2
+         ==================================================
+         ==================================================
          ==================================================
       ),
       declare(
@@ -697,9 +1038,7 @@ src_javascript(
          ===================================================
          ===================================================
          ===================================================
-         ===================================================
          fonction d'analyse syntaxique d'un programme source
-         ===================================================
          ===================================================
          ===================================================
          ===================================================

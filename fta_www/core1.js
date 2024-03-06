@@ -1,22 +1,183 @@
 
 /*
-===========================================
+==================================================================================
+==================================================================================
+==================================================================================
+fonction qui reconstitue un texte source à partir du tableau 
+représentant la matrice du programme
+==================================================================================
+==================================================================================
+==================================================================================
+*/
+function a2F1(arr,parentId,retourLigne,debut,coloration){
+    /*
+    ========================================
+    Attention : cette fonction est récursive
+    ========================================
+    */
+    var i=0;
+    var j=0;
+    var t='';
+    var profondeurLimite=3;
+    var nombreEnfantsLimite=3;
+    var forcerRetourLigne=false;
+    var l01=0;
+    l01=arr.length;
+    /*
+    =====================================================================
+    boucle principale qui commence à partir de "debut" passé en paramètre
+    =====================================================================
+    */
+    for(i=debut;i < l01;i=i+1){
+        /*
+        on ne traite que les enfants et les éléments 
+        dont le niveau est supérieur au niveau du parent
+        */
+        if((arr[i][7] == parentId)){
+            /*On va à la suite du programme*/
+        }else if((arr[i][3] <= arr[parentId][3])){
+            break;
+        }else{
+            /*
+            on va dans la ligne suivante de la matrice 
+            et on ne fait pas le traitement ci dessous 
+            */
+            continue;
+        }
+        /*
+        On doit forcer le retour de ligne quand la
+        profondeur est trop importante ou bien
+        qu'il y a trop d'enfants ou bien qu'il
+        y a des commentaires
+        */
+        if((retourLigne == true)&&arr[parentId][10] > profondeurLimite){
+            forcerRetourLigne=true;
+        }else if((retourLigne == true)&&/*le type du parent est une fonction ou bien c'est la racine*/(arr[parentId][2] == 'f')||arr[parentId][2] == 'INIT'){
+            /*
+            Si c'est la premier enfant d'une fonction, 
+            on teste si il existe des enfants de type commentaires
+            */
+            for(j=0;(j < l01)&&arr[j][3] > arr[parentId][3];j=j+1){
+                if((arr[j][1] == DEBUTCOMMENTAIRE)&&arr[j][2] == 'f'&&arr[j][3] < arr[parentId][3]+profondeurLimite){
+                    /*
+                    il y a un commentaire
+                    c'est une fonction
+                    niveau inférieur à celui du parent + profondeur limite
+                    */
+                    forcerRetourLigne=true;
+                    break;
+                }
+            }
+            for(j=0;(j < l01)&&arr[j][3] > arr[parentId][3];j=j+1){
+                if((arr[j][8] > nombreEnfantsLimite)){
+                    /*
+                    si le nombre d'enfants est supérieur à 3
+                    */
+                    forcerRetourLigne=true;
+                    break;
+                }
+                /*finchoix suite du source*/
+                a=1;
+            }
+            /*
+            ici la variable forcerRetourLigne est éventuellement mise à true 
+            var condition1=arr[parentId][2]=='f' 
+            && arr[parentId][8]<=nombreEnfantsLimite 
+            && arr[parentId][10]<=profondeurLimite;
+            */
+            condition1=(arr[parentId][2] == 'f')&&arr[parentId][8] <= nombreEnfantsLimite&&arr[parentId][10] <= profondeurLimite;
+            if((arr[i][9] == 1)){
+                /*!forcerRetourLigne && retourLigne==true && condition1*/
+                if(!(forcerRetourLigne)&&retourLigne == true&&condition1){
+                    t=concat(t,' , ');
+                }else{
+                    t=concat(t,',');
+                }
+            }
+            if((((forcerRetourLigne))&&arr[parentId][2] == 'INIT')){
+                t=concat(t,
+                    espacesnrev(false,niveau)
+                );
+            }else if((retourLigne)){
+                if(((arr[parentId][2] == 'INIT')&&arr[i][9] == 1)||condition1){
+                    /*on ne fait rien*/
+                }else{
+                    t=concat(t,
+                        espacesnrev(false,niveau)
+                    );
+                }
+            }
+            /*#
+if(arr[i][2]=='c'){
+ if(coloration){
+  if(arr[i][4]===true){ // constante quotée
+   t+='\''+arr[i][1].replace(/&/,'&amp;').replace(/</,'&lt;').replace(/>/,'&gt;')+'\'';
+  }else{
+   t+=arr[i][1].replace(/&/,'&amp;').replace(/</,'&lt;').replace(/>/,'&gt;');
+  }
+ }else{
+  if(arr[i][4]===true){ // constante quotée
+   t+='\''+arr[i][1]+'\'';
+  }else{
+   t+=arr[i][1];
+  }
+ }
+}
+                           
+                        */
+            if((arr[i][2] == 'c')){
+                if(((coloration))){
+                    if((arr[i][4] == true)){
+                        t=concat('\'',
+                            strToHtml(arr[i][1]),'\''
+                        );
+                    }else{
+                        t=concat(
+                            strToHtml(arr[i][1])
+                        );
+                    }
+                }else{
+                    if((arr[i][4] == true)){
+                        t=concat('\'',arr[i][1],'\'');
+                    }else{
+                        t=concat(arr[i][1]);
+                    }
+                }
+            }else if((arr[i][2] == 'f')){
+                if(((arr[i][1] == DEBUTCOMMENTAIRE))){
+                    a=1;
+                }else{
+                    a=1;
+                }
+                /*finchoix suite du source*/
+                /**/
+            }
+        }
+    }
+}
+/*
+
+
+
+
+==========================================
+==========================================
+==========================================
 fonction qui produit un tableau html de la
 des caractères du source du programme
-===========================================
+==========================================
+==========================================
+==========================================
 */
 function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
-    var tr1={};
-    var td1={};
     var numeroLigne=0;
     var debut=0;
     var i=0;
     var j=0;
+    var l01=0;
     var tmps='';
     var out= Array();
     t2.setAttribute('class','tableau2');
-    tr1.document.createElement('tr');
-    td1.document.createElement('td');
     if((objTableau === null)){
         /*On construit le tableau à partir du texte source*/
         var outo={};
@@ -25,20 +186,31 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     }else{
         out=objTableau.out;
     }
-    for(i=0;i < out.length;i=i+1){
-        var tr1={};
-        tr1.document.createElement('td');
+    /*
+    première case du tableau = numéro de ligne
+    */
+    var tr1={};
+    var td1={};
+    tr1=document.createElement('tr');
+    td1=document.createElement('td');
+    td1.innerHTML=numeroLigne;
+    tr1.appendChild(td1);
+    /*boucle principale*/
+    l01=out.length;
+    for(i=0;i < l01;i=i+1){
+        var td1={};
+        td1=document.createElement('td');
         td1.innerHTML=out[i][0].replace('\n','\\n');
         tmps=out[i][0].codePointAt(0);
         td1.title=concat('&amp;#',tmps,'; (',out[i][1],')');
         tr1.appendChild(td1);
+        /*
+        ============================================
+        Si on a un retour chariot, on écrit les 
+        cases contenant les positions des caractères
+        ============================================
+        */
         if((out[i][0] == '\n')){
-            /*
-            ============================================
-            Si on a un retour chariot, on écrit les 
-            cases contenant les positions des caractères
-            ============================================
-            */
             t2.appendChild(tr1);
             /*
             
@@ -75,6 +247,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             position du backslash
             =====================
             */
+            var td1={};
             td1=document.createElement('td');
             td1.setAttribute('class','td2');
             td1.innerHTML=j;
@@ -82,9 +255,10 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             t2.appendChild(tr1);
             /*
             
-            =====================================================
+            ========================================================
             position dans la chaine = deuxième ligne des chiffres
-            =====================================================
+            car certains caractères utf8 sont codées sur 2 positions
+            ========================================================
             */
             var tr1={};
             var td1={};
@@ -114,6 +288,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             position du backslash
             =====================
             */
+            var td1={};
             td1=document.createElement('td');
             td1.setAttribute('class','td2');
             td1.innerHTML=out[j][3];
@@ -133,6 +308,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             tr1=document.createElement('tr');
             td1=document.createElement('td');
             td1.innerHTML=numeroLigne;
+            tr1.appendChild(td1);
             t2.appendChild(tr1);
             /*
             ============================================
@@ -177,15 +353,13 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
         tr1.appendChild(td1);
         /*finchoix suite du source*/
     }
+    t2.appendChild(tr1);
     /*
-    
     =====================
     pas de position du backslash
     =====================
     */
-    t2.appendChild(tr1);
     /*
-    
     =====================================================
     position dans la chaine = deuxième ligne des chiffres
     =====================================================
@@ -213,43 +387,71 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
         tr1.appendChild(td1);
         /*finchoix suite du source*/
     }
-    /*
-    
-    =====================
-    pas de position du backslash
-    =====================
-    */
+    /*et enfin, on ajoute la dernière ligne*/
     t2.appendChild(tr1);
 }
 /*
-===========================================
+==========================================
+==========================================
+==========================================
 fonction qui produit un tableau html de la
 forme matricielle du programme
-===========================================
+==========================================
+==========================================
+==========================================
 */
 function ConstruitHtmlMatrice(t1,matriceFonction){
     /**/
     var i=0;
     var j=0;
+    var l01=0;
     var temp='';
-    var t1={};
-    var r1= new RegExp(' ',g);
-    var r2= new RegExp('\n',g);
-    t1=document.createElement(tr1);
-    for(i=0;i < matriceFonction.value.length;i=i+1){
+    var tr1={};
+    var td1={};
+    var r1= new RegExp(' ','g');
+    var r2= new RegExp('\n','g');
+    tr1=document.createElement('tr');
+    /*
+    =================
+    entête du tableau
+    =================
+    */
+    l01=global_enteteTableau.length;
+    for(i=0;i < l01;i=i+1){
+        var td1={};
+        td1=document.createElement('td');
+        td1.innerHTML=concat(i,global_enteteTableau[i][0]);
+        /*#                  td1.setAttribute('title',global_enteteTableau[i][1] + '(' + i + ')');*/
+        td1.setAttribute('title',
+            concat(global_enteteTableau[i][1],'(',i,')')
+        );
+        tr1.appendChild(td1);
+    }
+    t1.appendChild(tr1);
+    /*
+    
+    
+    ===================
+    éléments du tableau
+    ===================
+    */
+    l01=matriceFonction.value.length;
+    for(i=0;i < l01;i=i+1){
         var tr1={};
-        tr1=document.createElement(tr);
+        tr1=document.createElement('tr');
         for(j=0;j < matriceFonction.value[i].length;j=j+1){
             var td1={};
-            td1=document.createElement(td);
+            td1=document.createElement('td');
             if((j == 1)||j == 13){
+                /*Pour la valeur ou les commentaires*/
                 temp=String(matriceFonction.value[i][j]);
                 temp=temp.replace(r1,'░');
                 temp=temp.replace(r2,'¶');
+                td1.innerHTML=temp;
                 td1.style.whiteSpace='pre-wrap';
                 td1.style.verticalAlign='baseline';
             }else if((j == 4)){
-                /*Constante quotée*/
+                /*si la Constante est quotée*/
                 if((matriceFonction.value[i][j] == true)){
                     td1.innerHTML='1';
                 }else{
@@ -267,14 +469,17 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
 }
 /*
 ===========================================
+===========================================
+===========================================
 fonction qui transforme un texte en tableau
+===========================================
+===========================================
 ===========================================
 */
 function iterateCharacters(str){
     var out= Array();
     var te= new TextEncoder();
     var i=0;
-    var bytes=0;
     var length=0;
     var numLigne=0;
     var position=0;
@@ -291,17 +496,16 @@ function iterateCharacters(str){
             tableauBytes=te.encode(arr[i]);
             longueurBytes=tableauBytes.length;
             out.push(
-                Array(arr[i],bytes,position,position2,numLigne)
+                Array(arr[i],longueurBytes,position,position2,numLigne)
             );
             if((arr[i] == '\n')){
                 numLigne=numLigne+1;
             }
-            position=position+bytes;
+            position=position+longueurBytes;
             position2=position2+1;
-            if((bytes == 4)){
+            if((longueurBytes == 4)){
                 position2=position2+1;
             }
-            position=position+bytes;
         }
     }
     retour={'out':out,'position':position,'position2':position2,'numLigne':numLigne};
@@ -309,8 +513,12 @@ function iterateCharacters(str){
 }
 /*
 ==================================================
+==================================================
+==================================================
 tableau retourné par l'analyse syntaxique 
 du texte en entrée de la fonction functionToArray2
+==================================================
+==================================================
 ==================================================
 */
 var global_enteteTableau= Array(
@@ -333,9 +541,7 @@ var global_enteteTableau= Array(
 ===================================================
 ===================================================
 ===================================================
-===================================================
 fonction d'analyse syntaxique d'un programme source
-===================================================
 ===================================================
 ===================================================
 ===================================================

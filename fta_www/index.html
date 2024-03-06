@@ -18,46 +18,7 @@
   <ul class="menu2">
     <li><a href="javascript:chargerSourceDeTest()">source de test</a></li>
   </ul>
-  <textarea class="txtar1" id="txtar1" rows="4">#( début aaaa  debut),
-a(
-  #(test , 👍),
-  b(
-    xx(
-      y(
-        #(dedans
-          commentaire bloc
-        ),
-        t,
-        v),
-      #(aa),
-      xx(
-        #(dedans
-          commentaire bloc
-        )),
-      #( bb),
-      5,
-      #(cc
-      )
-    ),
-    #(comment 1),
-    y(
-      ' dd  ',
-      #( bla
-blu),
-      ee,
-      2,
-      #( @ )
-    ),
-    #( comment 2 ),
-    a(b())
-  ),
-  #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
-  &#8203;f&#8203;(&#8203;g&#8203;)&#8203;,
-  #(👍😁💥💪👎☀🌞🟥🟩)
-)</textarea>
-
-
-
+  <textarea class="txtar1" id="txtar1" rows="4"></textarea>
   <a href="javascript:transform()">transform</a>
   <div id="message1"></div>
   <div id="resultat1"></div>
@@ -90,7 +51,7 @@ a(
     ),
     #(comment 1),
     y(
-      ' dd  ',
+      ' dd&nbsp;',
       #( bla
 blu),
       ee,
@@ -101,7 +62,7 @@ blu),
     a(b())
   ),
   #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
-  &#8203;f&#8203;(&#8203;g&#8203;)&#8203;,
+  ​f(​g​)​,
   #(👍😁💥💪👎☀🌞🟥🟩)
 )`;
  dogid('txtar1').value=t;

@@ -5,6 +5,11 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      affecte(
+         variable,
+         condition((egal(1 , 1)))
+      ),
+      #(#
       affecte(apresAppelF , 1),
       #(
          ===============
@@ -100,5 +105,6 @@ src_javascript(
       #(commentaire 13),
       affecte(a , 1),
       #(commentaire 14)
+      )
    )
 )

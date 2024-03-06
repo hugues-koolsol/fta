@@ -17,6 +17,8 @@ src_html(
          body(
             hr(),
             table(
+               tr(td(00) , td('mettre le menu dans une zone fixed')),
+               tr(td(00) , td('enlever une parenthèse à la fin de la définition d\'une fonction javascript')),
                tr(td((style , 'color:red;') , 99) , td('mettre les source produit dans un textarea')),
                tr(td(00) , td('mettre un php dans un html')),
                tr(td(00) , td('mettre un php dans un html')),

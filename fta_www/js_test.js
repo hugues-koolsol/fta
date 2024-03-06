@@ -1,59 +1,99 @@
 
-apresAppelF=1;
-/*
-===============
-début de boucle
-===============
+variable=(1 == 1);
+/*#
+affecte(apresAppelF , 1),
+#(
+   ===============
+   début de boucle
+   ===============
+),
+boucle(
+   #(comm 20 boucle),
+   initialisation(affecte(i , 0)),
+   condition(inf(i , tab.length)),
+   increment(affecte(i , i+1)),
+   faire(
+      affecte(a , 1),
+      #(arrêter le traitement),
+      break(),
+      appelf(
+         n(nomFonction),
+         r(variableDeRetour),
+         p(parametre1),
+         p(parametre2)
+      ),
+      revenir(appelf(n(logerror) , p(variableDeRetour)))
+   )
+),
+#(
+   ===========================
+   fin boucle, suite du source
+   ===========================
+),
+#(
+   =============
+   comm 10 if OK
+   =============
+),
+#(commentaire 11),
+choix(
+   #(
+      =============
+      comm 20 if OK
+      =============
+   ),
+   si(
+      #(commentaire 30 OK),
+      condition(
+         #(
+            =============
+            comm 40 if OK
+            =============
+         ),
+         non(
+            #(commentaire 50 OK),
+            (
+               #(commentaire 60 OK),
+               egal(vrai , vrai)
+            ),
+            #(commentaire 51 OK),
+            et(
+               #(commentaire 61 OK),
+               egal(vrai , vrai)
+            )
+         ),
+         #(
+            =================
+            commentaire 41 OK
+            =================
+         ),
+         ou(egal(faux , vrai))
+      ),
+      alors(affecte(a , 1))
+   ),
+   #(
+      =================
+      commentaire 21 OK
+      =================
+   ),
+   sinonsi(
+      #(commentaire 31 OK),
+      condition(
+         #(commentaire 32 OK),
+         egal(true , faux)
+      ),
+      alors(affecte(a , 1))
+   ),
+   #(commentaire 22 OK),
+   sinon(
+      alors(affecte(a , 1)),
+      #(finsinon)
+   ),
+   #(commentaire 23 OK)
+),
+#(commentaire 12),
+affecte(apresChoix , 1),
+#(commentaire 13),
+affecte(a , 1),
+#(commentaire 14)
 */
-for(i=0;i < tab.length;i=i+1){
-    a=1;
-    /*arrêter le traitement*/
-    break;
-    variableDeRetour=nomFonction(parametre1,parametre2);
-    return(logerror(variableDeRetour));
-}
-/*
-===========================
-fin boucle, suite du source
-===========================
-*/
-/*
-=============
-comm 10 if OK
-=============
-*/
-/*commentaire 11*/
-    /*
-    =============
-    comm 20 if OK
-    =============
-    *//*commentaire 30 OK*/
-if(
-    /*
-    =============
-    comm 40 if OK
-    =============
-    */
-    !(/*commentaire 50 OK*/(/*commentaire 60 OK*/true == true)/*commentaire 51 OK*/&&/*commentaire 61 OK*/true == true)
-    /*
-    =================
-    commentaire 41 OK
-    =================
-    */
-    ||false == true){
-    a=1;
-        /*
-        =================
-        commentaire 21 OK
-        =================
-        *//*commentaire 31 OK*/
-}else if(/*commentaire 32 OK*/true == false){
-    a=1;/*commentaire 22 OK*/
-}else{
-    a=1;
-}/*commentaire 23 OK*/
-/*commentaire 12*/
-apresChoix=1;
-/*commentaire 13*/
-a=1;
-/*commentaire 14*/

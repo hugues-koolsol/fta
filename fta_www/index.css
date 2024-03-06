@@ -32,6 +32,10 @@ hr{
  margin:5px;
  border:1px grey solid;
 }
+nav{
+ background: white;
+ border: 1px red outset; 
+}
 #loginbox{
  max-width: 300px;
  margin: auto; 

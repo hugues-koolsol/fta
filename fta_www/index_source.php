@@ -4,17 +4,15 @@ require_once('aa_include.php');
 session_start();
 start_session_messages();
 $o1='';
-$a=array('title' => 'index source','description' => 'index source' );
+$a=array('title' => 'index source','description' => 'index source' , 'opt' => array('bodyPaddingTop'=>48));
 $o1=html_header1($a);
 $o1.='<style>';
 $o1.='#arrayed td{max-width:150px;overflow-x:auto;}';
 $o1.='</style>';
 print($o1);$o1='';
+
 ?>
-   <table>
-     <tr>
-       <td></td>
-       <td colspan="2">
+<nav style="position: fixed;top: 24px;left: 0;">
         <button onclick="enregistrer2()">Enregistrer</button>
         <a href="javascript:insertSource('choix');">Choix</a>
         <a href="javascript:insertSource('boucle');">Boucle</a>
@@ -23,9 +21,10 @@ print($o1);$o1='';
         <a href="javascript:parentheses();" title="repérer la parenthèse fermante correspondante">(|...)</a>
         <a href="javascript:decaler('droite');">(|&gt;&gt;&gt;</a>
         <a href="javascript:mettreEnCommentaire();">#()</a>
-        <input type="text" id="nomDuSource" disabled="true" style="" />
+        <input type="text" id="nomDuSource" disabled="true" style="max-width: 150px;" />
         <button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" data-fichiertexte="" >sauvegarder le texte normalise</button>         
-       </td>
+</nav>
+   <table>
      <tr>
        <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;">
          <button onclick="charger('source1.txt')" title="source1.txt">test.html</button>
@@ -915,7 +914,8 @@ function analyseKeyUp(e){
   }else{
 //   console.log('%cRaaaah','color:red');
   }
- }else if(e.keyCode==86 && e.ctrlKey==true ){
+  zoneSource.scrollTo({left: 0, behavior: "smooth"});
+ }else if(e.keyCode==86 && e.ctrlKey==true ){ // crtl v
    // ctrl v
    var zoneSource=document.getElementById('zonesource');
 //   console.log('zoneSource=',zoneSource , zoneSource.scrollTop);

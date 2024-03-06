@@ -7,6 +7,19 @@ src_javascript(
       declare(globale_LangueCourante , 'fr'),
       fonction(
          definition(
+            nom(test),
+            argument(nomFichier),
+            argument(nomZone),
+            #(
+               ===============================================================
+               Appel de la fonction "fntSiOk" si l'appel ajax est OK
+            ),
+            argument(fntSiOk)
+         ),
+         contenu()
+      ),
+      fonction(
+         definition(
             nom(chargerFichierSource),
             argument(nomFichier),
             argument(nomZone),
@@ -17,6 +30,7 @@ src_javascript(
             argument(fntSiOk)
          ),
          contenu(
+            #(#
             #(
                ==============================================================
                Déclaration d'un appel ajax
@@ -75,7 +89,9 @@ src_javascript(
                            si(
                               condition((egal(jsonRet.status , 'OK'))),
                               alors(
-                                 appelf(n(fntSiOk) , obj((status , true) , (value , jsonRet.value) , (nomZone , nomZone))),
+                                 declare(ret , obj()),
+                                 affecte(ret , obj((status , true) , (value , jsonRet.value) , (nomZone , nomZone))),
+                                 appelf(n(fntSiOk) , p(ret)),
                                  revenir()
                               )
                            ),
@@ -155,6 +171,7 @@ src_javascript(
                envoie des données en POST
             ),
             appelf(n(r.send) , p(chaineAppelAjax))
+            )
          )
       )
    ),
