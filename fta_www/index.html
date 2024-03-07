@@ -24,8 +24,6 @@
   <div id="resultat1"></div>
   <script type="text/javascript" src="js/core4.js"></script>
 <script type="text/javascript">
-
-
 //=====================================================================================================================
 function chargerSourceDeTest(){
  var t=`#( début aaaa  debut),
@@ -81,7 +79,7 @@ function chargerLeDernierSource(){
 function transform(){
   //"àà"
 
-
+  console.log('\n=========================\ndébut de transforme')
   document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
 
@@ -97,36 +95,57 @@ function transform(){
   
   
   var startMicro=performance.now();
+  var tableau1=iterateCharacters2(a.value);
+  var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+  console.log(a.value.substr(4,1),a.value.length)
+/*
+  var startMicro=performance.now();
   var tableau1=iterateCharacters(a.value);
   var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+*/  
+/*
+  if(tableau2.length==tableau1.length){
+   var dif=false;
+   console.log('👍 longueur tableaux Egaux');
+   for(var i=0;i < tableau1.length ; i++){
+    if(tableau2[i][0]!==tableau1[i][0]){
+     console.error('\ntableau2['+i+']=',JSON.stringify(tableau2[i][0]),'\ntableau2['+i+']=',JSON.stringify(tableau2[i][0]));
+     return;
+    }
+   }
+  }
+*/
  
 //  console.log('tableau1.out=',tableau1.out);
   
   var startMicro=performance.now();
-  var matriceFonction=functionToArray2(tableau1.out);
+  var matriceFonction1=functionToArray2(tableau1.out);
   var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
-  console.log(matriceFonction);
+
+//  console.log(matriceFonction1);
+//  console.log(JSON.stringify(matriceFonction1.value));
+  
 
   document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
 
 
-  if(matriceFonction.status===true){
+  if(matriceFonction1.status===true){
   
   
     var parent=document.getElementById('resultat1');
     
 
     var startMicro=performance.now();
-    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.value,true,false);
+    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.value,true,false);
     var diResultatsCompactes=document.createElement('pre');
     
     if(fonctionReecriteAvecRetour1.status===true){
     
-     var compacteOriginal=arrayToFunct1(matriceFonction.value,false,false);
+     var compacteOriginal=arrayToFunct1(matriceFonction1.value,false,false);
      
      
-     var tableau2=iterateCharacters(fonctionReecriteAvecRetour1.value);
+     var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
      var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out);
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      
@@ -151,7 +170,7 @@ function transform(){
     
     
     
-    var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction.value,true,true);
+    var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.value,true,true);
     var difonctionReecriteAvecRetour1=document.createElement('pre');
     if(fonctionReecriteAvecEtColoration1.status===true){
      difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr />'+fonctionReecriteAvecEtColoration1.value;
@@ -168,21 +187,26 @@ function transform(){
     
     var t1=document.createElement('table');
     t1.setAttribute('class','tableau1');
-    
-    ConstruitHtmlMatrice(t1,matriceFonction);
+    ConstruitHtmlMatrice(t1,matriceFonction1);
     document.getElementById('resultat1').appendChild(t1);
+/*    
+    var t1=document.createElement('table');
+    t1.setAttribute('class','tableau1');
+    ConstruitHtmlMatrice(t1,matriceFonction2);
+    document.getElementById('resultat1').appendChild(t1);
+*/    
     
 /*    
     var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.out);
+    var matriceFonction1=functionToArray2(tableau1.out);
     var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
     var told1=document.createElement('table');
     told1.setAttribute('class','tableau1');
     
-    ConstruitHtmlMatrice(told1,matriceFonction);
+    ConstruitHtmlMatrice(told1,matriceFonction1);
     document.getElementById('resultat1').appendChild(told1);
 */
-//    console.log('\nmatriceFonction='+JSON.stringify(matriceFonction.value))
+//    console.log('\nmatriceFonction1='+JSON.stringify(matriceFonction1.value))
     
     
     var t2=document.createElement('table');
@@ -196,7 +220,7 @@ function transform(){
   }else{
     var sp1=document.createElement('span');
     sp1.style.color='red';
-    sp1.innerHTML=matriceFonction.message;
+    sp1.innerHTML=matriceFonction1.message;
     document.getElementById('resultat1').appendChild(sp1);
     
     var t2=document.createElement('table');

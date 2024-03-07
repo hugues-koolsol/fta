@@ -1,6 +1,45 @@
 
+var obj={};
+obj={'status':faux,'message':'erreur','id':i};
+if((true)){
+    t=concat(t,espacesnrev(false,arr[i][3]));
+}else{
+    t=concat(t,espacesnrev(false,arr[i][3]));
+}
+/*#
+============================================
+
+
+
+appelf(
+   n(push),
+   element(out),
+   p(
+      appelf(
+         n(Array),
+         p(
+            appelf(
+               element(str),
+               n(substr),
+               p(0),
+               p(2)
+            )
+         ),
+         p(2),
+         p(i),
+         p(numLigne)
+      )
+   )
+),
+
+============================================
+*/
 variable=(1 == 1);
 /*#
+
+
+
+============================================
 affecte(apresAppelF , 1),
 #(
    ===============
@@ -96,4 +135,7 @@ affecte(apresChoix , 1),
 #(commentaire 13),
 affecte(a , 1),
 #(commentaire 14)
+
+
+============================================
 */

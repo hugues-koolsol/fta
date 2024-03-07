@@ -8,6 +8,61 @@ src_javascript(
          ==================================================================================
          ==================================================================================
          ==================================================================================
+         fonction transforme un texte pour qu'il soit visible en html
+         par exemple &nbsp; ou bien <
+         ==================================================================================
+         ==================================================================================
+         ==================================================================================
+      ),
+      fonction(
+         definition(nom(strToHtml) , argument(s)),
+         contenu(
+            declare(
+               r1,
+               new(appelf(n(RegExp) , p('&') , p('g')))
+            ),
+            declare(
+               r2,
+               new(appelf(n(RegExp) , p('<') , p('g')))
+            ),
+            declare(
+               r3,
+               new(appelf(n(RegExp) , p('>') , p('g')))
+            ),
+            affecte(
+               s,
+               appelf(
+                  n(replace),
+                  element(s),
+                  p(r1),
+                  p('&amp;')
+               )
+            ),
+            affecte(
+               s,
+               appelf(
+                  n(replace),
+                  element(s),
+                  p(r2),
+                  p('&lt;')
+               )
+            ),
+            affecte(
+               s,
+               appelf(
+                  n(replace),
+                  element(s),
+                  p(r3),
+                  p('&gt;')
+               )
+            ),
+            revenir(s)
+         )
+      ),
+      #(
+         ==================================================================================
+         ==================================================================================
+         ==================================================================================
          fonction qui reconstitue un texte source à partir du tableau 
          représentant la matrice du programme
          ==================================================================================
@@ -31,10 +86,13 @@ src_javascript(
             ),
             declare(i , 0),
             declare(j , 0),
+            declare(obj , obj()),
             declare(t , ''),
             declare(profondeurLimite , 3),
             declare(nombreEnfantsLimite , 3),
             declare(forcerRetourLigne , faux),
+            declare(condition1 , faux),
+            declare(commentaire , ''),
             declare(l01 , 0),
             affecte(l01 , arr.length),
             #(
@@ -98,7 +156,7 @@ src_javascript(
                               on teste si il existe des enfants de type commentaires
                            ),
                            boucle(
-                              initialisation(affecte(j , 0)),
+                              initialisation(affecte(j , debut)),
                               condition((inf(j , l01)) , et(sup(arr[j][3] , arr[parentId][3]))),
                               increment(affecte(j , j+1)),
                               faire(
@@ -119,7 +177,7 @@ src_javascript(
                               )
                            ),
                            boucle(
-                              initialisation(affecte(j , 0)),
+                              initialisation(affecte(j , debut)),
                               condition((inf(j , l01)) , et(sup(arr[j][3] , arr[parentId][3]))),
                               increment(affecte(j , j+1)),
                               faire(
@@ -134,36 +192,152 @@ src_javascript(
                                           break()
                                        )
                                     )
-                                 ),
-                                 #(finchoix suite du source),
-                                 affecte(a , 1)
+                                 )
                               )
-                           ),
-                           #(
-                              ici la variable forcerRetourLigne est éventuellement mise à true 
-                              var condition1=arr[parentId][2]=='f' 
-                              && arr[parentId][8]<=nombreEnfantsLimite 
-                              && arr[parentId][10]<=profondeurLimite;
-                           ),
-                           affecte(
-                              condition1,
-                              condition((egal(arr[parentId][2] , 'f')) , et(infeg(arr[parentId][8] , nombreEnfantsLimite)) , et(infeg(arr[parentId][10] , profondeurLimite)))
-                           ),
+                           )
+                        )
+                     )
+                  ),
+                  #(
+                     ici la variable forcerRetourLigne est éventuellement mise à true 
+                     var condition1=arr[parentId][2]=='f' 
+                     && arr[parentId][8]<=nombreEnfantsLimite 
+                     && arr[parentId][10]<=profondeurLimite;
+                  ),
+                  affecte(
+                     condition1,
+                     condition((egal(arr[parentId][2] , 'f')) , et(infeg(arr[parentId][8] , nombreEnfantsLimite)) , et(infeg(arr[parentId][10] , profondeurLimite)))
+                  ),
+                  choix(
+                     si(
+                        condition((sup(arr[i][9] , 1))),
+                        alors(
+                           #(!forcerRetourLigne && retourLigne==true && condition1),
                            choix(
                               si(
-                                 condition((egal(arr[i][9] , 1))),
+                                 condition(non(forcerRetourLigne) , et(egal(retourLigne , true)) , et(condition1)),
                                  alors(
-                                    #(!forcerRetourLigne && retourLigne==true && condition1),
+                                    affecte(t , appelf(n(concat) , p(t) , p(' , ')))
+                                 )
+                              ),
+                              sinon(
+                                 alors(
+                                    affecte(t , appelf(n(concat) , p(t) , p(',')))
+                                 ),
+                                 #(finsinon)
+                              )
+                           )
+                        )
+                     )
+                  ),
+                  choix(
+                     si(
+                        condition(
+                           (((forcerRetourLigne)) , et(diff(arr[parentId][2] , 'INIT')))
+                        ),
+                        alors(
+                           appelf(
+                              r(t),
+                              n(concat),
+                              p(t),
+                              p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition((retourLigne)),
+                        alors(
+                           choix(
+                              si(
+                                 condition(
+                                    ((egal(arr[parentId][2] , 'INIT')) , et(egal(arr[i][9] , 1))),
+                                    ou(condition1)
+                                 ),
+                                 alors(
+                                    #(on ne fait rien)
+                                 )
+                              ),
+                              sinon(
+                                 alors(
+                                    appelf(
+                                       r(t),
+                                       n(concat),
+                                       p(t),
+                                       p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
+                                    )
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  ),
+                  #(
+                     
+                     
+                     ================================
+                     si on doit traiter une constante
+                     ================================
+                  ),
+                  choix(
+                     si(
+                        condition((egal(arr[i][2] , 'c'))),
+                        alors(
+                           choix(
+                              si(
+                                 condition(((coloration))),
+                                 alors(
                                     choix(
                                        si(
-                                          condition(non(forcerRetourLigne) , et(egal(retourLigne , true)) , et(condition1)),
+                                          condition((egal(arr[i][4] , true))),
                                           alors(
-                                             affecte(t , appelf(n(concat) , p(t) , p(' , ')))
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p('\''),
+                                                p(appelf(n(strToHtml) , p(arr[i][1]))),
+                                                p('\'')
+                                             )
                                           )
                                        ),
                                        sinon(
                                           alors(
-                                             affecte(t , appelf(n(concat) , p(t) , p(',')))
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p(appelf(n(strToHtml) , p(arr[i][1])))
+                                             )
+                                          ),
+                                          #(finsinon)
+                                       )
+                                    )
+                                 )
+                              ),
+                              sinon(
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition((egal(arr[i][4] , true))),
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p('\''),
+                                                p(arr[i][1]),
+                                                p('\'')
+                                             )
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p(arr[i][1])
+                                             )
                                           ),
                                           #(finsinon)
                                        )
@@ -171,17 +345,196 @@ src_javascript(
                                  )
                               )
                            ),
+                           continue()
+                        )
+                     )
+                  ),
+                  #(
+                     
+                     
+                     ===================================================
+                     si on doit traiter une fonction de type commentaire
+                     ===================================================            
+                  ),
+                  choix(
+                     si(
+                        condition((egal(arr[i][2] , 'f')) , et(egal(arr[i][1] , DEBUTCOMMENTAIRE))),
+                        alors(
+                           #(
+                              ==========================
+                              on est dans un commentaire
+                              ==========================
+                           ),
+                           affecte(
+                              commentaire,
+                              appelf(
+                                 n(ttcomm1),
+                                 p(arr[i][13]),
+                                 p(arr[i][3]),
+                                 p(i)
+                              )
+                           ),
+                           choix(
+                              si(
+                                 condition(((coloration))),
+                                 alors(
+                                    #(mise en forme en HTML),
+                                    appelf(r(commentaire) , n(strToHtml) , p(commentaire)),
+                                    choix(
+                                       si(
+                                          condition(((retourLigne))),
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p('<span '),
+                                                p('style="'),
+                                                p('color:darkgreen;'),
+                                                p('background-color:lightgrey;'),
+                                                p('"'),
+                                                p('>'),
+                                                p(appelf(n(strToHtml) , p(arr[i][1]))),
+                                                p('('),
+                                                p(commentaire),
+                                                p(')'),
+                                                p('</span>')
+                                             )
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p('<span '),
+                                                p('style="'),
+                                                p('color:darkgreen;'),
+                                                p('background-color:lightgrey;'),
+                                                p('"'),
+                                                p('>'),
+                                                p(appelf(n(strToHtml) , p(arr[i][1]))),
+                                                p('('),
+                                                p(')'),
+                                                p('</span>')
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              ),
+                              sinon(
+                                 alors(
+                                    #(pas de mise en forme en HTML),
+                                    choix(
+                                       si(
+                                          condition(((retourLigne))),
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p(arr[i][1]),
+                                                p('('),
+                                                p(commentaire),
+                                                p(')')
+                                             )
+                                          )
+                                       ),
+                                       sinon(
+                                          alors(
+                                             appelf(
+                                                r(t),
+                                                n(concat),
+                                                p(t),
+                                                p(arr[i][1]),
+                                                p('()')
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              )
+                           ),
+                           continue()
+                        )
+                     )
+                  ),
+                  #(
+                     
+                     
+                     ===========================================================
+                     pour toutes les autres fonctions, on fait un appel récursif
+                     ===========================================================    
+                  ),
+                  declare(obj , obj()),
+                  appelf(
+                     r(obj),
+                     n(a2F1),
+                     p(arr),
+                     p(i),
+                     p(retourLigne),
+                     p(i+1),
+                     p(coloration)
+                  ),
+                  choix(
+                     si(
+                        condition(
+                           ((egalstricte(obj.status , vrai)))
+                        ),
+                        alors(
+                           #(on ajoute le nom de la fonction et on ouvre la parenthèse),
+                           choix(
+                              si(
+                                 condition(((coloration))),
+                                 alors(
+                                    appelf(
+                                       r(t),
+                                       n(concat),
+                                       p(t),
+                                       p(appelf(n(strToHtml) , p(arr[i][1]))),
+                                       p('(')
+                                    )
+                                 )
+                              ),
+                              sinon(
+                                 alors(
+                                    appelf(
+                                       r(t),
+                                       n(concat),
+                                       p(t),
+                                       p(arr[i][1]),
+                                       p('(')
+                                    )
+                                 )
+                              )
+                           ),
+                           #(
+                              ============================================
+                              on ajoute le contenu récursif de la fonction
+                              ============================================
+                           ),
+                           appelf(
+                              r(t),
+                              n(concat),
+                              p(t),
+                              p(obj.value)
+                           ),
+                           #(
+                              on met les retours de ligne
+                           ),
                            choix(
                               si(
                                  condition(
-                                    (((forcerRetourLigne)) , et(egal(arr[parentId][2] , 'INIT')))
+                                    ((forcerRetourLigne) , et(egal(obj.forcerRetourLigne , vrai)))
                                  ),
                                  alors(
                                     appelf(
                                        r(t),
                                        n(concat),
                                        p(t),
-                                       p(appelf(n(espacesnrev) , p(false) , p(niveau)))
+                                       p(appelf(n(espacesnrev) , p(faux) , p(arr[i][3])))
                                     )
                                  )
                               ),
@@ -191,20 +544,14 @@ src_javascript(
                                     choix(
                                        si(
                                           condition(
-                                             ((egal(arr[parentId][2] , 'INIT')) , et(egal(arr[i][9] , 1))),
-                                             ou(condition1)
+                                             non((infeg(arr[i][8] , nombreEnfantsLimite)) , et(infeg(arr[i][10] , profondeurLimite)))
                                           ),
-                                          alors(
-                                             #(on ne fait rien)
-                                          )
-                                       ),
-                                       sinon(
                                           alors(
                                              appelf(
                                                 r(t),
                                                 n(concat),
                                                 p(t),
-                                                p(appelf(n(espacesnrev) , p(false) , p(niveau)))
+                                                p(appelf(n(espacesnrev) , p(faux) , p(arr[i][3])))
                                              )
                                           )
                                        )
@@ -212,69 +559,28 @@ src_javascript(
                                  )
                               )
                            ),
-                           #(#
-   if(arr[i][2]=='c'){
-    if(coloration){
-     if(arr[i][4]===true){ // constante quotée
-      t+='\''+arr[i][1].replace(/&/,'&amp;').replace(/</,'&lt;').replace(/>/,'&gt;')+'\'';
-     }else{
-      t+=arr[i][1].replace(/&/,'&amp;').replace(/</,'&lt;').replace(/>/,'&gt;');
-     }
-    }else{
-     if(arr[i][4]===true){ // constante quotée
-      t+='\''+arr[i][1]+'\'';
-     }else{
-      t+=arr[i][1];
-     }
-    }
-   }
-                              
+                           #(
+                              on ferme la parenthèse
                            ),
-                           choix(
-                              si(
-                                 condition((egal(arr[i][2] , 'c'))),
-                                 alors(
-                                    choix(
-                                       si(
-                                          condition(((coloration))),
-                                          alors(
-                                             choix(
-                                                si(
-                                                   condition((egal(arr[i][4] , true))),
-                                                   alors(
-                                                      appelf(
-                                                         r(t),
-                                                         n(concat),
-                                                         p('\''),
-                                                         p(appelf(n(strToHtml) , p(arr[i][1]))),
-                                                         p('\'')
-                                                      )
-                                                   )
-                                                ),
-                                                sinon(
-                                                   alors(
-                                                      appelf(
-                                                         r(t),
-                                                         n(concat),
-                                                         p('\''),
-                                                         p(appelf(n(strToHtml) , p(arr[i][1]))),
-                                                         p('\'')
-                                                      )
-                                                   ),
-                                                   #(finsinon)
-                                                )
-                                             )
-                                          )
-                                       )
-                                    )
-                                 )
-                              )
+                           appelf(
+                              r(t),
+                              n(concat),
+                              p(t),
+                              p(')')
                            )
+                        )
+                     ),
+                     sinon(
+                        alors(
+                           affecte(obj , obj(('status' , faux) , ('message' , 'erreur') , ('id' , i))),
+                           revenir(obj)
                         )
                      )
                   )
                )
-            )
+            ),
+            affecte(obj , obj((status , true) , (value , t) , (forcerRetourLigne , forcerRetourLigne))),
+            revenir(obj)
          )
       ),
       #(
@@ -318,7 +624,7 @@ src_javascript(
                   alors(
                      #(On construit le tableau à partir du texte source),
                      declare(outo , obj()),
-                     appelf(r(outo) , n(iterateCharacters) , p(texteSource)),
+                     appelf(r(outo) , n(iterateCharacters2) , p(texteSource)),
                      affecte(out , outo.out)
                   )
                ),
@@ -414,35 +720,13 @@ src_javascript(
                                           )
                                        )
                                     ),
-                                    sinonsi(
-                                       condition((egal(out[j][1] , 3))),
-                                       alors(
-                                          appelf(
-                                             element(td1),
-                                             n(setAttribute),
-                                             p('class'),
-                                             p('td5')
-                                          )
-                                       )
-                                    ),
-                                    sinonsi(
-                                       condition((egal(out[j][1] , 4))),
-                                       alors(
-                                          appelf(
-                                             element(td1),
-                                             n(setAttribute),
-                                             p('class'),
-                                             p('td4')
-                                          )
-                                       )
-                                    ),
                                     sinon(
                                        alors(
                                           appelf(
                                              element(td1),
                                              n(setAttribute),
                                              p('class'),
-                                             p('td3')
+                                             p('td4')
                                           )
                                        )
                                     )
@@ -506,19 +790,7 @@ src_javascript(
                                           )
                                        )
                                     ),
-                                    sinonsi(
-                                       condition((egal(out[j][1] , 3))),
-                                       alors(
-                                          appelf(
-                                             element(td1),
-                                             n(setAttribute),
-                                             p('class'),
-                                             p('td5')
-                                          )
-                                       )
-                                    ),
-                                    sinonsi(
-                                       condition((egal(out[j][1] , 4))),
+                                    sinon(
                                        alors(
                                           appelf(
                                              element(td1),
@@ -527,19 +799,9 @@ src_javascript(
                                              p('td4')
                                           )
                                        )
-                                    ),
-                                    sinon(
-                                       alors(
-                                          appelf(
-                                             element(td1),
-                                             n(setAttribute),
-                                             p('class'),
-                                             p('td3')
-                                          )
-                                       )
                                     )
                                  ),
-                                 affecte(td1.innerHTML , out[j][3]),
+                                 affecte(td1.innerHTML , out[j][2]),
                                  appelf(element(tr1) , n(appendChild) , p(td1))
                               )
                            ),
@@ -630,35 +892,13 @@ src_javascript(
                            )
                         )
                      ),
-                     sinonsi(
-                        condition((egal(out[j][1] , 3))),
-                        alors(
-                           appelf(
-                              element(td1),
-                              n(setAttribute),
-                              p('class'),
-                              p('td5')
-                           )
-                        )
-                     ),
-                     sinonsi(
-                        condition((egal(out[j][1] , 4))),
-                        alors(
-                           appelf(
-                              element(td1),
-                              n(setAttribute),
-                              p('class'),
-                              p('td4')
-                           )
-                        )
-                     ),
                      sinon(
                         alors(
                            appelf(
                               element(td1),
                               n(setAttribute),
                               p('class'),
-                              p('td3')
+                              p('td4')
                            )
                         )
                      )
@@ -710,19 +950,7 @@ src_javascript(
                            )
                         )
                      ),
-                     sinonsi(
-                        condition((egal(out[j][1] , 3))),
-                        alors(
-                           appelf(
-                              element(td1),
-                              n(setAttribute),
-                              p('class'),
-                              p('td5')
-                           )
-                        )
-                     ),
-                     sinonsi(
-                        condition((egal(out[j][1] , 4))),
+                     sinon(
                         alors(
                            appelf(
                               element(td1),
@@ -731,20 +959,9 @@ src_javascript(
                               p('td4')
                            )
                         )
-                     ),
-                     sinon(
-                        alors(
-                           appelf(
-                              element(td1),
-                              n(setAttribute),
-                              p('class'),
-                              p('td3')
-                           )
-                        ),
-                        #(finsinon)
                      )
                   ),
-                  affecte(td1.innerHTML , out[j][3]),
+                  affecte(td1.innerHTML , out[j][2]),
                   appelf(element(tr1) , n(appendChild) , p(td1)),
                   #(finchoix suite du source)
                )
@@ -919,24 +1136,16 @@ src_javascript(
          ===========================================
       ),
       fonction(
-         definition(nom(iterateCharacters) , argument(str)),
+         definition(nom(iterateCharacters2) , argument(str)),
          contenu(
             declare(out , appelf(n(Array))),
-            declare(
-               te,
-               new(appelf(n(TextEncoder)))
-            ),
             declare(i , 0),
-            declare(length , 0),
+            declare(j , 0),
             declare(numLigne , 0),
-            declare(position , 0),
-            declare(position2 , 0),
-            declare(arr , appelf(n(Array) , p(...str))),
-            declare(tableauBytes , appelf(n(Array))),
-            declare(longueurBytes , 0),
-            declare(l01 , arr.length),
+            declare(l01 , str.length),
             declare(codeCaractere , ''),
             declare(retour , obj()),
+            declare(temp , 0),
             boucle(
                initialisation(affecte(i , 0)),
                condition(inf(i , l01)),
@@ -944,47 +1153,76 @@ src_javascript(
                faire(
                   appelf(
                      r(codeCaractere),
-                     element(arr[i]),
+                     element(str),
                      n(charCodeAt),
-                     p(0)
+                     p(i)
                   ),
                   choix(
                      si(
-                        condition((diff(codeCaractere , 8203))),
+                        condition((diffstricte(codeCaractere , 8203))),
                         alors(
-                           appelf(
-                              r(tableauBytes),
-                              element(te),
-                              n(encode),
-                              p(arr[i])
+                           #(
+                              0xD800 =55296
                            ),
-                           affecte(longueurBytes , tableauBytes.length),
-                           appelf(
-                              n(push),
-                              element(out),
-                              p(
-                                 appelf(
-                                    n(Array),
-                                    p(arr[i]),
-                                    p(longueurBytes),
-                                    p(position),
-                                    p(position2),
-                                    p(numLigne)
+                           affecte(temp , codeCaractere&0xF800),
+                           choix(
+                              si(
+                                 condition(
+                                    ((egalstricte(temp , 55296)))
+                                 ),
+                                 alors(
+                                    appelf(
+                                       n(push),
+                                       element(out),
+                                       p(
+                                          appelf(
+                                             n(Array),
+                                             p(
+                                                appelf(
+                                                   element(str),
+                                                   n(substr),
+                                                   p(i),
+                                                   p(2)
+                                                )
+                                             ),
+                                             p(2),
+                                             p(i),
+                                             p(numLigne)
+                                          )
+                                       )
+                                    ),
+                                    affecte(i , i+1)
                                  )
-                              )
-                           ),
-                           choix(
-                              si(
-                                 condition((egal(arr[i] , '\n'))),
-                                 alors(affecte(numLigne , numLigne+1))
-                              )
-                           ),
-                           affecte(position , position+longueurBytes),
-                           affecte(position2 , position2+1),
-                           choix(
-                              si(
-                                 condition((egal(longueurBytes , 4))),
-                                 alors(affecte(position2 , position2+1))
+                              ),
+                              sinon(
+                                 alors(
+                                    appelf(
+                                       n(push),
+                                       element(out),
+                                       p(
+                                          appelf(
+                                             n(Array),
+                                             p(
+                                                appelf(
+                                                   element(str),
+                                                   n(substr),
+                                                   p(i),
+                                                   p(1)
+                                                )
+                                             ),
+                                             p(1),
+                                             p(i),
+                                             p(numLigne)
+                                          )
+                                       )
+                                    ),
+                                    choix(
+                                       si(
+                                          condition((egalstricte(codeCaractere , 10))),
+                                          alors(affecte(numLigne , numLigne+1))
+                                       )
+                                    )
+                                 )
                               )
                            )
                         )
@@ -992,15 +1230,7 @@ src_javascript(
                   )
                )
             ),
-            affecte(
-               retour,
-               obj(
-                  (out , out),
-                  (position , position),
-                  (position2 , position2),
-                  (numLigne , numLigne)
-               )
-            ),
+            affecte(retour , obj((out , out) , (position2 , j) , (numLigne , numLigne))),
             revenir(retour)
          )
       ),

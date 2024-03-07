@@ -69,11 +69,11 @@ function js_condition1(tab,id,niveau){
   for(i=id;i<max;i++){
    if((tab[i][1]=='non' || tab[i][1]=='et' || tab[i][1]=='ou' || (premiereCondition==true && tab[i][1]=='' ) ) && tab[i][8]>0 && tab[i][2]=='f'){ //i18
     if(tab[i][1]=='non'){
-     t+='!';
+     t+=' !';
     }else if(tab[i][1]=='et'){ // i18
-     t+='&&';
+     t+=' && ';
     }else if(tab[i][1]=='ou'){ // i18
-     t+='||';
+     t+=' || ';
     }
     // todo tester si arguments
     obj=js_condition1(tab,i+1,niveau);
@@ -1123,7 +1123,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction){ // id = p
        return logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'});
       }
      }else{
-      textObj+=','+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':'\''+tab[j+1][1])+'\''+':'+(tab[j+2][4]==true?'\''+echappConstante(tab[j+2][1])+'\'':tab[j+2][1])+'';
+      textObj+=','+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':'\''+tab[j+1][1]+'\'')+':'+(tab[j+2][4]==true?'\''+echappConstante(tab[j+2][1])+'\'':tab[j+2][1])+'';
      }
     }
    }
@@ -1258,6 +1258,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
      if(tab[j][8]==1 && tab[j+1][2]=='f' ){
       if(tab[j+1][1]=='appelf'){ // i18
        aDesAppelsRecursifs=true;
+//       dansConditionOuDansFonction=true;
        obj=js_traiteAppelFonction(tab,j+1,true,niveau,true);
        if(obj.status==true){
         argumentsFonction+=','+obj.value;
@@ -1275,13 +1276,13 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
    t+=espacesn(true,niveau);
   }
   t+=nomRetour!=''?nomRetour+'=':'';
-  if(recursif===true && nomRetour==''){
+  if(recursif===true && nomRetour=='' && !dansConditionOuDansFonction){
    t+=espacesn(true,niveau+1)+(nomElement==''?'':nomElement+'.')+nomFonction;
   }else{
    t+=(nomElement==''?'':nomElement+'.')+nomFonction;
   }
   t+='('+(argumentsFonction!==''?argumentsFonction.substr(1):'');
-  if(aDesAppelsRecursifs){
+  if(aDesAppelsRecursifs && !dansConditionOuDansFonction && nomRetour=='' && nomElement==''){
    t+=espacesn(true,niveau);
    t+=')';
   }else{

@@ -41,7 +41,7 @@ print($o1);$o1='';
          <textarea id="zonesource" class="yytextSmall" cols="100" rows="60" spellcheck="false" style="height:85vh;padding:3px 3px 3px 8px;"></textarea>
        </td>
        <td style="vertical-align: text-top;">
-         <textarea id="normalise" class="yytextSmall" cols="100" rows="10" spellcheck="false"></textarea>
+         <textarea id="normalise" class="yytextSmall" style="display:none" cols="100" rows="10" spellcheck="false"></textarea>
        </td>
      </tr>
      <tr>
@@ -195,8 +195,13 @@ function reprendre(){
  document.getElementById('zonesource').value=document.getElementById('normalise').value;
 }
 //=====================================================================================================================
+function reprendreEtRecompiler(){
+ document.getElementById('zonesource').value=document.getElementById('normalise').value;
+ enregistrer2();
+}
+//=====================================================================================================================
 function compareNormalise(zoneSource,zoneNormalisee , comparaisonSourcesSansCommentairesOK ){
- var lienReprendre='<div class="yywarning">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre le normalise</a></div>';
+ var lienReprendre='<div class="yywarning">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre</a> </div>';
  var tab1=document.getElementById(zoneSource).value.split('\n');
  var tab2=document.getElementById(zoneNormalisee).value.split('\n');
  if(tab1.length==tab2.length){
@@ -277,7 +282,7 @@ function enregistrer2(){
  
  var a=document.getElementById('zonesource');
  var startMicro=performance.now();
- var tableau1=iterateCharacters(a.value);
+ var tableau1=iterateCharacters2(a.value);
  global_messages.data.tableau=tableau1;
  var endMicro=performance.now();  console.log('\n\n=============\nmise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
@@ -286,7 +291,7 @@ function enregistrer2(){
  var startMicro=performance.now();
  var matriceFonction=functionToArray2(tableau1.out);
  global_messages.data.matrice=matriceFonction;
- var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+ var endMicro=performance.now();  console.log('analyse syntaxique et mise en matrice endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
  console.log('matriceFonction=',matriceFonction);
 
  if(matriceFonction.status===true){
@@ -311,7 +316,7 @@ function enregistrer2(){
      var compacteOriginal=arrayToFunct1(matriceFonction.value,false,false);
      
      
-     var tableau2=iterateCharacters(fonctionReecriteAvecRetour1.value);
+     var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
      var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out);
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      var endMicro=performance.now();  console.log('comparaison des compactés=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
@@ -362,7 +367,7 @@ function enregistrer2(){
       }
      }else{
       
-      logerreur({status:false,message:'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre le normalise</a>  '});
+      logerreur({status:false,message:'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '});
      }
     }
     
@@ -391,6 +396,7 @@ function enregistrer2(){
   lienVoitSourceGenere.href='javascript:voirSourceGenere(0)';
   lienVoitSourceGenere.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
   zonedonneesComplementaires.appendChild(lienVoitSourceGenere);
+
  }
 
  
@@ -637,7 +643,7 @@ function mettreEnCommentaire(){
  console.log(zoneSource.selectionStart , zoneSource.selectionEnd);
  var debut=0;
  var fin=zoneSource.value.length;
- var obj=iterateCharacters(zoneSource.value);
+ var obj=iterateCharacters2(zoneSource.value);
  console.log('obj=',obj);
  for( var i=zoneSource.selectionStart-1;i>=0;i--){
   if(obj.out[i][0]=='\n'){

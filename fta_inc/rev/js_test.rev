@@ -5,11 +5,68 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      declare(obj , obj()),
+      affecte(obj , obj(('status' , faux) , ('message' , 'erreur') , ('id' , i))),
+      choix(
+         si(
+            condition((vrai)),
+            alors(
+               appelf(
+                  r(t),
+                  n(concat),
+                  p(t),
+                  p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
+               )
+            )
+         ),
+         sinon(
+            alors(
+               appelf(
+                  r(t),
+                  n(concat),
+                  p(t),
+                  p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
+               )
+            )
+         )
+      ),
+      #(#
+      ============================================
+      
+      
+      
+      appelf(
+         n(push),
+         element(out),
+         p(
+            appelf(
+               n(Array),
+               p(
+                  appelf(
+                     element(str),
+                     n(substr),
+                     p(0),
+                     p(2)
+                  )
+               ),
+               p(2),
+               p(i),
+               p(numLigne)
+            )
+         )
+      ),
+      
+      ============================================
+      ),
       affecte(
          variable,
          condition((egal(1 , 1)))
       ),
       #(#
+      
+      
+      
+      ============================================
       affecte(apresAppelF , 1),
       #(
          ===============
@@ -105,6 +162,9 @@ src_javascript(
       #(commentaire 13),
       affecte(a , 1),
       #(commentaire 14)
+
+
+      ============================================
       )
    )
 )

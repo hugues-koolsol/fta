@@ -197,7 +197,7 @@ alors que
 ```
  #( a() , b( c , d(x ) )
 ```
-ne l'est pas.```
+ne l'est pas.
 
 
 
