@@ -1155,6 +1155,8 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
  var objTxt='';
  var proprietesFonction='';
  var aDesAppelsRecursifs=false;
+ var nbEnfants=0;
+ var forcerNvelleLigneEnfant=false;
  
  positionAppelFonction=-1;
  for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
@@ -1162,6 +1164,9 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
    positionAppelFonction=j;
    if(tab[j][8]==1){
     nomFonction=tab[j+1][1];
+    if(nomFonction=='Array'){
+     nbEnfants=tab[tab[tab[j+1][7]][7]][8]-1;
+    }
    }
    break;
   }
@@ -1261,7 +1266,12 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
 //       dansConditionOuDansFonction=true;
        obj=js_traiteAppelFonction(tab,j+1,true,niveau,true);
        if(obj.status==true){
-        argumentsFonction+=','+obj.value;
+        argumentsFonction+=',';
+        if(nomFonction=='Array' && nbEnfants>=4){
+         forcerNvelleLigneEnfant=true;
+         argumentsFonction+=espacesn(true,niveau+1);
+        }         
+        argumentsFonction+=obj.value;
        }else{
         return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'});
        }
@@ -1281,13 +1291,12 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
   }else{
    t+=(nomElement==''?'':nomElement+'.')+nomFonction;
   }
-  t+='('+(argumentsFonction!==''?argumentsFonction.substr(1):'');
-  if(aDesAppelsRecursifs && !dansConditionOuDansFonction && nomRetour=='' && nomElement==''){
+  t+='('
+  t+=(argumentsFonction!==''?argumentsFonction.substr(1):'');
+  if((aDesAppelsRecursifs && !dansConditionOuDansFonction && nomRetour=='' && nomElement=='' )|| forcerNvelleLigneEnfant ){
    t+=espacesn(true,niveau);
-   t+=')';
-  }else{
-   t+=')';
   }
+  t+=')';
   t+=proprietesFonction;
   if(!dansConditionOuDansFonction){
    t+=';';
@@ -1295,6 +1304,6 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
  }else{
   return logerreur({status:false,value:t,id:i,tab:tab,message:' dans js_traiteAppelFonction il faut un nom de fonction à appeler n(xxxx)'});
  }
- return {status:true,value:t};
+ return {status:true,value:t,'forcerNvelleLigneEnfant':forcerNvelleLigneEnfant};
 }
 //=====================================================================================================================

@@ -1,11 +1,43 @@
 
-var obj={};
-obj={'status':faux,'message':'erreur','id':i};
-if((true)){
-    t=concat(t,espacesnrev(false,arr[i][3]));
-}else{
-    t=concat(t,espacesnrev(false,arr[i][3]));
-}
+var global_enteteTableau= Array(
+    Array('id','id'),
+    Array('val','value'),
+    Array('typ','type'),
+    Array('niv','niveau'),
+    Array('coQ','constante quotée')
+);
+/*#
+
+
+declare(obj , obj()),
+affecte(obj , obj(('status' , faux) , ('message' , 'erreur') , ('id' , i))),
+choix(
+   si(
+      condition((vrai)),
+      alors(
+         appelf(
+            r(t),
+            n(concat),
+            p(t),
+            p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
+         )
+      )
+   ),
+   sinon(
+      alors(
+         appelf(
+            r(t),
+            n(concat),
+            p(t),
+            p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
+         )
+      )
+   )
+),
+
+
+
+*/
 /*#
 ============================================
 

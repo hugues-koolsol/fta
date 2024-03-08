@@ -1,13 +1,98 @@
 
 /*
-==================================================================================
-==================================================================================
-==================================================================================
-fonction transforme un texte pour qu'il soit visible en html
-par exemple &nbsp; ou bien <
-==================================================================================
-==================================================================================
-==================================================================================
+=============================================
+=============================================
+=============================================
+fonction transforme un texte pour qu'il  soit 
+visible en html, par exemple &nbsp; ou bien <
+=============================================
+=============================================
+=============================================
+*/
+function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
+    var i=0;
+    /*Si c'est un commentaire monoligne, on le retourne sans aucune transformation*/
+    i=texte.indexOf('\n');
+    if(tab.length <= 1){
+        return texte;
+    }
+    /**/
+    var i=0;
+    var j=0;
+    var l01=0;
+    var min=0;
+    var t='';
+    var ligne='';
+    var temps='';
+    var newTab= Array();
+    var tab= Array();
+    tab=texte.split('\n');
+    l01=tab.length;
+    /**/
+    if(texte.length > 1){
+        ligne=texte.substr(0,1);
+        if(ligne == '#'){
+            /*
+            on a un commentaire de type bloc non formaté 
+            car le premier caractère = #
+            */
+            /*
+            si on traite un source de type rev,
+            on ne transforme pas le texte ...
+            */
+            if((fichierRev0)){
+                return texte;
+            }
+            /*
+            ... sinon on supprime les espaces 
+            inutiles en début de ligne.
+            */
+            t='';
+            min=99999;
+            for(i=0;i < l01;i=i+1){
+                ligne=tab[i];
+                for(j=0;j < ligne.length;j=j+1){
+                    /*
+                    on balaye toutes les lignes pour détecter 
+                    le nombre d'espaces minimal à gauche
+                    */
+                    temps=ligne.substr(j,1);
+                    if(temps == ' '){
+                        continue;
+                    }else{
+                        if(j < min){
+                            /*on réajuste le minimum*/
+                            min=j;
+                        }
+                        /* et on passe à la ligne suivante*/
+                        break;
+                    }
+                }
+            }
+            if(min > 0){
+                for(i=1;i < l01;i=i+1){
+                    tab[i]=tab[i].substr(min);
+                }
+                texte=tab.join('\n');
+            }
+            return texte;
+        }
+    }
+    /*
+    si on est ici, c'est qu'on a un commentaire multiligne
+    qu'il faut formatter en alignant à gauche les textes 
+    d'un nombre d'espaces correspondant au niveau
+    */
+}
+/*
+=============================================
+=============================================
+=============================================
+fonction transforme un texte pour qu'il  soit 
+visible en html, par exemple &nbsp; ou bien <
+=============================================
+=============================================
+=============================================
 */
 function strToHtml(s){
     var r1= new RegExp('&','g');
@@ -19,14 +104,14 @@ function strToHtml(s){
     return s;
 }
 /*
-==================================================================================
-==================================================================================
-==================================================================================
-fonction qui reconstitue un texte source à partir du tableau 
-représentant la matrice du programme
-==================================================================================
-==================================================================================
-==================================================================================
+=================================================
+=================================================
+=================================================
+fonction qui reconstitue un texte source à partir  
+du tableau représentant la matrice  du  programme
+=================================================
+=================================================
+=================================================
 */
 function a2F1(arr,parentId,retourLigne,debut,coloration){
     /*
@@ -102,9 +187,6 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         }
         /*
         ici la variable forcerRetourLigne est éventuellement mise à true 
-        var condition1=arr[parentId][2]=='f' 
-        && arr[parentId][8]<=nombreEnfantsLimite 
-        && arr[parentId][10]<=profondeurLimite;
         */
         condition1=(arr[parentId][2] == 'f') && arr[parentId][8] <= nombreEnfantsLimite && arr[parentId][10] <= profondeurLimite;
         if((arr[i][9] > 1)){
@@ -125,11 +207,11 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             }
         }
         /*
-        
-        
-        ================================
-        si on doit traiter une constante
-        ================================
+        ======================================
+        ici, forcerRetourLigne est vrai ou pas
+        ======================================
+        si  on  doit  traiter  une  constante
+        ======================================
         */
         if((arr[i][2] == 'c')){
             if(((coloration))){
@@ -228,14 +310,14 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
 
 
 
-==========================================
-==========================================
-==========================================
-fonction qui produit un tableau html de la
-des caractères du source du programme
-==========================================
-==========================================
-==========================================
+===========================================
+===========================================
+===========================================
+fonction qui produit un tableau html de  la
+liste des caractères du source du programme
+===========================================
+===========================================
+===========================================
 */
 function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     var numeroLigne=0;
@@ -530,6 +612,7 @@ function iterateCharacters2(str){
     var out= Array();
     var i=0;
     var j=0;
+    var exceptions=0;
     var numLigne=0;
     var l01=str.length;
     var codeCaractere='';
@@ -537,23 +620,33 @@ function iterateCharacters2(str){
     var temp=0;
     for(i=0;i < l01;i=i+1){
         codeCaractere=str.charCodeAt(i);
-        if((codeCaractere !== 8203)){
+            /*
+            zero width space , vertical tab
+            */
+            
+        if( !((codeCaractere === 8203) || codeCaractere === 11)){
             /*
             0xD800 =55296
             */
             temp=codeCaractere&0xF800;
             if(((temp === 55296))){
-                out.push(Array(str.substr(i,2),2,i,numLigne));
+                out.push(Array(
+                    str.substr(i,2),2,i,numLigne
+                ));
                 i=i+1;
             }else{
-                out.push(Array(str.substr(i,1),1,i,numLigne));
+                out.push(Array(
+                    str.substr(i,1),1,i,numLigne
+                ));
                 if((codeCaractere === 10)){
                     numLigne=numLigne+1;
                 }
             }
+        }else{
+            exceptions=exceptions+1;
         }
     }
-    retour={'out':out,'position2':j,'numLigne':numLigne};
+    retour={'out':out,'numLigne':numLigne,'exceptions':exceptions};
     return retour;
 }
 /*
@@ -566,7 +659,22 @@ du texte en entrée de la fonction functionToArray2
 ==================================================
 ==================================================
 */
-var global_enteteTableau= Array(Array('id','id'),Array('val','value'),Array('typ','type'),Array('niv','niveau'),Array('coQ','constante quotée'),Array('pre','position du premier caractère'),Array('der','position du dernier caractère'),Array('pId','Id du parent'),Array('nbE','nombre d\'enfants'),Array('nuE','numéro enfants'),Array('pro','profondeur'),Array('pop','position ouverture parenthese'),Array('pfp','position fermeture parenthese'),Array('com','commentaire'));
+var global_enteteTableau= Array(
+    Array('id','id'),
+    Array('val','value'),
+    Array('typ','type'),
+    Array('niv','niveau'),
+    Array('coQ','constante quotée'),
+    Array('pre','position du premier caractère'),
+    Array('der','position du dernier caractère'),
+    Array('pId','Id du parent'),
+    Array('nbE','nombre d\'enfants'),
+    Array('nuE','numéro enfants'),
+    Array('pro','profondeur'),
+    Array('pop','position ouverture parenthese'),
+    Array('pfp','position fermeture parenthese'),
+    Array('com','commentaire')
+);
 /*
 ===================================================
 ===================================================

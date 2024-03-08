@@ -5,6 +5,20 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      declare(
+         global_enteteTableau,
+         appelf(
+            n(Array),
+            p(appelf(n(Array) , p('id') , p('id'))),
+            p(appelf(n(Array) , p('val') , p('value'))),
+            p(appelf(n(Array) , p('typ') , p('type'))),
+            p(appelf(n(Array) , p('niv') , p('niveau'))),
+            p(appelf(n(Array) , p('coQ') , p('constante quotée')))
+         )
+      ),
+      #(#
+      
+      
       declare(obj , obj()),
       affecte(obj , obj(('status' , faux) , ('message' , 'erreur') , ('id' , i))),
       choix(
@@ -29,6 +43,10 @@ src_javascript(
                )
             )
          )
+      ),
+      
+      
+      
       ),
       #(#
       ============================================

@@ -78,7 +78,7 @@ function html_header1($p=array()){
  }else{
   $t.=' <body style="padding-top:24px;">'.CRLF;
  }
- $t.=' <nav style="position: fixed;top: 0;left: 0;">'.CRLF;
+ $t.=' <nav style="position: fixed;top: 0;left: 0;width:100%;">'.CRLF;
  $t.='   <a href="index.html">html home</a>'.CRLF;
  $t.='   <a href="index.php">php home</a>'.CRLF;
  $t.='   <a href="todo.html">todo</a>'.CRLF;

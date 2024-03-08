@@ -12,7 +12,7 @@ $o1.='</style>';
 print($o1);$o1='';
 
 ?>
-<nav style="position: fixed;top: 24px;left: 0;">
+<nav style="position: fixed;top: 24px;left: 0;background: aliceblue;width:100%;">
         <button onclick="enregistrer2()">Enregistrer</button>
         <a href="javascript:insertSource('choix');">Choix</a>
         <a href="javascript:insertSource('boucle');">Boucle</a>
@@ -38,7 +38,7 @@ print($o1);$o1='';
          
        </td>
        <td>
-         <textarea id="zonesource" class="yytextSmall" cols="100" rows="60" spellcheck="false" style="height:85vh;padding:3px 3px 3px 8px;"></textarea>
+         <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:85vh;padding:3px 3px 3px 8px;"></textarea>
        </td>
        <td style="vertical-align: text-top;">
          <textarea id="normalise" class="yytextSmall" style="display:none" cols="100" rows="10" spellcheck="false"></textarea>
@@ -256,10 +256,10 @@ function ajusteTailleTextareaContenantSource(normalise){
     }
    }
    largeur+=5;
-   if(largeur>100||largeur<=0){
-    largeur=100;
+   if(largeur>150||largeur<=0){
+    largeur=150;
    }
-   document.getElementById(normalise).cols=largeur;
+//   document.getElementById(normalise).cols=largeur;
   }catch(e){
    //var tab=document.getElementById(normalise).innetHTML.split('\n');
   }
@@ -416,6 +416,7 @@ function enregistrer2(){
   zoneContenantLeSourceGenere.style.display='none';
   zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
   zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
+  voirSourceGenere();
 
  } 
 

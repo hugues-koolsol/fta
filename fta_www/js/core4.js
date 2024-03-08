@@ -1,5 +1,6 @@
 "use strict";
-
+//var test=' '.repeat(0);
+console.log('test=','"'+(typeof test)+'"');
 // (typeof(b),egal('undefined')),et(d,egal(true))
 var DEBUTCOMMENTAIRE='#';
 var CRLF='\r\n';
@@ -510,107 +511,6 @@ function writeSourceFile(obj){
  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
  return logerreur({status:true});  
 }
-/*
-var NBESPACESSOURCEPRODUIT=4;
-*/
-//=====================================================================================================================
-function traiteCommentaire2(texte,niveau,ind){
- var t='';
- var multiLigne=false;
- var ajouterUneLigneViergeALaFin=false;
- var ajouterUneLigneViergeAuDebut=false;
- var numTest=-1;
- if(texte.indexOf('\n')>=0){
-  multiLigne=true;
- }
- var tab=texte.split('\n');
- var l01=tab.length;
- if(multiLigne && texte.length>=1 && texte.substr(0,1)=='#'){
-  // trouver le premier non blanc
-  var t='';
-  var min=99999;
-  for(var i=1;i<l01;i++){
-   var ligne=tab[i];
-   for(j=0;j<ligne.length;j++){
-    if(ligne.substr(j,1)==' '){
-    }else{
-     if(j<min){
-      min=j
-     }
-     break;
-    }
-   }
-   
-  }
-  if(min>0){
-   for(var i=1;i<l01;i++){
-    tab[i]=tab[i].substr(min);
-   }
-   texte=tab.join('\n');
-  }
-//  console.log( texte , min)
-  
-  
-  return texte;
- }
- if(ind==numTest){
-  console.log('"'+texte+'"');
- }
- var newTab=[];
- for(var i=0;i<l01;i++){
-    t='';
-    // on envève les espaces au début
-    for(var j=0;j<tab[i].length;j++){
-     if(tab[i].substr(j,1)==' '){
-     }else{
-      t+=tab[i].substr(j);
-      break;
-     }
-    }
-    if(i==l01-1){
-     if(t!=''){
-      if(multiLigne){
-       newTab.push(' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau+1)+t);
-       newTab.push((niveau>=0?'  '.repeat(niveau):''));
-      }else{
-       newTab.push(t);
-      }       
-     }else{
-      if(multiLigne){
-       newTab.push((niveau>=0?' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau):''));
-      }else{
-       newTab.push(t);
-      }
-     }
-    }else if(i==0){
-     if(t!==''){
-      if(multiLigne){
-       t=' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau+1)+t;
-       newTab.unshift('');
-       newTab.push(t);
-      }else{
-       newTab.push(t);
-      }
-     }else{
-      newTab.push(t);
-     }
-    }else{
-     if(niveau>0){
-      t=' '.repeat(NBESPACESSOURCEPRODUIT).repeat(niveau)+t;
-     }
-     newTab.push(t);
-    }
-    if(ind==numTest){
-     console.log('t="'+t+'"');
-    }
-    
- }
- if(ind==numTest){
-  console.log('tab=',tab);
- }
- t=newTab.join('\n');
- return t;
-}
 
 //=====================================================================================================================
 function arrayToFunct1(matrice,retourLigne,coloration){
@@ -651,11 +551,10 @@ function functionToArray(src,exitOnLevelError){
 var NBESPACESREV=3;
 */
 //=====================================================================================================================
-function ttcomm1(texte,niveau,ind){
+function ttcomm1Old(texte,niveau,ind){
  var t='';
  var multiLigne=false;
- var ajouterUneLigneViergeALaFin=false;
- var ajouterUneLigneViergeAuDebut=false;
+ var i=0;
  var numTest=-1;
  if(texte.indexOf('\n')>=0){
   multiLigne=true;
@@ -669,7 +568,7 @@ function ttcomm1(texte,niveau,ind){
   console.log('"'+texte+'"');
  }
  var newTab=[];
- for(var i=0;i<l01;i++){
+ for(i=0;i<l01;i++){
     t='';
     // on envève les espaces au début
     for(var j=0;j<tab[i].length;j++){
@@ -721,6 +620,104 @@ function ttcomm1(texte,niveau,ind){
  t=newTab.join('\n');
  return t;
 }
+
+//=====================================================================================================================
+function traiteCommentaire2(texte,niveau,ind){
+ return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+}
+
+//=====================================================================================================================
+function ttcomm1(texte,niveau,ind){
+ return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESREV,true);
+}
+/*
+var NBESPACESSOURCEPRODUIT=4;
+*/
+//=====================================================================================================================
+function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
+ var t='';
+ var i=0;
+ var j=0;
+ //var numTest=-1;
+ if(texte.indexOf('\n')<0){
+  return(texte);
+ }
+ var tab=texte.split('\n');
+ var l01=tab.length;
+ if(texte.length>=1 && texte.substr(0,1)=='#'){
+  if(fichierRev0){
+   return texte;
+  }
+  // trouver le premier non blanc
+  var t='';
+  var min=99999;
+  for(i=1;i<l01;i++){
+   var ligne=tab[i];
+   for(j=0;j<ligne.length;j++){
+    if(ligne.substr(j,1)==' '){
+    }else{
+     if(j<min){
+      min=j
+     }
+     break;
+    }
+   }
+   
+  }
+  // tout décaler à gauche
+  if(min>0){
+   for(var i=1;i<l01;i++){
+    tab[i]=tab[i].substr(min);
+   }
+   texte=tab.join('\n');
+  }
+//  console.log( texte , min)
+  
+  
+  return texte;
+ }
+ var newTab=[];
+ for(i=0;i<l01;i++){
+    t='';
+    // on envève les espaces au début
+    for(j=0;j<tab[i].length;j++){
+     if(tab[i].substr(j,1)==' '){
+     }else{
+      t+=tab[i].substr(j);
+      break;
+     }
+    }
+    if(i==l01-1){
+     if(t!=''){
+      newTab.push(' '.repeat(nbEspacesSrc1*(niveau+1))+t);
+      newTab.push(' '.repeat(nbEspacesSrc1*niveau));
+     }else{
+      newTab.push(' '.repeat(nbEspacesSrc1*niveau));
+     }
+    }else if(i==0){
+     if(t!==''){
+      t=' '.repeat(nbEspacesSrc1*(niveau+1))+t;
+      newTab.unshift('');
+      newTab.push(t);
+     }else{
+      newTab.push(t);
+     }
+    }else{
+     if(fichierRev0){
+      t=' '.repeat(nbEspacesSrc1*(niveau+1))+t;
+     }else{
+      t=' '.repeat(nbEspacesSrc1*niveau)+t;
+     }
+     newTab.push(t);
+    }
+    
+ }
+ t=newTab.join('\n');
+ return t;
+}
+
+
+
 /*
 ==================================================================================
 ==================================================================================
@@ -761,7 +758,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var obj={};
     var t='';
     var profondeurLimite=3;
-    var nombreEnfantsLimite=3;
+    var nombreEnfantsLimite=5;
     var forcerRetourLigne=false;
     var condition1=false;
     var commentaire='';
@@ -1244,7 +1241,6 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     }
 }
 
-
 /*
 ===========================================
 ===========================================
@@ -1266,7 +1262,7 @@ function iterateCharacters2(str){
     var temp=0;
     for(i=0;i < l01;i=i+1){
         codeCaractere=str.charCodeAt(i);
-        if((codeCaractere !== 8203)){
+        if(!(codeCaractere === 8203 || codeCaractere === 11)){
             /*
             0xD800 =55296
             */
@@ -1281,11 +1277,10 @@ function iterateCharacters2(str){
                 }
             }
         }else{
-         exceptions++;
+         exceptions=exceptions+1;
         }
     }
-    console.log('exceptions='+exceptions);
-    retour={'out':out,'numLigne':numLigne};
+    retour={'out':out,'numLigne':numLigne,'exceptions':exceptions};
     return retour;
 }
 /*
@@ -1365,7 +1360,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     Le tableau en sortie si tout va bien
     ====================================
     */
-    var T= new Array();
+    var T=[]; //Array();
     var temp={};
     /*
     =======================================================================
