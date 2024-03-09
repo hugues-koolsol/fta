@@ -4,15 +4,71 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      #(#
+//=====================================================================================================================
+function traiteCommentaire2(texte,niveau,ind){
+ return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+}
+
+      ),
       #(
-         =============================================
-         =============================================
-         =============================================
-         fonction transforme un texte pour qu'il  soit 
-         visible en html, par exemple &nbsp; ou bien <
-         =============================================
-         =============================================
-         =============================================
+        ===================================================================
+        ===================================================================
+        ===================================================================
+        fonction transforme un commentaire pour un fichier source à générer
+        ===================================================================
+        ===================================================================
+        ===================================================================
+      ),
+      fonction(
+         definition(nom(traiteCommentaire2) , argument(texte) , argument(niveau) , argument(ind)),
+         contenu(
+            declare(s , ''),
+            appelf(
+               r(s),
+               n(traiteCommentaireSourceEtGenere1),
+               p(texte),
+               p(niveau),
+               p(ind),
+               p(NBESPACESSOURCEPRODUIT),
+               p(faux)
+            ),
+            revenir(s)
+         )
+      ),
+      #(
+        ======================================================
+        ======================================================
+        ======================================================
+        fonction transforme un commentaire pour un fichier rev
+        ======================================================
+        ======================================================
+        ======================================================
+      ),
+      fonction(
+         definition(nom(ttcomm1) , argument(texte) , argument(niveau) , argument(ind)),
+         contenu(
+            declare(s , ''),
+            appelf(
+               r(s),
+               n(traiteCommentaireSourceEtGenere1),
+               p(texte),
+               p(niveau),
+               p(ind),
+               p(NBESPACESREV),
+               p(vrai)
+            ),
+            revenir(s)
+         )
+      ),
+      #(
+        =============================================
+        =============================================
+        =============================================
+        fonction transforme un commentaire 
+        =============================================
+        =============================================
+        =============================================
       ),
       fonction(
          definition(
@@ -28,7 +84,7 @@ src_javascript(
             #(Si c'est un commentaire monoligne, on le retourne sans aucune transformation),
             affecte(i , appelf(element(texte) , n(indexOf) , p('\n'))),
             choix(
-               si(condition(infeg(tab.length , 1)) , alors(revenir(texte)))
+               si(condition(inf(i , 0)) , alors(revenir(texte)))
             ),
             #(),
             declare(i , 0),
@@ -38,8 +94,12 @@ src_javascript(
             declare(t , ''),
             declare(ligne , ''),
             declare(temps , ''),
+            declare(unBloc , ''),
+            declare(unBlocPlus1 , ''),
             declare(newTab , appelf(n(Array))),
             declare(tab , appelf(n(Array))),
+            #(),
+            affecte(unBloc , appelf(element(' ') , n(repeat) , p(nbEspacesSrc1*niveau))),
             affecte(tab , appelf(element(texte) , n(split) , p('\n'))),
             affecte(l01 , tab.length),
             #(),
@@ -47,30 +107,27 @@ src_javascript(
                si(
                   condition(sup(texte.length , 1)),
                   alors(
-                     affecte(ligne , appelf(element(texte) , n(substr) , p(0) , p(1))),
+                     affecte(temps , appelf(element(texte) , n(substr) , p(0) , p(1))),
                      choix(
                         si(
-                           condition(egal(ligne , '#')),
+                           condition(egal(temps , '#')),
                            alors(
                               #(
-                                 on a un commentaire de type bloc non formaté 
-                                 car le premier caractère = #
+                                on a un commentaire de type bloc non formaté 
+                                car le premier caractère = #
                               ),
                               #(
-                                 si on traite un source de type rev,
-                                 on ne transforme pas le texte ...
+                                ... sinon on supprime les espaces 
+                                inutiles en début de ligne.
                               ),
-                              choix(
-                                 si(condition((fichierRev0)) , alors(revenir(texte)))
-                              ),
-                              #(
-                                 ... sinon on supprime les espaces 
-                                 inutiles en début de ligne.
+                              #(#
+test
+  test
                               ),
                               affecte(t , ''),
                               affecte(min , 99999),
                               boucle(
-                                 initialisation(affecte(i , 0)),
+                                 initialisation(affecte(i , 1)),
                                  condition(inf(i , l01)),
                                  increment(affecte(i , i+1)),
                                  faire(
@@ -81,13 +138,13 @@ src_javascript(
                                        increment(affecte(j , j+1)),
                                        faire(
                                           #(
-                                             on balaye toutes les lignes pour détecter 
-                                             le nombre d'espaces minimal à gauche
+                                            on balaye toutes les lignes pour détecter 
+                                            le nombre d'espaces minimal à gauche
                                           ),
                                           affecte(temps , appelf(element(ligne) , n(substr) , p(j) , p(1))),
                                           choix(
-                                             si(condition(egal(temps , ' ')) , alors(continue())),
-                                             sinon(
+                                             si(
+                                                condition(diff(temps , ' ')),
                                                 alors(
                                                    choix(
                                                       si(
@@ -109,20 +166,39 @@ src_javascript(
                               ),
                               choix(
                                  si(
-                                    condition(sup(min , 0)),
+                                    condition(sup(min , 2)),
                                     alors(
+                                       #(tout décaler à gauche),
                                        boucle(
                                           initialisation(affecte(i , 1)),
                                           condition(inf(i , l01)),
                                           increment(affecte(i , i+1)),
                                           faire(
-                                             affecte(tab[i] , appelf(element(tab[i]) , n(substr) , p(min)))
+                                             affecte(tab[i] , appelf(element(tab[i]) , n(substr) , p(min-2)))
                                           )
-                                       ),
-                                       affecte(texte , appelf(element(tab) , n(join) , p('\n')))
+                                       )
                                     )
                                  )
                               ),
+                              #( si c'est un fichierRev0, on doit avoir la dernière ligne vide),
+                              choix(
+                                 si(
+                                    condition((fichierRev0)),
+                                    alors(
+                                       affecte(ligne , tab[tab.length-1]),
+                                       affecte(ligne , appelf(element(ligne) , n(replaceAll) , p(' ') , p(''))),
+                                       choix(
+                                          si(
+                                             condition(diff(ligne , '')),
+                                             alors(appelf(element(tab) , n(push) , p(unBloc)))
+                                          ),
+                                          sinon(alors(affecte(tab[tab.length-1] , unBloc)))
+                                       )
+                                    )
+                                 )
+                              ),
+                              #(),
+                              affecte(texte , appelf(element(tab) , n(join) , p('\n'))),
                               revenir(texte)
                            )
                         )
@@ -131,21 +207,103 @@ src_javascript(
                )
             ),
             #(
-               si on est ici, c'est qu'on a un commentaire multiligne
-               qu'il faut formatter en alignant à gauche les textes 
-               d'un nombre d'espaces correspondant au niveau
-            )
+              si on est ici, c'est qu'on a un commentaire multiligne
+              qu'il faut formatter en alignant à gauche les textes 
+              d'un nombre d'espaces correspondant au niveau
+            ),
+            #(affecte(i , niveau+1)),
+            affecte(unBlocPlus1 , appelf(element(' ') , n(repeat) , p(nbEspacesSrc1*niveau+2))),
+            declare(s1 , ''),
+            declare(s2 , ''),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition(inf(i , l01)),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(t , ''),
+                  #(on enlève les espaces au début),
+                  boucle(
+                     initialisation(affecte(j , 0)),
+                     condition(inf(j , tab[i].length)),
+                     increment(affecte(j , j+1)),
+                     faire(
+                        affecte(temps , appelf(element(tab[i]) , n(substr) , p(j) , p(1))),
+                        choix(
+                           si(
+                              condition((diff(temps , ' '))),
+                              alors(
+                                 affecte(temps , appelf(element(tab[i]) , n(substr) , p(j))),
+                                 affecte(t , appelf(n(concat) , p(t) , p(temps))),
+                                 break()
+                              )
+                           )
+                        )
+                     )
+                  ),
+                  affecte(s1 , appelf(n(concat) , p(unBloc) , p(t))),
+                  affecte(s2 , appelf(n(concat) , p(unBlocPlus1) , p(t))),
+                  choix(
+                     si(
+                        condition(egal(i , l01-1)),
+                        alors(
+                           #(la dernière ligne du commentaire de bloc doit être vide),
+                           choix(
+                              si(
+                                 condition(egal(t , '')),
+                                 alors(appelf(element(newTab) , n(push) , p(unBloc)))
+                              ),
+                              sinon(
+                                 alors(
+                                    #(on met la ligne et on ajoute une ligne vide),
+                                    appelf(element(newTab) , n(push) , p(s2)),
+                                    appelf(element(newTab) , n(push) , p(unBloc))
+                                 )
+                              )
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition(egal(i , 0)),
+                        alors(
+                           #(la première ligne du commentaire de bloc doit être vide),
+                           choix(
+                              si(
+                                 condition(egal(t , '')),
+                                 alors(appelf(element(newTab) , n(push) , p(t)))
+                              ),
+                              sinon(
+                                 alors(
+                                    #(
+                                      on ajoute une ligne vide en début de tableau
+                                      on fait un unshift ici mais on aurait pu faire
+                                      un push car on est à i=0
+                                    ),
+                                    appelf(element(newTab) , n(unshift) , p('')),
+                                    appelf(element(newTab) , n(push) , p(s2))
+                                 )
+                              )
+                           )
+                        )
+                     ),
+                     sinon(
+                        alors(appelf(element(newTab) , n(push) , p(s2)))
+                     )
+                  )
+               )
+            ),
+            affecte(t , appelf(element(newTab) , n(join) , p('\n'))),
+            revenir(t)
          )
       ),
       #(
-         =============================================
-         =============================================
-         =============================================
-         fonction transforme un texte pour qu'il  soit 
-         visible en html, par exemple &nbsp; ou bien <
-         =============================================
-         =============================================
-         =============================================
+        =============================================
+        =============================================
+        =============================================
+        fonction transforme un texte pour qu'il  soit 
+        visible en html, par exemple &nbsp; ou bien <
+        =============================================
+        =============================================
+        =============================================
       ),
       fonction(
          definition(nom(strToHtml) , argument(s)),
@@ -169,14 +327,14 @@ src_javascript(
          )
       ),
       #(
-         =================================================
-         =================================================
-         =================================================
-         fonction qui reconstitue un texte source à partir  
-         du tableau représentant la matrice  du  programme
-         =================================================
-         =================================================
-         =================================================
+        =================================================
+        =================================================
+        =================================================
+        fonction qui reconstitue un texte source à partir  
+        du tableau représentant la matrice  du  programme
+        =================================================
+        =================================================
+        =================================================
       ),
       fonction(
          definition(
@@ -189,9 +347,9 @@ src_javascript(
          ),
          contenu(
             #(
-               ========================================
-               Attention : cette fonction est récursive
-               ========================================
+              ========================================
+              Attention : cette fonction est récursive
+              ========================================
             ),
             declare(i , 0),
             declare(j , 0),
@@ -205,9 +363,9 @@ src_javascript(
             declare(l01 , 0),
             affecte(l01 , arr.length),
             #(
-               =====================================================================
-               boucle principale qui commence à partir de "debut" passé en paramètre
-               =====================================================================
+              =====================================================================
+              boucle principale qui commence à partir de "debut" passé en paramètre
+              =====================================================================
             ),
             boucle(
                initialisation(affecte(i , debut)),
@@ -215,8 +373,8 @@ src_javascript(
                increment(affecte(i , i+1)),
                faire(
                   #(
-                     on ne traite que les enfants et les éléments 
-                     dont le niveau est supérieur au niveau du parent
+                    on ne traite que les enfants et les éléments 
+                    dont le niveau est supérieur au niveau du parent
                   ),
                   choix(
                      si(
@@ -232,18 +390,18 @@ src_javascript(
                      sinon(
                         alors(
                            #(
-                              on va dans la ligne suivante de la matrice 
-                              et on ne fait pas le traitement ci dessous 
+                             on va dans la ligne suivante de la matrice 
+                             et on ne fait pas le traitement ci dessous 
                            ),
                            continue()
                         )
                      )
                   ),
                   #(
-                     On doit forcer le retour de ligne quand la
-                     profondeur est trop importante ou bien
-                     qu'il y a trop d'enfants ou bien qu'il
-                     y a des commentaires
+                    On doit forcer le retour de ligne quand la
+                    profondeur est trop importante ou bien
+                    qu'il y a trop d'enfants ou bien qu'il
+                    y a des commentaires
                   ),
                   choix(
                      si(
@@ -261,8 +419,8 @@ src_javascript(
                         ),
                         alors(
                            #(
-                              Si c'est la premier enfant d'une fonction, 
-                              on teste si il existe des enfants de type commentaires
+                             Si c'est la premier enfant d'une fonction, 
+                             on teste si il existe des enfants de type commentaires
                            ),
                            boucle(
                               initialisation(affecte(j , debut)),
@@ -274,9 +432,9 @@ src_javascript(
                                        condition((egal(arr[j][1] , DEBUTCOMMENTAIRE)) , et(egal(arr[j][2] , 'f')) , et(inf(arr[j][3] , arr[parentId][3]+profondeurLimite))),
                                        alors(
                                           #(
-                                             il y a un commentaire
-                                             c'est une fonction
-                                             niveau inférieur à celui du parent + profondeur limite
+                                            il y a un commentaire
+                                            c'est une fonction
+                                            niveau inférieur à celui du parent + profondeur limite
                                           ),
                                           affecte(forcerRetourLigne , vrai),
                                           break()
@@ -295,7 +453,7 @@ src_javascript(
                                        condition((sup(arr[j][8] , nombreEnfantsLimite))),
                                        alors(
                                           #(
-                                             si le nombre d'enfants est supérieur à 3
+                                            si le nombre d'enfants est supérieur à 3
                                           ),
                                           affecte(forcerRetourLigne , vrai),
                                           break()
@@ -308,7 +466,7 @@ src_javascript(
                      )
                   ),
                   #(
-                     ici la variable forcerRetourLigne est éventuellement mise à true 
+                    ici la variable forcerRetourLigne est éventuellement mise à true 
                   ),
                   affecte(
                      condition1,
@@ -378,11 +536,11 @@ src_javascript(
                      )
                   ),
                   #(
-                     ======================================
-                     ici, forcerRetourLigne est vrai ou pas
-                     ======================================
-                     si  on  doit  traiter  une  constante
-                     ======================================
+                    ======================================
+                    ici, forcerRetourLigne est vrai ou pas
+                    ======================================
+                    si  on  doit  traiter  une  constante
+                    ======================================
                   ),
                   choix(
                      si(
@@ -449,20 +607,20 @@ src_javascript(
                      )
                   ),
                   #(
-                     
-                     
-                     ===================================================
-                     si on doit traiter une fonction de type commentaire
-                     ===================================================            
+                    
+                    
+                    ===================================================
+                    si on doit traiter une fonction de type commentaire
+                    ===================================================            
                   ),
                   choix(
                      si(
                         condition((egal(arr[i][2] , 'f')) , et(egal(arr[i][1] , DEBUTCOMMENTAIRE))),
                         alors(
                            #(
-                              ==========================
-                              on est dans un commentaire
-                              ==========================
+                             ==========================
+                             on est dans un commentaire
+                             ==========================
                            ),
                            affecte(commentaire , appelf(n(ttcomm1) , p(arr[i][13]) , p(arr[i][3]) , p(i))),
                            choix(
@@ -545,11 +703,11 @@ src_javascript(
                      )
                   ),
                   #(
-                     
-                     
-                     ===========================================================
-                     pour toutes les autres fonctions, on fait un appel récursif
-                     ===========================================================    
+                    
+                    
+                    ===========================================================
+                    pour toutes les autres fonctions, on fait un appel récursif
+                    ===========================================================    
                   ),
                   declare(obj , obj()),
                   appelf(
@@ -586,13 +744,13 @@ src_javascript(
                               )
                            ),
                            #(
-                              ============================================
-                              on ajoute le contenu récursif de la fonction
-                              ============================================
+                             ============================================
+                             on ajoute le contenu récursif de la fonction
+                             ============================================
                            ),
                            appelf(r(t) , n(concat) , p(t) , p(obj.value)),
                            #(
-                              on met les retours de ligne
+                             on met les retours de ligne
                            ),
                            choix(
                               si(
@@ -630,7 +788,7 @@ src_javascript(
                               )
                            ),
                            #(
-                              on ferme la parenthèse
+                             on ferme la parenthèse
                            ),
                            appelf(r(t) , n(concat) , p(t) , p(')'))
                         )
@@ -649,18 +807,18 @@ src_javascript(
          )
       ),
       #(
-         
-         
-         
-         
-         ===========================================
-         ===========================================
-         ===========================================
-         fonction qui produit un tableau html de  la
-         liste des caractères du source du programme
-         ===========================================
-         ===========================================
-         ===========================================
+        
+        
+        
+        
+        ===========================================
+        ===========================================
+        ===========================================
+        fonction qui produit un tableau html de  la
+        liste des caractères du source du programme
+        ===========================================
+        ===========================================
+        ===========================================
       ),
       fonction(
          definition(nom(ConstruitHtmlTableauCaracteres) , argument(t2) , argument(texteSource) , argument(objTableau)),
@@ -686,7 +844,7 @@ src_javascript(
                sinon(alors(affecte(out , objTableau.out)))
             ),
             #(
-               première case du tableau = numéro de ligne
+              première case du tableau = numéro de ligne
             ),
             declare(tr1 , obj()),
             declare(td1 , obj()),
@@ -716,10 +874,10 @@ src_javascript(
                   ),
                   appelf(element(tr1) , n(appendChild) , p(td1)),
                   #(
-                     ============================================
-                     Si on a un retour chariot, on écrit les 
-                     cases contenant les positions des caractères
-                     ============================================
+                    ============================================
+                    Si on a un retour chariot, on écrit les 
+                    cases contenant les positions des caractères
+                    ============================================
                   ),
                   choix(
                      si(
@@ -727,11 +885,11 @@ src_javascript(
                         alors(
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
-                              
-                              
-                              =================================================
-                              indice dans tableau = première ligne des chiffres
-                              =================================================
+                             
+                             
+                             =================================================
+                             indice dans tableau = première ligne des chiffres
+                             =================================================
                            ),
                            declare(tr1 , obj()),
                            declare(td1 , obj()),
@@ -761,10 +919,10 @@ src_javascript(
                               )
                            ),
                            #(
-                              
-                              =====================
-                              position du backslash
-                              =====================
+                             
+                             =====================
+                             position du backslash
+                             =====================
                            ),
                            declare(td1 , obj()),
                            appelf(r(td1) , n(document.createElement) , p('td')),
@@ -773,11 +931,11 @@ src_javascript(
                            appelf(element(tr1) , n(appendChild) , p(td1)),
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
-                              
-                              ========================================================
-                              position dans la chaine = deuxième ligne des chiffres
-                              car certains caractères utf8 sont codées sur 2 positions
-                              ========================================================
+                             
+                             ========================================================
+                             position dans la chaine = deuxième ligne des chiffres
+                             car certains caractères utf8 sont codées sur 2 positions
+                             ========================================================
                            ),
                            declare(tr1 , obj()),
                            declare(td1 , obj()),
@@ -807,10 +965,10 @@ src_javascript(
                               )
                            ),
                            #(
-                              
-                              =====================
-                              position du backslash
-                              =====================
+                             
+                             =====================
+                             position du backslash
+                             =====================
                            ),
                            declare(td1 , obj()),
                            appelf(r(td1) , n(document.createElement) , p('td')),
@@ -819,11 +977,11 @@ src_javascript(
                            appelf(element(tr1) , n(appendChild) , p(td1)),
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
-                              
-                              
-                              ======================================
-                              fin des lignes contenant les positions
-                              ======================================
+                             
+                             
+                             ======================================
+                             fin des lignes contenant les positions
+                             ======================================
                            ),
                            affecte(debut , i+1),
                            affecte(numeroLigne , numeroLigne+1),
@@ -835,10 +993,10 @@ src_javascript(
                            appelf(element(tr1) , n(appendChild) , p(td1)),
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
-                              ============================================
-                              FIN Si on a un retour chariot, on écrit les 
-                              cases contenant les positions des caractères
-                              ============================================
+                             ============================================
+                             FIN Si on a un retour chariot, on écrit les 
+                             cases contenant les positions des caractères
+                             ============================================
                            )
                         )
                      )
@@ -847,15 +1005,15 @@ src_javascript(
                )
             ),
             #(
-               dernière ligne des positions des caractères
+              dernière ligne des positions des caractères
             ),
             appelf(element(t2) , n(appendChild) , p(tr1)),
             #(
-               
-               
-               =================================================
-               indice dans tableau = première ligne des chiffres
-               =================================================
+              
+              
+              =================================================
+              indice dans tableau = première ligne des chiffres
+              =================================================
             ),
             declare(tr1 , obj()),
             declare(td1 , obj()),
@@ -887,14 +1045,14 @@ src_javascript(
             ),
             appelf(element(t2) , n(appendChild) , p(tr1)),
             #(
-               =====================
-               pas de position du backslash
-               =====================
+              =====================
+              pas de position du backslash
+              =====================
             ),
             #(
-               =====================================================
-               position dans la chaine = deuxième ligne des chiffres
-               =====================================================
+              =====================================================
+              position dans la chaine = deuxième ligne des chiffres
+              =====================================================
             ),
             declare(tr1 , obj()),
             declare(td1 , obj()),
@@ -929,14 +1087,14 @@ src_javascript(
          )
       ),
       #(
-         ==========================================
-         ==========================================
-         ==========================================
-         fonction qui produit un tableau html de la
-         forme matricielle du programme
-         ==========================================
-         ==========================================
-         ==========================================
+        ==========================================
+        ==========================================
+        ==========================================
+        fonction qui produit un tableau html de la
+        forme matricielle du programme
+        ==========================================
+        ==========================================
+        ==========================================
       ),
       fonction(
          definition(nom(ConstruitHtmlMatrice) , argument(t1) , argument(matriceFonction)),
@@ -958,9 +1116,9 @@ src_javascript(
             ),
             appelf(r(tr1) , n(document.createElement) , p('tr')),
             #(
-               =================
-               entête du tableau
-               =================
+              =================
+              entête du tableau
+              =================
             ),
             affecte(l01 , global_enteteTableau.length),
             boucle(
@@ -971,7 +1129,7 @@ src_javascript(
                   declare(td1 , obj()),
                   appelf(r(td1) , n(document.createElement) , p('td')),
                   affecte(td1.innerHTML , appelf(n(concat) , p(i) , p(global_enteteTableau[i][0]))),
-                  #(#                  td1.setAttribute('title',global_enteteTableau[i][1] + '(' + i + ')');),
+                  #(),
                   appelf(
                      element(td1),
                      n(setAttribute),
@@ -983,11 +1141,11 @@ src_javascript(
             ),
             appelf(element(t1) , n(appendChild) , p(tr1)),
             #(
-               
-               
-               ===================
-               éléments du tableau
-               ===================
+              
+              
+              ===================
+              éléments du tableau
+              ===================
             ),
             affecte(l01 , matriceFonction.value.length),
             boucle(
@@ -1047,13 +1205,13 @@ src_javascript(
          )
       ),
       #(
-         ===========================================
-         ===========================================
-         ===========================================
-         fonction qui transforme un texte en tableau
-         ===========================================
-         ===========================================
-         ===========================================
+        ===========================================
+        ===========================================
+        ===========================================
+        fonction qui transforme un texte en tableau
+        ===========================================
+        ===========================================
+        ===========================================
       ),
       fonction(
          definition(nom(iterateCharacters2) , argument(str)),
@@ -1076,14 +1234,14 @@ src_javascript(
                   choix(
                      si(
                         #(
-                           zero width space , vertical tab
+                          zero width space , vertical tab
                         ),
                         condition(
                            non((egalstricte(codeCaractere , 8203)) , ou(egalstricte(codeCaractere , 11)))
                         ),
                         alors(
                            #(
-                              0xD800 =55296
+                             0xD800 =55296
                            ),
                            affecte(temp , codeCaractere&0xF800),
                            choix(
@@ -1143,14 +1301,14 @@ src_javascript(
          )
       ),
       #(
-         ==================================================
-         ==================================================
-         ==================================================
-         tableau retourné par l'analyse syntaxique 
-         du texte en entrée de la fonction functionToArray2
-         ==================================================
-         ==================================================
-         ==================================================
+        ==================================================
+        ==================================================
+        ==================================================
+        tableau retourné par l'analyse syntaxique 
+        du texte en entrée de la fonction functionToArray2
+        ==================================================
+        ==================================================
+        ==================================================
       ),
       declare(
          global_enteteTableau,
@@ -1173,13 +1331,13 @@ src_javascript(
          )
       ),
       #(
-         ===================================================
-         ===================================================
-         ===================================================
-         fonction d'analyse syntaxique d'un programme source
-         ===================================================
-         ===================================================
-         ===================================================
+        ===================================================
+        ===================================================
+        ===================================================
+        fonction d'analyse syntaxique d'un programme source
+        ===================================================
+        ===================================================
+        ===================================================
       ),
       fonction(
          definition(
@@ -1190,9 +1348,9 @@ src_javascript(
          ),
          contenu(
             #(
-               =========================
-               les chaines de caractères
-               =========================
+              =========================
+              les chaines de caractères
+              =========================
             ),
             declare(texte , ''),
             declare(commentaire , ''),
@@ -1200,9 +1358,9 @@ src_javascript(
             declare(c1 , ''),
             declare(c2 , ''),
             #(
-               =========================
-               les entiers
-               =========================
+              =========================
+              les entiers
+              =========================
             ),
             declare(i , 0),
             declare(j , 0),
@@ -1218,17 +1376,17 @@ src_javascript(
             declare(niveauDebutCommentaire , 0),
             declare(niveauDansCommentaire , 0),
             #(
-               =========================
-               les booléens
-               =========================
+              =========================
+              les booléens
+              =========================
             ),
             declare(dansCst , false),
             declare(dsComment , false),
             declare(constanteQuotee , false),
             #(
-               ====================================
-               Le tableau en sortie si tout va bien
-               ====================================
+              ====================================
+              Le tableau en sortie si tout va bien
+              ====================================
             ),
             declare(
                T,
@@ -1236,12 +1394,12 @@ src_javascript(
             ),
             declare(temp , obj()),
             #(
-               =======================================================================
-               initialisation du tableau contenant le source structuré en arborescence
-               =======================================================================
-               0id    1val  2typ  3niv  4coQ
-               5pre   6der  7pId  8nbE  9numEnfant  
-               10pro 11OPa 12FPa 13comm
+              =======================================================================
+              initialisation du tableau contenant le source structuré en arborescence
+              =======================================================================
+              0id    1val  2typ  3niv  4coQ
+              5pre   6der  7pId  8nbE  9numEnfant  
+              10pro 11OPa 12FPa 13comm
             ),
             appelf(
                n(push),
@@ -1268,13 +1426,13 @@ src_javascript(
             ),
             declare(l01 , tableauEntree.length),
             #(
-               // ====================================================================
-               // ====================================================================
-               // boucle principale sur tous les caractères du texte passé en argument
-               // on commence par analyser les cas ou on est dans des chaines, puis on
-               // analyse les caractères
-               // ====================================================================
-               // ====================================================================
+              // ====================================================================
+              // ====================================================================
+              // boucle principale sur tous les caractères du texte passé en argument
+              // on commence par analyser les cas ou on est dans des chaines, puis on
+              // analyse les caractères
+              // ====================================================================
+              // ====================================================================
             ),
             boucle(
                initialisation(affecte(i , 0)),
@@ -1287,12 +1445,12 @@ src_javascript(
                         condition((dsComment)),
                         alors(
                            #(
-                              
-                              
-                              
-                              =============================
-                              Si on est dans un commentaire
-                              =============================
+                             
+                             
+                             
+                             =============================
+                             Si on est dans un commentaire
+                             =============================
                            ),
                            choix(
                               si(
@@ -1335,12 +1493,12 @@ src_javascript(
                               )
                            ),
                            #(
-                              =============================
-                              FIN de Si on est dans un commentaire
-                              =============================
-                              
-                              
-                              
+                             =============================
+                             FIN de Si on est dans un commentaire
+                             =============================
+                             
+                             
+                             
                            )
                         )
                      ),
@@ -1348,12 +1506,12 @@ src_javascript(
                         condition((egal(dansCst , true))),
                         alors(
                            #(
-                              
-                              
-                              
-                              ============================
-                              Si on est dans une constante
-                              ============================
+                             
+                             
+                             
+                             ============================
+                             Si on est dans une constante
+                             ============================
                            ),
                            choix(
                               si(
@@ -1478,36 +1636,36 @@ src_javascript(
                               )
                            ),
                            #(
-                              ===================================
-                              Fin de Si on est dans une constante
-                              ===================================
-                              
-                              
-                              
+                             ===================================
+                             Fin de Si on est dans une constante
+                             ===================================
+                             
+                             
+                             
                            )
                         )
                      ),
                      sinon(
                         alors(
                            #(
-                              
-                              
-                              
-                              ==================================================
-                              on n'est pas dans un commentaire ou une constante,  
-                              donc c'est un nouveau type qu'il faut détecter
-                              ==================================================
+                             
+                             
+                             
+                             ==================================================
+                             on n'est pas dans un commentaire ou une constante,  
+                             donc c'est un nouveau type qu'il faut détecter
+                             ==================================================
                            ),
                            choix(
                               si(
                                  condition((egal(c , '('))),
                                  alors(
                                     #(
-                                       ====================
-                                       Parenthèse ouvrante
-                                       ====================
-                                       
-                                       
+                                      ====================
+                                      Parenthèse ouvrante
+                                      ====================
+                                      
+                                      
                                     ),
                                     affecte(posOuvPar , i),
                                     affecte(indice , indice+1),
@@ -1544,11 +1702,11 @@ src_javascript(
                                     affecte(texte , ''),
                                     affecte(dansCst , faux),
                                     #(
-                                       ==========================
-                                       FIN DE Parenthèse ouvrante
-                                       ==========================
-                                       
-                                       
+                                      ==========================
+                                      FIN DE Parenthèse ouvrante
+                                      ==========================
+                                      
+                                      
                                     )
                                  )
                               ),
@@ -1556,11 +1714,11 @@ src_javascript(
                                  condition((egal(c , ')'))),
                                  alors(
                                     #(
-                                       
-                                       
-                                       ====================
-                                       Parenthèse fermante
-                                       ====================
+                                      
+                                      
+                                      ====================
+                                      Parenthèse fermante
+                                      ====================
                                     ),
                                     affecte(posFerPar , i),
                                     choix(
@@ -1606,9 +1764,9 @@ src_javascript(
                                     ),
                                     affecte(niveau , niveau-1),
                                     #(
-                                       
-                                       maj de la position de fermeture de la parenthèse
-                                       
+                                      
+                                      maj de la position de fermeture de la parenthèse
+                                      
                                     ),
                                     boucle(
                                        initialisation(affecte(j , indice)),
@@ -1626,11 +1784,11 @@ src_javascript(
                                     affecte(posFerPar , 0),
                                     affecte(dansCst , false),
                                     #(
-                                       ==========================
-                                       FIN de Parenthèse fermante
-                                       ==========================
-                                       
-                                       
+                                      ==========================
+                                      FIN de Parenthèse fermante
+                                      ==========================
+                                      
+                                      
                                     )
                                  )
                               ),
@@ -1638,11 +1796,11 @@ src_javascript(
                                  condition((egal(c , '\\'))),
                                  alors(
                                     #(
-                                       
-                                       
-                                       ===========
-                                       anti slash 
-                                       ===========
+                                      
+                                      
+                                      ===========
+                                      anti slash 
+                                      ===========
                                     ),
                                     choix(
                                        si(
@@ -1654,11 +1812,11 @@ src_javascript(
                                        )
                                     ),
                                     #(
-                                       ===================
-                                       Fin d'un anti slash
-                                       ===================
-                                       
-                                       
+                                      ===================
+                                      Fin d'un anti slash
+                                      ===================
+                                      
+                                      
                                     )
                                  )
                               ),
@@ -1666,11 +1824,11 @@ src_javascript(
                                  condition((egal(c , '\''))),
                                  alors(
                                     #(
-                                       
-                                       
-                                       //===========
-                                       // apostrophe
-                                       //===========
+                                      
+                                      
+                                      //===========
+                                      // apostrophe
+                                      //===========
                                     ),
                                     affecte(premier , i),
                                     choix(
@@ -1681,11 +1839,11 @@ src_javascript(
                                        sinon(alors(affecte(dansCst , vrai)))
                                     ),
                                     #(
-                                       //===============
-                                       // FIN apostrophe
-                                       //===============
-                                       
-                                       
+                                      //===============
+                                      // FIN apostrophe
+                                      //===============
+                                      
+                                      
                                     )
                                  )
                               ),
@@ -1693,11 +1851,11 @@ src_javascript(
                                  condition((egal(c , ','))),
                                  alors(
                                     #(
-                                       
-                                       
-                                       //========================
-                                       // virgule donc séparateur
-                                       //========================
+                                      
+                                      
+                                      //========================
+                                      // virgule donc séparateur
+                                      //========================
                                     ),
                                     choix(
                                        si(
@@ -1772,11 +1930,11 @@ src_javascript(
                                     affecte(texte , ''),
                                     affecte(dansCst , faux),
                                     #(
-                                       //============================
-                                       // FIN virgule donc séparateur
-                                       //============================
-                                       
-                                       
+                                      //============================
+                                      // FIN virgule donc séparateur
+                                      //============================
+                                      
+                                      
                                     )
                                  )
                               ),
@@ -1784,11 +1942,11 @@ src_javascript(
                                  condition((egal(c , ' ')) , ou(egal(c , '\t')) , ou(egal(c , '\r')) , ou(egal(c , '\n'))),
                                  alors(
                                     #(
-                                       
-                                       
-                                       =============================
-                                       caractères séparateurs de mot
-                                       =============================
+                                      
+                                      
+                                      =============================
+                                      caractères séparateurs de mot
+                                      =============================
                                     ),
                                     choix(
                                        si(
@@ -1833,21 +1991,21 @@ src_javascript(
                                        )
                                     ),
                                     #(
-                                       ====================================
-                                       FIN de caractères séparateurs de mot
-                                       ====================================
-                                       
-                                       
+                                      ====================================
+                                      FIN de caractères séparateurs de mot
+                                      ====================================
+                                      
+                                      
                                     )
                                  )
                               ),
                               sinon(
                                  #(
-                                    
-                                    
-                                    ==========================
-                                    tous les autres caractères
-                                    ==========================
+                                   
+                                   
+                                   ==========================
+                                   tous les autres caractères
+                                   ==========================
                                  ),
                                  alors(
                                     choix(
@@ -1867,9 +2025,9 @@ src_javascript(
                )
             ),
             #(
-               ========================================
-               on est en dehors de la boucle principale
-               ========================================
+              ========================================
+              on est en dehors de la boucle principale
+              ========================================
             ),
             choix(
                si(
@@ -1923,10 +2081,10 @@ src_javascript(
                )
             ),
             #(
-               
-               ==============================================================
-               // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
-               ============================================================== 
+              
+              ==============================================================
+              // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
+              ============================================================== 
             ),
             affecte(l01 , T.length),
             boucle(
@@ -1951,11 +2109,11 @@ src_javascript(
                )
             ),
             #(
-               
-               ============================== 
-               numérotation des enfants
-               numenfant = k
-               ==============================
+              
+              ============================== 
+              numérotation des enfants
+              numenfant = k
+              ==============================
             ),
             affecte(k , 0),
             boucle(
@@ -1980,11 +2138,11 @@ src_javascript(
                )
             ),
             #(
-               =======================================
-               profondeur des fonctions
-               k=remonterAuNiveau
-               l=idParent
-               =======================================
+              =======================================
+              profondeur des fonctions
+              k=remonterAuNiveau
+              l=idParent
+              =======================================
             ),
             boucle(
                initialisation(affecte(i , l01-1)),

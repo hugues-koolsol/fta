@@ -73,9 +73,9 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
             value+=' , ';
            }
            if(tab[l][1]=='NULL'){
-            value+=''+echappConstante(tab[l][1])+'';
+            value+=''+(tab[l][1])+'';
            }else{
-            value+='\''+echappConstante(tab[l][1])+'\'';
+            value+='\''+(tab[l][1])+'\'';
            }
           }
           if(value!=''){
@@ -207,9 +207,9 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
       t+='  ';
       t+=tab[i+2][1];
      }else{
-      t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : tab[i+1][1]);
+      t+=(tab[i+1][4]===true?'\''+(tab[i+1][1])+'\'' : tab[i+1][1]);
       t+=' = ';
-      t+=(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : tab[i+2][1]);
+      t+=(tab[i+2][4]===true?'\''+(tab[i+2][1])+'\'' : tab[i+2][1]);
      }
      t+=';';
     }else{
@@ -250,7 +250,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
         t+=' NOT NULL';
        }else if(tab[j][1]=='default' && tab[j][8]==1){
         t+=' DEFAULT ';
-        t+=' \''+echappConstante(tab[j+1][1])+'\' ';
+        t+=' \''+(tab[j+1][1])+'\' ';
         j++;
        }else if(tab[j][1]=='type' && (tab[j][8]==1 || tab[j][8]==2) && tab[j+1][2]=='c'){
         if(tab[j][8]==1){

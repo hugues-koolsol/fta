@@ -60,7 +60,7 @@ function js_condition1(tab,id,niveau){
    t+=tab[i][1]=='vrai'?'true':'false'; // i18
   }else if(tab[i][4]==true){
    t+='\'';
-   t+=echappConstante(tab[i][1]);
+   t+=tab[i][1];
    t+='\'';
   }else{
    t+=tab[i][1];
@@ -137,7 +137,7 @@ function js_condition1(tab,id,niveau){
      }
      if(tab[tabPar[0]][2]=='c'){
       if(tab[tabPar[0]][4]==true){
-       t+='\''+echappConstante(tab[tabPar[0]][1])+'\'';
+       t+='\''+tab[tabPar[0]][1]+'\'';
       }else{
        if(tab[tabPar[0]][1]=='vrai' || tab[tabPar[0]][1]=='faux'){
         t+=(tab[tabPar[0]][1]=='vrai'?'true':'false');
@@ -178,7 +178,7 @@ function js_condition1(tab,id,niveau){
      }
      if(tab[tabPar[1]][2]=='c'){
       if(tab[tabPar[1]][4]==true){
-       t+='\''+echappConstante(tab[tabPar[1]][1])+'\'';
+       t+='\''+tab[tabPar[1]][1]+'\'';
       }else{
        if(tab[tabPar[1]][1]=='vrai' || tab[tabPar[1]][1]=='faux'){
         t+=(tab[tabPar[1]][1]=='vrai'?'true':'false');
@@ -208,7 +208,7 @@ function js_condition1(tab,id,niveau){
      t+=tab[i][1]=='vrai'?'true':'false'; // i18
     }else if(tab[i][4]==true){
      t+='\'';
-     t+=echappConstante(tab[i][1]);
+     t+=tab[i][1];
      t+='\'';
     }else{
      t+=tab[i][1];
@@ -333,7 +333,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     if(tab[i][8]==1){    
      if(tab[i+1][2]=='c'){
       t+=espacesn(true,niveau);
-      t+='return '+(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1]))))+';';
+      t+='return '+(tab[i+1][4]===true?'\''+tab[i+1][1]+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1]))))+';';
      }else if(tab[i+1][2]=='f' && tab[i+1][1]=='appelf' ){
        t+=espacesn(true,niveau);
       obj=js_traiteAppelFonction(tab,i+1,true,niveau,false);
@@ -951,7 +951,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
 
-    t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':tab[i+2][1]) )+'');
+    t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+tab[i+2][1]+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':tab[i+2][1]) )+'');
     if(!dansInitialisation){
      t+=';';
     }
@@ -977,7 +977,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==i && tab[j][9]=='2'){
        if(tab[j][2]=='c'){
-        t+=(tab[j][4]===true?'\''+echappConstante(tab[j][1])+'\'' : (tab[j][1]=='vrai'?'true':(tab[j][1]=='faux'?'false':(tab[j][1]))));        
+        t+=(tab[j][4]===true?'\''+tab[j][1]+'\'' : (tab[j][1]=='vrai'?'true':(tab[j][1]=='faux'?'false':(tab[j][1]))));        
        }else{
         if(tab[j][1]=='appelf'){
          obj=js_traiteAppelFonction(tab,j,true,niveau,false);
@@ -1042,7 +1042,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      if( (tab[i+2][1]=='vrai' || tab[i+2][1]=='faux' ) && tab[i+2][4]===false){
       t+='var '+tab[i+1][1]+'='+(tab[i+2][1]==='vrai'?'true':'false')+';';
      }else{
-      t+='var '+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\';' : tab[i+2][1]+';');
+      t+='var '+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+tab[i+2][1]+'\';' : tab[i+2][1]+';');
      }
     }else{
      if(tab[i+1][2]=='c' && tab[i+2][2]=='f' ){
@@ -1088,10 +1088,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    
   //=====================================================================================
   }else if(tab[i][1]=='#'  && tab[i][2]=='f'){
-   t+=espacesn(true,niveau);
+   if(tab[i][13].substr(0,1)=='#'){
+    t+='\n';
+   }else{
+    t+=espacesn(true,niveau);
+   }
    var commt=traiteCommentaire2(tab[i][13],niveau,i);
 //   console.log('apres traite commentaite2 tab['+i+'][13]='+tab[i][13],'\ncommt='+commt);
-   t+='/*' + commt +'*/';
+   t+='/*' + commt;
+   if(tab[i][13].substr(0,1)=='#'){
+    t+='\n';
+   }
+   t+='*/';
   //=====================================================================================
   }else{
    t+=espacesn(true,niveau);
@@ -1118,12 +1126,12 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction){ // id = p
      if(tab[j+2][1]=='obj'){
       obj=js_traiteDefinitionObjet(tab,j+2,true);
       if(obj.status==true){
-       textObj+=','+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':'\''+tab[j+1][1])+'\''+':'+obj.value+'';
+       textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1])+'\''+':'+obj.value+'';
       }else{
        return logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'});
       }
      }else{
-      textObj+=','+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':'\''+tab[j+1][1]+'\'')+':'+(tab[j+2][4]==true?'\''+echappConstante(tab[j+2][1])+'\'':tab[j+2][1])+'';
+      textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1]+'\'')+':'+(tab[j+2][4]==true?'\''+tab[j+2][1]+'\'':tab[j+2][1])+'';
      }
     }
    }
@@ -1186,7 +1194,11 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
   for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
    if(tab[j][1]=='element' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
     if(tab[j][8]==1){
-     nomElement=tab[j+1][1];
+     if(tab[j+1][4]==true){
+      nomElement='\''+tab[j+1][1]+'\'';
+     }else{
+      nomElement=tab[j+1][1];
+     }
     }
     break;
    }
@@ -1196,7 +1208,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     break;
    }
    if(tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
-    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='r' ){
+    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='r' || tab[j][1]=='prop' ){
      continue;
     }else{
      logerreur({status:false,value:t,id:i,tab:tab,message:'les seuls paramètres de appelf sont n,p,r,element et non pas "'+tab[j][1]+'"'});
@@ -1230,7 +1242,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     // la propriété est à un niveau +1 de l'appelf ( document.getElementById(toto).propriete )
     // todo voir dans quel cas c'est utilisé
     if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
-     proprietesFonction+='.'+( tab[j+1][4]==true ? '\''+echappConstante(tab[j+1][1])+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'false':tab[j+1][1])) );
+     proprietesFonction+='.'+( tab[j+1][4]==true ? '\''+tab[j+1][1]+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'false':tab[j+1][1])) );
     }else{
      // cas ou le paramètre d'une fonction est une fonction
      if(tab[j][8]==1 && tab[j+1][2]=='f' ){
@@ -1257,7 +1269,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     if(tab[j][8]==0 && tab[j+1][2]=='f' ){ // le paramètre est une fonction vide
      argumentsFonction+=',';
     }else if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
-     argumentsFonction+=','+( tab[j+1][4]==true ? '\''+echappConstante(tab[j+1][1])+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'false':tab[j+1][1])) );
+     argumentsFonction+=','+( tab[j+1][4]==true ? '\''+tab[j+1][1]+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'false':tab[j+1][1])) );
     }else{
      // cas ou le paramètre d'une fonction est une fonction
      if(tab[j][8]==1 && tab[j+1][2]=='f' ){

@@ -1,19 +1,54 @@
 
+/*#
+//=====================================================================================================================
+function traiteCommentaire2(texte,niveau,ind){
+ return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+}
+
+      
+*/
 /*
-=============================================
-=============================================
-=============================================
-fonction transforme un texte pour qu'il  soit 
-visible en html, par exemple &nbsp; ou bien <
-=============================================
-=============================================
-=============================================
+  ===================================================================
+  ===================================================================
+  ===================================================================
+  fonction transforme un commentaire pour un fichier source à générer
+  ===================================================================
+  ===================================================================
+  ===================================================================
+*/
+function traiteCommentaire2(texte,niveau,ind){
+    var s='';
+    s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+    return s;
+}
+/*
+  ======================================================
+  ======================================================
+  ======================================================
+  fonction transforme un commentaire pour un fichier rev
+  ======================================================
+  ======================================================
+  ======================================================
+*/
+function ttcomm1(texte,niveau,ind){
+    var s='';
+    s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESREV,true);
+    return s;
+}
+/*
+  =============================================
+  =============================================
+  =============================================
+  fonction transforme un commentaire 
+  =============================================
+  =============================================
+  =============================================
 */
 function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
     var i=0;
     /*Si c'est un commentaire monoligne, on le retourne sans aucune transformation*/
     i=texte.indexOf('\n');
-    if(tab.length <= 1){
+    if(i < 0){
         return texte;
     }
     /**/
@@ -24,42 +59,42 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var t='';
     var ligne='';
     var temps='';
+    var unBloc='';
+    var unBlocPlus1='';
     var newTab= Array();
     var tab= Array();
+    /**/
+    unBloc=' '.repeat(nbEspacesSrc1*niveau);
     tab=texte.split('\n');
     l01=tab.length;
     /**/
     if(texte.length > 1){
-        ligne=texte.substr(0,1);
-        if(ligne == '#'){
+        temps=texte.substr(0,1);
+        if(temps == '#'){
             /*
-            on a un commentaire de type bloc non formaté 
-            car le premier caractère = #
+              on a un commentaire de type bloc non formaté 
+              car le premier caractère = #
             */
             /*
-            si on traite un source de type rev,
-            on ne transforme pas le texte ...
+              ... sinon on supprime les espaces 
+              inutiles en début de ligne.
             */
-            if((fichierRev0)){
-                return texte;
-            }
-            /*
-            ... sinon on supprime les espaces 
-            inutiles en début de ligne.
-            */
+/*#
+test
+  test
+                              
+*/
             t='';
             min=99999;
-            for(i=0;i < l01;i=i+1){
+            for(i=1;i < l01;i=i+1){
                 ligne=tab[i];
                 for(j=0;j < ligne.length;j=j+1){
                     /*
-                    on balaye toutes les lignes pour détecter 
-                    le nombre d'espaces minimal à gauche
+                      on balaye toutes les lignes pour détecter 
+                      le nombre d'espaces minimal à gauche
                     */
                     temps=ligne.substr(j,1);
-                    if(temps == ' '){
-                        continue;
-                    }else{
+                    if(temps != ' '){
                         if(j < min){
                             /*on réajuste le minimum*/
                             min=j;
@@ -69,30 +104,87 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                     }
                 }
             }
-            if(min > 0){
+            if(min > 2){
+                /*tout décaler à gauche*/
                 for(i=1;i < l01;i=i+1){
-                    tab[i]=tab[i].substr(min);
+                    tab[i]=tab[i].substr(min-2);
                 }
-                texte=tab.join('\n');
             }
+            /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
+            if((fichierRev0)){
+                ligne=tab[tab.length-1];
+                ligne=ligne.replaceAll(' ','');
+                if(ligne != ''){
+                    tab.push(unBloc);
+                }else{
+                    tab[tab.length-1]=unBloc;
+                }
+            }
+            /**/
+            texte=tab.join('\n');
             return texte;
         }
     }
     /*
-    si on est ici, c'est qu'on a un commentaire multiligne
-    qu'il faut formatter en alignant à gauche les textes 
-    d'un nombre d'espaces correspondant au niveau
+      si on est ici, c'est qu'on a un commentaire multiligne
+      qu'il faut formatter en alignant à gauche les textes 
+      d'un nombre d'espaces correspondant au niveau
     */
+    /*affecte(i , niveau+1)*/
+    unBlocPlus1=' '.repeat(nbEspacesSrc1*niveau+2);
+    var s1='';
+    var s2='';
+    for(i=0;i < l01;i=i+1){
+        t='';
+        /*on enlève les espaces au début*/
+        for(j=0;j < tab[i].length;j=j+1){
+            temps=tab[i].substr(j,1);
+            if((temps != ' ')){
+                temps=tab[i].substr(j);
+                t=concat(t,temps);
+                break;
+            }
+        }
+        s1=concat(unBloc,t);
+        s2=concat(unBlocPlus1,t);
+        if(i == l01-1){
+            /*la dernière ligne du commentaire de bloc doit être vide*/
+            if(t == ''){
+                newTab.push(unBloc);
+            }else{
+                /*on met la ligne et on ajoute une ligne vide*/
+                newTab.push(s2);
+                newTab.push(unBloc);
+            }
+        }else if(i == 0){
+            /*la première ligne du commentaire de bloc doit être vide*/
+            if(t == ''){
+                newTab.push(t);
+            }else{
+                /*
+                  on ajoute une ligne vide en début de tableau
+                  on fait un unshift ici mais on aurait pu faire
+                  un push car on est à i=0
+                */
+                newTab.unshift('');
+                newTab.push(s2);
+            }
+        }else{
+            newTab.push(s2);
+        }
+    }
+    t=newTab.join('\n');
+    return t;
 }
 /*
-=============================================
-=============================================
-=============================================
-fonction transforme un texte pour qu'il  soit 
-visible en html, par exemple &nbsp; ou bien <
-=============================================
-=============================================
-=============================================
+  =============================================
+  =============================================
+  =============================================
+  fonction transforme un texte pour qu'il  soit 
+  visible en html, par exemple &nbsp; ou bien <
+  =============================================
+  =============================================
+  =============================================
 */
 function strToHtml(s){
     var r1= new RegExp('&','g');
@@ -104,20 +196,20 @@ function strToHtml(s){
     return s;
 }
 /*
-=================================================
-=================================================
-=================================================
-fonction qui reconstitue un texte source à partir  
-du tableau représentant la matrice  du  programme
-=================================================
-=================================================
-=================================================
+  =================================================
+  =================================================
+  =================================================
+  fonction qui reconstitue un texte source à partir  
+  du tableau représentant la matrice  du  programme
+  =================================================
+  =================================================
+  =================================================
 */
 function a2F1(arr,parentId,retourLigne,debut,coloration){
     /*
-    ========================================
-    Attention : cette fonction est récursive
-    ========================================
+      ========================================
+      Attention : cette fonction est récursive
+      ========================================
     */
     var i=0;
     var j=0;
@@ -131,14 +223,14 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var l01=0;
     l01=arr.length;
     /*
-    =====================================================================
-    boucle principale qui commence à partir de "debut" passé en paramètre
-    =====================================================================
+      =====================================================================
+      boucle principale qui commence à partir de "debut" passé en paramètre
+      =====================================================================
     */
     for(i=debut;i < l01;i=i+1){
         /*
-        on ne traite que les enfants et les éléments 
-        dont le niveau est supérieur au niveau du parent
+          on ne traite que les enfants et les éléments 
+          dont le niveau est supérieur au niveau du parent
         */
         if((arr[i][7] == parentId)){
             /*On va à la suite du programme*/
@@ -146,30 +238,30 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             break;
         }else{
             /*
-            on va dans la ligne suivante de la matrice 
-            et on ne fait pas le traitement ci dessous 
+              on va dans la ligne suivante de la matrice 
+              et on ne fait pas le traitement ci dessous 
             */
             continue;
         }
         /*
-        On doit forcer le retour de ligne quand la
-        profondeur est trop importante ou bien
-        qu'il y a trop d'enfants ou bien qu'il
-        y a des commentaires
+          On doit forcer le retour de ligne quand la
+          profondeur est trop importante ou bien
+          qu'il y a trop d'enfants ou bien qu'il
+          y a des commentaires
         */
         if((retourLigne == true) && arr[parentId][10] > profondeurLimite){
             forcerRetourLigne=true;
         }else if((retourLigne == true) && /*le type du parent est une fonction ou bien c'est la racine*/(arr[parentId][2] == 'f') || arr[parentId][2] == 'INIT'){
             /*
-            Si c'est la premier enfant d'une fonction, 
-            on teste si il existe des enfants de type commentaires
+              Si c'est la premier enfant d'une fonction, 
+              on teste si il existe des enfants de type commentaires
             */
             for(j=debut;(j < l01) && arr[j][3] > arr[parentId][3];j=j+1){
                 if((arr[j][1] == DEBUTCOMMENTAIRE) && arr[j][2] == 'f' && arr[j][3] < arr[parentId][3]+profondeurLimite){
                     /*
-                    il y a un commentaire
-                    c'est une fonction
-                    niveau inférieur à celui du parent + profondeur limite
+                      il y a un commentaire
+                      c'est une fonction
+                      niveau inférieur à celui du parent + profondeur limite
                     */
                     forcerRetourLigne=true;
                     break;
@@ -178,7 +270,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             for(j=debut;(j < l01) && arr[j][3] > arr[parentId][3];j=j+1){
                 if((arr[j][8] > nombreEnfantsLimite)){
                     /*
-                    si le nombre d'enfants est supérieur à 3
+                      si le nombre d'enfants est supérieur à 3
                     */
                     forcerRetourLigne=true;
                     break;
@@ -186,7 +278,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             }
         }
         /*
-        ici la variable forcerRetourLigne est éventuellement mise à true 
+          ici la variable forcerRetourLigne est éventuellement mise à true 
         */
         condition1=(arr[parentId][2] == 'f') && arr[parentId][8] <= nombreEnfantsLimite && arr[parentId][10] <= profondeurLimite;
         if((arr[i][9] > 1)){
@@ -207,11 +299,11 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             }
         }
         /*
-        ======================================
-        ici, forcerRetourLigne est vrai ou pas
-        ======================================
-        si  on  doit  traiter  une  constante
-        ======================================
+          ======================================
+          ici, forcerRetourLigne est vrai ou pas
+          ======================================
+          si  on  doit  traiter  une  constante
+          ======================================
         */
         if((arr[i][2] == 'c')){
             if(((coloration))){
@@ -230,17 +322,17 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             continue;
         }
         /*
-        
-        
-        ===================================================
-        si on doit traiter une fonction de type commentaire
-        ===================================================            
+          
+          
+          ===================================================
+          si on doit traiter une fonction de type commentaire
+          ===================================================            
         */
         if((arr[i][2] == 'f') && arr[i][1] == DEBUTCOMMENTAIRE){
             /*
-            ==========================
-            on est dans un commentaire
-            ==========================
+              ==========================
+              on est dans un commentaire
+              ==========================
             */
             commentaire=ttcomm1(arr[i][13],arr[i][3],i);
             if(((coloration))){
@@ -262,11 +354,11 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             continue;
         }
         /*
-        
-        
-        ===========================================================
-        pour toutes les autres fonctions, on fait un appel récursif
-        ===========================================================    
+          
+          
+          ===========================================================
+          pour toutes les autres fonctions, on fait un appel récursif
+          ===========================================================    
         */
         var obj={};
         obj=a2F1(arr,i,retourLigne,i+1,coloration);
@@ -278,13 +370,13 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 t=concat(t,arr[i][1],'(');
             }
             /*
-            ============================================
-            on ajoute le contenu récursif de la fonction
-            ============================================
+              ============================================
+              on ajoute le contenu récursif de la fonction
+              ============================================
             */
             t=concat(t,obj.value);
             /*
-            on met les retours de ligne
+              on met les retours de ligne
             */
             if(((forcerRetourLigne) && obj.forcerRetourLigne == true)){
                 t=concat(t,espacesnrev(false,arr[i][3]));
@@ -294,7 +386,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 }
             }
             /*
-            on ferme la parenthèse
+              on ferme la parenthèse
             */
             t=concat(t,')');
         }else{
@@ -306,18 +398,18 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     return obj;
 }
 /*
-
-
-
-
-===========================================
-===========================================
-===========================================
-fonction qui produit un tableau html de  la
-liste des caractères du source du programme
-===========================================
-===========================================
-===========================================
+  
+  
+  
+  
+  ===========================================
+  ===========================================
+  ===========================================
+  fonction qui produit un tableau html de  la
+  liste des caractères du source du programme
+  ===========================================
+  ===========================================
+  ===========================================
 */
 function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     var numeroLigne=0;
@@ -337,7 +429,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
         out=objTableau.out;
     }
     /*
-    première case du tableau = numéro de ligne
+      première case du tableau = numéro de ligne
     */
     var tr1={};
     var td1={};
@@ -355,19 +447,19 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
         td1.title=concat('&amp;#',tmps,'; (',out[i][1],')');
         tr1.appendChild(td1);
         /*
-        ============================================
-        Si on a un retour chariot, on écrit les 
-        cases contenant les positions des caractères
-        ============================================
+          ============================================
+          Si on a un retour chariot, on écrit les 
+          cases contenant les positions des caractères
+          ============================================
         */
         if((out[i][0] == '\n')){
             t2.appendChild(tr1);
             /*
-            
-            
-            =================================================
-            indice dans tableau = première ligne des chiffres
-            =================================================
+              
+              
+              =================================================
+              indice dans tableau = première ligne des chiffres
+              =================================================
             */
             var tr1={};
             var td1={};
@@ -388,10 +480,10 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
                 tr1.appendChild(td1);
             }
             /*
-            
-            =====================
-            position du backslash
-            =====================
+              
+              =====================
+              position du backslash
+              =====================
             */
             var td1={};
             td1=document.createElement('td');
@@ -400,11 +492,11 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             tr1.appendChild(td1);
             t2.appendChild(tr1);
             /*
-            
-            ========================================================
-            position dans la chaine = deuxième ligne des chiffres
-            car certains caractères utf8 sont codées sur 2 positions
-            ========================================================
+              
+              ========================================================
+              position dans la chaine = deuxième ligne des chiffres
+              car certains caractères utf8 sont codées sur 2 positions
+              ========================================================
             */
             var tr1={};
             var td1={};
@@ -425,10 +517,10 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
                 tr1.appendChild(td1);
             }
             /*
-            
-            =====================
-            position du backslash
-            =====================
+              
+              =====================
+              position du backslash
+              =====================
             */
             var td1={};
             td1=document.createElement('td');
@@ -437,11 +529,11 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             tr1.appendChild(td1);
             t2.appendChild(tr1);
             /*
-            
-            
-            ======================================
-            fin des lignes contenant les positions
-            ======================================
+              
+              
+              ======================================
+              fin des lignes contenant les positions
+              ======================================
             */
             debut=i+1;
             numeroLigne=numeroLigne+1;
@@ -453,24 +545,24 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             tr1.appendChild(td1);
             t2.appendChild(tr1);
             /*
-            ============================================
-            FIN Si on a un retour chariot, on écrit les 
-            cases contenant les positions des caractères
-            ============================================
+              ============================================
+              FIN Si on a un retour chariot, on écrit les 
+              cases contenant les positions des caractères
+              ============================================
             */
         }
         /*dernière ligne de faire boucle*/
     }
     /*
-    dernière ligne des positions des caractères
+      dernière ligne des positions des caractères
     */
     t2.appendChild(tr1);
     /*
-    
-    
-    =================================================
-    indice dans tableau = première ligne des chiffres
-    =================================================
+      
+      
+      =================================================
+      indice dans tableau = première ligne des chiffres
+      =================================================
     */
     var tr1={};
     var td1={};
@@ -493,14 +585,14 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     }
     t2.appendChild(tr1);
     /*
-    =====================
-    pas de position du backslash
-    =====================
+      =====================
+      pas de position du backslash
+      =====================
     */
     /*
-    =====================================================
-    position dans la chaine = deuxième ligne des chiffres
-    =====================================================
+      =====================================================
+      position dans la chaine = deuxième ligne des chiffres
+      =====================================================
     */
     var tr1={};
     var td1={};
@@ -525,14 +617,14 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     t2.appendChild(tr1);
 }
 /*
-==========================================
-==========================================
-==========================================
-fonction qui produit un tableau html de la
-forme matricielle du programme
-==========================================
-==========================================
-==========================================
+  ==========================================
+  ==========================================
+  ==========================================
+  fonction qui produit un tableau html de la
+  forme matricielle du programme
+  ==========================================
+  ==========================================
+  ==========================================
 */
 function ConstruitHtmlMatrice(t1,matriceFonction){
     /**/
@@ -546,26 +638,26 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     var r2= new RegExp('\n','g');
     tr1=document.createElement('tr');
     /*
-    =================
-    entête du tableau
-    =================
+      =================
+      entête du tableau
+      =================
     */
     l01=global_enteteTableau.length;
     for(i=0;i < l01;i=i+1){
         var td1={};
         td1=document.createElement('td');
         td1.innerHTML=concat(i,global_enteteTableau[i][0]);
-        /*#                  td1.setAttribute('title',global_enteteTableau[i][1] + '(' + i + ')');*/
+        /**/
         td1.setAttribute('title',concat(global_enteteTableau[i][1],'(',i,')'));
         tr1.appendChild(td1);
     }
     t1.appendChild(tr1);
     /*
-    
-    
-    ===================
-    éléments du tableau
-    ===================
+      
+      
+      ===================
+      éléments du tableau
+      ===================
     */
     l01=matriceFonction.value.length;
     for(i=0;i < l01;i=i+1){
@@ -600,13 +692,13 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     }
 }
 /*
-===========================================
-===========================================
-===========================================
-fonction qui transforme un texte en tableau
-===========================================
-===========================================
-===========================================
+  ===========================================
+  ===========================================
+  ===========================================
+  fonction qui transforme un texte en tableau
+  ===========================================
+  ===========================================
+  ===========================================
 */
 function iterateCharacters2(str){
     var out= Array();
@@ -621,12 +713,12 @@ function iterateCharacters2(str){
     for(i=0;i < l01;i=i+1){
         codeCaractere=str.charCodeAt(i);
             /*
-            zero width space , vertical tab
+              zero width space , vertical tab
             */
             
         if( !((codeCaractere === 8203) || codeCaractere === 11)){
             /*
-            0xD800 =55296
+              0xD800 =55296
             */
             temp=codeCaractere&0xF800;
             if(((temp === 55296))){
@@ -650,14 +742,14 @@ function iterateCharacters2(str){
     return retour;
 }
 /*
-==================================================
-==================================================
-==================================================
-tableau retourné par l'analyse syntaxique 
-du texte en entrée de la fonction functionToArray2
-==================================================
-==================================================
-==================================================
+  ==================================================
+  ==================================================
+  ==================================================
+  tableau retourné par l'analyse syntaxique 
+  du texte en entrée de la fonction functionToArray2
+  ==================================================
+  ==================================================
+  ==================================================
 */
 var global_enteteTableau= Array(
     Array('id','id'),
@@ -676,19 +768,19 @@ var global_enteteTableau= Array(
     Array('com','commentaire')
 );
 /*
-===================================================
-===================================================
-===================================================
-fonction d'analyse syntaxique d'un programme source
-===================================================
-===================================================
-===================================================
+  ===================================================
+  ===================================================
+  ===================================================
+  fonction d'analyse syntaxique d'un programme source
+  ===================================================
+  ===================================================
+  ===================================================
 */
 function functionToArray2(tableauEntree,exitOnLevelError){
     /*
-    =========================
-    les chaines de caractères
-    =========================
+      =========================
+      les chaines de caractères
+      =========================
     */
     var texte='';
     var commentaire='';
@@ -696,9 +788,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     var c1='';
     var c2='';
     /*
-    =========================
-    les entiers
-    =========================
+      =========================
+      les entiers
+      =========================
     */
     var i=0;
     var j=0;
@@ -714,49 +806,49 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     var niveauDebutCommentaire=0;
     var niveauDansCommentaire=0;
     /*
-    =========================
-    les booléens
-    =========================
+      =========================
+      les booléens
+      =========================
     */
     var dansCst=false;
     var dsComment=false;
     var constanteQuotee=false;
     /*
-    ====================================
-    Le tableau en sortie si tout va bien
-    ====================================
+      ====================================
+      Le tableau en sortie si tout va bien
+      ====================================
     */
     var T= new Array();
     var temp={};
     /*
-    =======================================================================
-    initialisation du tableau contenant le source structuré en arborescence
-    =======================================================================
-    0id    1val  2typ  3niv  4coQ
-    5pre   6der  7pId  8nbE  9numEnfant  
-    10pro 11OPa 12FPa 13comm
+      =======================================================================
+      initialisation du tableau contenant le source structuré en arborescence
+      =======================================================================
+      0id    1val  2typ  3niv  4coQ
+      5pre   6der  7pId  8nbE  9numEnfant  
+      10pro 11OPa 12FPa 13comm
     */
     T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
     var l01=tableauEntree.length;
     /*
-    // ====================================================================
-    // ====================================================================
-    // boucle principale sur tous les caractères du texte passé en argument
-    // on commence par analyser les cas ou on est dans des chaines, puis on
-    // analyse les caractères
-    // ====================================================================
-    // ====================================================================
+      // ====================================================================
+      // ====================================================================
+      // boucle principale sur tous les caractères du texte passé en argument
+      // on commence par analyser les cas ou on est dans des chaines, puis on
+      // analyse les caractères
+      // ====================================================================
+      // ====================================================================
     */
     for(i=0;i < l01;i=i+1){
         c=tableauEntree[i][0];
         if((dsComment)){
             /*
-            
-            
-            
-            =============================
-            Si on est dans un commentaire
-            =============================
+              
+              
+              
+              =============================
+              Si on est dans un commentaire
+              =============================
             */
             if((c == ')')){
                 if(((niveau == niveauDebutCommentaire+1) && niveauDansCommentaire == 0)){
@@ -777,21 +869,21 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 commentaire=concat(commentaire,c);
             }
             /*
-            =============================
-            FIN de Si on est dans un commentaire
-            =============================
-            
-            
-            
+              =============================
+              FIN de Si on est dans un commentaire
+              =============================
+              
+              
+              
             */
         }else if((dansCst == true)){
             /*
-            
-            
-            
-            ============================
-            Si on est dans une constante
-            ============================
+              
+              
+              
+              ============================
+              Si on est dans une constante
+              ============================
             */
             if((c == '\'')){
                 if((i == l01-1)){
@@ -839,30 +931,30 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 texte=concat(texte,c);
             }
             /*
-            ===================================
-            Fin de Si on est dans une constante
-            ===================================
-            
-            
-            
+              ===================================
+              Fin de Si on est dans une constante
+              ===================================
+              
+              
+              
             */
         }else{
             /*
-            
-            
-            
-            ==================================================
-            on n'est pas dans un commentaire ou une constante,  
-            donc c'est un nouveau type qu'il faut détecter
-            ==================================================
+              
+              
+              
+              ==================================================
+              on n'est pas dans un commentaire ou une constante,  
+              donc c'est un nouveau type qu'il faut détecter
+              ==================================================
             */
             if((c == '(')){
                 /*
-                ====================
-                Parenthèse ouvrante
-                ====================
-                
-                
+                  ====================
+                  Parenthèse ouvrante
+                  ====================
+                  
+                  
                 */
                 posOuvPar=i;
                 indice=indice+1;
@@ -875,19 +967,19 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 texte='';
                 dansCst=false;
                 /*
-                ==========================
-                FIN DE Parenthèse ouvrante
-                ==========================
-                
-                
+                  ==========================
+                  FIN DE Parenthèse ouvrante
+                  ==========================
+                  
+                  
                 */
             }else if((c == ')')){
                 /*
-                
-                
-                ====================
-                Parenthèse fermante
-                ====================
+                  
+                  
+                  ====================
+                  Parenthèse fermante
+                  ====================
                 */
                 posFerPar=i;
                 if((texte != '')){
@@ -901,9 +993,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 }
                 niveau=niveau-1;
                 /*
-                
-                maj de la position de fermeture de la parenthèse
-                
+                  
+                  maj de la position de fermeture de la parenthèse
+                  
                 */
                 for(j=indice;j >= 0;j=j-1){
                     if((T[j][3] == niveau) && T[j][2] == 'f'){
@@ -914,38 +1006,38 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 posFerPar=0;
                 dansCst=false;
                 /*
-                ==========================
-                FIN de Parenthèse fermante
-                ==========================
-                
-                
+                  ==========================
+                  FIN de Parenthèse fermante
+                  ==========================
+                  
+                  
                 */
             }else if((c == '\\')){
                 /*
-                
-                
-                ===========
-                anti slash 
-                ===========
+                  
+                  
+                  ===========
+                  anti slash 
+                  ===========
                 */
                 if( !(dansCst)){
                     temp={'status':false,'value':T,'id':i,'message':'un antislash doit être dans une constante'};
                     return(logerreur(temp));
                 }
                 /*
-                ===================
-                Fin d'un anti slash
-                ===================
-                
-                
+                  ===================
+                  Fin d'un anti slash
+                  ===================
+                  
+                  
                 */
             }else if((c == '\'')){
                 /*
-                
-                
-                //===========
-                // apostrophe
-                //===========
+                  
+                  
+                  //===========
+                  // apostrophe
+                  //===========
                 */
                 premier=i;
                 if((dansCst == true)){
@@ -954,19 +1046,19 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                     dansCst=true;
                 }
                 /*
-                //===============
-                // FIN apostrophe
-                //===============
-                
-                
+                  //===============
+                  // FIN apostrophe
+                  //===============
+                  
+                  
                 */
             }else if((c == ',')){
                 /*
-                
-                
-                //========================
-                // virgule donc séparateur
-                //========================
+                  
+                  
+                  //========================
+                  // virgule donc séparateur
+                  //========================
                 */
                 if((texte != '')){
                     indice=indice+1;
@@ -990,19 +1082,19 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 texte='';
                 dansCst=false;
                 /*
-                //============================
-                // FIN virgule donc séparateur
-                //============================
-                
-                
+                  //============================
+                  // FIN virgule donc séparateur
+                  //============================
+                  
+                  
                 */
             }else if((c == ' ') || c == '\t' || c == '\r' || c == '\n'){
                 /*
-                
-                
-                =============================
-                caractères séparateurs de mot
-                =============================
+                  
+                  
+                  =============================
+                  caractères séparateurs de mot
+                  =============================
                 */
                 if((texte != '')){
                     indice=indice+1;
@@ -1015,11 +1107,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                     dansCst=false;
                 }
                 /*
-                ====================================
-                FIN de caractères séparateurs de mot
-                ====================================
-                
-                
+                  ====================================
+                  FIN de caractères séparateurs de mot
+                  ====================================
+                  
+                  
                 */
             }else{
                 if((texte == '')){
@@ -1031,9 +1123,9 @@ function functionToArray2(tableauEntree,exitOnLevelError){
         }
     }
     /*
-    ========================================
-    on est en dehors de la boucle principale
-    ========================================
+      ========================================
+      on est en dehors de la boucle principale
+      ========================================
     */
     if((niveau != 0) && exitOnLevelError){
         temp={'status':false,'value':T,'message':'des parenthèses ne correspondent pas'};
@@ -1050,10 +1142,10 @@ function functionToArray2(tableauEntree,exitOnLevelError){
         T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
     }
     /*
-    
-    ==============================================================
-    // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
-    ============================================================== 
+      
+      ==============================================================
+      // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
+      ============================================================== 
     */
     l01=T.length;
     for(i=l01-1;i > 0;i=i-1){
@@ -1067,11 +1159,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
         }
     }
     /*
-    
-    ============================== 
-    numérotation des enfants
-    numenfant = k
-    ==============================
+      
+      ============================== 
+      numérotation des enfants
+      numenfant = k
+      ==============================
     */
     k=0;
     for(i=0;i < l01;i=i+1){
@@ -1084,11 +1176,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
         }
     }
     /*
-    =======================================
-    profondeur des fonctions
-    k=remonterAuNiveau
-    l=idParent
-    =======================================
+      =======================================
+      profondeur des fonctions
+      k=remonterAuNiveau
+      l=idParent
+      =======================================
     */
     for(i=l01-1;i > 0;i=i-1){
         if((T[i][2] == 'c')){

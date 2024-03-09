@@ -24,16 +24,7 @@ src_php(
          ),
          affecte($username , 'admin'),
          affecte($userpass , 'admin'),
-         affecte(
-            $selectSql,
-            sqlref(
-               num(1),
-               p($username),
-               p($userpass),
-               p('toto'),
-               p(0)
-            )
-         ),
+         affecte($selectSql , sqlref(num(1) , p($username) , p($userpass) , p('toto') , p(0))),
          affecte(
             $contenuhtml,
             html(div((id , toto) , hello))
@@ -45,14 +36,7 @@ src_php(
                transaction(
                   create_table(
                      n(tbl_user),
-                     fields(
-                        field(
-                           n(fld_id_user),
-                           type(BIGINT),
-                           unsigned(),
-                           notnull()
-                        )
-                     )
+                     fields(field(n(fld_id_user) , type(BIGINT) , unsigned() , notnull()))
                   )
                )
             )

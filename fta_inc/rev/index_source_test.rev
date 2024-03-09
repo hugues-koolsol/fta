@@ -9,8 +9,8 @@ src_php(
          appelf(n(session_start)),
          appelf(n(start_session_messages)),
          #(
-            // ======================================================== 
-            // affichage de l'entête html 
+           ======================================================= 
+           affichage de l'entête html 
          ),
          affecte($o1 , ''),
          affecte($a , array(('title' , 'accueil') , ('description' , 'accueil'))),
@@ -21,18 +21,18 @@ src_php(
             p($o1),
             p(appelf(n(session_messages)))
          ),
-         #(//      on imprime le texte ...,),
+         #(on imprime le texte ...,),
          appelf(n(print) , p($o1)),
-         #(//  ... puis on le reinitialise,),
+         #(... puis on le reinitialise),
          affecte($o1 , '')
       ),
       #(
-         // =====================================================
-         // avec un peu de html
-         // =====================================================
+        =====================================================
+        avec un peu de html
+        =====================================================
       ),
       html(
-         #(// =====================================================),
+         #(=====================================================),
          table(
             tr(
                td(button((onclick , 'charger(\'source4.txt\')') , 'source4') , button((onclick , 'charger(\'source5.txt\')') , 'source5') , button((onclick , 'charger(\'source6.txt\')') , 'source6')),
@@ -47,18 +47,18 @@ src_php(
             )
          ),
          #(
-            // =====================================================
-            // et un javascript dans le html
-            // =====================================================
+           =====================================================
+           et un javascript dans le html
+           =====================================================
          ),
          script(
             (type , 'text/javascript'),
             (data-lang , 'fr'),
             source(
                #(
-                  // ====================================================================
-                  // fonction met la zone normalisée à la même hauteur que la zone source
-                  // ====================================================================
+                 ====================================================================
+                 fonction met la zone normalisée à la même hauteur que la zone source
+                 ====================================================================
                ),
                fonction(
                   definition(nom(memeHauteur) , argument(normalise) , argument(source)),
@@ -70,19 +70,14 @@ src_php(
                      declare(bou , null),
                      appelf(r(bou) , n(zoneSource.getBoundingClientRect) , p()),
                      declare(t , ''),
-                     appelf(
-                        r(t),
-                        n(concat),
-                        p(bou.height),
-                        p('px')
-                     ),
+                     appelf(r(t) , n(concat) , p(bou.height) , p('px')),
                      affecte(zonenormalisée.style.height , t)
                   )
                ),
                #(
-                  // =====================================================
-                  // fonction qui ajuste la largeur d'une zone de textarea
-                  // =====================================================
+                 =====================================================
+                 fonction qui ajuste la largeur d'une zone de textarea
+                 =====================================================
                ),
                fonction(
                   definition(nom(ajusteTailleTextareaContenantSource) , argument(nomZone)),
@@ -117,61 +112,51 @@ src_php(
                   )
                ),
                #(
-                  // ==============================================
-                  // fonction qui convertit et enregistre le source
-                  // ==============================================
+                 ==============================================
+                 fonction qui convertit et enregistre le source
+                 ==============================================
                ),
                fonction(
                   definition(nom(enregistrer)),
                   contenu(
                      #(
-                        // =========================
-                        // raz de la zone de message
+                       =========================
+                       raz de la zone de message
                      ),
                      declare(zoneMessageErreur , null),
                      appelf(r(zoneMessageErreur) , n(document.getElementById) , p('message_erreur')),
                      affecte(zoneMessageErreur.innerHTML , ''),
                      #(
-                        // ===================================================
-                        // déclaration et affectation des zones de l'interface
+                       ===================================================
+                       déclaration et affectation des zones de l'interface
                      ),
                      declare(zoneNormalisée , null),
                      declare(zoneSource , null),
                      appelf(r(zoneNormalisée) , n(document.getElementById) , p('normalise')),
                      appelf(r(zoneSource) , n(document.getElementById) , p('zonesource')),
                      #(
-                        // ===============================================================
-                        // on essaie de reconstruire la fonction pour détecter des erreurs
+                       ===============================================================
+                       on essaie de reconstruire la fonction pour détecter des erreurs
                      ),
                      declare(testSourceReconstruit , {}),
                      appelf(r(testSourceReconstruit) , n(compareSourceEtReconstruit) , p(zoneSource.value)),
                      #(
-                        // =============================================================
-                        // conversion de la fonction en javascript 
-                        // en déclenchant une erreur si il y a une erreure de parenthese
+                       =============================================================
+                       conversion de la fonction en javascript 
+                       en déclenchant une erreur si il y a une erreure de parenthese
                      ),
                      declare(arr , {}),
-                     appelf(
-                        r(arr),
-                        n(functionToArray),
-                        p(zoneSource.value),
-                        p(vrai)
-                     ),
+                     appelf(r(arr) , n(functionToArray) , p(zoneSource.value) , p(vrai)),
                      choix(
                         si(
                            condition((egal(arr.status , vrai))),
                            alors(
                               #(
-                                 // =============================================================
-                                 // si pas d'erreur on construit le source normalise
+                                =============================================================
+                                si pas d'erreur on construit le source normalise
                               ),
                               declare(sourceNormalisé , {}),
-                              appelf(
-                                 r(sourceNormalisé),
-                                 n(arrayToFunctNormalize),
-                                 p(arr.value),
-                                 p(vrai)
-                              ),
+                              appelf(r(sourceNormalisé) , n(arrayToFunctNormalize) , p(arr.value) , p(vrai)),
                               choix(
                                  si(
                                     condition((egal(sourceNormalisé.status , vrai))),
@@ -179,12 +164,7 @@ src_php(
                                        affecte(appelf(n(document.getElementById) , p('normalise') , prop(value)) , sourceNormalisé.value),
                                        appelf(n(ajusteTailleTextareaContenantSource) , p('normalise')),
                                        appelf(n(memeHauteur) , p('normalise') , p('zonesource')),
-                                       appelf(
-                                          r(arr),
-                                          n(writePhpFile),
-                                          p(zoneSource),
-                                          p(arr)
-                                       ),
+                                       appelf(r(arr) , n(writePhpFile) , p(zoneSource) , p(arr)),
                                        choix(
                                           si(
                                              condition((egal(arr.status , faux))),
@@ -212,23 +192,10 @@ src_php(
                                           )
                                        )
                                     ),
-                                    alors(
-                                       appelf(
-                                          r(zoneMessageErreur.innerHTML),
-                                          n(concat),
-                                          p(zoneMessageErreur.innerHTML),
-                                          p('\n'),
-                                          p(arr.message)
-                                       )
-                                    )
+                                    alors(appelf(r(zoneMessageErreur.innerHTML) , n(concat) , p(zoneMessageErreur.innerHTML) , p('\n') , p(arr.message)))
                                  )
                               ),
-                              appelf(
-                                 r(sourceNormalisé),
-                                 n(arrayToFunctNormalize),
-                                 p(arr.value),
-                                 p(vrai)
-                              ),
+                              appelf(r(sourceNormalisé) , n(arrayToFunctNormalize) , p(arr.value) , p(vrai)),
                               choix(
                                  si(
                                     condition((egal(sourceNormalisé.status , vrai))),
@@ -245,9 +212,9 @@ src_php(
                   )
                ),
                #(
-                  // ========================================================
-                  // fonction appelée après le chargement du fichier source
-                  // ========================================================
+                 ========================================================
+                 fonction appelée après le chargement du fichier source
+                 ========================================================
                ),
                fonction(
                   definition(nom(afficherFichierSource) , argument(source)),
@@ -270,20 +237,15 @@ src_php(
                   )
                ),
                #(
-                  // =============================================================================
-                  // fonction appelée quand on clique sur un bouton pour charger un fichier source
-                  // =============================================================================
+                 =============================================================================
+                 fonction appelée quand on clique sur un bouton pour charger un fichier source
+                 =============================================================================
                ),
                fonction(
                   definition(nom(charger) , argument(nomsource)),
                   contenu(
                      affecte(appelf(n(document.getElementById) , p('normalise') , prop(value)) , ''),
-                     appelf(
-                        n(chargerFichierSource),
-                        p(nomsource),
-                        p(afficherFichierSource),
-                        p('zonesource')
-                     )
+                     appelf(n(chargerFichierSource) , p(nomsource) , p(afficherFichierSource) , p('zonesource'))
                   )
                )
             )
@@ -303,9 +265,9 @@ src_php(
             p(appelf(n(html_footer1) , p($a)))
          ),
          appelf(n(print) , p($o1)),
-         #(// ... puis on le reinitialise),
+         #(... puis on le reinitialise),
          affecte($o1 , '')
       ),
-      #(// fin du php)
+      #(fin du php)
    )
 )

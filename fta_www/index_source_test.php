@@ -5,20 +5,20 @@ require_once('aa_include.php');
 session_start();
 start_session_messages();
 /*
-// ======================================================== 
-// affichage de l'entête html 
+  ======================================================= 
+  affichage de l'entête html 
 */
 $o1='';
 $a=array( 'title' => 'accueil', 'description' => 'accueil');
 $o1=html_header1($a);
 $o1=concat($o1,session_messages());
-/*//      on imprime le texte ...,*/
+/*on imprime le texte ...,*/
 print($o1);
-/*//  ... puis on le reinitialise,*/
+/*... puis on le reinitialise*/
 $o1='';
 ?>
 
-    <!-- // ===================================================== -->
+    <!-- ===================================================== -->
     <table>
         <tr>
             <td>
@@ -43,18 +43,18 @@ $o1='';
         </tr>
     </table>
     <!-- 
-    // =====================================================
-    // et un javascript dans le html
-    // =====================================================
+      =====================================================
+      et un javascript dans le html
+      =====================================================
      -->
     <script type="text/javascript" data-lang="fr">
 // = = = = <source javascript = = = =
 "use strict";
 
 /*
-// ====================================================================
-// fonction met la zone normalisée à la même hauteur que la zone source
-// ====================================================================
+  ====================================================================
+  fonction met la zone normalisée à la même hauteur que la zone source
+  ====================================================================
 */
 function memeHauteur(normalise,source){
     var zoneSource=null;
@@ -68,9 +68,9 @@ function memeHauteur(normalise,source){
     zonenormalisée.style.height=t;
 }
 /*
-// =====================================================
-// fonction qui ajuste la largeur d'une zone de textarea
-// =====================================================
+  =====================================================
+  fonction qui ajuste la largeur d'une zone de textarea
+  =====================================================
 */
 function ajusteTailleTextareaContenantSource(nomZone){
     var zoneSource=null;
@@ -85,49 +85,49 @@ function ajusteTailleTextareaContenantSource(nomZone){
         }
     }
     largeur=largeur+5;
-    if((largeur > 100)||largeur <= 0){
+    if((largeur > 100) || largeur <= 0){
         largeur=100;
     }
     zoneSource.cols=largeur;
 }
 /*
-// ==============================================
-// fonction qui convertit et enregistre le source
-// ==============================================
+  ==============================================
+  fonction qui convertit et enregistre le source
+  ==============================================
 */
 function enregistrer(){
     /*
-    // =========================
-    // raz de la zone de message
+      =========================
+      raz de la zone de message
     */
     var zoneMessageErreur=null;
     zoneMessageErreur=document.getElementById('message_erreur');
     zoneMessageErreur.innerHTML='';
     /*
-    // ===================================================
-    // déclaration et affectation des zones de l'interface
+      ===================================================
+      déclaration et affectation des zones de l'interface
     */
     var zoneNormalisée=null;
     var zoneSource=null;
     zoneNormalisée=document.getElementById('normalise');
     zoneSource=document.getElementById('zonesource');
     /*
-    // ===============================================================
-    // on essaie de reconstruire la fonction pour détecter des erreurs
+      ===============================================================
+      on essaie de reconstruire la fonction pour détecter des erreurs
     */
     var testSourceReconstruit={};
     testSourceReconstruit=compareSourceEtReconstruit(zoneSource.value);
     /*
-    // =============================================================
-    // conversion de la fonction en javascript 
-    // en déclenchant une erreur si il y a une erreure de parenthese
+      =============================================================
+      conversion de la fonction en javascript 
+      en déclenchant une erreur si il y a une erreure de parenthese
     */
     var arr={};
     arr=functionToArray(zoneSource.value,true);
     if((arr.status == true)){
         /*
-        // =============================================================
-        // si pas d'erreur on construit le source normalise
+          =============================================================
+          si pas d'erreur on construit le source normalise
         */
         var sourceNormalisé={};
         sourceNormalisé=arrayToFunctNormalize(arr.value,true);
@@ -141,7 +141,7 @@ function enregistrer(){
             }
         }
     }else{
-        if(((arr.levelError)&&(arr.levelError == true))||((arr.message)&&(arr.message != ''))){
+        if(((arr.levelError) && (arr.levelError == true)) || ((arr.message) && (arr.message != ''))){
             zoneMessageErreur.innerHTML=concat(zoneMessageErreur.innerHTML,'\n',arr.message);
         }
         sourceNormalisé=arrayToFunctNormalize(arr.value,true);
@@ -153,12 +153,12 @@ function enregistrer(){
     }
 }
 /*
-// ========================================================
-// fonction appelée après le chargement du fichier source
-// ========================================================
+  ========================================================
+  fonction appelée après le chargement du fichier source
+  ========================================================
 */
 function afficherFichierSource(source){
-    if((source.nomZone)&&(source.status == true)){
+    if((source.nomZone) && (source.status == true)){
         document.getElementById(source.nomZone).value=source.value;
         ajusteTailleTextareaContenantSource(source.nomZone);
     }else{
@@ -166,9 +166,9 @@ function afficherFichierSource(source){
     }
 }
 /*
-// =============================================================================
-// fonction appelée quand on clique sur un bouton pour charger un fichier source
-// =============================================================================
+  =============================================================================
+  fonction appelée quand on clique sur un bouton pour charger un fichier source
+  =============================================================================
 */
 function charger(nomsource){
     document.getElementById('normalise').value='';
@@ -183,6 +183,6 @@ function charger(nomsource){
 $a=array( 'js' => array( 'js/php.js', 'js/javascript.js', 'js/html.js'));
 $o1=concat($o1,html_footer1($a));
 print($o1);
-/*// ... puis on le reinitialise*/
+/*... puis on le reinitialise*/
 $o1='';
 ?>

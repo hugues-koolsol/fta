@@ -87,7 +87,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
    }else if(tab[i][8]==1 && tab[i+1][2]=='c' ){
     t+=espacesn(true,niveau);
     t+='exit(';
-    t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
+    t+=(tab[i+1][4]===true?'\''+tab[i+1][1]+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
     t+=');'
     i++;
    }else{
@@ -104,7 +104,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
    }else if(tab[i][8]==1 && tab[i+1][2]=='c' ){
     t+=espacesn(true,niveau);
     t+='return(';
-    t+=(tab[i+1][4]===true?'\''+echappConstante(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
+    t+=(tab[i+1][4]===true?'\''+(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
     t+=');'
     i++;
    }else{
@@ -658,7 +658,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
    if(tab[i][8]==2){
      if(tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
 
-      t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':(tab[i+2][1])))+'');
+      t+=''+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+(tab[i+2][1])+'\'' : (tab[i+2][1]=='vrai'?'true':(tab[i+2][1]=='faux'?'false':(tab[i+2][1])))+'');
       if(!dansInitialisation){
        t+=';';
       }
@@ -785,7 +785,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     if( (tab[i+2][1]=='vrai' || tab[i+2][1]=='faux' ) && tab[i+2][4]===false){
      t+='var '+tab[i+1][1]+'='+(tab[i+2][1]==='vrai'?'true':'false')+';';
     }else{
-     t+='var '+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+echappConstante(tab[i+2][1])+'\';' : tab[i+2][1]+';');
+     t+='var '+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+(tab[i+2][1])+'\';' : tab[i+2][1]+';');
     }
    }else{
     if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' ){
@@ -859,7 +859,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     t+='session_start();\n';
     t+='start_session_messages();\n';
     t+='$o1=\'\';\n';
-    t+='$a=array( \'title\' => \''+echappConstante(tab[i+1][1])+'\', \'description\' => \''+echappConstante(tab[i+2][1])+'\');\n';
+    t+='$a=array( \'title\' => \''+(tab[i+1][1])+'\', \'description\' => \''+(tab[i+2][1])+'\');\n';
     t+='$o1=html_header1($a);\n';
     t+='$o1=concat($o1,session_messages());\n';
     t+='print($o1);\n';
@@ -969,7 +969,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
 
     if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
-     argumentsFonction+=','+( tab[j+1][4]==true ? '\''+echappConstante(tab[j+1][1])+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'faux':tab[j+1][1])) );
+     argumentsFonction+=','+( tab[j+1][4]==true ? '\''+(tab[j+1][1])+'\'' : (tab[j+1][1]=='vrai'?'true':(tab[j+1][1]=='faux'?'faux':tab[j+1][1])) );
     }else{
      // cas ou le paramètre d'une fonction est une fonction
      if(tab[j][8]==1 && tab[j+1][2]=='f' ){
@@ -1013,12 +1013,12 @@ function php_traiteDefinitionTableau(tab,id,dansConditionOuDansFonction){ // id 
      if(tab[j+2][1]=='array'){
       obj=php_traiteDefinitionTableau(tab,j+2,true);
       if(obj.status==true){
-       textObj+=', '+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':tab[j+1][1])+' => '+obj.value+'';
+       textObj+=', '+(tab[j+1][4]==true?'\''+(tab[j+1][1])+'\'':tab[j+1][1])+' => '+obj.value+'';
       }else{
        return logerreur({status:false,value:t,id:id,tab:tab,message:'dans php_traiteDefinitionTableau il y a un problème'});
       }
      }else{
-      textObj+=', '+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':tab[j+1][1])+' => '+(tab[j+2][4]==true?'\''+echappConstante(tab[j+2][1])+'\'':tab[j+2][1])+'';
+      textObj+=', '+(tab[j+1][4]==true?'\''+(tab[j+1][1])+'\'':tab[j+1][1])+' => '+(tab[j+2][4]==true?'\''+(tab[j+2][1])+'\'':tab[j+2][1])+'';
      }
     }else if(tab[j][8]==1){
      if(tab[j+1][1]=='array' && tab[j+1][2]=='f' ){
@@ -1029,7 +1029,7 @@ function php_traiteDefinitionTableau(tab,id,dansConditionOuDansFonction){ // id 
        return logerreur({status:false,value:t,id:id,tab:tab,message:'dans php_traiteDefinitionTableau il y a un problème'});
       }
      }else{
-      textObj+=', '+(tab[j+1][4]==true?'\''+echappConstante(tab[j+1][1])+'\'':tab[j+1][1])+'';
+      textObj+=', '+(tab[j+1][4]==true?'\''+(tab[j+1][1])+'\'':tab[j+1][1])+'';
      }
      // en php, i peut n'y avoir qu'une dimention sans cle => valeur ( array('a','b') )
     }
@@ -1072,7 +1072,7 @@ function php_condition1(tab,id,niveau){
    t+=tab[i][1]=='vrai'?'true':'false'; // i18
   }else if(tab[i][4]==true){
    t+='\'';
-   t+=echappConstante(tab[i][1]);
+   t+=(tab[i][1]);
    t+='\'';
   }else{
    t+=''+tab[i][1];
@@ -1150,7 +1150,7 @@ function php_condition1(tab,id,niveau){
      }
      if(tab[tabPar[0]][2]=='c'){
       if(tab[tabPar[0]][4]==true){
-       t+='\''+echappConstante(tab[tabPar[0]][1])+'\'';
+       t+='\''+(tab[tabPar[0]][1])+'\'';
       }else{
        if(tab[tabPar[0]][1]=='vrai' || tab[tabPar[0]][1]=='faux'){
         t+=(tab[tabPar[0]][1]=='vrai'?'true':'false');
@@ -1191,7 +1191,7 @@ function php_condition1(tab,id,niveau){
      }
      if(tab[tabPar[1]][2]=='c'){
       if(tab[tabPar[1]][4]==true){
-       t+='\''+echappConstante(tab[tabPar[1]][1])+'\'';
+       t+='\''+(tab[tabPar[1]][1])+'\'';
       }else{
        if(tab[tabPar[1]][1]=='vrai' || tab[tabPar[1]][1]=='faux'){
         t+=(tab[tabPar[1]][1]=='vrai'?'true':'false');
@@ -1221,7 +1221,7 @@ function php_condition1(tab,id,niveau){
      t+=tab[i][1]=='vrai'?'true':'false'; // i18
     }else if(tab[i][4]==true){
      t+='\'';
-     t+=echappConstante(tab[i][1]);
+     t+=(tab[i][1]);
      t+='\'';
     }else{
      t+=''+tab[i][1];

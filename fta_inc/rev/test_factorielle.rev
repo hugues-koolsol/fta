@@ -1,14 +1,14 @@
 src_html(
    #(
-      =============================== 
-      description du fichier produit 
+     =============================== 
+     description du fichier produit 
    ),
    (file_name , test_factorielle),
    (file_extension , html),
    (file_path , .),
    #(
-      ====================
-      source de ce fichier
+     ====================
+     source de ce fichier
    ),
    source(
       html(
@@ -21,9 +21,9 @@ src_html(
             meta((name , description) , (content , 'a')),
             link((rel , 'stylesheet') , (href , index.css)),
             #(
-               ====================================================
-               script optionnel ici, c'est seulement pour l'exemple
-               ====================================================
+              ====================================================
+              script optionnel ici, c'est seulement pour l'exemple
+              ====================================================
             ),
             #(test),
             script((type , 'text/javascript') , (src , 'js/core3.js'))
@@ -32,18 +32,18 @@ src_html(
             div('Si cette page fonctionne, il y aura écrit "120" ci dessous !'),
             div((id , zoneResultat)),
             #(
-               ====================================
-               dans ce html, on écrit du javascript
-               ====================================
+              ====================================
+              dans ce html, on écrit du javascript
+              ====================================
             ),
             script(
                (type , 'text/javascript'),
                (data-lang , 'fr'),
                source(
                   #(
-                     ========================================================
-                     dans ce javascript, on définit une fonction factorielle
-                     ========================================================
+                    ========================================================
+                    dans ce javascript, on définit une fonction factorielle
+                    ========================================================
                   ),
                   fonction(
                      definition(nom(factorielle) , argument(nombre)),
@@ -66,23 +66,23 @@ src_html(
                      )
                   ),
                   #(
-                     ========================================================
-                     puis on utilise cette fonction
-                     ========================================================
+                    ========================================================
+                    puis on utilise cette fonction
+                    ========================================================
                   ),
                   declare(zone , {}),
                   declare(valeur , 5),
                   declare(resultat , 0),
                   #(
-                     ===============================================
-                     on affecte la valeur factorielle(5) à la valeur
-                     ===============================================
+                    ===============================================
+                    on affecte la valeur factorielle(5) à la valeur
+                    ===============================================
                   ),
                   affecte(resultat , appelf(n(factorielle) , p(valeur))),
                   #(
-                     ===========================
-                     puis on affiche le résultat
-                     ===========================
+                    ===========================
+                    puis on affiche le résultat
+                    ===========================
                   ),
                   affecte(zone , appelf(n(document.getElementById) , p('zoneResultat'))),
                   affecte(zone.innerHTML , resultat),
@@ -105,7 +105,7 @@ src_html(
 
                       Même si la définition de la fonction factorielle plus haut est plus verbeuse que
                       celle écrite en lisp, je la préfère. 
-                    Ce n'est que mon avis et ce n'est qu'une question de goût !
+                      Ce n'est que mon avis et ce n'est qu'une question de goût !
                   )
                )
             ),

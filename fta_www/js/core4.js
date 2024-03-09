@@ -120,12 +120,6 @@ function dogid(n){
  return document.getElementById(n);
 }
 //=====================================================================================================================
-function echappConstante(t){
-// return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
-// return t.replace(/\\/g,'\\\\').replace(/\'/g,'\\\''); //.replace(/\\\\n/g,'\\n').replace(/\\\\t/g,'\\t').replace(/\\\\r/g,'\\r');
- return t;
-}
-//=====================================================================================================================
 function concat(){
   var t='';
   var a=null;
@@ -133,14 +127,6 @@ function concat(){
    t+=String(arguments[a]);
   }
   return t;
-}
-//=====================================================================================================================
-function espaces(i){
- var t='\n';
- if(i>0){
-  t+=' '.repeat(i);
- }
- return t;
 }
 var NBESPACESREV=3;
 var NBESPACESSOURCEPRODUIT=4;
@@ -153,7 +139,7 @@ function espacesnrev(optionCRLF,i){
   t='\n';
  }
  if(i>0){
-  t+=' '.repeat(NBESPACESREV).repeat(i);
+  t+=' '.repeat(NBESPACESREV*i);
  }
  return t;
 }
@@ -166,7 +152,7 @@ function espacesn(optionCRLF,i){
   t='\n';
  }
  if(i>0){
-  t+=' '.repeat(NBESPACESSOURCEPRODUIT).repeat(i);
+  t+=' '.repeat(NBESPACESSOURCEPRODUIT*i);
  }
  return t;
 }
@@ -620,7 +606,108 @@ function ttcomm1Old(texte,niveau,ind){
  t=newTab.join('\n');
  return t;
 }
+//=====================================================================================================================
+function traiteCommentaireSourceEtGenere1Old(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
+ var t='';
+ var i=0;
+ var j=0;
+ var unBloc=' '.repeat(nbEspacesSrc1*niveau);
+ var unBlocPlus1=' '.repeat(nbEspacesSrc1*(niveau+1));
+ 
+ //var numTest=-1;
+ if(texte.indexOf('\n')<0){
+  return(texte);
+ }
+ var tab=texte.split('\n');
+ var l01=tab.length;
+ if(texte.length>=1 && texte.substr(0,1)=='#'){
+/*  
+  if(fichierRev0){
+   return texte;
+  }
+*/  
+  // trouver le premier non blanc
+  var t='';
+  var min=99999;
+  for(i=1;i<l01;i++){
+   var ligne=tab[i];
+   for(j=0;j<ligne.length;j++){
+    if(ligne.substr(j,1)!=' '){
+     if(j<min){
+      min=j
+     }
+     break;
+    }
+   }
+   
+  }
+  // tout décaler à gauche
+  if(min>2){
+   for(var i=1;i<l01;i++){
+    tab[i]=tab[i].substr(min-2);
+   }
+  }
+/* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
+  if((fichierRev0)){
+   ligne=tab[tab.length-1];
+   ligne=ligne.replaceAll(' ','');
+   if(ligne != ''){
+       tab.push(unBloc);
+   }else{
+    tab[tab.length-1]=unBloc;
+   }
+  }
+  texte=tab.join('\n');
+  
+  
+  return texte;
+ }
+ var s1='';
+ var s2='';
+ var newTab=[];
+ for(i=0;i<l01;i++){
+    t='';
+    // on envève les espaces au début
+    for(j=0;j<tab[i].length;j++){
+     if(tab[i].substr(j,1)!=' '){
+      t+=tab[i].substr(j);
+      break;
+     }
+    }
+    s1=unBloc+t;
+    s2=unBlocPlus1+t;
+    if(i==l01-1){
+     if(t==''){
+      newTab.push(unBloc);
+     }else{
+      newTab.push(s2);
+      newTab.push(unBloc);
+     }
+    }else if(i==0){
+     if(t==''){
+      newTab.push(t);
+     }else{
+      newTab.unshift('');
+      newTab.push(s2);
+     }
+    }else{
+     if(fichierRev0){
+      newTab.push(s2);
+     }else{
+      newTab.push(s1);
+     }
+    }
+    
+ }
+ t=newTab.join('\n');
+ return t;
+}
 
+//=====================================================================================================================
+function replaceAll(chaine, par){
+ var r1= new RegExp(chaine,'g');
+ return(chaine.replace(r1,par));
+}
 //=====================================================================================================================
 function traiteCommentaire2(texte,niveau,ind){
  return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
@@ -633,91 +720,148 @@ function ttcomm1(texte,niveau,ind){
 /*
 var NBESPACESSOURCEPRODUIT=4;
 */
-//=====================================================================================================================
+
+/*
+=============================================
+=============================================
+=============================================
+fonction transforme un commentaire 
+=============================================
+=============================================
+=============================================
+*/
 function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
- var t='';
- var i=0;
- var j=0;
- //var numTest=-1;
- if(texte.indexOf('\n')<0){
-  return(texte);
- }
- var tab=texte.split('\n');
- var l01=tab.length;
- if(texte.length>=1 && texte.substr(0,1)=='#'){
-  if(fichierRev0){
-   return texte;
-  }
-  // trouver le premier non blanc
-  var t='';
-  var min=99999;
-  for(i=1;i<l01;i++){
-   var ligne=tab[i];
-   for(j=0;j<ligne.length;j++){
-    if(ligne.substr(j,1)==' '){
-    }else{
-     if(j<min){
-      min=j
-     }
-     break;
+    var i=0;
+    /*Si c'est un commentaire monoligne, on le retourne sans aucune transformation*/
+    i=texte.indexOf('\n');
+    if(i < 0){
+        return texte;
     }
-   }
-   
-  }
-  // tout décaler à gauche
-  if(min>0){
-   for(var i=1;i<l01;i++){
-    tab[i]=tab[i].substr(min);
-   }
-   texte=tab.join('\n');
-  }
-//  console.log( texte , min)
-  
-  
-  return texte;
- }
- var newTab=[];
- for(i=0;i<l01;i++){
-    t='';
-    // on envève les espaces au début
-    for(j=0;j<tab[i].length;j++){
-     if(tab[i].substr(j,1)==' '){
-     }else{
-      t+=tab[i].substr(j);
-      break;
-     }
+    /**/
+    var i=0;
+    var j=0;
+    var l01=0;
+    var min=0;
+    var t='';
+    var ligne='';
+    var temps='';
+    var unBloc='';
+    var unBlocPlus1='';
+    var newTab= Array();
+    var tab= Array();
+    /**/
+    unBloc=' '.repeat(nbEspacesSrc1*niveau);
+    tab=texte.split('\n');
+    l01=tab.length;
+    /**/
+    if(texte.length > 1){
+        temps=texte.substr(0,1);
+        if(temps == '#'){
+            /*
+            on a un commentaire de type bloc non formaté 
+            car le premier caractère = #
+            */
+            /*
+            ... sinon on supprime les espaces 
+            inutiles en début de ligne.
+            */
+/*#
+  test
+             test
+                              
+*/
+            t='';
+            min=99999;
+            for(i=1;i < l01;i=i+1){
+                ligne=tab[i];
+                for(j=0;j < ligne.length;j=j+1){
+                    /*
+                    on balaye toutes les lignes pour détecter 
+                    le nombre d'espaces minimal à gauche
+                    */
+                    temps=ligne.substr(j,1);
+                    if(temps != ' '){
+                        if(j < min){
+                            /*on réajuste le minimum*/
+                            min=j;
+                        }
+                        /* et on passe à la ligne suivante*/
+                        break;
+                    }
+                }
+            }
+            if(min > 2){
+                /*tout décaler à gauche*/
+                for(i=1;i < l01;i=i+1){
+                    tab[i]=tab[i].substr(min-2);
+                }
+            }
+            /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
+            if((fichierRev0)){
+                ligne=tab[tab.length-1];
+                ligne=ligne.replaceAll(' ','');
+                if(ligne != ''){
+                    tab.push(unBloc);
+                }else{
+                    tab[tab.length-1]=unBloc;
+                }
+            }
+            /**/
+            texte=tab.join('\n');
+            return texte;
+        }
     }
-    if(i==l01-1){
-     if(t!=''){
-      newTab.push(' '.repeat(nbEspacesSrc1*(niveau+1))+t);
-      newTab.push(' '.repeat(nbEspacesSrc1*niveau));
-     }else{
-      newTab.push(' '.repeat(nbEspacesSrc1*niveau));
-     }
-    }else if(i==0){
-     if(t!==''){
-      t=' '.repeat(nbEspacesSrc1*(niveau+1))+t;
-      newTab.unshift('');
-      newTab.push(t);
-     }else{
-      newTab.push(t);
-     }
-    }else{
-     if(fichierRev0){
-      t=' '.repeat(nbEspacesSrc1*(niveau+1))+t;
-     }else{
-      t=' '.repeat(nbEspacesSrc1*niveau)+t;
-     }
-     newTab.push(t);
+    /*
+    si on est ici, c'est qu'on a un commentaire multiligne
+    qu'il faut formatter en alignant à gauche les textes 
+    d'un nombre d'espaces correspondant au niveau
+    */
+    /*affecte(i , niveau+1)*/
+    unBlocPlus1=' '.repeat(nbEspacesSrc1*niveau+2);
+    var s1='';
+    var s2='';
+    for(i=0;i < l01;i=i+1){
+        t='';
+        /*on enlève les espaces au début*/
+        for(j=0;j < tab[i].length;j=j+1){
+            temps=tab[i].substr(j,1);
+            if((temps != ' ')){
+                temps=tab[i].substr(j);
+                t=concat(t,temps);
+                break;
+            }
+        }
+        s1=concat(unBloc,t);
+        s2=concat(unBlocPlus1,t);
+        if(i == l01-1){
+            /*la dernière ligne du commentaire de bloc doit être vide*/
+            if(t == ''){
+                newTab.push(unBloc);
+            }else{
+                /*on met la ligne et on ajoute une ligne vide*/
+                newTab.push(s2);
+                newTab.push(unBloc);
+            }
+        }else if(i == 0){
+            /*la première ligne du commentaire de bloc doit être vide*/
+            if(t == ''){
+                newTab.push(t);
+            }else{
+                /*
+                on ajoute une ligne vide en début de tableau
+                on fait un unshift ici mais on aurait pu faire
+                un push car on est à i=0
+                */
+                newTab.unshift('');
+                newTab.push(s2);
+            }
+        }else{
+            newTab.push(s2);
+        }
     }
-    
- }
- t=newTab.join('\n');
- return t;
+    t=newTab.join('\n');
+    return t;
 }
-
-
-
 /*
 ==================================================================================
 ==================================================================================
