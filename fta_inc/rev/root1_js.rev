@@ -5,20 +5,26 @@ src_javascript(
    (strict()),
    source(
       #(#
-//=====================================================================================================================
-function traiteCommentaire2(texte,niveau,ind){
- return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
-}
-
       ),
       #(
-        ===================================================================
-        ===================================================================
-        ===================================================================
+        ========================================================================================================================
+        fonction de remplacement globale
+      ),
+      fonction(
+         definition(nom(replaceAll) , argument(chaine) , argument(chaineQuiRemplace)),
+         contenu(
+            declare(s , ''),
+            declare(
+               r,
+               new(appelf(n(RegExp) , p(chaine) , p('g')))
+            ),
+            appelf(r(s) , element(chaine) , n(replace) , p(r1) , p(chaineQuiRemplace)),
+            revenir(s)
+         )
+      ),
+      #(
+        ========================================================================================================================
         fonction transforme un commentaire pour un fichier source à générer
-        ===================================================================
-        ===================================================================
-        ===================================================================
       ),
       fonction(
          definition(nom(traiteCommentaire2) , argument(texte) , argument(niveau) , argument(ind)),
@@ -37,13 +43,8 @@ function traiteCommentaire2(texte,niveau,ind){
          )
       ),
       #(
-        ======================================================
-        ======================================================
-        ======================================================
+        ========================================================================================================================
         fonction transforme un commentaire pour un fichier rev
-        ======================================================
-        ======================================================
-        ======================================================
       ),
       fonction(
          definition(nom(ttcomm1) , argument(texte) , argument(niveau) , argument(ind)),
@@ -62,13 +63,8 @@ function traiteCommentaire2(texte,niveau,ind){
          )
       ),
       #(
-        =============================================
-        =============================================
-        =============================================
+        ========================================================================================================================
         fonction transforme un commentaire 
-        =============================================
-        =============================================
-        =============================================
       ),
       fonction(
          definition(
@@ -114,15 +110,8 @@ function traiteCommentaire2(texte,niveau,ind){
                            alors(
                               #(
                                 on a un commentaire de type bloc non formaté 
-                                car le premier caractère = #
-                              ),
-                              #(
-                                ... sinon on supprime les espaces 
-                                inutiles en début de ligne.
-                              ),
-                              #(#
-test
-  test
+                                car le premier caractère = #.
+                                On supprime les espaces inutiles en début de ligne.
                               ),
                               affecte(t , ''),
                               affecte(min , 99999),
@@ -296,14 +285,8 @@ test
          )
       ),
       #(
-        =============================================
-        =============================================
-        =============================================
-        fonction transforme un texte pour qu'il  soit 
-        visible en html, par exemple &nbsp; ou bien <
-        =============================================
-        =============================================
-        =============================================
+        ========================================================================================================================
+        fonction transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
       ),
       fonction(
          definition(nom(strToHtml) , argument(s)),
@@ -327,14 +310,8 @@ test
          )
       ),
       #(
-        =================================================
-        =================================================
-        =================================================
-        fonction qui reconstitue un texte source à partir  
-        du tableau représentant la matrice  du  programme
-        =================================================
-        =================================================
-        =================================================
+        ========================================================================================================================
+        fonction qui reconstitue un texte source à partir  du tableau représentant la matrice  du  programme
       ),
       fonction(
          definition(
@@ -356,7 +333,7 @@ test
             declare(obj , obj()),
             declare(t , ''),
             declare(profondeurLimite , 3),
-            declare(nombreEnfantsLimite , 3),
+            declare(nombreEnfantsLimite , 5),
             declare(forcerRetourLigne , faux),
             declare(condition1 , faux),
             declare(commentaire , ''),
@@ -807,18 +784,8 @@ test
          )
       ),
       #(
-        
-        
-        
-        
-        ===========================================
-        ===========================================
-        ===========================================
-        fonction qui produit un tableau html de  la
-        liste des caractères du source du programme
-        ===========================================
-        ===========================================
-        ===========================================
+        ========================================================================================================================
+        fonction qui produit un tableau html de  la liste des caractères du source du programme
       ),
       fonction(
          definition(nom(ConstruitHtmlTableauCaracteres) , argument(t2) , argument(texteSource) , argument(objTableau)),
@@ -973,7 +940,7 @@ test
                            declare(td1 , obj()),
                            appelf(r(td1) , n(document.createElement) , p('td')),
                            appelf(element(td1) , n(setAttribute) , p('class') , p('td2')),
-                           affecte(td1.innerHTML , out[j][3]),
+                           affecte(td1.innerHTML , out[j][2]),
                            appelf(element(tr1) , n(appendChild) , p(td1)),
                            appelf(element(t2) , n(appendChild) , p(tr1)),
                            #(
@@ -1087,14 +1054,8 @@ test
          )
       ),
       #(
-        ==========================================
-        ==========================================
-        ==========================================
-        fonction qui produit un tableau html de la
-        forme matricielle du programme
-        ==========================================
-        ==========================================
-        ==========================================
+        ========================================================================================================================
+        fonction qui produit un tableau html de la forme matricielle du programme
       ),
       fonction(
          definition(nom(ConstruitHtmlMatrice) , argument(t1) , argument(matriceFonction)),
@@ -1205,20 +1166,14 @@ test
          )
       ),
       #(
-        ===========================================
-        ===========================================
-        ===========================================
+        ========================================================================================================================
         fonction qui transforme un texte en tableau
-        ===========================================
-        ===========================================
-        ===========================================
       ),
       fonction(
          definition(nom(iterateCharacters2) , argument(str)),
          contenu(
             declare(out , appelf(n(Array))),
             declare(i , 0),
-            declare(j , 0),
             declare(exceptions , 0),
             declare(numLigne , 0),
             declare(l01 , str.length),
@@ -1301,14 +1256,8 @@ test
          )
       ),
       #(
-        ==================================================
-        ==================================================
-        ==================================================
-        tableau retourné par l'analyse syntaxique 
-        du texte en entrée de la fonction functionToArray2
-        ==================================================
-        ==================================================
-        ==================================================
+        ========================================================================================================================
+        tableau retourné par l'analyse syntaxique du texte en entrée de la fonction functionToArray2
       ),
       declare(
          global_enteteTableau,
@@ -1331,13 +1280,13 @@ test
          )
       ),
       #(
-        ===================================================
-        ===================================================
-        ===================================================
+        ========================================================================================================================
+        ========================================================================================================================
+        ========================================================================================================================
         fonction d'analyse syntaxique d'un programme source
-        ===================================================
-        ===================================================
-        ===================================================
+        ========================================================================================================================
+        ========================================================================================================================
+        ========================================================================================================================
       ),
       fonction(
          definition(

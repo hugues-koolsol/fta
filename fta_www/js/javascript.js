@@ -1,26 +1,6 @@
 "use strict";
-/*
-var global_enteteTableau=[
- ['id','id'                                 ,''], // 00
- ['val','value'                             ,''],
- ['typ','type'                              ,''],
- ['niv','niveau'                            ,''],
- ['coQ','constante quotee'                  ,''],
- ['pre','position du premier caractère'     ,''], // 05
- ['der','position du dernier caractère'     ,''],
- ['pId','Id du parent'                      ,''], // 10 ->  7
- ['nbE','nombre d\'enfants'                 ,''], // 11 ->  8
- ['nuE','numéro enfants'                    ,''], // 12 ->  9
- ['pro','profondeur'                        ,''], // 15 -> 10
- ['pop','position ouverture parenthese'     ,''], // 22 -> 11
- ['pfp','position fermeture parenthese'     ,''], // 23 -> 12
- ['com','commentaire'                       ,''],  
-];
-
-*/
 //=====================================================================================================================
 function parseJavascript0(tab,id,niveau){
- var i=0;
  var t='';
  var obj={};
  var retJS=js_tabTojavascript1(tab,id,false,false,niveau);
@@ -72,8 +52,16 @@ function js_condition1(tab,id,niveau){
      t+=' !';
     }else if(tab[i][1]=='et'){ // i18
      t+=' && ';
+     if(tab[i][8]>1){
+      //si il y a plusieurs enfants, il vaut mieux ouvrir une parenthèse
+      t+=' ( ';
+     }
     }else if(tab[i][1]=='ou'){ // i18
      t+=' || ';
+     if(tab[i][8]>1){
+      //si il y a plusieurs enfants, il vaut mieux ouvrir une parenthèse
+      t+=' ( ';
+     }
     }
     // todo tester si arguments
     obj=js_condition1(tab,i+1,niveau);
@@ -97,6 +85,11 @@ function js_condition1(tab,id,niveau){
     }
     if( tab[i][1]=='' || tab[i][1]=='non' ){
      t+=')';
+    }else if(tab[i][1]=='et' || tab[i][1]=='ou'){ // i18
+     if(tab[i][8]>1){
+      //si il y a plusieurs enfants, il vaut mieux ouvrir une parenthèse donc on la referme
+      t+=' ) ';
+     }
     }
     if(!btrouve){
      i=max-1
@@ -243,7 +236,7 @@ function js_condition0(tab,id,niveau){
  
  for(i=id+1;i<tab.length && tab[i][3]>tab[id][3];i++){
   if(tab[i][7]==tab[id][0]){
-   if(tab[i][1]=='' || tab[i][1]=='non'){
+   if(tab[i][1]=='' || tab[i][1]=='non'  ){
     if(premiereCondition){
      obj=js_condition1(tab,i,niveau);
      if(obj.status==false){

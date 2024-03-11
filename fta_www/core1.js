@@ -1,20 +1,20 @@
 
 /*#
-//=====================================================================================================================
-function traiteCommentaire2(texte,niveau,ind){
- return traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
-}
 
-      
 */
 /*
-  ===================================================================
-  ===================================================================
-  ===================================================================
+  ========================================================================================================================
+  fonction de remplacement globale
+*/
+function replaceAll(chaine,chaineQuiRemplace){
+    var s='';
+    var r= new RegExp(chaine,'g');
+    s=chaine.replace(r1,chaineQuiRemplace);
+    return s;
+}
+/*
+  ========================================================================================================================
   fonction transforme un commentaire pour un fichier source à générer
-  ===================================================================
-  ===================================================================
-  ===================================================================
 */
 function traiteCommentaire2(texte,niveau,ind){
     var s='';
@@ -22,13 +22,8 @@ function traiteCommentaire2(texte,niveau,ind){
     return s;
 }
 /*
-  ======================================================
-  ======================================================
-  ======================================================
+  ========================================================================================================================
   fonction transforme un commentaire pour un fichier rev
-  ======================================================
-  ======================================================
-  ======================================================
 */
 function ttcomm1(texte,niveau,ind){
     var s='';
@@ -36,13 +31,8 @@ function ttcomm1(texte,niveau,ind){
     return s;
 }
 /*
-  =============================================
-  =============================================
-  =============================================
+  ========================================================================================================================
   fonction transforme un commentaire 
-  =============================================
-  =============================================
-  =============================================
 */
 function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
     var i=0;
@@ -73,17 +63,9 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         if(temps == '#'){
             /*
               on a un commentaire de type bloc non formaté 
-              car le premier caractère = #
+              car le premier caractère = #.
+              On supprime les espaces inutiles en début de ligne.
             */
-            /*
-              ... sinon on supprime les espaces 
-              inutiles en début de ligne.
-            */
-/*#
-test
-  test
-                              
-*/
             t='';
             min=99999;
             for(i=1;i < l01;i=i+1){
@@ -177,14 +159,8 @@ test
     return t;
 }
 /*
-  =============================================
-  =============================================
-  =============================================
-  fonction transforme un texte pour qu'il  soit 
-  visible en html, par exemple &nbsp; ou bien <
-  =============================================
-  =============================================
-  =============================================
+  ========================================================================================================================
+  fonction transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
 */
 function strToHtml(s){
     var r1= new RegExp('&','g');
@@ -196,14 +172,8 @@ function strToHtml(s){
     return s;
 }
 /*
-  =================================================
-  =================================================
-  =================================================
-  fonction qui reconstitue un texte source à partir  
-  du tableau représentant la matrice  du  programme
-  =================================================
-  =================================================
-  =================================================
+  ========================================================================================================================
+  fonction qui reconstitue un texte source à partir  du tableau représentant la matrice  du  programme
 */
 function a2F1(arr,parentId,retourLigne,debut,coloration){
     /*
@@ -216,7 +186,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var obj={};
     var t='';
     var profondeurLimite=3;
-    var nombreEnfantsLimite=3;
+    var nombreEnfantsLimite=5;
     var forcerRetourLigne=false;
     var condition1=false;
     var commentaire='';
@@ -398,18 +368,8 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     return obj;
 }
 /*
-  
-  
-  
-  
-  ===========================================
-  ===========================================
-  ===========================================
-  fonction qui produit un tableau html de  la
-  liste des caractères du source du programme
-  ===========================================
-  ===========================================
-  ===========================================
+  ========================================================================================================================
+  fonction qui produit un tableau html de  la liste des caractères du source du programme
 */
 function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     var numeroLigne=0;
@@ -525,7 +485,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             var td1={};
             td1=document.createElement('td');
             td1.setAttribute('class','td2');
-            td1.innerHTML=out[j][3];
+            td1.innerHTML=out[j][2];
             tr1.appendChild(td1);
             t2.appendChild(tr1);
             /*
@@ -617,14 +577,8 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     t2.appendChild(tr1);
 }
 /*
-  ==========================================
-  ==========================================
-  ==========================================
-  fonction qui produit un tableau html de la
-  forme matricielle du programme
-  ==========================================
-  ==========================================
-  ==========================================
+  ========================================================================================================================
+  fonction qui produit un tableau html de la forme matricielle du programme
 */
 function ConstruitHtmlMatrice(t1,matriceFonction){
     /**/
@@ -692,18 +646,12 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     }
 }
 /*
-  ===========================================
-  ===========================================
-  ===========================================
+  ========================================================================================================================
   fonction qui transforme un texte en tableau
-  ===========================================
-  ===========================================
-  ===========================================
 */
 function iterateCharacters2(str){
     var out= Array();
     var i=0;
-    var j=0;
     var exceptions=0;
     var numLigne=0;
     var l01=str.length;
@@ -742,14 +690,8 @@ function iterateCharacters2(str){
     return retour;
 }
 /*
-  ==================================================
-  ==================================================
-  ==================================================
-  tableau retourné par l'analyse syntaxique 
-  du texte en entrée de la fonction functionToArray2
-  ==================================================
-  ==================================================
-  ==================================================
+  ========================================================================================================================
+  tableau retourné par l'analyse syntaxique du texte en entrée de la fonction functionToArray2
 */
 var global_enteteTableau= Array(
     Array('id','id'),
@@ -768,13 +710,13 @@ var global_enteteTableau= Array(
     Array('com','commentaire')
 );
 /*
-  ===================================================
-  ===================================================
-  ===================================================
+  ========================================================================================================================
+  ========================================================================================================================
+  ========================================================================================================================
   fonction d'analyse syntaxique d'un programme source
-  ===================================================
-  ===================================================
-  ===================================================
+  ========================================================================================================================
+  ========================================================================================================================
+  ========================================================================================================================
 */
 function functionToArray2(tableauEntree,exitOnLevelError){
     /*

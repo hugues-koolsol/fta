@@ -272,7 +272,7 @@ function enregistrer2(){
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  document.getElementById('nomDuSource').disabled=true;
 
- clearMessages();
+ clearMessages('zone_global_messages');
  
  document.getElementById('arrayed').innerHTML='';
  
@@ -419,9 +419,7 @@ function enregistrer2(){
   voirSourceGenere();
 
  } 
-
- displayMessages()
- 
+ displayMessages('zone_global_messages')
 }
 
 //=====================================================================================================================
@@ -510,7 +508,7 @@ function afficherFichierSource(source){
 }
 //=====================================================================================================================
 function chargerFichierRev(nomFichierSource){
- clearMessages();
+ clearMessages('zone_global_messages');
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  document.getElementById('nomDuSource').disabled=true;
  document.getElementById('normalise').value='';
@@ -960,7 +958,7 @@ function chargerLaListeDesSourcesRev(){
        global_messages['errors'].push(errors.messages[elem]);
       }
       global_messages['e500logged']=true;
-      displayMessages();
+      displayMessages('zone_global_messages');
       console.log(global_messages);
      }catch(e){
      }
@@ -989,7 +987,7 @@ function chargerLaListeDesSourcesRev(){
    for(var elem in errors.messages){
     global_messages['errors'].push(errors.messages[elem]);
    }
-   displayMessages();
+   displayMessages('zone_global_messages');
    console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
    return;
   }
@@ -1036,7 +1034,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 <?php
-$a=array('js' => array('js/php.js','js/javascript.js','js/html.js','js/sql.js'));
+$a=array('js' => array('js/compile1.js','js/php.js','js/javascript.js','js/html.js','js/sql.js'));
 $o1=concat($o1,html_footer1($a));
 print($o1);
 $o1='';

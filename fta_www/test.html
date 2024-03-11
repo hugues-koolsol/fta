@@ -15,9 +15,7 @@
 function espace2(i){
     var t='';
     if(i > 0){
-        t=concat(t,'\n',
-            repeat(' ',i)
-        );
+        t=concat(t,'\n',repeat(' ',i));
     }
     return(t);
 }
@@ -34,9 +32,9 @@ function enregistrer2(par1,par2){
         dansFaireRetourneTrue();
         e=456.789;
     }
-    if((true)&&(test1()||(true)||test2())&&blabla()){
+    if((true) && (test1() || (true) || test2()) && blabla()){
         alert('OK1');
-    }else if(!(true == d)){
+    }else if( !(true == d)){
         alert('OK2');
     }else{
         alert('OK3');

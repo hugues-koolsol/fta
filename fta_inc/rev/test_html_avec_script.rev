@@ -1,13 +1,13 @@
 #(
-   Début de source
-   Définition du fichier
+  Début de source
+  Définition du fichier
 ),
 src_html(
    (file_name , test),
    (file_extension , html),
    (file_path , .),
    #(
-      contenu du fichier
+     contenu du fichier
    ),
    source(
       html(

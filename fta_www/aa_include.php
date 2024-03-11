@@ -82,7 +82,7 @@ function html_header1($p=array()){
  $t.='   <a href="index.html">html home</a>'.CRLF;
  $t.='   <a href="index.php">php home</a>'.CRLF;
  $t.='   <a href="todo.html">todo</a>'.CRLF;
- $t.='   <a href="funcToArray6.html">funcToArray6</a>'.CRLF; 
+ $t.='   <a href="traiteJs.html">traiteJs</a>'.CRLF; 
  if(isset($_SESSION[APP_KEY]["user"]) && 1 === $_SESSION[APP_KEY]["user"]){
   $t.='   <a href="index_source.php">index_source</a>'.CRLF;
   $t.='   <a href="aa_login.php?a=logout">logout</a>'.CRLF;
@@ -90,7 +90,7 @@ function html_header1($p=array()){
   $t.='   <a href="aa_login.php">login</a>'.CRLF;
  }
  $t.=' </nav>'.CRLF;
- $t.=' <div id="global_messages"></div>'.CRLF;
+ $t.=' <div id="zone_global_messages"></div>'.CRLF;
  return $t;
 }
 //==================================================================================================
