@@ -212,7 +212,12 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
  var i=0;
  var j=0;
  var l01=ch.length;
+ var id=0;
+ var parentId=0;
+ //           niveau , id  , parentId    nbEnf     1            2   3avant
+ tab1.push([ [niveau , id  , parentId ,  0     ] , variable1 , [] , ''      , '' , '' , [[ '' , '' , [ '' , '' , '' ] ]] ]);
  
+ // phase 1 : séparation des parenthèses
  for(i=0;i<l01;i++){
   var c1=ch.substr(i,1);
   if(dansChaineDouble){
@@ -275,7 +280,8 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
      variable1=monTrim(variable1);
      variable1+='!';
     }
-    tab1.push([niveau,variable1,[],'','','']);
+    id++;
+    tab1.push([ [niveau,id,parentId,0] , variable1 , [] , '' , '' , '' , [['' , '' , [ '' , '' , '' ] ]] ]);
    }
    niveau++;
    variable1='';
@@ -283,7 +289,8 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
    variable1=variable1.replace(/\n/g,' ')
    variable1=monTrim(variable1);
    if(variable1!==''){
-    tab1.push([niveau,variable1,[],'','','']);
+    id++;
+    tab1.push([ [niveau,id,parentId,0] , variable1 , [] , '' , '' , '' , [['' , '' , [ '' , '' , '' ] ]] ]);
    }
    variable1='';
    niveau--;
@@ -297,19 +304,42 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
    variable1+=c1;
   }
  }
+ 
+ 
  variable1=variable1.replace(/\n/g,' ')
  variable1=monTrim(variable1);
  if(variable1!==''){
-  tab1.push([niveau,variable1,[],'','','']);
+  id++;
+  tab1.push([ [niveau,id,parentId,0] , variable1 , [] , '' , '' , '' , [[ '' , '' , [ '' , '' , '' ] ]] ]);
  }
+ for(var i=tab1.length-1;i>=1;i--){
+  var niv=tab1[i][0][0];
+  for(var j=i-1;j>=1;j--){
+   if(niv>tab1[j][0][0]){
+    tab1[i][0][2]=tab1[j][0][1];
+    break;
+   }
+  }
+ }
+ 
+ for(var i=tab1.length-1;i>0;i--){
+  var par=tab1[i][0][2];
+  tab1[par][0][3]++
+ }
+ 
+
+ //======================================================================
+ // phase 2 : chaque groupe de parenthèse représente une ligne du tableau
+ //======================================================================
+
  
  var niveauprecedent=999;
  var l01=tab1.length;
  // on sépare les && et ||
  
- for(i=0;i<l01;i++){
+ for(i=1;i<l01;i++){
   c1=tab1[i][1];
-  console.log('niveau et c1='+tab1[i][0]+'"'+c1+'"');
+  console.log('niveau et c1='+tab1[i][0][0]+'"'+c1+'"');
   //dans chaque ligne , on explose les && et les || 
   if(c1.length>=3){
    if(c1.substr(0,3)=='&&!' || c1.substr(0,3)=='||!'){
@@ -325,7 +355,7 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
     c1=c1.substr(2);
    }
   }
-  if(niveauprecedent<tab1[i][0] && c1!='' && tab1[i-1][4]=='' ){
+  if(niveauprecedent<tab1[i][0][0] && c1!='' && tab1[i-1][4]=='' ){
    // si le niveau courant est inférieur au niveau suivant, la ligne doit de terminer par
    // un "&&!" ou un "||!" ou un "&&" ou un "||"
    if(i<l01-1){
@@ -352,9 +382,179 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
    
   }
   tab1[i][5]=c1;
-  niveauprecedent=tab1[i][0];
+  // tab1[i][5] contient des elements de type condition1 && condition2 || condition 3
+  // dans tab1[i][6] on explose ces conditions sous la forme [['|et|ou','conditionX'],...]
+  dansChaineDouble=false;
+  dansChaineSimple=false;
+  variable1='';
+  var textEtOu='';
+  var indiceCondition=0;
+  
+  for(var j=0;j<tab1[i][5].length-1;j++){
+   c1=tab1[i][5].substr(j,1);
+   textEtOu=tab1[i][5].substr(j,2);
+   if(dansChaineDouble){
+   
+    variable1+=c1;
+    if(c1=='"'){
+     dansChaineDouble=false;
+    }else{
+    
+     for(j=i+1;j<l01;j++){
+      c2=ch.substr(j,1);
+      if(c2=='"'){
+       if(c1=='\\'){
+        variable1+=c2;
+       }else{
+        variable1+=c2;
+        dansChaineDouble=false;
+        i=j;
+        break;
+       }
+      }else{
+       variable1+=c2;
+      }
+     }
+    }
+    
+   }else if(dansChaineSimple){
+   
+    variable1+=c1;
+    if(c1=='\''){
+     dansChaineSimple=false;
+    }else{
+    
+     for(j=i+1;j<l01;j++){
+      c2=ch.substr(j,1);
+      if(c2=='\''){
+       if(c1=='\\'){
+        variable1+=c2;
+       }else{
+        variable1+=c2;
+        dansChaineSimple=false;
+        i=j;
+        break;
+       }
+      }else{
+       variable1+=c2;
+      }
+     }
+    }
+   }else if(textEtOu=='&&' || textEtOu=='||'){
+    tab1[i][6][indiceCondition][1]=monTrim(variable1);
+    tab1[i][6].push([textEtOu,'',[ '' , '' , '' ]]);
+    indiceCondition++;
+    variable1='';
+    j++;
+   }else{
+    variable1+=c1;
+   }
+  }
+  variable1+=tab1[i][5].substr(tab1[i][5].length-1,1)
+  tab1[i][6][indiceCondition][1]=monTrim(variable1);
+  
+   
+  dansChaineDouble=false;
+  dansChaineSimple=false;
+  variable1='';
+  var textTest1='';
+  var textTest2='';
+  var textTest3='';
+  var indiceTest=0;
+  
+  for(var j=0;j<tab1[i][6].length;j++){
+  
+   var l02=tab1[i][6][j][1].length;
+   var str1=tab1[i][6][j][1];
+   
+   for(var k=0;k<l02;k++){
+   
+    c1=str1.substr(k,1);
+    textTest1=str1.substr(k,1);
+    textTest2=str1.substr(k,2);
+    textTest3=str1.substr(k,3);
+    if(dansChaineDouble){
+    
+     variable1+=c1;
+     if(c1=='"'){
+      dansChaineDouble=false;
+     }else{
+     
+      for(var l=k+1;l<l02;l++){
+       c2=ch.substr(l,1);
+       if(c2=='"'){
+        if(c1=='\\'){
+         variable1+=c2;
+        }else{
+         variable1+=c2;
+         dansChaineDouble=false;
+         k=l;
+         break;
+        }
+       }else{
+        variable1+=c2;
+       }
+      }
+     }
+     
+    }else if(dansChaineSimple){
+    
+     variable1+=c1;
+     if(c1=='\''){
+      dansChaineSimple=false;
+     }else{
+     
+      for(var l=k+1;l<l02;l++){
+       c2=ch.substr(l,1);
+       if(c2=='\''){
+        if(c1=='\\'){
+         variable1+=c2;
+        }else{
+         variable1+=c2;
+         dansChaineSimple=false;
+         k=l;
+         break;
+        }
+       }else{
+        variable1+=c2;
+       }
+      }
+     }
+    }else if(textTest3=='===' || textTest3=='!=='){
+     tab1[i][6][j][2][0]=textTest3;
+     tab1[i][6][j][2][1]=monTrim(str1.substr(0,k));
+     tab1[i][6][j][2][2]=monTrim(str1.substr(k+3));
+     break;
+    }else if(textTest2=='==' || textTest2=='!='  || textTest2=='<=' || textTest2=='>='){
+     tab1[i][6][j][2][0]=textTest2;
+     tab1[i][6][j][2][1]=monTrim(str1.substr(0,k));
+     tab1[i][6][j][2][2]=monTrim(str1.substr(k+2));
+     break;
+    }else if(textTest1=='>' || textTest1=='<'  ){
+     tab1[i][6][j][2][0]=textTest1;
+     tab1[i][6][j][2][1]=monTrim(str1.substr(0,k));
+     tab1[i][6][j][2][2]=monTrim(str1.substr(k+1));
+     break;
+    }else{
+     if(c1=='"'){
+      dansChaineDouble=true;
+     }else if(c1=='\''){
+      dansChaineSimple=true;
+     }else{
+      variable1+=c1;
+     }
+    }   
+   
+   
+   
+   }
+  }  
+  niveauprecedent=tab1[i][0][0];
  }
- console.log('\n===================================\ntab1=',tab1);
+ 
+ 
+ 
+ console.log('\n====ch=\n'+ch+'\n==== conditions ===========================\ntab1=',tab1);
  
  
  
@@ -362,6 +562,131 @@ function decomposeConditionEnTableau1(tab,ind,niveau,ch){
  return {'status':true,'value':tab1}
  
 }
+
+//=====================================================================================================================
+function boucleRecursiveSurCondition1(tab,ind1,niveau1,parentId){
+ var t='';
+ var dernierI=0;
+ for(var i=ind1;i<tab.length;i++){
+  if(tab[i][0][2]==parentId){
+  
+   if(tab[i][3]=='||'){
+    t+='ou';
+   }else if(tab[i][3]=='&&'){
+    t+='et';
+   }else{
+    t+=tab[i][3];
+   }
+   
+   if(tab[i][0][0]>niveau1){
+    t+='('.repeat(tab[i][0][0]-niveau1);
+   }
+   if(tab[i][5]!==''){
+//    t+=' untruc pour i='+i+' ';
+    for(var j=0;j<tab[i][6].length;j++){
+     var elt=tab[i][6][j];
+     if(elt[0]=='||'){
+      t+='ou(';
+     }else if(elt[0]=='&&'){
+      t+='et(';
+     }else{
+      t+='(';
+     }
+
+     if(elt[2][0]=='<'){
+      t+='inf('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if(elt[2][0]=='<='){
+      t+='infeg('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if(elt[2][0]=='>'){
+      t+='sup('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if(elt[2][0]=='>='){
+      t+='supegal('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if(elt[2][0]=='!=='){
+      t+='diffstricte('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if(elt[2][0]=='==='){
+      t+='egalstricte('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if(elt[2][0]=='!='){
+      t+='diff('+elt[2][1]+' , '+elt[2][2]+')';
+     }else if( elt[2][0] == '==' ){
+      t+='egal('+elt[2][1]+' , '+elt[2][2]+')';
+     }else{
+      t+='TODO"'+elt[2][0]+'"('+elt[2][1]+' , '+elt[2][2]+')';
+     }
+     
+     if(j!=tab[i][6].length-1){
+//      t+=',';
+     }
+     t+=')';
+    }
+   }
+/*
+test=`  ( a == b )
+  ||
+  ( 
+         tab[i][1]=="non" 
+      || tab[i][1]=='ou' 
+      || (
+               premiereCondition==true 
+            && tab[i][1]=='' 
+         ) 
+  ) 
+  && tab[i][8]>0 
+  && tab[i][2]=='f'
+`  ;
+
+
+(
+  (egal(a , b))
+)
+ou(
+    (egal(tab[i][1] , "non"))
+  ou(egal(tab[i][1] , 'ou'))
+  ou(
+      (egal(premiereCondition , true))
+    et(egal(tab[i][1] , ''))
+  )
+)
+et(
+  sup(tab[i][8] , 0)
+)
+et(
+ egal(tab[i][2] , 'f')
+)
+
+
+
+*/   
+   if(tab[i][4]=='||'){
+    t+='ou';
+   }else if(tab[i][4]=='&&'){
+    t+='et';
+   }else{
+    t+=tab[i][4];
+   }
+
+
+
+   if(tab[i][0][3]>0){
+    var obj=boucleRecursiveSurCondition1(tab,i+1,tab[i][0][0],tab[i][0][1]);
+    if(obj.status==true){
+     t+=obj.value;
+    }else{
+     return {'status':false,'message':'erreur recursif'};
+    }
+   }
+   
+   
+   if(tab[i][0][0]>niveau1){
+    t+=')'.repeat(tab[i][0][0]-niveau1);
+   }
+
+   
+  }
+ 
+ }
+ return {'status':true,'value':t};
+}
+
 //=====================================================================================================================
 function traiteConditionComplexe1(tab,ind,niveau,ch){
  var t='';
@@ -375,81 +700,38 @@ function traiteConditionComplexe1(tab,ind,niveau,ch){
  var l01=ch.length;
  
  
-ch=`  ( a == b )
-  ||
-  ( 
-         tab[i][1]=='non' 
-      || tab[i][1]=='et' 
-      || tab[i][1]=='ou' 
-      || (
-               premiereCondition==true 
-            && tab[i][1]=='' 
-         ) 
-  ) 
-  && tab[i][8]>0 
-  && tab[i][2]=='f'
-`  ;
-
  
  var obj1=decomposeConditionEnTableau1(tab,ind,niveau,ch);
  if(obj1.status===false){
   return {'status':false,'line':tab[ind][5]};
  }
  var tab1=obj1.value;
- 
- console.log( '\n========================\ntab1=' , tab1 );
- 
- 
- var c2='';
- var c3='';
- for(var i=0;i<l01;i++){
-  var c1=ch.substr(i,1);
-  if(dansChaineDouble){
-  }else if(dansChaineSimple){
-  }else{
-   if(c1=='pasPossible'){
-   }else if(c1=='\''){
-   }else if(c1=='"'){
-   }else if(c1=='|'){
-   }else if(c1=='&'){
-   }else if(c1=='\''){
-   }else if(c1=='='){
-    if(i<l01-2){
-     c2=ch.substr(i+1);
-     if(c2=='='){
-      if(i<l01-3){
-       c2=ch.substr(i+2);
-       if(c2=='='){
-        contition1='egalstricte';
-       }else{
-        contition1='egal';
-       }
-      }
-     }
-    }else{
-      return {'status':false,'id':ind,'line':tab[ind][5]};
-    }
-   }else{
-    if(c1==' ' || c1=='\n' || c1=='\r'){
-    }else{
-     variable1=variable1+c1;
-    }
-   }
-  }
+
+ var obj1=boucleRecursiveSurCondition1(tab1 , 1 , 0 , 0);
+ console.log('apres recursif, obj1=',obj1);
+ if(obj1.status===false){
+  return {'status':false,'line':tab[ind][5]};
+ }else{
+  t=obj1.value;
  }
+ 
+ 
+ 
+ 
+ 
  
  return {'status':true,'value':t,'tropComplexe':true};
 }
 //=====================================================================================================================
-function traiteCondition1(tab,ind,niveau,c){
+function traiteCondition1(tab,ind,niveau,ch){
  var t='';
   
  // a priori, c'est une condition simple, dans la majorité des cas on a un " a < b " ou équivalent
- if( c.indexOf('(')<0 && c.indexOf(')')<0 && c.indexOf('&&')<0  && c.indexOf('||')<0 ){
+ if( ch.indexOf('(')<0 && ch.indexOf(')')<0 && ch.indexOf('&&')<0  && ch.indexOf('||')<0 ){
   var tabCas=['<=','>=','<','>','!==','===','!=','=='];
   for(var i=0;i<=tabCas.length;i++){
-   if(c.indexOf(tabCas[i])>=0){
-    var tt=c.split(tabCas[i]);
+   if(ch.indexOf(tabCas[i])>=0){
+    var tt=ch.split(tabCas[i]);
     if(tt.length==2){
      var obj1=analyseChaineSimple1(tt[0],tab,ind,niveau);
      var obj2=analyseChaineSimple1(tt[1],tab,ind,niveau);
@@ -457,7 +739,23 @@ function traiteCondition1(tab,ind,niveau,c){
       if(obj1.isComplex || obj2.isComplex ){
        // cas complexe
       }else{
-       t=obj1.value+tabCas[i]+obj2.value;
+       if(tabCas[i]=='<'){
+        t='inf('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='<='){
+        t='infeg('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='>'){
+        t='sup('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='>='){
+        t='supeg('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='!=='){
+        t='diffstricte('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='==='){
+        t='egalstricte('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='!='){
+        t='diff('+obj1.value+' , '+obj2.value+')'
+       }else if(tabCas[i]=='=='){
+        t='egal('+obj1.value+' , '+obj2.value+')'
+       }
        return {status:true,value:t,'tropComplexe':false}
       }
      }
@@ -466,12 +764,11 @@ function traiteCondition1(tab,ind,niveau,c){
   }
  }
 
- 
-test=`  a==b
+/* 
+ch=`  (( a == b ))
   ||
-  ! ( 
-         tab[i][1]=='non' 
-      || tab[i][1]=='et' 
+  ( 
+         tab[i][1]=="non" 
       || tab[i][1]=='ou' 
       || (
                premiereCondition==true 
@@ -481,23 +778,25 @@ test=`  a==b
   && tab[i][8]>0 
   && tab[i][2]=='f'
 `  ;
+*/
+
 // test='  a==b && (c!=d)';
- console.log('test='+test);
- var obj1=traiteConditionComplexe1(tab,ind,niveau,test);
 
 
-  
+ console.log('ch='+ch);
+ var obj1=traiteConditionComplexe1(tab,ind,niveau,ch);
+ console.log('obj1.value='+obj1.value)
  
  
- 
- if(c.indexOf('&&')>=0 || c.indexOf('||')>=0 ){
-  var tabConditions =[];
-  for(i=0;i<c.length;i++){
-  }
+ if(obj1.status==true){
+  t=obj1.value;
+  return {'status':true,'value':t,'tropComplexe':false};
+ }else{
+  return {'status':true,'value':t,'tropComplexe':true};
  }
  
- t=c;
- return {'status':true,'value':t,'tropComplexe':true};
+ 
+ 
 }
 //=====================================================================================================================
 function traiteBoucle1(tab,ind,niveau){
@@ -584,7 +883,7 @@ function traiteBoucle1(tab,ind,niveau){
 //=====================================================================================================================
 function monTrim(s){
  var t='';
- for(var i=0;i<s.length-1;i++){
+ for(var i=0;i<s.length;i++){
   var c=s.substr(i,1);
   if(c==' '){
    t=s.substr(i+1);
