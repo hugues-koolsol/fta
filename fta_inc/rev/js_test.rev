@@ -5,26 +5,76 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
-      boucle(
-         initialisation(affecte(i , 0)),
-         condition(
-            (inf(i , tab.length)),
-            et(sup(a , 0)),
-            ou(inf(a , b) , et(inf(a , b))),
-            et(
-               inf(a2 , b2),
-               ou(inf(a3 , b3)),
-               ou(inf(a3 , b3)),
-               ou(inf(a3 , b3)),
-               ou(inf(a3 , b3)),
-               ou(inf(a3 , b3))
+      #(#
+a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
+      ),
+      affecte(
+         a,
+         appelf(
+            #(),
+            n(b.c),
+            p('d'),
+            prop(
+               appelf(
+                  #(),
+                  n(e.f),
+                  p('g,h'),
+                  p(
+                     appelf(
+                        #(),
+                        n(i),
+                        p(j),
+                        prop(k)
+                     )
+                  ),
+                  prop(l)
+               )
             )
-         ),
-         increment(affecte(i , i+1)),
-         faire(
-            #(dans faire),
-            affecte(a , 1)
          )
+      ),
+      #(#      
+  declare(cleElement , obj()),
+  boucleSurObjet(
+     pourChaque(dans(cleElement , arguments)),
+     faire(
+        #(),
+        affecte(a , 1)
+     )
+  ),
+      ),
+      #(#      
+  affecte(
+     variable,
+     condition((egal(1 , 1)))
+  ),
+      ),
+      #(#      
+
+
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition(
+        (inf(i , tab.length)),
+        et(sup(a , 0)),
+        ou(inf(a , b) , et(inf(a , b))),
+        et(
+           inf(a2 , b2),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3))
+        )
+     ),
+     increment(affecte(i , i+1)),
+     faire(
+        #(dans faire),
+        affecte(a , 1)
+     )
+  ),
+  
+  
+  
       ),
       #(fin boucle, suite du source),
       #(#
@@ -103,10 +153,6 @@ src_javascript(
   ),
   
   ============================================
-      ),
-      affecte(
-         variable,
-         condition((egal(1 , 1)))
       ),
       #(#
   

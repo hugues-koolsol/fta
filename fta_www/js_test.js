@@ -1,8 +1,56 @@
 
-for(i=0;(i < tab.length) && a > 0 ||  ( a < b && a < b )  &&  ( a2 < b2 || a3 < b3 || a3 < b3 || a3 < b3 || a3 < b3 || a3 < b3 ) ;i=i+1){
-    /*dans faire*/
-    a=1;
-}
+/*#
+a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
+      
+*/
+a=b.c('d').e.f('g,h',i(j).k).l;
+/*#      
+  declare(cleElement , obj()),
+  boucleSurObjet(
+     pourChaque(dans(cleElement , arguments)),
+     faire(
+        #(),
+        affecte(a , 1)
+     )
+  ),
+      
+*/
+/*#      
+  affecte(
+     variable,
+     condition((egal(1 , 1)))
+  ),
+      
+*/
+/*#      
+
+
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition(
+        (inf(i , tab.length)),
+        et(sup(a , 0)),
+        ou(inf(a , b) , et(inf(a , b))),
+        et(
+           inf(a2 , b2),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3)),
+           ou(inf(a3 , b3))
+        )
+     ),
+     increment(affecte(i , i+1)),
+     faire(
+        #(dans faire),
+        affecte(a , 1)
+     )
+  ),
+  
+  
+  
+      
+*/
 /*fin boucle, suite du source*/
 /*#
   
@@ -84,7 +132,6 @@ for(i=0;(i < tab.length) && a > 0 ||  ( a < b && a < b )  &&  ( a2 < b2 || a3 < 
   ============================================
       
 */
-variable=(1 == 1);
 /*#
   
   
