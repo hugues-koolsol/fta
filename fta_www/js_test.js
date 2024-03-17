@@ -1,9 +1,104 @@
 
+/*
+  a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
+*/
+tagada=b.c(x('d').y.z()).e.f('g,h',i(j).k).l;
 /*#
-a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
+      
+cascade(
+   appelf(
+      element(b),
+      n(c),
+      p(
+         cascade(
+            appelf(
+               n(x) , 
+               p('d')
+            ),
+            appelf(
+               element(y) , 
+               n(z)
+            )
+         ),
+      )
+   ),
+   appelf(
+      element(e),
+      n(f),
+      p('g,h'),
+      p(appelf(n(i) , p(j) , prop(k))),
+      prop(l)
+   )
+)      
+      
       
 */
 a=b.c('d').e.f('g,h',i(j).k).l;
+/*#
+      
+a=b.c('d').e.f( 'g,h', i(j).k ) ; 
+      
+a=document.getElementById('x').value.replace('g,h',maFuncQuiRetourneUnObjet(j).k)
+affecte(
+   a,
+   listef(      
+     appelf(
+        element(document)
+        n(getElementById),
+        p('x'),
+        prop(value)
+     ),
+     appelf(
+        element(value)
+        name(replace)
+        p('gh'),
+        p(
+           appelf(
+              n(maFuncQuiRetourneUnObjet),
+              p(j)
+           )
+        )
+     )
+   )
+)
+
+
+
+      affecte(
+         a,
+         cascade(
+appelf(  element(b),  n(c),p('d')),appelf(  n(e.f),p('g,h'),p(appelf(  n(i),p(j),prop(k))),prop(l))         )
+      )
+
+
+
+      affecte(
+         a,
+         appelf(
+            #(),
+            n(b.c),
+            p('d'),
+            prop(
+               appelf(
+                  #(),
+                  n(e.f),
+                  p('g,h'),
+                  p(
+                     appelf(
+                        #(),
+                        n(i),
+                        p(j),
+                        prop(k)
+                     )
+                  ),
+                  prop(l)
+               )
+            )
+         )
+      ),
+
+      
+*/
 /*#      
   declare(cleElement , obj()),
   boucleSurObjet(

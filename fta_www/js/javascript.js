@@ -445,6 +445,43 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    i=reprise;
    
    
+  }else if(tab[i][1]=='cascade'  && tab[i][2]=='f'){ // i18
+   // une cascade d'appel à des fonctions
+   // a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
+   
+   
+   // une cascade d'appel à des fonctions
+   // a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
+   // affecte(a,cascade(   appelf( element(b) , n(c) , p('d') , prop(e)),    appelf(  n(f), p('g,h'),   p(appelf(n(i) , p(j) , prop(k)) )   , prop(l) ) ) ),
+    var nbEnfantsCascade=tab[i][5];
+    for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
+     if(tab[j][7]==tab[i][0]){
+      if(tab[j][1]=='appelf'){
+       obj=js_traiteAppelFonction(tab,j,true,niveau,false);
+       if(obj.status==true){
+        if(tab[j][9]>1){
+         t+='.';
+        }
+        t+=obj.value;
+       }else{
+        return logerreur({status:false,value:t,id:i,tab:tab,message:'dans flux cascade, erreur dans appelf'});
+       }
+      }else{
+       return logerreur({status:false,value:t,id:i,tab:tab,message:'dans flux cascade, il ne peut y avoir que des "appelf"'});
+      }
+     }
+    }
+    t+='';
+    reprise=i+1;
+    max=i+1;
+    for(j=max;j<tab.length && tab[j][3]>tab[i][3];j++){
+     reprise=j;
+    }
+    i=reprise;
+    
+   
+  
+  
   }else if(tab[i][1]=='boucleSurObjet'  && tab[i][2]=='f'){ // i18
 /*  
       boucleSurObjet(
@@ -461,7 +498,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      }else if(tab[j][1]=='#'){
       tabchoix.push([j,tab[j][1],i]);
      }else{
-      return logerreur({status:false,value:t,id:id,tab:tab,message:'la syntaxe de boucleSurObjet est boucleSurObjet(pourChaque(dans(a , b)),faire())'});
+      return logerreur({status:false,value:t,id:i,tab:tab,message:'la syntaxe de boucleSurObjet est boucleSurObjet(pourChaque(dans(a , b)),faire())'});
      }
     }    
    } 
@@ -1084,6 +1121,34 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     }else{
      return logerreur({status:false,value:t,id:id,tab:tab,message:'javascript.js dans appelf condition'});
     }
+
+   }else if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='cascade' ){
+
+   // une cascade d'appel à des fonctions
+   // a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
+   // affecte(a,cascade(   appelf( element(b) , n(c) , p('d') , prop(e)),    appelf(  n(f), p('g,h'),   p(appelf(n(i) , p(j) , prop(k)) )   , prop(l) ) ) ),
+    t+=''+tab[i+1][1]+signe;
+    var nbEnfantsCascade=tab[i+2][5];
+    for(j=i+3;j<tab.length && tab[j][3]>tab[i+2][3];j++){
+     if(tab[j][7]==tab[i+2][0]){
+      if(tab[j][1]=='appelf'){
+       obj=js_traiteAppelFonction(tab,j,true,niveau,false);
+       if(obj.status==true){
+        if(tab[j][9]>1){
+         t+='.';
+        }
+        t+=obj.value;
+       }else{
+        return logerreur({status:false,value:t,id:i,tab:tab,message:'dans appelf cascade, erreur dans appelf'});
+       }
+      }else{
+       return logerreur({status:false,value:t,id:i,tab:tab,message:'dans appelf cascade, il ne peut y avoir que des "appelf"'});
+      }
+     }
+    }
+    t+=';';
+
+
     
    }else{
     logerreur({status:false,value:t,id:i,tab:tab,message:'javascript.js dans "affecte" ou "dans" cas non prévu "'+tab[i+2][1]+'"'});
@@ -1303,6 +1368,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     i=reprise;
     
    }else if(tab[j][1]=='prop' && tab[j][3]==tab[i][3]+1){
+    
     // la propriété est à un niveau +1 de l'appelf ( document.getElementById(toto).propriete )
     // todo voir dans quel cas c'est utilisé
     if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
@@ -1337,10 +1403,15 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     }else{
      // cas ou le paramètre d'une fonction est une fonction
      if(tab[j][8]==1 && tab[j+1][2]=='f' ){
-      if(tab[j+1][1]=='appelf'){ // i18
+      if(tab[j+1][1]=='appelf' || tab[j+1][1]=='cascade'){ // i18
        aDesAppelsRecursifs=true;
 //       dansConditionOuDansFonction=true;
-       obj=js_traiteAppelFonction(tab,j+1,true,niveau,true);
+       if(tab[j+1][1]=='cascade'){
+//        obj=js_traiteAppelFonction(tab,j+1,true,niveau,true);
+        obj=js_tabTojavascript1(tab,j+1,false,false,niveau);
+       }else{
+        obj=js_traiteAppelFonction(tab,j+1,true,niveau,true);
+       }
        if(obj.status==true){
         argumentsFonction+=',';
         if(nomFonction=='Array' && nbEnfants>=4){
@@ -1352,7 +1423,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
         return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'});
        }
       }else{
-       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue '+tab[j][1]});
+       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 3 pour la fonction inconnue '+tab[j][1]});
       }
      }
     }

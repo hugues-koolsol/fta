@@ -144,6 +144,186 @@ function analyseChaineSimple1(tab,ind,niveau,chaine,noLogIfError){
  
 }
 //=====================================================================================================================
+function recurf1(tab,niveau,ind,parentId,parentEstCascade){
+
+/*
+b.c('d').e.f( 'g,h', i(j).k ).l
+niveau,id,parentId,nbEnfants
+tab2=
+[
+ [0  ,  0  ,  0  ,  2  ,  ""      ,  ""  ]  ,  
+ [0  ,  1  ,  0  ,  1  ,  "b.c"   ,  "f" ]  ,  
+ [1  ,  2  ,  1  ,  0  ,  "'d'"   ,  "c" ]  ,  
+ [0  ,  3  ,  0  ,  3  ,  ".e.f"  ,  "f" ]  ,  
+ [1  ,  4  ,  3  ,  0  ,  "'g,h'" ,  "c" ]  ,  
+ [1  ,  5  ,  3  ,  2  ,  "i"     ,  "f" ]  ,  
+ [2  ,  6  ,  5  ,  0  ,  "j"     ,  "c" ]  ,  
+ [2  ,  7  ,  5  ,  0  ,  "k"     ,  "e" ]  ,  
+ [1  ,  8  ,  3  ,  0  ,  "l"     ,  "e" ]
+] 
+ 
+         cascade(
+            appelf(
+               n(b.c)
+               p('d')
+               prop(e),
+            ),
+            appelf(
+               n(f)
+               p('g,h')
+               p(
+                  appelf(
+                     n(i)
+                     p(j)
+                     prop(k)
+                  )
+               )
+               prop(l)
+            )
+         )
+         
+         
+appelf(  
+ n(b.c),
+ p('d')
+),
+appelf(  
+ n(.e.f),
+ p('g,h'),
+ p(
+  appelf(  
+   n(i),
+   p(j),
+   prop(k)
+  )
+ ),
+ prop(l)
+) 
+*/
+ var estCascade=false;
+ var t='';
+ var l01=tab.length;
+ var cascade=false;
+ for( var i=ind;i<l01;i++){
+ 
+  if(tab[i][2]==parentId){
+  
+  
+   if(tab[i][5]=='f'){
+   
+    if(tab[tab[i][2]][5]=='f'){
+    
+     if(t!==''){
+      t+=',';
+     }
+     if(estCascade==false){
+      t+='p(';
+     }
+     
+    }else{
+    
+     if(t!==''){
+      t+=',';
+     }
+     
+    }
+/*
+cascade(
+  appelf(  
+    element(b),  
+    n(c)
+    p(
+      cascade(
+        appelf(
+          n(x),
+          p('d')
+        ),
+        appelf(  
+          element(y),  
+          n(z)
+        )
+      )
+    )
+  ),
+  appelf(  
+    element(e),  
+    n(f),
+    p('g,h'),
+    p(
+      appelf(  
+        n(i),
+        p(j),
+        prop(k)
+      )
+    ),
+    prop(l)
+  )
+)
+*/    
+    // si le parent est une cascade et que c'est la première fonction
+    if(tab[parentId][7]==1 && tab[i][6]==1 ){ 
+     t+='cascade(';
+     estCascade=true;
+    }
+    t+='appelf(';
+    // todo, traiter ici le element()
+    if(tab[i][4].indexOf('.')>0){
+     t+='  element('+tab[i][4].substr(0,tab[i][4].indexOf('.'))+'),';
+     t+='  n('+tab[i][4].substr(tab[i][4].indexOf('.')+1)+')';
+    }else if(tab[i][4].indexOf('.')==0){
+     var n=tab[i][4].substr(1);
+     if(n.indexOf('.')>0){
+      t+='  element('+n.substr(0,n.indexOf('.'))+'),';
+      t+='  n('+n.substr(n.indexOf('.')+1)+')';
+     }else{
+      t+='  n('+n+')';
+     }
+    }else{
+     t+='  n('+tab[i][4]+')';
+    }
+    niveau++;
+    var obj=recurf1(tab,niveau,tab[i][1]+1,tab[i][1],estCascade);
+    niveau--;
+    if(obj.status==true){
+     t+=obj.value;
+     t+=')';
+     if(tab[tab[i][2]][5]=='f' ){
+      if(estCascade==false){
+       t+=')'; // fermeture du p(
+      }else{
+       // mais si c'est le dernier élément de la cascade
+       if(tab[i][6]==tab[tab[i][2]][3]){
+        t+=')';
+       }
+      }
+     }else{
+      // mais si c'est le dernier élément de la cascade
+      if(tab[i][6]==tab[tab[i][2]][3]){
+       t+=')';
+      }
+     }
+    }else{
+     temp={'status':false,'line':tab[ind][5],'message':'recurf1 1'};
+     return(logerreur(temp));
+    }
+    // si le parent est une cascade et que c'est la dernière fonction
+    if(tab[parentId][7]==1 && tab[i][6]==tab[parentId][3] && parentEstCascade ){ 
+     t+=')'; // on ferme la cascade;
+    }
+    
+    
+    
+   }else if(tab[i][5]=='e'){
+    t+=',prop('+tab[i][4]+')';
+   }else{
+    t+=',p('+tab[i][4]+')';
+   }
+  }
+ }
+ 
+ return {'status':true,'value':t}
+}
+//=====================================================================================================================
 function analyseChaineParElements1(tab,ind,niveau,ch){
 
  var tab2=[];
@@ -155,14 +335,15 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  var dansChaineSimple=false;
  var i=0;
  var j=0;
+ var k=0;
  var l01=ch.length;
  var id=0;
  var parentId=0;
  
  console.log('ch=',ch);
  
- //           niveau , id  , parentId    nbEnf     1         
- tab2.push([ niveau , id  , parentId ,  0      , variable1 ]);
+ //         0niveau , 1id  , 2parentId    3nbEnf     4variable   5typ  , numéroEnfant    cascade
+ tab2.push([  -1 , id   ,  parentId ,  0        , variable1 , ''    , 0             , 0       ]);
  
  // phase 1 : séparation des parenthèses
  for(i=0;i<l01;i++){
@@ -223,7 +404,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    variable1=monTrim(variable1);
    if(variable1!==''){
     id++;
-    tab2.push([ niveau,id,parentId,0 , variable1 ]);
+    tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 ]);
    }
    variable1='';
   
@@ -234,7 +415,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    
    if(variable1!==''){
     id++;
-    tab2.push([ niveau,id,parentId,0 , variable1 ]);
+    tab2.push([ niveau,id,parentId,0 , variable1 , 'f' , 0 , 0 ]);
    }
    niveau++;
    variable1='';
@@ -245,7 +426,11 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    variable1=monTrim(variable1);
    if(variable1!==''){
     id++;
-    tab2.push([ niveau,id,parentId,0 , variable1 ]);
+    if(variable1.substr(0,1)=='.'){
+     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'e' , 0 , 0 ]);
+    }else{
+     tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 ]);
+    }
    }
    variable1='';
    niveau--;
@@ -272,46 +457,83 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  variable1=monTrim(variable1);
  if(variable1!==''){
   id++;
-  tab2.push([ niveau,id,parentId,0 , variable1  ]);
+  if(variable1.substr(0,1)=='.'){
+   tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'e' , 0 , 0 ]);
+  }else{ 
+   tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 ]);
+  }
  }
- for(var i=tab2.length-1;i>=1;i--){
+ 
+ l01=tab2.length;
+ 
+ for(var i=l01-1;i>=1;i--){
   var niv=tab2[i][0];
   for(var j=i-1;j>=1;j--){
    if(niv>tab2[j][0]){
-    tab2[i][2]=tab2[j][1];
+    tab2[i][2]=tab2[j][1]; // numéro de parent
     break;
    }
   }
  }
  
- for(var i=tab2.length-1;i>0;i--){
+ for(i=0;i < l01;i=i+1){
+  k=0;
+  for(j=i+1;j < l01;j=j+1){
+   if(tab2[j][0] > tab2[i][0]){
+    if(tab2[j][2] == tab2[i][1] ){
+     k=k+1;
+     tab2[j][6]=k; // numéro d'enfant
+    }
+   }else{
+    break;
+   }
+  }
+ }
+ 
+ 
+ 
+ for(var i=l01-1;i>0;i--){
   var par=tab2[i][2];
   tab2[par][3]++; // nb enfants
  }
  
- console.log('\n=====================\n'+'b.c(\'d\').e.f( \'g,h\', i(j).k ).l'+'\n');
- console.log('tab2=',tab2);
- var obj1=recurf1(tab,1,0);
+
+ // si le parent est une fonction ou est 0 et tous les enfants sont des f ( car il n'y a pas de n() ) 
+ // alors, on doit ajouter une cascade
+ for(i=0;i < l01;i=i+1){
+  // si c'est une fonction qui est le premier enfant
+  if(tab2[i][5]=='f' && tab2[i][6]==1){
+   var parentId=tab2[i][2];
+   var estCascade=1;
+   for(j=i+1;j<l01;j++){
+    if(tab2[j][2] == parentId){
+     if(tab2[j][5]=='f' ){
+     }else{
+      estCascade=0;
+      break;
+     }
+    }
+   }
+   if(estCascade==1){
+    tab2[tab2[i][2]][7]=1; // le parent est une cascade
+   }
+  
+  }
+ }
+
  
-/*
-      #(a=b.c('d').e.f('g,h',i).j;),
-      appelf(
-         #(),
-         n(b.c),
-         p('d'),
-         prop(
-            appelf(
-               #(),
-               n(e.f),
-               p('g,h'),
-               p(i),
-               prop(j)
-            )
-         )
-      )
-
-*/ 
-
+ console.log('\n=====================\n'+'b.c(\'d\').e.f( \'g,h\', i(j).k ).l'+'\n');
+ console.log('tab2=',JSON.stringify(tab2).replace(/\],/g,'],\n'));
+ // tab,niv,ind,parentId
+ var obj1=recurf1(tab2,0,1,0,false);
+ console.log('\n\n=====retour récursif obj1='+JSON.stringify(obj1)+'\n=======\n');
+ if(obj1.status==true){
+  // todo tester une cascade
+ 
+ 
+ 
+  return {'status':true,value:obj1.value};
+ }
  return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1'});
 }
 //=====================================================================================================================
@@ -347,7 +569,7 @@ function traiteEgalite1(tab,ind,niveau,s){
      if(obj2.status===false  && obj2.isComplex===true ){
       var objch1=analyseChaineParElements1(tab,ind,niveau,tt[1]);
       if(objch1.status===true){
-       t+='TODO'
+       t+=objch1.value;
       }else{
        temp={'status':false,'line':tab[ind][5],'message':'3 traiteEgalite1 dans analyseChaineParElements1, objch1='+JSON.stringify(objch1)+' '+JSON.stringify(tab[ind])};
        return(logerreur(temp));
