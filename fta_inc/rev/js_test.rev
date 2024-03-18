@@ -5,36 +5,47 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      declare(s , ''),
+      affecte(
+         s,
+         cascade(
+            appelf(
+               n(traiteCommentaireSourceEtGenere1),
+               p(texte),
+               p(niveau),
+               p(ind),
+               p(NBESPACESSOURCEPRODUIT),
+               p(false)
+            )
+         )
+      ),
       #(
         a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
       ),
-      affecte(
-         tagada,
-         cascade(
-            appelf(
-               element(b),
-               n(c),
-               p(
-                  cascade(
-                     appelf(
-                        #(),
-                        n(x),
-                        p('d')
-                     ),
-                     appelf(
-                        #(),
-                        element(y),
-                        n(z)
+      declare(i , 0),
+      boucle(
+         initialisation(affecte(i , 0)),
+         condition((inf(i , 10))),
+         increment(affecte(i , i+1)),
+         faire(
+            affecte(
+               a,
+               cascade(
+                  appelf(
+                     element(b),
+                     n(c),
+                     p(
+                        cascade(appelf(n(x) , p('d')) , appelf(element(y) , n(z)))
                      )
+                  ),
+                  appelf(
+                     element(e),
+                     n(f),
+                     p('g,h'),
+                     p(appelf(n(i) , p(j) , prop(k))),
+                     prop(l)
                   )
                )
-            ),
-            appelf(
-               element(e),
-               n(f),
-               p('g,h'),
-               p(appelf(n(i) , p(j) , prop(k))),
-               prop(l)
             )
          )
       ),

@@ -1,8 +1,13 @@
 
+var s='';
+s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
 /*
   a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
 */
-tagada=b.c(x('d').y.z()).e.f('g,h',i(j).k).l;
+var i=0;
+for(i=0;(i < 10);i=i+1){
+    a=b.c(x('d').y.z()).e.f('g,h',i(j).k).l;
+}
 /*#
       
 cascade(
