@@ -50,9 +50,9 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
   if(tab[i][2]==parentId){
   
   
-   if(tab[i][5]=='f'){
+   if(tab[i][5]=='func'){
    
-    if(tab[tab[i][2]][5]=='f'){
+    if(tab[tab[i][2]][5]=='func'){
     
      if(t!==''){
       t+=',';
@@ -68,8 +68,8 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
      }
      
     }
-    // si le parent est une cascade et que c'est la première fonction
-    if(tab[parentId][7]==1 && tab[i][6]==1 ){ 
+    // si le parent est une cascade et que c'est la première fonction et que la cascade contient plus d'une fonction
+    if(tab[parentId][7]==1 && tab[i][6]==1 && tab[parentId][3]>1 ){ 
      t+='cascade(';
      estCascade=true;
     }
@@ -95,18 +95,20 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
     if(obj.status==true){
      t+=obj.value;
      t+=')';
-     if(tab[tab[i][2]][5]=='f' ){
+     if(tab[tab[i][2]][5]=='func' ){
       if(estCascade==false){
-       t+=')'; // fermeture du p(
+       if(tab[tab[i][2]][5]=='func'){
+        t+=')'; // fermeture du p(
+       }
       }else{
        // mais si c'est le dernier élément de la cascade
-       if(tab[i][6]==tab[tab[i][2]][3]){
+       if(tab[i][6]==tab[tab[i][2]][3] && estCascade){
         t+=')';
        }
       }
      }else{
       // mais si c'est le dernier élément de la cascade
-      if(tab[i][6]==tab[tab[i][2]][3]){
+      if(tab[i][6]==tab[tab[i][2]][3] && estCascade){
        t+=')';
       }
      }
@@ -114,22 +116,30 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
      temp={'status':false,'line':tab[ind][5],'message':'recurf1 1'};
      return(logerreur(temp));
     }
-    // si le parent est une cascade et que c'est la dernière fonction
-    if(tab[parentId][7]==1 && tab[i][6]==tab[parentId][3] && parentEstCascade ){ 
+    // si le parent est une cascade et que c'est la première fonction et que la cascade contient plus d'une fonction
+    if(tab[parentId][7]==1 && tab[i][6]==tab[parentId][3] && tab[parentId][3]>1 && parentEstCascade ){ 
      t+=')'; // on ferme la cascade;
     }
     
     
     
-   }else if(tab[i][5]=='e'){
+   }else if(tab[i][5]=='elem'){
     t+=',prop('+tab[i][4]+')';
    }else{
     t+=',p('+tab[i][4]+')';
    }
   }
  }
- 
  return {'status':true,'value':t}
+/* 
+ 0 appelf( n(f)
+ 1  ,p(a), p( appelf( n(b)
+ 2 
+ 1 ) // fermeture appelf
+ 1 ) //fermeture du p
+*/
+
+ 
 }
 //=====================================================================================================================
 function analyseChaineParElements1(tab,ind,niveau,ch){
@@ -218,7 +228,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    variable1=monTrim(variable1);
    if(variable1!==''){
     id++;
-    tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 , i-1]);
+    tab2.push([ niveau,id,parentId,0 , variable1 , 'cstt' , 0 , 0 , i-1]);
    }
    variable1='';
   
@@ -229,7 +239,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    
    if(variable1!==''){
     id++;
-    tab2.push([ niveau,id,parentId,0 , variable1 , 'f' , 0 , 0 , i-1]);
+    tab2.push([ niveau,id,parentId,0 , variable1 , 'func' , 0 , 0 , i-1]);
    }
    niveau++;
    variable1='';
@@ -241,9 +251,9 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    if(variable1!==''){
     id++;
     if(variable1.substr(0,1)=='.'){
-     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'e' , 0 , 0 , i-1 ]);
+     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'elem' , 0 , 0 , i-1 ]);
     }else{
-     tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 , i-1 ]);
+     tab2.push([ niveau,id,parentId,0 , variable1 , 'cstt' , 0 , 0 , i-1 ]);
     }
    }
    variable1='';
@@ -264,10 +274,10 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    if(variable1!==''){
     if(variable1.substr(0,1)=='.'){
      id++;
-     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'e' , 0 , 0 , i-1 ]);
+     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'elem' , 0 , 0 , i-1 ]);
     }else{
      id++;
-     tab2.push([ niveau  ,id,parentId,0 , variable1 , 'c' , 0 , 0 , i-1 ]);
+     tab2.push([ niveau  ,id,parentId,0 , variable1 , 'cstt' , 0 , 0 , i-1 ]);
     }
     variable1='';
    }
@@ -281,21 +291,21 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    if(variable1!==''){
     if(variable1.substr(0,1)=='.'){
      id++;
-     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'e' , 0 , 0 , i-1 ]);
+     tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'elem' , 0 , 0 , i-1 ]);
     }else{
      id++;
-     tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 , i-1 ]);
+     tab2.push([ niveau,id,parentId,0 , variable1 , 'cstt' , 0 , 0 , i-1 ]);
     }
     variable1='';
    }
   
    if(c2=='='){
     id++;
-    tab2.push([ niveau,id,parentId,0 , c1+c2 , 'i' , 0 , 0 , i+1 ]);
+    tab2.push([ niveau,id,parentId,0 , c1+c2 , 'incr' , 0 , 0 , i+1 ]);
     i++;
    }else{
     id++;
-    tab2.push([ niveau,id,parentId,0 , c1 , 'o' , 0 , 0 , i ]);
+    tab2.push([ niveau,id,parentId,0 , c1 , 'oper' , 0 , 0 , i ]);
    }
   
   }else{
@@ -311,9 +321,9 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  if(variable1!==''){
   id++;
   if(variable1.substr(0,1)=='.'){
-   tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'e' , 0 , 0 , i ]);
+   tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'elem' , 0 , 0 , i ]);
   }else{ 
-   tab2.push([ niveau,id,parentId,0 , variable1 , 'c' , 0 , 0 , i ]);
+   tab2.push([ niveau,id,parentId,0 , variable1 , 'cstt' , 0 , 0 , i ]);
   }
  }
  
@@ -355,12 +365,12 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  // alors, on doit ajouter une cascade
  for(i=0;i < l01;i=i+1){
   // si c'est une fonction qui est le premier enfant
-  if(tab2[i][5]=='f' && tab2[i][6]==1){
+  if(tab2[i][5]=='func' && tab2[i][6]==1){
    var parentId=tab2[i][2];
    var estCascade=1;
    for(j=i+1;j<l01;j++){
     if(tab2[j][2] == parentId){
-     if(tab2[j][5]=='f' ){
+     if(tab2[j][5]=='func' ){
      }else{
       estCascade=0;
       break;
@@ -375,18 +385,19 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  }
  
 /*
-document.getElementById("global_messages").innerHTML += '<div class="yyerror">' + global_messages.errors[i] + "</div>";
+document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' + global_messages.errors[i] + "</div>";
+0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
 [
- [-1  ,  0  ,  0  ,  7  ,  ""                             ,  ""  ,  0  ,  0  ,  0]  ,  
- [ 0  ,  1  ,  0  ,  2  ,  "document.getElementById"      ,  "f"  ,  1  ,  0  ,  22]  ,  
- [ 1  ,  2  ,  1  ,  0  ,  "\"global_messages\""          ,  "c"  ,  1  ,  0  ,  40]  ,  
- [ 1  ,  3  ,  1  ,  0  ,  "innerHTML "                   ,  "e"  ,  2  ,  0  ,  52]  ,  
- [ 0  ,  3  ,  0  ,  0  ,  "+="                           ,  "i"  ,  2  ,  0  ,  52]  ,  
- [ 0  ,  4  ,  0  ,  0  ,  " '<div class=\"yyerror\">' "  ,  "c"  ,  3  ,  0  ,  79]  ,  
- [ 0  ,  4  ,  0  ,  0  ,  "+"                            ,  "o"  ,  4  ,  0  ,  79]  ,  
- [ 0  ,  5  ,  0  ,  0  ,  " global_messages.errors[i] "  ,  "c"  ,  5  ,  0  ,  107]  ,  
- [ 0  ,  5  ,  0  ,  0  ,  "+"                            ,  "o"  ,  6  ,  0  ,  107]  ,  
- [ 0  ,  6  ,  0  ,  0  ,  "\"</div>\";"                  ,  "c"  ,  7  ,  0  ,  118]
+ [-1  ,  0  ,  0  ,  7  ,  ""                             ,  ""      ,  0  ,  0  ,    0 ]  ,  
+ [ 0  ,  1  ,  0  ,  2  ,  "document.getElementById"      ,  "func"  ,  1  ,  0  ,   22 ]  ,  
+ [ 1  ,  2  ,  1  ,  0  ,  "\"global_messages\""          ,  "cst"   ,  1  ,  0  ,   40 ]  ,  
+ [ 1  ,  3  ,  1  ,  0  ,  "innerHTML"                    ,  "elem"  ,  2  ,  0  ,   51 ]  ,  
+ [ 0  ,  4  ,  0  ,  0  ,  "+="                           ,  "incr"  ,  2  ,  0  ,   53 ]  ,  
+ [ 0  ,  5  ,  0  ,  0  ,  " '<div class=\"yyerror\">' "  ,  "cst"   ,  3  ,  0  ,   78 ]  ,  
+ [ 0  ,  6  ,  0  ,  0  ,  "+"                            ,  "ope"   ,  4  ,  0  ,   79 ]  ,  
+ [ 0  ,  7  ,  0  ,  0  ,  " global_messages.errors[i] "  ,  "cst"   ,  5  ,  0  ,  106 ]  ,  
+ [ 0  ,  8  ,  0  ,  0  ,  "+"                            ,  "ope"   ,  6  ,  0  ,  107 ]  ,  
+ [ 0  ,  9  ,  0  ,  0  ,  "\"</div>\";"                  ,  "cst"   ,  7  ,  0  ,  118 ]
 ]
 */ 
  // on essaie de repérer si il y a une affectation
@@ -400,18 +411,102 @@ document.getElementById("global_messages").innerHTML += '<div class="yyerror">' 
    operation=tab2[i][4];
    c1=ch.substr(0,tab2[i][8]-tab2[i][4].length+1);
    c2=ch.substr(tab2[i][8]+tab2[i][4].length);
+   c2=monTrim(c2);
+   if(c2.substr(c2.length-1,1)==';'){
+    c2=c2.substr(0,c2.length-2);
+   }
    console.log('c1=',c1,'\nc2=',c2);
    break;
   }
  }
 
  if(operation!=''){
+  var uneConcatenation=false;
+  if(operation=='+=' || operation=='-=' || operation=='*=' || operation=='/='){
+   uneConcatenation=true;
+  }
+ 
   var obj1=analyseChaineParElements1(tab,ind,niveau,c1);
   if(obj1.status==true){
+   console.log('obj1 ok, operation="'+operation+'", obj1.value='+obj1.value);
    
+   var tableau1=iterateCharacters2(obj1.value);
+   var matriceFonction1=functionToArray2(tableau1.out,false);
+   if(matriceFonction1.status==true){
+    var objRecompose1=a2F1(matriceFonction1.value,0,false,1,false);
+    if(objRecompose1.status===false){
+     return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 objRecompose1'});
+    }
+    console.log('objRecompose1=' , objRecompose1);
+   }else{
+    return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 matriceFonction1'});
+   }
+    
+   
+/*
+
+,
+p('<div class=\"yyerror\">' ),
+p(+),
+p( global_messages.errors[i] ),
+p(+),
+p( \"</div class=\\\"toto\\\">\" ),
+p(+),
+appelf(  n(toto),p(a),p('b')))
+
+*/   
    var obj2=analyseChaineParElements1(tab,ind,niveau,c2);
    if(obj2.status==true){
-    return {'status':true,value:obj1.value};
+    console.log('obj2 ok, operation="'+operation+'", obj2.value="'+obj2.value+'", obj2.tab2=\n'+JSON.stringify(obj2.tab2).replace(/\],/g,'],\n'));
+    
+    // analyse du tableau pour savoir si c'est une éventuelle concaténation de chaine 
+    var concatenationChaine=false;
+    if(operation=='+=' || operation=='='){
+     var queDesPlus=false;
+     for(i=1;i<obj2.tab2.length;i++){
+      if(obj2.tab2[i][5]=='oper' && obj2.tab2[i][0]==0){
+       if(obj2.tab2[i][4]=='+'){
+        queDesPlus=true;
+       }else{
+        queDesPlus=false;
+        break
+       }
+      }
+     }
+     if(queDesPlus){
+      concatenationChaine=true;
+     }
+    }
+    
+    if(concatenationChaine){
+     console.log('vrai concatenationChaine');
+     var tempch2=obj2.value;
+     if(tempch2.substr(0,1)==','){
+      tempch2=tempch2.substr(1);
+     }
+     if(operation=='+='){
+      tempch2='appelf(n(concat),p('+objRecompose1.value+'),'+tempch2.replace(/,p\(\+\)/g,'');
+     }else{
+      tempch2='appelf(n(concat),'+tempch2.replace(/,p\(\+\)/g,'');
+     }
+     console.log('tempch2=',tempch2);
+     
+     var tableau2=iterateCharacters2(tempch2);
+     var matriceFonction2=functionToArray2(tableau2.out,false);
+//     console.log('matriceFonction2=',matriceFonction2);
+     if(matriceFonction2.status==false){
+      return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 matriceFonction2'});
+     }
+     var objRecompose2=a2F1(matriceFonction2.value,0,false,1,false);
+     if(objRecompose2.status===false){
+      return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 objRecompose2'});
+     }
+     
+     console.log('objRecompose2=' , objRecompose2);
+    }else{
+     debugger ; // todo
+    }
+    return {'status':true,value:{'gauche':objRecompose1,'droite':objRecompose2,'uneConcatenation':uneConcatenation,'concatenationChaine':concatenationChaine}};
    }
   }
   
@@ -420,13 +515,13 @@ document.getElementById("global_messages").innerHTML += '<div class="yyerror">' 
   var obj1=recurf1(tab2,0,1,0,false);
   console.log('\n\n=====retour récursif obj1='+JSON.stringify(obj1)+'\n=======\n');
   if(obj1.status==true){
-   return {'status':true,value:obj1.value};
+   return {'status':true,value:obj1.value,'tab2':tab2};
   }
  }
  return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1'});
 }
 //=====================================================================================================================
-function traiteDelimiteursChaine1(s,delim,tab,ind,niveau){
+function traiteDelimiteursChaine1(tab,ind,niveau,s,delim){
  var t='';
  var niveau=0;
  for(var i=0;i<s.length;i++){
@@ -487,13 +582,13 @@ function analyseChaineSimple1(tab,ind,niveau,chaine,noLogIfError){
  }
  if(chaine.substr(0,1)=='"' && chaine.substr(chaine.length-1,1)=='"'){
   chaineQuotee=true;
-  var obj=traiteDelimiteursChaine1(chaine,'"',tab,ind,niveau);
+  var obj=traiteDelimiteursChaine1(tab,ind,niveau,chaine,'"');
   if(obj.status==true){
    t=obj.value;
   }
  }else if(chaine.substr(0,1)=='\'' && chaine.substr(chaine.length-1,1)=='\''){
   chaineQuotee=true;
-  var obj=traiteDelimiteursChaine1(chaine,'\'');
+  var obj=traiteDelimiteursChaine1(tab,ind,niveau,chaine,'\'');
   if(obj.status==true){
    t=obj.value;
   }
@@ -531,7 +626,7 @@ function analyseChaineSimple1(tab,ind,niveau,chaine,noLogIfError){
  
 }
 //=====================================================================================================================
-function traiteEgalite1(tab,ind,niveau,s){
+function traiteEgaliteSimple1(tab,ind,niveau,s){
  var t='';
  s=s.replace(';','');
  var tt=s.split('=');
@@ -542,7 +637,7 @@ function traiteEgalite1(tab,ind,niveau,s){
     if(obj2.status===true  && obj1.isComplex===false ){
      t+='\n'+' '.repeat(niveau*NBESPACESREV)+'declare(';
      if(obj1.chaineQuotee || obj1.isNum || obj1.isComplex ){
-      temp={'status':false,'line':tab[ind][5],'message':'4 traiteEgalite1 problème dans une déclaration de variable'};
+      temp={'status':false,'line':tab[ind][5],'message':'4 traiteEgaliteSimple1 problème dans une déclaration de variable'};
       return(logerreur(temp));
      }else{
       t+=obj1.value+'';
@@ -555,7 +650,7 @@ function traiteEgalite1(tab,ind,niveau,s){
      }else if(obj2.isComplex==false){
       t+=obj2.value+'';
      }else{
-      temp={'status':false,'line':tab[ind][5],'message':'4 traiteEgalite1 problème dans une déclaration de variable '+JSON.stringify(tab[ind])};
+      temp={'status':false,'line':tab[ind][5],'message':'4 traiteEgaliteSimple1 problème dans une déclaration de variable '+JSON.stringify(tab[ind])};
       return(logerreur(temp));
      }
      t+=')';
@@ -565,11 +660,11 @@ function traiteEgalite1(tab,ind,niveau,s){
       if(obj2.status===true){
        t+=obj2.value;
       }else{
-       temp={'status':false,'line':tab[ind][5],'message':'3 traiteEgalite1 dans analyseChaineParElements1, objch1='+JSON.stringify(obj2)+' '+JSON.stringify(tab[ind])};
+       temp={'status':false,'line':tab[ind][5],'message':'3 traiteEgaliteSimple1 dans analyseChaineParElements1, objch1='+JSON.stringify(obj2)+' '+JSON.stringify(tab[ind])};
        return(logerreur(temp));
       }
      }else{
-      temp={'status':false,'line':tab[ind][5],'message':'2 traiteEgalite1 problème dans une déclaration de variable, obj2='+JSON.stringify(obj2)+''};
+      temp={'status':false,'line':tab[ind][5],'message':'2 traiteEgaliteSimple1 problème dans une déclaration de variable, obj2='+JSON.stringify(obj2)+''};
       return(logerreur(temp));
      }
     }
@@ -580,16 +675,17 @@ function traiteEgalite1(tab,ind,niveau,s){
      if(obj1.status===true){
       t+=obj1.value;
      }else{
-      temp={'status':false,'line':tab[ind][5],'message':'1 1 traiteEgalite1 problème dans une déclaration de variable, obj1='+JSON.stringify(obj1)+''};
+      temp={'status':false,'line':tab[ind][5],'message':'1 1 traiteEgaliteSimple1 problème dans une déclaration de variable, obj1='+JSON.stringify(obj1)+''};
       return(logerreur(temp));
      }
     }else{
-     temp={'status':false,'line':tab[ind][5],'message':'1 2 traiteEgalite1 problème dans une déclaration de variable, obj1='+JSON.stringify(obj1)+''};
+     temp={'status':false,'line':tab[ind][5],'message':'1 2 traiteEgaliteSimple1 problème dans une déclaration de variable, obj1='+JSON.stringify(obj1)+''};
      return(logerreur(temp));
     }
    }
  }else{
-   temp={'status':false,'line':tab[ind][5],'message':'0 traiteEgalite1 problème dans une déclaration de variable'};
+  // ce n'est pas un égalité simple = on ne met pas de message
+   temp={'status':false};
    return(logerreur(temp));
  }
  return {'status':true,'value':t,'fermetureNiveau':false,'ajouterNiveauDedans':0,'gauche':obj1,'droite':obj2};
@@ -604,11 +700,19 @@ function traiteDeclarationVariable1(tab,ind,niveau,dansFor){
   ligne=tab[ind][4];
  }
  var s=ligne.substr(4);
- var obj1=traiteEgalite1(tab,ind,niveau,s);
+ var obj1=traiteEgaliteSimple1(tab,ind,niveau,s);
  if(obj1.status===true){
   t=obj1.value;
   return {'status':true,'value':t,'fermetureNiveau':false,'ajouterNiveauDedans':0,'gauche':obj1.gauche,'droite':obj1.droite};
  }else{
+ 
+  obj1=analyseChaineParElements1(tab,ind,niveau,s);
+  if(objinit.status==false){
+   return logerreur({'status':false,'message':'Erreur traiteDeclarationVariable1 la declaration ne fonctionne pas','line':tab[ind][5]});
+  }
+  return {'status':true,'value':t,'fermetureNiveau':false,'ajouterNiveauDedans':0,'gauche':obj1.gauche,'droite':obj1.droite};
+ 
+ 
    temp={'status':false,'line':tab[ind][5],'message':'traiteDeclarationVariable1 : problème dans une déclaration de variable , s="'+s+'"'};
    return(logerreur(temp));
  }
@@ -1411,6 +1515,9 @@ function essayerDeclarationOuAffectationSimple1(tab,ind,niveau,ligne){
  var objinit={};
  var initialisationAvecUneDeclaration=false;
  ligne=monTrim(ligne);
+ if(ligne.substr(ligne.length-1,1)==';'){
+  ligne=ligne.substr(0,ligne.length-1);
+ }
  if(ligne.substr(0 , 4)=='var '){
   objinit=traiteDeclarationVariable1(tab,ind,niveau,ligne);
   if(objinit.status==true && objinit.gauche.isComplex==false && ( objinit.droite.isNum==true || objinit.droite.chaineQuotee==true || objinit.droite.isComplex==false ) ){
@@ -1419,11 +1526,12 @@ function essayerDeclarationOuAffectationSimple1(tab,ind,niveau,ligne){
    return logerreur({'status':false,'message':'Erreur essayerDeclarationOuAffectationSimple1 la declaration "'+ligne+'" ne fonctionne pas','line':tab[ind][5]});
   }
  }else{
-  objinit=traiteEgalite1(tab,ind,niveau,ligne);
+  objinit=traiteEgaliteSimple1(tab,ind,niveau,ligne);
   if(objinit.status==false){
     objinit=analyseChaineParElements1(tab,ind,niveau,ligne);
-    console.error('====== test de remplacement')
-//    debugger;
+    if(objinit.status==false){
+     return logerreur({'status':false,'message':'Erreur essayerDeclarationOuAffectationSimple1 la declaration ne fonctionne pas','line':tab[ind][5]});
+    }
   }else{
   
    if(objinit.status==true && objinit.gauche.isComplex==false ){
@@ -1515,7 +1623,13 @@ function traiteLigne1(tab,ind,niveau){
     if(obj1.initialisationAvecUneDeclaration){
       t+='\n'+esp0+obj1.value.value+',';
     }else{
-      t+='\n'+esp0+'affecte('+obj1.value.gauche.value+' , '+obj1.value.droite.value+'),';
+      if(obj1.value.value.gauche){
+       t+='\n'+esp0+'affecte('+obj1.value.value.gauche.value+' , '+obj1.value.value.droite.value+'),';
+      }else if(obj1.value.gauche){
+       t+='\n'+esp0+'affecte('+obj1.value.gauche.value+' , '+obj1.value.droite.value+'),';
+      }else{
+       t+='\n'+esp0+''+obj1.value.value+',';
+      }
     }
    }else{
     t+='\n'+' '.repeat(niveau*NBESPACESREV)+'#('+JSON.stringify(tab[ind])+')';
@@ -1527,7 +1641,17 @@ function traiteLigne1(tab,ind,niveau){
  }
  
  
- 
+/*
+appelf(  
+   n(f),
+   p(a),
+   p(
+      appelf(  
+         n(b)
+      )
+   )
+)
+*/ 
  
  return {'status':true,'value':t,'fermetureNiveau':fermetureNiveau,'ajouterNiveauDedans':ajouterNiveauDedans};
 }

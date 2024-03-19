@@ -1,6 +1,73 @@
 
-var s='';
-s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+/*#
+      
+for (var i=0;i<10;i++){
+  document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' + global_messages.errors[i] + "</div class=\"toto\">" + toto(a,'b');
+  f(a,b());
+}
+      ========================================================================================================
+      
+*/
+var i=0;
+for(i=0;(i < 10);i=i+1){
+    document.getElementById('global_messages').innerHTML=concat(document.getElementById('global_messages').innerHTML,'<div class="yyerror">',global_messages.errors[i],'</div class="toto">',toto(a,'b'));
+    f(a,b()
+    );
+}
+/*
+  
+  
+  
+  
+  =======================================================================================================
+  
+  
+  
+  
+*/
+/*
+  
+  
+  
+  affecte(
+  appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+  appelf(
+  n(concat),
+  #(),
+  p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+  p('<div class="yyerror">'),
+  p(global_messages.errors[i]),
+  p('</div class="toto">'),
+  p(appelf(n(toto) , p(a) , p('b')))
+  )
+  ),
+  
+  
+  
+*/
+/*#
+      
+      
+      
+  declare(s , ''),
+  affecte(
+     s,
+     cascade(
+        appelf(
+           n(traiteCommentaireSourceEtGenere1),
+           p(texte),
+           p(niveau),
+           p(ind),
+           p(NBESPACESSOURCEPRODUIT),
+           p(false)
+        )
+     )
+  ),
+  
+  
+  
+      
+*/
 /*
   a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
 */

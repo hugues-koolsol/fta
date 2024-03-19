@@ -5,19 +5,89 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
-      declare(s , ''),
-      affecte(
-         s,
-         cascade(
+      declare(i , 0),
+      boucle(
+         initialisation(affecte(i , 0)),
+         condition((inf(i , 10))),
+         increment(affecte(i , i+1)),
+         faire(
+            affecte(
+               appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+               appelf(
+                  n(concat),
+                  p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+                  p('<div class="yyerror">'),
+                  p(global_messages.errors[i]),
+                  p('</div class="toto">'),
+                  appelf(
+                     #(),
+                     n(toto),
+                     p(a),
+                     p('b')
+                  )
+               )
+            ),
             appelf(
-               n(traiteCommentaireSourceEtGenere1),
-               p(texte),
-               p(niveau),
-               p(ind),
-               p(NBESPACESSOURCEPRODUIT),
-               p(false)
+               n(f),
+               p(a),
+               p(appelf(n(b)))
             )
          )
+      ),
+      #(=======================================================================================================),
+      affecte(
+         appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+         appelf(
+            n(concat),
+            p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+            p('<div class="yyerror">'),
+            p(global_messages.errors[i]),
+            p('</div class="toto">'),
+            appelf(n(toto) , p(a) , p('b'))
+         )
+      ),
+      #(=======================================================================================================),
+      #(
+        
+        
+        
+        affecte(
+        appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+        appelf(
+        n(concat),
+        #(),
+        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+        p('<div class="yyerror">'),
+        p(global_messages.errors[i]),
+        p('</div class="toto">'),
+        p(appelf(n(toto) , p(a) , p('b')))
+        )
+        ),
+        
+        
+        
+      ),
+      #(#
+      
+      
+      
+  declare(s , ''),
+  affecte(
+     s,
+     cascade(
+        appelf(
+           n(traiteCommentaireSourceEtGenere1),
+           p(texte),
+           p(niveau),
+           p(ind),
+           p(NBESPACESSOURCEPRODUIT),
+           p(false)
+        )
+     )
+  ),
+  
+  
+  
       ),
       #(
         a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 

@@ -981,7 +981,8 @@ function functionToArray2(tableauEntree,exitOnLevelError){
       les booléens
       =========================
     */
-    var dansCst=false;
+    var dansCstSimple=false;
+    var dansCstDouble=false;
     var dsComment=false;
     var constanteQuotee=false;
     /*
@@ -1047,7 +1048,75 @@ function functionToArray2(tableauEntree,exitOnLevelError){
               
               
             */
-        }else if((dansCst == true)){
+            
+            
+        }else if((dansCstDouble == true)){
+            /*
+              
+              
+              
+              ===================================
+              Si on est dans une constante double
+              ===================================
+            */
+            if((c == '"')){
+                if((i == l01-1)){
+                    temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                    return(logerreur(temp));
+                }
+                c1=tableauEntree[i+1][0];
+                if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
+                    dernier=i-1;
+                }else{
+                    temp={'status':false,'value':T,'id':i,'message':'apres une constante, il doit y avoir un caractère d\'echappement'};
+                    return(logerreur(temp));
+                }
+                dansCstDouble=false;
+                indice=indice+1;
+                constanteQuotee=true;
+                if((niveau == 0)){
+                    temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                    return(logerreur(temp));
+                }
+                T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                texte='';
+                constanteQuotee=false;
+            }else if((c == '\\')){
+                if((i == l01-1)){
+                    temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
+                    return(logerreur(temp));
+                }
+                /**/
+                c1=tableauEntree[i+1][0];
+                if((c1 == '\\') || c1 == 'n' || c1 == 't' || c1 == 'r'){
+                    if((texte == '')){
+                        premier=i;
+                    }
+                    texte=concat(texte,'\\',c1);
+                    i=i+1;
+                }else if(c1=='"'){
+                 // on remplace le \" par un "
+                    texte=concat(texte , '"' );
+                    i=i+1;
+                }else{
+                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r'};
+                    return(logerreur(temp));
+                }
+            }else if((c=='\'')){
+                texte=concat(texte,'\\\'');
+            }else{
+                if((texte == '')){
+                    premier=i;
+                }
+                texte=concat(texte,c);
+            }
+            /*
+              ==========================================
+              Fin de Si on est dans une constante double
+              ==========================================
+            */
+            
+        }else if((dansCstSimple == true)){
             /*
               
               
@@ -1068,7 +1137,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                     temp={'status':false,'value':T,'id':i,'message':'apres une constante, il doit y avoir un caractère d\'echappement'};
                     return(logerreur(temp));
                 }
-                dansCst=false;
+                dansCstSimple=false;
                 indice=indice+1;
                 constanteQuotee=true;
                 if((niveau == 0)){
@@ -1136,7 +1205,8 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 niveau=niveau+1;
                 texte='';
-                dansCst=false;
+                dansCstSimple=false;
+                dansCstDouble=false;
                 /*
                   ==========================
                   FIN DE Parenthèse ouvrante
@@ -1175,7 +1245,8 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                     }
                 }
                 posFerPar=0;
-                dansCst=false;
+                dansCstSimple=false;
+                dansCstDouble=false;
                 /*
                   ==========================
                   FIN de Parenthèse fermante
@@ -1191,10 +1262,15 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                   anti slash 
                   ===========
                 */
-                if( !(dansCst)){
+                if( !(dansCstSimple)){
                     temp={'status':false,'value':T,'id':i,'message':'un antislash doit être dans une constante'};
                     return(logerreur(temp));
                 }
+                if( !(dansCstDouble)){
+                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être dans une constante'};
+                    return(logerreur(temp));
+                }
+                
                 /*
                   ===================
                   Fin d'un anti slash
@@ -1211,15 +1287,36 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                   //===========
                 */
                 premier=i;
-                if((dansCst == true)){
-                    dansCst=false;
+                if((dansCstSimple == true)){
+                    dansCstSimple=false;
                 }else{
-                    dansCst=true;
+                    dansCstSimple=true;
                 }
                 /*
                   //===============
                   // FIN apostrophe
                   //===============
+                  
+                  
+                */
+            }else if((c == '"')){
+                /*
+                  
+                  
+                  //=============
+                  // double quote
+                  //=============
+                */
+                premier=i;
+                if((dansCstDouble == true)){
+                    dansCstDouble=false;
+                }else{
+                    dansCstDouble=true;
+                }
+                /*
+                  //=================
+                  // FIN double quote
+                  //=================
                   
                   
                 */
@@ -1251,7 +1348,8 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                     }
                 }
                 texte='';
-                dansCst=false;
+                dansCstSimple=false;
+                dansCstDouble=false;
                 /*
                   //============================
                   // FIN virgule donc séparateur
@@ -1275,7 +1373,8 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                     }
                     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     texte='';
-                    dansCst=false;
+                    dansCstSimple=false;
+                    dansCstDouble=false;
                 }
                 /*
                   ====================================

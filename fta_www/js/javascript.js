@@ -1,4 +1,9 @@
 "use strict";
+/*
+ tada
+ le r() dans un appelf doit pouvoir contenir un appelf
+ 
+*/
 //=====================================================================================================================
 function parseJavascript0(tab,id,niveau){
  var t='';
@@ -1337,7 +1342,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     break;
    }
    if(tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
-    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='r' || tab[j][1]=='prop' || tab[j][1]=='#' ){
+    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='appelf' || tab[j][1]=='r' || tab[j][1]=='prop' || tab[j][1]=='#' ){
      continue;
     }else{
      logerreur({status:false,value:t,id:i,tab:tab,message:'les seuls paramètres de appelf sont n,p,r,element et non pas "'+tab[j][1]+'"'});
@@ -1390,6 +1395,32 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
      }
     }
     
+    
+    
+   }else if(tab[j][1]=='appelf'  && tab[j][3]==tab[i][3]+1){
+    
+     // cas ou le paramètre d'une fonction est une fonction directe 
+     // par exemple on traite la fonction "z" affecte( a,appelf(n(x),p(y),appelf(n(z))))
+    aDesAppelsRecursifs=true;
+//       dansConditionOuDansFonction=true;
+    if(tab[j+1][1]=='cascade'){
+//        obj=js_traiteAppelFonction(tab,j+1,true,niveau,true);
+     obj=js_tabTojavascript1(tab,j,false,false,niveau);
+    }else{
+     obj=js_traiteAppelFonction(tab,j,true,niveau,true);
+    }
+    if(obj.status==true){
+     argumentsFonction+=',';
+     if(nomFonction=='Array' && nbEnfants>=4){
+      forcerNvelleLigneEnfant=true;
+      argumentsFonction+=espacesn(true,niveau+1);
+     }         
+     argumentsFonction+=obj.value;
+    }else{
+     return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'});
+    }
+       
+     
     
     
    }else if(tab[j][1]=='p' && tab[j][3]==tab[i][3]+1){
