@@ -808,6 +808,9 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     var td1={};
     var r1= new RegExp(' ','g');
     var r2= new RegExp('\n','g');
+    var r3= new RegExp('&','g');
+    var r4= new RegExp('<','g');
+    var r5= new RegExp('>','g');
     tr1=document.createElement('tr');
     /*
       =================
@@ -843,6 +846,9 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
                 temp=String(matriceFonction.value[i][j]);
                 temp=temp.replace(r1,'░');
                 temp=temp.replace(r2,'¶');
+                temp=temp.replace(r3,'&amp;');
+                temp=temp.replace(r4,'&lt;');
+                temp=temp.replace(r5,'&gt;');
                 td1.innerHTML=temp;
                 td1.style.whiteSpace='pre-wrap';
                 td1.style.verticalAlign='baseline';

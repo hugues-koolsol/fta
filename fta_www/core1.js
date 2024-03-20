@@ -221,7 +221,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         */
         if((retourLigne == true) && arr[parentId][10] > profondeurLimite){
             forcerRetourLigne=true;
-        }else if((retourLigne == true) && /*le type du parent est une fonction ou bien c'est la racine*/(arr[parentId][2] == 'f') || arr[parentId][2] == 'INIT'){
+        }else if((retourLigne == true) &&  ( /*le type du parent est une fonction ou bien c'est la racine*/(arr[parentId][2] == 'f') || arr[parentId][2] == 'INIT' ) ){
             /*
               Si c'est la premier enfant d'une fonction, 
               on teste si il existe des enfants de type commentaires
@@ -590,6 +590,9 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     var td1={};
     var r1= new RegExp(' ','g');
     var r2= new RegExp('\n','g');
+    var r3= new RegExp('&','g');
+    var r4= new RegExp('<','g');
+    var r5= new RegExp('>','g');
     tr1=document.createElement('tr');
     /*
       =================
@@ -625,6 +628,9 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
                 temp=String(matriceFonction.value[i][j]);
                 temp=temp.replace(r1,'░');
                 temp=temp.replace(r2,'¶');
+                temp=temp.replace(r3,'&amp;');
+                temp=temp.replace(r4,'&lt;');
+                temp=temp.replace(r5,'&gt;');
                 td1.innerHTML=temp;
                 td1.style.whiteSpace='pre-wrap';
                 td1.style.verticalAlign='baseline';

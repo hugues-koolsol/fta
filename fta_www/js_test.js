@@ -1,31 +1,60 @@
 
+/* a.b("c").d += '<e f="g">' + h.i[j] + "</e>"; */
+a.b('c').d=concat(a.b('c').d,'<e f="g">',h.i[j],'</e>');
+/*=============================================================================================================================*/
 /*#
-      
-for (var i=0;i<10;i++){
-  document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' + global_messages.errors[i] + "</div class=\"toto\">" + toto(a,'b');
-  f(a,b());
-}
-      ========================================================================================================
+  
+  
+  
+  declare(i , 0),
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition((inf(i , 10))),
+     increment(affecte(i , i+1)),
+     faire(
+        affecte(
+           appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+           appelf(
+              n(concat),
+              p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+              p('<div class="yyerror">'),
+              p(global_messages.errors[i]),
+              p('</div class="toto">'),
+              appelf(
+                 #(),
+                 n(toto),
+                 p(a),
+                 p('b')
+              )
+           )
+        ),
+        appelf(
+           n(f),
+           p(a),
+           p(appelf(n(b)))
+        )
+     )
+  ),
+  
       
 */
-var i=0;
-for(i=0;(i < 10);i=i+1){
-    document.getElementById('global_messages').innerHTML=concat(document.getElementById('global_messages').innerHTML,'<div class="yyerror">',global_messages.errors[i],'</div class="toto">',toto(a,'b'));
-    f(a,b()
-    );
-}
-/*
-  
-  
-  
-  
-  =======================================================================================================
-  
-  
-  
-  
+/*=======================================================================================================*/
+/*#
+  affecte(
+     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+     appelf(
+        n(concat),
+        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+        p('<div class="yyerror">'),
+        p(global_messages.errors[i]),
+        p('</div class="toto">'),
+        appelf(n(toto) , p(a) , p('b'))
+     )
+  ),
+      
 */
-/*
+/*=======================================================================================================*/
+/*#
   
   
   
@@ -44,6 +73,7 @@ for(i=0;(i < 10);i=i+1){
   
   
   
+      
 */
 /*#
       
@@ -69,12 +99,42 @@ for(i=0;(i < 10);i=i+1){
       
 */
 /*
+  
   a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
+  
 */
-var i=0;
-for(i=0;(i < 10);i=i+1){
-    a=b.c(x('d').y.z()).e.f('g,h',i(j).k).l;
-}
+/*#
+      
+      
+  declare(i , 0),
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition((inf(i , 10))),
+     increment(affecte(i , i+1)),
+     faire(
+        affecte(
+           a,
+           cascade(
+              appelf(
+                 element(b),
+                 n(c),
+                 p(
+                    cascade(appelf(n(x) , p('d')) , appelf(element(y) , n(z)))
+                 )
+              ),
+              appelf(
+                 element(e),
+                 n(f),
+                 p('g,h'),
+                 p(appelf(n(i) , p(j) , prop(k))),
+                 prop(l)
+              )
+           )
+        )
+     )
+  ),
+      
+*/
 /*#
       
 cascade(
@@ -105,7 +165,22 @@ cascade(
       
       
 */
-a=b.c('d').e.f('g,h',i(j).k).l;
+/*#
+  affecte(
+     a,
+     cascade(
+        appelf(element(b) , n(c) , p('d')),
+        appelf(
+           element(e),
+           n(f),
+           p('g,h'),
+           p(appelf(n(i) , p(j) , prop(k))),
+           prop(l)
+        )
+     )
+  ),
+      
+*/
 /*#
       
 a=b.c('d').e.f( 'g,h', i(j).k ) ; 
@@ -139,7 +214,7 @@ affecte(
       affecte(
          a,
          cascade(
-appelf(  element(b),  n(c),p('d')),appelf(  n(e.f),p('g,h'),p(appelf(  n(i),p(j),prop(k))),prop(l))         )
+          appelf(  element(b),  n(c),p('d')),appelf(  n(e.f),p('g,h'),p(appelf(  n(i),p(j),prop(k))),prop(l))         )
       )
 
 
