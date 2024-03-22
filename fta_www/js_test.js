@@ -1,6 +1,69 @@
 
-/* a.b("c").d += '<e f="g">' + h.i[j] + "</e>"; */
-a.b('c').d=concat(a.b('c').d,'<e f="g">',h.i[j],'</e>');
+var r= new XMLHttpRequest();
+function traiteCommentaire2(texte,niveau,ind){
+    var s='';
+    s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+    return s;
+}
+function displayMessages(){
+    var i=0;
+    for(i=0;(i < global_messages.errors.length);i=i+1){
+        document.getElementById('global_messages').innerHTML=concat(document.getElementById('global_messages').innerHTML,"<div class=\"yyerror\">"+global_messages.errors[i]+"</div>");
+    }
+    var i=0;
+    for(i=0;(i < global_messages.lines.length);i=i+1){
+        document.getElementById('global_messages').innerHTML=concat(document.getElementById('global_messages').innerHTML,"<a href=\"javascript:jumpToError("+(global_messages.lines[i]+1)+")\" class=\"yyerror\" style=\"border:2px red outset;\">go to line "+global_messages.lines[i]+"</a>&nbsp;");
+    }
+    var numLignePrecedente=-1;
+    var i=0;
+    for(i=0;(i < global_messages.ids.length);i=i+1){
+        var id=global_messages.ids[i];
+        if((id < global_messages.data.matrice.value.length)){
+            var ligneMatrice=global_messages.data.matrice.value[id];
+            var caractereDebut=ligneMatrice[5];
+            var numeroDeLigne=0;
+            var j=caractereDebut;
+            for(j=caractereDebut;(j >= 0);j=j-1){
+                if((global_messages.data.tableau.out[j][0] == '\n')){
+                    numeroDeLigne=numeroDeLigne+1;
+                }
+            }
+        }
+        if((numeroDeLigne > 0)){
+            if((numeroDeLigne != numLignePrecedente)){
+                document.getElementById('global_messages').innerHTML=concat(document.getElementById('global_messages').innerHTML,"<a href=\"javascript:jumpToError("+(numeroDeLigne+1)+")\" class=\"yyerror\" style=\"border:2px red outset;\">go to line "+numeroDeLigne+"</a>&nbsp;");
+                numLignePrecedente=numeroDeLigne;
+            }
+        }
+    }
+}
+function espacesn(optionCRLF,i){
+    var t='';
+    if(((optionCRLF === true))){
+        t="\r\n";
+    }else{
+        t="\n";
+    }
+    if((i > 0)){
+        t=concat(t,' '.repeat(NBESPACESSOURCEPRODUIT*i));
+    }
+    return t;
+}
+/*#
+      
+      
+      
+      
+  declare(a , 0),
+  declare(i , 0),
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition((inf(i , 10))),
+     increment(affecte(i , i+1)),
+     faire(affecte(a , @(1+a*(1+(1+(a+1))))))
+  ),
+      
+*/
 /*=============================================================================================================================*/
 /*#
   

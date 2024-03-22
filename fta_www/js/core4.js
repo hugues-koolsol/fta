@@ -1,5 +1,6 @@
 "use strict";
 var DEBUTCOMMENTAIRE='#';
+var DEBUTBLOC='@';
 var CRLF='\r\n';
 var NBESPACESREV=3;
 var global_messages={
@@ -125,7 +126,7 @@ function concat(){
 }
 //=====================================================================================================================
 function isNumeric(str) {
- if (typeof str != "string") return false // we only process strings!  
+ if (typeof str != "string") return false; // we only process strings!  
  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
@@ -193,9 +194,9 @@ function arrayToFunctNoComment(matrice){
 }
 
 //=====================================================================================================================
-function functionToArray(src,exitOnLevelError){
+function functionToArray(src,quitterSiErreurNiveau){
  var tableau1=iterateCharacters2(src);
- var matriceFonction=functionToArray2(tableau1.out,exitOnLevelError);
+ var matriceFonction=functionToArray2(tableau1.out,quitterSiErreurNiveau,false);
  global_messages.data.matrice=matriceFonction;
  global_messages.data.tableau=tableau1;
  return matriceFonction;
@@ -514,6 +515,36 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                     t=concat(t,'<span ','style="','color:darkgreen;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',commentaire,')','</span>');
                 }else{
                     t=concat(t,'<span ','style="','color:darkgreen;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',')','</span>');
+                }
+            }else{
+                /*pas de mise en forme en HTML*/
+                if(((retourLigne))){
+                    t=concat(t,arr[i][1],'(',commentaire,')');
+                }else{
+                    t=concat(t,arr[i][1],'()');
+                }
+            }
+            continue;
+        }
+        /*
+          ===================================================
+          si on doit traiter une fonction de type bloc
+          ===================================================            
+        */
+        if((arr[i][2] == 'f') && arr[i][1] == DEBUTBLOC){
+            /*
+              ==========================
+              on est dans un bloc
+              ==========================
+            */
+            commentaire=arr[i][13];
+            if(((coloration))){
+                /*mise en forme en HTML*/
+                commentaire=strToHtml(commentaire);
+                if(((retourLigne))){
+                    t=concat(t,'<span ','style="','color:navy;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',commentaire,')','</span>');
+                }else{
+                    t=concat(t,'<span ','style="','color:navy;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',')','</span>');
                 }
             }else{
                 /*pas de mise en forme en HTML*/
@@ -953,7 +984,7 @@ var global_enteteTableau= Array(
   ===================================================
   ===================================================
 */
-function functionToArray2(tableauEntree,exitOnLevelError){
+function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine){
     /*
       =========================
       les chaines de caractères
@@ -990,6 +1021,7 @@ function functionToArray2(tableauEntree,exitOnLevelError){
     var dansCstSimple=false;
     var dansCstDouble=false;
     var dsComment=false;
+    var dsBloc=false;
     var constanteQuotee=false;
     /*
       ====================================
@@ -1132,9 +1164,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
               ============================
             */
             if((c == '\'')){
-                if((i == l01-1)){
-                    temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
-                    return(logerreur(temp));
+                if(autoriserCstDansRacine!==true){
+                 if((i == l01-1)){
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     return(logerreur(temp));
+                 }
                 }
                 c1=tableauEntree[i+1][0];
                 if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
@@ -1146,9 +1180,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 dansCstSimple=false;
                 indice=indice+1;
                 constanteQuotee=true;
-                if((niveau == 0)){
-                    temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
-                    return(logerreur(temp));
+                if(autoriserCstDansRacine!==true){
+                 if((niveau == 0)){
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     return(logerreur(temp));
+                 }
                 }
                 T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 texte='';
@@ -1205,6 +1241,10 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 posOuvPar=i;
                 indice=indice+1;
                 if((texte == DEBUTCOMMENTAIRE)){
+                    dsComment=true;
+                    niveauDebutCommentaire=niveau;
+                }
+                if((texte == DEBUTBLOC)){
                     dsComment=true;
                     niveauDebutCommentaire=niveau;
                 }
@@ -1336,9 +1376,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 */
                 if((texte != '')){
                     indice=indice+1;
-                    if((niveau == 0)){
-                        temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
-                        return(logerreur(temp));
+                    if(autoriserCstDansRacine!==true){
+                        if((niveau == 0)){
+                            temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
+                            return(logerreur(temp));
+                        }
                     }
                     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                 }else{
@@ -1373,9 +1415,11 @@ function functionToArray2(tableauEntree,exitOnLevelError){
                 */
                 if((texte != '')){
                     indice=indice+1;
-                    if((niveau == 0)){
-                        temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
-                        return(logerreur(temp));
+                    if(autoriserCstDansRacine!==true){
+                        if((niveau == 0)){
+                            temp={'status':false,'value':T,'id':i,'message':'la racine ne peut pas contenir des constantes'};
+                            return(logerreur(temp));
+                        }
                     }
                     T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     texte='';
@@ -1403,16 +1447,18 @@ function functionToArray2(tableauEntree,exitOnLevelError){
       on est en dehors de la boucle principale
       ========================================
     */
-    if((niveau != 0) && exitOnLevelError){
+    if((niveau != 0) && quitterSiErreurNiveau){
         temp={'status':false,'value':T,'message':'des parenthèses ne correspondent pas'};
         return(logerreur(temp));
     }
     /**/
     if((texte != '')){
         indice=indice+1;
-        if((niveau == 0)){
-            temp={'status':false,'value':T,'message':'la racine ne peut pas contenir des constantes'};
-            return(logerreur(temp));
+        if(autoriserCstDansRacine!==true){
+            if((niveau == 0)){
+                temp={'status':false,'value':T,'message':'la racine ne peut pas contenir des constantes'};
+                return(logerreur(temp));
+            }
         }
         /**/
         T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));

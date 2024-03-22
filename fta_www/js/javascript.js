@@ -87,7 +87,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    
   }else if(tab[i][1]=='fonction' && tab[i][2]=='f' ){  // i18
    if(dansFonction==true){
-    return {status:false,value:t,id:id,tab:tab,message:'on ne peut pas déclarer une fonction dans une fonction'};
+    return logerreur({status:false,value:t,id:id,tab:tab,message:'on ne peut pas déclarer une fonction dans une fonction'});
    }else{
     dansFonction=true;
     positionDeclarationFonction=-1;
@@ -110,7 +110,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
        if(tab[j][8]==1){
         nomFonction=tab[j+1][1];
        }else{
-        return {status:false,value:t,id:id,tab:tab,message:'le nom de la fonction doit être sous la forme  n(xxx) '};
+        return logerreur({status:false,value:t,id:id,tab:tab,message:'le nom de la fonction doit être sous la forme  n(xxx) '});
        }
       }
      }
@@ -121,7 +121,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
        if(tab[j][8]==1){
         argumentsFonction+=','+tab[j+1][1];
        }else{
-        return {status:false,value:t,id:id,tab:tab,message:'les arguments passés à la fonction doivent être sous la forme  a(xxx) '};
+        return logerreur({status:false,value:t,id:id,tab:tab,message:'les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
        }
       }
      }
@@ -144,7 +144,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
         t+=obj.value;
         t+='\n}';
        }else{
-        return {status:false,value:t,id:id,tab:tab,message:'problème sur le contenu de la fonction "'+nomFonction+'"'};
+        return logerreur({status:false,value:t,id:id,tab:tab,message:'problème sur le contenu de la fonction "'+nomFonction+'"'});
        }
       }
       max=Math.max(positionDeclarationFonction,positionContenu);
@@ -878,10 +878,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     t+=';';
 
 
-    
+   }else if(tab[i+1][2]=='c' && tab[i+2][2]=='f' && tab[i+2][1]=='@' ){
+    t+=''+tab[i+1][1]+'='+tab[i+2][13]+';';
    }else{
     logerreur({status:false,value:t,id:i,tab:tab,message:'javascript.js dans "affecte" ou "dans" cas non prévu "'+tab[i+2][1]+'"'});
-    t+='//todo dans affecte 829 '+tab[i][1]+'';
+    t+='//todo dans affecte 886 '+tab[i][1]+'';
    }
    reprise=i+1;
    max=i+1;
@@ -1198,8 +1199,23 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
        }else{
         return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'});
        }
+      }else if(tab[j+1][1]=='p'){ // i18
+          obj=js_tabTojavascript1(tab,j+1,false,false,niveau);
+          if(obj.status==true){
+           argumentsFonction+=',';
+           if(nomFonction=='Array' && nbEnfants>=4){
+            forcerNvelleLigneEnfant=true;
+            argumentsFonction+=espacesn(true,niveau+1);
+           }         
+           argumentsFonction+=obj.value;
+          }else{
+           return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'});
+          }
+      }else if(tab[j+1][1]=='@'){ // i18
+           argumentsFonction+=',';
+           argumentsFonction+=tab[j+1][13];
       }else{
-       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 3 pour la fonction inconnue '+tab[j][1]});
+       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 dans un appel de fonction imbriqué 3 pour la fonction inconnue '+tab[j+1][1]});
       }
      }
     }

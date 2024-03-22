@@ -5,67 +5,234 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
-      declare(i , 0),
-      boucle(
-         initialisation(affecte(i , 0)),
-         condition((inf(i , 10))),
-         increment(affecte(i , i+1)),
-         faire(
+      declare(r , appelf(n(@(new XMLHttpRequest)))),
+      fonction(
+         definition(nom(traiteCommentaire2) , argument(texte) , argument(niveau) , argument(ind)),
+         contenu(
+            declare(s , ''),
             affecte(
-               appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+               s,
                appelf(
-                  n(concat),
-                  p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-                  p('<div class="yyerror">'),
-                  p(global_messages.errors[i]),
-                  p('</div class="toto">'),
-                  appelf(
-                     #(),
-                     n(toto),
-                     p(a),
-                     p('b')
+                  n(traiteCommentaireSourceEtGenere1),
+                  p(texte),
+                  p(niveau),
+                  p(ind),
+                  p(NBESPACESSOURCEPRODUIT),
+                  p(false)
+               )
+            ),
+            revenir(s)
+         )
+      ),
+      fonction(
+         definition(nom(displayMessages)),
+         contenu(
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.errors.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(
+                     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+                     appelf(
+                        n(concat),
+                        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+                        p(@("<div class=\"yyerror\">"+global_messages.errors[i]+"</div>"))
+                     )
                   )
                )
             ),
-            appelf(
-               n(f),
-               p(a),
-               p(appelf(n(b)))
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.lines.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(
+                     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+                     appelf(
+                        n(concat),
+                        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+                        p(@("<a href=\"javascript:jumpToError("+(global_messages.lines[i]+1)+")\" class=\"yyerror\" style=\"border:2px red outset;\">go to line "+global_messages.lines[i]+"</a>&nbsp;"))
+                     )
+                  )
+               )
+            ),
+            declare(numLignePrecedente , -1),
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.ids.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  declare(id , global_messages.ids[i]),
+                  choix(
+                     si(
+                        condition((inf(id , global_messages.data.matrice.value.length))),
+                        alors(
+                           declare(ligneMatrice , global_messages.data.matrice.value[id]),
+                           declare(caractereDebut , ligneMatrice[5]),
+                           declare(numeroDeLigne , 0),
+                           declare(j , caractereDebut),
+                           boucle(
+                              initialisation(affecte(j , caractereDebut)),
+                              condition((supeg(j , 0))),
+                              increment(affecte(j , j-1)),
+                              faire(
+                                 choix(
+                                    si(
+                                       condition((egal(global_messages.data.tableau.out[j][0] , '\n'))),
+                                       alors(affecte(numeroDeLigne , numeroDeLigne+1))
+                                    )
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  ),
+                  choix(
+                     si(
+                        condition((sup(numeroDeLigne , 0))),
+                        alors(
+                           choix(
+                              si(
+                                 condition((diff(numeroDeLigne , numLignePrecedente))),
+                                 alors(
+                                    affecte(
+                                       appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+                                       appelf(
+                                          n(concat),
+                                          p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+                                          p(@("<a href=\"javascript:jumpToError("+(numeroDeLigne+1)+")\" class=\"yyerror\" style=\"border:2px red outset;\">go to line "+numeroDeLigne+"</a>&nbsp;"))
+                                       )
+                                    ),
+                                    affecte(numLignePrecedente , @(numeroDeLigne))
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
             )
          )
       ),
-      #(=======================================================================================================),
-      affecte(
-         appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-         appelf(
-            n(concat),
-            p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-            p('<div class="yyerror">'),
-            p(global_messages.errors[i]),
-            p('</div class="toto">'),
-            appelf(n(toto) , p(a) , p('b'))
+      fonction(
+         definition(nom(espacesn) , argument(optionCRLF) , argument(i)),
+         contenu(
+            declare(t , ''),
+            choix(
+               si(
+                  condition(
+                     ((egalstricte(optionCRLF , vrai)))
+                  ),
+                  alors(affecte(t , @("\r\n")))
+               ),
+               sinon(alors(affecte(t , @("\n"))))
+            ),
+            choix(
+               si(
+                  condition((sup(i , 0))),
+                  alors(
+                     affecte(
+                        t,
+                        appelf(
+                           n(concat),
+                           p(t),
+                           p(appelf(element(' ') , n(repeat) , p(NBESPACESSOURCEPRODUIT*i)))
+                        )
+                     )
+                  )
+               )
+            ),
+            revenir(t)
          )
       ),
-      #(=======================================================================================================),
-      #(
-        
-        
-        
+      #(#
+      
+      
+      
+      
+  declare(a , 0),
+  declare(i , 0),
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition((inf(i , 10))),
+     increment(affecte(i , i+1)),
+     faire(affecte(a , @(1+a*(1+(1+(a+1))))))
+  ),
+      ),
+      #(=============================================================================================================================),
+      #(#
+  
+  
+  
+  declare(i , 0),
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition((inf(i , 10))),
+     increment(affecte(i , i+1)),
+     faire(
         affecte(
-        appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+           appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+           appelf(
+              n(concat),
+              p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+              p('<div class="yyerror">'),
+              p(global_messages.errors[i]),
+              p('</div class="toto">'),
+              appelf(
+                 #(),
+                 n(toto),
+                 p(a),
+                 p('b')
+              )
+           )
+        ),
         appelf(
+           n(f),
+           p(a),
+           p(appelf(n(b)))
+        )
+     )
+  ),
+  
+      ),
+      #(=======================================================================================================),
+      #(#
+  affecte(
+     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+     appelf(
         n(concat),
-        #(),
         p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
         p('<div class="yyerror">'),
         p(global_messages.errors[i]),
         p('</div class="toto">'),
-        p(appelf(n(toto) , p(a) , p('b')))
-        )
-        ),
-        
-        
-        
+        appelf(n(toto) , p(a) , p('b'))
+     )
+  ),
+      ),
+      #(=======================================================================================================),
+      #(#
+  
+  
+  
+  affecte(
+  appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
+  appelf(
+  n(concat),
+  #(),
+  p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
+  p('<div class="yyerror">'),
+  p(global_messages.errors[i]),
+  p('</div class="toto">'),
+  p(appelf(n(toto) , p(a) , p('b')))
+  )
+  ),
+  
+  
+  
       ),
       #(#
       
@@ -90,34 +257,40 @@ src_javascript(
   
       ),
       #(
+        
         a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
+        
       ),
-      declare(i , 0),
-      boucle(
-         initialisation(affecte(i , 0)),
-         condition((inf(i , 10))),
-         increment(affecte(i , i+1)),
-         faire(
-            affecte(
-               a,
-               cascade(
-                  appelf(
-                     element(b),
-                     n(c),
-                     p(
-                        cascade(appelf(n(x) , p('d')) , appelf(element(y) , n(z)))
-                     )
-                  ),
-                  appelf(
-                     element(e),
-                     n(f),
-                     p('g,h'),
-                     p(appelf(n(i) , p(j) , prop(k))),
-                     prop(l)
-                  )
-               )
-            )
-         )
+      #(#
+      
+      
+  declare(i , 0),
+  boucle(
+     initialisation(affecte(i , 0)),
+     condition((inf(i , 10))),
+     increment(affecte(i , i+1)),
+     faire(
+        affecte(
+           a,
+           cascade(
+              appelf(
+                 element(b),
+                 n(c),
+                 p(
+                    cascade(appelf(n(x) , p('d')) , appelf(element(y) , n(z)))
+                 )
+              ),
+              appelf(
+                 element(e),
+                 n(f),
+                 p('g,h'),
+                 p(appelf(n(i) , p(j) , prop(k))),
+                 prop(l)
+              )
+           )
+        )
+     )
+  ),
       ),
       #(#
       
@@ -148,18 +321,20 @@ cascade(
 )      
       
       ),
-      affecte(
-         a,
-         cascade(
-            appelf(element(b) , n(c) , p('d')),
-            appelf(
-               element(e),
-               n(f),
-               p('g,h'),
-               p(appelf(n(i) , p(j) , prop(k))),
-               prop(l)
-            )
-         )
+      #(#
+  affecte(
+     a,
+     cascade(
+        appelf(element(b) , n(c) , p('d')),
+        appelf(
+           element(e),
+           n(f),
+           p('g,h'),
+           p(appelf(n(i) , p(j) , prop(k))),
+           prop(l)
+        )
+     )
+  ),
       ),
       #(#
       
@@ -194,7 +369,7 @@ affecte(
       affecte(
          a,
          cascade(
-appelf(  element(b),  n(c),p('d')),appelf(  n(e.f),p('g,h'),p(appelf(  n(i),p(j),prop(k))),prop(l))         )
+          appelf(  element(b),  n(c),p('d')),appelf(  n(e.f),p('g,h'),p(appelf(  n(i),p(j),prop(k))),prop(l))         )
       )
 
 

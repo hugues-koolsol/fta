@@ -26,9 +26,22 @@
   <a href="javascript:transform()">transform</a>
   
   <div id="resultat1"></div>
+  
+  <textarea class="txtar1" id="txtar2" rows="4"></textarea>
+  
+  
   <script type="text/javascript" src="js/core4.js"></script>
+  <script type="text/javascript" src="js/compile1.js"></script>
+  <script type="text/javascript" src="js/javascript.js"></script>
 <script type="text/javascript">
 
+
+/*
+var b=false;
+if( ! b){
+ alert('a');
+}
+*/
 /*
 BUG !!!!!!!
 var a=1;
@@ -36,6 +49,11 @@ var b=1+(a==0?4:5);
 console.log('b='+b); // b=6
 var b=1+ a==0?4:5 ; // on retire les parenthèses
 console.log('b='+b); // b=5
+*/
+/*
+var a='a+2*p(1+p(a+1))';
+var b=a.replace( /p\((.*)\)/   , '($1)' ).replace( /p\((.*)\)/   , '($1)' );
+alert(b);
 */
 
 //=====================================================================================================================
@@ -130,49 +148,47 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
      if(tab[i][6]>1){ // si c'est le nième enfant > 1
       t+=','
      }
-     t+='p('+tab[i][4]+')';
+     if(tab[i][5]=='oper'){
+      t+='o('+tab[i][4]+')';
+     }else{
+      t+='p('+tab[i][4]+')';
+     }
     }else{
      if(tab[i][6]>1){ // si c'est le nième enfant > 1
       t+=','
      }
-     t+=''+tab[i][4]+'';
+     if(tab[i][5]=='cstt'){
+      t+=''+tab[i][4]+'';
+     }else if(tab[i][5]=='oper'){
+      t+='o('+tab[i][4]+')';
+     }
+     // une constante peut avoir des enfants dans le cas de parenthèses, par exemple :
+     // a='a'+(n+1)+'b'
+     if(tab[i][3]>0){
+      var obj=recurf1(tab,niveau,tab[i][1]+1,tab[i][1],false);
+      if(obj.status==true){
+       t+='p(';
+       t+=obj.value;
+       t+=')';
+      }else{
+       temp={'status':false,'line':tab[ind][5],'message':'recurf1 1'};
+       return(logerreur(temp));
+      }
+     }
     }
    }
   }
  }
+// console.log('ici pour ind='+ind+', t='+t);
  return {'status':true,'value':t}
-/* 
- 0 appelf( n(f)
- 1  ,p(a), p( appelf( n(b)
- 2 
- 1 ) // fermeture appelf
- 1 ) //fermeture du p
-*/
-/*
-affecte(
-   appelf(
-      element(a),
-      n(b),
-      p('c'),
-      prop(d)
-   ) , 
-   appelf(
-      n(concat),
-      p(
-         appelf(
-            element(a),
-            n(b),
-            p('c'),
-            prop(d)
-         )
-      ),
-      p("<e f=\"g\">"  +  h.i[j]  + "</e>")
-   ),
-*/ 
 }
-//console.log(traiteQuotes1('\'<e f="g">\' + h.i[j] + "</e>"'));
+//console.log('test de traiteQuotes1='+traiteQuotes1('\'a\' + d + "e"'));
+
+//p("b"),o(+)p(p(n),o(+),p(1)),o(+),p("c"),o(+),p(n),o(+),p("d")
+
 //=====================================================================================================================
 function traiteQuotes1(ch){
+// console.log('traiteQuotes1 debut ch='+ch);
  var l01=ch.length;
  var c1='';
  var c2='';
@@ -209,8 +225,9 @@ function traiteQuotes1(ch){
   }else{
    out+=c1;
   }
-  console.log('out="'+out+'"');
+//  console.log('out="'+out+'"');
  }
+// console.log('traiteQuotes1 fin='+out)
  return out;
 }
 //=====================================================================================================================
@@ -227,15 +244,23 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  var i=0;
  var j=0;
  var k=0;
- var l01=ch.length;
+ var l01=0;
  var id=0;
  var parentId=0;
+ var declarationDeVariable='';
  
- console.log('ch=',ch);
+ ch=monTrim(ch);
+ if(ch.substr(0,3)=='var'){
+  declarationDeVariable='var ';
+  ch=ch.substr(3);
+  ch=monTrim(ch);
+ }
+ console.log('on entre dans analyseChaineParElements1 avec ch='+declarationDeVariable+ch);
  
  //         0niveau , 1id  , 2parentId    3nbEnf     4variable   5typ  , 6numéroEnfant   7cascade , 8positionFin
  tab2.push([  -1    , id   ,  parentId ,  0        , variable1 , ''    , 0             , 0        , 0            ]);
  
+ l01=ch.length;
  // phase 1 : séparation des parenthèses
  for(i=0;i<l01;i++){
   var c1=ch.substr(i,1);
@@ -253,6 +278,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    
     for(j=i+1;j<l01;j++){
      c2=ch.substr(j,1);
+     c1=ch.substr(j-1,1);
      if(c2=='"'){
       if(c1=='\\'){
        variable1+=c2;
@@ -277,6 +303,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    
     for(j=i+1;j<l01;j++){
      c2=ch.substr(j,1);
+     c1=ch.substr(j-1,1);
      if(c2=='\''){
       if(c1=='\\'){
        variable1+=c2;
@@ -321,10 +348,11 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
    variable1=variable1.replace(/\n/g,' ')
    variable1=monTrim(variable1);
    if(variable1!==''){
-    id++;
     if(variable1.substr(0,1)=='.'){
+     id++;
      tab2.push([ niveau+1,id,parentId,0 , variable1.substr(1) , 'elem' , 0 , 0 , i-1 ]);
     }else{
+     id++;
      tab2.push([ niveau,id,parentId,0 , traiteQuotes1(variable1) , 'cstt' , 0 , 0 , i-1 ]);
     }
    }
@@ -380,6 +408,12 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
     tab2.push([ niveau,id,parentId,0 , c1 , 'oper' , 0 , 0 , i ]);
    }
   
+  }else if(c1 == ' '){
+   // un espace ne sert à rien dans un javascript en dehors d'une constante, d'un new
+   if(variable1=='new'){
+    variable1+=c1;
+   }
+   
   }else{
   
    variable1+=c1;
@@ -473,7 +507,7 @@ document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' +
 ]
 */ 
  // on essaie de repérer si il y a une affectation
- console.log('tab2=',JSON.stringify(tab2).replace(/\],/g,'],\n'));
+ console.log('===========================\nle tableau est construit pour la chaine ch='+ch+'\ntab2=',JSON.stringify(tab2).replace(/\],/g,'],\n'));
  var operation=''; 
  for(i=1;i<l01;i++){
   c1=tab2[i][4].substr(0,1);
@@ -485,7 +519,7 @@ document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' +
    c2=ch.substr(tab2[i][8]+tab2[i][4].length);
    c2=monTrim(c2);
    if(c2.substr(c2.length-1,1)==';'){
-    c2=c2.substr(0,c2.length-2);
+    c2=c2.substr(0,c2.length-1);
    }
    console.log('c1=',c1,'\nc2=',c2);
    break;
@@ -500,15 +534,18 @@ document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' +
  
   var obj1=analyseChaineParElements1(tab,ind,niveau,c1);
   if(obj1.status==true){
-   console.log('obj1 ok, operation="'+operation+'", obj1.value='+obj1.value);
+   console.log('obj1 ok, operation="'+operation+'", obj1.value='+obj1.value.gauche.value);
    
-   var tableau1=iterateCharacters2(obj1.value);
-   var matriceFonction1=functionToArray2(tableau1.out,false);
+   var tableau1=iterateCharacters2(obj1.value.gauche.value);
+   var matriceFonction1=functionToArray2(tableau1.out,true,true);
    if(matriceFonction1.status==true){
     console.log('matriceFonction1.value='+JSON.stringify(matriceFonction1.value).replace(/\],/g,'],\n'));
     var objRecompose1=a2F1(matriceFonction1.value,0,false,1,false);
     if(objRecompose1.status===false){
      return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 objRecompose1'});
+    }
+    if(declarationDeVariable!==''){
+     declarationDeVariable=objRecompose1.value;
     }
     console.log('objRecompose1=' , objRecompose1);
    }else{
@@ -536,63 +573,175 @@ appelf(  n(toto),p(a),p('b')))
     var concatenationChaine=false;
     if(operation=='+=' || operation=='='){
      var queDesPlus=false;
+     var auMoinsUneChaine=false;
+     var queDesOperationsEtDesConstantes=true;
      for(i=1;i<obj2.tab2.length;i++){
-      if(obj2.tab2[i][5]=='oper' && obj2.tab2[i][0]==0){
+      if(obj2.tab2[i][5]=='oper'){
        if(obj2.tab2[i][4]=='+'){
         queDesPlus=true;
        }else{
         queDesPlus=false;
         break
        }
+      }else if(obj2.tab2[i][5]=='cstt'){
+       if(obj2.tab2[i][4].substr(0,1)=='\'' || obj2.tab2[i][4].substr(0,1)=='"' ){
+        auMoinsUneChaine=true;
+       }
+      }else{
+       queDesOperationsEtDesConstantes=false;
       }
      }
-     if(queDesPlus){
+     if(queDesPlus && auMoinsUneChaine){
       concatenationChaine=true;
      }
     }
     
     if(concatenationChaine){
      console.log('vrai concatenationChaine');
-     var tempch2=obj2.value;
+     var tempch2=obj2.value.gauche.value;
      if(tempch2.substr(0,1)==','){
       tempch2=tempch2.substr(1);
      }
      if(operation=='+='){
-      tempch2='appelf(n(concat),p('+objRecompose1.value+'),p('+tempch2.replace(/,\+,/g,' + ')+')';
+      // "b",+(n,+,1),+,"c",+,n,+,"d"
+      
+      tempch2='affecte('+objRecompose1.value+',appelf(n(concat),p('+objRecompose1.value+'),p('+tempch2.replace(/,\+,/g,'),p(')+')))';
      }else{
-      tempch2='appelf(n(concat),p('+tempch2.replace(/,\+,/g,'')+')';
+      tempch2='affecte('+objRecompose1.value+',appelf(n(concat),p('+tempch2.replace(/,\+,/g,'),p(')+')))';
      }
-     console.log('tempch2=',tempch2);
-/*     
-     var tableau2=iterateCharacters2(tempch2);
-     var matriceFonction2=functionToArray2(tableau2.out,false);
-//     console.log('matriceFonction2=',matriceFonction2);
-     if(matriceFonction2.status==false){
-      return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 matriceFonction2'});
-     }
-     var objRecompose2=a2F1(matriceFonction2.value,0,false,1,false);
-     if(objRecompose2.status===false){
-      return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 objRecompose2'});
-     }
-*/     
-     objRecompose2={};
-     objRecompose2.status=true;
-     objRecompose2.value=tempch2;
      
-     console.log('objRecompose2=' , objRecompose2);
+     console.log('tempch2=',tempch2);
+     return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2},'droite':null}};
+     
     }else{
-     debugger ; // todo
+     if(operation=='='){
+     
+      tempch2=obj2.value.gauche.value;
+      
+      if(queDesOperationsEtDesConstantes){
+ //      console.log(' à gauche '+obj2.value.gauche.value);
+       tempch2=tempch2.replace(/\,o\(\+\)\,/g,'+').replace(/\,o\(\+\)/g,'+').replace(/o\(\+\)\,/g,'+');
+       tempch2=tempch2.replace(/\,o\(\-\)\,/g,'-').replace(/\,o\(\-\)/g,'-').replace(/o\(\-\)\,/g,'-');
+       tempch2=tempch2.replace(/\,o\(\*\)\,/g,'*').replace(/\,o\(\*\)/g,'*').replace(/o\(\*\)\,/g,'*');
+       tempch2=tempch2.replace(/\,o\(\/\)\,/g,'/').replace(/\,o\(\/\)/g,'/').replace(/o\(\/\)\,/g,'/');
+       var k=20; // on expère moins de 20 niveaux de parenthèses
+       while(tempch2.indexOf('p(')>=0 && k-- > 0 ){
+        tempch2=tempch2.replace( /p\((.*)\)/   , '($1)' );
+       }
+
+       
+       tempch2='affecte('+objRecompose1.value+',@('+tempch2+'))';
+      }else{
+       tempch2='affecte('+objRecompose1.value+','+tempch2+')';
+      }
+      return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2},'droite':null}};
+      
+     }else if(operation=='+='){
+     
+      var tempch2=obj2.value.gauche.value;
+      if(tempch2.substr(0,1)==','){
+       tempch2=tempch2.substr(1);
+      }
+      tempch2=tempch2.replace(/\,o\(\+\)\,/g,'+').replace(/\,o\(\+\)/g,'+').replace(/o\(\+\)\,/g,'+');
+      tempch2=tempch2.replace(/\,o\(\-\)\,/g,'-').replace(/\,o\(\-\)/g,'-').replace(/o\(\-\)\,/g,'-');
+      tempch2=tempch2.replace(/\,o\(\*\)\,/g,'*').replace(/\,o\(\*\)/g,'*').replace(/o\(\*\)\,/g,'*');
+      tempch2=tempch2.replace(/\,o\(\/\)\,/g,'/').replace(/\,o\(\/\)/g,'/').replace(/o\(\/\)\,/g,'/');
+/*
+      var k=20; // on expère moins de 20 niveaux de parenthèses
+      while(tempch2.indexOf('p(')>=0 && k -- > 0 ){
+       tempch2=tempch2.replace( /p\((.*)\)/   , '($1)' );
+      }
+*/    
+      if(tempch2.substr(0,6)=='appelf'){
+       tempch2='affecte('+objRecompose1.value+',appelf(n(concat),p('+objRecompose1.value+'),p('+tempch2+')))';
+      }else{
+       tempch2='affecte('+objRecompose1.value+',appelf(n(concat),p('+objRecompose1.value+'),@('+tempch2+')))';
+      }
+
+      return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2},'droite':null}};
+     
+     }else{
+     
+      debugger ; // todo
+      return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 cas non traité pour operation="'+operation+'"'});
+      
+     }
     }
-    return {'status':true,value:{'gauche':objRecompose1,'droite':objRecompose2,'uneConcatenation':uneConcatenation,'concatenationChaine':concatenationChaine}};
+   }else{
+    return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 err deuxième partie '});
    }
   }
   
- }else{
+ }else{ // pas d'opération
   // tab,niv,ind,parentId
-  var obj1=recurf1(tab2,0,1,0,false);
-  console.log('\n\n=====retour récursif obj1='+JSON.stringify(obj1)+'\n=======\n');
-  if(obj1.status==true){
-   return {'status':true,value:obj1.value,'tab2':tab2};
+  if(ch.indexOf('++')>0){
+   var chaine=ch.replace(/\+\+/,'').replace(';','');
+   var obj2=analyseChaineParElements1(tab,ind,niveau,chaine);
+   if(obj2.status==true){
+    var tempch2=obj2.value.gauche.value;
+    tempch2='affecte('+tempch2+','+tempch2+'+1)';
+    return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2},'droite':null}};
+     
+   }else{
+    return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 ++ non traité '});
+   }
+  }else if(ch.indexOf('--')>0){
+   var chaine=ch.replace(/\-\-/,'').replace(';','');
+   var obj2=analyseChaineParElements1(tab,ind,niveau,chaine);
+   if(obj2.status==true){
+    var tempch2=obj2.value.gauche.value;
+    tempch2='affecte('+tempch2+','+tempch2+'-1)';
+    return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2},'droite':null}};
+     
+   }else{
+    return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1 ++ non traité '});
+   }
+  }else{
+   console.log('appel recursif avec le tableau précédent '); // avec tableau tab2=\n'+JSON.stringify( tab2 ).replace(/\],/g,'],\n') +'')
+   var obj1=recurf1(tab2,0,1,0,false);
+   console.log('=====retour récursif obj1='+JSON.stringify(obj1)+'\n====================================');
+   if(obj1.status==true){
+   
+    var queDesOperationsEtDesConstantes=true;
+    for(i=1;i<tab2.length;i++){
+     if(tab2[i][5]=='oper'){
+     }else if(tab2[i][5]=='cstt'){
+     }else{
+      queDesOperationsEtDesConstantes=false;
+     }
+    }
+    if(queDesOperationsEtDesConstantes){
+     console.warn('queDesOperationsEtDesConstantes est vrai, obj1.value=',obj1.value);
+     obj1.value=obj1.value.replace()
+     obj1.value=obj1.value.replace(/\,o\(\+\)\,/g,'+').replace(/\,o\(\+\)/g,'+').replace(/o\(\+\)\,/g,'+');
+     obj1.value=obj1.value.replace(/\,o\(\-\)\,/g,'-').replace(/\,o\(\-\)/g,'-').replace(/o\(\-\)\,/g,'-');
+     obj1.value=obj1.value.replace(/\,o\(\*\)\,/g,'*').replace(/\,o\(\*\)/g,'*').replace(/o\(\*\)\,/g,'*');
+     obj1.value=obj1.value.replace(/\,o\(\/\)\,/g,'/').replace(/\,o\(\/\)/g,'/').replace(/o\(\/\)\,/g,'/');
+     if(tab2.length==2 && tab2[1][5]=='cstt'){
+      obj1.value=''+obj1.value+'';
+     }else{
+      var k=20;
+      while(obj1.value.indexOf('p(')>=0 && k-- > 0 ){
+       obj1.value=obj1.value.replace( /p\((.*)\)/   , '($1)' );
+      }
+      obj1.value=''+obj1.value+'';
+      obj1.value='@('+obj1.value+')';
+     }
+     
+    }
+    if(obj1.value.indexOf('),o(')>=0 && obj1.value.indexOf('),p(')){
+     console.log('// on tente le coup avant = ', obj1.value);
+     obj1.value=obj1.value.replace(/\)\,o\(\+\)\,p\(/g , '+' );
+     obj1.value=obj1.value.replace(/\)\,o\(\-\)\,p\(/g , '-' );
+     obj1.value=obj1.value.replace(/\)\,o\(\*\)\,p\(/g , '*' );
+     obj1.value=obj1.value.replace(/\)\,o\(\/\)\,p\(/g , '/' );
+     console.log('// on tente le coup après = ', obj1.value);
+    }
+   
+    console.warn('apres transformation, obj1.value=',obj1.value);
+   
+    return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':obj1,'droite':null},'tab2':tab2};
+   }
   }
  }
  return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1'});
@@ -673,7 +822,11 @@ function analyseChaineSimple1(tab,ind,niveau,chaine,noLogIfError){
   t=chaine;
  }
  if(chaineQuotee){
-   return logerreur({'status':true,'ind':ind,'value':t,'chaineQuotee':chaineQuotee,'isNum':false,'isComplex':isComplex,'message':'analyseChaineSimple1 1 Erreur'});
+  if(noLogIfError==true){
+   return {'status':true,'ind':ind,'value':t,'chaineQuotee':chaineQuotee,'isNum':false,'isComplex':isComplex,'message':'analyseChaineSimple1 1 Erreur , ind="'+ind+'" '};
+  }else{
+   return logerreur({'status':true,'ind':ind,'value':t,'chaineQuotee':chaineQuotee,'isNum':false,'isComplex':isComplex,'message':'analyseChaineSimple1 1 Erreur , ind="'+ind+'" '});
+  }
  }
  var tab1=', \' " < > ! = & | ( ) ?'.split(' ');
  for(var i=0 ; i < t.length && isComplex==false ; i++ ){
@@ -735,7 +888,12 @@ function traiteEgaliteSimple1(tab,ind,niveau,s){
      if(obj2.status===false  && obj2.isComplex===true ){
       var obj2=analyseChaineParElements1(tab,ind,niveau,tt[1]);
       if(obj2.status===true){
-       t+=obj2.value;
+      
+       t+='\n'+' '.repeat(niveau*NBESPACESREV)+'declare(';
+       t+=obj1.value + ' , ';
+       t+=obj2.value.gauche.value;
+       t+=')';
+       
       }else{
        temp={'status':false,'line':tab[ind][5],'message':'3 traiteEgaliteSimple1 dans analyseChaineParElements1, objch1='+JSON.stringify(obj2)+' '+JSON.stringify(tab[ind])};
        return(logerreur(temp));
@@ -1170,12 +1328,22 @@ function boucleRecursiveSurCondition1(tab,ind1,niveau1,parentId){
 //    t+=' untruc pour i='+i+' ';
     for(var j=0;j<tab[i][6].length;j++){
      var elt=tab[i][6][j];
+     if(j>0){
+      t+=',';
+     }
      if(elt[0]=='||'){
       t+='ou';
      }else if(elt[0]=='&&'){
       t+='et';
      }
-     if(elt[2][1]=='' && elt[2][2]==''){
+     if(elt[2][0]=='' && elt[2][1]=='' && elt[2][2]==''){
+      t+='(';
+       if(tab[i][6][j][1].substr(0,1)=='!'){
+        t+='non(egalstricte('+tab[i][6][j][1].substr(1)+' , vrai))';
+       }else{
+        t+='egalstricte('+tab[i][6][j][1]+' , vrai)';
+       }
+      t+=')';
      }else{
       t+='(';
       if(elt[2][0]=='<'){
@@ -1250,7 +1418,7 @@ function traiteConditionComplexe1(tab,ind,niveau,ch){
  var tab1=obj1.value;
 
  var obj1=boucleRecursiveSurCondition1(tab1 , 1 , 0 , 0);
- console.log('apres recursif, obj1=',obj1);
+ console.log('apres recur condition, obj1=',obj1);
  if(obj1.status===false){
   return logerreur({'status':false,'line':tab[ind][5]});
  }else{
@@ -1275,31 +1443,29 @@ function traiteCondition1(tab,ind,niveau,ch){
    if(ch.indexOf(tabCas[i])>=0){
     var tt=ch.split(tabCas[i]);
     if(tt.length==2){
-     var obj1=analyseChaineSimple1(tab,ind,niveau,tt[0],false);
-     var obj2=analyseChaineSimple1(tab,ind,niveau,tt[1],false);
-     if(obj1.status===true && obj2.status===true){
-      if(obj1.isComplex || obj2.isComplex ){
-       // cas complexe
-      }else{
-       if(tabCas[i]=='<'){
-        t='inf('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='<='){
-        t='infeg('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='>'){
-        t='sup('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='>='){
-        t='supeg('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='!=='){
-        t='diffstricte('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='==='){
-        t='egalstricte('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='!='){
-        t='diff('+obj1.value+' , '+obj2.value+')'
-       }else if(tabCas[i]=='=='){
-        t='egal('+obj1.value+' , '+obj2.value+')'
-       }
-       return {status:true,value:t,'tropComplexe':false}
+
+     var obja1=analyseChaineParElements1(tab,ind,niveau,tt[0]);
+     var obja2=analyseChaineParElements1(tab,ind,niveau,tt[1]);
+     
+     if(obja1.status===true && obja2.status===true){
+      if(tabCas[i]=='<'){
+       t='inf('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='<='){
+       t='infeg('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='>'){
+       t='sup('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='>='){
+       t='supeg('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='!=='){
+       t='diffstricte('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='==='){
+       t='egalstricte('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='!='){
+       t='diff('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
+      }else if(tabCas[i]=='=='){
+       t='egal('+obja1.value.gauche.value+' , '+obja2.value.gauche.value+')'
       }
+      return {status:true,value:t,'tropComplexe':false}
      }
     }
    }
@@ -1536,7 +1702,7 @@ function traiteReturn11(tab,ind,niveau){
   var quoi=monTrim(ligne.substr(6));
   var obj1=analyseChaineParElements1(tab,ind,niveau,quoi);
   if(obj1.status==true){
-   t+='\n'+esp0+'revenir('+obj1.value+')';
+   t+='\n'+esp0+'revenir('+obj1.value.gauche.value+')';
   }
  }
  
@@ -1619,21 +1785,6 @@ function traiteIf1(tab,ind,niveau){
   fermetureNiveau=3;
  }
  
-  // détermination du niveau de fermeture 
-/*
-
-[
- ["0mainId", "1niveau" ,  "2ParId"  ,  "3nbEnf" ,     "4init"                                                           ,     "numLigneOriginale"]     ,     
- [0        ,     0     ,     -1     ,     1     ,     "if (id < global_messages.data.matrice.value.length) {"          ,     0]     ,     
- [1        ,     1     ,      0     ,     0     ,     "var ligneMatrice = global_messages.data.matrice.value[id];"     ,     1]     ,     
- [2        ,     0     ,     -1     ,     1     ,     "} else if (id < global_messages.data.matrice.value.length-1) {" ,     2]     ,     
- [3        ,     1     ,      2     ,     0     ,     "var ligneMatrice = global_messages.data.matrice.value[id];"     ,     3]     ,     
- [4        ,     0     ,     -1     ,     1     ,     "} else {"                                                       ,     4]     ,     
- [5        ,     1     ,      4     ,     0     ,     "var ligneMatrice = global_messages.data.matrice.value[id];"     ,     5]     ,     
- [6        ,     0     ,     -1     ,     0     ,     "toto = tata;"     ,     7]     ,     
-
-*/  
-  
   
  fermetureNiveau=3;
  if(type=='if'){
@@ -1688,36 +1839,6 @@ function traiteIf1(tab,ind,niveau){
   
  
  
-/*
-      choix(
-         si(
-            condition(
-               non(
-                  ( egal(vrai , vrai) ),
-                  et( egal( vrai , vrai ) )
-               )
-            ),
-            alors(
-               affecte( a , 1 )
-            )
-         ),
-         sinonsi(
-            condition( (true) ),
-            alors(
-               affecte(a , 1)
-            )
-         ),
-         sinon(
-            alors(
-               affecte(a , 1)
-            )
-            #(finsinon)
-         ),
-      ),
-
-*/
- 
- 
  return {'status':true,'value':t,'fermetureNiveau':fermetureNiveau,'ajouterNiveauDedans':3};
 }
 
@@ -1749,6 +1870,7 @@ function traiteDeclarationFonction1(tab,ind,niveau){
  var t='';
  var esp0=' '.repeat(NBESPACESREV*niveau);
  var esp1=' '.repeat(NBESPACESREV);
+ var lesArguments='';
  
  // function traiteCommentaire2(texte, niveau, ind) {
  var s=tab[ind][4].substr(9);
@@ -1769,7 +1891,16 @@ function traiteDeclarationFonction1(tab,ind,niveau){
  s=s.replace(/\(/g,'');
  s=s.replace(/\)/g,'');
  s=s.replace(/\{/g,'');
- tabarg=s.split(',');
+ s=monTrim(s);
+ if(s!=''){
+  tabarg=s.split(',');
+  for(var i=0;i<tabarg.length;i++){
+   lesArguments+='\n'+esp0+esp1+esp1+'argument('+tabarg[i].trim()+')';
+   if(i!=tabarg.length-1){
+    lesArguments+=',';
+   }
+  }
+ }
  
  
  
@@ -1778,14 +1909,7 @@ function traiteDeclarationFonction1(tab,ind,niveau){
 // t+='\n'+esp0+'#('+JSON.stringify(tab[ind])+'';
  t+='\n'+esp0+'fonction(';
  t+='\n'+esp0+esp1+'definition(';
- t+='\n'+esp0+esp1+esp1+'nom('+nomFonction+'),';
- for(var i=0;i<tabarg.length;i++){
-  if(i!=tabarg.length-1){
-   t+='\n'+esp0+esp1+esp1+'argument('+tabarg[i].trim()+'),';
-  }else{
-   t+='\n'+esp0+esp1+esp1+'argument('+tabarg[i].trim()+')';
-  }
- }
+ t+='\n'+esp0+esp1+esp1+'nom('+nomFonction+')'+lesArguments;
  t+='\n'+esp0+esp1+'),';
  t+='\n'+esp0+esp1+'contenu(';
 
@@ -1899,37 +2023,36 @@ function traiteLigne1(tab,ind,niveau){
  
   var obj=traiteReturn11(tab,ind,niveau);
   if(obj.status===true){
-   t+=obj.value;
-   fermetureNiveau=obj.fermetureNiveau;
-   ajouterNiveauDedans=obj.ajouterNiveauDedans;
+     t+=obj.value;
+     fermetureNiveau=obj.fermetureNiveau;
+     ajouterNiveauDedans=obj.ajouterNiveauDedans;
   }else{
-   temp={'status':false,'line':tab[ind][5],'message':'problème dans traiteLigne1 return : ' + JSON.stringify(tab[ind])};
-   return(logerreur(temp));
+     temp={'status':false,'line':tab[ind][5],'message':'problème dans traiteLigne1 return : ' + JSON.stringify(tab[ind])};
+     return(logerreur(temp));
   }  
  
  
  }else{
- 
-   var obj1=essayerDeclarationOuAffectationSimple1(tab,ind,niveau,ligne);
+   var obj1=analyseChaineParElements1(tab,ind,niveau,ligne);
    if(obj1.status==true){
-    if(obj1.initialisationAvecUneDeclaration){
-      t+='\n'+esp0+obj1.value.value+',';
-    }else{
-      if(obj1.value.value.gauche){
-       t+='\n'+esp0+'affecte('+obj1.value.value.gauche.value+' , '+obj1.value.value.droite.value+'),';
-      }else if(obj1.value.gauche){
-       t+='\n'+esp0+'affecte('+obj1.value.gauche.value+' , '+obj1.value.droite.value+'),';
+      if(obj1.value.droite!==null){
+         if(obj1.value.droite.status===true){
+            t+='\n'+' '.repeat(niveau*NBESPACESREV)+obj1.value.gauche.value+' '+obj1.value.droite.value;
+         }else{
+            t+='\n'+' '.repeat(niveau*NBESPACESREV)+'#('+JSON.stringify(tab[ind])+')';
+            temp={'status':false,'line':tab[ind][5],'message':'traiteLigne1 : cas non prévu ATTENTION, le JS en entrée doir être formatté par closure : '+JSON.stringify(tab[ind])};
+            console.log('',JSON.stringify(temp));
+            logerreur(temp);
+         }
       }else{
-       t+='\n'+esp0+''+obj1.value.value+',';
+         t+='\n'+' '.repeat(niveau*NBESPACESREV)+obj1.value.gauche.value;
       }
-    }
    }else{
-    t+='\n'+' '.repeat(niveau*NBESPACESREV)+'#('+JSON.stringify(tab[ind])+')';
-    temp={'status':false,'line':tab[ind][5],'message':'traiteLigne1 : cas non prévu ATTENTION, le JS en entrée doir être formatté par closure : '+JSON.stringify(tab[ind])};
-    console.log('',JSON.stringify(temp));
-    logerreur(temp);
+      t+='\n'+' '.repeat(niveau*NBESPACESREV)+'#('+JSON.stringify(tab[ind])+')';
+      temp={'status':false,'line':tab[ind][5],'message':'traiteLigne1 : cas non prévu ATTENTION, le JS en entrée doir être formatté par closure : '+JSON.stringify(tab[ind])};
+      console.log('',JSON.stringify(temp));
+      logerreur(temp);
    }
-   
  }
  return {'status':true,'value':t,'fermetureNiveau':fermetureNiveau,'ajouterNiveauDedans':ajouterNiveauDedans};
 }
@@ -1940,7 +2063,9 @@ function traiteArbre1(tab,idDebut,idParent,niveau){
  
  for(var i=idDebut;i<tab.length;i++){
   if(tab[i][2]==idParent){
+  
    var obj=traiteLigne1(tab,i,niveau);
+   
    if(obj.status===true){
     t+=obj.value;
     if(tab[i][3]>0){
@@ -1979,6 +2104,24 @@ function traiteArbre1(tab,idDebut,idParent,niveau){
 //=====================================================================================================================
 function transformeSourceEnTableau1(sourceEntree){
   var lines = sourceEntree.split(/\r|\r\n|\n/);
+  var inPop=false;
+  for(var i=lines.length-1;i>=0;i--){
+   
+   if(lines[i].substr(0,2)=='*/'){
+    inPop=true;
+    lines.splice(i,1);
+   }else if(lines[i].substr(0,2)=='/*'){
+    inPop=false;
+    lines.splice(i,1);
+   }else{
+    if(inPop){
+     lines.splice(i,1);
+    }
+   }
+  }   
+   
+  
+  
   var l01=lines.length;
   var mainParentId=0;
   //             0        1         2          3       4        5
@@ -2000,13 +2143,11 @@ function transformeSourceEnTableau1(sourceEntree){
       break;
      }
     }
-    if(!( s=='}' || s=='' || s.substr(0,2) == '//' || s=="'use strict';")){
+    if(!( s=='}' || s=='' || s.substr(0,2) == '//' || s.substr(0,12)=="'use strict'" || s.substr(0,12)=='"use strict"')){
      newTab.push([mainId,niveau,mainParentId,0,s,i]);
      mainId++
     }
-    
    }
-  
   }
     /*
       
@@ -2018,19 +2159,19 @@ function transformeSourceEnTableau1(sourceEntree){
   for(i=l01-1;i > 0;i=i-1){
       niveau=newTab[i][1];
       if(niveau==0){
-       newTab[i][2]=-1;
+          newTab[i][2]=-1;
       }else{
-       for(j=i-1;j >= 0;j=j-1){
-           if((newTab[j][1] == niveau-1)){
-               newTab[i][2]=newTab[j][0]; // idParent
-               newTab[j][3]=newTab[j][3]+1; // nombre d'enfants
-               break;
-           }
-       }
+          for(j=i-1;j >= 0;j=j-1){
+              if((newTab[j][1] == niveau-1)){
+                  newTab[i][2]=newTab[j][0]; // idParent
+                  newTab[j][3]=newTab[j][3]+1; // nombre d'enfants
+                  break;
+              }
+          }
       }
   }
   
-  console.log('newTab=',JSON.stringify(newTab).replace(/\],/g , '],\n'));
+  console.log('transformeSourceEnTableau1 newTab=============================================\n',JSON.stringify(newTab).replace(/\],/g , '],\n'),'\n=============================\n');
   
   return({'status':true,'value':newTab});
   
@@ -2041,13 +2182,16 @@ function transformeSourceEnTableau1(sourceEntree){
 function transform(){
   //"àà"
 
-  console.log('\n=========================\ndébut de transforme')
+  console.log('=========================\ndébut de transforme')
+  document.getElementById('txtar2').value='';
   document.getElementById('resultat1').innerHTML='';
   clearMessages('zone_global_messages');
   var a=document.getElementById('txtar1');
   localStorage.setItem("fta_indexhtml_javascript_dernier_fichier_charge", a.value);
   
   var lines = a.value.split(/\r|\r\n|\n/);
+  
+  
   var count = lines.length;
   a.setAttribute('rows',count+1);
   
@@ -2056,7 +2200,8 @@ function transform(){
    newTab=obj1.value;
    var obj=traiteArbre1(newTab,1,-1,0);  
    console.log('\n\n\n===================\n\n\nretour parsing js ='+obj.status+'\n=====================\n'+obj.value);
-   document.getElementById('resultat1').innerHTML='<pre>'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>';
+   document.getElementById('resultat1').innerHTML='<pre>'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
+   document.getElementById('txtar2').value=obj.value;
   }
   
   displayMessages('zone_global_messages');
@@ -2070,32 +2215,74 @@ function transform(){
 //=====================================================================================================================
 function chargerSourceDeTest(){
 // debut de backtic ``` ci dessous pour la variable t = = = = = = = = = = = = = = = = = = = = = = = = = 
- var t=`//=========================================
-'use strict';
+ var t=`/*
+a.b("c").d += '<e f="g">' + h.i[i] + "</e>";
 
-for (var i = 0; i < a.b.c(d(),'e '," f ",5).f(g[h][i]) * (x>0&&!(!1==false)?4:5) ; i++) {
-  document.getElementById("global_messages").innerHTML += 'hello';
+for (var i = 0; i < b; i++) {
+  a.b("c").d += '<e>' + h.i[i] + "</e>";
 }
+t = " ".repeat(NBESPACESSOURCEPRODUIT * i);
+t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
 
-var NBESPACESSOURCEPRODUIT = 4;
+
+
+//==========================================================================================
+//testé
 function traiteCommentaire2(texte, niveau, ind) {
-  var s = "abc";
-  var s = 'def';
-  s = traiteCommentaireSourceEtGenere1(par1, par2.p, par3.p(a), b.c(par), false,'a');
-  if (objMatSrc.value[i][1] == "#") {
-  } else if (objMatSrc.value[i][1] == "src_javascript") {
-    type_source = objMatSrc.value[i][1];
-    break;
-  } else if (objMatSrc.value[i][1] == "src_html") {
-    type_source = objMatSrc.value[i][1];
-    break;
-  } else {
-    return logerreur({status:false, id:i, message:"file core , problème"});
-  }
+  var s = "";
+  s = traiteCommentaireSourceEtGenere1(texte, niveau, ind, NBESPACESSOURCEPRODUIT, false);
   return s;
 }
-var glo=2;
-//fin de test`;
+
+function displayMessages() {
+  for (var i = 0; i < global_messages.errors.length; i++) {
+    document.getElementById("global_messages").innerHTML += '<div class="yyerror">' + global_messages.errors[i] + "</div>";
+  }
+  for (var i = 0; i < global_messages.lines.length; i++) {
+    document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (global_messages.lines[i] + 1) + ')" class="yyerror" style="border:2px red outset;">go to line ' + global_messages.lines[i] + "</a>&nbsp;";
+  }
+  var numLignePrecedente = -1;
+  for (var i = 0; i < global_messages.ids.length; i++) {
+    var id = global_messages.ids[i];
+    if (id < global_messages.data.matrice.value.length) {
+      var ligneMatrice = global_messages.data.matrice.value[id];
+      var caractereDebut = ligneMatrice[5];
+      var numeroDeLigne = 0;
+      for (var j = caractereDebut; j >= 0; j--) {
+        if (global_messages.data.tableau.out[j][0] == "\n") {
+          numeroDeLigne++;
+        }
+      }
+    }
+    if (numeroDeLigne > 0) {
+      if (numeroDeLigne != numLignePrecedente) {
+        document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (numeroDeLigne + 1) + ')" class="yyerror" style="border:2px red outset;">go to line ' + numeroDeLigne + "</a>&nbsp;";
+        numLignePrecedente = numeroDeLigne;
+      }
+    }
+  }
+}
+
+function espacesn(optionCRLF, i) {
+  var t = "";
+  if (optionCRLF) {
+    t = "\r\n";
+  } else {
+    t = "\n";
+  }
+  if (i > 0) {
+    t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
+  }
+  return t;
+}
+
+
+
+*/`;
+
+
+
+
 // fin de backtic ``` ci dessus pour la variable t = = = = = = = = = = = = = = = = = = = = = = = = = 
  dogid('txtar1').value=t;
 }
