@@ -1025,6 +1025,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
  var nbEnfants=0;
  var forcerNvelleLigneEnfant=false;
  var l01=tab.length;
+ var contenu='';
 
  positionAppelFonction=-1;
  for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -1035,6 +1036,8 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     if(nomFonction=='Array'){
      nbEnfants=tab[tab[tab[j+1][7]][7]][8]-1;
     }
+   }else if(tab[j][8]==2 && tab[j+1][1]=='new'){
+    nomFonction=tab[j+1][1]+' '+tab[j+2][1];
    }
    break;
   }
@@ -1068,7 +1071,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
     break;
    }
    if(tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
-    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='appelf' || tab[j][1]=='r' || tab[j][1]=='prop' || tab[j][1]=='#' ){
+    if(tab[j][1]=='element' || tab[j][1]=='n' || tab[j][1]=='p' || tab[j][1]=='appelf' || tab[j][1]=='r' || tab[j][1]=='prop' || tab[j][1]=='#'  || tab[j][1]=='contenu' ){
      continue;
     }else{
      logerreur({status:false,value:t,id:i,tab:tab,message:'les seuls paramètres de appelf sont n,p,r,element et non pas "'+tab[j][1]+'"'});
@@ -1148,6 +1151,19 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
      
     
     
+   }else if(tab[j][1]=='contenu' && tab[j][3]==tab[i][3]+1){
+    if(nomFonction=='function'){
+     contenu='';
+     obj=js_tabTojavascript1(tab,j+1,false,false,niveau+1);
+     if(obj.status==true){
+      contenu+=obj.value;
+     }else{
+      return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appelf sur  le contenu d\'une fonction "function" '});
+     }
+    }else{
+     return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appelf, seule une fonction "function" peut avoir un contenu '});
+     
+    }
    }else if(tab[j][1]=='p' && tab[j][3]==tab[i][3]+1){
     // le paramètre est à un niveau +1 de l'appelf
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
@@ -1236,6 +1252,11 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
    t+=espacesn(true,niveau);
   }
   t+=')';
+  if(nomFonction=='function'){
+   t+='{'+contenu;
+   t+=espacesn(true,niveau);
+   t+='}';
+  }
   t+=proprietesFonction;
   if(!dansConditionOuDansFonction){
    t+=';';

@@ -63,6 +63,7 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
  var t='';
  var l01=tab.length;
  var cascade=false;
+ var parentEstFonction=false;
  for( var i=ind;i<l01;i++){
  
   if(tab[i][2]==parentId){
@@ -91,7 +92,13 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
      t+='cascade(';
      estCascade=true;
     }
-    t+='appelf(';
+    
+    if(tab[i][4]=='function'){
+     parentEstFonction=true;
+     t+='appelf(';
+    }else{
+     t+='appelf(';
+    }
     // todo, traiter ici le element()
     if(tab[i][4].indexOf('.')>0){
      t+='  element('+tab[i][4].substr(0,tab[i][4].indexOf('.'))+'),';
@@ -112,7 +119,11 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
     niveau--;
     if(obj.status==true){
      t+=obj.value;
-     t+=')';
+     if(tab[i][4]=='function'){
+      t+=',contenu(';
+     }else{
+      t+=')';
+     }
      if(tab[tab[i][2]][5]=='func' ){
       if(estCascade==false){
        if(tab[tab[i][2]][5]=='func'){
@@ -155,10 +166,17 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
      }
     }else{
      if(tab[i][6]>1){ // si c'est le nième enfant > 1
-      t+=','
+      if(tab[i][4]=='{'){  // dans le cas de affcte fonction
+      }else{
+       t+=','
+      }
      }
      if(tab[i][5]=='cstt'){
-      t+=''+tab[i][4]+'';
+      if(tab[i][4]=='{'){
+//       t+='contenu('; // dans le cas de affcte fonction
+      }else{
+       t+=''+tab[i][4]+'';
+      }
      }else if(tab[i][5]=='oper'){
       t+='o('+tab[i][4]+')';
      }
@@ -180,7 +198,7 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
   }
  }
 // console.log('ici pour ind='+ind+', t='+t);
- return {'status':true,'value':t}
+ return {'status':true,'value':t,'parentEstFonction':parentEstFonction}
 }
 //console.log('test de traiteQuotes1='+traiteQuotes1('\'a\' + d + "e"'));
 
@@ -629,12 +647,19 @@ appelf(  n(toto),p(a),p('b')))
         tempch2=tempch2.replace( /p\((.*)\)/   , '($1)' );
        }
 
-       
-       tempch2='affecte('+objRecompose1.value+',@('+tempch2+'))';
+       if(tempch2.substr(0,4)=='obj('){
+        tempch2='affecte('+objRecompose1.value+','+tempch2+')';
+       }else{
+        tempch2='affecte('+objRecompose1.value+',@('+tempch2+'))';
+       }
       }else{
-       tempch2='affecte('+objRecompose1.value+','+tempch2+')';
+       if(obj2.value.gauche.parentEstFonction){
+        tempch2='affecte('+objRecompose1.value+','+tempch2+''; // il y a contenu ici
+       }else{
+        tempch2='affecte('+objRecompose1.value+','+tempch2+')';
+       }
       }
-      return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2},'droite':null}};
+      return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':{'status':true,'value':tempch2,'parentEstFonction':obj2.value.gauche.parentEstFonction},'droite':null}};
       
      }else if(operation=='+='){
      
@@ -724,8 +749,11 @@ appelf(  n(toto),p(a),p('b')))
       while(obj1.value.indexOf('p(')>=0 && k-- > 0 ){
        obj1.value=obj1.value.replace( /p\((.*)\)/   , '($1)' );
       }
-      obj1.value=''+obj1.value+'';
-      obj1.value='@('+obj1.value+')';
+      if(obj1.value.substr(0,1)=='{' && obj1.value.substr(obj1.value.length-1,1)=='}'){
+       obj1.value=''+objectify0(obj1.value)+'';
+      }else{
+       obj1.value='@('+obj1.value+')';
+      }
      }
      
     }
@@ -745,6 +773,48 @@ appelf(  n(toto),p(a),p('b')))
   }
  }
  return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1'});
+}
+//=====================================================================================================================
+function isObject(obj){
+  if(Object.prototype.toString.call(obj) === '[object Object]'){
+   return true;
+  }else{
+   return false;
+  }
+}
+//=====================================================================================================================
+function objectify1(o){
+ var t='';
+ for( var a in o){
+  if(isObject(o[a])){
+   var obj=objectify1(o[a]);
+   if(obj.status===true){
+    t+='(\''+a+'\' , obj('+obj.value+')),';
+   }else{
+    return {status:false,value:t};
+   }
+  }else{
+   t+='(\''+a+'\' , '+o[a]+'),';
+  }
+ }
+ if(t.length>0 && t.substr(t.length-1,1)==','){
+  t=t.substr(0,t.length-1);
+ }
+ return {status:true,value:t};
+}
+//=====================================================================================================================
+function objectify0(s){
+ var t='';
+ var o=JSON.parse(s);
+ var obj1=objectify1(o);
+ if(obj1.status==true){
+  t+='obj(';
+  t+=obj1.value;
+  t+=')';
+  return t;
+ }else{
+  return '#(TODO IN objectify0)';
+ }
 }
 //=====================================================================================================================
 function traiteDelimiteursChaine1(tab,ind,niveau,s,delim){
@@ -1339,9 +1409,9 @@ function boucleRecursiveSurCondition1(tab,ind1,niveau1,parentId){
      if(elt[2][0]=='' && elt[2][1]=='' && elt[2][2]==''){
       t+='(';
        if(tab[i][6][j][1].substr(0,1)=='!'){
-        t+='non(egalstricte('+tab[i][6][j][1].substr(1)+' , vrai))';
+        t+='egalstricte('+tab[i][6][j][1].substr(1)+' , faux)';
        }else{
-        t+='egalstricte('+tab[i][6][j][1]+' , vrai)';
+        t+='non(egalstricte('+tab[i][6][j][1]+' , faux))';
        }
       t+=')';
      }else{
@@ -1710,6 +1780,51 @@ function traiteReturn11(tab,ind,niveau){
  return {'status':true,'value':t,'fermetureNiveau':0,'ajouterNiveauDedans':0};
 
 }
+
+//=====================================================================================================================
+function traiteTryCatch1(tab,ind,niveau){
+ var t='';
+ var i=0;
+ var ligne='';
+ var type='';
+ var esp0=' '.repeat(NBESPACESREV*niveau);
+ var esp1=' '.repeat(NBESPACESREV);
+ var fermetureNiveau=0;
+ var ajouterNiveauDedans=2;
+
+//  }else if(ligne.substr(0,5)=='try {' || ligne.substr(0,9)== '} catch (' ){
+
+
+ ligne=tab[ind][4];
+ if(ligne.substr(0,5)=='try {'){
+  type='try';
+ }else{
+  type='catch';
+ }
+
+ if(type=='try'){
+  t+='\n'+esp0+'essayer(';
+  t+='\n'+esp0+esp1+'faire(';
+  fermetureNiveau=1;
+ }else if(type=='catch'){
+ 
+  var noMerreur='';
+  console.log('dans catch, ligne=',ligne);
+  monerreur=monTrim(ligne.substr(9).replace(')','').replace('{',''));
+  console.log('dans catch, monerreur="'+monerreur+'"');
+  
+ 
+  t+='\n'+esp0+esp1+'sierreur(';
+  t+='\n'+esp0+esp1+esp1+monerreur+' ,';
+  t+='\n'+esp0+esp1+esp1+'faire(';
+  fermetureNiveau=3;
+  ajouterNiveauDedans=3;
+
+ }
+ return {'status':true,'value':t,'fermetureNiveau':fermetureNiveau,'ajouterNiveauDedans':ajouterNiveauDedans};
+
+}
+
 //=====================================================================================================================
 function traiteIf1(tab,ind,niveau){
  var t='';
@@ -1743,7 +1858,6 @@ function traiteIf1(tab,ind,niveau){
     ligne=ligne.substr(0,i+1);
    }
   }
-  console.log('ligne='+ligne);
   
   var valeurFinaleCondition='TODO ';
   var condition=ligne;
@@ -1955,8 +2069,12 @@ function traiteLigne1(tab,ind,niveau){
  var ajouterNiveauDedans=0;
 // t+=JSON.stringify(tab[ind])+'\n';
 // console.log('traiteLigne tab['+ind+']=',tab[ind])
- var ligne=tab[ind][4];
+ var ligne=monTrim(tab[ind][4]);
+ if(ligne.substr(ligne.length-1,1)==';'){
+  ligne=ligne.substr(0,ligne.length-1);
+ }
 
+ 
  if(ligne.substr(0,4)=='var '){
  
   var obj=traiteDeclarationVariable1(tab,ind,niveau,'');
@@ -2004,6 +2122,18 @@ function traiteLigne1(tab,ind,niveau){
    return(logerreur(temp));
   }  
  
+ }else if(ligne.substr(0,5)=='try {' || ligne.substr(0,9)== '} catch (' ){
+
+  var obj=traiteTryCatch1(tab,ind,niveau,'');
+  if(obj.status===true){
+   t+=obj.value;
+   fermetureNiveau=obj.fermetureNiveau;
+   ajouterNiveauDedans=obj.ajouterNiveauDedans;
+  }else{
+   temp={'status':false,'line':tab[ind][5],'message':'problème dans traiteLigne1 pour try catch : ' + JSON.stringify(tab[ind])};
+   return(logerreur(temp));
+  }
+  
  }else if(ligne.substr(0,4)=='if (' || ligne.substr(0,11)=='} else if (' || ligne.substr(0,8)=='} else {'){
  
  
@@ -2045,6 +2175,11 @@ function traiteLigne1(tab,ind,niveau){
             logerreur(temp);
          }
       }else{
+         if(obj1.value.gauche.parentEstFonction){
+          fermetureNiveau+=3;
+          ajouterNiveauDedans+=3;
+         }
+          
          t+='\n'+' '.repeat(niveau*NBESPACESREV)+obj1.value.gauche.value;
       }
    }else{
@@ -2068,7 +2203,7 @@ function traiteArbre1(tab,idDebut,idParent,niveau){
    
    if(obj.status===true){
     t+=obj.value;
-    if(tab[i][3]>0){
+    if(tab[i][3]>0){ // si il a des enfants
      niveau=niveau+obj.ajouterNiveauDedans;
      var obj2=traiteArbre1(tab,i+1,tab[i][0],niveau);
      niveau=niveau-obj.ajouterNiveauDedans;
@@ -2085,6 +2220,14 @@ function traiteArbre1(tab,idDebut,idParent,niveau){
       }
      }else{
       return logerreur({'status':false,'value':t,'message':'traite arbre erreur 0'});
+     }
+    }else{
+     for( var j=obj.fermetureNiveau;j>0;j--){
+      countNiveau=j;
+      if(obj.fermetureNiveau==obj.ajouterNiveauDedans){
+       countNiveau=j-1;
+      }
+      t+='\n'+' '.repeat(niveau*NBESPACESREV)+esp1.repeat(countNiveau)+')';
      }
     }
    }else{
