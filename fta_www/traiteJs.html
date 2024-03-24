@@ -154,6 +154,8 @@ function recurf1(tab,niveau,ind,parentId,parentEstCascade){
     
    }else if(tab[i][5]=='elem'){
     t+=',prop('+tab[i][4]+')';
+   }else if(tab[i][5]=='obj'){
+    t+=''+tab[i][4]+'';
    }else{
     if(tab[tab[i][2]][5]=='func'){ // si le parent est une fonction
      if(tab[i][6]>1){ // si c'est le nième enfant > 1
@@ -266,6 +268,7 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
  var id=0;
  var parentId=0;
  var declarationDeVariable='';
+ var niveauObjet=0;
  
  ch=monTrim(ch);
  if(ch.substr(0,3)=='var'){
@@ -337,17 +340,35 @@ function analyseChaineParElements1(tab,ind,niveau,ch){
     }
    }
    
+  }else if(c1=='{'){
+   niveauObjet++;
+   variable1+=c1;
+  }else if(c1=='}'){
+   variable1+=c1;
+   niveauObjet--;
+   if(niveauObjet==0){
+    variable1=monTrim(variable1);
+    if(variable1!==''){
+     id++;
+     tab2.push([ niveau,id,parentId,0 , variable1 , 'obj' , 0 , 0 , i-1]);
+     variable1='';
+    }
+   }
   
   
   }else if(c1==','){
   
-   variable1=variable1.replace(/\n/g,' ')
-   variable1=monTrim(variable1);
-   if(variable1!==''){
-    id++;
-    tab2.push([ niveau,id,parentId,0 , traiteQuotes1(variable1) , 'cstt' , 0 , 0 , i-1]);
+   variable1=variable1.replace(/\n/g,' ');
+   if(niveauObjet>0){
+    variable1+=c1;
+   }else{
+    variable1=monTrim(variable1);
+    if(variable1!==''){
+     id++;
+     tab2.push([ niveau,id,parentId,0 , traiteQuotes1(variable1) , 'cstt' , 0 , 0 , i-1]);
+    }
+    variable1='';
    }
-   variable1='';
   
   }else if(c1=='('){
   
@@ -731,6 +752,7 @@ appelf(  n(toto),p(a),p('b')))
     for(i=1;i<tab2.length;i++){
      if(tab2[i][5]=='oper'){
      }else if(tab2[i][5]=='cstt'){
+     }else if(tab2[i][5]=='obj'){
      }else{
       queDesOperationsEtDesConstantes=false;
      }
@@ -742,8 +764,12 @@ appelf(  n(toto),p(a),p('b')))
      obj1.value=obj1.value.replace(/\,o\(\-\)\,/g,'-').replace(/\,o\(\-\)/g,'-').replace(/o\(\-\)\,/g,'-');
      obj1.value=obj1.value.replace(/\,o\(\*\)\,/g,'*').replace(/\,o\(\*\)/g,'*').replace(/o\(\*\)\,/g,'*');
      obj1.value=obj1.value.replace(/\,o\(\/\)\,/g,'/').replace(/\,o\(\/\)/g,'/').replace(/o\(\/\)\,/g,'/');
-     if(tab2.length==2 && tab2[1][5]=='cstt'){
-      obj1.value=''+obj1.value+'';
+     if(tab2.length==2 && ( tab2[1][5]=='cstt' || tab2[1][5]=='obj') ){
+      if(obj1.value.substr(0,1)=='{' && obj1.value.substr(obj1.value.length-1,1)=='}'){
+       obj1.value=''+objectify0(obj1.value)+'';
+      }else{
+       obj1.value=''+obj1.value+'';
+      }
      }else{
       var k=20;
       while(obj1.value.indexOf('p(')>=0 && k-- > 0 ){
@@ -775,46 +801,199 @@ appelf(  n(toto),p(a),p('b')))
  return logerreur({'status':false,'line':tab[ind][5],'message':'analyseChaineParElements1'});
 }
 //=====================================================================================================================
-function isObject(obj){
-  if(Object.prototype.toString.call(obj) === '[object Object]'){
-   return true;
-  }else{
-   return false;
-  }
-}
-//=====================================================================================================================
-function objectify1(o){
+function objectify1(s,ind,niveau){
  var t='';
- for( var a in o){
-  if(isObject(o[a])){
-   var obj=objectify1(o[a]);
-   if(obj.status===true){
-    t+='(\''+a+'\' , obj('+obj.value+')),';
-   }else{
-    return {status:false,value:t};
+ var i=0;
+ var j=0;
+ var l01=s.length;
+ var cleFaite=false;
+ var valeurFaite=false;
+ var dsQuot=false;
+ var dsDblQuot=false;
+ var cle='';
+ var valeur='';
+ var c1='';
+ 
+ for(var i=ind;i<l01;i++){
+  c0=s.substr(i,1);
+  if(dsQuot){
+   for(j=i;j<l01;j++){
+    c1=s.substr(j,1);
+    if(c1=='\''){
+     var cm1=s.substr(j-1,1);
+     if(cm1=='\\'){
+      if(cleFaite){
+       valeur+=c1;
+      }else{
+       cle+=c1;
+      }
+     }else{
+      if(cleFaite){
+       valeur+=c1;
+      }else{
+       cle+=c1;
+       cleFaite=true;
+      }
+      i=j;
+      dsQuot=false;
+      break;
+     }
+    }else if(c1=='\\'){
+     var cp1=s.substr(j+1,1);
+     if(cp1=='\\'){
+      if(cleFaite){
+       valeur+='\\\\';
+      }else{
+       cle+='\\\\';
+      }
+      j++;
+     }else{
+      if(cleFaite){
+       valeur+=c1;
+      }else{
+       cle+=c1;
+      }
+     }
+    
+    }else{
+     if(cleFaite){
+      valeur+=c1;
+     }else{
+      cle+=c1;
+     }
+    }
+   }
+  
+  }else if(dsDblQuot){
+   for(j=i;j<l01;j++){
+    c1=s.substr(j,1);
+    if(c1=='"'){
+     var cm1=s.substr(j-1,1);
+     if(cm1=='\\'){
+      if(cleFaite){
+       valeur+=c1;
+      }else{
+       cle+=c1;
+      }
+     }else{
+      if(cleFaite){
+       valeur+=c1;
+      }else{
+       cle+=c1;
+       cleFaite=true;
+      }
+      i=j;
+      dsDblQuot=false;
+      break;
+     }
+    }else if(c1=='\\'){
+     var cp1=s.substr(j+1,1);
+     if(cp1=='\\'){
+      if(cleFaite){
+       valeur+='\\\\';
+      }else{
+       cle+='\\\\';
+      }
+      j++;
+     }else{
+      if(cleFaite){
+       valeur+=c1;
+      }else{
+       cle+=c1;
+      }
+     }
+    
+    }else{
+     if(cleFaite){
+      valeur+=c1;
+     }else{
+      cle+=c1;
+     }
+    }
    }
   }else{
-   t+='(\''+a+'\' , '+o[a]+'),';
+   if(c0=='{'){
+    niveau++;
+    var obj1=objectify1(s,i+1,niveau);
+    niveau--;
+    if(obj1.status==true){
+     if(cle==''){
+      t+='obj('+obj1.value+')';
+     }else{
+      t+='('+cle+' , obj('+obj1.value+'))';
+     }
+     cle='';
+     valeur='';
+     i=obj1.dernierI;
+     cleFaite=false;
+    }else{
+     return( {'status':false,'message':'erreur 814 objectify'});
+    }
+   }else if(c0=='}'){
+    if(cle!='' && valeur !==''){
+     t+='('+cle+','+valeur+')';
+    }
+    
+    return( {'status':true,'dernierI':i,'value':t})
+   }else if(c0=='\''){
+    if(dsQuot){
+     return( {'status':false,'message':'erreur 820 objectify'});
+    }else{
+     if(cleFaite){
+      valeur+=c0;
+     }else{
+      cle+=c0;
+     }
+     dsQuot=true;
+    }
+   }else if(c0=='"'){
+    if(dsDblQuot){
+     return( {'status':false,'message':'erreur 826 objectify'});
+    }else{
+     if(cleFaite){
+      valeur+=c0;
+     }else{
+      cle+=c0;
+     }
+     dsDblQuot=true;
+    }
+   }else if(c0==':'){
+    cleFaite=true;
+   }else if(c0==','){
+    if(cle!='' && valeur !==''){
+     t+='('+cle+','+valeur+')'; // cas ou on est après la fermeture d'un sous objet
+    }
+    t+=',';
+    cle='';
+    valeur='';
+    cleFaite=false;
+   }else{
+    if(cleFaite){
+     valeur+=c0;
+    }else{
+     cle+=c0;
+    }
+   }
   }
+  
+ 
  }
- if(t.length>0 && t.substr(t.length-1,1)==','){
-  t=t.substr(0,t.length-1);
+ if(cle!='' && valeur !==''){
+  t+='('+cle+','+valeur+')'; // cas ou on est après la fermeture d'un sous objet
  }
- return {status:true,value:t};
+ return( {'status':true,'dernierI':i,'value':t})
 }
+
+
 //=====================================================================================================================
 function objectify0(s){
- var t='';
- var o=JSON.parse(s);
- var obj1=objectify1(o);
- if(obj1.status==true){
-  t+='obj(';
-  t+=obj1.value;
-  t+=')';
-  return t;
- }else{
-  return '#(TODO IN objectify0)';
+
+ var obj=objectify1(s,0,0);
+ if(obj.status===true){
+  return ''+obj.value+'';
  }
+ return '#(TODO IN objectify0)';
+
 }
 //=====================================================================================================================
 function traiteDelimiteursChaine1(tab,ind,niveau,s,delim){

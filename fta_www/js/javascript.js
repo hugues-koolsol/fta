@@ -914,8 +914,17 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
         return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration'});
        }
  //      t+='{};//todo declare 3 '+tab[i][1]+'';
-      }else if(tab[i+2][1]=='obj' && tab[i+2][8]==0){
-       t+='var '+tab[i+1][1]+'={};';
+      }else if(tab[i+2][1]=='obj'){
+       if( tab[i+2][8]==0){
+        t+='var '+tab[i+1][1]+'={};';
+       }else{
+        obj=js_traiteDefinitionObjet(tab,i+2,true);
+        if(obj.status==true){
+         t+='var '+tab[i+1][1]+'='+obj.value+';';
+        }else{
+         return logerreur({status:false,value:t,id:i,tab:tab,message:'dans obj de "declare" ou "dans" il y a un problème'});
+        }
+       }
       }else if(tab[i+2][1]=='appelf' ){
        t+='var '+tab[i+1][1]+'= ';
        obj=js_traiteAppelFonction(tab,i+2,true,niveau,false);
@@ -985,7 +994,8 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction){ // id = p
      if(tab[j+2][1]=='obj'){
       obj=js_traiteDefinitionObjet(tab,j+2,true);
       if(obj.status==true){
-       textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1])+'\''+':'+obj.value+'';
+//       textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1])+'\''+':'+obj.value+'';
+       textObj+=','+ '\'' + tab[j+1][1] + '\'' + ':' + obj.value;
       }else{
        return logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'});
       }
