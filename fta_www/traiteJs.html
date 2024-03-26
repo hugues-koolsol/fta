@@ -556,11 +556,12 @@ document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' +
    operation=tab2[i][4];
    c1=ch.substr(0,tab2[i][8]-tab2[i][4].length+1);
    c2=ch.substr(tab2[i][8]+tab2[i][4].length);
+//   c2=ch.substr(tab2[i][8]);
    c2=monTrim(c2);
    if(c2.substr(c2.length-1,1)==';'){
     c2=c2.substr(0,c2.length-1);
    }
-   console.log('c1=',c1,'\nc2=',c2);
+   console.warn('i='+i+',c1=<'+c1+'>c2=<'+c2+'>');
    break;
   }
  }
@@ -592,18 +593,6 @@ document.getElementById("global_messages").innerHTML+= '<div class="yyerror">' +
    }
     
    
-/*
-
-,
-p('<div class=\"yyerror\">' ),
-p(+),
-p( global_messages.errors[i] ),
-p(+),
-p( \"</div class=\\\"toto\\\">\" ),
-p(+),
-appelf(  n(toto),p(a),p('b')))
-
-*/   
    var obj2=analyseChaineParElements1(tab,ind,niveau,c2);
    if(obj2.status==true){
     console.log('obj2 ok, operation="'+operation+'", obj2.value="'+obj2.value+'", obj2.tab2=\n'+JSON.stringify(obj2.tab2).replace(/\],/g,'],\n'));
@@ -793,8 +782,18 @@ appelf(  n(toto),p(a),p('b')))
     }
    
     console.warn('apres transformation, obj1.value=',obj1.value);
+    // on teste pour voir si c'est un "rev" OK
+    var tableau1=iterateCharacters2(obj1.value);
+    var matriceFonction=functionToArray2(tableau1.out,false,true);
+    if(matriceFonction.status==true){
+     return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':obj1,'droite':null},'tab2':tab2};
+    }else{
+     return {'status':false,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':obj1,'droite':null},'tab2':tab2};
+    }
+
+    
+    
    
-    return {'status':true,value:{'declarationDeVariable':declarationDeVariable,'operation':operation,'gauche':obj1,'droite':null},'tab2':tab2};
    }
   }
  }
@@ -1187,7 +1186,7 @@ function traiteDeclarationVariable1(tab,ind,niveau,dansFor){
  }else{
  
   obj1=analyseChaineParElements1(tab,ind,niveau,s);
-  if(objinit.status==false){
+  if(obj1.status==false){
    return logerreur({'status':false,'message':'Erreur traiteDeclarationVariable1 la declaration ne fonctionne pas','line':tab[ind][5]});
   }
   return {'status':true,'value':t,'fermetureNiveau':0,'ajouterNiveauDedans':0,'gauche':obj1.gauche,'droite':obj1.droite};
@@ -1952,6 +1951,9 @@ function traiteReturn11(tab,ind,niveau){
   var obj1=analyseChaineParElements1(tab,ind,niveau,quoi);
   if(obj1.status==true){
    t+='\n'+esp0+'revenir('+obj1.value.gauche.value+')';
+  }else{
+   t+='\n'+esp0+'#('+tab[ind][4]+'),';
+   t+='\n'+esp0+'#(revenir('+obj1.value.gauche.value+'))';
   }
  }
  
@@ -2107,23 +2109,26 @@ function traiteIf1(tab,ind,niveau){
   }
   
  }else if(type=='elseif'){
+ 
+  var parIdRef=tab[ind][2];
+  fermetureNiveau=3;
+  
   for(i=ind+1;i<tab.length;i++){
    if(tab[i][1] < tab[ind][1]){
     break;
    }
-   if(tab[i][1] == tab[ind][1]){
-    if( tab[i][4].substr(0,8)=='} else {'){
+   if(tab[i][1] == tab[ind][1] && tab[i][2] == parIdRef ){
+    if( tab[i][4].substr(0,8)=='if ('){
+     // c'est un autre if de même niveau
+     fermetureNiveau=3;
+     break;
+    }else if(tab[i][4].substr(0,11)=='} else if ('){
      fermetureNiveau=2;
      break;
-    }else if( tab[i][4].substr(0,4)=='if (' || tab[i][4].substr(0,5)=='for (' || tab[i][4].substr(0,9)=='function ' || tab[i][4].substr(0,4)=='var ' ){
-     
-     fermetureNiveau=3;
-     break;
-    }else{
-     fermetureNiveau=3;
+    }else if( tab[i][4].substr(0,8)=='} else {'){
+     fermetureNiveau=2;
      break;
     }
-     
    }
   }
  }else if(type=='else'){
@@ -2342,6 +2347,7 @@ function traiteLigne1(tab,ind,niveau){
  
  
  }else{
+ 
    var obj1=analyseChaineParElements1(tab,ind,niveau,ligne);
    if(obj1.status==true){
       if(obj1.value.droite!==null){
@@ -2465,7 +2471,7 @@ function transformeSourceEnTableau1(sourceEntree){
       break;
      }
     }
-    if(!( s=='}' || s=='' || s.substr(0,2) == '//' || s.substr(0,12)=="'use strict'" || s.substr(0,12)=='"use strict"')){
+    if(!( s=='}' ||  s=='};' || s=='' || s.substr(0,2) == '//' || s.substr(0,12)=="'use strict'" || s.substr(0,12)=='"use strict"')){
      newTab.push([mainId,niveau,mainParentId,0,s,i]);
      mainId++
     }
