@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="utf-8" />
+ <title>html home</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <nav>
+    <a href="index.html">html home</a>
+    <a href="index.php">php home</a>
+    <a href="todo.html">todo</a>
+    <a href="traiteJs.html">traiteJs</a>
+    <a href="aa_login.php">login</a>
+  </nav>
+  <h1>traiteJs</h1>
+  <ul class="menu2">
+    <li><a href="javascript:chargerSourceDeTest()">source de test</a></li>
+  </ul>
+  
+  <!-- label>Nom du fichier Js<input name="NomDuJs" id="NomDuJs" value="" style="border: 1px lightgrey inset;" /></label -->
+  <div id="zone_global_messages"></div>
+  <br />
+  <textarea class="txtar1" id="txtar1" rows="4"></textarea>
+  <a href="javascript:transform()">transform</a>
+  
+  <div id="resultat1"></div>
+  
+  <textarea class="txtar1" id="txtar2" rows="4"></textarea>
+  
+  
+  <script type="text/javascript" src="js/core4.js"></script>
+  <script type="text/javascript" src="js/compile1.js"></script>
+  <script type="text/javascript" src="js/javascript.js"></script>
+  <!-- https://esprima.org/doc/videos.html -->
+  <script type="text/javascript" src="esprima.js"></script>
+<script type="text/javascript">
+function recupNomDuTest(s){
+ if(s==='=='){
+  return 'egal';
+ }else if(s==='!='){
+  return 'diff';
+ }else{
+  return 'TODO recupNomDuTest pour "'+s+'"'
+ }
+}
+//=========================================================================================================
+function traiteCondition1(objectEsprimaTest,niveauTest){
+ var t='';
+ console.warn('objectEsprimaTest=',objectEsprimaTest);
+ if(objectEsprimaTest.type==='BinaryExpression'){
+  if(objectEsprimaTest.left && objectEsprimaTest.left.type==='Identifier'){
+  
+   if(objectEsprimaTest.right && objectEsprimaTest.right.type==='Identifier'){
+    var nomDuTest=recupNomDuTest(objectEsprimaTest.operator);
+    t+='('+nomDuTest+'('+objectEsprimaTest.left.name+','+objectEsprimaTest.right.name+'))';
+   }else if(objectEsprimaTest.right && objectEsprimaTest.right.type==='Literal'){
+    var nomDuTest=recupNomDuTest(objectEsprimaTest.operator);
+    t+='('+nomDuTest+'('+objectEsprimaTest.left.name+','+objectEsprimaTest.right.raw+'))';
+   }else{
+    console.error('traiteCondition1 todo 61 ',objectEsprimaTest );
+   }
+   
+  }else if(objectEsprimaTest.left && objectEsprimaTest.left.type=='Literal'){
+  
+   if(objectEsprimaTest.right && objectEsprimaTest.right.type==='Literal'){
+    var nomDuTest=recupNomDuTest(objectEsprimaTest.operator);
+    t+='('+nomDuTest+'('+objectEsprimaTest.left.raw+','+objectEsprimaTest.right.raw+'))';
+   }else{
+    console.error('traiteCondition1 todo  64 ',objectEsprimaTest );
+   }
+   
+  }else{
+  
+   console.error('traiteCondition1 todo 66 ',objectEsprimaTest );
+   
+  }
+ }else if(objectEsprimaTest.type==='LogicalExpression'){
+  console.warn('traiteCondition1 todo 69 ',objectEsprimaTest );
+  if(objectEsprimaTest.left && objectEsprimaTest.right){
+   var obj1=traiteCondition1(objectEsprimaTest.left);
+   if(obj1.status===true){
+    t+=''+obj1.value+'';
+   }else{
+    return logerreur({'status':false,'message':'erreur dans traiteCondition1 '});
+   }
+   if("&&"==objectEsprimaTest.operator){
+    t+=',et'
+   }else if("||"==objectEsprimaTest.operator){
+    t+=',ou'
+   }else{
+    console.error('traiteCondition1 todo 80 ',objectEsprimaTest.operator );
+   }
+   var obj2=traiteCondition1(objectEsprimaTest.right);
+//   console.log('ici' + objectEsprimaTest.right.type)
+   if(obj2.status===true){
+    if(objectEsprimaTest.right.type=='LogicalExpression'){
+     t+='('+obj2.value+')';
+    }else if(objectEsprimaTest.right.type=='BinaryExpression'){
+     t+=''+obj2.value+'';
+    }else{
+     console.error('traiteCondition1 todo 102 ',objectEsprimaTest.right.type );
+    }
+   }else{
+    return logerreur({'status':false,'message':'erreur dans traiteCondition1 '});
+   }
+  }else{
+   console.error('traiteCondition1 todo 72 ',objectEsprimaTest );
+  }
+ 
+ }else{
+  console.error('traiteCondition1 todo 76 ',objectEsprimaTest );
+ }
+ console.log(t);
+ return {status:true,value:t}
+}
+//=========================================================================================================
+function traiteIf1(element , niveau ,type ){
+ var t='';
+ var esp0=' '.repeat(NBESPACESREV*niveau);
+ var esp1=' '.repeat(NBESPACESREV);
+ 
+ if(t!==''){
+  t+=',';
+ }
+ if(type=='if'){
+  t+='\n'+esp0+'choix(';
+  t+='\n'+esp0+esp1+'si(';
+  t+='\n'+esp0+esp1+esp1+'condition(';
+  var obj2=traiteCondition1(element.test,0);
+  if(obj2.status===true){
+   t+=''+obj2.value;
+  }else{
+   return logerreur({status:false,message:'erreur traiteIf1 135 pour '+element.type })
+  }
+  t+='),';
+ }else{
+  if(element.test){ // c'est un elseif
+   t+='\n'+esp0+esp1+'sinonsi(';
+   t+='\n'+esp0+esp1+esp1+'condition(';
+   var obj2=traiteCondition1(element.test,0);
+   if(obj2.status===true){
+    t+=''+obj2.value;
+   }else{
+    return logerreur({status:false,message:'erreur traiteIf1 146 pour '+element.type })
+   }
+   t+='),';
+  }else{ // c'est un else
+   t+='\n'+esp0+esp1+'sinon(';
+  }
+ }
+ t+='\n'+esp0+esp1+esp1+'alors(';
+ niveau+=3;
+ if(element.consequent){
+  var obj3=TransformAstEnRev(element.consequent.body,niveau);
+ }else{
+  var obj3=TransformAstEnRev(element.body,niveau);
+ }
+ niveau-=3;
+ if(obj3.status===true){
+  t+=obj3.value;
+ }else{
+  return logerreur({status:false,message:'erreur traiteIf1 160 pour '+element.type })
+ }
+ t+='\n'+esp0+esp1+esp1+')'; // fin alors
+ t+='\n'+esp0+esp1+')'; // fin si
+ // y a-t-il des alternates
+ if(element.alternate){
+  var obj3=traiteIf1(element.alternate,niveau,'else');
+  if(obj3.status===true){
+   t+=obj3.value;
+  }else{
+    return logerreur({status:false,message:'erreur traiteIf1 170 pour '+element.type })
+  }
+ }
+ 
+ if(type=='if'){
+  t+='\n'+esp0+')';
+ }
+     
+ 
+ return {status:true,value:t}
+}
+//=========================================================================================================
+function traiteExpression1(element , niveau){
+ var t='';
+ var esp0=' '.repeat(NBESPACESREV*niveau);
+ var esp1=' '.repeat(NBESPACESREV);
+ 
+ console.log('element=',element);
+ 
+ 
+ if('ExpressionStatement' === element.type){
+  console.log('element.expression=',element.expression);
+  if('AssignmentExpression'===element.expression.type){
+   if(element.expression.left && element.expression.left.type==="Identifier"){
+    t='\n'+esp0+'affecte('+element.expression.left.name+' , ';
+    if(element.expression.right && element.expression.right.type==="Literal"){
+     t+=element.expression.right.raw+')';
+    }else if(element.expression.right && element.expression.right.type==="MemberExpression"){
+     if(element.expression.right.computed===false){
+      if(element.expression.right.object && element.expression.right.object.type==='Identifier'){
+       t+=element.expression.right.object.name;
+       if(element.expression.right.property && element.expression.right.property.type==='Identifier'){
+        t+='.'+element.expression.right.property.name+')';
+       }else{
+        return logerreur({status:false,message:'erreur traiteExpression1 205 pour '+element.type })
+       }
+      }else{
+       return logerreur({status:false,message:'erreur traiteExpression1 205 pour '+element.type })
+      }
+     }else{
+      return logerreur({status:false,message:'erreur traiteExpression1 208 pour '+element.type })
+     }
+    }else{
+     return logerreur({status:false,message:'erreur traiteExpression1 211 pour '+element.type })
+    }
+   }else{
+    return logerreur({status:false,message:'erreur traiteExpression1 214 pour '+element.type })
+   }
+  }else{
+   return logerreur({status:false,message:'erreur traiteExpression1 217 pour '+element.type })
+  }
+ }else{
+  return logerreur({status:false,message:'erreur traiteExpression1 220 pour '+element.type })
+ }
+ 
+ return {status:true,value:t}
+}
+//=========================================================================================================
+function TransformAstEnRev(objectEsprimaBody,niveau){
+ var t='';
+ var esp0=' '.repeat(NBESPACESREV*niveau);
+ var esp1=' '.repeat(NBESPACESREV);
+ 
+ console.log('entrée dans le récursif avec objectEsprimaBody=',objectEsprimaBody);
+ // dans le body, il peut y avoir plusieurs éléments 0,1,2 ... n
+ if(objectEsprimaBody.length){
+  for(var i=0;i<objectEsprimaBody.length;i++){
+   var element=objectEsprimaBody[i];
+   var bodyTrouve=false;
+//   console.log('element.type='+element.type,element);
+
+
+   if(element.type=='FunctionDeclaration'){
+   
+   
+//    console.log('dans FunctionDeclaration');
+    t+='\n'+esp0+'fonction(';
+    t+='\n'+esp0+esp1+'definition(';
+    t+='\n'+esp0+esp1+esp1+'nom('+element.id.name+')';
+    if(element.params && element.params.length>0){
+     t+=',';
+     for(var j=0;j<element.params.length;j++){
+      t+='\n'+esp0+esp1+esp1+'argument('+element.params[j].name+')';
+      if(j<element.params.length-1){
+       t+=',';
+      }
+     }
+    }
+    t+='\n'+esp0+esp1+'),';
+    t+='\n'+esp0+esp1+'contenu(';
+    for( var prop in element ){
+//     console.log('prop='+prop);
+     if(prop=='body'){
+//      console.log('on a troyvé body, element[prop]=' , element[prop] );
+      bodyTrouve=true;
+      niveau++;
+      var obj=TransformAstEnRev(element[prop],niveau);
+      niveau--;
+      if(obj.status===true){
+       t+=obj.value;
+      }else{
+       return logerreur({status:false,message:'erreur pour TransformAstEnRev 229 '+element.type })
+      }
+     }
+    }
+    t+='\n'+esp0+esp1+')';
+    t+='\n'+esp0+')';
+    
+    
+   }else if(element.type=='VariableDeclaration'){
+   
+   
+    console.log('element.type='+element.type,element.declarations);
+    for( var decl in element.declarations){
+     console.log(element.declarations[decl]);
+     if(t!==''){
+      t+=',';
+     }
+     t+='\n'+esp0+'declare('+element.declarations[decl].id.name+' , ';
+     if("Literal"===element.declarations[decl].init.type){
+      t+=''+element.declarations[decl].init.raw+')';
+     }else{
+      t+='"todo")';
+     }
+    }
+    
+   }else if("IfStatement"===element.type){
+   
+     
+     var objif=traiteIf1(element,niveau,'if');
+     if(objif.status==true){
+      t+=objif.value;
+     }else{
+      return logerreur({status:false,message:'erreur pour TransformAstEnRev 261 '+element.type })
+     }
+
+   
+   }else if('ExpressionStatement'===  element.type){
+
+     var objexp1=traiteExpression1(element,niveau);
+     if(objexp1.status==true){
+      t+=objexp1.value;
+     }else{
+      return logerreur({status:false,message:'erreur pour TransformAstEnRev 271 '+element.type })
+     }
+   
+    
+   }else{
+   
+   
+    console.error('non pris en compte element.type='+element.type,element);
+    for( var prop in element ){
+     if(prop=='body'){
+      bodyTrouve=true;
+      var obj=TransformAstEnRev(element[prop],niveau);
+      if(obj.status===true){
+       t+=obj.value;
+      }else{
+       return logerreur({status:false,message:'erreur pour '+element.type })
+      }
+     }
+    }
+   }
+   if(!bodyTrouve){
+//    console.log('body non trouvé pour '+element.type);
+   }
+  
+  }
+ }else{
+//  console.log('Pas de length pour '+objectEsprimaBody.type)
+  if(objectEsprimaBody.type==='BlockStatement'){
+   if(objectEsprimaBody.body){
+    niveau++;
+    var obj=TransformAstEnRev(objectEsprimaBody.body,niveau);
+    if(obj.status===true){
+     t+=obj.value;
+    }else{
+     return logerreur({status:false,message:'erreur pour '+element.type })
+    }
+    niveau--;
+   }else{
+    console.log('Pas de body pour '+objectEsprimaBody.type)
+   }
+  }
+ }
+ console.log('sortie du récursif')
+ return({status:true,value:t});
+ 
+} 
+
+function checkVariableNames(node, errors) { 
+ _.each(
+  node.declarations, function(decl) {
+   if (decl.id.name.indexOf('_') >= 0) { 
+     return errors.push(
+      { 
+        location: decl.loc, 
+        message: 'Use camelCase, not hacker_style!' }
+      ); 
+   } 
+  }
+ ); 
+} 
+ 
+ 
+
+
+
+//=====================================================================================================================
+function transform(){
+  //"àà"
+
+  console.log('=========================\ndébut de transforme')
+  document.getElementById('txtar2').value='';
+  document.getElementById('resultat1').innerHTML='';
+  clearMessages('zone_global_messages');
+  var a=document.getElementById('txtar1');
+  localStorage.setItem("fta_indexhtml_javascript_dernier_fichier_charge", a.value);
+  
+  var lines = a.value.split(/\r|\r\n|\n/);
+  
+  var count = lines.length;
+  a.setAttribute('rows',count+1);
+  
+//  console.log('a compiler="'+a.value+'"');
+  try{
+  
+/*  
+   var ret=esprima.parseScript(
+    a.value, 
+    {} , 
+    function (node, meta){
+        console.log('meta=',meta);
+        if(node.type === 'VariableDeclaration'){
+         console.log('VariableDeclaration');
+        }else if(node.type === 'FunctionDeclaration'){ 
+         console.log('FunctionDeclaration');
+        }else if(node.type === 'FunctionExpression'){ 
+         console.log('FunctionExpression');
+        }else{
+         console.log('pas encore implémenté' , node.type, node);
+        }
+    }
+   );
+   console.log('ret.body=',ret.body);
+   
+*/
+
+   var ret=esprima.parseScript(a.value);
+   console.log('ret.body=',ret.body);
+   var obj=TransformAstEnRev(ret.body,0);
+   if(obj.status==true){
+    console.log('\n\n\n===================\n\n\nretour parsing js ='+obj.status+'\n=====================\n'+obj.value);
+    document.getElementById('resultat1').innerHTML='<pre>'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
+    document.getElementById('txtar2').value=obj.value;
+   }
+
+   
+  }catch(e){
+   console.log('erreur esprima',e);
+  }
+  
+  
+  displayMessages('zone_global_messages');
+ 
+}
+//=====================================================================================================================
+//=====================================================================================================================
+//=====================================================================================================================
+function chargerSourceDeTest(){
+// debut de backtic ``` ci dessous pour la variable t = = = = = = = = = = = = = = = = = = = = = = = = = 
+ var t=`/*
+a.b("c").d += '<e f="g">' + h.i[i] + "</e>";
+
+for (var i = 0; i < b; i++) {
+  a.b("c").d += '<e>' + h.i[i] + "</e>";
+}
+t = " ".repeat(NBESPACESSOURCEPRODUIT * i);
+t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
+
+
+
+//==========================================================================================
+//testé
+function traiteCommentaire2(texte, niveau, ind) {
+  var s = "";
+  s = traiteCommentaireSourceEtGenere1(texte, niveau, ind, NBESPACESSOURCEPRODUIT, false);
+  return s;
+}
+
+function displayMessages() {
+  for (var i = 0; i < global_messages.errors.length; i++) {
+    document.getElementById("global_messages").innerHTML += '<div class="yyerror">' + global_messages.errors[i] + "</div>";
+  }
+  for (var i = 0; i < global_messages.lines.length; i++) {
+    document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (global_messages.lines[i] + 1) + ')" class="yyerror" style="border:2px red outset;">go to line ' + global_messages.lines[i] + "</a>&nbsp;";
+  }
+  var numLignePrecedente = -1;
+  for (var i = 0; i < global_messages.ids.length; i++) {
+    var id = global_messages.ids[i];
+    if (id < global_messages.data.matrice.value.length) {
+      var ligneMatrice = global_messages.data.matrice.value[id];
+      var caractereDebut = ligneMatrice[5];
+      var numeroDeLigne = 0;
+      for (var j = caractereDebut; j >= 0; j--) {
+        if (global_messages.data.tableau.out[j][0] == "\n") {
+          numeroDeLigne++;
+        }
+      }
+    }
+    if (numeroDeLigne > 0) {
+      if (numeroDeLigne != numLignePrecedente) {
+        document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (numeroDeLigne + 1) + ')" class="yyerror" style="border:2px red outset;">go to line ' + numeroDeLigne + "</a>&nbsp;";
+        numLignePrecedente = numeroDeLigne;
+      }
+    }
+  }
+}
+
+function espacesn(optionCRLF, i) {
+  var t = "";
+  if (optionCRLF) {
+    t = "\r\n";
+  } else {
+    t = "\n";
+  }
+  if (i > 0) {
+    t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
+  }
+  return t;
+}
+
+
+
+*/`;
+
+
+
+
+// fin de backtic ``` ci dessus pour la variable t = = = = = = = = = = = = = = = = = = = = = = = = = 
+ dogid('txtar1').value=t;
+}
+//=====================================================================================================================
+function chargerLeDernierSource(){
+ var fta_indexhtml_javascript_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_javascript_dernier_fichier_charge");
+// console.log('fta_indexhtml_javascript_dernier_fichier_charge=' , fta_indexhtml_javascript_dernier_fichier_charge );
+ if(fta_indexhtml_javascript_dernier_fichier_charge!==null){
+  dogid('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
+ }
+}
+
+chargerLeDernierSource();
+transform();
+</script>
+  
+</body></html>

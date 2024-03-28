@@ -34,9 +34,31 @@
   <script type="text/javascript" src="js/core4.js"></script>
   <script type="text/javascript" src="js/compile1.js"></script>
   <script type="text/javascript" src="js/javascript.js"></script>
+  <script type="text/javascript" src="esprima.js"></script>
 <script type="text/javascript">
 
+var aParser=`var c=d;
+//=====================
+function toto(){
+ var xx="2",y=a('b').c;
+ if(a<(a('b').c)){
+  if(true==false){
+   a=1;
+  }
+  j=j+1;
+  b.b[a]=5;
+ }else if( a==1 && b > 2 || ( d == 0 ) ){
+  j=j+2;
+ }else{
+ }
+}`;
 
+try{
+ var ret=esprima.parseScript(aParser);
+ console.log('ret=',ret.body);
+}catch(e){
+ console.log('erreur esprima',e);
+}
 /*
 var b=false;
 if( ! b){

@@ -124,6 +124,7 @@ function decomposeConditionEnTableau1(ch){
  var variable1='';
  var niveau=0;
  var c1='';
+ var c2='';
  var dansChaineDouble=false;
  var dansChaineSimple=false;
  var i=0;
@@ -188,20 +189,32 @@ function decomposeConditionEnTableau1(ch){
   
   
   }else if(c1=='('){
-   variable1=variable1.replace(/\n/g,' ')
-   variable1=monTrim(variable1);
    
-   if(variable1!==''){
-    if(variable1.substr(variable1.length-1,1)=='!'){
-     variable1=variable1.substr(0,variable1.length-1);
-     variable1=monTrim(variable1);
-     variable1+='!';
+   var temp=monTrim(variable1);
+   var ctemp=temp.substr(temp.length-1,1);
+   if(ctemp=='|' || ctemp=='&' || ctemp=='<' ){
+    //C'est une parenthèse dans les conditions mais pas une parenthèse sur une fonction
+    variable1=variable1.replace(/\n/g,' ')
+    variable1=monTrim(variable1);
+    
+    if(variable1!==''){
+     if(variable1.substr(variable1.length-1,1)=='!'){
+      variable1=variable1.substr(0,variable1.length-1);
+      variable1=monTrim(variable1);
+      variable1+='!';
+     }
+     id++;
+     tab1.push([ [niveau,id,parentId,0] , variable1 , [] , '' , '' , '' , [['' , '' , [ '' , '' , '' ] ]] ]);
     }
-    id++;
-    tab1.push([ [niveau,id,parentId,0] , variable1 , [] , '' , '' , '' , [['' , '' , [ '' , '' , '' ] ]] ]);
+    niveau++;
+    variable1='';
+    
+   }else{
+    variable1+=c1;
+    
    }
-   niveau++;
-   variable1='';
+   
+   
   }else if(c1==')'){
    variable1=variable1.replace(/\n/g,' ')
    variable1=monTrim(variable1);
@@ -552,7 +565,11 @@ function ExploseBlocEnTableau(tab1,indin,source){
     niveauParentheseIf--;
     if(niveauParentheseIf===0){
      ind++;
+     console.log('parenthèse if chaine1="'+chaine1+'"')
      tab2.push([ind,niveauAccolade,niveauParenthese,niveauCrochet,0,'conditionIf',chaine1]);
+
+/*     
+
      var temporaireeeeeeeeeeeeeeeeeeeeee=decomposeConditionEnTableau1(chaine1);
      if(temporaireeeeeeeeeeeeeeeeeeeeee.status===true){
       var tab1=temporaireeeeeeeeeeeeeeeeeeeeee.value;
@@ -564,9 +581,9 @@ function ExploseBlocEnTableau(tab1,indin,source){
        console.log('apres recur condition, temporaireeeeeeeeeeeeeeeeeeeeee=',temporaireeeeeeeeeeeeeeeeeeeeee);
       }
      }
-     
-     
-     
+
+*/
+
      chaine1='';
     }else{
      chaine1+=c0;
@@ -625,7 +642,7 @@ function ExploseBlocEnTableau(tab1,indin,source){
         niveauParentheseIf++;
        }else{
         ind++;
-        tab2.push([ind,niveauAccolade,niveauParenthese,niveauCrochet,0,'debutFonction',chaine1]);
+        tab2.push([ind,niveauAccolade,niveauParenthese,niveauCrochet,0,'debutAppelFonction',chaine1]);
        }
       }
      }
@@ -823,7 +840,7 @@ function analyseFonction1(tab3,indDebut , indFin ){
  var dernier=indFin;
  t+=esp0+'fonction(';
  t+='\n'+esp0+esp1+'definition(';
- t+='\n'+esp0+esp1+esp1+'nom(todo),';
+ t+='\n'+esp0+esp1+esp1+'nom('+tab3[indDebut][6]+'),';
  for(var i=0;i<indFin;i++){
   if(tab3[indDebut][1]==tab3[i][1] && tab3[indDebut][2]+1==tab3[i][2] ){
    for(var j=i;j<indFin;j++){
