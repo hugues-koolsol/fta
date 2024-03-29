@@ -4,7 +4,17 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
+      declare(
+         ajax_param,
+         obj(
+            ('call' , obj(('lib' , 'core') , ('file' , 'file') , ('funct' , 'loadRevFile'))),
+            ('file_name' , nomFichierSource)
+         )
+      ),
+      affecte(a , obj(('"b\'c' , 'f"a\'a\\a'))),
       #(#
+
+declare(a , @(obj(obj('b' , obj(('c' , d),('e' , f),('g' , h),)),('i' , j),)))      
       ),
       #(
         ========================================================================================================================
@@ -1075,6 +1085,18 @@ src_javascript(
                r2,
                new(appelf(n(RegExp) , p('\n') , p('g')))
             ),
+            declare(
+               r3,
+               new(appelf(n(RegExp) , p('&') , p('g')))
+            ),
+            declare(
+               r4,
+               new(appelf(n(RegExp) , p('<') , p('g')))
+            ),
+            declare(
+               r5,
+               new(appelf(n(RegExp) , p('>') , p('g')))
+            ),
             appelf(r(tr1) , n(document.createElement) , p('tr')),
             #(
               =================
@@ -1131,6 +1153,9 @@ src_javascript(
                                  affecte(temp , appelf(n(String) , p(matriceFonction.value[i][j]))),
                                  affecte(temp , appelf(n(replace) , element(temp) , p(r1) , p('░'))),
                                  affecte(temp , appelf(n(replace) , element(temp) , p(r2) , p('¶'))),
+                                 affecte(temp , appelf(n(replace) , element(temp) , p(r3) , p('&amp;'))),
+                                 affecte(temp , appelf(n(replace) , element(temp) , p(r4) , p('&lt;'))),
+                                 affecte(temp , appelf(n(replace) , element(temp) , p(r5) , p('&gt;'))),
                                  affecte(td1.innerHTML , temp),
                                  affecte(td1.style.whiteSpace , 'pre-wrap'),
                                  affecte(td1.style.verticalAlign , 'baseline')

@@ -1,11 +1,53 @@
 
-var ajax_param={'call':{'lib':'core','file':'file','funct':'loadRevFile'},'file_name':nomFichierSource};
-a={'"b\'c':'f"a\'a\\a'};
-/*#
-
-declare(a , @(obj(obj('b' , obj(('c' , d),('e' , f),('g' , h),)),('i' , j),)))      
-      
-*/
+var a= b.c('d',e).z;
+function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){
+    var r= new XMLHttpRequest();
+    r.open('POST','za_ajax.php?loadRevFile',true);
+    r.timeout=6000;
+    r.setRequestHeader('Content-Type','application/x-www-form-urlencoded;charset=utf-8');
+    r.onreadystatechange=function(){
+        if(((r.readyState != 4) || r.status != 200)){
+            return;
+        }
+        try{
+            var jsonRet= JSON.parse(r.responseText);
+            if((jsonRet.status == 'OK')){
+                fntSiOk({status:true,value:jsonRet.value,nomZone:nomZone,nomFichierSource:nomFichierSource});
+                try{
+                    localStorage.setItem('fta_dernier_fichier_charge',nomFichierSource);
+                }catch(e){
+                }
+                if((typeoffaireApres == 'function')){
+                    faireApres();
+                }
+                return;
+            }else{
+                display_ajax_error_in_cons(jsonRet);
+                console.log(r);
+                alert('BAD job !');
+                return;
+            }
+        }catch(e){
+            console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
+            return;
+        }
+    };
+    r.onerror=function(e){
+        console.error('e=',e);
+        return;
+    };
+    r.ontimeout=function(e){
+        console.error('e=',e);
+        return;
+    };
+    var ajax_param={};
+    /*
+      ,file:"file",funct:"loadRevFile",},file_name:nomFichierSource,}
+    */
+    /*
+      appelf(  element(r),  n(send)p("ajax_param="+appelf(  n(encodeURIComponent)p(appelf(  element(JSON),  n(stringify)p(ajax_param))))))
+    */
+}
 /*#
       
       

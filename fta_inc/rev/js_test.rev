@@ -5,150 +5,137 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
-      declare(r , appelf(n(@(new XMLHttpRequest)))),
-      fonction(
-         definition(nom(traiteCommentaire2) , argument(texte) , argument(niveau) , argument(ind)),
-         contenu(
-            declare(s , ''),
-            affecte(
-               s,
-               appelf(
-                  n(traiteCommentaireSourceEtGenere1),
-                  p(texte),
-                  p(niveau),
-                  p(ind),
-                  p(NBESPACESSOURCEPRODUIT),
-                  p(false)
-               )
-            ),
-            revenir(s)
+      declare(
+         a,
+         appelf(
+            n(b.c),
+            p('d'),
+            p(e),
+            prop(z),
+            #()
          )
       ),
       fonction(
-         definition(nom(displayMessages)),
+         definition(nom(loadRevFile) , argument(nomFichierSource) , argument(fntSiOk) , argument(nomZone) , argument(faireApres)),
          contenu(
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.errors.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  affecte(
-                     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-                     appelf(
-                        n(concat),
-                        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-                        p(@("<div class=\"yyerror\">"+global_messages.errors[i]+"</div>"))
-                     )
-                  )
-               )
-            ),
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.lines.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  affecte(
-                     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-                     appelf(
-                        n(concat),
-                        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-                        p(@("<a href=\"javascript:jumpToError("+(global_messages.lines[i]+1)+")\" class=\"yyerror\" style=\"border:2px red outset;\">go to line "+global_messages.lines[i]+"</a>&nbsp;"))
-                     )
-                  )
-               )
-            ),
-            declare(numLignePrecedente , -1),
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.ids.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  declare(id , global_messages.ids[i]),
-                  choix(
-                     si(
-                        condition((inf(id , global_messages.data.matrice.value.length))),
-                        alors(
-                           declare(ligneMatrice , global_messages.data.matrice.value[id]),
-                           declare(caractereDebut , ligneMatrice[5]),
-                           declare(numeroDeLigne , 0),
-                           declare(j , caractereDebut),
-                           boucle(
-                              initialisation(affecte(j , caractereDebut)),
-                              condition((supeg(j , 0))),
-                              increment(affecte(j , j-1)),
-                              faire(
-                                 choix(
-                                    si(
-                                       condition((egal(global_messages.data.tableau.out[j][0] , '\n'))),
-                                       alors(affecte(numeroDeLigne , numeroDeLigne+1))
-                                    )
-                                 )
-                              )
-                           )
+            declare(r , appelf(n(new , XMLHttpRequest))),
+            appelf(element(r) , n(open) , p('POST') , p('za_ajax.php?loadRevFile') , p(true)),
+            affecte(r.timeout , @(6000)),
+            appelf(element(r) , n(setRequestHeader) , p('Content-Type') , p('application/x-www-form-urlencoded;charset=utf-8')),
+            affecte(
+               r.onreadystatechange,
+               appelf(
+                  n(function),
+                  contenu(
+                     choix(
+                        si(
+                           condition(
+                              ((diff(r.readyState , 4)) , ou(diff(r.status , 200)))
+                           ),
+                           alors(revenir())
                         )
-                     )
-                  ),
-                  choix(
-                     si(
-                        condition((sup(numeroDeLigne , 0))),
-                        alors(
+                     ),
+                     essayer(
+                        faire(
+                           declare(jsonRet , appelf(element(JSON) , n(parse) , p(r.responseText))),
                            choix(
                               si(
-                                 condition((diff(numeroDeLigne , numLignePrecedente))),
+                                 condition((egal(jsonRet.status , 'OK'))),
                                  alors(
-                                    affecte(
-                                       appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-                                       appelf(
-                                          n(concat),
-                                          p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-                                          p(@("<a href=\"javascript:jumpToError("+(numeroDeLigne+1)+")\" class=\"yyerror\" style=\"border:2px red outset;\">go to line "+numeroDeLigne+"</a>&nbsp;"))
+                                    appelf(n(fntSiOk) , p({status:true) , p(value:jsonRet.value) , p(nomZone:nomZone) , p(nomFichierSource:nomFichierSource})),
+                                    essayer(
+                                       faire(appelf(element(localStorage) , n(setItem) , p('fta_dernier_fichier_charge') , p(nomFichierSource))),
+                                       sierreur(e , faire())
+                                    ),
+                                    choix(
+                                       si(
+                                          condition((egal(typeoffaireApres , 'function'))),
+                                          alors(appelf(n(faireApres)))
                                        )
                                     ),
-                                    affecte(numLignePrecedente , @(numeroDeLigne))
+                                    revenir()
                                  )
+                              ),
+                              sinon(
+                                 alors(appelf(n(display_ajax_error_in_cons) , p(jsonRet)) , appelf(element(console) , n(log) , p(r)) , appelf(n(alert) , p('BAD job !')) , revenir())
                               )
+                           )
+                        ),
+                        sierreur(
+                           e,
+                           faire(
+                              appelf(
+                                 element(console),
+                                 n(error),
+                                 p('Go to the network panel and look the preview tab\n\n'),
+                                 p(e),
+                                 p('\n\n'),
+                                 p(r),
+                                 p('\n\n')
+                              ),
+                              revenir()
                            )
                         )
                      )
                   )
                )
+            ),
+            affecte(
+               r.onerror,
+               appelf(
+                  n(function),
+                  p(e),
+                  contenu(appelf(element(console) , n(error) , p('e=') , p(e)) , revenir())
+               )
+            ),
+            affecte(
+               r.ontimeout,
+               appelf(
+                  n(function),
+                  p(e),
+                  contenu(appelf(element(console) , n(error) , p('e=') , p(e)) , revenir())
+               )
+            ),
+            declare(ajax_param , obj(('lib:core'))),
+            #(
+              ,file:"file",funct:"loadRevFile",},file_name:nomFichierSource,}
+            ),
+            #(
+              appelf(  element(r),  n(send)p("ajax_param="+appelf(  n(encodeURIComponent)p(appelf(  element(JSON),  n(stringify)p(ajax_param))))))
             )
          )
       ),
-      fonction(
-         definition(nom(espacesn) , argument(optionCRLF) , argument(i)),
-         contenu(
-            declare(t , ''),
-            choix(
-               si(
-                  condition(
-                     ((egalstricte(optionCRLF , vrai)))
-                  ),
-                  alors(affecte(t , @("\r\n")))
-               ),
-               sinon(alors(affecte(t , @("\n"))))
-            ),
-            choix(
-               si(
-                  condition((sup(i , 0))),
-                  alors(
-                     affecte(
-                        t,
-                        appelf(
-                           n(concat),
-                           p(t),
-                           p(appelf(element(' ') , n(repeat) , p(NBESPACESSOURCEPRODUIT*i)))
-                        )
-                     )
-                  )
-               )
-            ),
-            revenir(t)
-         )
+      #(#
+      
+      
+      
+  fonction(
+     definition(nom(loadRevFile) , argument(nomFichierSource) , argument(fntSiOk) , argument(nomZone) , argument(faireApres)),
+     contenu(
+        declare(r , appelf(n(new , XMLHttpRequest))),
+        appelf(element(r) , n(open) , p('POST') , p('za_ajax.php?loadRevFile') , p(true)),
+        affecte(r.timeout , @(6000)),
+        appelf(element(r) , n(setRequestHeader) , p('Content-Type') , p('application/x-www-form-urlencoded;charset=utf-8')),
+        affecte(
+           r.onreadystatechange,
+           appelf(
+              n(function),
+              contenu(
+                 choix(
+                    si(
+                       condition(
+                          ((diff(r.readyState , 4)) , ou(diff(r.status , 200)))
+                       ),
+                       alors(revenir())
+                    )
+                 )
+              )
+           )
+        )
+     )
+  ),
       ),
+      #(=============================================================================================================================),
       #(#
       
       
@@ -162,6 +149,8 @@ src_javascript(
      increment(affecte(i , i+1)),
      faire(affecte(a , @(1+a*(1+(1+(a+1))))))
   ),
+  
+  
       ),
       #(=============================================================================================================================),
       #(#
