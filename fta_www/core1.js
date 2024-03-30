@@ -1,4 +1,11 @@
 
+var ajax_param={'call':{'lib':'core','file':'file','funct':'loadRevFile'},'file_name':nomFichierSource};
+a={'"b\'c':'f"a\'a\\a'};
+/*#
+
+declare(a , @(obj(obj('b' , obj(('c' , d),('e' , f),('g' , h),)),('i' , j),)))      
+      
+*/
 /*
   ========================================================================================================================
   fonction de remplacement globale
