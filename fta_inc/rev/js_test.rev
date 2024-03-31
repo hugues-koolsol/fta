@@ -10,7 +10,271 @@ src_javascript(
         Debut du source à tester
         ========================
       ),
-      affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus('<div class="yywarning">' , global_messages.warnings[i]) , '</div>'),
+      declare(NBESPACESSOURCEPRODUIT , 4),
+      fonction(
+         definition(nom(traiteCommentaire2) , argument(texte) , argument(niveau) , argument(ind)),
+         contenu(
+            declare(s , ''),
+            affecte(
+               s,
+               appelf(
+                  n(traiteCommentaireSourceEtGenere1),
+                  p(texte),
+                  p(niveau),
+                  p(ind),
+                  p(NBESPACESSOURCEPRODUIT),
+                  p(false)
+               )
+            ),
+            revenir(s)
+         )
+      ),
+      fonction(
+         definition(nom(displayMessages)),
+         contenu(
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.errors.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus(plus('<div class="yyerror">' , global_messages.errors[i]) , '</div>'))
+               )
+            ),
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.warnings.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus(plus('<div class="yywarning">' , global_messages.warnings[i]) , '</div>'))
+               )
+            ),
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.infos.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus(plus('<div class="yyinfo">' , global_messages.infos[i]) , '</div>'))
+               )
+            ),
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.lines.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  affecte(
+                     appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)),
+                     plus(
+                        plus(
+                           plus(plus('<a href="javascript:jumpToError(' , plus(global_messages.lines[i] , 1)) , ')" class="yyerror" style="border:2px red outset;">go to line '),
+                           global_messages.lines[i]
+                        ),
+                        '</a>&nbsp;'
+                     )
+                  )
+               )
+            ),
+            declare(numLignePrecedente , -1),
+            declare(i , 0),
+            boucle(
+               initialisation(affecte(i , 0)),
+               condition((inf(i , global_messages.ids.length))),
+               increment(affecte(i , i+1)),
+               faire(
+                  declare(id , global_messages.ids[i]),
+                  choix(
+                     si(
+                        condition((inf(id , global_messages.data.matrice.value.length))),
+                        alors(
+                           declare(ligneMatrice , global_messages.data.matrice.value[id]),
+                           declare(caractereDebut , ligneMatrice[5]),
+                           declare(numeroDeLigne , 0),
+                           declare(j , caractereDebut),
+                           boucle(
+                              initialisation(affecte(j , caractereDebut)),
+                              condition((supeg(j , 0))),
+                              increment(affecte(j , j-1)),
+                              faire(
+                                 choix(
+                                    si(
+                                       condition((egal(global_messages.data.tableau.out[j][0] , '\n'))),
+                                       alors(affecte(numeroDeLigne , numeroDeLigne+1))
+                                    )
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  ),
+                  choix(
+                     si(
+                        condition((sup(numeroDeLigne , 0))),
+                        alors(
+                           choix(
+                              si(
+                                 condition((diff(numeroDeLigne , numLignePrecedente))),
+                                 alors(
+                                    affecte(
+                                       appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)),
+                                       plus(
+                                          plus(
+                                             plus(plus('<a href="javascript:jumpToError(' , plus(numeroDeLigne , 1)) , ')" class="yyerror" style="border:2px red outset;">go to line '),
+                                             numeroDeLigne
+                                          ),
+                                          '</a>&nbsp;'
+                                       )
+                                    ),
+                                    affecte(numLignePrecedente , numeroDeLigne)
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            )
+         )
+      ),
+      fonction(
+         definition(nom(espacesn) , argument(optionCRLF) , argument(i)),
+         contenu(
+            declare(t , ''),
+            choix(
+               si(
+                  condition((egalstricte(optionCRLF , vrai))),
+                  alors(affecte(t , '\r\n'))
+               ),
+               sinon(alors(affecte(t , '\n')))
+            ),
+            choix(
+               si(
+                  condition((sup(i , 0))),
+                  alors(
+                     affecte(
+                        t,
+                        appelf(element(' ') , n(repeat) , p(mult(NBESPACESSOURCEPRODUIT , i)))
+                     )
+                  )
+               )
+            ),
+            revenir(t)
+         )
+      ),
+      fonction(
+         definition(nom(loadRevFile) , argument(nomFichierSource) , argument(fntSiOk) , argument(nomZone) , argument(faireApres)),
+         contenu(
+            declare(
+               r,
+               new(appelf(n(XMLHttpRequest)))
+            ),
+            appelf(n(r.open) , p('POST') , p('za_ajax.php?loadRevFile') , p(true)),
+            affecte(r.timeout , 6000),
+            appelf(n(r.setRequestHeader) , p('Content-Type') , p('application/x-www-form-urlencoded;charset=utf-8')),
+            affecteFonction(
+               r.onreadystatechange,
+               appelf(
+                  n(function),
+                  contenu(
+                     choix(
+                        si(
+                           condition((diff(r.readyState , 4)) , ou(diff(r.status , 200))),
+                           alors(revenir())
+                        )
+                     ),
+                     essayer(
+                        faire(
+                           declare(jsonRet , appelf(n(JSON.parse) , p(r.responseText))),
+                           choix(
+                              si(
+                                 condition((egal(jsonRet.status , 'OK'))),
+                                 alors(
+                                    appelf(
+                                       n(fntSiOk),
+                                       p(obj((status , true) , (value , jsonRet.value) , (nomZone , nomZone) , (nomFichierSource , nomFichierSource)))
+                                    ),
+                                    essayer(
+                                       faire(appelf(n(localStorage.setItem) , p('fta_dernier_fichier_charge') , p(nomFichierSource))),
+                                       sierreur(
+                                          e,
+                                          faire(
+                                             #(rien)
+                                          )
+                                       )
+                                    ),
+                                    choix(
+                                       si(
+                                          condition(
+                                             (egal(Typeof(faireApres) , 'function'))
+                                          ),
+                                          alors(appelf(n(faireApres)))
+                                       )
+                                    ),
+                                    revenir()
+                                 )
+                              ),
+                              sinon(
+                                 alors(appelf(n(display_ajax_error_in_cons) , p(jsonRet)) , appelf(n(console.log) , p(r)) , appelf(n(alert) , p('BAD job !')) , revenir())
+                              )
+                           )
+                        ),
+                        sierreur(
+                           e,
+                           faire(
+                              appelf(
+                                 n(console.error),
+                                 p('Go to the network panel and look the preview tab\n\n'),
+                                 p(e),
+                                 p('\n\n'),
+                                 p(r),
+                                 p('\n\n')
+                              ),
+                              revenir()
+                           )
+                        )
+                     )
+                  )
+               )
+            ),
+            affecteFonction(
+               r.onerror,
+               appelf(
+                  n(function),
+                  p(e),
+                  contenu(appelf(n(console.error) , p('e=') , p(e)) , revenir())
+               )
+            ),
+            affecteFonction(
+               r.ontimeout,
+               appelf(
+                  n(function),
+                  p(e),
+                  contenu(appelf(n(console.error) , p('e=') , p(e)) , revenir())
+               )
+            ),
+            declare(
+               ajax_param,
+               obj(
+                  (call , obj((lib , 'core') , (file , 'file') , (funct , 'loadRevFile'))),
+                  (file_name , nomFichierSource)
+               )
+            ),
+            appelf(
+               n(r.send),
+               p(
+                  plus(
+                     'ajax_param=',
+                     appelf(
+                        n(encodeURIComponent),
+                        p(appelf(n(JSON.stringify) , p(ajax_param)))
+                     )
+                  )
+               )
+            )
+         )
+      ),
       #(
         ======================
         fin du source à tester

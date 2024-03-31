@@ -289,7 +289,7 @@ function enregistrer2(){
 //  console.log('tableau1.out=',tableau1.out);
  
  var startMicro=performance.now();
- var matriceFonction=functionToArray2(tableau1.out);
+ var matriceFonction=functionToArray2(tableau1.out,true,false);
  global_messages.data.matrice=matriceFonction;
  var endMicro=performance.now();  console.log('analyse syntaxique et mise en matrice endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
  console.log('matriceFonction=',matriceFonction);
@@ -317,7 +317,7 @@ function enregistrer2(){
      
      
      var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
-     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out);
+     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false);
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      var endMicro=performance.now();  console.log('comparaison des compactés=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
      
@@ -919,7 +919,10 @@ function analyseKeyUp(e){
   }else{
 //   console.log('%cRaaaah','color:red');
   }
-  zoneSource.scrollTo({left: 0, behavior: "smooth"});
+  
+  zoneSource.scrollTo({left: 0}); // , behavior: "smooth"
+  window.scrollTo({ left: 0 }); // , behavior: 'smooth'
+  
  }else if(e.keyCode==86 && e.ctrlKey==true ){ // crtl v
    // ctrl v
    var zoneSource=document.getElementById('zonesource');
