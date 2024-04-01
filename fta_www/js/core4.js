@@ -206,11 +206,19 @@ function functionToArray(src,quitterSiErreurNiveau){
   ========================================================================================================================
   fonction de remplacement globale
 */
-function replaceAll(chaine,chaineQuiRemplace){
-    var s='';
-    var r= new RegExp(chaine,'g');
-    s=chaine.replace(r1,chaineQuiRemplace);
-    return s;
+function replaceAll(s,chaineAremplacer,chaineQuiRemplace){
+    var r1= new RegExp(chaineAremplacer,'g');
+    var ret=s.replace(r1,chaineQuiRemplace);
+    return ret;
+}
+/*
+  ========================================================================================================================
+  fonction de remplacement NON globale
+*/
+function myReplace(s,chaineAremplacer,chaineQuiRemplace){
+    var r1= new RegExp(chaineAremplacer,''); // pas de g
+    var ret=s.replace(r1,chaineQuiRemplace);
+    return ret;
 }
 /*
   ========================================================================================================================
@@ -286,7 +294,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
             if((fichierRev0)){
                 ligne=tab[tab.length-1];
-                ligne=ligne.replaceAll(' ','');
+                ligne=replaceAll(ligne,' ','');
                 if(ligne != ''){
                     tab.push(unBloc);
                 }else{
@@ -1098,23 +1106,34 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
               ===================================
             */
             if((c == '"')){
-                if((i == l01-1)){
-                    temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
-                    return(logerreur(temp));
+                if(autoriserCstDansRacine!==true){
+                 if((i == l01-1)){
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     return(logerreur(temp));
+                 }
                 }
-                c1=tableauEntree[i+1][0];
-                if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
-                    dernier=i-1;
+                if(i+1<l01){
+                 c1=tableauEntree[i+1][0];
+                 if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
+                     dernier=i-1;
+                 }else{
+                     temp={'status':false,'value':T,'id':i,'message':'0 apres une constante, il doit y avoir un caractère d\'echappement'};
+                     return(logerreur(temp));
+                 }
                 }else{
-                    temp={'status':false,'value':T,'id':i,'message':'apres une constante, il doit y avoir un caractère d\'echappement'};
-                    return(logerreur(temp));
+                 if(!(autoriserCstDansRacine===true)){
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     return(logerreur(temp));
+                 }
                 }
                 dansCstDouble=false;
                 indice=indice+1;
                 constanteQuotee=true;
-                if((niveau == 0)){
-                    temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
-                    return(logerreur(temp));
+                if(autoriserCstDansRacine!==true){
+                 if((niveau == 0)){
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     return(logerreur(temp));
+                 }
                 }
                 T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 texte='';
@@ -1126,7 +1145,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                if((c1 == '\\') || c1 == 'n' || c1 == 't' || c1 == 'r'){
+                if((c1 == '\\') || c1 == 'n' || c1 == 't' || c1 == 'r' || c1 == 'u'){
                     if((texte == '')){
                         premier=i;
                     }
@@ -1137,7 +1156,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte=concat(texte , '"' );
                     i=i+1;
                 }else{
-                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r'};
+                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u'};
                     return(logerreur(temp));
                 }
             }else if((c=='\'')){
@@ -1170,12 +1189,19 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                      return(logerreur(temp));
                  }
                 }
-                c1=tableauEntree[i+1][0];
-                if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
-                    dernier=i-1;
+                if(i+1<l01){
+                 c1=tableauEntree[i+1][0];
+                 if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
+                     dernier=i-1;
+                 }else{
+                     temp={'status':false,'value':T,'id':i,'message':'1 apres une constante, il doit y avoir un caractère d\'echappement'};
+                     return(logerreur(temp));
+                 }
                 }else{
-                    temp={'status':false,'value':T,'id':i,'message':'apres une constante, il doit y avoir un caractère d\'echappement'};
-                    return(logerreur(temp));
+                 if(!(autoriserCstDansRacine===true)){
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     return(logerreur(temp));
+                 }                 
                 }
                 dansCstSimple=false;
                 indice=indice+1;
@@ -1196,14 +1222,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                if((c1 == '\\') || c1 == '\'' || c1 == 'n' || c1 == 't' || c1 == 'r'){
+                if((c1 == '\\') || c1 == '\'' || c1 == 'n' || c1 == 't' || c1 == 'r' || c1 == 'u'){
                     if((texte == '')){
                         premier=i;
                     }
                     texte=concat(texte,'\\',c1);
                     i=i+1;
                 }else{
-                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r'};
+                    temp={'status':false,'value':T,'id':i,'message':'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u'};
                     return(logerreur(temp));
                 }
             }else{

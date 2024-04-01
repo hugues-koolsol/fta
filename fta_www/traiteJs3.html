@@ -36,6 +36,9 @@
   <!-- https://esprima.org/doc/videos.html -->
   <script type="text/javascript" src="esprima.js"></script>
 <script type="text/javascript">
+
+var a='hugues';
+console.log(replaceAll(a,'u','toto'))
 'use strict';
 //=========================================================================================================
 function recupNomOperateur(s){ // recupNomOperateur
@@ -67,6 +70,8 @@ function recupNomOperateur(s){ // recupNomOperateur
   return 'inf';
  }else if(s==='>='){
   return 'supeg';
+ }else if(s==='<='){
+  return 'infeg';
  }else if(s==='<='){
   return 'infeg';
  }else{
@@ -185,6 +190,8 @@ function traiteBinaryExpress1(element,niveau){
   if(obj1.status===true){
    if(element.right && element.right.type==='Literal'){
     t+=''+nomDuTest+'('+obj1.value+','+element.right.raw+')';
+   }else if(element.right && element.right.type==='Identifier'){
+    t+=''+nomDuTest+'('+obj1.value+','+element.right.name+')';
    }else if(element.right && element.right.type==="MemberExpression"){
     var obj2=traiteMemberExpression1(element.right,niveau);
     if(obj2.status===true){
@@ -209,6 +216,17 @@ function traiteBinaryExpress1(element,niveau){
   }else{
    return logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 128 '});
   }
+  
+ }else if(element && element.type=="MemberExpression"){
+  debugger;
+  var obj1=traiteMemberExpression1(element,niveau);
+  if(obj1.status===true){
+   t+='TODO 216';
+  }else{
+   return logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 217 '});
+  }
+  
+  
   
   
  }else{
@@ -460,6 +478,8 @@ function traiteCallExpression1(element , niveau , parent , opt ){
   esp0='';
   esp1='';
  }
+ var transformeEnReplaceAll='';
+ var transformeEnReplace='';
  
  
 // console.log('dans traiteCallExpression1, element=' , element );
@@ -490,7 +510,20 @@ function traiteCallExpression1(element , niveau , parent , opt ){
     if(unNew){
      t+='new(appelf( n('+obj1.value+')';
     }else{
-     t+=LF+esp0+'appelf( n('+obj1.value+')';
+     if(obj1.value.substr(obj1.value.length-7,7)==='replace'){
+      if(obj1.value.substr(obj1.value.length-8,1)==='.'){
+       if(obj1.value.substr(obj1.value.length-8,1)==='.'){
+        transformeEnReplaceAll=LF+esp0+'appelf( n(replaceAll),p('+obj1.value.substr(0,obj1.value.length-8)+')';
+        transformeEnReplace=LF+esp0+'appelf( n(myReplace)';
+       }else{
+        t+=LF+esp0+'appelf( n('+obj1.value+')';
+       }
+      }else{
+       t+=LF+esp0+'appelf( n('+obj1.value+')';
+      }
+     }else{
+      t+=LF+esp0+'appelf( n('+obj1.value+')';
+     }
     }
    }
    if(element.arguments && element.arguments.length>0){
@@ -500,7 +533,22 @@ function traiteCallExpression1(element , niveau , parent , opt ){
       lesArguments+=',';
      }
      if("Literal"===element.arguments[i].type){
-      lesArguments+='p('+element.arguments[i].raw+')';
+      if(transformeEnReplaceAll!==''){
+       if(element.arguments[i].raw.substr(0,1)=='/' && element.arguments[i].raw.substr(element.arguments[i].raw.length-1,1)=='g' ){
+        t+=transformeEnReplaceAll;
+        var leParam=replaceAll(element.arguments[i].raw,'\\\\','\\\\');
+        leParam=leParam.substr(1,leParam.length-2);
+        leParam='\''+leParam+'\'';
+        lesArguments+=',p('+leParam+')';
+        
+       }else{
+        t+=transformeEnReplace;
+        lesArguments+=',p('+element.arguments[i].raw+')';
+       }
+       transformeEnReplaceAll='';
+      }else{
+       lesArguments+='p('+element.arguments[i].raw+')';
+      }
      }else if("Identifier"===element.arguments[i].type){
       lesArguments+='p('+element.arguments[i].name+')';
      }else if("BinaryExpression"===element.arguments[i].type){
@@ -639,6 +687,13 @@ function traiteCallExpression1(element , niveau , parent , opt ){
   }else{
    return logerreur({status:false,message:'erreur dans traiteCallExpression1 534' })
   }
+ }else if(element.type==='BinaryExpression'){
+  var obj1=traiteBinaryExpress1(element.type,niveau)
+  if(obj1.status===true){
+   t+=+obj1.value;
+  }else{
+   return logerreur({status:false,message:'erreur traiteExpression1 452' });
+  }
  
  }else{
   console.log('element=',element);
@@ -718,11 +773,18 @@ function traiteObjectExpression1(element , niveau){
    if(obj1.status===true){
     t+=obj1.value+')';
    }else{
-    return logerreur({status:false,message:'erreur traiteObjectExpression1 630 pour '+eval.value.type });
+    return logerreur({status:false,message:'erreur traiteObjectExpression1 732 pour '+eval.value.type });
+   }
+  }else if(val.value.type==='BinaryExpression'){
+   var obj2=traiteBinaryExpress1(val.value,niveau)
+   if(obj2.status===true){
+    t+=''+obj2.value+')';
+   }else{
+    return logerreur({status:false,message:'erreur traiteAssignmentExpress1 739 pour '+element.type });
    }
    
   }else{
-   return logerreur({status:false,message:'erreur dans traiteObjectExpression1 625 '+val.value.type })
+   return logerreur({status:false,message:'erreur dans traiteObjectExpression1 743 '+val.value.type })
   }
  }
  t='obj('+t+')';
@@ -800,19 +862,26 @@ function traiteMemberExpression1(element , niveau){
       t+='['+element.property.raw+']';
      }else if(element.property.type==='Identifier'){
       t+='['+element.property.name+']';
+     }else if(element.property.type==='BinaryExpression'){
+      var obj2=traiteBinaryExpress1(element.property,niveau)
+      if(obj2.status===true){
+       t+='['+obj2.value+']';
+      }else{
+       return logerreur({status:false,message:'erreur traiteAssignmentExpress1 808 pour '+element.type });
+      }
      }else{
       console.error('Dans traiteMemberExpression1 element=',element)
-      return logerreur({status:false,message:'erreur traiteMemberExpression1 279 pour '+element.type });
+      return logerreur({status:false,message:'erreur traiteMemberExpression1 805 pour '+element.type });
      }
     }
    }else{
     console.error('Dans traiteMemberExpression1 element=',element)
-    return logerreur({status:false,message:'erreur traiteMemberExpression1 279 pour '+element.type });
+    return logerreur({status:false,message:'erreur traiteMemberExpression1 810 pour '+element.type });
    }
    
   }else{
    console.error('Dans traiteMemberExpression1 element=',element)
-   return logerreur({status:false,message:'erreur traiteMemberExpression1 260 pour '+element.object.type })
+   return logerreur({status:false,message:'erreur traiteMemberExpression1 815 pour '+element.object.type })
   }
  
  }else{
@@ -820,7 +889,7 @@ function traiteMemberExpression1(element , niveau){
    t+=element.raw;
   }else{
    console.error('Dans traiteMemberExpression1 element=',element);
-   return logerreur({status:false,message:'erreur traiteMemberExpression1 200 pour '+element.type })
+   return logerreur({status:false,message:'erreur traiteMemberExpression1 823 pour '+element.type })
   }
  } 
  return {status:true,value:t} 
@@ -846,10 +915,10 @@ function traiteUpdateExpress1(element , niveau , opt){
   }else if('--'===element.operator && element.prefix==false){
    t+='affecte('+element.argument.name+','+element.argument.name+'-1)';
   }else{
-   return logerreur({status:false,message:'erreur traiteUpdateExpress1 625 pour '+element.argument.operator });
+   return logerreur({status:false,message:'erreur traiteUpdateExpress1 867 pour '+element.argument.operator });
   }
  }else{
-   return logerreur({status:false,message:'erreur traiteUpdateExpress1 628 pour '+element.argument.type });
+  return logerreur({status:false,message:'erreur traiteUpdateExpress1 628 pour '+element.argument.type });
  }
  return {status:true,value:t};
 
@@ -890,7 +959,7 @@ function traiteAssignmentExpress1(element , niveau , opt){
     return logerreur({status:false,message:'erreur traiteAssignmentExpress1 452 pour '+element.type });
    }
   }else if(element.right && element.right.type==="CallExpression"){
-   var obj1=traiteCallExpression1(element.right,niveau,element,{});
+   var obj1=traiteCallExpression1(element.right,niveau,element,{'sansLF':true});
    if(obj1.status===true){
     t+=obj1.value+')';
    }else{
@@ -899,6 +968,20 @@ function traiteAssignmentExpress1(element , niveau , opt){
    
   }else if(element.right && element.right.type==="Identifier"){
    t+=element.right.name+')';
+  }else if(element.right && element.right.type==="UnaryExpression"){
+  
+   var nomDuTestUnary=recupNomOperateur(element.right.operator);
+   var nomDuTest=recupNomOperateur(element.operator);
+   if(element.right && element.right.type==='Literal' && element.right.argument.type==='Identifier'){
+    t+=''+nomDuTest+'('+nomDuTestUnary+'('+element.right.argument.name+')'+','+element.right.raw+'))';
+   }else if( ( element.right.operator==='-'||element.right.operator==='+' ) && element.right.type=="UnaryExpression" && element.right.argument.type==='Literal' ){
+    t+=''+element.right.operator+''+element.right.argument.raw+')';
+   }else if( ( element.right.operator==='-'||element.right.operator==='+' ) && element.right.type=="UnaryExpression" && element.right.argument.type==='Identifiel' ){
+    t+=''+element.right.operator+''+element.right.argument.name+')';
+   }else{
+    return logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 934 '});
+   }
+  
   }else{
    return logerreur({status:false,message:'erreur traiteAssignmentExpress1 304 pour '+element.type });
   }
@@ -1015,10 +1098,10 @@ function traiteExpression1(element , niveau){
    }
   
   }else{
-   return logerreur({status:false,message:'erreur traiteExpression1 217 pour '+element.type })
+   return logerreur({status:false,message:'erreur traiteExpression1 1034 pour '+element.type })
   }
  }else{
-  return logerreur({status:false,message:'erreur traiteExpression1 220 pour '+element.type })
+  return logerreur({status:false,message:'erreur traiteExpression1 1037 pour '+element.type })
  }
  
  return {status:true,value:t}
@@ -1288,22 +1371,6 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
  return({status:true,value:t});
  
 } 
-
-function checkVariableNames(node, errors) { 
- _.each(
-  node.declarations, function(decl) {
-   if (decl.id.name.indexOf('_') >= 0) { 
-     return errors.push(
-      { 
-        location: decl.loc, 
-        message: 'Use camelCase, not hacker_style!' }
-      ); 
-   } 
-  }
- ); 
-} 
- 
- 
 
 
 
