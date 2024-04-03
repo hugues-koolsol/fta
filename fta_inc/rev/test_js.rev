@@ -4,106 +4,23 @@ src_javascript(
    (file_path , .),
    (strict()),
    source(
-      declare(globale_LangueCourante , 'fr'),
-      fonction(
-         definition(
-            nom(test),
-            argument(nomFichier),
-            argument(nomZone),
-            #(
-              ===============================================================
-              Appel de la fonction "fntSiOk" si l'appel ajax est OK
-            ),
-            argument(fntSiOk)
-         ),
-         contenu()
+      #(
+        f(y,z(i,j).k,w).g.h(a,b)
       ),
-      fonction(
-         definition(
-            nom(chargerFichierSource),
-            argument(nomFichier),
-            argument(nomZone),
-            #(
-              ===============================================================
-              Appel de la fonction "fntSiOk" si l'appel ajax est OK
-            ),
-            argument(fntSiOk)
-         ),
-         contenu(
-            #(#
-  #(
-     ==============================================================
-     Déclaration d'un appel ajax
-  ),
-  declare(
-     r,
-     new(appelf(n(XMLHttpRequest)))
-  ),
-  #(timeout 6 secondes, on considère qu'il y a un problème au delà ),
-  affecte(t.timeout , 6000),
-  #(on appel cette url en POST et en asynchrone ),
-  appelf(
-     n(r.open),
-     p('POST'),
-     p('za_ajax.php?getFileContent'),
-     p(vrai)
-  ),
-  #(
-     On ne passe pas du binaire ( multipart/form-data )
-     mais des données couple clé valeur
-  ),
-  appelf(n(r.setRequestHeader) , p('Content-Type') , p('application/x-www-form-urlencoded;charset=utf-8')),
-  #(
-     ==============================================================
-     en cas de retour de données du serveur on applique cette fonction
-  ),
-
-  #(
-     =======================
-     en cas d'erreur serveur
-     =======================
-  ),
-  #(
-     =================
-     en cas de timeout
-     =================
-  ),
-  #(
-     ==============================================================
-     construction des paramètres de l'appel ajax
-  ),
-  affecte(
-     ajax_param,
-     obj(
-        (call , obj((lib , 'file') , (file , 'file') , (funct , 'getFileContent'))),
-        (fileName , nomFichier)
-     )
-  ),
-  #(
-     ==============================================================
-     encodage des paramètres
-  ),
-  appelf(
-     r(chaineAppelAjax),
-     n(concat),
-     p('ajax_param='),
-     p(
-        appelf(
-           n(encodeURIComponent),
-           p(appelf(n(JSON.stringify) , p(ajax_param)))
-        )
-     )
-  ),
-  #(
-     ==============================================================
-     envoie des données en POST
-  ),
-  appelf(n(r.send) , p(chaineAppelAjax))
-            )
-         )
-      )
+      appelf(
+         nomf(global_messages.errors),
+         prop(appelf(nomf(push) , p(o.message)))
+      ),
+      #(
+        affectop('+=' , i , 1),
+        affectop('+=' , a , appelf(n(d.g) , p(a) , prop(v)))
+        affectop('+=' , appelf(n(d.g) , p(a) , prop(v)) , a),
+        affectop('+=' , appelf(n(d.g) , p(a) , prop(v)) , 0)
+        affectop('+=' , appelf(n(d.g) , p(a) , prop(v)) , appelf(n(d.g) , p(a) , prop(v)))
+      ),
+      affectop('+=' , a , condition(inf(a , 1)))
    ),
    #(pour mes tests),
-   concatFichier(testConcat1.js),
-   concatFichier(testConcat2.js)
+   #(concatFichier(testConcat1.js),),
+   #(concatFichier(testConcat2.js))
 )
