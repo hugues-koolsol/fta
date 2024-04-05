@@ -11,7 +11,7 @@
     <a href="index.html">html home</a>
     <a href="index.php">php home</a>
     <a href="todo.html">todo</a>
-    <a href="traiteJs.html">traiteJs</a>
+    <a href="traiteJs3.html">traiteJs3</a>
     <a href="aa_login.php">login</a>
   </nav>
   <h1>HTML HOME  🌞aa</h1>
@@ -119,7 +119,7 @@ function transform(){
 //  console.log('tableau1.out=',tableau1.out);
   
   var startMicro=performance.now();
-  var matriceFonction1=functionToArray2(tableau1.out);
+  var matriceFonction1=functionToArray2(tableau1.out,true,false);
   var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
 //  console.log(matriceFonction1);
@@ -146,12 +146,12 @@ function transform(){
      
      
      var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
-     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out);
+     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false);
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      
      if(compacteOriginal.status==true && compacteReecrit.status===true){
       if(compacteOriginal.value == compacteReecrit.value){
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b>';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><textarea rows="1" cols="30">'+compacteOriginal.value+'</textarea>';
       }else{
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
@@ -198,7 +198,7 @@ function transform(){
     
 /*    
     var startMicro=performance.now();
-    var matriceFonction1=functionToArray2(tableau1.out);
+    var matriceFonction1=functionToArray2(tableau1.out,true,false);
     var endMicro=performance.now();  console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
     var told1=document.createElement('table');
     told1.setAttribute('class','tableau1');

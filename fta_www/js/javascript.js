@@ -36,13 +36,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
 
  for(i=id;i<l01 && tab[i][3]>=tab[id][3] ;i++){
   
-  if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' || tab[i][1]=='continue' ) && tab[i][2]=='f' ){  // i18
-   if(tab[i][8]==0){
-     t+=espacesn(true,niveau);
-     t+=tab[i][1]+';'
+  if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' || tab[i][1]=='continue' || 'useStrict' === tab[i][1] ) && tab[i][2]=='f' ){  // i18
+   if( 'useStrict' === tab[i][1]){
+    t+=espacesn(true,niveau);
+    t+='"use strict";';
    }else{
-    console.trace();
-    return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans un '+tab[i][1]+' qui doit être sous le format '+tab[i][1]+'() strictement'});
+    if(tab[i][8]==0){
+      t+=espacesn(true,niveau);
+      t+=tab[i][1]+';'
+    }else{
+     console.trace();
+     return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans un '+tab[i][1]+' qui doit être sous le format '+tab[i][1]+'() strictement'});
+    }
    }
   }else if(tab[i][1]=='revenir' && tab[i][2]=='f' ){  // i18
    if(tab[i][8]==0){
@@ -309,7 +314,13 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      obj=js_tabTojavascript1(tab,tabchoix[j][0]+1,dansFonction,true,niveau);
      niveau--;
      if(obj.status==true){
+      
       initialisation+=obj.value;
+      if(initialisation.substr(initialisation.length-1,1)===';'){
+       initialisation=initialisation.substr(0,initialisation.length-1);
+      }
+      
+      
      }else{
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
      }
@@ -331,6 +342,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
      niveau--;
      if(obj.status==true){
       increment+=obj.value;
+      if(increment.substr(increment.length-1,1)===';'){
+       increment=increment.substr(0,increment.length-1);
+      }
+      
      }else{
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
      }
@@ -884,7 +899,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
     
     t+=''+tabAffecte['par0'][1]+'='+tabAffecte['par1'][13]+';';
     
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && ( tabAffecte['par1'][1]=='mult' ||  tabAffecte['par1'][1]=='plus' ||  tabAffecte['par1'][1]=='etBin' ) ){
+   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && ( tabAffecte['par1'][1]=='mult' ||  tabAffecte['par1'][1]=='plus'  ||  tabAffecte['par1'][1]=='moins' ||  tabAffecte['par1'][1]=='etBin' ) ){
     
     var objOperation=TraiteOperations1(tab,tabAffecte['par1'][0]);
     if(objOperation.status==true){
@@ -949,12 +964,21 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
        
       }else if(tab[i+2][1]=='condition' && tab[i+2][2]==='f' ){
        t+='var '+tab[i+1][1]+'= ';
-       debugger;
+/*       debugger; */
        obj=js_condition1(tab,i+3,niveau);
        if(obj.status==true){
         t+=obj.value+';';
        }else{
         return logerreur({status:false,value:t,id:id,message:'erreur dans une condition'});
+       }
+
+      }else if(tab[i+2][2]==='f' && ( tab[i+2][1]=='plus' )  ){
+       
+       var objOperation=TraiteOperations1(tab,i+2,niveau);
+       if(objOperation.status==true){
+        t+=objOperation.value+';';
+       }else{
+        return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur declaration '});
        }
        
 
@@ -969,7 +993,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
       
     }    
    }else{
-     return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration, declare  doit avoir 2 paramètres'});
+     return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration 0996, declare  doit avoir 2 paramètres'});
    }
    reprise=i+1;
    max=i+1;
@@ -1464,7 +1488,7 @@ function TraiteOperations1(tab,id,niveau){
    }
   }
  }
- console.log('t=',t);
+// console.log('t=',t);
  return {value:t,status:true};
 }
 //=====================================================================================================================
@@ -1592,8 +1616,21 @@ function js_condition1(tab,id,niveau){
        }
 
       }else if(tab[tabPar[0]][2]=='f' && tab[tabPar[0]][1]=='Typeof'){ // i18
+      
        t+='typeof '+tab[tabPar[0]+1][1]
+       
+      }else if(tab[tabPar[0]][2]=='f' && (tab[tabPar[0]][1]=='plus' || tab[tabPar[0]][1]=='moins' )){ // i18
+      
+       var objOperation=TraiteOperations1(tab,tab[tabPar[0]][0]);
+       if(objOperation.status==true){
+        t+=objOperation.value;
+       }else{
+        return logerreur({status:false,value:t,id:tabAffecte['par1'][0],tab:tab,message:'erreur 1607 sur des opérations '});
+       }
+      
+      
       }else{
+       
        return logerreur({status:false,value:t,id:id,message:'erreur 1528 dans une condition pour un test egal, diff...' + tab[tabPar[0]][1]});
       }
      }

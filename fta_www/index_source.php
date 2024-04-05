@@ -428,7 +428,7 @@ function voirSourceGenere(){
  var zoneContenantLeSourceGenere=dogid('zoneContenantLeSourceGenere')
  if( zoneContenantLeSourceGenere && zoneContenantLeSourceGenere.innerHTML==''){
   var zoneSourceGenere=document.createElement('pre');
-  
+  zoneSourceGenere.style.fontSize='0.8em';
   zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/</g,'&gt;');
   
   zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
