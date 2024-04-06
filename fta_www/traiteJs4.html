@@ -573,6 +573,8 @@ function traiteCondition1(element,niveau){
 //=========================================================================================================
 function traiteForIn1(element , niveau){
  console.log('%c dans traiteForIn1, element=' , "color:green;font-weight:bold;background:yellow;" , element);
+ t+=ajouteCommentaireAvant(element,niveau);   
+ 
  var t='';
  var esp0=' '.repeat(NBESPACESREV*niveau);
  var esp1=' '.repeat(NBESPACESREV);
@@ -659,6 +661,7 @@ function traiteFor1(element , niveau){
  var esp1=' '.repeat(NBESPACESREV);
 
  console.log('%c dans traiteFor1, element=' , "color:green;font-weight:bold;background:yellow;" , element);
+ t+=ajouteCommentaireAvant(element,niveau);   
 
  var pourInit='';
  if(element.init.type==="VariableDeclaration"){
@@ -1396,16 +1399,16 @@ function traiteAssignmentExpress1(element , niveau , opt){
   LF='';
   esp0='';
   esp1='';
+ }else{
+  t+=ajouteCommentaireAvant(element,niveau);   
  }
  var valeurLeft='';
 // console.log('dans traiteAssignmentExpress1 , element=',element);
 
  if(element.left && element.left.type==="Identifier"){
   if(element.operator==='='){
-//   t=LF+esp0+'affecte('+element.left.name+' , ';
    valeurLeft=LF+esp0+'affecte('+element.left.name+' , ';
   }else{
-//   t=LF+esp0+'affectop(\''+element.operator+'\' , '+element.left.name+' , ';
    valeurLeft=LF+esp0+'affectop(\''+element.operator+'\' , '+element.left.name+' , ';
   }
   if(element.right && element.right.type==="Literal"){
@@ -1711,6 +1714,8 @@ function traiteDeclaration1(element,niveau){
  var esp0=' '.repeat(NBESPACESREV*niveau);
  var esp1=' '.repeat(NBESPACESREV);
  var nomVariable='';
+
+ t+=ajouteCommentaireAvant(element,niveau);   
  
  for( var decl in element.declarations){
 //  console.log(element.declarations[decl]);
@@ -1718,7 +1723,6 @@ function traiteDeclaration1(element,niveau){
    t+=',';
   }
   var debutDeclaration='';
-//  t+='\n'+esp0+'declare('+element.declarations[decl].id.name + ' , ';
   debutDeclaration='\n'+esp0+'declare('+element.declarations[decl].id.name+' , ';
   nomVariable=element.declarations[decl].id.name;
   if(element.declarations[decl].init){
@@ -1830,6 +1834,8 @@ function traiteTry1(element,niveau){
  var t='';
  var esp0=' '.repeat(NBESPACESREV*niveau);
  var esp1=' '.repeat(NBESPACESREV);
+ t+=ajouteCommentaireAvant(element,niveau);   
+ 
  t+='\n'+esp0+'essayer('
  t+='\n'+esp0+esp1+'faire('
  niveau+=2;
@@ -1879,16 +1885,44 @@ function traiteTry1(element,niveau){
  return {status:true,value:t}
 }
 //=========================================================================================================
+function ajouteCommentaireAvant(element,niveau){
+
+ var t='';
+ var esp0=' '.repeat(NBESPACESREV*niveau);
+ var esp1=' '.repeat(NBESPACESREV);
+
+ for(var i=tabComment.length-1;i>=0;i--){
+  if(tabComment[i].type==='Block'){
+   if(tabComment[i].range[1]<positionDebutBloc){
+    t+='\n'+esp0+'#('+tabComment[i].value+'),';
+    tabComment.splice(i,1);
+    break;
+   }
+  }
+ }
+ return t;
+}
+var positionDebutBloc=0;
+var positionFinBloc=0;
+var positionFinBlocPrecedent=0;
+//=========================================================================================================
 function TransformAstEnRev(objectEsprimaBody,niveau){
  var t='';
  var esp0=' '.repeat(NBESPACESREV*niveau);
  var esp1=' '.repeat(NBESPACESREV);
+
  
 // console.log('entrée dans le récursif avec objectEsprimaBody=',objectEsprimaBody);
  // dans le body, il peut y avoir plusieurs éléments 0,1,2 ... n
  if(objectEsprimaBody.length){
   for(var i=0;i<objectEsprimaBody.length;i++){
    var element=objectEsprimaBody[i];
+   
+   positionFinBlocPrecedent=positionFinBloc;
+   positionDebutBloc=element.range[0];
+   positionFinBloc=element.range[1];
+   t+=ajouteCommentaireAvant(element,niveau);   
+   
    var bodyTrouve=false;
 //   console.log('element.type='+element.type,element);
 
@@ -1934,6 +1968,7 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
     
     
    }else if(element.type=='VariableDeclaration'){
+
    
    
 //    console.log('element.type='+element.type,element.declarations);
@@ -1986,6 +2021,7 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
    
     
    }else if('ReturnStatement'===  element.type){
+
     if(element.argument===null){
      t+='\n'+esp0+'revenir()';
     }else if(element.argument && element.argument.type=='Identifier'){
@@ -2048,14 +2084,17 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
      }
     }
    }
-   if(!bodyTrouve){
-//    console.log('body non trouvé pour '+element.type);
-   }
-  
   }
  }else{
 //  console.log('Pas de length pour '+objectEsprimaBody.type)
   if(objectEsprimaBody.type==='BlockStatement'){
+  
+   positionFinBlocPrecedent=positionFinBloc;
+   positionDebutBloc=objectEsprimaBody.range[0];
+   positionFinBloc=objectEsprimaBody.range[1];
+   t+=ajouteCommentaireAvant(objectEsprimaBody,niveau);   
+  
+  
    if(objectEsprimaBody.body){
     niveau++;
     var obj=TransformAstEnRev(objectEsprimaBody.body,niveau);
@@ -2074,9 +2113,10 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
 // console.log('sortie du récursif')
  return({status:true,value:t});
  
-} 
+}
 
 
+var tabComment=[];
 
 //=====================================================================================================================
 function transform(){
@@ -2096,42 +2136,26 @@ function transform(){
   
 //  console.log('a compiler="'+a.value+'"');
   try{
-  
-/*  
-   var ret=esprima.parseScript(
-    a.value, 
-    {} , 
-    function (node, meta){
-        console.log('meta=',meta);
-        if(node.type === 'VariableDeclaration'){
-         console.log('VariableDeclaration');
-        }else if(node.type === 'FunctionDeclaration'){ 
-         console.log('FunctionDeclaration');
-        }else if(node.type === 'FunctionExpression'){ 
-         console.log('FunctionExpression');
-        }else{
-         console.log('pas encore implémenté' , node.type, node);
-        }
-    }
-   );
-   console.log('ret.body=',ret.body);
-   
-*/
-
-   var ret=esprima.parseScript(a.value); // ,{'comment':true}
-//   console.log('ret.body=',ret.body);
-   var obj=TransformAstEnRev(ret.body,0);
-   if(obj.status==true){
-    console.log('\n\n\n===================\n\n\nretour parsing js ='+obj.status+'\n=====================\n'+obj.value);
-    document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
-    document.getElementById('txtar2').value=obj.value;
-   }
+   var ret=esprima.parseScript(a.value,{ range: true ,comment:true}); // ,{'comment':true}
+   console.log('ret.body=',ret);
 
    
   }catch(e){
    console.log('erreur esprima',e);
+   ret=false;
   }
-  
+  if(ret!==false){
+   tabComment=ret.comments;
+   var obj=TransformAstEnRev(ret.body,0);
+   if(obj.status==true){
+//    console.log('\n\n\n===================\n\n\nretour parsing js ='+obj.status+'\n=====================\n'+obj.value);
+    document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
+    document.getElementById('txtar2').value=obj.value;
+    console.log('Après traitement tabComment=',tabComment);
+   }
+  }else{
+   logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine'})
+  }
   
   displayMessages('zone_global_messages');
  

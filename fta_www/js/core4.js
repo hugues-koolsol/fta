@@ -20,9 +20,15 @@ var global_messages={
 };
 
 
-//=====================================================================================================================
+/*
+=====================================================================================================================
+supprime les messages de la zone global_messages et efface la zone de texte qui contient les message
+=====================================================================================================================
+*/
 function clearMessages(nomZone){
- document.getElementById(nomZone).innerHTML='';
+ try{
+  document.getElementById(nomZone).innerHTML='';
+ }catch(e){}
  global_messages={
   'errors':[],
   'warnings':[],
@@ -38,7 +44,11 @@ function clearMessages(nomZone){
   }
  }
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+affiche les messages contenus dans la variable global_messages
+=====================================================================================================================
+*/
 function displayMessages(nomZone){
 // console.log(global_messages);
  for(var i=0;i<global_messages.errors.length;i++){
@@ -80,7 +90,11 @@ function displayMessages(nomZone){
  
 }
 
-//=====================================================================================================================
+/*
+=====================================================================================================================
+met les valeurs dans la variable global_messages
+=====================================================================================================================
+*/
 function logerreur(o){
  if(o.hasOwnProperty('status')){
   if(o.status===false){
@@ -111,11 +125,17 @@ function logerreur(o){
  }
  return o;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+Mes petites fonctions utilitaires dont le fameux dogid !
+=====================================================================================================================
+*/
 function dogid(n){
  return document.getElementById(n);
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function concat(){
   var t='';
   var a=null;
@@ -124,7 +144,9 @@ function concat(){
   }
   return t;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function isNumeric(str) {
  if (typeof str != "string"){
   return false; // we only process strings!  
@@ -134,7 +156,11 @@ function isNumeric(str) {
  var leTest=!isNaN(str) && !isNaN(parseFloat(str)) 
  return leTest;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+construit des espaces pour l'indentation des sources
+=====================================================================================================================
+*/
 function espacesnrev(optionCRLF,i){
  var t='';
  if(optionCRLF){
@@ -148,7 +174,11 @@ function espacesnrev(optionCRLF,i){
  return t;
 }
 
-//=====================================================================================================================
+/*
+=====================================================================================================================
+Pour les appels ajax qui ne fonctionnent pas, on 
+=====================================================================================================================
+*/
 function display_ajax_error_in_cons(jsonRet) {
  var txt = '';
  if(jsonRet.hasOwnProperty('status')){
@@ -170,12 +200,16 @@ function display_ajax_error_in_cons(jsonRet) {
   }
  }
  displayMessages();
- console.log('%c'+txt,'color:red');
+ console.log('%c'+txt,'color:red;background:orange;');
  console.log('jsonRet=', jsonRet);
  
 }
 
-//=====================================================================================================================
+/*
+=====================================================================================================================
+Des fonctions raccourcies
+=====================================================================================================================
+*/
 function arrayToFunct1(matrice,retourLigne,coloration){
  var t='';
  var obj=a2F1(matrice,0,retourLigne,1,coloration);
@@ -184,20 +218,23 @@ function arrayToFunct1(matrice,retourLigne,coloration){
  }
  return obj;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function arrayToFunctNormalize(matrice,bAvecCommentaires){
  var out=arrayToFunct1(matrice,bAvecCommentaires,false);
  return out;  
 }
-
-
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function arrayToFunctNoComment(matrice){
  var out=arrayToFunct1(matrice,true,false);
  return out;
 }
-
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function functionToArray(src,quitterSiErreurNiveau){
  var tableau1=iterateCharacters2(src);
  var matriceFonction=functionToArray2(tableau1.out,quitterSiErreurNiveau,false);
@@ -207,8 +244,9 @@ function functionToArray(src,quitterSiErreurNiveau){
 }
 
 /*
-  ========================================================================================================================
-  fonction de remplacement globale
+=====================================================================================================================
+fonction de remplacement globale
+=====================================================================================================================
 */
 function replaceAll(s,chaineAremplacer,chaineQuiRemplace){
     var r1= new RegExp(chaineAremplacer,'g');
@@ -216,8 +254,9 @@ function replaceAll(s,chaineAremplacer,chaineQuiRemplace){
     return ret;
 }
 /*
-  ========================================================================================================================
+  =====================================================================================================================
   fonction de remplacement NON globale
+  =====================================================================================================================
 */
 function myReplace(s,chaineAremplacer,chaineQuiRemplace){
     var r1= new RegExp(chaineAremplacer,''); // pas de g
@@ -225,8 +264,9 @@ function myReplace(s,chaineAremplacer,chaineQuiRemplace){
     return ret;
 }
 /*
-  ========================================================================================================================
+  =====================================================================================================================
   fonction transforme un commentaire pour un fichier rev
+  =====================================================================================================================
 */
 function ttcomm1(texte,niveau,ind){
     var s='';
@@ -234,8 +274,9 @@ function ttcomm1(texte,niveau,ind){
     return s;
 }
 /*
-  ========================================================================================================================
+  =====================================================================================================================
   fonction transforme un commentaire 
+  =====================================================================================================================
 */
 function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
     var i=0;
@@ -965,6 +1006,24 @@ function iterateCharacters2(str){
   ==================================================
   ==================================================
   ==================================================
+  reconstruit une chaine à partir du tableau
+  c'est utile en cas d'erreur !
+  ==================================================
+  ==================================================
+  ==================================================
+*/  
+function reconstruitChaine(tab,debut,fin){
+ var t='';
+ for(var i=debut;i<=fin && i<tab.length;i++){
+  t+=tab[i][0];
+ }
+ return t;
+}
+
+/*
+  ==================================================
+  ==================================================
+  ==================================================
   tableau retourné par l'analyse syntaxique 
   du texte en entrée de la fonction functionToArray2
   ==================================================
@@ -1121,12 +1180,23 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                  if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
                      dernier=i-1;
                  }else{
-                     temp={'status':false,'value':T,'id':i,'message':'0 apres une constante, il doit y avoir un caractère d\'echappement'};
+                     if(i>100){
+                      var presDe=reconstruitChaine(tableauEntree,i-100,i+110);
+                     }else{
+                      var presDe=reconstruitChaine(tableauEntree,0,i+10);
+                     }
+                  
+                     temp={'status':false,'value':T,'id':i,'message':'0 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
                      return(logerreur(temp));
                  }
                 }else{
                  if(!(autoriserCstDansRacine===true)){
-                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     if(i>100){
+                      var presDe=reconstruitChaine(tableauEntree,i-100,i+110);
+                     }else{
+                      var presDe=reconstruitChaine(tableauEntree,0,i+10);
+                     }
+                     temp={'status':false,'id':i,'value':T,'message':'-2 la racine ne peut pas contenir des constantes près de '+presDe};
                      return(logerreur(temp));
                  }
                 }
@@ -1135,7 +1205,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=true;
                 if(autoriserCstDansRacine!==true){
                  if((niveau == 0)){
-                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes'};
+                     if(i>100){
+                      var presDe=reconstruitChaine(tableauEntree,i-100,i+110);
+                     }else{
+                      var presDe=reconstruitChaine(tableauEntree,0,i+10);
+                     }
+                     temp={'status':false,'id':i,'value':T,'message':'-1 la racine ne peut pas contenir des constantes près de '+presDe};
                      return(logerreur(temp));
                  }
                 }
@@ -1198,7 +1273,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                  if((c1 == ',') || c1 == '\t' || c1 == '\n' || c1 == '\r' || c1 == '/' || c1 == ' ' || c1 == ')'){
                      dernier=i-1;
                  }else{
-                     temp={'status':false,'value':T,'id':i,'message':'1 apres une constante, il doit y avoir un caractère d\'echappement'};
+                     if(i>100){
+                      var presDe=reconstruitChaine(tableauEntree,i-100,i+110);
+                     }else{
+                      var presDe=reconstruitChaine(tableauEntree,0,i+10);
+                     }
+                     temp={'status':false,'value':T,'id':i,'message':'1 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
                      return(logerreur(temp));
                  }
                 }else{
