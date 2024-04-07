@@ -96,7 +96,7 @@ function html_header1($p=array()){
 //==================================================================================================
 function html_footer1($p=array()){
  $t='';
- $t.='  <script type="text/javascript" src="js/core4.js"></script>'.CRLF;
+ $t.='  <script type="text/javascript" src="js/core5.js"></script>'.CRLF;
  if(isset($p['js'])){
   foreach($p['js'] as $k1=>$v1){
    $t.='  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;

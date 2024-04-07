@@ -26,19 +26,9 @@ print($o1);$o1='';
 </nav>
    <table>
      <tr>
-       <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;">
-         <button onclick="charger('source1.txt')" title="source1.txt">test.html</button>
-         <button onclick="charger('source2.txt')" title="source2.txt">test.js</button>
-         <button onclick="charger('source3.txt')" title="source3.txt">test.php</button>
-         <button onclick="charger('source4.txt')" title="source4.txt">aa_login_test</button>
-         <button onclick="charger('source5.txt')" title="source5.txt">index_test</button>
-         <button onclick="charger('source6.txt')" title="source6.txt">index_source_test</button>
-         <button onclick="charger('source7.txt')" title="source7.txt">test_factorielle</button>         
-         <button onclick="charger('source8.txt')" title="source8.txt">todo</button>         
-         
-       </td>
+       <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;"></td>
        <td>
-         <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:85vh;padding:3px 3px 3px 8px;"></textarea>
+         <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:75vh;padding:3px 3px 3px 8px;"></textarea>
        </td>
        <td style="vertical-align: text-top;">
          <textarea id="normalise" class="yytextSmall" style="display:none" cols="100" rows="10" spellcheck="false"></textarea>
@@ -62,7 +52,9 @@ var global_editeur_debut_texte='';
 var global_editeur_fin_texte='';
 var global_editeur_debut_texte_tab=[];
 var global_editeur_scrolltop=0;
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function sauvegardeTexteSource(){
  var i=0;
  var c='';
@@ -88,10 +80,15 @@ function sauvegardeTexteSource(){
  document.getElementById('nomDuSource').disabled=true;
  
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+Recherche du bloc dans la parenthèse courante et décale le bloc à droite ou à gauche
+=====================================================================================================================
+*/
 function decaler(direction){
 
  parentheses();
+ return;
  if(global_editeur_derniere_valeur_selecStart<global_editeur_derniere_valeur_selectEnd){
   console.log(global_editeur_derniere_valeur_selecStart,global_editeur_derniere_valeur_selectEnd);
   var zoneSource=document.getElementById('zonesource');
@@ -118,7 +115,9 @@ function decaler(direction){
  }
  
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function parentheses(){
  if(global_editeur_derniere_valeur_selecStart<0){
   return;
@@ -140,7 +139,9 @@ function parentheses(){
  }
 
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function selectTextareaLine(tarea,lineNum) {
  lineNum=lineNum<=0?1:lineNum;
  lineNum--; // array starts at 0
@@ -186,15 +187,21 @@ function selectTextareaLine(tarea,lineNum) {
  }
  return false;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function jumpToError(i){
  selectTextareaLine(document.getElementById('zonesource'),i)
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function reprendre(){
  document.getElementById('zonesource').value=document.getElementById('normalise').value;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function reprendreEtRecompiler(){
  document.getElementById('zonesource').value=document.getElementById('normalise').value;
  enregistrer2();
@@ -240,12 +247,16 @@ function compareNormalise(zoneSource,zoneNormalisee , comparaisonSourcesSansComm
  }
  return true;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function memeHauteur(normalise,source){
   var bou=document.getElementById(source).getBoundingClientRect();
   document.getElementById(normalise).style.height=bou.height+'px';
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function ajusteTailleTextareaContenantSource(normalise){
   try{
    var tab=document.getElementById(normalise).value.split('\n');
@@ -264,7 +275,9 @@ function ajusteTailleTextareaContenantSource(normalise){
    //var tab=document.getElementById(normalise).innetHTML.split('\n');
   }
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function enregistrer2(){
  var sourcesCompactesIdentiques=false;
  var sourcesIdentiques=false;
@@ -416,13 +429,24 @@ function enregistrer2(){
   zoneContenantLeSourceGenere.style.display='none';
   zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
   zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
+  
+  
+  var zoneContenantLeSourceGenere2=document.createElement('textarea');
+  zoneContenantLeSourceGenere2.rows=3;
+  zoneContenantLeSourceGenere2.cols=120;
+  zoneContenantLeSourceGenere2.style.display='none';
+  zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
+  zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere2);
+  
+  
   voirSourceGenere();
 
  } 
  displayMessages('zone_global_messages')
 }
-
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function voirSourceGenere(){
  
  var zoneContenantLeSourceGenere=dogid('zoneContenantLeSourceGenere')
@@ -433,6 +457,11 @@ function voirSourceGenere(){
   
   zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
   zoneContenantLeSourceGenere.style.display='';
+  
+  zoneContenantLeSourceGenere2.value=global_messages.data.sourceGenere
+  zoneContenantLeSourceGenere2.style.display='';
+  
+  
  }else{
   if(zoneContenantLeSourceGenere.style.display=='none'){
    zoneContenantLeSourceGenere.style.display=''
@@ -444,8 +473,9 @@ function voirSourceGenere(){
  
  
 }
-
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function voirMatrice1(){
 // console.log(global_messages.data.matrice);
 
@@ -467,7 +497,9 @@ function voirMatrice1(){
 
 
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function voirTableau1(){
 // console.log(global_messages.data.tableau);
  
@@ -490,7 +522,9 @@ function voirTableau1(){
  
  
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function afficherFichierSource(source){
  if(source.status==true){
   var zoneSource=document.getElementById(source.nomZone);
@@ -506,7 +540,9 @@ function afficherFichierSource(source){
   console.log(source);
  }
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function chargerFichierRev(nomFichierSource){
  clearMessages('zone_global_messages');
  document.getElementById('sauvegarderLeNormalise').disabled=true;
@@ -515,7 +551,9 @@ function chargerFichierRev(nomFichierSource){
  document.getElementById('zonesource').value='';
  loadRevFile(nomFichierSource,afficherFichierSource,'zonesource',enregistrer2);
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function getCaretCoordinates(element, position){ //, options) {
   var isBrowser = (typeof window !== 'undefined');
   var isFirefox = (isBrowser && window.mozInnerScreenX != null);
@@ -619,7 +657,9 @@ function getCaretCoordinates(element, position){ //, options) {
 
   return coordinates;
 }
-
+/*
+=====================================================================================================================
+*/
 function createSelection(field, start, end) {
  if( field.createTextRange ) {
   var selRange = field.createTextRange();
@@ -636,7 +676,9 @@ function createSelection(field, start, end) {
  field.focus();
 } 
 
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function mettreEnCommentaire(){
  var zoneSource=document.getElementById('zonesource');
  console.log(zoneSource.selectionStart , zoneSource.selectionEnd);
@@ -691,7 +733,9 @@ function mettreEnCommentaire(){
  
  
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function insertSource(nomFonction){
  var i=0;
  var j=0;
@@ -759,8 +803,9 @@ function insertSource(nomFonction){
     }else if(nomFonction=='appelf'){
 
      toAdd =             'appelf(';
-     toAdd+='\n'+espaces+de1+'n(nomFonction),';
      toAdd+='\n'+espaces+de1+'r(variableDeRetour),';
+     toAdd+='\n'+espaces+de1+'element(nomElement),';
+     toAdd+='\n'+espaces+de1+'nomf(nomFonction),';
      toAdd+='\n'+espaces+de1+'p(parametre1),';
      toAdd+='\n'+espaces+de1+'p(parametre2)';
      toAdd+='\n'+espaces+'),';
@@ -784,7 +829,9 @@ function insertSource(nomFonction){
   
  }
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function initialisationEditeur(){
  var i=0;
  var j=0;
@@ -803,7 +850,9 @@ function initialisationEditeur(){
  }
  global_editeur_fin_texte=zoneSource.value.substr(zoneSource.selectionStart);
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function razEditeur(){
  var zoneSource=document.getElementById('zonesource');
  global_editeur_derniere_valeur_selecStart=0;
@@ -813,37 +862,52 @@ function razEditeur(){
  global_editeur_fin_texte=zoneSource.value.substr(zoneSource.selectionStart);
  global_editeur_scrolltop=0;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.getElementById('zonesource').onkeydown=function(e){
  initialisationEditeur();
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  return;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.getElementById('zonesource').onclick=function(e){
  initialisationEditeur();
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  return;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.getElementById('zonesource').onkeydown=function(e){
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  global_editeur_scrolltop=this.scrollTop;
 // console.log('global_editeur_scrolltop=',global_editeur_scrolltop);
  return;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.getElementById('normalise').onclick=function(e){
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  return;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.getElementById('normalise').onkeydown=function(e){
  document.getElementById('sauvegarderLeNormalise').disabled=true;
  return;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.getElementById('zonesource').onkeyup=analyseKeyUp;
+/*
+=====================================================================================================================
+*/
 function analyseKeyUp(e){
 // console.log( 'e=' , e );
 // console.log('avant tout: this.scrollTop='+this.scrollTop+', global_editeur_scrolltop='+global_editeur_scrolltop+','+document.getElementById('zonesource').scrollTop);
@@ -935,14 +999,20 @@ function analyseKeyUp(e){
    5
   )
    
+ }else if(e.keyCode==36 ){ // crtl v
+  var zoneSource=document.getElementById('zonesource');
+  zoneSource.scrollTo({left: 0}); // , behavior: "smooth"
+  window.scrollTo({ left: 0 }); // , behavior: 'smooth'
    
  }else{
-  global_editeur_scrolltop
+  
   initialisationEditeur();
  }
  return false;
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function chargerLaListeDesSourcesRev(){
  var r = new XMLHttpRequest();
  r.open("POST",'za_ajax.php?getRevFiles',true);
@@ -1018,7 +1088,9 @@ function chargerLaListeDesSourcesRev(){
  return logerreur({status:true});  
  
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 function chargerLeDernierSourceChargePrecedemment(){
  var fta_dernier_fichier_charge=localStorage.getItem("fta_dernier_fichier_charge");
 // console.log('fta_dernier_fichier_charge=' , fta_dernier_fichier_charge );
@@ -1026,7 +1098,9 @@ function chargerLeDernierSourceChargePrecedemment(){
   loadRevFile(fta_dernier_fichier_charge,afficherFichierSource,'zonesource');
  }
 }
-//=====================================================================================================================
+/*
+=====================================================================================================================
+*/
 document.addEventListener("DOMContentLoaded", function () {
   chargerLaListeDesSourcesRev('source1.txt');
   chargerLeDernierSourceChargePrecedemment()

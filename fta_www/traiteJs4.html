@@ -88,7 +88,7 @@ function traiteConditionalExpression1(element,niveau){
  var t='';
  console.log('element=',element);
  if(element.test.type==="BinaryExpression"){
-  var objtest1=traiteBinaryExpress1(element.test,niveau,false);
+  var objtest1=traiteBinaryExpress1(element.test,niveau,false,false);
   if(objtest1.status===true){
   }else{
    return logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 94 '});
@@ -142,7 +142,7 @@ function traiteConditionalExpression1(element,niveau){
  
 }
 //=========================================================================================================
-function traiteBinaryExpress1(element,niveau,parentEstCrochet){
+function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
  var t='';
  
  
@@ -185,7 +185,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet){
     t+=''+nomDuTest+'('+element.left.name+','+element.right.raw+')';
    }
   }else if(element.right && element.right.type==='BinaryExpression'){
-   var obj1=traiteBinaryExpress1(element.right,niveau,parentEstCrochet);
+   var obj1=traiteBinaryExpress1(element.right,niveau,parentEstCrochet,dansSiOuBoucle);
    if(obj1.status===true){
     t+=''+nomDuTest+'('+element.left.name+','+obj1.value+')';
    }else{
@@ -233,7 +233,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet){
   }else if(element.right && element.right.type==='BinaryExpression'){
   
    var nomDuTest=recupNomOperateur(element.operator);
-   var obj1=traiteBinaryExpress1(element.right,niveau,parentEstCrochet);
+   var obj1=traiteBinaryExpress1(element.right,niveau,parentEstCrochet,dansSiOuBoucle);
    if(obj1.status===true){
     t+=''+nomDuTest+'('+element.left.raw+','+obj1.value+')';
    }else{
@@ -278,7 +278,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet){
  
   var nomDuTest=recupNomOperateur(element.operator);
   
-  var obj0=traiteBinaryExpress1(element.left,niveau,parentEstCrochet);
+  var obj0=traiteBinaryExpress1(element.left,niveau,parentEstCrochet,dansSiOuBoucle);
   if(obj0.status===true){
    
   }else{
@@ -343,7 +343,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet){
     }
    }else if(element.right && element.right.type==="BinaryExpression"){
 
-    var obj2=traiteBinaryExpress1(element.right,niveau,parentEstCrochet);
+    var obj2=traiteBinaryExpress1(element.right,niveau,parentEstCrochet,dansSiOuBoucle);
     if(obj2.status===true){
      
      t+=''+nomDuTest+'('+obj1.value+','+obj2.value+')';
@@ -376,7 +376,11 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet){
   var nomDuTest=recupNomOperateur(element.operator);
   if(element.right && element.right.type==='Literal' && element.left.argument.type==='Identifier'){
    if(nomDuTest==='diff' || nomDuTest === 'egal' || nomDuTest === 'egalstricte' || nomDuTest === 'diffstricte' || nomDuTest === 'sup' || nomDuTest === 'inf' || nomDuTest === 'supeg' || nomDuTest === 'infeg' || nomDuTest === 'non'){
-    t+='condition('+nomDuTest+'('+nomDuTestUnary+'('+element.left.argument.name+')'+','+element.right.raw+'))';
+    if(dansSiOuBoucle){
+     t+=''+nomDuTest+'('+nomDuTestUnary+'('+element.left.argument.name+')'+','+element.right.raw+')';
+    }else{
+     t+='condition('+nomDuTest+'('+nomDuTestUnary+'('+element.left.argument.name+')'+','+element.right.raw+'))';
+    }
    }else{
     t+=''+nomDuTest+'('+nomDuTestUnary+'('+element.left.argument.name+')'+','+element.right.raw+')';
    }
@@ -413,11 +417,11 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet){
  return {status:true,value:t}
 }
 //=========================================================================================================
-function traiteLogicalExpression1(element , niveau){
+function traiteLogicalExpression1(element , niveau,dansSiOuBoucle){
  var t='';
 
  if(element.left && element.right){
-  var obj1=traiteCondition1(element.left,niveau);
+  var obj1=traiteCondition1(element.left,niveau,dansSiOuBoucle);
   if(obj1.status===true){
    t+=''+obj1.value+'';
   }else{
@@ -428,9 +432,15 @@ function traiteLogicalExpression1(element , niveau){
   }else if("||"==element.operator){
    t+=',ou'
   }else{
-   console.error('traiteLogicalExpression1 todo 80 ',element.operator );
+   return logerreur({'status':false,'message':'erreur dans traiteLogicalExpression1 0436 '+element.operator});
   }
-  var obj2=traiteCondition1(element.right,niveau);
+  var obj2=traiteCondition1(element.right,niveau,dansSiOuBoucle);
+  if(obj2.status===true){
+   t+='('+obj2.value+')'; // les parenthèses encadrent un "et" ou un "ou"
+  }else{
+   return logerreur({'status':false,'message':'erreur dans traiteLogicalExpression1 443 '+element.operator});
+  }
+/*  
 //   console.log('ici' + element.right.type)
   if(obj2.status===true){
    if(element.right.type=='LogicalExpression'){
@@ -453,7 +463,8 @@ function traiteLogicalExpression1(element , niveau){
        var nomDuTestUnaryLeft=recupNomOperateur(element.left.operator);
        var obj2=traiteCallExpression1(element.left.argument,niveau,element.left,{'sansLF':true});
        if(obj2.status===true){
-        t=nomDuTestUnaryLeft+'('+obj2.value+')'+t+'('+nomDuTestUnaryRight+'('+obj1.value+'))';
+//        t=nomDuTestUnaryLeft+'('+obj2.value+')'+t+'('+nomDuTestUnaryRight+'('+obj1.value+'))';
+        t+=nomDuTestUnaryLeft+'('+obj2.value+')'+'('+nomDuTestUnaryRight+'('+obj1.value+'))';
        }else{
         return logerreur({status:false,message:'erreur traiteLogicalExpression1 326 ' })
        }
@@ -477,6 +488,7 @@ function traiteLogicalExpression1(element , niveau){
   }else{
    return logerreur({'status':false,'message':'erreur dans traiteLogicalExpression1 0234 '});
   }
+*/  
  }else{
   console.error('traiteLogicalExpression1 todo 72 ',element );
   return logerreur({'status':false,'message':'erreur dans traiteLogicalExpression1 0238 '});
@@ -485,11 +497,11 @@ function traiteLogicalExpression1(element , niveau){
  return {status:true,value:t}
 }
 //=========================================================================================================
-function traiteCondition1(element,niveau){
+function traiteCondition1(element,niveau,dansSiOuBoucle){
  var t='';
 // console.warn('element=',element);
  if(element.type==='BinaryExpression'){
-  var obj1=traiteBinaryExpress1(element,niveau,false);
+  var obj1=traiteBinaryExpress1(element,niveau,false,dansSiOuBoucle);
   if(obj1.status===true){
    t+='('+obj1.value+')';
   }else{
@@ -497,7 +509,7 @@ function traiteCondition1(element,niveau){
   }
   
  }else if(element.type==='LogicalExpression'){
-  var obj=traiteLogicalExpression1(element,niveau);
+  var obj=traiteLogicalExpression1(element,niveau,dansSiOuBoucle);
   if(obj.status===true){
    t+=''+obj.value+'';
   }else{
@@ -526,7 +538,7 @@ function traiteCondition1(element,niveau){
   var nomDuTestUnary=recupNomOperateur(element.operator);
   if(element.operator==='!' && element.argument.type==='LogicalExpression'){
    
-   var obj1=traiteLogicalExpression1(element.argument,niveau);
+   var obj1=traiteLogicalExpression1(element.argument,niveau,dansSiOuBoucle);
    if(obj1.status===true){
     t+=nomDuTestUnary+'('+obj1.value+')';
     
@@ -540,14 +552,14 @@ function traiteCondition1(element,niveau){
 
    var obj1=traiteCallExpression1(element.argument,niveau,element,{'sansLF':true});
    if(obj1.status===true){
-    t+=nomDuTestUnary+'('+element.argument.name+')';
+    t+=nomDuTestUnary+'('+obj1.value+')';
    }else{
     return logerreur({status:false,message:'erreur traiteCondition1 0421 ' })
    }
 
   }else if(element.operator==='!' && element.argument.type==='BinaryExpression'){
 
-  var obj1=traiteBinaryExpress1(element.argument,niveau,false);
+  var obj1=traiteBinaryExpress1(element.argument,niveau,false,dansSiOuBoucle);
   if(obj1.status===true){
    t+=nomDuTestUnary+'('+obj1.value+')';
   }else{
@@ -724,7 +736,7 @@ function traiteFor1(element , niveau){
  }
  t+=')';
  t+='\n'+esp0+esp1+'condition(';
- var obj2=traiteCondition1(element.test,0);
+ var obj2=traiteCondition1(element.test,0,true);
  if(obj2.status===true){
   t+=''+obj2.value;
  }else{
@@ -790,7 +802,7 @@ function traiteIf1(element , niveau ,type ){
   t+='\n'+esp0+'choix(';
   t+='\n'+esp0+esp1+'si(';
   t+='\n'+esp0+esp1+esp1+'condition(';
-  var obj2=traiteCondition1(element.test,0);
+  var obj2=traiteCondition1(element.test,0,true);
   if(obj2.status===true){
    t+=''+obj2.value;
   }else{
@@ -801,7 +813,7 @@ function traiteIf1(element , niveau ,type ){
   if(element.test){ // c'est un elseif
    t+='\n'+esp0+esp1+'sinonsi(';
    t+='\n'+esp0+esp1+esp1+'condition(';
-   var obj2=traiteCondition1(element.test,0);
+   var obj2=traiteCondition1(element.test,0,true);
    if(obj2.status===true){
     t+=''+obj2.value;
    }else{
@@ -837,6 +849,19 @@ function traiteIf1(element , niveau ,type ){
  }else{
   return logerreur({status:false,message:'erreur traiteIf1 0826 pour '+element.type })
  }
+//  positionDebutBloc=objectEsprimaBody.range[0];
+ if(element.alternate){
+  positionDebutBloc=element.alternate.range[0];  
+  t+=ajouteCommentaireAvant(element.alternate,niveau+3);   
+ }else{
+  if(type=='else'){ 
+   /* il n'y a pas d'alternate mais il y a peut être des commentaires à la fin */
+   positionDebutBloc=element.range[1];  // on met ici la position de fin de bloc
+   t+=ajouteCommentaireAvant(element,niveau+3);
+  }
+ }
+ 
+ 
  t+='\n'+esp0+esp1+esp1+')'; // fin alors
  t+='\n'+esp0+esp1+')'; // fin si
  // y a-t-il des alternates
@@ -917,7 +942,7 @@ function traiteCallExpression1(element , niveau , parent , opt , cumulProprieteM
    }else if("Identifier"===element.arguments[i].type){
     lesArguments+='p('+element.arguments[i].name+')';
    }else if("BinaryExpression"===element.arguments[i].type){
-    obj1=traiteBinaryExpress1(element.arguments[i],niveau,true)
+    obj1=traiteBinaryExpress1(element.arguments[i],niveau,true,false)
     if(obj1.status===true){
      lesArguments+='p('+obj1.value+')';
      console.log('%c 717 vérifier la validite de ', 'color:yellow;background:red;' , 'p('+obj1.value+')');
@@ -1185,7 +1210,7 @@ function traiteObjectExpression1(element , niveau){
     return logerreur({status:false,message:'erreur traiteObjectExpression1 0799 pour '+eval.value.type });
    }
   }else if(val.value.type==='BinaryExpression'){
-   var obj2=traiteBinaryExpress1(val.value,niveau,false)
+   var obj2=traiteBinaryExpress1(val.value,niveau,false,false)
    if(obj2.status===true){
     t+=''+obj2.value+')';
    }else{
@@ -1305,7 +1330,7 @@ function traiteMemberExpression1(element , niveau,parent,cumulProprieteMembre){ 
     
    }else if(element.property && element.property.type==="BinaryExpression"){
    
-    var obj1=traiteBinaryExpress1(element.property,niveau,true)
+    var obj1=traiteBinaryExpress1(element.property,niveau,true,false)
     if(obj1.status===true){
      t+=element.object.name+'['+obj1.value+']';
     }else{
@@ -1327,7 +1352,7 @@ function traiteMemberExpression1(element , niveau,parent,cumulProprieteMembre){ 
      }else if(element.property.type==='Identifier'){
       t+='['+element.property.name+']';
      }else if(element.property.type==='BinaryExpression'){
-      var obj2=traiteBinaryExpress1(element.property,niveau,true)
+      var obj2=traiteBinaryExpress1(element.property,niveau,true,false)
       if(obj2.status===true){
        t+='['+obj2.value+']';
       }else{
@@ -1423,7 +1448,7 @@ function traiteAssignmentExpress1(element , niveau , opt){
 //  }else if(
 //  
   }else if(element.right && element.right.type==="BinaryExpression"){
-   obj1=traiteBinaryExpress1(element.right,niveau,false)
+   obj1=traiteBinaryExpress1(element.right,niveau,false,false)
    if(obj1.status===true){
     t+=valeurLeft+obj1.value+')';
    }else{
@@ -1480,7 +1505,7 @@ function traiteAssignmentExpress1(element , niveau , opt){
    
   }else if(element.right && element.right.type==="LogicalExpression"){
 
-   var obj1=traiteLogicalExpression1(element.right,niveau);
+   var obj1=traiteLogicalExpression1(element.right,niveau,false);
    if(obj1.status===true){
     t+=valeurLeft+'condition('+obj1.value+'))';
 
@@ -1553,7 +1578,7 @@ function traiteAssignmentExpress1(element , niveau , opt){
     }else{
      t=LF+esp0+'affectop(\''+element.operator+'\' , '+obj2.value+' , ';
     }
-    obj1=traiteBinaryExpress1(element.right,niveau,false)
+    obj1=traiteBinaryExpress1(element.right,niveau,false,false)
     if(obj1.status===true){
      t+=obj1.value+')';
     }else{
@@ -1612,7 +1637,7 @@ function traiteAssignmentExpress1(element , niveau , opt){
     
    }else if('LogicalExpression'===element.right.type){
    
-    var obj1=traiteLogicalExpression1(element.right,niveau);
+    var obj1=traiteLogicalExpression1(element.right,niveau,false);
     if(obj1.status===true){
      if(element.operator==='='){
       t=LF+esp0+'affecte('+obj2.value+' , ';
@@ -1770,7 +1795,7 @@ function traiteDeclaration1(element,niveau){
     }
 
    }else if("LogicalExpression"===element.declarations[decl].init.type){
-    var obj=traiteLogicalExpression1(element.declarations[decl].init,niveau);
+    var obj=traiteLogicalExpression1(element.declarations[decl].init,niveau,false);
     if(obj.status===true){
      if(obj.value.substr(0,1)===','){
       t+=debutDeclaration+'condition('+obj.value.substr(1)+'))';
@@ -1800,7 +1825,7 @@ function traiteDeclaration1(element,niveau){
     }
    
    }else if("BinaryExpression"===element.declarations[decl].init.type){
-    var obj1=traiteBinaryExpress1(element.declarations[decl].init,niveau,false);
+    var obj1=traiteBinaryExpress1(element.declarations[decl].init,niveau,false,false);
     if(obj1.status===true){
      t+=debutDeclaration+obj1.value+')';
     }else{
@@ -1865,7 +1890,6 @@ function traiteTry1(element,niveau){
    if(obj.status===true){
     t+='\n'+esp0+esp1+esp1+'faire(';
     if(obj.value==''){
-     t+='#(rien)';
      t+=')';
     }else{
      t+='\n'+esp0+esp1+esp1+esp1+obj.value;
@@ -1894,17 +1918,19 @@ function ajouteCommentaireAvant(element,niveau){
  for(var i=tabComment.length-1;i>=0;i--){
   if(tabComment[i].type==='Block'){
    if(tabComment[i].range[1]<positionDebutBloc){
-    t+='\n'+esp0+'#('+tabComment[i].value+'),';
+    /*
+     Attention, ici on remonte le tableau de caractères
+     donc on ajoute le précédent après
+    */
+    t='\n'+esp0+'#('+tabComment[i].value+'),'+t; 
     tabComment.splice(i,1);
-    break;
    }
   }
  }
  return t;
 }
 var positionDebutBloc=0;
-var positionFinBloc=0;
-var positionFinBlocPrecedent=0;
+var positionDebutBlocSuivant=0;
 //=========================================================================================================
 function TransformAstEnRev(objectEsprimaBody,niveau){
  var t='';
@@ -1917,10 +1943,10 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
  if(objectEsprimaBody.length){
   for(var i=0;i<objectEsprimaBody.length;i++){
    var element=objectEsprimaBody[i];
-   
-   positionFinBlocPrecedent=positionFinBloc;
+   if(i<objectEsprimaBody.length-1){
+    positionDebutBlocSuivant=objectEsprimaBody[i+1].range[0];
+   }
    positionDebutBloc=element.range[0];
-   positionFinBloc=element.range[1];
    t+=ajouteCommentaireAvant(element,niveau);   
    
    var bodyTrouve=false;
@@ -2087,12 +2113,9 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
   }
  }else{
 //  console.log('Pas de length pour '+objectEsprimaBody.type)
+
   if(objectEsprimaBody.type==='BlockStatement'){
   
-   positionFinBlocPrecedent=positionFinBloc;
-   positionDebutBloc=objectEsprimaBody.range[0];
-   positionFinBloc=objectEsprimaBody.range[1];
-   t+=ajouteCommentaireAvant(objectEsprimaBody,niveau);   
   
   
    if(objectEsprimaBody.body){

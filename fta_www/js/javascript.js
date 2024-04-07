@@ -166,10 +166,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    }
    
   }else if(tab[i][1]=='appelf' && tab[i][2]=='f'){ // i18
-   obj=js_traiteAppelFonction(tab,i,false,niveau,false);
+   obj=js_traiteAppelFonction(tab,i,true,niveau,false);
    
    if(obj.status==true){
-    t+=obj.value;
+    t+=espacesn(true,niveau);
+    t+=obj.value+';';
    }else{
     return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
    }
@@ -938,77 +939,89 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
   //=====================================================================================
   }else if(tab[i][1]=='declare'  && tab[i][2]=='f'){ // i18
    t+=espacesn(true,niveau);
-   if(tab[i][8]==2 ){
-    if(tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
-     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
-     if( (tab[i+2][1]=='vrai' || tab[i+2][1]=='faux' ) && tab[i+2][4]===false){
-      t+='var '+tab[i+1][1]+'='+(tab[i+2][1]==='vrai'?'true':'false')+';';
+   var tabdeclare=[];
+   for(j=i+1;j<l01;j++){
+    if(tab[j][3]<=tab[i][3]){
+     break;
+    }
+    if(tab[j][7]==tab[i][0]){
+     if(tab[j][1]==='#' && tab[j][2]==='f'){
      }else{
-      t+='var '+tab[i+1][1]+'='+(tab[i+2][4]===true?'\''+tab[i+2][1]+'\';' : tab[i+2][1]+';');
+      tabdeclare.push(tab[j]);
+     }
+    }
+   }
+   
+   if(tabdeclare.length==2 ){ // tab[i+1]=tabdeclare[0] tab[i+2]=tabdeclare[1]
+    if(tabdeclare[0][2]=='c' && tabdeclare[1][2]=='c' ){
+     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
+     if( (tabdeclare[1][1]=='vrai' || tabdeclare[1][1]=='faux' ) && tabdeclare[1][4]===false){
+      t+='var '+tabdeclare[0][1]+'='+(tabdeclare[1][1]==='vrai'?'true':'false')+';';
+     }else{
+      t+='var '+tabdeclare[0][1]+'='+(tabdeclare[1][4]===true?'\''+tabdeclare[1][1]+'\';' : tabdeclare[1][1]+';');
      }
     }else{
-     if(tab[i+1][2]=='c' && tab[i+2][2]=='f' ){
-      if(tab[i+2][1]=='new' && tab[i+2][8]==1 && tab[i+3][1]=='appelf' ){
-       t+='var '+tab[i+1][1]+'= new ';
-       obj=js_traiteAppelFonction(tab,i+3,true,niveau,false);
+     if(tabdeclare[0][2]=='c' && tabdeclare[1][2]=='f' ){
+      if(tabdeclare[1][1]=='new' && tabdeclare[1][8]==1 && tab[i+3][1]=='appelf' ){
+       t+='var '+tabdeclare[0][1]+'= new ';
+       obj=js_traiteAppelFonction(tab,tabdeclare[1][0]+1,true,niveau,false);
        if(obj.status==true){
         t+=obj.value+';';
        }else{
         return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration'});
        }
- //      t+='{};//todo declare 3 '+tab[i][1]+'';
-      }else if(tab[i+2][1]=='obj'){
-       if( tab[i+2][8]==0){
-        t+='var '+tab[i+1][1]+'={};';
+      }else if(tabdeclare[1][1]=='obj'){
+       if( tabdeclare[1][8]==0){
+        t+='var '+tabdeclare[0][1]+'={};';
        }else{
-        obj=js_traiteDefinitionObjet(tab,i+2,true);
+        obj=js_traiteDefinitionObjet(tab,tabdeclare[1][0],true);
         if(obj.status==true){
-         t+='var '+tab[i+1][1]+'='+obj.value+';';
+         t+='var '+tabdeclare[0][1]+'='+obj.value+';';
         }else{
          return logerreur({status:false,value:t,id:i,tab:tab,message:'dans obj de "declare" ou "dans" il y a un problème'});
         }
        }
-      }else if(tab[i+2][1]=='appelf' ){
-       t+='var '+tab[i+1][1]+'= ';
-       obj=js_traiteAppelFonction(tab,i+2,true,niveau,false);
+      }else if(tabdeclare[1][1]=='appelf' ){
+       t+='var '+tabdeclare[0][1]+'= ';
+       obj=js_traiteAppelFonction(tab,tabdeclare[1][0],true,niveau,false);
        if(obj.status==true){
         t+=obj.value+';';
        }else{
         return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration'});
        }
        
-      }else if(tab[i+2][1]=='condition' && tab[i+2][2]==='f' ){
-       t+='var '+tab[i+1][1]+'= ';
+      }else if(tabdeclare[1][1]=='condition' && tabdeclare[1][2]==='f' ){
+       t+='var '+tabdeclare[0][1]+'= ';
 /*       debugger; */
-       obj=js_condition1(tab,i+3,niveau);
+       obj=js_condition1(tab,tabdeclare[1][0]+1,niveau);
        if(obj.status==true){
         t+=obj.value+';';
        }else{
         return logerreur({status:false,value:t,id:id,message:'erreur dans une condition'});
        }
 
-      }else if(tab[i+2][2]==='f' && ( tab[i+2][1]=='plus' ||  tab[i+2][1]=='moins' ||  tab[i+2][1]=='mult' ||  tab[i+2][1]=='divi' )  ){
+      }else if(tabdeclare[1][2]==='f' && ( tabdeclare[1][1]=='plus' ||  tabdeclare[1][1]=='moins' ||  tabdeclare[1][1]=='mult' ||  tabdeclare[1][1]=='divi' )  ){
        
-       var objOperation=TraiteOperations1(tab,i+2,niveau);
+       var objOperation=TraiteOperations1(tab,tabdeclare[1][0],niveau);
        if(objOperation.status==true){
         t+=objOperation.value+';';
        }else{
-        return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur declaration '});
+        return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur 1249 sur declaration '});
        }
        
        
-      }else if(tab[i+2][1]=='tableau' && tab[i+2][2]==='f' ){
-       t+='var '+tab[i+1][1]+'= ';
-       var objTableau=js_traiteTableau1(tab,i+2,true,niveau,false);
+      }else if(tabdeclare[1][1]=='tableau' && tabdeclare[1][2]==='f' ){
+       t+='var '+tabdeclare[0][1]+'= ';
+       var objTableau=js_traiteTableau1(tab,tabdeclare[1][0],true,niveau,false);
        if(objTableau.status==true){
         t+=objTableau.value+';';
        }else{
-        return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 sur declaration '});
+        return logerreur({status:false,value:t,id:i,tab:tab,message:'erreur 1007 sur declaration '});
        }
 
-      }else if(tab[i+2][1]=='testEnLigne' && tab[i+2][2]==='f' ){
-       t+='var '+tab[i+1][1]+'= ';
-       var objtestLi=js_traiteInstruction1(tab,niveau,i+2);
+      }else if(tabdeclare[1][1]=='testEnLigne' && tabdeclare[1][2]==='f' ){
+       t+='var '+tabdeclare[0][1]+'= ';
+       var objtestLi=js_traiteInstruction1(tab,niveau,tabdeclare[1][0]); // i
        if(obj.status==true){
         t+=objtestLi.value+';';
        }else{
@@ -1203,7 +1216,7 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
        }
        
       }else{
-       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 dans un appel de fonction imbriqué 3 pour la fonction inconnue '+tab[j+1][1]});
+       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 dans un appel de fonction imbriqué 1207 pour la fonction inconnue '+tab[j+1][1]});
       }
      }
     }
@@ -1477,13 +1490,35 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction){ // id = p
   if(tab[j][3]==tab[id][3]+1){
    if(tab[j][1]=='' && tab[j][2]=='f'){
     if(tab[j][8]==2){
-     if(tab[j+2][1]=='obj'){
-      obj=js_traiteDefinitionObjet(tab,j+2,true);
-      if(obj.status==true){
-//       textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1])+'\''+':'+obj.value+'';
-       textObj+=','+ '\'' + tab[j+1][1] + '\'' + ':' + obj.value;
+     if(tab[j+2][2]==='f'){
+      if(tab[j+2][1]=='obj'){
+       obj=js_traiteDefinitionObjet(tab,j+2,true);
+       if(obj.status==true){
+ //       textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1])+'\''+':'+obj.value+'';
+        textObj+=','+ '\'' + tab[j+1][1] + '\'' + ':' + obj.value;
+       }else{
+        return logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'});
+       }
+      }else if(tab[j+2][1]=='plus'){
+       
+       var objOperation=TraiteOperations1(tab,j+2,0);
+       if(objOperation.status==true){
+        textObj+=','+ '\'' + tab[j+1][1] + '\'' + ':' + objOperation.value;
+       }else{
+        return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur js_traiteDefinitionObjet 1496 sur des opérations '});
+       }
+       
+      }else if(tab[j+2][1]=='appelf'){
+       var objfnt1=js_traiteAppelFonction(tab,j+2,true,0,true);
+       if(objfnt1.status===true){
+        textObj+=','+ '\'' + tab[j+1][1] + '\'' + ':' + objfnt1.value;
+       }else{
+        logerreur({status:false,value:t,id:j,tab:tab,message:'1069 erreur sur appel de fonction nom "'+tab[j][1]+'"'});
+       }
+       
+       
       }else{
-       return logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'});
+       return logerreur({status:false,value:t,id:id,tab:tab,message:'dans ajs_traiteDefinitionObjet, 1492"'});
       }
      }else{
       textObj+=','+(tab[j+1][4]==true?'\''+tab[j+1][1]+'\'':'\''+tab[j+1][1]+'\'')+':'+(tab[j+2][4]==true?'\''+tab[j+2][1]+'\'':tab[j+2][1])+'';
@@ -1564,10 +1599,20 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
   for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
    if(tab[j][1]=='element' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
     if(tab[j][8]==1){
-     if(tab[j+1][4]==true){
-      nomElement='\''+tab[j+1][1]+'\'';
-     }else{
-      nomElement=tab[j+1][1];
+     if(tab[j+1][2]==='c'){
+      if(tab[j+1][4]==true){
+       nomElement='\''+tab[j+1][1]+'\'';
+      }else{
+       nomElement=tab[j+1][1];
+      }
+     }else if(tab[j+1][2]==='f'){
+      var objinst=js_traiteInstruction1(tab,niveau,j+1);
+      if(objinst.status===true){
+       nomElement=objinst.value;
+      }else{
+       return logerreur({status:false,value:t,id:i,tab:tab,message:'element incorrecte dans appelf 1592 '});
+      }
+       
      }
     }
     break;
@@ -1756,8 +1801,17 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
         return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur des opérations '});
        }
        
+      }else if(tab[j+1][1]=='tableau' ){
+       var objTableau=js_traiteTableau1(tab,tab[j+1][0],true,niveau,false);
+       if(objTableau.status==true){
+        argumentsFonction+=',';
+        argumentsFonction+=objTableau.value;
+       }else{
+        return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 sur declaration '});
+       }
+       
       }else{
-       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 dans un appel de fonction imbriqué 3 pour la fonction inconnue '+tab[j+1][1]});
+       return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 dans un appel de fonction imbriqué 1784 pour la fonction inconnue '+tab[j+1][1]});
       }
      }
     }
@@ -1801,6 +1855,13 @@ function TraiteOperations1(tab,id,niveau){
  var t='';
  var i=0;
  var j=0;
+ /*
+  dans le cas d'un "plus" simple on est peut être au milieu d'une concaténation de chaine.
+  Si un des deux paramètre est numérique il est plus prudent d'ajouter une parenthèse
+  a+='e('+(f+1)+') g '+h+' i';
+ */
+ 
+ var condi0=tab[id][8]===2 && tab[id][1]==='plus' && ( (tab[id+1][2]==='c' && isNumeric(tab[id+1][1])) || (tab[id+2][2]==='c' && isNumeric(tab[id+2][1]) ) ) ;
  var l01=tab.length;
  var parentId=tab[id][0];
  var numEnfant=1;
@@ -1833,7 +1894,11 @@ function TraiteOperations1(tab,id,niveau){
       if(tab[i][4]===true){
        t+='\''+tab[i][1]+'\''
       }else{
-       t+=tab[i][1];
+       if(condi0){
+        t+='('+tab[i][1];
+       }else{
+        t+=tab[i][1];
+       }
       }
      }else if(tab[i][2]=='f'){
       if(tab[i][1]=='#'){
@@ -1875,7 +1940,7 @@ function TraiteOperations1(tab,id,niveau){
       }else{
        return logerreur({status:false,message:' erreur sur TraiteOperations1 1324'});
       }
-     }else if(tab[parentId][1]=='mult'){
+     }else if(tab[parentId][1]=='mult' || tab[parentId][1]=='divi'){
       t+='*(';
      }else if(tab[parentId][1]=='plus'){
       t+='+';
@@ -1889,7 +1954,7 @@ function TraiteOperations1(tab,id,niveau){
        var objOperation=TraiteOperations1(tab,i);
        if(objOperation.status==true){
         t+=objOperation.value;
-        if(tab[parentId][1]=='mult'){
+        if(tab[parentId][1]=='mult' || tab[parentId][1]=='divi' ){
          t+=')';
         }
        }else{
@@ -1899,7 +1964,7 @@ function TraiteOperations1(tab,id,niveau){
        var obj=js_traiteAppelFonction(tab,i,true,niveau,false);
        if(obj.status==true){
         t+=obj.value;
-        if(tab[parentId][1]=='mult'){
+        if(tab[parentId][1]=='mult' || tab[parentId][1]=='divi' ){
          t+=')';
         }
        }else{
@@ -1919,12 +1984,16 @@ function TraiteOperations1(tab,id,niveau){
      }else{
       if(tab[i][4]===true){
        t+='\''+tab[i][1]+'\''
-       if(tab[parentId][1]=='mult'){
+       if(tab[parentId][1]=='mult' || tab[parentId][1]=='divi' ){
         t+=')';
        }
       }else{
-       t+=tab[i][1];
-       if(tab[parentId][1]=='mult'){
+       if(condi0){
+        t+=tab[i][1]+')';
+       }else{
+        t+=tab[i][1];
+       }
+       if(tab[parentId][1]=='mult' || tab[parentId][1]=='divi' ){
         t+=')';
        }
       }
