@@ -36,7 +36,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
 
  for(i=id;i<l01 && tab[i][3]>=tab[id][3] ;i++){
   
-  if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' || tab[i][1]=='continue' || 'useStrict' === tab[i][1] ) && tab[i][2]=='f' ){  // i18
+  if( ( tab[i][1]=='break'  || tab[i][1]=='debugger' || tab[i][1]=='continue' || 'useStrict' === tab[i][1] || 'debugger' === tab[i][1] ) && tab[i][2]=='f' ){  // i18
    if( 'useStrict' === tab[i][1]){
     t+=espacesn(true,niveau);
     t+='"use strict";';
@@ -71,17 +71,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
        console.trace();
        return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
       }
+     }else if(tab[i+1][2]=='f' && tab[i+1][1]=='obj' ){
+      t+=espacesn(true,niveau);
+      obj=js_traiteDefinitionObjet(tab,tab[i+1][0],true);
+      if(obj.status==true){
+       t+='return('+obj.value+');';
+      }else{
+       return logerreur({status:false,value:t,id:i,tab:tab,message:'dans obj de "return" ou "dans" il y a un problème'});
+      }
      }else{
-       t+=espacesn(true,niveau);
-      t+='// todo revenir return args;';
-      console.trace();
-      return logerreur({status:false,value:t,id:i,tab:tab,message:'javascript non traité'});
+      return logerreur({status:false,value:t,id:i,tab:tab,message:'javascript non traité 0083'});
      }
     }else{
-     t+=espacesn(true,niveau);
-     t+='// todo revenir return args;';
-     console.trace();
-     return logerreur({status:false,value:t,id:i,tab:tab,message:'javascript non traité'});
+     return logerreur({status:false,value:t,id:i,tab:tab,message:'javascript non traité 0088'});
     }
     reprise=i+1;
     max=i+1;
@@ -219,11 +221,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
   
   
   }else if(tab[i][1]=='boucleSurObjet'  && tab[i][2]=='f'){ // i18
-/*  
-      boucleSurObjet(
-         pourChaque(dans(a , b)),
-         faire(
-*/         
    tabchoix=[];
    for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
     if(tab[j][3]==tab[i][3]+1){
@@ -805,129 +802,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
    }else{
     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans appelf de "affecte" ou "dans" 0805 '});
    }
-/*   
-   
-   // todo, à rendre indépendant de la position
-   if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='c' ){ // tab[i+1] => tabAffecte['par0'] , tab[i+2]=> tabAffecte['par1']
-    // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
-
-    t+=''+tabAffecte['par0'][1]+signe+(tabAffecte['par1'][4]===true?'\''+tabAffecte['par1'][1]+'\'' : (tabAffecte['par1'][1]=='vrai'?'true':(tabAffecte['par1'][1]=='faux'?'false':tabAffecte['par1'][1]) )+'');
-    if(!dansInitialisation){
-     t+=';';
-    }
-   
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && tabAffecte['par1'][1]=='appelf' ){
-    
-    obj=js_traiteAppelFonction(tab,tabAffecte['par1'][0],true,niveau,false);
-    if(obj.status==true){
-     t+=tabAffecte['par0'][1]+signe+obj.value;
-     if(!dansInitialisation){
-      t+=';';
-     }
-    }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans appelf de "affecte" ou "dans" il faut un nom de fonction à appeler n(xxxx)'});
-    }
-
-   }else if(tabAffecte['par0'][2]=='f' && tabAffecte['par0'][1]=='appelf' ){
-    
-    obj=js_traiteAppelFonction(tab,tabAffecte['par0'][0],true,niveau,false);
-    if(obj.status==true){
-     t+=''+obj.value+signe;
-//     // trouver 'x' dans "affecte( appelf(...) , x )"
-     if(tabAffecte['par1'][2]=='c'){
-      t+=(tabAffecte['par1'][4]===true?'\''+tabAffecte['par1'][1]+'\'' : (tabAffecte['par1'][1]=='vrai'?'true':(tabAffecte['par1'][1]=='faux'?'false':(tabAffecte['par1'][1]))));        
-     }else{
-      if(tabAffecte['par1'][1]=='appelf'){
-       obj=js_traiteAppelFonction(tab,tabAffecte['par1'][0],true,niveau,false);
-       if(obj.status==true){
-        t+=obj.value;
-       }else{
-        return logerreur({status:false,value:t,id:i,tab:tab,message:'dans le deuxième argument de 817 appelf '});
-       }
-      }else if(tabAffecte['par1'][1]=='plus' || tabAffecte['par1'][1]=='mult'){
-       var objOperation=TraiteOperations1(tab,tabAffecte['par1'][0]);
-       if(objOperation.status==true){
-        t+=objOperation.value;
-       }else{
-        return logerreur({status:false,value:t,id:tabAffecte['par1'][0],tab:tab,message:'erreur 824 sur des opérations '});
-       }
-      }else{
-       return logerreur({status:false,value:t,id:tabAffecte['par1'][0],tab:tab,message:'dans le deuxième argument de 820 appelf '});
-      }
-     }
-     if(!dansInitialisation){
-      t+=';';
-     }
-       
-    }else{
-     return logerreur({status:false,value:t,id:i,tab:tab,message:'dans appelf de "affecte" ou "dans" il faut un nom de fonction à appeler n(xxxx)'});
-    }
-
-
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && tabAffecte['par1'][1]=='obj' ){
-    
-    obj=js_traiteDefinitionObjet(tab,tabAffecte['par1'][0],true);
-    if(obj.status==true){
-     t+=''+tabAffecte['par0'][1]+signe+obj.value+';';
-    }else{
-     return logerreur({status:false,value:t,id:i,tab:tab,message:'dans obj de "affecte" ou "dans" il y a un problème'});
-    }
-
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && tabAffecte['par1'][1]=='condition' ){
-    
-    obj=js_condition0(tab,tabAffecte['par1'][0],niveau);
-    if(obj.status==true){
-     t+=''+tabAffecte['par0'][1]+signe+obj.value;
-     t+=';';
-    }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'javascript.js dans appelf condition'});
-    }
-
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && tabAffecte['par1'][1]=='cascade' ){
-
-   // une cascade d'appel à des fonctions
-   // a=b.c('d').e.f( 'g,h', i(j).k ).l ; 
-   // affecte(a,cascade(   appelf( element(b) , n(c) , p('d') , prop(e)),    appelf(  n(f), p('g,h'),   p(appelf(n(i) , p(j) , prop(k)) )   , prop(l) ) ) ),
-    t+=''+tabAffecte['par0'][1]+signe;
-    var nbEnfantsCascade=tabAffecte['par1'][5];
-    for(j=i+3;j<l01 && tab[j][3]>tabAffecte['par1'][3];j++){
-     if(tab[j][7]==tabAffecte['par1'][0]){
-      if(tab[j][1]=='appelf'){
-       obj=js_traiteAppelFonction(tab,j,true,niveau,false);
-       if(obj.status==true){
-        if(tab[j][9]>1){
-         t+='.';
-        }
-        t+=obj.value;
-       }else{
-        return logerreur({status:false,value:t,id:i,tab:tab,message:'dans appelf cascade, erreur dans appelf'});
-       }
-      }else{
-       return logerreur({status:false,value:t,id:i,tab:tab,message:'dans appelf cascade, il ne peut y avoir que des "appelf"'});
-      }
-     }
-    }
-    t+=';';
-
-
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && tabAffecte['par1'][1]=='@' ){
-    
-    t+=''+tabAffecte['par0'][1]+'='+tabAffecte['par1'][13]+';';
-    
-   }else if(tabAffecte['par0'][2]=='c' && tabAffecte['par1'][2]=='f' && ( tabAffecte['par1'][1]=='mult' ||  tabAffecte['par1'][1]=='plus'  ||  tabAffecte['par1'][1]=='moins' ||  tabAffecte['par1'][1]=='etBin' ) ){
-    
-    var objOperation=TraiteOperations1(tab,tabAffecte['par1'][0]);
-    if(objOperation.status==true){
-     t+=''+tabAffecte['par0'][1]+signe+objOperation.value+';';
-    }else{
-     return logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur des opérations '});
-    }
-    
-   }else{
-    logerreur({status:false,value:t,id:i,tab:tab,message:'javascript.js dans "affecte" ou "dans" cas non prévu "'+tabAffecte['par1'][1]+'"'});
-    t+='//todo dans affecte 886 '+tab[i][1]+'';
-   }
-*/   
    reprise=i+1;
    max=i+1;
    for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -1353,7 +1227,7 @@ function js_traiteInstruction1(tab,niveau,id){
   
   
  }else{
-   return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur sur js_traiteInstruction1 1067 '});
+   return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur sur js_traiteInstruction1 1067 pour '+tab[id][1]});
  }
 /*    
  

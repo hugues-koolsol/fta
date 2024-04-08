@@ -3,7 +3,7 @@ var DEBUTCOMMENTAIRE='#';
 var DEBUTBLOC='@';
 var CRLF='\r\n';
 var NBESPACESREV=3;
-var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
 /*
   =====================================================================================================================
   supprime les messages de la zone global_messages et efface la zone de texte qui contient les message
@@ -14,7 +14,7 @@ function clearMessages(nomZone){
         document.getElementById(nomZone).innerHTML='';
     }catch(e){
     }
-    global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+    global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
 }
 /*
   =====================================================================================================================
@@ -58,6 +58,10 @@ function displayMessages(nomZone){
             }
         }
     }
+    for(i=0;(i < global_messages.ranges.length);i=i+1){
+        document.getElementById(nomZone).innerHTML+='<a href="javascript:jumpToRange('+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+')" class="yyerror" style="border:2px red outset;">go to range '+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+'</a>&nbsp;';
+    }
+    
 }
 /*
   =====================================================================================================================
@@ -88,10 +92,10 @@ function logerreur(o){
         }
     }
     if((o.hasOwnProperty('tabs'))){
-        global_messages[tabs].push(o.tabs);
+        global_messages['tabs'].push(o.tabs);
     }
     if((o.line)){
-        global_messages[lines].push(o.line);
+        global_messages['lines'].push(o.line);
     }
     return o;
 }
@@ -858,6 +862,12 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     var r3= new RegExp('&','g');
     var r4= new RegExp('<','g');
     var r5= new RegExp('>','g');
+    var largeurTable1EnPx='1000';
+    var largeurColonne1EnPx='400';
+    
+    t1.className='yytableauMatrice1';
+    
+    
     tr1=document.createElement('tr');
     /*
       =================
@@ -867,10 +877,11 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
     l01=global_enteteTableau.length;
     for(i=0;(i < l01);i=(i+1)){
         var td1={};
-        td1=document.createElement('td');
+        td1=document.createElement('th');
         td1.innerHTML=concat(i,global_enteteTableau[i][0]);
         /**/
         td1.setAttribute('title',concat(global_enteteTableau[i][1],'(',i,')'));
+        
         tr1.appendChild(td1);
     }
     t1.appendChild(tr1);
@@ -899,6 +910,8 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
                 td1.innerHTML=temp;
                 td1.style.whiteSpace='pre-wrap';
                 td1.style.verticalAlign='baseline';
+                td1.style.maxWidth=largeurColonne1EnPx+'px';
+                td1.style.overflowWrap='break-word';
             }else if((j == 4)){
                 /*si la Constante est quotée*/
                 if((matriceFonction.value[i][j] == true)){

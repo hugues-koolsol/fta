@@ -78,8 +78,10 @@ nav{
   width: 80%;
   max-height: 80vh;
 }
-.tableau1{
- font-size:80%;
+.yytableauMatrice1{
+ font-size:0.8em;
+ border-collapse:collapse;
+ max-width:1000px;
 }
 .tableau2{
  font-size:80%;
