@@ -821,7 +821,9 @@ document.getElementById('zonesource').onkeyup=analyseKeyUp;
 /*
 =====================================================================================================================
 */
+var globale_timeoutEditeur=null;
 function analyseKeyUp(e){
+ clearTimeout(globale_timeoutEditeur);
 // console.log( 'e=' , e );
 // console.log('avant tout: this.scrollTop='+this.scrollTop+', global_editeur_scrolltop='+global_editeur_scrolltop+','+document.getElementById('zonesource').scrollTop);
 // console.log('e.keyCode='+e.keyCode);
@@ -904,15 +906,18 @@ function analyseKeyUp(e){
    // ctrl v
    var zoneSource=document.getElementById('zonesource');
 //   console.log('zoneSource=',zoneSource , zoneSource.scrollTop);
-   setTimeout(
+
+
+   globale_timeoutEditeur=setTimeout(
     function(){
 //     console.log('global_editeur_scrolltop=',global_editeur_scrolltop);
      zoneSource.scrollTop=global_editeur_scrolltop;
     },
-   5
+   1
   )
+
    
- }else if(e.keyCode==36 ){ // crtl v
+ }else if(e.keyCode==36 ){ // home
   var zoneSource=document.getElementById('zonesource');
   zoneSource.scrollTo({left: 0}); // , behavior: "smooth"
   window.scrollTo({ left: 0 }); // , behavior: 'smooth'

@@ -924,7 +924,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
  
  positionAppelFonction=-1;
  for(j=i+1;j<tab.length && tab[j][3]>tab[i][3];j++){
-  if(tab[j][1]=='n' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
+  if(tab[j][1]=='nomf' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){
    positionAppelFonction=j;
    if(tab[j][8]==1){
     nomFonction=tab[j+1][1];

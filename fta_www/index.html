@@ -11,7 +11,7 @@
     <a href="index.html">html home</a>
     <a href="index.php">php home</a>
     <a href="todo.html">todo</a>
-    <a href="traiteJs3.html">traiteJs3</a>
+    <a href="traiteJs4.html">traiteJs4</a>
     <a href="aa_login.php">login</a>
   </nav>
   <h1>HTML HOME  🌞aa</h1>
@@ -78,7 +78,7 @@ function chargerLeDernierSource(){
 
 function transform(){
   //"àà"
-
+  clearMessages();
   console.log('\n=========================\ndébut de transforme')
   document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
@@ -132,7 +132,7 @@ function transform(){
      
      if(compacteOriginal.status==true && compacteReecrit.status===true){
       if(compacteOriginal.value == compacteReecrit.value){
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><textarea rows="1" cols="30">'+compacteOriginal.value+'</textarea>';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><textarea rows="1" cols="30">'+strToHtml(compacteOriginal.value)+'</textarea>';
       }else{
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
@@ -175,25 +175,18 @@ function transform(){
     
   
   }else{
-    var sp1=document.createElement('span');
-    sp1.style.color='red';
-    sp1.innerHTML=matriceFonction1.message;
-    document.getElementById('resultat1').appendChild(sp1);
-    
     var t2=document.createElement('table');
-    
     ConstruitHtmlTableauCaracteres( t2 , a.value , tableau1 );
     document.getElementById('resultat1').appendChild(t2);
-    
-    
   }
+  displayMessages('message1');
 
   
  
 }
 
 chargerLeDernierSource();
-transform();
+//transform();
 </script>
   
 </body></html>
