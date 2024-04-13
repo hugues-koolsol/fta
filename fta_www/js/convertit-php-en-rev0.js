@@ -26,7 +26,7 @@ function jumpToRange(debut,fin){
 function astphp_logerreur(o){
  logerreur(o);
  if(rangeErreurSelectionne===false){
-  if(o.element.hasOwnProperty('attributes') && o.element.attributes.hasOwnProperty('startTokenPos')  && o.element.attributes.hasOwnProperty('endTokenPos') ){
+  if(o.element && o.element.hasOwnProperty('attributes') && o.element.attributes.hasOwnProperty('startTokenPos')  && o.element.attributes.hasOwnProperty('endTokenPos') ){
    rangeErreurSelectionne=true;
    global_messages['ranges'].push([o.element.attributes.startFilePos,o.element.attributes.endFilePos]);
   } 
@@ -151,25 +151,103 @@ function baisserNiveauEtSupprimer(tab,id,niveau){
   return tab;
  }
 }
+//=====================================================================================================================
 function php_traite_Expr_Include(element,niveau){
  console.log('%c entrée dans php_traite_Expr_Include element=','background:yellow;',element);
  var t='';
+ t+='appelf('
  if(element.type===1){
-  t+='include('
+  t+='nomf(include)'
  }else if (element.type===2){
-  t+='include_once('
+  t+='nomf(include_once)'
  }else if (element.type===3){
-  t+='require('
+  t+='nomf(require)'
  }else if (element.type===4){
-  t+='require_once('
+  t+='nomf(require_once)'
  }
  var obj=php_traite_Stmt_Expression(element.expr);
  if(obj.status===true){
-  t+=obj.value;
+  t+=',p('+obj.value+')';
  }else{
   t+='#(todo dans php_traite_Expr_FuncCall 0175 pas de expr )';
  }
  t+=')';
+ 
+ 
+ return {'status':true,'value':t};
+}
+//=====================================================================================================================
+function php_traite_Stmt_TryCatch(element,niveau){
+ console.log('%c entrée dans php_traite_Stmt_TryCatch element=','background:pink;',element);
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ 
+ var contenu='';
+ if(element.stmts && element.stmts.length>0){
+  niveau+=2;
+  var obj=TransformAstPhpEnRev(element.stmts,niveau)
+  niveau-=2;
+  if(obj.status===true){
+   contenu+=obj.value;
+  }else{
+   contenu+='#(erreur php_traite_Stmt_Function 0288)'
+  }
+ }
+
+ 
+ t+='\n'+esp0+'essayer(';
+ t+='\n'+esp0+esp1+'faire(\n';
+ t+=contenu;
+ t+='\n'+esp0+esp1+'),';
+ 
+ if(element.catches && element.catches.length>0){
+  for( var numc=0;numc<element.catches.length;numc++){
+   
+   contenu='';
+   var lesTypesErreurs='';
+   if(element.catches[numc].types && element.catches[numc].types.length>0){
+    for(var i=0;i<element.catches[numc].types.length;i++){
+     if(element.catches[numc].types[i].nodeType==='Name'){
+      lesTypesErreurs +=element.catches[numc].types[i].name+' ';
+     }
+    }
+   }else{
+    lesTypesErreurs='#(TODO php_traite_Stmt_TryCatch 0206)';
+   }
+   
+   var leNomErreur='';
+   if(element.catches[numc].var && element.catches[numc].var.nodeType==="Expr_Variable"){
+    leNomErreur='$'+element.catches[numc].var.name;
+   }else{
+    leNomErreur='#(TODO php_traite_Stmt_TryCatch 0211)';
+   }
+   
+   if(element.catches[numc].stmts && element.catches[numc].stmts.length>0){
+    niveau+=3;
+    var obj=TransformAstPhpEnRev(element.catches[numc].stmts,niveau)
+    niveau-=3;
+    if(obj.status===true){
+     contenu+=obj.value;
+    }else{
+     contenu+='#(erreur php_traite_Stmt_Function 0232)'
+    }
+   }
+   t+='\n'+esp0+esp1+'sierreur(';
+   t+='\n'+esp0+esp1+esp1+'err('+lesTypesErreurs+','+leNomErreur+')';
+   t+='\n'+esp0+esp1+esp1+'faire(\n';
+   t+=contenu;
+   t+='\n'+esp0+esp1+esp1+')';
+   t+='\n'+esp0+esp1+')'; 
+   
+   
+   
+  }
+ }
+   
+ 
+ 
+ t+='\n'+esp0+')';
  
  
  return {'status':true,'value':t};
@@ -182,12 +260,12 @@ function php_traite_Stmt_Use(element,niveau){
  for(var i=0;i<element.uses.length;i++){
   if("UseItem"===element.uses[i].nodeType){
    if(element.uses[i].name.nodeType === "Name"){
-    t+='use(\''+element.uses[i].name.name+'\')';
+    t+='appelf(nomf(use),p(\''+element.uses[i].name.name.replace(/\\/g,'\\\\')+'\'))';
    }else{
-    t+='#(todo erreur dans php_traite_Stmt_Expression 0232 pour ' + element.nodeType + ' )';
+    t+='#(todo erreur dans php_traite_Stmt_Use 0232 pour ' + element.nodeType + ' )';
    }
   }else{
-   t+='#(todo erreur dans php_traite_Stmt_Expression 0235 pour ' + element.nodeType + ' )';
+   t+='#(todo erreur dans php_traite_Stmt_Use 0235 pour ' + element.nodeType + ' )';
   }
  }
  return {'status':true,'value':t};
@@ -208,7 +286,9 @@ function php_traite_Expr_FuncCall(element,niveau){
  }else{
    t+='#(todo dans php_traite_Expr_FuncCall 0168 pas de name)';
  }
+ 
  var lesArguments='';
+ 
  if(element.args && element.args.length>0){
   for(var i=0;i<element.args.length;i++){
    var obj=php_traite_Stmt_Expression(element.args[i],niveau);
@@ -227,7 +307,7 @@ function php_traite_Expr_FuncCall(element,niveau){
 /*=====================================================================================================================*/
 
 function php_traite_echo(element,niveau){
- console.log('%c entrée dans php_traite_echo element=','background:pink;',element);
+ console.log('%c entrée dans php_traite_echo element=','background:yellow;',element);
  var t='';
  var lesArguments='';
  if(element.exprs){
@@ -244,14 +324,254 @@ function php_traite_echo(element,niveau){
  t+='appelf(nomf(echo)'+lesArguments+')'; ;
  return {'status':true,'value':t};
 }
+//=====================================================================================================================
+function php_traite_Stmt_Function(element , niveau){
+ console.log('%c entrée dans php_traite_Stmt_Function element=','background:yellow;',element.type,element);
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ var nomFonction='';
+ var lesArguments='';
+ var contenu='';
+ 
+ if(element.name && element.name.nodeType === "Identifier"){
+  nomFonction=element.name.name;
+ }else{
+   nomFonction='#(todo erreur dans php_traite_Stmt_Function 0261 )';
+ }
+ if(element.params && element.params.length>0){
+  for(var i=0;i<element.params.length;i++){
+
+   lesArguments+=',\n'+esp0+esp1+esp1+'p(';
+
+   if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType ){
+    if(element.params[i].byRef && element.params[i].byRef===true){
+     lesArguments+='parReference('+element.params[i].var.name+')';
+    }else{
+     lesArguments+=''+element.params[i].var.name+'';
+    }
+   }else{
+    lesArguments+='#(TODO 0278 dans php_traite_Stmt_Function)';
+   }
+   lesArguments+=')';
+  }
+ }
+ if(element.stmts && element.stmts.length>0){
+  niveau+=2;
+  var obj=TransformAstPhpEnRev(element.stmts,niveau)
+  niveau-=2;
+  if(obj.status===true){
+   contenu+=obj.value;
+  }else{
+   contenu+='#(erreur php_traite_Stmt_Function 0288)'
+  }
+ }
+ 
+ 
+ 
+ t+='\n'+esp0+'fonction(';
+ t+='\n'+esp0+esp1+'definition('
+ t+='\n'+esp0+esp1+esp1+'nom('+nomFonction+')';
+ t+=lesArguments;
+ t+='\n'+esp0+esp1+'),';
+ t+='\n'+esp0+esp1+'contenu(\n';
+ t+=contenu;
+ t+='\n'+esp0+esp1+')';
+ t+='\n'+esp0+')';
+ 
+ return {'status':true,'value':t};
+}
+
 /*
 //=====================================================================================================================
-//=====================================================================================================================
-//=====================================================================================================================
-//=====================================================================================================================
-//=====================================================================================================================
-//=====================================================================================================================
-//=====================================================================================================================
+*/
+function php_traite_Expr_MethodCall(element , niveau){
+ console.log('%c entrée dans php_traite_Stmt_Function element=','background:yellow;',element.type,element);
+ var t='';
+
+ var nomFonction='';
+ var lelement='';
+ var lesArguments='';
+ 
+ 
+ if(element.var){
+  if(element.var.nodeType=="Expr_New"){
+   
+   
+   if(element.var.class){
+    
+    var nomClasse='';
+    if(element.var.class.nodeType=="Name"){
+     nomClasse=element.var.class.name;
+    }else{
+     nomClasse+='#(php_traite_Expr_MethodCall 0331),';
+    }
+    
+    var lesArgumentsDeLaClass='';
+    if(element.var.args){
+     for(var i=0;i<element.var.args.length;i++){
+      var obj=php_traite_Stmt_Expression(element.var.args[i],niveau);
+      if(obj.status===true){
+       lesArgumentsDeLaClass+=',p('+obj.value+')';
+      }else{
+       t+='#(todo dans php_traite_Expr_MethodCall 341)';
+      }
+     }
+    }
+    
+    lelement+='element(new(appelf(nomf('+nomClasse+')'+lesArgumentsDeLaClass+'))),';
+    
+   }else{
+    
+    lelement+='element(new(#(php_traite_Expr_MethodCall 0323))),';
+    
+   }
+   
+  }else if(element.var.nodeType=="Expr_Variable"){
+   
+   lelement+='element($'+element.var.name+'),';
+   
+  }else{
+
+   lelement+='element(#(php_traite_Expr_MethodCall 0316)),';
+
+  }
+
+ }else{
+
+  lelement+='element(#(php_traite_Expr_MethodCall 0319)),';
+
+ }  
+
+
+ if(element.name){
+  if(element.name.nodeType=="Identifier"){
+   nomFonction=element.name.name;
+  }else{
+   nomFonction+='element(#(php_traite_Expr_MethodCall 0345)),';
+  }
+ }else{
+  nomFonction+='element(#(php_traite_Expr_MethodCall 0345)),';
+ }
+
+ var lesArguments='';
+ 
+ if(element.args && element.args.length>0){
+  for(var i=0;i<element.args.length;i++){
+   var obj=php_traite_Stmt_Expression(element.args[i],niveau);
+   if(obj.status===true){
+    lesArguments+=',p('+obj.value+')';
+   }else{
+    t+='#(todo dans php_traite_Expr_MethodCall 0360 pas de expr )';
+   }
+  }
+ }
+ 
+
+
+ 
+ t+='appelf('+lelement+'nomf('+nomFonction+')'+lesArguments+')';
+ 
+ 
+ return {'status':true,'value':t};
+}
+/*
+=====================================================================================================================
+*/
+function php_traite_Expr_Assign(element,niveau){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+
+ var gauche=''; 
+ var droite=''; 
+ if(element.var){
+  if(element.var.nodeType==="Expr_Variable"){
+    gauche='$'+element.var.name;
+  }else if(element.var.nodeType==="Expr_ArrayDimFetch"){
+   var obj=php_traite_Expr_ArrayDimFetch(element.var,niveau,0);
+   if(obj.status===true){
+    gauche+=obj.value;
+   }else{
+    gauche+='#(todo erreur dans php_traite_Expr_Assign 0450)';
+   }   
+  }else{
+   gauche='#(todo dans php_traite_Stmt_Expression 0168 '+element.var.nodeType+')';
+  }
+ }else{
+  gauche='#(todo dans php_traite_Stmt_Expression 0167 pas de variable '+element.nodeType+')';
+ }
+
+ if(element.expr){
+  var obj=php_traite_Stmt_Expression( element.expr , niveau);
+  if(obj.status===true){
+   droite=obj.value;
+  }else{
+   droite='#(todo erreur dans php_traite_Stmt_Expression 0227 pas de expr '+element.nodeType+')';
+  }
+ }else{
+  droite='#(todo dans php_traite_Stmt_Expression 0230 pas de expr '+element.nodeType+')';
+ }
+ t+='affecte('+gauche+' , '+droite+')';
+  
+ 
+ 
+ return {'status':true,'value':t};
+}
+/*
+=====================================================================================================================
+*/
+function php_traite_Expr_ArrayDimFetch(element,niveau,num){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ var nomTableau='';
+
+ 
+ if(element.var){
+  if("Expr_Variable" === element.var.nodeType){
+   t='nomt('+element.var.name+')';
+  }else if("Expr_ArrayDimFetch" === element.var.nodeType){
+   num++;
+   var obj=php_traite_Expr_ArrayDimFetch(element.var,niveau,num);
+   num--;
+   if(obj.status===true){
+    t+=obj.value;
+   }else{
+    t+='#(todo erreur dans php_traite_Expr_ArrayDimFetch 0541)';
+   }
+  }else{
+    t+='#(todo erreur dans php_traite_Expr_ArrayDimFetch 0544)';
+  }
+ }
+ 
+ if(element.dim){
+  if("Scalar_String" === element.dim.nodeType){
+   t+=',p(\''+element.dim.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+  }else if("Expr_Variable" === element.dim.nodeType){
+   t+=',p($'+element.dim.name+')';
+  }else{
+   t+=',p(#(todo erreur dans php_traite_Expr_ArrayDimFetch 0554))';
+  }
+ }else{
+  t+=',p()';
+ }
+ if(num===0){
+  t='tableau('+t+')';
+ }
+
+// t+='#(todo erreur dans php_traite_Expr_ArrayDimFetch 0473)';
+
+ return {'status':true,'value':t};
+}
+/*
+=====================================================================================================================
+=====================================================================================================================
+=====================================================================================================================
+=====================================================================================================================
+=====================================================================================================================
+=====================================================================================================================
+=====================================================================================================================
 */
 function php_traite_Stmt_Expression(element,niveau){
  console.log('%c entrée dans php_traite_Stmt_Expression element=','background:yellow;',element.type,element);
@@ -262,12 +582,35 @@ function php_traite_Stmt_Expression(element,niveau){
 
 
  /*===============================================*/
- if("Stmt_Use"===element.nodeType){
+ if("Expr_Variable"===element.nodeType){
+
+  t+='$'+element.name+'';
+
+ /*===============================================*/
+ }else if("Expr_ArrayDimFetch"===element.nodeType){
+
+  var obj=php_traite_Expr_ArrayDimFetch( element , niveau,0);
+  if(obj.status===true){
+   t+=obj.value;
+  }else{
+   t+='#(todo erreur dans php_traite_Stmt_Expression 0492 )';
+  }
+  
+ /*===============================================*/
+ }else if("Expr_MethodCall"===element.nodeType){
+
+  var obj=php_traite_Expr_MethodCall( element , niveau);
+  if(obj.status===true){
+   t+=obj.value;
+  }else{
+   t+='#(todo erreur dans php_traite_Stmt_Expression 0331 )';
+  }
+
   
  /*===============================================*/
  }else if("Expr_BinaryOp_Concat"===element.nodeType){
   
-  
+  t+='concat('
   if(element.left.nodeType==="Expr_Variable"){
    t+='$'+element.left.name;
   }else if(element.left.nodeType==="Scalar_String"){
@@ -275,7 +618,7 @@ function php_traite_Stmt_Expression(element,niveau){
   }else{
    t+='#(todo erreur dans php_traite_Stmt_Expression 0236 pour ' + element.left.nodeType + ' )';
   }
-  t+='.';
+  t+=' , ';
   if(element.right.nodeType==="Scalar_String"){
    t+="'"+element.right.value.replace(/\\/,'\\\\').replace(/\'/,'\\\'')+"'";
   }else if(element.right.nodeType==="Expr_Variable"){
@@ -283,9 +626,16 @@ function php_traite_Stmt_Expression(element,niveau){
   }else{
    t+='#(todo erreur dans php_traite_Stmt_Expression 0236 pour ' + element.left.nodeType + ' )';
   }
+  t+=')';
   
   
   
+ /*===============================================*/
+ }else if("Scalar_String"===element.nodeType){
+
+  t+="'"+element.value.replace(/\\/,'\\\\').replace(/\'/,'\\\'')+"'";
+
+
  /*===============================================*/
  }else if("Scalar_MagicConst_File"===element.nodeType){
   t+='__FILE__';
@@ -309,30 +659,14 @@ function php_traite_Stmt_Expression(element,niveau){
   
  /*===============================================*/
  }else if("Expr_Assign"===element.nodeType){
-  
-  if(element.var){
-   if(element.var.nodeType==="Expr_Variable"){
-     t+='\n'+esp0+'affecte( $a ,';
-   }else{
-    t+='#(todo dans php_traite_Stmt_Expression 0168 '+element.var.nodeType+')';
-   }
-  }else{
-   t+='#(todo dans php_traite_Stmt_Expression 0167 pas de variable '+element.nodeType+')';
-  }
 
-  if(element.expr){
-   var obj=php_traite_Stmt_Expression( element.expr , niveau);
-   if(obj.status===true){
-    t+=''+esp0+obj.value+')';
-   }else{
-    t+='#(todo erreur dans php_traite_Stmt_Expression 0227 pas de expr '+element.nodeType+')';
-   }
+  var obj=php_traite_Expr_Assign( element , niveau);
+  if(obj.status===true){
+   t+=obj.value;
   }else{
-   t+='#(todo dans php_traite_Stmt_Expression 0230 pas de expr '+element.nodeType+')';
+   t+='#(todo erreur dans php_traite_Stmt_Expression 0512 )';
   }
-
   
-//  t+='\n'+esp0+'#(todo dans php_traite_Stmt_Expression '+element.nodeType+')';
  
 
  /*===============================================*/
@@ -392,7 +726,7 @@ function TransformAstPhpEnRev(stmts,niveau){
     if(obj.status===true){
      t+='\n'+esp0+obj.value;
     }else{
-     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_Stmt_Use "'+stmts[i].nodeType+'")';
+     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_echo "'+stmts[i].nodeType+'")';
     }
     
 
@@ -414,6 +748,17 @@ function TransformAstPhpEnRev(stmts,niveau){
     }
     
 
+   }else if("Stmt_Function"===stmts[i].nodeType){
+
+    var obj=php_traite_Stmt_Function( stmts[i] , niveau);
+    if(obj.status===true){
+     t+='\n'+esp0+obj.value;
+    }else{
+     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR Stmt_Function "'+stmts[i].nodeType+'")';
+    }
+    
+    
+    
    }else if("Stmt_Use"===stmts[i].nodeType){
 
     var obj=php_traite_Stmt_Use( stmts[i] , niveau);
@@ -425,6 +770,19 @@ function TransformAstPhpEnRev(stmts,niveau){
     
 
     
+   }else if("Stmt_TryCatch"===stmts[i].nodeType){
+
+    var obj=php_traite_Stmt_TryCatch( stmts[i] , niveau);
+    if(obj.status===true){
+     t+='\n'+esp0+obj.value;
+    }else{
+     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR 0610 "'+stmts[i].nodeType+'")';
+    }
+    
+
+   }else if("Stmt_Return"===stmts[i].nodeType){
+    
+     t+='\n'+esp0+'#(TODO return 780)';
     
    }else if("Stmt_InlineHTML"===stmts[i].nodeType){
 
@@ -433,11 +791,19 @@ function TransformAstPhpEnRev(stmts,niveau){
     
 
    }else{
-    t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev "'+stmts[i].nodeType+'")';
-    astphp_logerreur({'status':false,'message':'0395  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] });
+    
+    t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev 0439 "'+stmts[i].nodeType+'")';
+    astphp_logerreur({'status':false,'message':'0440  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] });
     
    }
   }
+ }
+ if(t.substr(0,2)==='\r\n'){
+  t=t.substr(2);
+ }else if(t.substr(0,1)==='\r'){
+  t=t.substr(1);
+ }else if(t.substr(0,1)==='\n'){
+  t=t.substr(1);
  }
  return {'status':true,'value':t};
 }
@@ -454,13 +820,13 @@ function traitementApresRecuperationAst(ret){
    document.getElementById('txtar2').value=obj.value;
    var obj1=functionToArray(obj.value,true);
    if(obj.status===true){
-    return astphp_logerreur({status:true,message:'pas d\'erreur pour le rev'});
+    astphp_logerreur({status:true,message:'pas d\'erreur pour le rev'});
    }else{
-    return astphp_logerreur({status:false,message:'erreur pour le rev'});
+    astphp_logerreur({status:false,message:'erreur pour le rev'});
    }
   }
  }catch(e){
-  return astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409'})
+  astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
  }
  
  displayMessages('zone_global_messages');
@@ -479,6 +845,11 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
  r.onreadystatechange = function () {
   if(r.readyState != 4 || r.status != 200){
    if(r.status==500){
+    /*
+      normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+      au niveau du php za_ajax mais sait-on jamais
+    */
+    
     if(global_messages['e500logged']==false){
      try{
 //     console.log("r=",r);

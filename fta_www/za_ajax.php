@@ -4,7 +4,7 @@ error_reporting(0);
 ini_set('display_errors', 0);
 set_error_handler("errorHandler");
 register_shutdown_function("shutdownHandler");
-
+//================================================================================================
 function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context){
  $typeName='';
  switch ($error_level){
@@ -27,8 +27,12 @@ function errorHandler($error_level, $error_message, $error_file, $error_line, $e
   mylog($error, "fatal");
  }
 }
-
-function shutdownHandler(){ //will be called when php script ends.
+/*
+================================================================================================
+Fonction appelée quand il y a un bug dans le source php
+================================================================================================
+*/
+function shutdownHandler(){
  $lasterror = error_get_last();
  $typeName='';
  if(isset($lasterror['type'])){
@@ -47,19 +51,25 @@ function shutdownHandler(){ //will be called when php script ends.
       case E_COMPILE_WARNING:   $typeName='E_COMPILE_WARNING';break;
       case E_PARSE:             $typeName='E_PARSE';break;
   }
-  $error = ($typeName==''?'UNKNOWN_ERROR':$typeName)." | msg:" . $lasterror['message'] . " | line:" . $lasterror['line'] . " | file:" . basename($lasterror['file']) . " (" . $lasterror['file'] . ")";
+  $toto=dirname(dirname(__FILE__));
+  $dernierMessage=str_replace($toto,'',$lasterror['message']);
+  $error = ($typeName==''?'UNKNOWN_ERROR':$typeName)." bug dans le source php | msg:" . '<span style="text-wrap:wrap;color:blue;">'.$dernierMessage . "</span> | line:" . $lasterror['line'] . " | aafile:" . basename($lasterror['file']) . " (" . $lasterror['file'] . ")";
   if($typeName!=''){
    mylog($error, "fatal");
   }
  }
 }
+//================================================================================================
 function mylog($error, $errlvl){
  $ret=array('status' => 'KO','messages' => array() ); // messages must be in array
  $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . $error; 
  header('Content-Type: application/json; charset=utf-8');
  echo json_encode($ret,JSON_FORCE_OBJECT);
+ /* on a capturé une erreur de type 500, on force la réponse en 200 */
+ http_response_code(200);
  exit(0);
 }
+//================================================================================================
 require_once('aa_include.php');
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
  $ret=array('status' => 'KO','messages' => array() ); // messages must be in array
