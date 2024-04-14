@@ -65,12 +65,12 @@ src_php(
                   contenu(
                      declare(zoneSource , null),
                      declare(zonenormalisée , null),
-                     appelf(r(zoneSource) , n(document.getElementById) , p(source)),
-                     appelf(r(zonenormalisée) , n(document.getElementById) , p(normalise)),
+                     appelf(r(zoneSource) , nomf(document.getElementById) , p(source)),
+                     appelf(r(zonenormalisée) , nomf(document.getElementById) , p(normalise)),
                      declare(bou , null),
-                     appelf(r(bou) , n(zoneSource.getBoundingClientRect) , p()),
+                     appelf(r(bou) , nomf(zoneSource.getBoundingClientRect) , p()),
                      declare(t , ''),
-                     appelf(r(t) , n(concat) , p(bou.height) , p('px')),
+                     appelf(r(t) , nomf(concat) , p(bou.height) , p('px')),
                      affecte(zonenormalisée.style.height , t)
                   )
                ),
@@ -83,9 +83,9 @@ src_php(
                   definition(nom(ajusteTailleTextareaContenantSource) , argument(nomZone)),
                   contenu(
                      declare(zoneSource , null),
-                     appelf(r(zoneSource) , n(document.getElementById) , p(nomZone)),
+                     appelf(r(zoneSource) , nomf(document.getElementById) , p(nomZone)),
                      declare(tab , []),
-                     appelf(r(tab) , n(zoneSource.value.split) , p('\n')),
+                     appelf(r(tab) , nomf(zoneSource.value.split) , p('\n')),
                      declare(i , 0),
                      declare(largeur , 0),
                      boucle(
@@ -124,7 +124,7 @@ src_php(
                        raz de la zone de message
                      ),
                      declare(zoneMessageErreur , null),
-                     appelf(r(zoneMessageErreur) , n(document.getElementById) , p('message_erreur')),
+                     appelf(r(zoneMessageErreur) , nomf(document.getElementById) , p('message_erreur')),
                      affecte(zoneMessageErreur.innerHTML , ''),
                      #(
                        ===================================================
@@ -132,21 +132,21 @@ src_php(
                      ),
                      declare(zoneNormalisée , null),
                      declare(zoneSource , null),
-                     appelf(r(zoneNormalisée) , n(document.getElementById) , p('normalise')),
-                     appelf(r(zoneSource) , n(document.getElementById) , p('zonesource')),
+                     appelf(r(zoneNormalisée) , nomf(document.getElementById) , p('normalise')),
+                     appelf(r(zoneSource) , nomf(document.getElementById) , p('zonesource')),
                      #(
                        ===============================================================
                        on essaie de reconstruire la fonction pour détecter des erreurs
                      ),
                      declare(testSourceReconstruit , {}),
-                     appelf(r(testSourceReconstruit) , n(compareSourceEtReconstruit) , p(zoneSource.value)),
+                     appelf(r(testSourceReconstruit) , nomf(compareSourceEtReconstruit) , p(zoneSource.value)),
                      #(
                        =============================================================
                        conversion de la fonction en javascript 
                        en déclenchant une erreur si il y a une erreure de parenthese
                      ),
                      declare(arr , {}),
-                     appelf(r(arr) , n(functionToArray) , p(zoneSource.value) , p(vrai)),
+                     appelf(r(arr) , nomf(functionToArray) , p(zoneSource.value) , p(vrai)),
                      choix(
                         si(
                            condition((egal(arr.status , vrai))),
@@ -156,19 +156,19 @@ src_php(
                                 si pas d'erreur on construit le source normalise
                               ),
                               declare(sourceNormalisé , {}),
-                              appelf(r(sourceNormalisé) , n(arrayToFunctNormalize) , p(arr.value) , p(vrai)),
+                              appelf(r(sourceNormalisé) , nomf(arrayToFunctNormalize) , p(arr.value) , p(vrai)),
                               choix(
                                  si(
                                     condition((egal(sourceNormalisé.status , vrai))),
                                     alors(
-                                       affecte(appelf(n(document.getElementById) , p('normalise') , prop(value)) , sourceNormalisé.value),
-                                       appelf(n(ajusteTailleTextareaContenantSource) , p('normalise')),
-                                       appelf(n(memeHauteur) , p('normalise') , p('zonesource')),
-                                       appelf(r(arr) , n(writePhpFile) , p(zoneSource) , p(arr)),
+                                       affecte(appelf(nomf(document.getElementById) , p('normalise') , prop(value)) , sourceNormalisé.value),
+                                       appelf(nomf(ajusteTailleTextareaContenantSource) , p('normalise')),
+                                       appelf(nomf(memeHauteur) , p('normalise') , p('zonesource')),
+                                       appelf(r(arr) , nomf(writePhpFile) , p(zoneSource) , p(arr)),
                                        choix(
                                           si(
                                              condition((egal(arr.status , faux))),
-                                             alors(appelf(n(console.log) , p(arr)))
+                                             alors(appelf(nomf(console.log) , p(arr)))
                                           )
                                        )
                                     )
@@ -192,17 +192,17 @@ src_php(
                                           )
                                        )
                                     ),
-                                    alors(appelf(r(zoneMessageErreur.innerHTML) , n(concat) , p(zoneMessageErreur.innerHTML) , p('\n') , p(arr.message)))
+                                    alors(appelf(r(zoneMessageErreur.innerHTML) , nomf(concat) , p(zoneMessageErreur.innerHTML) , p('\n') , p(arr.message)))
                                  )
                               ),
-                              appelf(r(sourceNormalisé) , n(arrayToFunctNormalize) , p(arr.value) , p(vrai)),
+                              appelf(r(sourceNormalisé) , nomf(arrayToFunctNormalize) , p(arr.value) , p(vrai)),
                               choix(
                                  si(
                                     condition((egal(sourceNormalisé.status , vrai))),
                                     alors(
-                                       affecte(appelf(n(document.getElementById) , p('normalise') , prop(value)) , srcNormalise.value),
-                                       appelf(n(ajusteTailleTextareaContenantSource) , p('normalise')),
-                                       appelf(n(memeHauteur) , p('normalise') , p('zonesource'))
+                                       affecte(appelf(nomf(document.getElementById) , p('normalise') , prop(value)) , srcNormalise.value),
+                                       appelf(nomf(ajusteTailleTextareaContenantSource) , p('normalise')),
+                                       appelf(nomf(memeHauteur) , p('normalise') , p('zonesource'))
                                     )
                                  )
                               )
@@ -226,12 +226,12 @@ src_php(
                               et((egal(source.status , vrai)))
                            ),
                            alors(
-                              affecte(appelf(n(document.getElementById) , p(source.nomZone) , prop(value)) , source.value),
-                              appelf(n(ajusteTailleTextareaContenantSource) , p(source.nomZone))
+                              affecte(appelf(nomf(document.getElementById) , p(source.nomZone) , prop(value)) , source.value),
+                              appelf(nomf(ajusteTailleTextareaContenantSource) , p(source.nomZone))
                            )
                         ),
                         sinon(
-                           alors(appelf(n(console.log) , p(source)))
+                           alors(appelf(nomf(console.log) , p(source)))
                         )
                      )
                   )
@@ -244,8 +244,8 @@ src_php(
                fonction(
                   definition(nom(charger) , argument(nomsource)),
                   contenu(
-                     affecte(appelf(n(document.getElementById) , p('normalise') , prop(value)) , ''),
-                     appelf(n(chargerFichierSource) , p(nomsource) , p(afficherFichierSource) , p('zonesource'))
+                     affecte(appelf(nomf(document.getElementById) , p('normalise') , prop(value)) , ''),
+                     appelf(nomf(chargerFichierSource) , p(nomsource) , p(afficherFichierSource) , p('zonesource'))
                   )
                )
             )

@@ -57,7 +57,7 @@ src_html(
                            ),
                            sinon(
                               alors(
-                                 affecte(b , appelf(n(factorielle) , p(nombre-1))),
+                                 affecte(b , appelf(nomf(factorielle) , p(nombre-1))),
                                  affecte(a , nombre*b)
                               )
                            )
@@ -78,13 +78,13 @@ src_html(
                     on affecte la valeur factorielle(5) à la valeur
                     ===============================================
                   ),
-                  affecte(resultat , appelf(n(factorielle) , p(valeur))),
+                  affecte(resultat , appelf(nomf(factorielle) , p(valeur))),
                   #(
                     ===========================
                     puis on affiche le résultat
                     ===========================
                   ),
-                  affecte(zone , appelf(n(document.getElementById) , p('zoneResultat'))),
+                  affecte(zone , appelf(nomf(document.getElementById) , p('zoneResultat'))),
                   affecte(zone.innerHTML , resultat),
                   #(#
   en lisp la fonction factorielle est ecrite comme ça :

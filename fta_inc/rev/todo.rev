@@ -17,6 +17,15 @@ src_html(
          body(
             hr(),
             table(
+               tr(td(00) , td(' simplifier       affecte(
+         tableau(nomt(tab) , p(i) , p(j) , p(5)),
+         appelf(
+            element(tableau(nomt(tab) , p(i))),
+            nomf(substr),
+            p(moins(min , 2 , 3))
+         )
+      ),
+      affecte(tab[i][j][3] , appelf(element(tab[i]) , nomf(substr) , p(min-2-3))),')),
                tr(td(00) , td('mettre le menu dans une zone fixed')),
                tr(td(00) , td('enlever une parenthèse à la fin de la définition d\'une fonction javascript')),
                tr(td((style , 'color:red;') , 99) , td('mettre les source produit dans un textarea')),

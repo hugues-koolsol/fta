@@ -105,8 +105,31 @@ function logerreur(o){
   mais je l'aime tellement!
   =====================================================================================================================
 */
+/*
+  =====================================================================================================================
+*/
 function dogid(n){
     return(document.getElementById(n));
+}
+/*
+  =====================================================================================================================
+*/
+function maConstante(tab){
+    var t='';
+    if(tab[4] === 1){
+        t='\''+tab[1]+'\'';
+    }else if(tab[4] === 2){
+        t='`'+tab[1]+'`';
+    }else{
+        if(tab[1] === 'vrai'){
+            t='true';
+        }else if(tab[1] === 'faux'){
+            t='false';
+        }else{
+            t=tab[1];
+        }
+    }
+    return t;
 }
 /*
   =====================================================================================================================
@@ -227,6 +250,16 @@ function replaceAll(s,chaineAremplacer,chaineQuiRemplace){
 function myReplace(s,chaineAremplacer,chaineQuiRemplace){
     var r1= new RegExp(chaineAremplacer,'');
     var ret = s.replace(r1,chaineQuiRemplace);
+    return ret;
+}
+/*
+  =====================================================================================================================
+  fonction split avec regex, par exemple : var lines = a.value.split(/\r|\r\n|\n/);
+  =====================================================================================================================
+*/
+function mySplit(s,t){
+    var r1= new RegExp(t,'');
+    var ret = s.split(r1);
     return ret;
 }
 /*

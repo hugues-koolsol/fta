@@ -177,8 +177,78 @@ function php_traite_Expr_Include(element,niveau){
  return {'status':true,'value':t};
 }
 //=====================================================================================================================
+function php_traite_Stmt_Switch(element,niveau){
+ console.log('%c entrée dans php_traite_Stmt_Switch element=','background:pink;',element);
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ debugger
+ var leTest='';
+ var tabSw=[];
+ 
+ if(element.cond){
+  if(element.cond.nodeType==="Expr_Variable"){
+   leTest='$'+element.cond.name;
+  }else{
+   leTest='#(erreur php_traite_Stmt_Switch 0193)';
+  }
+ }else{
+  leTest='#(erreur php_traite_Stmt_Switch 0196)';
+ }
+ 
+ if(element.cases){
+  if(element.cases.length>0){
+   for(var i=0;i<element.cases.length;i++){
+    var leSw=element.cases[i];
+    var laCondition='';
+    if(leSw.cond){
+     if(leSw.cond.nodeType==="Expr_ConstFetch"){
+      laCondition=leSw.cond.name.name;
+     }else{
+      laCondition='#(todo php_traite_Stmt_Switch 205)';
+     }
+    }else{
+     laCondition='#(erreur php_traite_Stmt_Switch 211)';
+    }
+    var lesInstructions='';
+    if(leSw.stmts){
+     if(leSw.stmts.length>0){
+      niveau+=3;
+      var obj1=TransformAstPhpEnRev(leSw.stmts , niveau);
+      niveau-=3;
+      if(obj1.status===true){
+       lesInstructions=obj1.value;
+      }else{
+       lesInstructions='#(erreur php_traite_Stmt_Switch 222)';;
+      }
+     }
+    }
+    tabSw.push([laCondition,lesInstructions]);
+   }
+  }else{
+   tabSw.push('#(erreur php_traite_Stmt_Switch 0202)');
+  }
+ }else{
+   tabSw.push('#(erreur php_traite_Stmt_Switch 212)');
+ }
+ t+='\n'+esp0+'bascule('
+ t+='\n'+esp0+esp1+'quand('+leTest+')';
+ for(var i=0;i<tabSw.length;i++){
+  t+=',\n'+esp0+esp1+'est(';
+  t+= '\n'+esp0+esp1+esp1+'valeur('+tabSw[i][0]+')';
+  t+=',\n'+esp0+esp1+esp1+'faire(\n'+tabSw[i][1]
+  t+= '\n'+esp0+esp1+esp1+')';
+  t+= '\n'+esp0+esp1+')';
+ }
+ t+='\n'+esp0+')'
+ 
+ 
+ return {'status':true,'value':t};
+
+}
+//=====================================================================================================================
 function php_traite_Stmt_TryCatch(element,niveau){
- console.log('%c entrée dans php_traite_Stmt_TryCatch element=','background:pink;',element);
+ console.log('%c entrée dans php_traite_Stmt_TryCatch element=','background:yellow;',element);
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -342,18 +412,16 @@ function php_traite_Stmt_Function(element , niveau){
  if(element.params && element.params.length>0){
   for(var i=0;i<element.params.length;i++){
 
-   lesArguments+=',\n'+esp0+esp1+esp1+'p(';
 
    if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType ){
     if(element.params[i].byRef && element.params[i].byRef===true){
-     lesArguments+='parReference('+element.params[i].var.name+')';
+     lesArguments+=',\n'+esp0+esp1+esp1+'adresseArgument($'+element.params[i].var.name+')';
     }else{
-     lesArguments+=''+element.params[i].var.name+'';
+     lesArguments+=',\n'+esp0+esp1+esp1+'argument($'+element.params[i].var.name+')';
     }
    }else{
     lesArguments+='#(TODO 0278 dans php_traite_Stmt_Function)';
    }
-   lesArguments+=')';
   }
  }
  if(element.stmts && element.stmts.length>0){
@@ -582,7 +650,11 @@ function php_traite_Stmt_Expression(element,niveau){
 
 
  /*===============================================*/
- if("Expr_Variable"===element.nodeType){
+ if("Scalar_Int"===element.nodeType){
+  t+=element.value;
+
+ /*===============================================*/
+ }else if("Expr_Variable"===element.nodeType){
 
   t+='$'+element.name+'';
 
@@ -700,7 +772,7 @@ function php_traite_Stmt_Expression(element,niveau){
  }else{
   
   
-  t+='#(todo dans php_traite_Stmt_Expression '+element.nodeType+')';
+  t+='#(todo dans php_traite_Stmt_Expression 701 '+element.nodeType+')';
   
   
   
@@ -781,17 +853,39 @@ function TransformAstPhpEnRev(stmts,niveau){
     
 
    }else if("Stmt_Return"===stmts[i].nodeType){
+          
+     if(stmts[i].expr===null){
+      t+='\n'+esp0+'revenir()';
+     }else {
+      t+='\n'+esp0+'#(TODO return 780)';
+     }
     
-     t+='\n'+esp0+'#(TODO return 780)';
+   }else if("Stmt_Break"===stmts[i].nodeType){
+     
+     if(stmts[i].num===null){
+      t+='\n'+esp0+'break()';
+     }else {
+      t+='\n'+esp0+'#(TODO return 868)';
+     }
     
    }else if("Stmt_InlineHTML"===stmts[i].nodeType){
 
 
      t+='\n'+esp0+'html(@(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+
+   }else if("Stmt_Switch"===stmts[i].nodeType){
+
+    var obj=php_traite_Stmt_Switch( stmts[i] , niveau);
+    if(obj.status===true){
+     t+='\n'+esp0+obj.value;
+    }else{
+     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR 814 "'+stmts[i].nodeType+'")';
+    }
+    
     
 
    }else{
-    
+    console.log('%cAvant erreur :stmts[i]=' , 'background:red;' , stmts[i] );
     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev 0439 "'+stmts[i].nodeType+'")';
     astphp_logerreur({'status':false,'message':'0440  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] });
     
@@ -965,30 +1059,26 @@ function chargerSourceDeTest(){
  var t=`<?php
 $a=realpath(dirname(dirname(dirname(__FILE__))));
 require($a.'/phplib/vendor/autoload.php');
-
-/*===============================================*/
-
+/*
+https://github.com/nikic/php-parser
+*/
 use PhpParser\Error;
 use PhpParser\NodeDumper;
 use PhpParser\ParserFactory;
 
-?>
-hello<?php echo ' world';?> and others
-<?php
-/*===============================================*/
-
 function recupererAstDePhp(&$data){
-// $data['messages'][]=var_export( $data['input']['texteSource'] , true )  ;
- $parser = (new ParserFactory())->createForNewestSupportedVersion();
- try {
-     $ast = $parser->parse($data['input']['texteSource']);
-     $data['value']=json_encode($ast);
-     $data['status']='OK';
- } catch (Error $error) {
-    $data['messages'][]="Parse error: {$error->getMessage()}\\n";
-    return;
- }
+    $parser = (new ParserFactory())->createForNewestSupportedVersion();
+    try {
+        $ast = $parser->parse($data['input']['texteSource']);
+        $data['value']=json_encode($ast);
+        $data['status']='OK';
+    } catch (Error $error) {
+       $data['messages'][]=$error->getMessage();
+       return;
+    }
 }
+hello<?php echo ' world';?> and others<?php
+
 `;
 
 

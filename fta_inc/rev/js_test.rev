@@ -6,801 +6,275 @@ src_javascript(
    (strict()),
    source(
       #(
-        ========================
-        Debut du source à tester
-        ========================
-      ),
-      declare(NBESPACESSOURCEPRODUIT , 4),
-      fonction(
-         definition(nom(traiteCommentaire2) , argument(texte) , argument(niveau) , argument(ind)),
-         contenu(
-            declare(s , ''),
-            affecte(
-               s,
-               appelf(
-                  n(traiteCommentaireSourceEtGenere1),
-                  p(texte),
-                  p(niveau),
-                  p(ind),
-                  p(NBESPACESSOURCEPRODUIT),
-                  p(false)
-               )
-            ),
-            revenir(s)
-         )
+        =====================================================================================================
+        =====================================================================================================
+        debut du source de test
+        =====================================================================================================
+        =====================================================================================================
+        =====================================================================================================
       ),
       fonction(
-         definition(nom(displayMessages)),
+         definition(nom(js_traiteDefinitionObjet) , argument(tab) , argument(id) , argument(dansConditionOuDansFonction)),
          contenu(
-            declare(i , 0),
+            declare(t , ''),
+            declare(j , 0),
+            declare(obj , obj()),
+            declare(textObj , ''),
             boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.errors.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus(plus('<div class="yyerror">' , global_messages.errors[i]) , '</div>'))
-               )
-            ),
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.warnings.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus(plus('<div class="yywarning">' , global_messages.warnings[i]) , '</div>'))
-               )
-            ),
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.infos.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  affecte(appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)) , plus(plus('<div class="yyinfo">' , global_messages.infos[i]) , '</div>'))
-               )
-            ),
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.lines.length))),
-               increment(affecte(i , i+1)),
-               faire(
-                  affecte(
-                     appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)),
-                     plus(
-                        plus(
-                           plus(plus('<a href="javascript:jumpToError(' , plus(global_messages.lines[i] , 1)) , ')" class="yyerror" style="border:2px red outset;">go to line '),
-                           global_messages.lines[i]
-                        ),
-                        '</a>&nbsp;'
-                     )
+               initialisation(affecte(j , plus(id , 1))),
+               condition(
+                  (
+                     (inf(j , tab.length)),
+                     et((sup(tab[j][3] , tab[id][3])))
                   )
-               )
-            ),
-            declare(numLignePrecedente , -1),
-            declare(i , 0),
-            boucle(
-               initialisation(affecte(i , 0)),
-               condition((inf(i , global_messages.ids.length))),
-               increment(affecte(i , i+1)),
+               ),
+               increment(affecte(j , j+1)),
                faire(
-                  declare(id , global_messages.ids[i]),
+                  #(On parcour le tableau ),
                   choix(
                      si(
-                        condition((inf(id , global_messages.data.matrice.value.length))),
+                        condition(
+                           (egal(tab[j][3] , plus(tab[id][3] , 1))),
+                           et(egal(tab[j][7] , tab[id][0]))
+                        ),
                         alors(
-                           declare(ligneMatrice , global_messages.data.matrice.value[id]),
-                           declare(caractereDebut , ligneMatrice[5]),
-                           declare(numeroDeLigne , 0),
-                           declare(j , caractereDebut),
-                           boucle(
-                              initialisation(affecte(j , caractereDebut)),
-                              condition((supeg(j , 0))),
-                              increment(affecte(j , j-1)),
-                              faire(
-                                 choix(
-                                    si(
-                                       condition((egal(global_messages.data.tableau.out[j][0] , '\n'))),
-                                       alors(affecte(numeroDeLigne , numeroDeLigne+1))
+                           choix(
+                              si(
+                                 condition(
+                                    (
+                                       (egal(tab[j][1] , '')),
+                                       et((egal(tab[j][2] , 'f')))
+                                    )
+                                 ),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition((egal(tab[j][8] , 2))),
+                                          alors(
+                                             choix(
+                                                si(
+                                                   condition((egalstricte(tab[j+2][2] , 'f'))),
+                                                   alors(
+                                                      choix(
+                                                         si(
+                                                            condition((egal(tab[j+2][1] , 'obj'))),
+                                                            alors(
+                                                               affecte(
+                                                                  obj,
+                                                                  appelf(nomf(js_traiteDefinitionObjet) , p(tab) , p(plus(j , 2)) , p(true))
+                                                               ),
+                                                               choix(
+                                                                  si(
+                                                                     condition((egal(obj.status , true))),
+                                                                     alors(
+                                                                        affectop(
+                                                                           '+=',
+                                                                           textObj,
+                                                                           plus(
+                                                                              ',',
+                                                                              '\'',
+                                                                              tab[j+1][1],
+                                                                              '\'',
+                                                                              ':',
+                                                                              obj.value
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  ),
+                                                                  sinon(
+                                                                     alors(
+                                                                        revenir(
+                                                                           appelf(
+                                                                              nomf(logerreur),
+                                                                              p(obj((status , false) , (value , t) , (id , id) , (tab , tab) , (message , 'dans js_traiteDefinitionObjet il y a un problème')))
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  )
+                                                               )
+                                                            )
+                                                         ),
+                                                         sinonsi(
+                                                            condition((egal(tab[j+2][1] , 'plus'))),
+                                                            alors(
+                                                               declare(
+                                                                  objOperation,
+                                                                  appelf(nomf(TraiteOperations1) , p(tab) , p(plus(j , 2)) , p(0))
+                                                               ),
+                                                               choix(
+                                                                  si(
+                                                                     condition((egal(objOperation.status , true))),
+                                                                     alors(
+                                                                        affectop(
+                                                                           '+=',
+                                                                           textObj,
+                                                                           plus(
+                                                                              ',',
+                                                                              '\'',
+                                                                              tab[j+1][1],
+                                                                              '\'',
+                                                                              ':',
+                                                                              objOperation.value
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  ),
+                                                                  sinon(
+                                                                     alors(
+                                                                        revenir(
+                                                                           appelf(
+                                                                              nomf(logerreur),
+                                                                              p(obj((status , false) , (value , t) , (id , j) , (tab , tab) , (message , 'erreur js_traiteDefinitionObjet 1496 sur des opérations ')))
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  )
+                                                               )
+                                                            )
+                                                         ),
+                                                         sinonsi(
+                                                            condition((egal(tab[j+2][1] , 'appelf'))),
+                                                            alors(
+                                                               declare(
+                                                                  objfnt1,
+                                                                  appelf(
+                                                                     nomf(js_traiteAppelFonction),
+                                                                     p(tab),
+                                                                     p(plus(j , 2)),
+                                                                     p(true),
+                                                                     p(0),
+                                                                     p(true)
+                                                                  )
+                                                               ),
+                                                               choix(
+                                                                  si(
+                                                                     condition((egalstricte(objfnt1.status , true))),
+                                                                     alors(
+                                                                        affectop(
+                                                                           '+=',
+                                                                           textObj,
+                                                                           plus(
+                                                                              ',',
+                                                                              '\'',
+                                                                              tab[j+1][1],
+                                                                              '\'',
+                                                                              ':',
+                                                                              objfnt1.value
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  ),
+                                                                  sinon(
+                                                                     alors(
+                                                                        appelf(
+                                                                           nomf(logerreur),
+                                                                           p(
+                                                                              obj((status , false) , (value , t) , (id , j) , (tab , tab) , ('message' , plus('1069 erreur sur appel de fonction nom "' , tab[j][1] , '"')))
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  )
+                                                               )
+                                                            )
+                                                         ),
+                                                         sinonsi(
+                                                            condition((egal(tab[j+2][1] , 'tableau'))),
+                                                            alors(
+                                                               declare(
+                                                                  objTableau,
+                                                                  appelf(
+                                                                     nomf(js_traiteTableau1),
+                                                                     p(tab),
+                                                                     p(plus(j , 2)),
+                                                                     p(true),
+                                                                     p(0),
+                                                                     p(false)
+                                                                  )
+                                                               ),
+                                                               choix(
+                                                                  si(
+                                                                     condition((egal(objTableau.status , true))),
+                                                                     alors(
+                                                                        affectop(
+                                                                           '+=',
+                                                                           textObj,
+                                                                           plus(
+                                                                              ',',
+                                                                              '\'',
+                                                                              tab[j+1][1],
+                                                                              '\'',
+                                                                              ':',
+                                                                              objTableau.value
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  ),
+                                                                  sinon(
+                                                                     alors(
+                                                                        revenir(
+                                                                           appelf(
+                                                                              nomf(logerreur),
+                                                                              p(obj((status , false) , (value , t) , (id , j) , (tab , tab) , (message , 'erreur 1392 sur js_traiteDefinitionObjet ')))
+                                                                           )
+                                                                        )
+                                                                     )
+                                                                  )
+                                                               )
+                                                            )
+                                                         ),
+                                                         sinon(
+                                                            alors(
+                                                               revenir(
+                                                                  appelf(
+                                                                     nomf(logerreur),
+                                                                     p(
+                                                                        obj((status , false) , (value , t) , (id , id) , (tab , tab) , ('message' , plus('dans js_traiteDefinitionObjet, 1492 "' , tab[j+2][1] , '"')))
+                                                                     )
+                                                                  )
+                                                               )
+                                                            )
+                                                         )
+                                                      )
+                                                   )
+                                                ),
+                                                sinon(
+                                                   alors(
+                                                      affectop(
+                                                         '+=',
+                                                         textObj,
+                                                         plus(',' , appelf(nomf(maConstante) , p(tab[j+1])) , ':' , appelf(nomf(maConstante) , p(tab[j+2])))
+                                                      )
+                                                   )
+                                                )
+                                             )
+                                          )
+                                       )
                                     )
                                  )
                               )
                            )
                         )
                      )
-                  ),
-                  choix(
-                     si(
-                        condition((sup(numeroDeLigne , 0))),
-                        alors(
-                           choix(
-                              si(
-                                 condition((diff(numeroDeLigne , numLignePrecedente))),
-                                 alors(
-                                    affecte(
-                                       appelf(n(document.getElementById) , p('global_messages') , prop(innerHTML)),
-                                       plus(
-                                          plus(
-                                             plus(plus('<a href="javascript:jumpToError(' , plus(numeroDeLigne , 1)) , ')" class="yyerror" style="border:2px red outset;">go to line '),
-                                             numeroDeLigne
-                                          ),
-                                          '</a>&nbsp;'
-                                       )
-                                    ),
-                                    affecte(numLignePrecedente , numeroDeLigne)
-                                 )
-                              )
-                           )
-                        )
-                     )
                   )
                )
-            )
-         )
-      ),
-      fonction(
-         definition(nom(espacesn) , argument(optionCRLF) , argument(i)),
-         contenu(
-            declare(t , ''),
-            choix(
-               si(
-                  condition((egalstricte(optionCRLF , vrai))),
-                  alors(affecte(t , '\r\n'))
-               ),
-               sinon(alors(affecte(t , '\n')))
             ),
+            affectop('+=' , t , '{'),
             choix(
                si(
-                  condition((sup(i , 0))),
+                  condition((diff(textObj , ''))),
                   alors(
-                     affecte(
-                        t,
-                        appelf(element(' ') , n(repeat) , p(mult(NBESPACESSOURCEPRODUIT , i)))
-                     )
+                     affectop('+=' , t , appelf(nomf(textObj.substr) , p(1)))
                   )
                )
             ),
-            revenir(t)
-         )
-      ),
-      fonction(
-         definition(nom(loadRevFile) , argument(nomFichierSource) , argument(fntSiOk) , argument(nomZone) , argument(faireApres)),
-         contenu(
-            declare(
-               r,
-               new(appelf(n(XMLHttpRequest)))
-            ),
-            appelf(n(r.open) , p('POST') , p('za_ajax.php?loadRevFile') , p(true)),
-            affecte(r.timeout , 6000),
-            appelf(n(r.setRequestHeader) , p('Content-Type') , p('application/x-www-form-urlencoded;charset=utf-8')),
-            affecteFonction(
-               r.onreadystatechange,
-               appelf(
-                  n(function),
-                  contenu(
-                     choix(
-                        si(
-                           condition((diff(r.readyState , 4)) , ou(diff(r.status , 200))),
-                           alors(revenir())
-                        )
-                     ),
-                     essayer(
-                        faire(
-                           declare(jsonRet , appelf(n(JSON.parse) , p(r.responseText))),
-                           choix(
-                              si(
-                                 condition((egal(jsonRet.status , 'OK'))),
-                                 alors(
-                                    appelf(
-                                       n(fntSiOk),
-                                       p(obj((status , true) , (value , jsonRet.value) , (nomZone , nomZone) , (nomFichierSource , nomFichierSource)))
-                                    ),
-                                    essayer(
-                                       faire(appelf(n(localStorage.setItem) , p('fta_dernier_fichier_charge') , p(nomFichierSource))),
-                                       sierreur(
-                                          e,
-                                          faire(
-                                             #(rien)
-                                          )
-                                       )
-                                    ),
-                                    choix(
-                                       si(
-                                          condition(
-                                             (egal(Typeof(faireApres) , 'function'))
-                                          ),
-                                          alors(appelf(n(faireApres)))
-                                       )
-                                    ),
-                                    revenir()
-                                 )
-                              ),
-                              sinon(
-                                 alors(appelf(n(display_ajax_error_in_cons) , p(jsonRet)) , appelf(n(console.log) , p(r)) , appelf(n(alert) , p('BAD job !')) , revenir())
-                              )
-                           )
-                        ),
-                        sierreur(
-                           e,
-                           faire(
-                              appelf(
-                                 n(console.error),
-                                 p('Go to the network panel and look the preview tab\n\n'),
-                                 p(e),
-                                 p('\n\n'),
-                                 p(r),
-                                 p('\n\n')
-                              ),
-                              revenir()
-                           )
-                        )
-                     )
-                  )
-               )
-            ),
-            affecteFonction(
-               r.onerror,
-               appelf(
-                  n(function),
-                  p(e),
-                  contenu(appelf(n(console.error) , p('e=') , p(e)) , revenir())
-               )
-            ),
-            affecteFonction(
-               r.ontimeout,
-               appelf(
-                  n(function),
-                  p(e),
-                  contenu(appelf(n(console.error) , p('e=') , p(e)) , revenir())
-               )
-            ),
-            declare(
-               ajax_param,
-               obj(
-                  (call , obj((lib , 'core') , (file , 'file') , (funct , 'loadRevFile'))),
-                  (file_name , nomFichierSource)
-               )
-            ),
-            appelf(
-               n(r.send),
-               p(
-                  plus(
-                     'ajax_param=',
-                     appelf(
-                        n(encodeURIComponent),
-                        p(appelf(n(JSON.stringify) , p(ajax_param)))
-                     )
-                  )
-               )
-            )
+            affectop('+=' , t , '}'),
+            revenir(obj((status , true) , (value , t)))
          )
       ),
       #(
-        ======================
-        fin du source à tester
-        ======================
-      ),
-      #(#
-      
-      appelf(
-         n(r.send),
-         p(
-            plus(
-               'a=',
-               appelf(
-                  n(fb),
-                  p(appelf(n(ec.fd) , p(e)))
-               )
-            )
-         )
-      ),
-      
-      
-  fonction(
-     definition(nom(loadRevFile) , argument(nomFichierSource) , argument(fntSiOk) , argument(nomZone) , argument(faireApres)),
-     contenu(
-        declare(r , appelf(n(new , XMLHttpRequest))),
-        appelf(element(r) , n(open) , p('POST') , p('za_ajax.php?loadRevFile') , p(true)),
-        affecte(r.timeout , @(6000)),
-        appelf(element(r) , n(setRequestHeader) , p('Content-Type') , p('application/x-www-form-urlencoded;charset=utf-8')),
-        affecte(
-           r.onreadystatechange,
-           appelf(
-              n(function),
-              contenu(
-                 choix(
-                    si(
-                       condition(
-                          ((diff(r.readyState , 4)) , ou(diff(r.status , 200)))
-                       ),
-                       alors(revenir())
-                    )
-                 )
-              )
-           )
-        )
-     )
-  ),
-      ),
-      #(=============================================================================================================================),
-      #(#
-      
-      
-      
-      
-  declare(a , 0),
-  declare(i , 0),
-  boucle(
-     initialisation(affecte(i , 0)),
-     condition((inf(i , 10))),
-     increment(affecte(i , i+1)),
-     faire(affecte(a , @(1+a*(1+(1+(a+1))))))
-  ),
-  
-  
-      ),
-      #(=============================================================================================================================),
-      #(#
-  
-  
-  
-  declare(i , 0),
-  boucle(
-     initialisation(affecte(i , 0)),
-     condition((inf(i , 10))),
-     increment(affecte(i , i+1)),
-     faire(
-        affecte(
-           appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-           appelf(
-              n(concat),
-              p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-              p('<div class="yyerror">'),
-              p(global_messages.errors[i]),
-              p('</div class="toto">'),
-              appelf(
-                 #(),
-                 n(toto),
-                 p(a),
-                 p('b')
-              )
-           )
-        ),
-        appelf(
-           n(f),
-           p(a),
-           p(appelf(n(b)))
-        )
-     )
-  ),
-  
-      ),
-      #(=======================================================================================================),
-      #(#
-  affecte(
-     appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-     appelf(
-        n(concat),
-        p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-        p('<div class="yyerror">'),
-        p(global_messages.errors[i]),
-        p('</div class="toto">'),
-        appelf(n(toto) , p(a) , p('b'))
-     )
-  ),
-      ),
-      #(=======================================================================================================),
-      #(#
-  
-  
-  
-  affecte(
-  appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML)),
-  appelf(
-  n(concat),
-  #(),
-  p(appelf(element(document) , n(getElementById) , p('global_messages') , prop(innerHTML))),
-  p('<div class="yyerror">'),
-  p(global_messages.errors[i]),
-  p('</div class="toto">'),
-  p(appelf(n(toto) , p(a) , p('b')))
-  )
-  ),
-  
-  
-  
-      ),
-      #(#
-      
-      
-      
-  declare(s , ''),
-  affecte(
-     s,
-     cascade(
-        appelf(
-           n(traiteCommentaireSourceEtGenere1),
-           p(texte),
-           p(niveau),
-           p(ind),
-           p(NBESPACESSOURCEPRODUIT),
-           p(false)
-        )
-     )
-  ),
-  
-  
-  
-      ),
-      #(
+        =====================================================================================================
+        fin du source de test
         
-        a=b.c(x('d').y.z()).e.f( 'g,h', i(j).k ).l 
-        
-      ),
-      #(#
-      
-      
-  declare(i , 0),
-  boucle(
-     initialisation(affecte(i , 0)),
-     condition((inf(i , 10))),
-     increment(affecte(i , i+1)),
-     faire(
-        affecte(
-           a,
-           cascade(
-              appelf(
-                 element(b),
-                 n(c),
-                 p(
-                    cascade(appelf(n(x) , p('d')) , appelf(element(y) , n(z)))
-                 )
-              ),
-              appelf(
-                 element(e),
-                 n(f),
-                 p('g,h'),
-                 p(appelf(n(i) , p(j) , prop(k))),
-                 prop(l)
-              )
-           )
-        )
-     )
-  ),
-      ),
-      #(#
-      
-cascade(
-   appelf(
-      element(b),
-      n(c),
-      p(
-         cascade(
-            appelf(
-               n(x) , 
-               p('d')
-            ),
-            appelf(
-               element(y) , 
-               n(z)
-            )
-         ),
-      )
-   ),
-   appelf(
-      element(e),
-      n(f),
-      p('g,h'),
-      p(appelf(n(i) , p(j) , prop(k))),
-      prop(l)
-   )
-)      
-      
-      ),
-      #(#
-  affecte(
-     a,
-     cascade(
-        appelf(element(b) , n(c) , p('d')),
-        appelf(
-           element(e),
-           n(f),
-           p('g,h'),
-           p(appelf(n(i) , p(j) , prop(k))),
-           prop(l)
-        )
-     )
-  ),
-      ),
-      #(#
-      
-a=b.c('d').e.f( 'g,h', i(j).k ) ; 
-      
-a=document.getElementById('x').value.replace('g,h',maFuncQuiRetourneUnObjet(j).k)
-affecte(
-   a,
-   listef(      
-     appelf(
-        element(document)
-        n(getElementById),
-        p('x'),
-        prop(value)
-     ),
-     appelf(
-        element(value)
-        name(replace)
-        p('gh'),
-        p(
-           appelf(
-              n(maFuncQuiRetourneUnObjet),
-              p(j)
-           )
-        )
-     )
-   )
-)
-
-
-
-      affecte(
-         a,
-         cascade(
-          appelf(  element(b),  n(c),p('d')),appelf(  n(e.f),p('g,h'),p(appelf(  n(i),p(j),prop(k))),prop(l))         )
-      )
-
-
-
-      affecte(
-         a,
-         appelf(
-            #(),
-            n(b.c),
-            p('d'),
-            prop(
-               appelf(
-                  #(),
-                  n(e.f),
-                  p('g,h'),
-                  p(
-                     appelf(
-                        #(),
-                        n(i),
-                        p(j),
-                        prop(k)
-                     )
-                  ),
-                  prop(l)
-               )
-            )
-         )
-      ),
-
-      ),
-      #(#      
-  declare(cleElement , obj()),
-  boucleSurObjet(
-     pourChaque(dans(cleElement , arguments)),
-     faire(
-        #(),
-        affecte(a , 1)
-     )
-  ),
-      ),
-      #(#      
-  affecte(
-     variable,
-     condition((egal(1 , 1)))
-  ),
-      ),
-      #(#      
-
-
-  boucle(
-     initialisation(affecte(i , 0)),
-     condition(
-        (inf(i , tab.length)),
-        et(sup(a , 0)),
-        ou(inf(a , b) , et(inf(a , b))),
-        et(
-           inf(a2 , b2),
-           ou(inf(a3 , b3)),
-           ou(inf(a3 , b3)),
-           ou(inf(a3 , b3)),
-           ou(inf(a3 , b3)),
-           ou(inf(a3 , b3))
-        )
-     ),
-     increment(affecte(i , i+1)),
-     faire(
-        #(dans faire),
-        affecte(a , 1)
-     )
-  ),
-  
-  
-  
-      ),
-      #(fin boucle, suite du source),
-      #(#
-  
-  
-  declare(
-     global_enteteTableau,
-     appelf(
-        n(Array),
-        p(appelf(n(Array) , p('id') , p('id'))),
-        p(appelf(n(Array) , p('val') , p('value'))),
-        p(appelf(n(Array) , p('typ') , p('type'))),
-        p(appelf(n(Array) , p('niv') , p('niveau'))),
-        p(appelf(n(Array) , p('coQ') , p('constante quotée')))
-     )
-  ),
-  
-  
-      ),
-      #(#
-  
-  
-  declare(obj , obj()),
-  affecte(obj , obj(('status' , faux) , ('message' , 'erreur') , ('id' , i))),
-  choix(
-     si(
-        condition((vrai)),
-        alors(
-           appelf(
-              r(t),
-              n(concat),
-              p(t),
-              p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
-           )
-        )
-     ),
-     sinon(
-        alors(
-           appelf(
-              r(t),
-              n(concat),
-              p(t),
-              p(appelf(n(espacesnrev) , p(false) , p(arr[i][3])))
-           )
-        )
-     )
-  ),
-  
-  
-  
-      ),
-      #(#
-  ============================================
-  
-  
-  
-  appelf(
-     n(push),
-     element(out),
-     p(
-        appelf(
-           n(Array),
-           p(
-              appelf(
-                 element(str),
-                 n(substr),
-                 p(0),
-                 p(2)
-              )
-           ),
-           p(2),
-           p(i),
-           p(numLigne)
-        )
-     )
-  ),
-  
-  ============================================
-      ),
-      #(#
-  
-  
-  
-  ============================================
-  affecte(apresAppelF , 1),
-  #(
-     ===============
-     début de boucle
-     ===============
-  ),
-  boucle(
-     #(comm 20 boucle),
-     initialisation(affecte(i , 0)),
-     condition(inf(i , tab.length)),
-     increment(affecte(i , i+1)),
-     faire(
-        affecte(a , 1),
-        #(arrêter le traitement),
-        break(),
-        appelf(
-           n(nomFonction),
-           r(variableDeRetour),
-           p(parametre1),
-           p(parametre2)
-        ),
-        revenir(appelf(n(logerror) , p(variableDeRetour)))
-     )
-  ),
-  #(
-     ===========================
-     fin boucle, suite du source
-     ===========================
-  ),
-  #(
-     =============
-     comm 10 if OK
-     =============
-  ),
-  #(commentaire 11),
-  choix(
-     #(
-        =============
-        comm 20 if OK
-        =============
-     ),
-     si(
-        #(commentaire 30 OK),
-        condition(
-           #(
-              =============
-              comm 40 if OK
-              =============
-           ),
-           non(
-              #(commentaire 50 OK),
-              (
-                 #(commentaire 60 OK),
-                 egal(vrai , vrai)
-              ),
-              #(commentaire 51 OK),
-              et(
-                 #(commentaire 61 OK),
-                 egal(vrai , vrai)
-              )
-           ),
-           #(
-              =================
-              commentaire 41 OK
-              =================
-           ),
-           ou(egal(faux , vrai))
-        ),
-        alors(affecte(a , 1))
-     ),
-     #(
-        =================
-        commentaire 21 OK
-        =================
-     ),
-     sinonsi(
-        #(commentaire 31 OK),
-        condition(
-           #(commentaire 32 OK),
-           egal(true , faux)
-        ),
-        alors(affecte(a , 1))
-     ),
-     #(commentaire 22 OK),
-     sinon(
-        alors(affecte(a , 1)),
-        #(finsinon)
-     ),
-     #(commentaire 23 OK)
-  ),
-  #(commentaire 12),
-  affecte(apresChoix , 1),
-  #(commentaire 13),
-  affecte(a , 1),
-  #(commentaire 14)
-
-
-  ============================================
       )
    )
 )

@@ -4,48 +4,74 @@ src_php(
    (file_path , .),
    source(
       php(
-         fonction(
-            definition(nom(getFileContent) , adresseArgument($data)),
-            contenu(
-               choix(
-                  #(on interdit un ".." dans le chemin de fichier en lecture),
-                  #(sauf si c'est le super utilisateur),
-                  si(
-                     condition(
-                        (
-                           diff_stricte(faux , appelf(n(strpos) , p($data[INPUT]["fileName"]) , p('..')))
-                        ),
-                        ou(diff_stricte(1 , $_SESSION[APP_KEY]["userLoginId"]))
-                     ),
-                     alors(affecte($data[MESSAGES][] , 'cannot read a file containing ".."'))
-                  ),
-                  #(sinon on le lit),
-                  sinon(
-                     alors(
-                        choix(
-                           si(
-                              condition((diff($data[INPUT]["fileName"] , ''))),
-                              alors(
-                                 affecte($filefullpath , $data[INPUT]["fileName"]),
-                                 appelf(r($contenu) , n(file_get_contents) , p($filefullpath)),
-                                 choix(
-                                    si(
-                                       condition((diff_stricte(faux , $contenu))),
-                                       alors(affecte($data[VALUE] , $contenu) , affecte($data[STATUS] , 'OK'))
-                                    ),
-                                    sinon(alors(affecte($data[MESSAGES][] , 'cannot read the file')))
-                                 )
-                              )
-                           ),
-                           sinon(alors(affecte($data[MESSAGES][] , 'file name must be given')))
+         #(
+           début du test
+           =======================================================================================
+         ),
+         affecte(
+            $a,
+            appelf(
+               nomf(realpath),
+               p(
+                  appelf(
+                     nomf(dirname),
+                     p(
+                        appelf(
+                           nomf(dirname),
+                           p(appelf(nomf(dirname) , p(__FILE__)))
                         )
                      )
                   )
                )
             )
+         ),
+         appelf(nomf(require) , p(concat($a , '/phplib/vendor/autoload.php'))),
+         appelf(nomf(use) , p('PhpParser\\Error')),
+         appelf(nomf(use) , p('PhpParser\\NodeDumper')),
+         appelf(nomf(use) , p('PhpParser\\ParserFactory')),
+         fonction(
+            definition(nom(recupererAstDePhp) , adresseArgument($data)),
+            contenu(
+               affecte(
+                  $parser,
+                  appelf(
+                     element(
+                        new(appelf(nomf(ParserFactory)))
+                     ),
+                     nomf(createForNewestSupportedVersion)
+                  )
+               ),
+               essayer(
+                  faire(
+                     affecte(
+                        $ast,
+                        appelf(
+                           element($parser),
+                           nomf(parse),
+                           p(tableau(nomt(data) , p('input') , p('texteSource')))
+                        )
+                     ),
+                     affecte(tableau(nomt(data) , p('value')) , appelf(nomf(json_encode) , p($ast))),
+                     affecte(tableau(nomt(data) , p('status')) , 'OK')
+                  ),
+                  sierreur(
+                     err(Error , $error),
+                     faire(
+                        affecte(tableau(nomt(data) , p('messages') , p()) , appelf(element($error) , nomf(getMessage))),
+                        revenir()
+                     )
+                  )
+               )
+            )
+         ),
+         #(
+           =================================================================================
+           fin du test
          )
       )
    ),
-   concatFichier(testConcat1.js),
-   concatFichier(testConcat2.js)
+   #(
+     concatFichier(testConcat1.js),
+     concatFichier(testConcat2.js)
+   )
 )
