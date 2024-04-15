@@ -8,7 +8,7 @@ src_php(
          affecte($src_create_database , appelf(n(file_get_contents) , p('init.sql'))),
          choix(
             si(
-               condition((egal_stricte($src_create_database , faux))),
+               condition((egalstricte($src_create_database , faux))),
                alors(appelf(n(die) , p('fichier init.sql non trouve')))
             )
          ),

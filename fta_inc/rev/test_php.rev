@@ -8,62 +8,376 @@ src_php(
            début du test
            =======================================================================================
          ),
-         affecte(
-            $a,
-            appelf(
-               nomf(realpath),
-               p(
-                  appelf(
-                     nomf(dirname),
-                     p(
-                        appelf(
-                           nomf(dirname),
-                           p(appelf(nomf(dirname) , p(__FILE__)))
-                        )
-                     )
-                  )
-               )
-            )
-         ),
-         appelf(nomf(require) , p(concat($a , '/phplib/vendor/autoload.php'))),
-         appelf(nomf(use) , p('PhpParser\\Error')),
-         appelf(nomf(use) , p('PhpParser\\NodeDumper')),
-         appelf(nomf(use) , p('PhpParser\\ParserFactory')),
+         appelf(nomf(error_reporting) , p(0)),
+         appelf(nomf(ini_set) , p('display_errors') , p(0)),
+         appelf(nomf(set_error_handler) , p('errorHandler')),
+         appelf(nomf(register_shutdown_function) , p('shutdownHandler')),
          fonction(
-            definition(nom(recupererAstDePhp) , adresseArgument($data)),
+            definition(
+               nom(errorHandler),
+               argument($error_level),
+               argument($error_message),
+               argument($error_file),
+               argument($error_line),
+               argument($error_context)
+            ),
             contenu(
+               affecte($typeName , ''),
+               bascule(
+                  quand($error_level),
+                  est(valeur(E_STRICT) , faire(affecte($typeName , 'E_STRICT') , break())),
+                  est(valeur(E_USER_NOTICE) , faire(affecte($typeName , 'E_USER_NOTICE') , break())),
+                  est(valeur(E_NOTICE) , faire(affecte($typeName , 'E_NOTICE') , break())),
+                  est(valeur(E_USER_WARNING) , faire(affecte($typeName , 'E_USER_WARNING') , break())),
+                  est(valeur(E_WARNING) , faire(affecte($typeName , 'E_WARNING') , break())),
+                  est(valeur(E_ERROR) , faire(affecte($typeName , 'E_ERROR') , break())),
+                  est(valeur(E_CORE_ERROR) , faire(affecte($typeName , 'E_CORE_ERROR') , break())),
+                  est(valeur(E_COMPILE_ERROR) , faire(affecte($typeName , 'E_COMPILE_ERROR') , break())),
+                  est(valeur(E_USER_ERROR) , faire(affecte($typeName , 'E_USER_ERROR') , break())),
+                  est(valeur(E_RECOVERABLE_ERROR) , faire(affecte($typeName , 'E_RECOVERABLE_ERROR') , break())),
+                  est(valeur(E_CORE_WARNING) , faire(affecte($typeName , 'E_CORE_WARNING') , break())),
+                  est(valeur(E_COMPILE_WARNING) , faire(affecte($typeName , 'E_COMPILE_WARNING') , break())),
+                  est(valeur(E_PARSE) , faire(affecte($typeName , 'E_PARSE') , break()))
+               ),
                affecte(
-                  $parser,
-                  appelf(
-                     element(
-                        new(appelf(nomf(ParserFactory)))
+                  $error,
+                  concat(
+                     testEnLigne(
+                        condition((egal($typeName , ''))),
+                        siVrai('UNKNOWN_ERROR'),
+                        siFaux($typeName)
                      ),
-                     nomf(createForNewestSupportedVersion)
+                     ' | msg:',
+                     $error_message,
+                     ' | line:',
+                     $error_line,
+                     ' | file:',
+                     appelf(nomf(basename) , p($error_file)),
+                     ' (',
+                     $error_file,
+                     ')'
                   )
                ),
-               essayer(
-                  faire(
-                     affecte(
-                        $ast,
-                        appelf(
-                           element($parser),
-                           nomf(parse),
-                           p(tableau(nomt(data) , p('input') , p('texteSource')))
+               choix(
+                  si(
+                     condition((diff($typeName , ''))),
+                     alors(appelf(nomf(mylog) , p($error) , p('fatal')))
+                  )
+               )
+            )
+         ),
+         fonction(
+            definition(nom(shutdownHandler)),
+            contenu(
+               affecte($lasterror , appelf(nomf(error_get_last))),
+               affecte($typeName , ''),
+               choix(
+                  si(
+                     condition(
+                        (
+                           appelf(
+                              nomf(isset),
+                              p(tableau(nomt($lasterror) , p('type')))
+                           )
                         )
                      ),
-                     affecte(tableau(nomt(data) , p('value')) , appelf(nomf(json_encode) , p($ast))),
-                     affecte(tableau(nomt(data) , p('status')) , 'OK')
-                  ),
-                  sierreur(
-                     err(Error , $error),
-                     faire(
-                        affecte(tableau(nomt(data) , p('messages') , p()) , appelf(element($error) , nomf(getMessage))),
-                        revenir()
+                     alors(
+                        bascule(
+                           quand(tableau(nomt($lasterror) , p('type'))),
+                           est(valeur(E_STRICT) , faire(affecte($typeName , 'E_STRICT') , break())),
+                           est(valeur(E_USER_NOTICE) , faire(affecte($typeName , 'E_USER_NOTICE') , break())),
+                           est(valeur(E_NOTICE) , faire(affecte($typeName , 'E_NOTICE') , break())),
+                           est(valeur(E_USER_WARNING) , faire(affecte($typeName , 'E_USER_WARNING') , break())),
+                           est(valeur(E_WARNING) , faire(affecte($typeName , 'E_WARNING') , break())),
+                           est(valeur(E_ERROR) , faire(affecte($typeName , 'E_ERROR') , break())),
+                           est(valeur(E_CORE_ERROR) , faire(affecte($typeName , 'E_CORE_ERROR') , break())),
+                           est(valeur(E_COMPILE_ERROR) , faire(affecte($typeName , 'E_COMPILE_ERROR') , break())),
+                           est(valeur(E_USER_ERROR) , faire(affecte($typeName , 'E_USER_ERROR') , break())),
+                           est(valeur(E_RECOVERABLE_ERROR) , faire(affecte($typeName , 'E_RECOVERABLE_ERROR') , break())),
+                           est(valeur(E_CORE_WARNING) , faire(affecte($typeName , 'E_CORE_WARNING') , break())),
+                           est(valeur(E_COMPILE_WARNING) , faire(affecte($typeName , 'E_COMPILE_WARNING') , break())),
+                           est(valeur(E_PARSE) , faire(affecte($typeName , 'E_PARSE') , break()))
+                        ),
+                        affecte(
+                           $toto,
+                           appelf(
+                              nomf(dirname),
+                              p(appelf(nomf(dirname) , p(__FILE__)))
+                           )
+                        ),
+                        affecte(
+                           $dernierMessage,
+                           appelf(
+                              nomf(str_replace),
+                              p($toto),
+                              p(''),
+                              p(tableau(nomt($lasterror) , p('message')))
+                           )
+                        ),
+                        affecte(
+                           $error,
+                           concat(
+                              testEnLigne(
+                                 condition((egal($typeName , ''))),
+                                 siVrai('UNKNOWN_ERROR'),
+                                 siFaux($typeName)
+                              ),
+                              ' bug dans le source php | msg:',
+                              '<span style="text-wrap:wrap;color:blue;">',
+                              $dernierMessage,
+                              '</span> | line:',
+                              tableau(nomt($lasterror) , p('line')),
+                              ' | aafile:',
+                              appelf(
+                                 nomf(basename),
+                                 p(tableau(nomt($lasterror) , p('file')))
+                              ),
+                              ' (',
+                              tableau(nomt($lasterror) , p('file')),
+                              ')'
+                           )
+                        ),
+                        choix(
+                           si(
+                              condition((diff($typeName , ''))),
+                              alors(appelf(nomf(mylog) , p($error) , p('fatal')))
+                           )
+                        )
                      )
                   )
                )
             )
          ),
+         fonction(
+            definition(nom(mylog) , argument($error) , argument($errlvl)),
+            contenu(
+               affecte($ret , array(('status' , 'KO') , ('messages' , array()))),
+               affecte(
+                  tableau(nomt($ret) , p('messages') , p()),
+                  concat(appelf(nomf(basename) , p(__FILE__)) , ' ' , __LINE__ , ' ' , $error)
+               ),
+               appelf(nomf(header) , p('Content-Type: application/json; charset=utf-8')),
+               appelf(
+                  nomf(echo),
+                  p(appelf(nomf(json_encode) , p($ret) , p(JSON_FORCE_OBJECT)))
+               ),
+               appelf(nomf(http_response_code) , p(200)),
+               sortir(0)
+            )
+         ),
+         appelf(nomf(require_once) , p('aa_include.php')),
+         choix(
+            si(
+               condition(
+                  (
+                     appelf(nomf(isset) , p($_POST)),
+                     et(
+                        sup(appelf(nomf(sizeof) , p($_POST)) , 0)
+                     ),
+                     et(
+                        appelf(
+                           nomf(isset),
+                           p(tableau(nomt($_POST) , p('ajax_param')))
+                        )
+                     )
+                  )
+               ),
+               alors(
+                  affecte($ret , array(('status' , 'KO') , ('messages' , array()))),
+                  affecte(
+                     tableau(nomt($ret) , p('input')),
+                     appelf(
+                        nomf(json_decode),
+                        p(tableau(nomt($_POST) , p('ajax_param'))),
+                        p(vrai)
+                     )
+                  ),
+                  choix(
+                     si(
+                        condition(
+                           (
+                              appelf(
+                                 nomf(isset),
+                                 p(tableau(nomt($ret) , p('input') , p('call') , p('funct')))
+                              ),
+                              et(
+                                 diff(tableau(nomt($ret) , p('input') , p('call') , p('lib')) , '')
+                              ),
+                              et(
+                                 diff(tableau(nomt($ret) , p('input') , p('call') , p('file')) , '')
+                              ),
+                              et(
+                                 diff(tableau(nomt($ret) , p('input') , p('call') , p('funct')) , '')
+                              )
+                           )
+                        ),
+                        alors(
+                           appelf(
+                              nomf(define),
+                              p('BNF'),
+                              p(
+                                 concat('/ajax/' , tableau(nomt($ret) , p('input') , p('call') , p('lib')) , '/' , tableau(nomt($ret) , p('input') , p('call') , p('file')) , '.php')
+                              )
+                           ),
+                           choix(
+                              si(
+                                 condition(
+                                    (
+                                       non(
+                                          appelf(
+                                             nomf(is_file),
+                                             p(
+                                                concat(
+                                                   INCLUDE_PATH,
+                                                   '/ajax/',
+                                                   tableau(nomt($ret) , p('input') , p('call') , p('lib')),
+                                                   '/',
+                                                   tableau(nomt($ret) , p('input') , p('call') , p('file')),
+                                                   '.php'
+                                                )
+                                             )
+                                          )
+                                       )
+                                    )
+                                 ),
+                                 alors(
+                                    affecte(tableau(nomt($ret) , p('status')) , 'KO'),
+                                    affecte(
+                                       tableau(nomt($ret) , p('messages') , p()),
+                                       concat(
+                                          appelf(nomf(basename) , p(__FILE__)),
+                                          ' ',
+                                          __LINE__,
+                                          ' ',
+                                          'Ajax file not founded : "',
+                                          INCLUDE_PATH,
+                                          '/ajax/',
+                                          tableau(nomt($ret) , p('input') , p('call') , p('lib')),
+                                          '/ajax_',
+                                          tableau(nomt($ret) , p('input') , p('call') , p('funct')),
+                                          '.php"'
+                                       )
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition(
+                                    (
+                                       egal(appelf(nomf(session_status)) , PHP_SESSION_NONE)
+                                    )
+                                 ),
+                                 alors(appelf(nomf(session_start)))
+                              ),
+                              sinonsi(
+                                 condition(
+                                    (
+                                       diff(tableau(nomt($ret) , p('input') , p('call') , p('funct')) , '')
+                                    )
+                                 ),
+                                 alors(
+                                    choix(
+                                       si(
+                                          condition(
+                                             (
+                                                egalstricte(vrai , appelf(nomf(checkGroupAjaxPages)))
+                                             )
+                                          ),
+                                          alors(
+                                             appelf(
+                                                nomf(require_once),
+                                                p(
+                                                   concat(
+                                                      INCLUDE_PATH,
+                                                      '/ajax/',
+                                                      tableau(nomt($ret) , p('input') , p('call') , p('lib')),
+                                                      '/',
+                                                      tableau(nomt($ret) , p('input') , p('call') , p('file')),
+                                                      '.php'
+                                                   )
+                                                )
+                                             ),
+                                             appelf(
+                                                nomf(tableau(nomt($ret) , p('input') , p('call') , p('funct'))),
+                                                p($ret)
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              ),
+                              sinonsi(
+                                 condition(
+                                    (
+                                       egalstricte(vrai , appelf(nomf(checkGroupAjaxPages)))
+                                    )
+                                 ),
+                                 alors(
+                                    appelf(
+                                       nomf(require_once),
+                                       p(
+                                          concat(
+                                             INCLUDE_PATH,
+                                             '/ajax/',
+                                             tableau(nomt($ret) , p('input') , p('call') , p('lib')),
+                                             '/',
+                                             tableau(nomt($ret) , p('input') , p('call') , p('file')),
+                                             '.php'
+                                          )
+                                       )
+                                    )
+                                 )
+                              )
+                           )
+                        )
+                     ),
+                     sinon(
+                        alors(
+                           affecte(tableau(nomt($ret) , p('status')) , 'KO'),
+                           affecte(
+                              tableau(nomt($ret) , p('messages') , p()),
+                              concat(
+                                 appelf(nomf(basename) , p(__FILE__)),
+                                 ' ',
+                                 __LINE__,
+                                 ' ',
+                                 'funct or lib is not defined in the input parameters : "',
+                                 appelf(
+                                    nomf(var_export),
+                                    p(tableau(nomt($ret) , p('input'))),
+                                    p(vrai)
+                                 ),
+                                 '"'
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            ),
+            sinon(
+               alors(
+                  affecte(tableau(nomt($ret) , p('status')) , 'KO'),
+                  affecte(
+                     tableau(nomt($ret) , p('messages') , p()),
+                     concat(
+                        appelf(nomf(basename) , p(__FILE__)),
+                        ' ',
+                        __LINE__,
+                        ' ',
+                        'post ajax_param is not defined : "',
+                        appelf(nomf(var_export) , p($_POST) , p(vrai)),
+                        '"'
+                     )
+                  )
+               )
+            )
+         ),
+         appelf(nomf(header) , p('Content-Type: application/json; charset=utf-8')),
+         appelf(
+            nomf(echo),
+            p(appelf(nomf(json_encode) , p($ret) , p(JSON_FORCE_OBJECT)))
+         ),
+         sortir(0),
          #(
            =================================================================================
            fin du test

@@ -509,7 +509,7 @@ function baisserNiveauEtSupprimer(tab,id,niveau){
 function traiteLogicalExpression1(element,niveau,dansSiOuBoucle){
     var t='';
     if((element.left) && (element.right)){
-        var obj1 = traiteCondition1(element.left,niveau,dansSiOuBoucle);
+        var obj1 = js_traiteCondition1(element.left,niveau,dansSiOuBoucle);
         if(obj1.status === true){
             t+=''+obj1.value+'';
         }else{
@@ -522,7 +522,7 @@ function traiteLogicalExpression1(element,niveau,dansSiOuBoucle){
         }else{
             return(astjs_logerreur({'status':false,'message':'erreur dans traiteLogicalExpression1 0436 '+element.operator,element:element}));
         }
-        var obj2 = traiteCondition1(element.right,niveau,dansSiOuBoucle);
+        var obj2 = js_traiteCondition1(element.right,niveau,dansSiOuBoucle);
         if(obj2.status === true){
             t+='('+obj2.value+')';
         }else{
@@ -534,7 +534,7 @@ function traiteLogicalExpression1(element,niveau,dansSiOuBoucle){
     }
     return({status:true,value:t});
 }
-function traiteCondition1(element,niveau,dansSiOuBoucle){
+function js_traiteCondition1(element,niveau,dansSiOuBoucle){
     var t='';
     var i=0;
     var j=0;
@@ -793,7 +793,7 @@ function traiteFor1(element,niveau){
     }
     t+=')';
     t+='\n'+esp0+esp1+'condition(';
-    var obj2 = traiteCondition1(element.test,0,true);
+    var obj2 = js_traiteCondition1(element.test,0,true);
     if(obj2.status === true){
         t+=''+obj2.value;
     }else{
@@ -846,7 +846,7 @@ function traiteIf1(element,niveau,type){
         t+='\n'+esp0+'choix(';
         t+='\n'+esp0+esp1+'si(';
         t+='\n'+esp0+esp1+esp1+'condition(';
-        var obj2 = traiteCondition1(element.test,0,true);
+        var obj2 = js_traiteCondition1(element.test,0,true);
         if(obj2.status === true){
             t+=''+obj2.value;
         }else{
@@ -857,7 +857,7 @@ function traiteIf1(element,niveau,type){
         if(element.test){
             t+='\n'+esp0+esp1+'sinonsi(';
             t+='\n'+esp0+esp1+esp1+'condition(';
-            var obj2 = traiteCondition1(element.test,0,true);
+            var obj2 = js_traiteCondition1(element.test,0,true);
             if(obj2.status === true){
                 t+=''+obj2.value;
             }else{
