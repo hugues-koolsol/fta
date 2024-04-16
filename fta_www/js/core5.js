@@ -1680,7 +1680,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         indice=(indice+1);
         if(autoriserCstDansRacine !== true){
             if(niveau == 0){
-                temp={'status':false,'value':T,'message':'1641 la racine ne peut pas contenir des constantes'};
+                if(i > 100){
+                    var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                }else{
+                    var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                }
+             
+                temp={'status':false,'value':T,'message':'1641 la racine ne peut pas contenir des constantes près de'+presDe};
                 return(logerreur(temp));
             }
         }

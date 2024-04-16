@@ -1,11 +1,103 @@
 <?php
+date_default_timezone_set('Europe/Paris');
+define("APP_KEY","fta");
+define("BACKUP_PATH",'..'.DIRECTORY_SEPARATOR.APP_KEY.'_backup');
+define("INCLUDE_PATH",'..'.DIRECTORY_SEPARATOR.APP_KEY.'_inc');
+define("CRLF","\r\n");
+define("OK","OK");
+define("MESSAGES","messages");
+define("INPUT","input");
+define("VALUE","value");
+define("STATUS","status");
+function checkGroupAjaxPages(){
+    return(true);
+}
+function start_session_messages(){
+    $_SESSION[APP_KEY][MESSAGES]['errors']=array();
+    $_SESSION[APP_KEY][MESSAGES]['warnings']=array();
+    $_SESSION[APP_KEY][MESSAGES]['comments']=array();
+}
+function clear_session_messages(){
+    unset($_SESSION[APP_KEY][MESSAGES]);
+}
+function session_messages(){
+    $t='';
+    $u='';
+    if((isset($_SESSION[APP_KEY][MESSAGES]))){
+        $u='';
+        if((isset($_SESSION[APP_KEY][MESSAGES]['errors']))){
+            foreach($_SESSION[APP_KEY][MESSAGES]['errors'] as $k1 => $v1){
+                if(($v1 != '')){
+                    $u=$u.'<div>'.htmlentities($v1).'</div>';
+                }
+            }
+        }
+        if(($u != '')){
+            $t=$t.'<div class="yyerror">'.$u.'</div>';
+        }
+    }
+    return($t);
+}
+function pushkv(&$a,$k,$v){
+    $a[$k]=$v;
+}
+function concat(...$ps){
+    $t='';
+    foreach($ps as $p){
+        $t=$t.$p;
+    }
+    return($t);
+}
+function html_header1($p){
+    $t='';
+    $t=$t.'<!DOCTYPE html>'.CRLF;
+    $t=$t.'<html lang="fr">'.CRLF;
+    $t=$t.' <head>'.CRLF;
+    $t=$t.'  <meta charset="utf-8" />'.CRLF;
+    $t=$t.'  <title>'.($p['title']??'title').'</title>'.CRLF;
+    $t=$t.'  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
+    $t=$t.'  <link rel="stylesheet" href="index.css" />'.CRLF;
+    $t=$t.' </head>'.CRLF;
+    if((isset($p['opt']['bodyPaddingTop']))){
+        $t=$t.' <body style="padding-top:'.$p['opt']['bodyPaddingTop'].'px;">'.CRLF;
+    }else{
+        $t=$t.' <body style="padding-top:24px;">'.CRLF;
+    }
+    $t=$t.' <nav style="position: fixed;top: 0;left: 0;width:100%;">'.CRLF;
+    $t=$t.'   <a href="index.html">html home</a>'.CRLF;
+    $t=$t.'   <a href="index.php">php home</a>'.CRLF;
+    $t=$t.'   <a href="todo.html">todo</a>'.CRLF;
+    $t=$t.'   <a href="traiteJs4.html">traiteJs4</a>'.CRLF;
+    $t=$t.'   <a href="traitePhp0.html">traitePhp0</a>'.CRLF;
+    if((isset($_SESSION[APP_KEY]['user']) && 1 === $_SESSION[APP_KEY]['user'])){
+        $t=$t.'   <a href="index_source.php">index_source</a>'.CRLF;
+        $t=$t.'   <a href="aa_login.php?a=logout">logout</a>'.CRLF;
+    }else{
+        $t=$t.'   <a href="aa_login.php">login</a>'.CRLF;
+    }
+    $t=$t.' </nav>'.CRLF;
+    $t=$t.' <div id="zone_global_messages"></div>'.CRLF;
+    return($t);
+}
+function html_footer1($p){
+    $t='';
+    $t=$t.'  <script type="text/javascript" src="js/core5.js"></script>'.CRLF;
+    if((isset($p['js']))){
+        foreach($p['js'] as $k1 => $v1){
+            $t=$t.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
+        }
+    }
+    $t=$t.'</body></html>'.CRLF;
+    return($t);
+}
+/*
 date_default_timezone_set('Europe/Paris'); // todo put here your default timezone (https://raw.githubusercontent.com/leon-do/Timezones/main/timezone.json)
 
 define('APP_KEY','fta');
 define('BACKUP_PATH' ,'..'.DIRECTORY_SEPARATOR.APP_KEY.'_backup');
 define('INCLUDE_PATH','..'.DIRECTORY_SEPARATOR.APP_KEY.'_inc');
 
-define('CRLF',"\r\n");
+define('CRLF',"\r\n");  // todo
 define('OK','OK');
 
 define('MESSAGES'    ,'messages');
@@ -25,7 +117,7 @@ function start_session_messages(){
 }
 //==================================================================================================
 function clear_session_messages(){
- unset($_SESSION[APP_KEY][MESSAGES]);
+ unset($_SESSION[APP_KEY][MESSAGES]); // todo
 }
 //==================================================================================================
 function session_messages(){
@@ -55,7 +147,7 @@ function pushkv(&$a,$k,$v){
  $a[$k]=$v;
 }
 //==================================================================================================
-function concat(...$ps){
+function concat(...$ps){ // todo
  $t='';
  foreach($ps as $p) {
   $t.=$p;
@@ -106,3 +198,4 @@ function html_footer1($p=array()){
  $t.='</body></html>'.CRLF;
  return $t;
 }
+*/

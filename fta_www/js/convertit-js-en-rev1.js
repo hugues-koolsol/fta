@@ -1294,7 +1294,17 @@ function traiteMemberExpression1(element,niveau,parent){
                             if(objTxt.substr(0,8) == 'tableau('){
                                 t+=objTxt.substr(0,objTxt.length-1)+',prop('+prop.value+'))';
                             }else{
-                                t+=objTxt+'.'+prop.value;
+                                if(objTxt.substr(0,6)==='appelf'){
+                                 if(objTxt.indexOf('prop(')>=0){
+                                  objTxt=objTxt.substr(0,objTxt.length-2)+'.'+prop.value+'))';
+                                  t=objTxt;
+                                 }else{
+                                  objTxt=objTxt.substr(0,objTxt.length-1)+',prop('+prop.value+'))';
+                                  t=objTxt;
+                                 }
+                                }else{
+                                 t+=objTxt+'.'+prop.value;
+                                }
                             }
                         }else{
                             t+=objTxt;
@@ -1333,6 +1343,18 @@ function traiteMemberExpression1(element,niveau,parent){
                     }
                 }else{
                     return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1530 pour '+element.object.type,element:element}));
+                }
+            }else if(element.object.type === "ThisExpression"){
+                objTxt='this';
+                var prop = recupProp(element.property);
+                if(prop.status === true){
+                    if(prop.value !== ''){
+                        t+=objTxt+'.'+prop.value;
+                    }else{
+                        t+=objTxt;
+                    }
+                }else{
+                    return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1528 pour '+element.object.type,element:element}));
                 }
             }else{
                 return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1523 pour '+element.object.type,element:element}));

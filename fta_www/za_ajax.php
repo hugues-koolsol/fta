@@ -1,68 +1,68 @@
-<?php //PLEASE, keep this comment with the EURO sign, this source MUST be in utf-8 ---- € déjà
-//if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
+<?php
+/*
+ PLEASE, keep this comment with the EURO sign, this source MUST be in utf-8 ---- € déjà
+*/
 error_reporting(0);
 ini_set('display_errors', 0);
 set_error_handler("errorHandler");
 register_shutdown_function("shutdownHandler");
-//================================================================================================
-function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context){
- $typeName='';
- switch ($error_level){
-     case E_STRICT:            $typeName='E_STRICT'; break;
-     case E_USER_NOTICE:       $typeName='E_USER_NOTICE'; break;
-     case E_NOTICE:            $typeName='E_NOTICE'; break;
-     case E_USER_WARNING:      $typeName='E_USER_WARNING'; break;
-     case E_WARNING:           $typeName='E_WARNING'; break;
-     case E_ERROR:             $typeName='E_ERROR'; break;
-     case E_CORE_ERROR:        $typeName='E_CORE_ERROR';break;
-     case E_COMPILE_ERROR:     $typeName='E_COMPILE_ERROR';break;
-     case E_USER_ERROR:        $typeName='E_USER_ERROR';break;
-     case E_RECOVERABLE_ERROR: $typeName='E_RECOVERABLE_ERROR';break;
-     case E_CORE_WARNING:      $typeName='E_CORE_WARNING';break;
-     case E_COMPILE_WARNING:   $typeName='E_COMPILE_WARNING';break;
-     case E_PARSE:             $typeName='E_PARSE';break;
+/*
+=====================================================================================================================
+Fonction retourne le nom du type d'erreur
+=====================================================================================================================
+*/
+function recupTypeErreur($ty){
+ $er='UNKNOWN_ERROR';
+ $listeDesTypes=array(
+     E_STRICT=>'E_STRICT',
+     E_USER_NOTICE=>'E_USER_NOTICE',
+     E_NOTICE=>'E_NOTICE',
+     E_USER_WARNING=>'E_USER_WARNING',
+     E_WARNING=>'E_WARNING',
+     E_ERROR=>'E_ERROR',
+     E_CORE_ERROR=>'E_CORE_ERROR',
+     E_COMPILE_ERROR=>'E_COMPILE_ERROR',
+     E_USER_ERROR=>'E_USER_ERROR',
+     E_RECOVERABLE_ERROR=>'E_RECOVERABLE_ERROR',
+     E_CORE_WARNING=>'E_CORE_WARNING',
+     E_COMPILE_WARNING=>'E_COMPILE_WARNING',
+     E_PARSE=>'E_PARSE'
+ );
+ if(isset($listeDesTypes[$ty])){
+  $er=$listeDesTypes[$ty];
  }
- $error = ($typeName==''?'UNKNOWN_ERROR':$typeName)." | msg:" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")"; // , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true)));
- if($typeName!=''){
-  mylog($error, "fatal");
- }
+ return($er);
 }
 /*
-================================================================================================
-Fonction appelée quand il y a un bug dans le source php
-================================================================================================
+=====================================================================================================================
+Fonction appelée quand il y a un bug de traitement, par exemple une division par zéro
+=====================================================================================================================
 */
+function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context){
+ $error = 'error : '.recupTypeErreur($error_level)." | msg:" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")"; // , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true)));
+ mylog($error);
+}
+/*
+=====================================================================================================================
+Fonction appelée quand il y a un bug dans le source php, par exemple un appel à une fonction que n'existe pas
+ou bien une erreur dans l'écriture du programme
+=====================================================================================================================
+*/
+
 function shutdownHandler(){
  $lasterror = error_get_last();
- $typeName='';
+ $nomErreur='UNKNOWN_ERROR';
  if(isset($lasterror['type'])){
-  switch ($lasterror['type']){
-      case E_STRICT:            $typeName='E_STRICT'; break;
-      case E_USER_NOTICE:       $typeName='E_USER_NOTICE'; break;
-      case E_NOTICE:            $typeName='E_NOTICE'; break;
-      case E_USER_WARNING:      $typeName='E_USER_WARNING'; break;
-      case E_WARNING:           $typeName='E_WARNING'; break;
-      case E_ERROR:             $typeName='E_ERROR'; break;
-      case E_CORE_ERROR:        $typeName='E_CORE_ERROR';break;
-      case E_COMPILE_ERROR:     $typeName='E_COMPILE_ERROR';break;
-      case E_USER_ERROR:        $typeName='E_USER_ERROR';break;
-      case E_RECOVERABLE_ERROR: $typeName='E_RECOVERABLE_ERROR';break;
-      case E_CORE_WARNING:      $typeName='E_CORE_WARNING';break;
-      case E_COMPILE_WARNING:   $typeName='E_COMPILE_WARNING';break;
-      case E_PARSE:             $typeName='E_PARSE';break;
-  }
-  $toto=dirname(dirname(__FILE__));
-  $dernierMessage=str_replace($toto,'',$lasterror['message']);
-  $error = ($typeName==''?'UNKNOWN_ERROR':$typeName)." bug dans le source php | msg:" . '<span style="text-wrap:wrap;color:blue;">'.$dernierMessage . "</span> | line:" . $lasterror['line'] . " | aafile:" . basename($lasterror['file']) . " (" . $lasterror['file'] . ")";
-  if($typeName!=''){
-   mylog($error, "fatal");
-  }
+  $aRetirer=dirname(dirname(__FILE__));
+  $dernierMessage=str_replace($aRetirer,'',$lasterror['message']);
+  $error = 'shutdown : '.recupTypeErreur($lasterror['type'])." bug dans le source php | msg:" . '<span style="text-wrap:wrap;color:blue;">'.$dernierMessage . "</span> | line:" . $lasterror['line'] . " | aafile:" . basename($lasterror['file']) . " (" . $lasterror['file'] . ")";
+  mylog($error);
  }
 }
 //================================================================================================
-function mylog($error, $errlvl){
- $ret=array('status' => 'KO','messages' => array() ); // messages must be in array
- $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . $error; 
+function mylog($error){
+ $ret=array('status' => 'KO','messages'=>array());
+ $ret['messages'][]=$error; 
  header('Content-Type: application/json; charset=utf-8');
  echo json_encode($ret,JSON_FORCE_OBJECT);
  /* on a capturé une erreur de type 500, on force la réponse en 200 */
@@ -71,6 +71,9 @@ function mylog($error, $errlvl){
 }
 //================================================================================================
 require_once('aa_include.php');
+/*
+if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
+*/
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
  $ret=array('status' => 'KO','messages' => array() ); // messages must be in array
  $ret['input']=json_decode($_POST['ajax_param'],true);
