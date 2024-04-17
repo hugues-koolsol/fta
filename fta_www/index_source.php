@@ -1,4 +1,10 @@
 <?php
+/*
+  ==========================================================================================================
+  php générique de la page
+  ==========================================================================================================
+*/
+// on définit le "base name file"  pour les autorisations
 define('BNF' , basename(__FILE__));
 require_once('aa_include.php');
 session_start();
@@ -6,6 +12,11 @@ start_session_messages();
 $o1='';
 $a=array('title' => 'index source','description' => 'index source' , 'opt' => array('bodyPaddingTop'=>48));
 $o1=html_header1($a);
+/*
+  ==========================================================================================================
+  ici commence le php spécifique de la page
+  ==========================================================================================================
+*/
 $o1.='<style>';
 $o1.='#arrayed td{max-width:150px;overflow-x:auto;}';
 $o1.='</style>';
@@ -42,12 +53,13 @@ print($o1);$o1='';
    </table>
    <table id="arrayed"></table>
    <div id="donneesComplementaires"></table>
-<script type="text/javascript">
-
-
-</script>
 <?php
-$a=array('js' => array('js/compile1.js','js/php.js','js/javascript.js','js/html.js','js/sql.js','js/index_source_script-original.js'));
+/*
+  ==========================================================================================================
+  ici finit le php spécifique de la page
+  ==========================================================================================================
+*/
+$a=array('js' => array('js/compile1.js','js/php.js','js/javascript.js','js/html.js','js/sql.js','js/index_source_script-v0.js'));
 $o1=concat($o1,html_footer1($a));
 print($o1);
 $o1='';

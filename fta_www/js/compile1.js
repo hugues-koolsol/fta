@@ -212,6 +212,8 @@ function convertSource(objMatSrc){
    }
    t=t.replace(/\/\*\*\//g,'');
    t=t.replace(/\?><\?php/g,'');
+   t=t.replace(/<\?php\?>/g,'');
+   
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){
    retProgrammeSource=parseJavascript0(objMatSrc.value ,idJs+1 , 0 );

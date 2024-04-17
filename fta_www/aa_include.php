@@ -79,7 +79,7 @@ function html_header1($p){
     $t=$t.' <div id="zone_global_messages"></div>'.CRLF;
     return($t);
 }
-function html_footer1($p){
+function html_footer1($p=array()){
     $t='';
     $t=$t.'  <script type="text/javascript" src="js/core5.js"></script>'.CRLF;
     if((isset($p['js']))){

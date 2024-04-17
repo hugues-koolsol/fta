@@ -135,7 +135,7 @@ EOT;
 }
 // ========================
 // on imprime le formulaire
-$o1=concat($o1,html_footer1());
+$o1=concat($o1,html_footer1(array());
 print($o1);
 $o1='';
 clear_session_messages();

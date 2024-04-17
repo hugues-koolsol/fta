@@ -987,7 +987,7 @@ function js_traiteInstruction1(tab,niveau,id){
         }else{
             return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteInstruction1 1043 '}));
         }
-    }else if((tab[id][1] == 'plus') || (tab[id][1] == 'mult') || (tab[id][1] == 'moins') || (tab[id][1] == 'etBin')){
+    }else if((tab[id][1] == 'plus') || (tab[id][1] == 'mult') || (tab[id][1] == 'divi') || (tab[id][1] == 'moins') || (tab[id][1] == 'etBin')){
         var objOperation = TraiteOperations1(tab,tab[id][0]);
         if(objOperation.status == true){
             t+=objOperation.value;
@@ -1448,7 +1448,11 @@ function TraiteOperations1(tab,id,niveau){
                             if(condi0){
                                 t+='('+tab[i][1];
                             }else{
-                                t+=tab[i][1];
+                                if(( tab[id][1]==='mult' || tab[id][1]==='divi' ) && ( tab[i][1].indexOf('+')>0 || tab[i][1].indexOf('-')>0 ) ) {
+                                 t+='('+tab[i][1]+')';
+                                }else{
+                                 t+=tab[i][1];
+                                }
                             }
                         }
                     }else if(tab[i][2] == 'f'){
@@ -1502,8 +1506,10 @@ function TraiteOperations1(tab,id,niveau){
                         }else{
                             return(logerreur({status:false,message:' erreur sur TraiteOperations1 1324'}));
                         }
-                    }else if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){
+                    }else if((tab[parentId][1] == 'mult')){
                         t+='*(';
+                    }else if((tab[parentId][1] == 'divi')){
+                        t+='/(';
                     }else if(tab[parentId][1] == 'plus'){
                         t+='+';
                     }else if(tab[parentId][1] == 'moins'){

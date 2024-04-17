@@ -439,10 +439,10 @@ function php_traite_Expr_FuncCall(element,niveau){
  t+='appelf(nomf('+nomFonction+')'+lesArguments+')';
  return {'status':true,'value':t};
 }
-/*=====================================================================================================================*/
 
-function php_traite_echo(element,niveau){
- console.log('%c entrée dans php_traite_echo element=','background:yellow;',element);
+/*=====================================================================================================================*/
+function php_traite_printOuEcho(element,niveau,nomFonction){
+ console.log('%c entrée dans php_traite_printOuEcho element=','background:yellow;',element);
  var t='';
  var lesArguments='';
  if(element.exprs){
@@ -451,13 +451,32 @@ function php_traite_echo(element,niveau){
    if(obj.status===true){
     lesArguments+=',p('+obj.value+')';
    }else{
-    t+='#(todo dans php_traite_Expr_FuncCall 0175 pas de expr )';
+    t+='#(todo dans php_traite_printOuEcho 0454 )';
    }
    
   }
  }
- t+='appelf(nomf(echo)'+lesArguments+')'; ;
+ if(element.expr){
+  var obj=php_traite_Stmt_Expression(element.expr,niveau);
+  if(obj.status===true){
+   lesArguments+=',p('+obj.value+')';
+  }else{
+   t+='#(todo dans php_traite_printOuEcho 0464 )';
+  }
+   
+ }
+ t+='appelf(nomf('+nomFonction+')'+lesArguments+')'; ;
  return {'status':true,'value':t};
+}
+/*=====================================================================================================================*/
+
+function php_traite_print(element,niveau){
+ return php_traite_printOuEcho(element , niveau , 'print');
+}
+/*=====================================================================================================================*/
+
+function php_traite_echo(element,niveau){
+ return php_traite_printOuEcho(element , niveau , 'echo');
 }
 //=====================================================================================================================
 function php_traite_Stmt_Function(element , niveau){
@@ -483,10 +502,19 @@ function php_traite_Stmt_Function(element , niveau){
      lesArguments+=',\n'+esp0+esp1+esp1+'adresseArgument($'+element.params[i].var.name+')';
     }else{
      if(element.params[i].variadic && element.params[i].variadic===true){
-      lesArguments+=',\n'+esp0+esp1+esp1+'argument(...$'+element.params[i].var.name+')';
+      lesArguments+=',\n'+esp0+esp1+esp1+'argument(...$'+element.params[i].var.name;
      }else{
-      lesArguments+=',\n'+esp0+esp1+esp1+'argument($'+element.params[i].var.name+')';
+      lesArguments+=',\n'+esp0+esp1+esp1+'argument($'+element.params[i].var.name;
      }
+     if(element.params[i].default){
+      var obj=php_traite_Stmt_Expression( element.params[i].default , niveau);
+      if(obj.status===true){
+       lesArguments+=',defaut('+obj.value+')';
+      }else{
+       t+='#(todo dans php_traite_Stmt_Function 0494 pas de expr )';
+      }
+     }
+     lesArguments+=')';
     }
    }else{
     lesArguments+='#(TODO 0278 dans php_traite_Stmt_Function)';
@@ -998,6 +1026,14 @@ function php_traite_Stmt_Expression(element,niveau){
    t+='#(erreur php_traite_Stmt_Expression 0927)';
   }
 
+ }else if("Expr_Print"===element.nodeType){
+
+  var obj=php_traite_print( element , niveau);
+  if(obj.status===true){
+   t+='\n'+esp0+obj.value;
+  }else{
+   t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_print "'+stmts[i].nodeType+'")';
+  }
    
   
   
@@ -1060,7 +1096,7 @@ function php_traite_Expr_Array(element , niveau){
    }
   }
  }
- t+='array('+lesElements+')';
+ t+='defTab('+lesElements+')';
 
 
  
@@ -1378,7 +1414,34 @@ function php_traite_Stmt_Foreach(element , niveau){
   
  return {'status':true,'value':t};
 }
-//=====================================================================================================================
+/*
+  =====================================================================================================================
+*/
+function ajouteCommentairesAvant(element,niveau){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ if(element.attributes.comments){
+  for(var j=0;j<element.attributes.comments.length;j++){
+   if(element.attributes.comments[j].nodeType==="Comment"){
+    if(element.attributes.comments[j].text.substr(0,2)==='/*'){
+     var txtComment=element.attributes.comments[j].text.substr(2);
+     
+     t+='\n'+esp0+'#('+txtComment.substr(0,txtComment.length-2).replace(/\(/g,'[').replace(/\)/g,')')+')';
+     element.attributes.comments[j].text='';
+     
+    }else if(element.attributes.comments[j].text.substr(0,2)==='//'){
+     t+='\n'+esp0+'#('+element.attributes.comments[j].text.substr(2).replace(/\(/g,'[').replace(/\)/g,')')+')';
+     element.attributes.comments[j].text='';
+    }
+   }
+  }
+ }
+ return t;
+}
+/*
+  =====================================================================================================================
+*/
 function TransformAstPhpEnRev(stmts,niveau){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -1386,6 +1449,8 @@ function TransformAstPhpEnRev(stmts,niveau){
  
  if(stmts.length>0){
   for( var i=0;i<stmts.length;i++){
+   t+=ajouteCommentairesAvant( stmts[i],niveau)
+   
    if(t != ''){
        t+=',';
    }
@@ -1404,6 +1469,7 @@ function TransformAstPhpEnRev(stmts,niveau){
     }else{
      t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_echo "'+stmts[i].nodeType+'")';
     }
+    
     
 
 
@@ -1485,7 +1551,7 @@ function TransformAstPhpEnRev(stmts,niveau){
    }else if("Stmt_InlineHTML"===stmts[i].nodeType){
 
 
-     t+='\n'+esp0+'html(@(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+     t+='\n'+esp0+'html(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
 
    }else if("Stmt_Switch"===stmts[i].nodeType){
 
