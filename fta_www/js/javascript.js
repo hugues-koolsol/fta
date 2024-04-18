@@ -88,7 +88,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                 i=reprise;
             }
         }else if((tab[i][1] == 'fonction') && (tab[i][2] == 'f')){
-            if(dansFonction == true){
+            if(false && dansFonction == true){
                 return(logerreur({status:false,value:t,id:id,tab:tab,message:'on ne peut pas déclarer une fonction dans une fonction'}));
             }else{
                 dansFonction=true;
@@ -127,18 +127,21 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                         }
                     }
                     if(nomFonction != ''){
-                        t+='\nfunction '+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
+                        t+=espacesn(true,niveau);
+                        t+='function '+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
                         if(tab[positionContenu][8] == 0){
-                            t+='\n';
+                            t+=espacesn(true,niveau);
                             t+='  // void';
-                            t+='\n}';
+                            t+=espacesn(true,niveau);
+                            t+='}';
                         }else{
                             niveau=niveau+1;
                             obj=js_tabTojavascript1(tab,(positionContenu+1),dansFonction,false,niveau);
                             niveau=niveau-1;
                             if(obj.status == true){
                                 t+=obj.value;
-                                t+='\n}';
+                                t+=espacesn(true,niveau);
+                                t+='}';
                             }else{
                                 return(logerreur({status:false,value:t,id:id,tab:tab,'message':'problème sur le contenu de la fonction "'+nomFonction+'"'}));
                             }

@@ -19,6 +19,369 @@ var global_enteteTableau=[
  
 ];
 */
+/* 
+  =======================================================================================
+  Construit texte html à partir d'une matrice rev
+  l'option retirerHtmlHeadEtBody permet de retirer les html,body et head si ils ne sont 
+  pas renseignés
+  =======================================================================================  
+*/
+function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ var dernierEstTexte=false;
+ var attributs='';
+ var contenu='';
+ var obj={dernierEstTexte:false};
+ 
+ 
+// console.log('jsonDeHtml=',jsonDeHtml);
+ if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
+  
+  if(jsonDeHtml.type!==''){
+   t+='\n'+esp0+jsonDeHtml.type.toLowerCase()+'(';
+  }
+  
+  if(jsonDeHtml.attributes){
+   for(var i in jsonDeHtml.attributes){
+    if(attributs!==''){
+     attributs+=','
+    }
+    attributs+='('+i+',\''+jsonDeHtml.attributes[i].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+   }
+  }
+  t+=attributs;
+  
+  if(jsonDeHtml.content && jsonDeHtml.content.length>0){
+   var count=0;
+   for(var i=0;i<jsonDeHtml.content.length;i++){
+    
+    count++;
+    niveau++;
+    obj=traiteJsonDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody);
+    niveau--;
+    if(obj.status===true){
+     if((attributs!=='' || contenu!=='') && obj.value!==''){
+      contenu+=',';
+     }
+     contenu+=obj.value;
+    }else{
+     return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
+    }
+   }
+   t+=contenu;
+   
+   
+   if(jsonDeHtml.type!==''){
+    if(obj && obj.dernierEstTexte){
+     t+=')';
+    }else{
+     if(contenu===''){
+      t+=')';
+     }else{
+      t+='\n'+esp0+')';
+     }
+    }
+   }
+  }else{
+   if(jsonDeHtml.type!==''){
+    t+=')';
+   }
+  }
+  
+  
+ }else{
+  contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
+  if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0){
+   contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  if(contenu!=='' ){
+   contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+  }
+  t+=contenu;
+  if(contenu!=''){
+   dernierEstTexte=true;
+  }else{
+  }
+ }
+ 
+ if(retirerHtmlHeadEtBody && niveau===0){
+  /*
+  le rev retourné inclut toujours une balise html et/ou body et/ou head
+  Si ces balises ne contiennent pas d'éléments, on les retire 
+  */
+  var tableau1 = iterateCharacters2(t);
+  var matriceFonction = functionToArray2(tableau1.out,false,true);
+  if(matriceFonction.status===true){
+//   console.log('matriceFonction.value=',JSON.stringify(matriceFonction.value).replace(/\],/g,'],\n'));
+   if(matriceFonction.value[1][1]==='html' && matriceFonction.value[1][8]<=2){
+    
+    /* 
+      l'élément html est en première position
+      si il n'a aucune propriété, on peut le supprimer
+    */
+    var aDesProps=false;
+    for(var i=0;i<matriceFonction.value.length && aDesProps===false;i++){
+     if(matriceFonction.value[i][7]===1){
+      if(matriceFonction.value[i][1]===''){
+       aDesProps=true;
+       break;
+      }
+     }
+    }
+    if(aDesProps===false){
+     var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.value,1,0);
+     
+     /*
+      si le head n'a aucun enfant
+     */
+     if(nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
+      
+      var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
+
+      
+      if(nouveauTableau2[1][1]==='body'){
+       var aDesProps=false;
+       for(var i=0;i<nouveauTableau2.length && aDesProps===false;i++){
+        if(nouveauTableau2[i][7]===1){
+         if(nouveauTableau2[i][1]===''){
+          aDesProps=true;
+          break;
+         }
+        }
+       }
+       if(aDesProps===false){
+
+        /*
+         si le body n'a aucune propriété
+        */
+
+        var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
+
+        var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau3);
+        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+        if(obj1.status===true){
+         t=obj1.value;
+        }else{
+         return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+        }
+
+       }else{
+        var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
+        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+        if(obj.status===true){
+         t=obj.value;
+        }else{
+         return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+        }
+       }
+      }else{
+       var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
+       var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+       if(obj1.status===true){
+        t=obj1.value;
+       }else{
+        return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+       }
+      }
+     }else{
+      /*
+        la balise head contient des éléments, on reconstruit le source à partir de matriceFonction.value
+        avec des retours de lignes et sans coloration
+      */
+      var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau1);
+      var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+      if(obj1.status===true){
+       t=obj1.value;
+      }else{
+       return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+      }
+     }
+    }else{
+    /*
+      on ne change rien car il y a des propriétés dans la balise html
+    */
+     
+    }
+    
+   }else{
+    /*
+      on ne change rien
+    */
+   }
+  }else{
+   return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0168 '+jsonDeHtml.type}));
+  }
+ }
+ return({status:true,value:t,'dernierEstTexte':dernierEstTexte});
+}
+/*
+  =======================================================================================
+  fonction trouvée sur le net ( désolé, j'ai perdu la référence )
+  A partir d'un html, on reconstruit un équivalent "ast" ( abstract syntax tree )
+  =======================================================================================
+*/
+function mapDOMOld(element, json) {
+    var treeObject = {};
+    
+    // If string convert to document Node
+    if (typeof element === "string") {
+        if (window.DOMParser)
+        {
+              var parser = new DOMParser();
+              var docNode = parser.parseFromString(element,"text/html");
+        }
+        else // Microsoft strikes again
+        {
+              docNode = new ActiveXObject("Microsoft.XMLDOM");
+              docNode.async = false;
+              docNode.loadXML(element); 
+        } 
+        element = docNode.firstChild;
+    }
+    
+    //Recursively loop through DOM elements and assign properties to object
+    function treeHTML(element, object) {
+        object["type"] = element.nodeName;
+        var nodeList = element.childNodes;
+        if (nodeList != null) {
+            if (nodeList.length) {
+                object["content"] = [];
+                for (var i = 0; i < nodeList.length; i++) {
+                    if (nodeList[i].nodeType == 3) {
+                        object["content"].push(nodeList[i].nodeValue);
+                    } else {
+                        object["content"].push({});
+                        treeHTML(nodeList[i], object["content"][object["content"].length -1]);
+                    }
+                }
+            }
+        }
+        if (element.attributes != null) {
+            if (element.attributes.length) {
+                object["attributes"] = {};
+                for (var i = 0; i < element.attributes.length; i++) {
+                    object["attributes"][element.attributes[i].nodeName] = element.attributes[i].nodeValue;
+                }
+            }
+        }
+    }
+    treeHTML(element, treeObject);
+    
+    return (json) ? JSON.stringify(treeObject) : treeObject;
+}
+function mapDOM(element){
+    var treeObject={};
+    if(typeof element === 'string'){
+        var parser= new DOMParser();
+        var docNode = parser.parseFromString(element,'text/html');
+        element=docNode.firstChild;
+    }
+    function treeHTML(element,object){
+        object['type']=element.nodeName;
+        var i=0;
+        var nodeList=element.childNodes;
+        if(nodeList != null){
+            if(nodeList.length){
+                object['content']=[];
+                for(i=0;i < nodeList.length;i=i+1){
+                    if(nodeList[i].nodeType == 3){
+                        object['content'].push(nodeList[i].nodeValue);
+                    }else{
+                        object['content'].push({});
+                        treeHTML(nodeList[i],object["content"][object["content"].length -1]);
+                    }
+                }
+            }
+        }
+        if(element.attributes != null){
+            if(element.attributes.length){
+                object['attributes']={};
+                for(i=0;i < element.attributes.length;i=i+1){
+                    object['attributes'][element.attributes[i].nodeName]=element.attributes[i].nodeValue;
+                }
+            }
+        }
+    }
+    treeHTML(element,treeObject);
+    return treeObject;
+}
+
+
+/* 
+  =======================================================================================
+  construit un ast à partir d'une matrice rev 
+  =======================================================================================  
+*/
+function mapMatriceVersJsonDeHtml(matrice){
+ 
+// console.log('matrice=',JSON.stringify(matrice).replace(/\],/g,'],\n'));
+ 
+ 
+ 
+ /* 
+  =======================================================================================
+  On définit une fonction dans une fonction car elle sera appelée récursivement
+  =======================================================================================  
+ */
+ function reconstruit(tab,parentId){
+  var l01=tab.length;
+  var type       ='';
+  var attributes ={};
+  var content    =[];
+  /*
+  récupération des attributs
+  */
+  var leJson={};
+  if(tab[parentId][8]===0 && parentId>0){
+   content.push('');
+  }else{
+   for(var indice=parentId+1;indice<l01;indice++){
+    if(tab[indice][7]===parentId){
+     if(tab[indice][1]!==''){
+      if(tab[indice][2]==='f' ){
+       content.push(reconstruit(tab,indice));
+      }else{
+       content.push(tab[indice][1]);
+      }
+     }
+    }
+   }
+  }
+  if(parentId===0){
+   type='';
+  }else{
+   type=tab[parentId][1];
+  }
+  leJson['type']=type;
+  leJson['content']=content;
+
+  var aDesAttributs=false;
+  for(var indice=parentId+1;indice<l01;indice++){
+   if(tab[indice][7]===parentId){
+    if(tab[indice][1]==='' && tab[indice][2]==='f' &&  tab[indice][8]===2){
+      attributes[tab[indice+1][1]]=tab[indice+2][1];
+      aDesAttributs=true;
+    }
+   }
+  }
+  if(aDesAttributs){
+   leJson['attributes']=attributes;
+  }
+  return leJson;
+ }
+ /* 
+  =======================================================================================
+  L'appel récursif se fait ici
+  =======================================================================================
+ */
+ 
+ var obj=reconstruit(matrice,0);
+ return obj;
+ 
+}
+
 //=====================================================================================================================
 function tabToHtml1(tab,id,noHead,niveau){
  // recherche du premier tag "html"

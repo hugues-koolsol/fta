@@ -262,6 +262,116 @@ function mySplit(s,t){
     var ret = s.split(r1);
     return ret;
 }
+
+/*
+  =====================================================================================================================
+  fonction qui se base sur la colonne [3] : niveau pour recalculer 
+  - le parent[7], 
+  - le nombre d'enfants[8], 
+  - le numéro d'enfant[9]
+  - la profondeur[10]
+  =====================================================================================================================
+*/
+function reIndicerLeTableau(tab){
+    var l01=tab.length;
+    var k=0;
+    var j=0;
+    var i=0;
+    var niveau=0;
+    
+    
+    /*
+      =================================================================================================================
+      indice et nombre d'enfants
+      =================================================================================================================
+    */
+    for(i=1;i<l01;i++){
+        tab[i][0]=i;
+        tab[i][8]=0;
+    }
+    
+    /*
+      =================================================================================================================
+      parent et nombre d'enfants
+      =================================================================================================================
+    */
+    for(i=l01-1;i > 0;i=i-1){
+        niveau=tab[i][3];
+        for(j=i;j >= 0;j=j-1){
+            if(tab[j][3] == niveau-1){
+                tab[i][7]=j;
+                tab[j][8]=(tab[j][8]+1);
+                break;
+            }
+        }
+    }
+    /*
+      =================================================================================================================
+      numéro d'enfant
+      =================================================================================================================
+    */
+    for(i=0;i < l01;i=(i+1)){
+        k=0;
+        for(j=(i+1);j < l01;j=(j+1)){
+            if(tab[j][7] == tab[i][0]){
+                k=(k+1);
+                tab[j][9]=k;
+            }
+        }
+    }
+    /*
+      =================================================================================================================
+      profondeur
+      =================================================================================================================
+    */
+    var l=0;
+    for(i=l01-1;i > 0;i=i-1){
+        if(tab[i][2] == 'c'){
+            tab[i][10]=0;
+        }
+        if(tab[i][7] > 0){
+            k=tab[i][3];
+            l=tab[i][7];
+            for(j=1;j <= k;j=(j+1)){
+                if(tab[l][10] < j){
+                    tab[l][10]=j;
+                }
+                l=tab[l][7];
+            }
+        }
+    }
+    return tab;
+}
+/*
+  =====================================================================================================================
+  fonction qui supprime un élément dans la matrice et descend les enfants de cet élément d'un niveau
+  =====================================================================================================================
+*/
+function baisserNiveauEtSupprimer(tab,id,niveau){
+    var i = (id+1);
+    for(i=(id+1);i < tab.length;i=i+1){
+        if(tab[i][7] === id){
+            tab[i][3]=tab[i][3]-1;
+            if(tab[i][2] === 'f'){
+                niveau=niveau+1;
+                /*
+                  appel récursif pour baisser les enfants des enfants
+                */
+                baisserNiveauEtSupprimer(tab,i,niveau);
+                niveau=niveau-1;
+            }
+        }
+    }
+    if(niveau === 0){
+        /*
+          à la fin, on supprime l'élément et on recalcul les indices
+        */
+        tab.splice(id,1);
+        tab=reIndicerLeTableau(tab);
+        return tab;
+    }
+}
+
 /*
   =====================================================================================================================
   fonction transforme un commentaire pour un fichier rev
@@ -351,11 +461,11 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         }
     }
     /*
+    
       si on est ici, c'est qu'on a un commentaire multiligne
       qu'il faut formatter en alignant à gauche les textes 
       d'un nombre d'espaces correspondant au niveau
     */
-    /*affecte[i , niveau+1]*/
     unBlocPlus1=' '.repeat(nbEspacesSrc1*(niveau)+2);
     var s1='';
     var s2='';
