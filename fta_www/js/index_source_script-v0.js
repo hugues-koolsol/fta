@@ -338,8 +338,9 @@ function enregistrer2(){
         zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
         var zoneContenantLeSourceGenere2 = document.createElement('textarea');
-        zoneContenantLeSourceGenere2.rows=3;
+        zoneContenantLeSourceGenere2.rows=30;
         zoneContenantLeSourceGenere2.cols=120;
+        zoneContenantLeSourceGenere2.style.background='lightcyan';
         zoneContenantLeSourceGenere2.style.display='none';
         zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere2);
@@ -355,7 +356,7 @@ function voirSourceGenere(){
     if((zoneContenantLeSourceGenere) && (zoneContenantLeSourceGenere.innerHTML == '')){
         var zoneSourceGenere = document.createElement('pre');
         zoneSourceGenere.style.fontSize='0.8em';
-        zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replace('&','&amp;').replaceAll('<','&lt;').replaceAll('<','&gt;');
+        zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('<','&gt;').replaceAll('"','&quot;');
         zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
         zoneContenantLeSourceGenere.style.display='';
         zoneContenantLeSourceGenere2.value=global_messages.data.sourceGenere;

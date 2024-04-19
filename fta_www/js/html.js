@@ -93,8 +93,11 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
   
  }else{
   contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
-  if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0){
-   contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
+   contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  if(contenu.indexOf('\\')>=0){
+   debugger;
   }
   if(contenu!=='' ){
    contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
@@ -382,6 +385,29 @@ function mapMatriceVersJsonDeHtml(matrice){
  
 }
 
+function TransformHtmlEnRev(texteHtml,niveau){
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    var elementsJson={};
+    try{
+     
+     elementsJson=mapDOM(texteHtml,false);
+//     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
+     
+     
+     var obj=traiteJsonDeHtml(elementsJson,0,true);
+     if(obj.status===true){
+      t=obj.value;
+     }else{
+      t='<-- erreur 0103 -->';
+     }
+     return({status:true,value:t});
+    }catch(e){
+     console.log('e=',e);
+     return(asthtml_logerreur({status:false,message:'erreur 0098 e='+e.message+'\ne.stack='+e.stack}));
+    }
+}
 //=====================================================================================================================
 function tabToHtml1(tab,id,noHead,niveau){
  // recherche du premier tag "html"
@@ -478,7 +504,14 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
     if( tab[i][2] == 'f' && tab[i][1]==''){
      if( tab[i][8]<=2){// (lang,fr) : 2 enfants
       if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='c' ){
-       temp+=' '+tab[i+1][1]+'="'+tab[i+2][1]+'"';
+       
+       /* 
+       ==============================================================================================================
+       Ecriture de la propriété
+       ==============================================================================================================
+       */
+       temp+=' '+tab[i+1][1]+'=\''+tab[i+2][1].replace(/\\\\\\\'/g,'"').replace(/\\\\\\\\/g,'\\').replace(/\"/g,'&quot;').replace(/\\\\/g,'\\')+'\'';
+       
        if(tab[i+1][1]=='data-lang' && ( tab[i+2][1]=='fr' ||tab[i+2][1]=='en' ) ){
         globale_LangueCourante=tab[i+2][1];
        }
@@ -532,6 +565,11 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
       niveau--;
       
       if(ob.status===true){
+       /*
+        ===========================================================================================
+        ecriture de la valeur dans le cas d'une fonction
+        ===========================================================================================
+       */
        t+=ob.value;
        dansBody=ob.dansBody;
        dansHead=ob.dansHead;
@@ -542,9 +580,13 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
      }else{
       if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
       }else{
-       // constante
        t+=espacesn(true,niveau+1);
-       t+=tab[i][1];
+       /*
+        ===========================================================================================
+        ecriture de la valeur dans le cas d'une constante
+        ===========================================================================================
+       */
+       t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\\/g,'\\');
        contenuNiveauPlus1=tab[i][1];
       }
      }

@@ -1391,7 +1391,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i+10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':'1 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
+                        temp={'status':false,'value':T,'id':i,'message':'1394 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
                         return(logerreur(temp));
                     }
                 }else{
@@ -1459,6 +1459,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         return(logerreur(temp));
                     }
                 }
+                
                 if((i+1) < l01){
                     c1=tableauEntree[i+1][0];
                     if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
@@ -1469,7 +1470,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i+10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':'1 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
+                        temp={'status':false,'value':T,'id':i,'message':'1472 apres une constante, il doit y avoir un caractère d\'echappement,i='+i+' c1="'+c1+'" près de '+presDe};
                         return(logerreur(temp));
                     }
                 }else{
@@ -1497,7 +1498,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                if((c1 == '\\') || (c1 == '\'') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u')){
+                if( false ){
+                    if(texte == ''){
+                        premier=i;
+                    }
+                    texte=concat(texte,c1);
+                    i=(i+1);
+                }else if( (c1 == '\\') || (c1 == '\'') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u')){
                     if(texte == ''){
                         premier=i;
                     }

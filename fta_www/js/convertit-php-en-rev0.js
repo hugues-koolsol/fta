@@ -1478,7 +1478,12 @@ function TransformAstPhpEnRev(stmts,niveau){
    }else if("Stmt_InlineHTML"===stmts[i].nodeType){
 
 
-     t+='\n'+esp0+'html(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+     var obj1=TransformHtmlEnRev(stmts[i].value,niveau);
+     if(obj1.status===true){
+      t+='\n'+esp0+'html('+obj1.value+')';
+     }else{
+      t+='\n'+esp0+'html(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+     }
 
    }else if("Stmt_Switch"===stmts[i].nodeType){
 

@@ -32,29 +32,7 @@ function asthtml_logerreur(o){
 }
 
 
-function TransformHtmlEnRev(texteHtml,niveau){
-    var t='';
-    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
-    var esp1 = ' '.repeat(NBESPACESREV);
-    var elementsJson={};
-    try{
-     
-     elementsJson=mapDOM(texteHtml,false);
-//     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
-     
-     
-     var obj=traiteJsonDeHtml(elementsJson,0,true);
-     if(obj.status===true){
-      t=obj.value;
-     }else{
-      t='<-- erreur 0103 -->';
-     }
-     return({status:true,value:t});
-    }catch(e){
-     console.log('e=',e);
-     return(asthtml_logerreur({status:false,message:'erreur 0098 e='+e.message+'\ne.stack='+e.stack}));
-    }
-}
+
 var tabComment=[];
 function transform(){
     console.log('=========================\ndébut de transforme');
