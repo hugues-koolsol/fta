@@ -231,7 +231,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
      }
     }else if(tab[i+2][2]=='c' ){
-     t+='\''+tab[i+1][1]+'\'';
+     t+='"'+tab[i+2][1].replace(/\"/g,'\\"')+'"';
     }else{
      t+='/* TODO 36 php.js */';
     }
@@ -555,11 +555,53 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
    }
    i=reprise;
    
+  }else if(tab[i][1]=='tantQue'  && tab[i][2]=='f'){
+
+   for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+    if(tab[j][3]==tab[i][3]+1){
+     if(tab[j][1]=='condition'){
+      
+      obj=php_condition0(tab,j,niveau);
+      
+      if(obj.status===true){
+       t+=espacesn(true,niveau);
+       t+='while('+obj.value+'){';
+      }else{
+       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
+      }
+      
+      
+      
+     }else if(tab[j][1]=='faire'){
+      niveau++;
+      obj=php_tabToPhp1(tab,j+1,dansFonction,false,niveau);
+      niveau--;
+      if(obj.status==true){
+       t+=obj.value;
+       t+=espacesn(true,niveau);
+       t+='}';
+      }else{
+       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+      }
+      
+     }else if(tab[j][1]=='#'){
+      t+=espacesn(true,niveau);
+      t+='/*'+traiteCommentaire2(tab[j][13],niveau,j)+'*/';
+     }
+    }
+   }
+
+   reprise=i+1;
+   max=i+1;
+   for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
+    reprise=j;
+   }
+   i=reprise;
   }else if(tab[i][1]=='choix'  && tab[i][2]=='f'){
    
 
 
-   tabchoix=[];
+   var tabchoix=[];
    var aDesSinonSi=false;
    var aUnSinon=false;
    for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -867,13 +909,13 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     }
    }else{
     if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+2][2]=='f' ){
-     if(tab[i+2][1]=='new' && tab[i+2][8]==1 && tab[i+3][1]=='appelf' ){
+     if(tab[i+2][1]=='nouveau' && tab[i+2][8]==1 && tab[i+3][1]=='appelf' ){
       t+='var '+tab[i+1][1]+'= new ';
       obj=php_traiteAppelFonction(tab,i+3,true,niveau);
       if(obj.status==true){
        t+=obj.value+';';
       }else{
-       return logerreut({status:false,value:t,id:id,tab:tab,message:'erreur dans une déclaration'});
+       return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans une déclaration'});
       }
 //      t+='{};//todo declare 3 '+tab[i][1]+'';
      }else{
@@ -1140,7 +1182,7 @@ function isNotSet(tab , id , niveau){
     if(obj.status===true){
      valeur=obj.value;
     }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans isNotSet 1120'});
+     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans isNotSet 1143'});
     }
      
 
@@ -1151,7 +1193,7 @@ function isNotSet(tab , id , niveau){
      defaut=obj.value;
      break;
     }else{
-     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans isNotSet 1120'});
+     return logerreur({status:false,value:t,id:id,tab:tab,message:'dans isNotSet 1154'});
     }
      
    }
@@ -1160,6 +1202,24 @@ function isNotSet(tab , id , niveau){
  t+=valeur+'??'+defaut; 
  return {status:true,value:t};
 }
+//=====================================================================================================================
+function php_traiteNew(tab,ind,niveau){
+ var t='';
+ 
+ t+='new '; 
+ 
+ var obj=php_traiteElement(tab , ind+1 , niveau);
+ if(obj.status==true){
+  t+=obj.value;
+ }else{
+  return logerreur({status:false,value:t,id:ind,tab:tab,message:'dans appelf de php_traiteElement 1179'});
+ }
+ 
+ 
+ return {status:true,value:t};
+ 
+}
+
 //=====================================================================================================================
 // hugues
 function php_traiteElement(tab , ind , niveau){
@@ -1170,6 +1230,15 @@ function php_traiteElement(tab , ind , niveau){
   
   t=maConstante(tab[ind]);
   
+ }else if(tab[ind][2]=='f' && tab[ind][1]=='nouveau' ){
+  
+  obj=php_traiteNew(tab,ind,niveau);
+  if(obj.status==true){
+   t=obj.value;
+  }else{
+   return logerreur({status:false,value:t,id:ind,tab:tab,message:'dans appelf de php_traiteElement 1179'});
+  }
+
  }else if(tab[ind][2]=='f' && tab[ind][1]=='appelf' ){
   
   obj=php_traiteAppelFonction(tab,ind,true,niveau);
@@ -1212,7 +1281,7 @@ function php_traiteElement(tab , ind , niveau){
   php_contexte_commentaire_html=false;
   obj=tabToHtml1(tab,ind,true,0);
   if(obj.status===true){
-   t=obj.value;
+   t='htmlDansPhp(\''+obj.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
   }else{
    return logerreur({status:false,value:t,id:ind,message:'erreur dans un html 1195 définit dans un php'});
   }
@@ -1584,7 +1653,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
     i=reprise;
     
    }else if(tab[j][1]=='element' && tab[j][3]==tab[i][3]+1){
-    if(tab[j+1][1]==='new'){
+    if(tab[j+1][1]==='nouveau'){
      dansNew=true;
      var indice=j+1;
     }else{
@@ -1910,7 +1979,21 @@ function php_condition1(tab,id,niveau){
     if(obj.status==true){
      t+=obj.value;
     }else{
-     return logerreut({status:false,value:t,id:id,tab:tab,message:'erreur dans une condition'});
+     return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans une condition'});
+    }
+    i=max-1;
+    
+    
+   }else if( tab[i][1]=='affecte'  && tab[i][2]=='f' ){
+    /*
+    affecte dans une condition, je n'aime vraiment pas ça
+    */
+    
+    obj=php_tabToPhp1(tab,i,true,true,niveau);
+    if(obj.status==true){
+     t+=obj.value;
+    }else{
+     return logerreur({status:false,value:t,id:id,tab:tab,message:'erreur dans une condition'});
     }
     i=max-1;
     
@@ -1942,7 +2025,7 @@ function php_condition1(tab,id,niveau){
        if(obj.status==true){
         t+=obj.value;
        }else{
-        return logerreut({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
+        return logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
        }
 
       }else if(tab[tabPar[0]][2]=='f' && tab[tabPar[0]][1]=='tableau'){

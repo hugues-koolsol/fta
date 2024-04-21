@@ -350,20 +350,37 @@ function php_traite_Expr_FuncCall(element,niveau){
  }
  
  var lesArguments='';
- 
+ var tabArgs=[];
  if(element.args && element.args.length>0){
   for(var i=0;i<element.args.length;i++){
    var obj=php_traite_Stmt_Expression(element.args[i],niveau);
    if(obj.status===true){
     lesArguments+=',p('+obj.value+')';
+    tabArgs.push([obj.value,element.args[i].value.nodeType]);
    }else{
     t+='#(todo dans php_traite_Expr_FuncCall 0175 pas de expr )';
    }
   }
  }
  
- 
- t+='appelf(nomf('+nomFonction+')'+lesArguments+')';
+ if(nomFonction==='define'){
+  if(tabArgs.length===2 && tabArgs[0][1]==='Scalar_String' && tabArgs[1][1]==='Scalar_String' ){
+   if(tabArgs[1][0].substr(0,1)==='\''){
+    var contenu=tabArgs[1][0].substr(1,tabArgs[1][0].length-2);
+    contenu=contenu.replace(/\\\\/g,'\\');
+    contenu=contenu.replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\'/g,'\\\'');
+    t+='definir('+tabArgs[0][0]+' , "'+contenu+'")';
+   }else{
+    var contenu=tabArgs[1][0].substr(1,tabArgs[1][0].length-2);
+    contenu=contenu.replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\'/g,'\\\'');
+    t+='definir('+tabArgs[0][0]+' , "'+contenu+'")';
+   }
+  }else{
+   t+='definir('+tabArgs[0][0]+' , '+tabArgs[1][0]+')';
+  }
+ }else{
+  t+='appelf(nomf('+nomFonction+')'+lesArguments+')';
+ }
  return {'status':true,'value':t};
 }
 
@@ -475,6 +492,46 @@ function php_traite_Stmt_Function(element , niveau){
 }
 
 /*
+=====================================================================================================================
+*/
+function php_traite_Expr_New(element , niveau){
+ console.log('%c entrée dans php_traite_Expr_New element=','background:yellow;',element.type,element);
+ var t='';
+
+ if(element.class){
+  
+  var nomClasse='';
+  if(element.class.nodeType=="Name"){
+   nomClasse=element.class.name;
+  }else{
+   nomClasse+='#(php_traite_Expr_New 0487),';
+  }
+  
+  var lesArgumentsDeLaClass='';
+  if(element.args){
+   for(var i=0;i<element.args.length;i++){
+    var obj=php_traite_Stmt_Expression(element.args[i],niveau);
+    if(obj.status===true){
+     lesArgumentsDeLaClass+=',p('+obj.value+')';
+    }else{
+     t+='#(todo dans php_traite_Expr_New 0497)';
+    }
+   }
+  }
+  
+  t+='nouveau(appelf(nomf('+nomClasse+')'+lesArgumentsDeLaClass+')),';
+  
+ }else{
+  
+  t+='nouveau(#(php_traite_Expr_New 0506)),';
+  
+ }
+ 
+ 
+ 
+ return {'status':true,'value':t};
+}
+/*
 //=====================================================================================================================
 */
 function php_traite_Expr_MethodCall(element , niveau){
@@ -489,34 +546,11 @@ function php_traite_Expr_MethodCall(element , niveau){
  if(element.var){
   if(element.var.nodeType=="Expr_New"){
    
-   
-   if(element.var.class){
-    
-    var nomClasse='';
-    if(element.var.class.nodeType=="Name"){
-     nomClasse=element.var.class.name;
-    }else{
-     nomClasse+='#(php_traite_Expr_MethodCall 0331),';
-    }
-    
-    var lesArgumentsDeLaClass='';
-    if(element.var.args){
-     for(var i=0;i<element.var.args.length;i++){
-      var obj=php_traite_Stmt_Expression(element.var.args[i],niveau);
-      if(obj.status===true){
-       lesArgumentsDeLaClass+=',p('+obj.value+')';
-      }else{
-       t+='#(todo dans php_traite_Expr_MethodCall 341)';
-      }
-     }
-    }
-    
-    lelement+='element(new(appelf(nomf('+nomClasse+')'+lesArgumentsDeLaClass+'))),';
-    
+   var obj=php_traite_Expr_New(element.var , niveau);
+   if(obj.status===true){
+    lelement+=',element('+obj.value+')';
    }else{
-    
-    lelement+='element(new(#(php_traite_Expr_MethodCall 0323))),';
-    
+    lelement+='#(todo dans php_traite_Expr_MethodCall 0360 pas de expr )';
    }
    
   }else if(element.var.nodeType=="Expr_Variable"){
@@ -758,7 +792,7 @@ function php_traite_Stmt_Expression(element,niveau){
  /*===============================================*/
  }else if("Scalar_String"===element.nodeType){
 
-  t+="'"+element.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\r/g,'\\r').replace(/\n/g,'\\n')+"'";
+  t+="'"+element.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+"'"; // .replace(/\r/g,'\\r').replace(/\n/g,'\\n')
 
  /*===============================================*/
  }else if("Expr_ArrayDimFetch"===element.nodeType){
@@ -953,6 +987,8 @@ function php_traite_Stmt_Expression(element,niveau){
    t+='#(erreur php_traite_Stmt_Expression 0927)';
   }
 
+ /*===============================================*/
+
  }else if("Expr_Print"===element.nodeType){
 
   var obj=php_traite_print( element , niveau);
@@ -960,6 +996,18 @@ function php_traite_Stmt_Expression(element,niveau){
    t+='\n'+esp0+obj.value;
   }else{
    t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_print "'+stmts[i].nodeType+'")';
+  }
+   
+  
+ /*===============================================*/
+
+ }else if("Expr_New"===element.nodeType){
+
+  var obj=php_traite_Expr_New( element , niveau);
+  if(obj.status===true){
+   t+='\n'+esp0+obj.value;
+  }else{
+   t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_Expr_New "'+stmts[i].nodeType+'")';
   }
    
   
@@ -977,7 +1025,7 @@ function php_traite_Stmt_Expression(element,niveau){
   
  }
  
- return {'status':true,'value':t};
+ return {'status':true,'value':t,'nodeType':element.nodeType};
 }
 
 //=====================================================================================================================
@@ -1110,7 +1158,11 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
  }
  
  
- if(element.nodeType==='Expr_BinaryOp_Concat'){
+ if(element.nodeType==='Expr_BinaryOp_NotIdentical'){
+  
+  t+='diffstricte('+gauche+' , '+droite+')';
+  
+ }else if(element.nodeType==='Expr_BinaryOp_Concat'){
   
   t+='concat('+gauche+' , '+droite+')';
   
@@ -1185,6 +1237,53 @@ function php_traiteCondition1(element,niveau){
  return {'status':true,'value':t};
  
 }
+ 
+//=====================================================================================================================
+function php_traite_Stmt_While(element,niveau,unElseIfOuUnElse){
+ console.log('%c entrée dans php_traite_Stmt_While 0794 element=','background:yellow;',element);
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ 
+ var conditionWhile='';
+ if(element.cond){
+  var obj=php_traiteCondition1(element.cond,niveau);
+  if(obj.status===true){
+   conditionWhile=obj.value;
+  }else{
+   conditionWhile='#(TODO ERREUR dans php_traite_Stmt_While 1202)';
+  }
+   
+ }else{
+  conditionWhile='#(pas de condition)';
+ }
+ 
+ var instructionsDansWhile='';
+ if(element.stmts){
+  niveau+=2;
+  var obj=TransformAstPhpEnRev(element.stmts,niveau);
+  niveau-=2;
+  if(obj.status===true){
+   instructionsDansWhile+=obj.value;
+  }else{
+   instructionsDansWhile+='#(ERREUR 1217 '+element.else.stmts[i].nodeType+' )';
+  }
+ }else{
+  instructionsDansWhile='#(PAS instructions dans if)';
+ }
+
+ t+='\n'+esp0+'tantQue('
+ t+='\n'+esp0+esp1+'condition(('+conditionWhile+'))';
+ t+='\n'+esp0+esp1+'faire(\n'
+ t+=instructionsDansWhile
+ t+='\n'+esp0+esp1+')';
+ t+='\n'+esp0+')'
+ 
+ 
+ return {'status':true,'value':t};
+ 
+}
+ 
 //=====================================================================================================================
 function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
  console.log('%c entrée dans php_traite_Stmt_If 0794 element=','background:yellow;',element);
@@ -1192,6 +1291,7 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
  var conditionIf='';
+ var instructionsDansElseOuElseifIf='';
  if(element.cond){
   var obj=php_traiteCondition1(element.cond,niveau);
   if(obj.status===true){
@@ -1201,7 +1301,7 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
   }
    
  }else{
-  conditionIf='#(pas de condition)';
+  conditionIf='';
  }
  
  var instructionsDansIf='';
@@ -1218,35 +1318,16 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
   instructionsDansIf='#(PAS instructions dans if)';
  }
 
- 
- var listeDesElse='';
- var listeDesElseIf='';
- if(element.else){
-  if(element.else.stmts){
-   for(var i=0;i<element.else.stmts.length;i++){
-    if(element.else.stmts[i].nodeType==="Stmt_If"){
-     var obj=php_traite_Stmt_If(element.else.stmts[i],niveau,true);
-     if(obj.status===true){
-      listeDesElseIf+=obj.value;
-     }else{
-      listeDesElseIf+='#(ERREUR 894 '+element.else.stmts[i].nodeType+' )';
-     }
-    }else if(element.else.stmts[i].nodeType==="Stmt_Expression"){
-     niveau+=2;
-     var obj=php_traite_Stmt_Expression(element.else.stmts[i].expr,niveau);
-     niveau-=2;
-     if(obj.status===true){
-      listeDesElse+=obj.value;
-     }else{
-      listeDesElse+='#(ERREUR 0902 '+element.else.stmts[i].nodeType+' )';
-     }
-    }else{
-     listeDesElseIf+='#(ERREUR 890 '+element.else.stmts[i].nodeType+' )';
-    }
-   }
-  }
- }
- if(unElseIfOuUnElse===false){
+ if(unElseIfOuUnElse){
+  
+  t+='\n'+esp0+esp1+'sinonsi('
+  t+='\n'+esp0+esp1+esp1+'condition(('+conditionIf+'))';
+  t+='\n'+esp0+esp1+esp1+'alors(\n'
+  t+=instructionsDansIf
+  t+='\n'+esp0+esp1+esp1+')';
+  t+='\n'+esp0+esp1+')'
+  
+ }else{
   t+='\n'+esp0+'choix('
   t+='\n'+esp0+esp1+'si('
   t+='\n'+esp0+esp1+esp1+'condition(('+conditionIf+'))';
@@ -1254,37 +1335,42 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
   t+=instructionsDansIf
   t+='\n'+esp0+esp1+esp1+')';
   t+='\n'+esp0+esp1+')'
-  t+='\n'+esp0+esp1+listeDesElseIf
-  if(listeDesElse!==''){
-   t+=''+esp0+'sinon(alors('+listeDesElse+'))'
-  }
-  t+='\n'+esp0+')'
- }else{
-  if(conditionIf!==''){
-   t+=  'sinonsi('
-   t+='\n'+esp0+esp1+esp1+'condition(('+conditionIf+'))';
-   t+='\n'+esp0+esp1+esp1+'alors(\n'
-   t+=instructionsDansIf
-   t+='\n'+esp0+esp1+esp1+')';
-   t+='\n'+esp0+esp1+')'
-   t+='\n'+esp0+esp1+listeDesElseIf
-   if(listeDesElse!==''){
-    t+=''+esp0+'sinon(alors('+listeDesElse+'))'
+ }
+ 
+ 
+ var listeDesElse='';
+ var listeDesElseIf='';
+ if(element.else){
+  if(element.else.stmts){
+   if(element.else.stmts.length===1 && element.else.stmts[0].nodeType==="Stmt_If"){
+    // c'est un elseif
+    var objElseIf=php_traite_Stmt_If(element.else.stmts[0],niveau,true);
+    if(objElseIf.status===true){
+     t+=''+objElseIf.value+'';
+    }else{
+     instructionsDansElseOuElseifIf+='#(ERREUR 0902 '+element.else.stmts[0].nodeType+' )';
+    }
+   }else{
+    // c'est un else
+    niveau+=3;
+    var obj=TransformAstPhpEnRev(element.else.stmts,niveau);
+    niveau-=3;
+    if(obj.status===true){
+     t+='\n'+esp0+esp1+'sinon('
+     t+='\n'+esp0+esp1+esp1+'alors(\n'
+     t+=obj.value;
+     t+='\n'+esp0+esp1+esp1+')';
+     t+='\n'+esp0+esp1+')'
+    }else{
+     t+='#(ERREUR 0902 '+element.else.stmts[0].nodeType+' )';
+    }
    }
-  }else{
-   listeDesElse='#(ERREUR 0936)'
-/*   
-   t+='\n'+esp0+esp1+'sinon('
-   t+='\n'+esp0+esp1+esp1+'alors('+instructionsDansIf+')';
-   t+='\n'+esp0+esp1+')'
-   t+='\n'+esp0+esp1+listeDesElseIf
-   if(listeDesElse!==''){
-    t+='\n'+esp0+esp1+'sinon('+listeDesElse+')'
-   }
-*/   
   }
  }
-
+ if(unElseIfOuUnElse){
+ }else{
+  t+='\n'+esp0+')';
+ }
  return {'status':true,'value':t};
 }
 //=====================================================================================================================
@@ -1354,11 +1440,11 @@ function ajouteCommentairesAvant(element,niveau){
     if(element.attributes.comments[j].text.substr(0,2)==='/*'){
      var txtComment=element.attributes.comments[j].text.substr(2);
      
-     t+='\n'+esp0+'#('+txtComment.substr(0,txtComment.length-2).replace(/\(/g,'[').replace(/\)/g,')')+')';
+     t+='\n'+esp0+'#('+txtComment.substr(0,txtComment.length-2).replace(/\(/g,'[').replace(/\)/g,']')+')';
      element.attributes.comments[j].text='';
      
     }else if(element.attributes.comments[j].text.substr(0,2)==='//'){
-     t+='\n'+esp0+'#('+element.attributes.comments[j].text.substr(2).replace(/\(/g,'[').replace(/\)/g,')')+')';
+     t+='\n'+esp0+'#('+element.attributes.comments[j].text.substr(2).replace(/\(/g,'[').replace(/\)/g,']')+')';
      element.attributes.comments[j].text='';
     }
    }
@@ -1515,6 +1601,18 @@ function TransformAstPhpEnRev(stmts,niveau){
      }else{
       t+='\n'+esp0+'#(todo erreur dans TransformAstPhpEnRev 1356)';
      }
+   
+    /*===============================================*/
+
+    }else if("Stmt_While"===stmts[i].nodeType){
+     
+     var obj=php_traite_Stmt_While(stmts[i],niveau);
+     if(obj.status===true){
+      t+='\n'+esp0+obj.value;
+     }else{
+      t+='\n'+esp0+'#(todo erreur dans TransformAstPhpEnRev 1356)';
+     }
+   
    
 
     

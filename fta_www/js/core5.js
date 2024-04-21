@@ -5,6 +5,161 @@ var CRLF='\r\n';
 var NBESPACESREV=3;
 var globale_LangueCourante='fr';
 var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+var globale_timeout_serveur_lent = 1500; // after 1.5 seconds of waiting response a message appears.
+var globale_timeout_reference=null;
+
+//=====================================================================================================================
+function displaySlowServer() {
+    try{
+        var elem=document.getElementById('sloserver1');
+        if(elem){
+            var opa = parseInt(elem.style.opacity * 100, 10);
+            if (opa < 100) {
+                var newOpa = opa / 100 + 0.1;
+                if (newOpa > 1) newOpa = 1;
+                document.getElementById('sloserver1').style.opacity = newOpa;
+                setTimeout(displaySlowServer, 30);
+            }
+        }else{
+        }
+    }catch(e){
+    }
+}
+
+//=====================================================================================================================
+function slowServer1() {
+    var divId = document.createElement('div');
+    divId.id = 'sloserver1';
+    divId.style.top = '55px';
+    divId.style.left = '0px';
+    divId.style.position = 'fixed';
+    divId.style.padding = '8px';
+    divId.style.zIndex = 10000;
+    divId.style.textAlign = 'center';
+    divId.style.fontSize = '2em';
+    divId.style.width = '99.99%';
+    divId.style.borderRadius = '3px';
+    divId.className = 'yyerror';
+    divId.style.opacity = 0.0;
+    divId.innerHTML = 'désolé, le serveur est lent, veuillez patienter';
+    document.getElementsByTagName('body')[0].appendChild(divId);
+    setTimeout(displaySlowServer, 0);
+}
+//=====================================================================================================================
+function reactiverLesBoutons(){
+ 
+    clearTimeout(globale_timeout_reference);
+    var lstb1 = document.getElementsByTagName('body')[0].getElementsByTagName('button');
+    for (var i = 0; i < lstb1.length; i++) {
+        if (!(lstb1[i].onclick)) {
+            if (lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0) {
+             
+            } else {
+                lstb1[i].style.visibility = "";
+            }
+        }
+    }
+    var lstb1 = document.getElementsByTagName('body')[0].getElementsByTagName('input');
+    for (var i = 0; i < lstb1.length; i++) {
+        if (!(lstb1[i].onclick)) {
+            if (lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0) {
+             
+            } else {
+                 if(lstb1[i].type==='submit'){
+                     lstb1[i].style.visibility = "";
+                 }
+            }
+        }
+    }
+    var lsta1 = document.getElementsByTagName('body')[0].getElementsByTagName('a');
+    for (var i = 0; i < lsta1.length; i++) {
+        if (lsta1[i].href && !(lsta1[i].href.indexOf('javascript') >= 0)) {
+            if (lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0) {} else {
+                lsta1[i].addEventListener("click", clickLink1, false);
+                lsta1[i].classList.remove("yyunset");
+            }
+        }
+    }
+    try{
+       var elem=document.getElementById('sloserver1');
+       elem.remove();
+    }catch(e){}
+
+ 
+}
+//=====================================================================================================================
+function clickLink1(e) {
+    try {
+        e.target.className = "yyunset";
+    } catch (e1) {}
+    globale_timeout_reference=setTimeout(slowServer1, globale_timeout_serveur_lent);
+}
+//=====================================================================================================================
+function clickButton1(e) {
+    try {
+        e.target.style.visibility = "hidden";
+    } catch (e1) {}
+    globale_timeout_reference=setTimeout(slowServer1, globale_timeout_serveur_lent);
+}
+//=====================================================================================================================
+window.onload = function() {
+ /*
+        fixMenu1();
+*/        
+        var lstb1 = document.getElementsByTagName('body')[0].getElementsByTagName('button');
+        for (var i = 0; i < lstb1.length; i++) {
+            if (!(lstb1[i].onclick)) {
+                if (lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0) {
+                 
+                } else {
+                    lstb1[i].addEventListener("click", clickButton1, false);
+                }
+            }
+        }
+        var lstb1 = document.getElementsByTagName('body')[0].getElementsByTagName('input');
+        for (var i = 0; i < lstb1.length; i++) {
+            if (!(lstb1[i].onclick)) {
+                if (lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0) {
+                 
+                } else {
+                     if(lstb1[i].type==='submit'){
+                         lstb1[i].addEventListener("click", clickButton1, false);
+                     }
+                }
+            }
+        }
+        var lsta1 = document.getElementsByTagName('body')[0].getElementsByTagName('a');
+        for (var i = 0; i < lsta1.length; i++) {
+            if (lsta1[i].href && !(lsta1[i].href.indexOf('javascript') >= 0)) {
+                if (lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0) {} else {
+                    lsta1[i].addEventListener("click", clickLink1, false);
+                }
+            }
+        }
+/*        
+        if (globalCssSettings1.other.autocompleteInput == 0) {
+            // ajouter des autocomplete
+            var lstb1 = document.getElementsByTagName('body')[0].getElementsByTagName('input');
+            for (var i = 0; i < lstb1.length; i++) {
+                if (lstb1[i].type && lstb1[i].type.toLowerCase() == 'text') {
+                    lstb1[i].setAttribute('autocomplete', 'off');
+                }
+            }
+            var lstb1 = document.getElementsByTagName('body')[0].getElementsByTagName('textarea');
+            for (var i = 0; i < lstb1.length; i++) {
+                if (lstb1[i].type && lstb1[i].type.toLowerCase() == 'text') {
+                    lstb1[i].setAttribute('autocomplete', 'off');
+                }
+            }
+        }
+*/
+        
+/*        getScrollWidth();
+//        getPageSize();
+//        pageFunction(); // this function calls finally a void function or doLocalPage ( see za_inc.php/function htmlFoot0 to see the implementation )
+*/
+}
+
 /*
   =====================================================================================================================
   supprime les messages de la zone global_messages et efface la zone de texte qui contient les message
@@ -1479,15 +1634,15 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         return(logerreur(temp));
                     }
                 }
-                dansCstSimple=false;
-                indice=(indice+1);
-                constanteQuotee=1;
                 if(autoriserCstDansRacine !== true){
                     if(niveau == 0){
                         temp={'status':false,'id':i,'value':T,'message':'1345 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
+                dansCstSimple=false;
+                indice=(indice+1);
+                constanteQuotee=1;
                 T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 texte='';
                 constanteQuotee=0;
@@ -1585,7 +1740,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 posFerPar=i;
                 if(texte != ''){
                     if(niveau == 0){
-                        temp={'status':false,'value':T,'id':i,'message':'une fermeture de parenthése ne doit pas être au niveau 0'};
+                        if(i > 100){
+                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                        }else{
+                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                        }
+                     
+                        temp={'status':false,'value':T,'id':i,'message':'une fermeture de parenthése ne doit pas être au niveau 0 près de '+presDe};
                         return(logerreur(temp));
                     }
                     indice=(indice+1);
@@ -1654,6 +1815,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(dansCstSimple == true){
                     dansCstSimple=false;
                 }else{
+                    if(texte!==''){
+                        indice=(indice+1);
+                        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                        texte='';
+                    }
                     dansCstSimple=true;
                 }
                 /*
@@ -1675,6 +1841,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(dansCstModele == true){
                     dansCstModele=false;
                 }else{
+                    if(texte!==''){
+                        indice=(indice+1);
+                        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                        texte='';
+                    }
                     dansCstModele=true;
                 }
                 /*
@@ -1696,6 +1867,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(dansCstDouble == true){
                     dansCstDouble=false;
                 }else{
+                    if(texte!==''){
+                        indice=(indice+1);
+                        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                        texte='';
+                    }
                     dansCstDouble=true;
                 }
                 /*

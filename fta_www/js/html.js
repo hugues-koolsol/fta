@@ -26,7 +26,7 @@ var global_enteteTableau=[
   pas renseignés
   =======================================================================================  
 */
-function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
+function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -34,13 +34,18 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
  var attributs='';
  var contenu='';
  var obj={dernierEstTexte:false};
+ var type='';
  
  
 // console.log('jsonDeHtml=',jsonDeHtml);
  if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
-  
+  type=jsonDeHtml.type.toLowerCase();
   if(jsonDeHtml.type!==''){
-   t+='\n'+esp0+jsonDeHtml.type.toLowerCase()+'(';
+   if(type==='script'){
+    t+='\n'+esp0+'javascriptDansHtml(';
+   }else{
+    t+='\n'+esp0+type+'(';
+   }
   }
   
   if(jsonDeHtml.attributes){
@@ -52,14 +57,22 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
    }
   }
   t+=attributs;
-  
-  if(jsonDeHtml.content && jsonDeHtml.content.length>0){
+  if(jsonDeHtml.type==='javascriptDansHtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
+   debugger  
+   var obj=transformSourceJavascriptEnRev(jsonDeHtml.content[0]);
+   if(obj.status===true){
+    t+=''+obj.value+'';
+   }else{
+    t+='#(Erreur de conversion du javascript 0066 )';
+   }
+   t+='\n'+esp0+')';
+  }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
    var count=0;
    for(var i=0;i<jsonDeHtml.content.length;i++){
     
     count++;
     niveau++;
-    obj=traiteJsonDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody);
+    obj=traiteJsonDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
     niveau--;
     if(obj.status===true){
      if((attributs!=='' || contenu!=='') && obj.value!==''){
@@ -92,20 +105,27 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
   
   
  }else{
-  contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
-  if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
-   contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  if(contenu.indexOf('\\')>=0){
-   debugger;
-  }
-  if(contenu!=='' ){
-   contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
-  }
-  t+=contenu;
-  if(contenu!=''){
-   dernierEstTexte=true;
+  if(typeParent==='script'){
+   var obj=transformSourceJavascriptEnRev(jsonDeHtml);
+   if(obj.status===true){
+    t+=''+obj.value+'';
+   }else{
+    t+='#(Erreur de conversion du javascript 0113 )';
+   }
+
   }else{
+   contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
+   if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
+    contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+   }
+   if(contenu!=='' ){
+    contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+   }
+   t+=contenu;
+   if(contenu!=''){
+    dernierEstTexte=true;
+   }else{
+   }
   }
  }
  
@@ -163,7 +183,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
         var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
 
         var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau3);
-        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
         if(obj1.status===true){
          t=obj1.value;
         }else{
@@ -172,7 +192,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
 
        }else{
         var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
-        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
         if(obj.status===true){
          t=obj.value;
         }else{
@@ -181,7 +201,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
        }
       }else{
        var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
-       var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+       var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
        if(obj1.status===true){
         t=obj1.value;
        }else{
@@ -194,7 +214,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody){
         avec des retours de lignes et sans coloration
       */
       var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau1);
-      var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false);
+      var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
       if(obj1.status===true){
        t=obj1.value;
       }else{
@@ -339,12 +359,51 @@ function mapMatriceVersJsonDeHtml(matrice){
   var leJson={};
   if(tab[parentId][8]===0 && parentId>0){
    content.push('');
+  }else if(tab[parentId][1]==='javascriptDansHtml'){
+
+    var debut=parentId+1;
+    for( var j=parentId+1;j<l01;j++){
+     if(tab[j][7]===parentId){
+      if(tab[j][1]==='' && tab[j][2]==='f'){
+      }else{
+       debut=j;
+       break;
+      }
+     }
+    }
+
+    debugger
+    var objContenuJs=parseJavascript0(tab,debut,0);
+    if(objContenuJs.status===true){
+     content.push(objContenuJs.value);
+    }else{
+     content.push('<!-- erreur html.js 377 -->');
+    }
+    
+    console.log('objContenuJs=',objContenuJs);
+
+   
   }else{
    for(var indice=parentId+1;indice<l01;indice++){
     if(tab[indice][7]===parentId){
      if(tab[indice][1]!==''){
       if(tab[indice][2]==='f' ){
-       content.push(reconstruit(tab,indice));
+       if('javascriptDansHtml'===tab[indice][1]){
+            debugger
+            content.push(reconstruit(tab,indice));
+            var max=l01-1;
+            for( var j=indice+1;j<l01;j++){
+             if(tab[j][3]<=tab[indice][3]){
+              max=j-1;
+              break;
+             }
+            }
+            indice=max;
+/*            
+*/            
+       }else{
+        content.push(reconstruit(tab,indice));
+       }
       }else{
        content.push(tab[indice][1]);
       }
@@ -396,7 +455,7 @@ function TransformHtmlEnRev(texteHtml,niveau){
 //     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
      
      
-     var obj=traiteJsonDeHtml(elementsJson,0,true);
+     var obj=traiteJsonDeHtml(elementsJson,0,true,'');
      if(obj.status===true){
       t=obj.value;
      }else{
@@ -465,6 +524,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
  }else if(dansJs&&tab[id][1]=='source'){ // i18
   // analyse de source javascript
   t+=CRLF;
+  t+='<![CDATA[';
   t+='// = = = = <source javascript = = = ='+CRLF;
   t+='"use strict";'+CRLF;
 //  console.error('todo')
@@ -478,6 +538,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
    return logerreur({status:false,value:t,message:'erreur de script dans un html'});
   }
   t+=CRLF+'// = = = = source javascript> = = = ='+CRLF;
+  t+=']]>'+CRLF;
   
   return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
 

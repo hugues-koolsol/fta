@@ -9,6 +9,32 @@ define("MESSAGES","messages");
 define("INPUT","input");
 define("VALUE","value");
 define("STATUS","status");
+/*
+  =========================================================
+  ========= FONCTION recharger la page courante ===========
+  =========================================================
+*/
+function rechargerPageCourante($a){
+    header("HTTP/1.1 303 See Other");
+    header(concat('Location: ',$a));
+    exit(0);
+}
+/*
+  =========================================================
+  ========= FONCTION supprimer les valeurs de session =====
+  =========================================================
+*/
+function supprimerLesValeursDeSession(){
+    unset($_SESSION[APP_KEY]['sess_id_utilisateur']);
+    unset($_SESSION[APP_KEY]['sess_id_utilisateur_init']);
+    unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur']);
+    unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']);
+}
+/*
+  =========================================================
+  ========= FONCTION supprimer les valeurs de session =====
+  =========================================================
+*/
 function checkGroupAjaxPages(){
     return(true);
 }
@@ -49,6 +75,9 @@ function concat(...$ps){
     return($t);
 }
 function html_header1($p){
+    if(!ob_start("ob_gzhandler")){
+     ob_start();
+    }
     $t='';
     $t=$t.'<!DOCTYPE html>'.CRLF;
     $t=$t.'<html lang="fr">'.CRLF;
@@ -57,6 +86,7 @@ function html_header1($p){
     $t=$t.'  <title>'.($p['title']??'title').'</title>'.CRLF;
     $t=$t.'  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
     $t=$t.'  <link rel="stylesheet" href="index.css" />'.CRLF;
+    $t=$t.'  <script type="text/javascript" src="js/core5.js"></script>'.CRLF;
     $t=$t.' </head>'.CRLF;
     if((isset($p['opt']['bodyPaddingTop']))){
         $t=$t.' <body style="padding-top:'.$p['opt']['bodyPaddingTop'].'px;">'.CRLF;
@@ -69,7 +99,7 @@ function html_header1($p){
     $t=$t.'   <a href="todo.html">todo</a>'.CRLF;
     $t=$t.'   <a href="traiteJs4.html">traiteJs4</a>'.CRLF;
     $t=$t.'   <a href="traitePhp0.html">traitePhp0</a>'.CRLF;
-    if((isset($_SESSION[APP_KEY]['user']) && 1 === $_SESSION[APP_KEY]['user'])){
+    if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
         $t=$t.'   <a href="index_source.php">index_source</a>'.CRLF;
         $t=$t.'   <a href="aa_login.php?a=logout">logout</a>'.CRLF;
     }else{
@@ -81,7 +111,6 @@ function html_header1($p){
 }
 function html_footer1($p=array()){
     $t='';
-    $t=$t.'  <script type="text/javascript" src="js/core5.js"></script>'.CRLF;
     if((isset($p['js']))){
         foreach($p['js'] as $k1 => $v1){
             $t=$t.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;

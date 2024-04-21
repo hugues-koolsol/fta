@@ -36,7 +36,7 @@ nav{
  background: aliceblue;
  border: 1px red outset; 
 }
-#loginbox{
+#boite_de_connexion{
  max-width: 300px;
  margin: auto; 
  display:flex;

@@ -429,75 +429,6 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     console.log('%c sortie de traiteBinaryExpress1 element=','color:red;background:yellow;font-weight:bold;',element,'t='+t);
     return({status:true,value:t});
 }
-function baisserNiveauEtSupprimer(tab,id,niveau){
-    var i = (id+1);
-    for(i=(id+1);i < tab.length;i=i+1){
-        if(tab[i][7] === id){
-            tab[i][3]=tab[i][3]-1;
-            if(tab[i][2] === 'f'){
-                niveau=niveau+1;
-                baisserNiveauEtSupprimer(tab,i,niveau);
-                niveau=niveau-1;
-            }
-        }
-    }
-    if(niveau === 0){
-        tab.splice(id,1);
-        var j=0;
-        var l01=tab.length;
-        for(i=l01-1;i > 0;i=i-1){
-            niveau=tab[i][3];
-            for(j=i;j >= 0;j=j-1){
-                if(tab[j][3] == niveau-1){
-                    tab[i][7]=j;
-                    tab[j][8]=(tab[j][8]+1);
-                    break;
-                }
-            }
-        }
-        /*
-          
-          ============================== 
-          numérotation des enfants
-          numenfant = k
-          ==============================
-        */
-        var k=0;
-        for(i=0;i < l01;i=(i+1)){
-            k=0;
-            for(j=(i+1);j < l01;j=(j+1)){
-                if(tab[j][7] == tab[i][0]){
-                    k=(k+1);
-                    tab[j][9]=k;
-                }
-            }
-        }
-        /*
-          =======================================
-          profondeur des fonctions
-          k=remonterAuNiveau
-          l=idParent
-          =======================================
-        */
-        var l=0;
-        for(i=l01-1;i > 0;i=i-1){
-            if(tab[i][2] == 'c'){
-                tab[i][10]=0;
-            }
-            if(tab[i][7] > 0){
-                k=tab[i][3];
-                l=tab[i][7];
-                for(j=1;j <= k;j=(j+1)){
-                    if(tab[l][10] < j){
-                        tab[l][10]=j;
-                    }
-                    l=tab[l][7];
-                }
-            }
-        }
-        return tab;
-    }
-}
 function traiteLogicalExpression1(element,niveau,dansSiOuBoucle){
     var t='';
     if((element.left) && (element.right)){
@@ -2251,7 +2182,39 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
     }
     return({status:true,value:t});
 }
+
+/*
+=====================================================================================================================
+*/
+function transformSourceJavascriptEnRev(sourceDuJavascript){
+ var t='';
+ 
+ try{
+  var ret=esprima.parseScript(sourceDuJavascript,{ range: true ,comment:true}); // ,{'comment':true}
+  console.log('ret.body=',ret);
+
+  
+ }catch(e){
+  console.log('erreur esprima',e);
+  return logerreur({status:false,message:'erreur convertir-js-en-rev 2725'});
+ }
+ if(ret!==false){
+  tabComment=ret.comments;
+  var obj=TransformAstEnRev(ret.body,0);
+  if(obj.status==true){
+   t=obj.value;
+  }else{
+   return logerreur({status:false,message:'erreur convertir-js-en-rev 2733'});
+  }
+ }
+ return {status:true,value:t};
+}
+
+
 var tabComment=[];
+/*
+=====================================================================================================================
+*/
 function transform(){
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
@@ -2361,5 +2324,3 @@ function chargerLeDernierSource(){
         dogid('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
     }
 }
-chargerLeDernierSource();
-transform();
