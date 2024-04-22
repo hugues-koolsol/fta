@@ -349,6 +349,7 @@ function php_traite_Expr_FuncCall(element,niveau){
    t+='#(todo dans php_traite_Expr_FuncCall 0357 pas de name)';
  }
  
+ var lesArgumentsCourts='';
  var lesArguments='';
  var tabArgs=[];
  if(element.args && element.args.length>0){
@@ -357,13 +358,36 @@ function php_traite_Expr_FuncCall(element,niveau){
    if(obj.status===true){
     lesArguments+=',p('+obj.value+')';
     tabArgs.push([obj.value,element.args[i].value.nodeType]);
+    lesArgumentsCourts+=','+obj.value;
    }else{
     t+='#(todo dans php_traite_Expr_FuncCall 0175 pas de expr )';
    }
   }
  }
  
- if(nomFonction==='define'){
+ if('htmlDansPhp'===nomFonction){
+  if(lesArgumentsCourts.substr(0,1)===','){
+   lesArgumentsCourts=lesArgumentsCourts.substr(1);
+  }
+  var source=lesArgumentsCourts.substr(1,lesArgumentsCourts.length-2);
+  var source=source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
+  
+  var obj = TransformHtmlEnRev(source,0);
+  if(obj.status == true){
+   t+='html('+obj.value+')';
+  }else{
+   t+='#(erreur convertit-php-en-rev 0373)';
+  }
+
+ }else if('concat'===nomFonction){
+  if(lesArgumentsCourts.substr(0,1)===','){
+   lesArgumentsCourts=lesArgumentsCourts.substr(1);
+  }
+  t+=''+nomFonction+'('+lesArgumentsCourts+')';
+ }else if(nomFonction==='define'){
+  /*
+  Dans le cas du define, il faut que les valeurs soient entre doubles quotes 
+  */
   if(tabArgs.length===2 && tabArgs[0][1]==='Scalar_String' && tabArgs[1][1]==='Scalar_String' ){
    if(tabArgs[1][0].substr(0,1)==='\''){
     var contenu=tabArgs[1][0].substr(1,tabArgs[1][0].length-2);
@@ -1459,6 +1483,11 @@ function TransformAstPhpEnRev(stmts,niveau){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
+ var numeroLignePrecedentStmtHtmlStartLine=0;
+ var numeroLigneCourantStmtHtmlStartLine=0;
+ var numeroLignePrecedentStmtHtmlEndLine=0;
+ var numeroLigneCourantStmtHtmlEndLine=0;
+ var StmtsHtmlPrecedentEstEcho=false;
  
  if(stmts.length>0){
   for( var i=0;i<stmts.length;i++){
@@ -1478,7 +1507,26 @@ function TransformAstPhpEnRev(stmts,niveau){
 
     var obj=php_traite_echo( stmts[i] , niveau);
     if(obj.status===true){
-     t+='\n'+esp0+obj.value;
+     
+     numeroLigneCourantStmtHtmlStartLine = stmts[i].attributes.startLine;
+     numeroLigneCourantStmtHtmlEndLine   = stmts[i].attributes.endLine;
+
+     if( ( numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlStartLine || numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlEndLine )&& StmtsHtmlPrecedentEstEcho===true){
+      console.log('optimiserIci t=',t);
+      /*
+      t finit par appelf(nomf(echo),p($d)),"
+      */
+      if('appelf(nomf(echo),'===obj.value.substr(0,18)){
+       t=t.substr(0,t.length-2)+obj.value.substr(17);
+      }else{
+       t+='\n'+esp0+obj.value;
+      }
+      numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
+      numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;
+      
+     }else{
+      t+='\n'+esp0+obj.value;
+     }
     }else{
      t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_echo "'+stmts[i].nodeType+'")';
     }
@@ -1563,13 +1611,268 @@ function TransformAstPhpEnRev(stmts,niveau){
     
    }else if("Stmt_InlineHTML"===stmts[i].nodeType){
 
+     /*
+     ===========================================================================
+     */
+     function isHTML(str) {
+      var i=0;
+      var j=0;
+      var c0='';
+      var cp1='';
+      var cm1='';
+      var dansTag=false;
+      var dansInner=true;
+      var dansNomPropriete=false;
+      var dansValeurPropriete=false;
+      var dansNomTag=false;
+      var caractereDebutProp='';
+      var nomTag='';
+      var dansBaliseFermante=false;
+      var tabTags=[];
+      
+      var l01=str.length;
+      var niveau=0;
+      for(var i=0;i<l01;i++){
+       c0=str.substr(i,1);
+       if(i<l01-1){
+        cp1=str.substr(i+1,1);
+       }else{
+        cp1='';
+       }
+       if(i>0 && l01>0){
+        cm1=str.substr(i-1,1);
+       }else{
+        cm1='';
+       }
+       if(dansTag){
+        
+        if(dansNomPropriete){
+          if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+           return false;
+          }else if(c0==='='){
+           if(cp1==="'" || cp1=='"'){
+            dansValeurPropriete=true;
+            dansNomPropriete=false;
+            caractereDebutProp=cp1;
+            i++;
+           }else{
+            return false;
+           }
+           
+          }else{
+           // on continue
+          }
+        }else if(dansValeurPropriete){
+         if(c0===caractereDebutProp){
+          if(cm1==='\\'){
+          // on continue
+          }else{
+           dansValeurPropriete=false;
+          }
+         }else{
+          // on continue
+         }
+         
+        }else if(dansNomTag){
+         
+         if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+          tabTags.push(nomTag);
+          dansNomTag=false;
+         }else if(c0==='>'){
+          if(dansBaliseFermante){ // </a>
+           dansNomTag=false
+           dansInner=true;
+           dansTag=false;
+           tabTags.pop();
+           nomTag='';
+           dansBaliseFermante=false;
+           niveau--;
+          }else{
+           // <b>
+           dansNomTag=false
+           dansInner=true;
+           dansTag=false;
+           tabTags.pop();
+           nomTag='';
+           
+          }
 
-     var obj1=TransformHtmlEnRev(stmts[i].value,niveau);
-     if(obj1.status===true){
-      t+='\n'+esp0+'html('+obj1.value+')';
-     }else{
-      t+='\n'+esp0+'html(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+         }else if(c0==='=' || c0==='"' || c0==='\''){
+          return false;
+         }else{
+          nomTag+=c0;
+         }
+        }else{
+         
+         if(nomTag===''){
+          
+          if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+           return false;
+           
+          }else{
+           dansNomTag=true;
+           nomTag+=c0;
+          }
+          
+         }else{
+          /* 
+            le tag a été fait, maintenant, c'est les propriétés 
+            ou la fin des propriétés ou un / pour une balise auto fermante ( <br /> )
+          */
+          if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+           // on continue
+          }else if(c0==='/'){
+           if(cp1==='>'){
+            // balise auto fermante
+            nomTag='';
+            tabTags.pop();
+            niveau--
+            dansTag=false;
+            dansInner=true;
+            i++;
+           }
+          }else if(c0==='>'){
+           if(nomTag===''){
+            return false;
+           }
+           dansTag=false;
+           dansInner=true;
+           tabTags.pop();
+           nomTag='';
+          }else{
+           if(c0==='=' || c0==='"' || c0==='\''){
+            return false;
+           }else{
+            dansNomPropriete=true;
+           }
+          }
+         }
+        }
+        
+       }else if(dansInner){
+        if(c0==='<'){
+         if(cp1==='/'){ // fin de tag </a>
+          dansBaliseFermante=true;
+          i++;
+         }else{
+          niveau+=1;
+         }
+         dansInner=false;
+         dansTag=true;
+        }else if(c0==='>'){
+         if(niveau===0){
+          return false;
+         }
+        }else{
+         // caractere suivant
+        }
+        
+       }else{
+        if(c0==='<'){
+        }else if(c0==='>'){
+         debugger // on ne devrait pas passer par ici
+         niveau-=1;
+         if(niveau<0){
+          return false;
+         }
+        }
+       }
+       
+      }
+      if(tabTags.length>0){
+       return false;
+      }
+      if(dansTag){
+       return false;
+      }
+      return true;
+/*
+       liste des essais foireux trouvés sur stackoverflow      
+       try {
+           const fragment = new DOMParser().parseFromString(str,"application/xml");
+           return fragment.body.children.length>0
+         } catch(error) { ; }  
+         return false;
+  
+       return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(str);
+       var a = document.createElement('div');
+       a.innerHTML = str;
+
+       for (var c = a.childNodes, i = c.length; i--; ) {
+         if (c[i].nodeType == 1) return true; 
+       }
+
+       return false;
+*/       
      }
+
+     /*
+     ===========================================================================
+     */
+     var estTraiteSansErreur=false;
+     if(isHTML(stmts[i].value)){
+      var obj1=TransformHtmlEnRev(stmts[i].value);
+      if(obj1.status===true){
+        StmtsHtmlPrecedentEstEcho=false;
+        t+='\n'+esp0+'html('+obj1.value+')';
+        estTraiteSansErreur=true;
+      }
+     }
+     if(estTraiteSansErreur===false){
+      
+      numeroLigneCourantStmtHtmlStartLine = stmts[i].attributes.startLine;
+      numeroLigneCourantStmtHtmlEndLine   = stmts[i].attributes.endLine;
+      var fragmentsHtml=stmts[i].value.split('\n');
+      for( var j=0;j<fragmentsHtml.length;j++){
+       if(isHTML(fragmentsHtml[j])){
+        
+        var obj1=TransformHtmlEnRev(fragmentsHtml[j]);
+        if(obj1.status===true){
+         if(obj1.value===''){
+          /*
+          si on est ici, c'est que c'est un fragment html qui contient du php
+          par exemple dans  "<a href="<?php echo $c;?>">b</a>",
+          on stmts[i].value contient <a href="
+          on fait donc un echo
+          
+          */
+          if(fragmentsHtml[j]!==''){
+           StmtsHtmlPrecedentEstEcho=true;
+           t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+          }
+         }else{
+          StmtsHtmlPrecedentEstEcho=false;
+          t+='\n'+esp0+'html('+obj1.value+')';
+         }
+        }else{
+         StmtsHtmlPrecedentEstEcho=false;
+         t+='\n'+esp0+'html(#(erreur convertit-php-en-rev0 dans la conversion html 1618 ))';
+        }
+        
+        
+       }else{
+         if(fragmentsHtml[j]!==''){
+          if( ( numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlStartLine || numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlEndLine )&& StmtsHtmlPrecedentEstEcho===true){
+           console.log('optimiserIci t=',t);
+           /*
+           t finit par appelf(nomf(echo),p($d)),"
+           */
+           t=t.substr(0,t.length-2)+',p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+ //          t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+          }else{
+           t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+           StmtsHtmlPrecedentEstEcho=true;
+          }
+          numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
+          numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;
+         }
+       }
+      }
+      numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
+      numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;      
+      
+     }
+
 
    }else if("Stmt_Switch"===stmts[i].nodeType){
 
@@ -1751,7 +2054,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
  
 }
 //=====================================================================================================================
-function transform(){
+function transformPhpEnRev(){
   //"àà"
 
   console.log('=========================\ndébut de transforme')
@@ -1821,7 +2124,7 @@ hello<?php echo ' world';?> and others<?php
  dogid('txtar1').value=t;
 }
 //=====================================================================================================================
-function chargerLeDernierSource(){
+function chargerLeDernierSourcePhp(){
  var fta_indexhtml_php_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_php_dernier_fichier_charge");
 // console.log('fta_indexhtml_javascript_dernier_fichier_charge=' , fta_indexhtml_javascript_dernier_fichier_charge );
  if(fta_indexhtml_php_dernier_fichier_charge!==null){
@@ -1829,5 +2132,3 @@ function chargerLeDernierSource(){
  }
 }
 
-chargerLeDernierSource();
-transform();

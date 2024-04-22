@@ -178,6 +178,7 @@ function clearMessages(nomZone){
   =====================================================================================================================
 */
 function displayMessages(nomZone){
+    reactiverLesBoutons();
     var i=0;
     for(i=0;i < global_messages.errors.length;i=(i+1)){
         document.getElementById(nomZone).innerHTML+='<div class="yyerror">'+global_messages.errors[i]+'</div>';

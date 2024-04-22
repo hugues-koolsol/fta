@@ -9,21 +9,13 @@ define("MESSAGES","messages");
 define("INPUT","input");
 define("VALUE","value");
 define("STATUS","status");
-/*
-  =========================================================
-  ========= FONCTION recharger la page courante ===========
-  =========================================================
-*/
+/*===================================================================================================================*/
 function rechargerPageCourante($a){
     header("HTTP/1.1 303 See Other");
     header(concat('Location: ',$a));
     exit(0);
 }
-/*
-  =========================================================
-  ========= FONCTION supprimer les valeurs de session =====
-  =========================================================
-*/
+/*===================================================================================================================*/
 function supprimerLesValeursDeSession(){
     unset($_SESSION[APP_KEY]['sess_id_utilisateur']);
     unset($_SESSION[APP_KEY]['sess_id_utilisateur_init']);
@@ -31,21 +23,28 @@ function supprimerLesValeursDeSession(){
     unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']);
 }
 /*
-  =========================================================
-  ========= FONCTION supprimer les valeurs de session =====
-  =========================================================
+  =====================================================================================================================
+  Utilitaire pour repérer les chaines de caractères qui contiennent du html quand on fait du rev
+  =====================================================================================================================
 */
+function htmlDansPhp($s){
+    return $s;
+}
+/*===================================================================================================================*/
 function checkGroupAjaxPages(){
     return(true);
 }
+/*===================================================================================================================*/
 function start_session_messages(){
     $_SESSION[APP_KEY][MESSAGES]['errors']=array();
     $_SESSION[APP_KEY][MESSAGES]['warnings']=array();
     $_SESSION[APP_KEY][MESSAGES]['comments']=array();
 }
+/*===================================================================================================================*/
 function clear_session_messages(){
     unset($_SESSION[APP_KEY][MESSAGES]);
 }
+/*===================================================================================================================*/
 function session_messages(){
     $t='';
     $u='';
@@ -64,9 +63,11 @@ function session_messages(){
     }
     return($t);
 }
+/*===================================================================================================================*/
 function pushkv(&$a,$k,$v){
     $a[$k]=$v;
 }
+/*===================================================================================================================*/
 function concat(...$ps){
     $t='';
     foreach($ps as $p){
@@ -74,6 +75,7 @@ function concat(...$ps){
     }
     return($t);
 }
+/*===================================================================================================================*/
 function html_header1($p){
     if(!ob_start("ob_gzhandler")){
      ob_start();

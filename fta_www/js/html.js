@@ -58,7 +58,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   }
   t+=attributs;
   if(jsonDeHtml.type==='javascriptDansHtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
-   debugger  
+
    var obj=transformSourceJavascriptEnRev(jsonDeHtml.content[0]);
    if(obj.status===true){
     t+=''+obj.value+'';
@@ -114,7 +114,15 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
    }
 
   }else{
-   contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
+   try{
+    contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
+   }catch(e){
+    /*
+    dans le cas où le jsonDeHtml n'existe pas
+    */
+
+    contenu='';
+   }
    if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
     contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
    }
@@ -372,7 +380,7 @@ function mapMatriceVersJsonDeHtml(matrice){
      }
     }
 
-    debugger
+    
     var objContenuJs=parseJavascript0(tab,debut,0);
     if(objContenuJs.status===true){
      content.push(objContenuJs.value);
@@ -389,7 +397,7 @@ function mapMatriceVersJsonDeHtml(matrice){
      if(tab[indice][1]!==''){
       if(tab[indice][2]==='f' ){
        if('javascriptDansHtml'===tab[indice][1]){
-            debugger
+
             content.push(reconstruit(tab,indice));
             var max=l01-1;
             for( var j=indice+1;j<l01;j++){
@@ -492,6 +500,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
  var niveauNouvelleLigne=3;
  var doctype='';
  var temp='';
+ var l01=tab.length;
  
  if(tab[id][1]=='head'){
   dansHead=true;
@@ -560,7 +569,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
    }
   }
   doctype='';
-  for(i=id+1;i<tab.length;i++){
+  for(i=id+1;i<l01;i++){
    if(tab[i][7]==id){
     if( tab[i][2] == 'f' && tab[i][1]==''){
      if( tab[i][8]<=2){// (lang,fr) : 2 enfants
@@ -617,27 +626,87 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
     }
    }
    var contenuNiveauPlus1='';
-   for(i=id+1;i<tab.length;i++){
+   for(i=id+1;i<l01;i++){
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
 
-      niveau++;
-      ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
-      niveau--;
-      
-      if(ob.status===true){
+      if(tab[i][1]==='javascriptdanshtml'){
        /*
-        ===========================================================================================
-        ecriture de la valeur dans le cas d'une fonction
-        ===========================================================================================
+       dans ce cas, c'est un tag <script avec des propriétés 
        */
-       t+=ob.value;
-       dansBody=ob.dansBody;
-       dansHead=ob.dansHead;
-       dansJs=ob.dansJs;
+       var lesProprietes='';
+       var indiceDebutJs=-1;
+       for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+        if(tab[j][7]===i){
+         if(tab[j][2]==='f'){
+          if(tab[j][1]==='' ){
+           lesProprietes+=' '+tab[j+1][1]+'=\''+tab[j+2][1].replace(/\"/g,'&quot;')+'\'';
+          }else{
+           if(indiceDebutJs===-1){
+            indiceDebutJs=j;
+           }
+          }
+         }
+        }
+       }
+debugger        
+       
+       niveau++;
+       ob=parseJavascript0(tab,indiceDebutJs,niveau);
+       niveau--;
+       
+       if(ob.status===true){
+        /*
+         ===========================================================================================
+         ecriture de la valeur dans le cas d'un tag javascriptdanshtml
+         ===========================================================================================
+        */
+        t+=CRLF;
+        t+='<script'+lesProprietes+'>'+CRLF;
+        t+='//<![CDATA['+CRLF;
+        t+='//<source_javascript_rev>'+CRLF;
+        t+=ob.value+CRLF;
+        t+='//</source_javascript_rev>'+CRLF;
+        t+='//]]>'+CRLF
+        t+='</script>'+CRLF;
+        
+        
+       }else{
+        return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0653'});  
+       }
+       
+       var max=l01-1;
+       for(var j=i+1;j<l01;j++){
+        if(tab[j][3]<=tab[i][3]){
+         max=j;
+        }
+       }
+       i=max;
+       
+       
       }else{
-       return logerreur({status:false,message:''});  
-      }
+       niveau++;
+       ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
+       niveau--;
+       
+       if(ob.status===true){
+        /*
+         ===========================================================================================
+         ecriture de la valeur dans le cas d'un tag html normal
+         ===========================================================================================
+        */
+        t+=ob.value;
+        dansBody=ob.dansBody;
+        dansHead=ob.dansHead;
+        dansJs=ob.dansJs;
+       }else{
+        return logerreur({status:false,message:'erreur dans un html 0659'});  
+       }
+       
+       
+       
+      }      
+      
      }else{
       if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
       }else{
@@ -678,13 +747,6 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
        const re2 = new RegExp("\r\n[ \t]+\<\/"+tag+"\>","g");
        const rp2 = '</'+tag+'>';
        t=t.replace(re2,rp2);
-       if(tab[id][1]=='td'){
-//        t=t.replace(/\<td(.*)\>\r\n[ \t]+/g,'<td$1>')
-//        t=t.replace(/\r\n[ \t]+\<\/td\>/g,'</td>')
-       }else if(tab[id][1]=='a'){
-//        t=t.replace(/\<a(.*)\>\r\n[ \t]+/g,'<a$1>')
-//        t=t.replace(/\r\n[ \t]+\<\/a\>/g,'</a>')
-       }
       }
      }
     }

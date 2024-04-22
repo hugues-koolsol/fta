@@ -1278,7 +1278,8 @@ function php_traiteElement(tab , ind , niveau){
 
  }else if(tab[ind][2]=='f' && tab[ind][1]=='html' ){
 
-  php_contexte_commentaire_html=false;
+  php_contexte_commentaire_html=true;
+  
   obj=tabToHtml1(tab,ind,true,0);
   if(obj.status===true){
    t='htmlDansPhp(\''+obj.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
@@ -1767,6 +1768,9 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
    argumentsFonction=argumentsFonction.replace(/\\\\/g,'\\');
    argumentsFonction=argumentsFonction.substr(1,argumentsFonction.length-2);
    t+=nomFonction+' '+argumentsFonction+'';
+   
+  }else if(nomFonction==='echo'){
+   t+=elementFonction+nomFonction+' '+argumentsFonction+' ';
    
   }else{
    t+=elementFonction+nomFonction+'('+argumentsFonction+')';

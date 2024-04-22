@@ -34,7 +34,7 @@ function asthtml_logerreur(o){
 
 
 var tabComment=[];
-function transform(){
+function transformHtmlEnRev(){
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     document.getElementById('resultat1').innerHTML='';
@@ -71,11 +71,9 @@ function chargerSourceDeTest(){
 </body>`;
     dogid('txtar1').value=t;
 }
-function chargerLeDernierSource(){
+function chargerLeDernierSourceHTML(){
     var fta_traitehtml_dernier_fichier_charge = localStorage.getItem('fta_traitehtml_dernier_fichier_charge');
     if(fta_traitehtml_dernier_fichier_charge !== null){
         dogid('txtar1').value=fta_traitehtml_dernier_fichier_charge;
     }
 }
-chargerLeDernierSource();
-transform();

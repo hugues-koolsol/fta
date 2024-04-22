@@ -2215,7 +2215,7 @@ var tabComment=[];
 /*
 =====================================================================================================================
 */
-function transform(){
+function transformJsEnRev(){
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     document.getElementById('resultat1').innerHTML='';
@@ -2318,7 +2318,7 @@ function espacesn(optionCRLF, i) {
 */`;
     dogid('txtar1').value=t;
 }
-function chargerLeDernierSource(){
+function chargerLeDernierSourceJs(){
     var fta_indexhtml_javascript_dernier_fichier_charge = localStorage.getItem('fta_indexhtml_javascript_dernier_fichier_charge');
     if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
         dogid('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
