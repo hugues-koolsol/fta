@@ -276,6 +276,11 @@ function maConstante(tab){
         t='\''+tab[1]+'\'';
     }else if(tab[4] === 2){
         t='`'+tab[1]+'`';
+    }else if(tab[4] === 3){
+        /*
+         \r, \n, \r\n sont des exceptions
+        */
+        t='"'+tab[1]+'"';
     }else{
         if(tab[1] === 'vrai'){
             t='true';
@@ -381,9 +386,9 @@ function arrayToFunctNoComment(matrice){
 /*
   =====================================================================================================================
 */
-function functionToArray(src,quitterSiErreurNiveau){
+function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine){
     var tableau1 = iterateCharacters2(src);
-    var matriceFonction = functionToArray2(tableau1.out,quitterSiErreurNiveau,false);
+    var matriceFonction = functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine);
     global_messages.data.matrice=matriceFonction;
     global_messages.data.tableau=tableau1;
     return matriceFonction;
@@ -803,6 +808,8 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                     t=concat(t,'\'',strToHtml(arr[i][1]),'\'');
                 }else if(arr[i][4] == 2){
                     t=concat(t,'`',strToHtml(arr[i][1]),'`');
+                }else if(arr[i][4] == 3){
+                    t=concat(t,'"',strToHtml(arr[i][1]),'"');
                 }else{
                     t=concat(t,strToHtml(arr[i][1]));
                 }
@@ -811,6 +818,8 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                     t=concat(t,'\'',arr[i][1],'\'');
                 }else if(arr[i][4] == 2){
                     t=concat(t,'`',arr[i][1],'`');
+                }else if(arr[i][4] == 3){
+                    t=concat(t,'"',arr[i][1],'"');
                 }else{
                     t=concat(t,arr[i][1]);
                 }
@@ -1472,8 +1481,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 dansCstDouble=false;
-                indice=(indice+1);
-                constanteQuotee=1;
                 if(autoriserCstDansRacine !== true){
                     if(niveau == 0){
                         if(i > 100){
@@ -1484,6 +1491,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         temp={'status':false,'id':i,'value':T,'message':'1186 la racine ne peut pas contenir des constantes près de '+presDe};
                         return(logerreur(temp));
                     }
+                }
+                indice=(indice+1);
+                constanteQuotee=1;
+                if(texte==='\\n' || texte==='\\r' || texte==='\\r\\n' ){
+                 constanteQuotee=3;
                 }
                 T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 texte='';
@@ -1505,7 +1517,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte=concat(texte,'"');
                     i=(i+1);
                 }else{
-                    temp={'status':false,'value':T,'id':i,'message':'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u en i='+i};
+                    if(i > 100){
+                        var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                    }else{
+                        var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                    }
+                    temp={'status':false,'value':T,'id':i,'message':'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u pres de '+presDe};
                     return(logerreur(temp));
                 }
             }else if(c == '\''){

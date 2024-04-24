@@ -48,7 +48,7 @@ function transformHtmlEnRev(){
     if(obj.status == true){
         document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;')+'</pre>';
         document.getElementById('txtar2').value=obj.value;
-        var obj1 = functionToArray2(obj.value,false,true); //functionToArray(obj.value,true);
+        var obj1 = functionToArray2(obj.value,false,true);
         if(obj.status === true){
             asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev'});
         }else{

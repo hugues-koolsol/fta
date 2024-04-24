@@ -391,7 +391,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         return(astjs_logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 0508 '+element.left.type,element:element}));
     }
     if((t.substr(0,10) === 'plus(plus(') || (t.substr(0,12) === 'moins(moins(')){
-        var o = functionToArray(t,true);
+        var o = functionToArray(t,true,false);
         if(o.status === true){
             console.log('%c simplifier les plus plus','background:pink;',t,o.value);
             var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
@@ -404,7 +404,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         }
     }
     if(t.substr(0,6) === 'moins('){
-        var o = functionToArray(t,true);
+        var o = functionToArray(t,true,false);
         if(o.status === true){
             console.log('%c réduire les moins(a,b)','background:pink;',t,o.value);
             var i=0;
@@ -528,6 +528,14 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
         }
     }else if(element.type === 'Literal'){
         t+=element.raw;
+    }else if(element.type === 'ArrayExpression'){
+        var obj1 = traiteArrayExpression1(element,niveau);
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,message:'erreur dans js_traiteCondition1 0536',element:element}));
+        }
+     
     }else{
         console.error('traiteCondition1 todo 0560 ',element);
         return(astjs_logerreur({'status':false,'message':'erreur dans traiteCondition1 0420 ',element:element}));
@@ -538,7 +546,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
       en ceci
       [[egal[d,1]],ou[[egal[e,2]]],ou[[egal[f,3]]]]
     */
-    var o = functionToArray(t,true);
+    var o = functionToArray(t,true,true); // si on reçoit un [], par exemple window.dataLayer = window.dataLayer || []; dans le source google
     if(o.status === true){
         if((o.value.length > 3) && (o.value[1][1] == '') && (o.value[1][2] == 'f') && (o.value[2][1] == '') && (o.value[2][2] == 'f') && (o.value[3][1] == '') && (o.value[3][2] == 'f')){
             var enfantDe2='';
@@ -1333,7 +1341,7 @@ function traiteMemberExpression1(element,niveau,parent){
         return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1512 pour '+element.type,element:element}));
     }
     if(t.substr(0,8) == 'tableau('){
-        var o = functionToArray(t,true);
+        var o = functionToArray(t,true,false);
         if(o.status === true){
             if((o.value[2][1] === 'nomt') && (o.value[2][8] === 1) && (o.value[3][2] === 'c')){
                 var i=0;
@@ -2215,7 +2223,30 @@ var tabComment=[];
 /*
 =====================================================================================================================
 */
-function transformJsEnRev(){
+
+function transformJsEnRev(texteJs){
+ 
+    try{
+        var ret = esprima.parseScript(texteJs,{range:true,comment:true});
+        var obj = TransformAstEnRev(ret.body,0);
+        if(obj.status == true){
+         return {status:true,value:obj.value}
+        }else{
+         return {status:false,message:'erreur de conversion de js en rev dans convertit-js-en-rev 2227'}
+        }
+
+    }catch(e){
+        return {status:false,message:'erreur de conversion de js en rev dans convertit-js-en-rev 2232, probablement une erreur dans le javascript'}
+    }
+ 
+ 
+}
+
+
+/*
+=====================================================================================================================
+*/
+function transformJsDeTextAreaEnRev(){
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     document.getElementById('resultat1').innerHTML='';
@@ -2238,7 +2269,7 @@ function transformJsEnRev(){
         if(obj.status == true){
             document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;')+'</pre>';
             document.getElementById('txtar2').value=obj.value;
-            var obj1 = functionToArray(obj.value,true);
+            var obj1 = functionToArray(obj.value,true,false);
             if(obj.status === true){
                 astjs_logerreur({status:true,message:'pas d\'erreur pour le rev'});
             }else{

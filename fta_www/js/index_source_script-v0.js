@@ -71,7 +71,7 @@ function parentheses(){
     var zoneSource = document.getElementById('zonesource');
     var texte=zoneSource.value;
     if(texte.substr(global_editeur_derniere_valeur_selecStart-1,1) == '('){
-        var arr = functionToArray(texte,false);
+        var arr = functionToArray(texte,false,false);
         var i=0;
         for(i=0;i < arr.value.length;i=i+1){
             if(global_editeur_derniere_valeur_selecStart-1 == arr.value[i][11]){

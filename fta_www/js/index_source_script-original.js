@@ -79,7 +79,7 @@ function parentheses(){
  var zoneSource=document.getElementById('zonesource');
  var texte=zoneSource.value;
  if(texte.substr(global_editeur_derniere_valeur_selecStart-1,1)=='('){
-  var arr=functionToArray(texte,false);
+  var arr=functionToArray(texte,false,false);
   for(var i=0;i<arr.value.length;i++){
    if(global_editeur_derniere_valeur_selecStart-1==arr.value[i][11]){
     zoneSource.select();

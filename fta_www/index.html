@@ -24,11 +24,12 @@
   <ul class="menu2">
     <li><a href="javascript:chargerSourceDeTest()">source de test</a></li>
   </ul>
-  <textarea class="txtar1" id="txtar1" rows="4"></textarea>
-  <a href="javascript:transform()">transform</a>
+  <textarea class="txtar1" id="txtar1" rows="10"></textarea>
+  <a href="javascript:transformLeRev()">transform</a>
   <div id="message1"></div>
   <div id="resultat1"></div>
   <script type="text/javascript" src="js/core5.js"></script>
+
 <script type="text/javascript">
 //=====================================================================================================================
 function chargerSourceDeTest(){
@@ -72,7 +73,7 @@ blu),
  dogid('txtar1').value=t;
 }
 //=====================================================================================================================
-function chargerLeDernierSource(){
+function chargerLeDernierSourceRev(){
  var fta_indexhtml_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_dernier_fichier_charge");
 // console.log('fta_indexhtml_dernier_fichier_charge=' , fta_indexhtml_dernier_fichier_charge );
  if(fta_indexhtml_dernier_fichier_charge!==null){
@@ -82,7 +83,7 @@ function chargerLeDernierSource(){
 //=====================================================================================================================
 
 
-function transform(){
+function transformLeRev(){
   //"àà"
   clearMessages();
   console.log('\n=========================\ndébut de transforme')
@@ -191,7 +192,7 @@ function transform(){
  
 }
 
-chargerLeDernierSource();
+chargerLeDernierSourceRev();
 //transform();
 </script>
   

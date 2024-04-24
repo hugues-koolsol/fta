@@ -118,21 +118,18 @@ function php_traite_Stmt_Switch(element,niveau){
  var tabSw=[];
  
  if(element.cond){
-  if(element.cond.nodeType==="Expr_Variable"){
-   leTest='$'+element.cond.name;
-  }else if(element.cond.nodeType==="Expr_ArrayDimFetch"){
-   
-   var obj=php_traite_Expr_ArrayDimFetch(element.cond,niveau,0);
-   if(obj.status===true){
-    leTest=obj.value;
-   }else{
-    leTest='#(todo erreur dans php_traite_Stmt_Switch 0450)';
-   }   
+  
+  var obj=php_traite_Stmt_Expression(element.cond,niveau);
+  if(obj.status===true){
+   leTest=obj.value;
   }else{
-   leTest='#(erreur php_traite_Stmt_Switch 0193)';
+   t+='#(todo dans php_traite_Stmt_Switch 0126 )';
   }
+
  }else{
-  leTest='#(erreur php_traite_Stmt_Switch 0196)';
+  
+  leTest='#(erreur php_traite_Stmt_Switch 0131 )';
+  
  }
  
  if(element.cases){
@@ -141,13 +138,16 @@ function php_traite_Stmt_Switch(element,niveau){
     var leSw=element.cases[i];
     var laCondition='';
     if(leSw.cond){
-     if(leSw.cond.nodeType==="Expr_ConstFetch"){
-      laCondition=leSw.cond.name.name;
+     
+     var obj=php_traite_Stmt_Expression(leSw.cond,niveau);
+     if(obj.status===true){
+      laCondition=obj.value;
      }else{
-      laCondition='#(todo php_traite_Stmt_Switch 205)';
+      t+='#(todo dans php_traite_Stmt_Switch 0146 )';
      }
+     
     }else{
-     laCondition='#(erreur php_traite_Stmt_Switch 211)';
+     laCondition=null;
     }
     var lesInstructions='';
     if(leSw.stmts){
@@ -174,7 +174,11 @@ function php_traite_Stmt_Switch(element,niveau){
  t+='\n'+esp0+esp1+'quand('+leTest+')';
  for(var i=0;i<tabSw.length;i++){
   t+=',\n'+esp0+esp1+'est(';
-  t+= '\n'+esp0+esp1+esp1+'valeur('+tabSw[i][0]+')';
+  if(tabSw[i][0]===null){
+   t+= '\n'+esp0+esp1+esp1+'valeurNonPrevue()';
+  }else{
+   t+= '\n'+esp0+esp1+esp1+'valeur('+tabSw[i][0]+')';
+  }
   t+=',\n'+esp0+esp1+esp1+'faire(\n'+tabSw[i][1]
   t+= '\n'+esp0+esp1+esp1+')';
   t+= '\n'+esp0+esp1+')';
@@ -630,7 +634,17 @@ function php_traite_Expr_MethodCall(element , niveau){
 /*
 =====================================================================================================================
 */
-function php_traite_Expr_AssignOp_Concat(element , niveau){
+function php_traite_Expr_AssignOp_General(element , niveau , nodeType ){
+ 
+ var operation = '';
+ if("Expr_AssignOp_Concat"===nodeType){
+  operation = 'concat';
+ }else if("Expr_AssignOp_Plus"===nodeType){
+  operation = 'plus';
+ }else{
+  operation='todoOperationNodeType'+nodeType;
+ }
+
  var t='';
 
  var gauche=''; 
@@ -656,37 +670,28 @@ function php_traite_Expr_AssignOp_Concat(element , niveau){
  }else{
   droite+='#(todo erreur dans php_traite_Expr_AssignOp_Concat 0636)';
  }
- t+='affecte('+gauche+' , concat( '+gauche+' , '+droite+' ))';
+ t+='affecte('+gauche+' , '+operation+'( '+gauche+' , '+droite+' ))';
 
- if(droite.substr(0,7)==='concat('){
+ if(droite.substr(0,operation.length+1)===operation+'('){
   var o1 = functionToArray2(droite,false,true);
   if(o1.status === true){
-//      console.log('%c simplifier les concat concat o1=','background:pink;',t,o1.value);
-      var o2 = functionToArray2(gauche,false,true);
-      if(o2.status === true){
-//       console.log('%c simplifier les concat concat o2=','background:pink;',t,o2.value);
-       for(var i=o2.value.length-1;i>=1;i--){
-        o1.value.splice(2,0,o2.value[i]);
-        o1.value[2][3]=o1.value[2][3]+1;
-        o1.value[2][0]=o1.value[2][0]+1;
-       }
-       for(var i=1+o2.value.length;i<o1.value.length;i++){
-        o1.value[i][0]=o1.value[i][0]+o2.value.length-1;
-       }
-       var nouveauTableau=reIndicerLeTableau(o1.value);
-//       console.log('%c simplifier les concat concat nouveauTableau=','background:green;',nouveauTableau);
-       var obj = a2F1(nouveauTableau,0,false,1,false);
-       if(obj.status === true){
-//           console.log('apres simplification obj.value=',obj.value);
-           t='affecte('+gauche+' , '+obj.value+' )';
-       }
-     
-       
-      
-      }  
+   var o2 = functionToArray2(gauche,false,true);
+   if(o2.status === true){
+    for(var i=o2.value.length-1;i>=1;i--){
+     o1.value.splice(2,0,o2.value[i]);
+     o1.value[2][3]=o1.value[2][3]+1;
+     o1.value[2][0]=o1.value[2][0]+1;
+    }
+    for(var i=1+o2.value.length;i<o1.value.length;i++){
+     o1.value[i][0]=o1.value[i][0]+o2.value.length-1;
+    }
+    var nouveauTableau=reIndicerLeTableau(o1.value);
+    var obj = a2F1(nouveauTableau,0,false,1,false);
+    if(obj.status === true){
+     t='affecte('+gauche+' , '+obj.value+' )';
+    }
+   }  
   }
-
-
  }
  
  
@@ -707,20 +712,14 @@ function php_traite_Expr_Assign(element,niveau){
  var gauche=''; 
  var droite=''; 
  if(element.var){
-  if(element.var.nodeType==="Expr_Variable"){
-    gauche='$'+element.var.name;
-  }else if(element.var.nodeType==="Expr_ArrayDimFetch"){
-   var obj=php_traite_Expr_ArrayDimFetch(element.var,niveau,0);
-   if(obj.status===true){
-    gauche+=obj.value;
-   }else{
-    gauche+='#(todo erreur dans php_traite_Expr_Assign 0450)';
-   }   
+  var obj=php_traite_Stmt_Expression( element.var , niveau);
+  if(obj.status===true){
+   gauche=obj.value;
   }else{
-   gauche='#(todo dans php_traite_Stmt_Expression 0567 '+element.var.nodeType+')';
+   gauche='#(todo erreur dans php_traite_Expr_Assign 0715 pas de expr '+element.var.nodeType+')';
   }
  }else{
-  gauche='#(todo dans php_traite_Stmt_Expression 0167 pas de variable '+element.nodeType+')';
+  gauche='#(todo dans php_traite_Expr_Assign 0718 pas de variable '+element.nodeType+')';
  }
 
  if(element.expr){
@@ -728,10 +727,10 @@ function php_traite_Expr_Assign(element,niveau){
   if(obj.status===true){
    droite=obj.value;
   }else{
-   droite='#(todo erreur dans php_traite_Stmt_Expression 0227 pas de expr '+element.nodeType+')';
+   droite='#(todo erreur dans php_traite_Expr_Assign 0726 pas de expr '+element.nodeType+')';
   }
  }else{
-  droite='#(todo dans php_traite_Stmt_Expression 0230 pas de expr '+element.nodeType+')';
+  droite='#(todo dans php_traite_Expr_Assign 0729 pas de expr '+element.nodeType+')';
  }
  t+='affecte('+gauche+' , '+droite+')';
   
@@ -767,14 +766,12 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
  }
  
  if(element.dim){
-  if("Scalar_String" === element.dim.nodeType){
-   t+=',p(\''+element.dim.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
-  }else if("Expr_Variable" === element.dim.nodeType){
-   t+=',p($'+element.dim.name+')';
-  }else if("Expr_ConstFetch" === element.dim.nodeType){
-   t+=',p('+element.dim.name.name+')';
+  
+  var obj=php_traite_Stmt_Expression( element.dim , niveau);
+  if(obj.status===true){
+   t+=',p('+obj.value+')';
   }else{
-   t+=',p(#(todo erreur dans php_traite_Expr_ArrayDimFetch 0554 '+element.dim.nodeType+'))';
+   t+='#(todo erreur dans php_traite_Expr_ArrayDimFetch 0775 )';
   }
  }else{
   t+=',p()';
@@ -787,6 +784,97 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
 
  return {'status':true,'value':t};
 }
+
+/*
+=====================================================================================================================
+*/
+function php_traite_Expr_List(element,niveau){
+ console.log('%c entrée dans php_traite_Stmt_Expression element=','background:yellow;',element.type,element);
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ 
+ var lesElements='';
+ if(element.items){
+  for(var i=0;i<element.items.length;i++){
+   if(null===element.items[i]){
+    lesElements+='p()';
+   }else if("ArrayItem"===element.items[i].nodeType){
+    var cle='';
+    if(element.items[i].value){
+     var objValeur=php_traite_Stmt_Expression(element.items[i].value,niveau);
+     if(objValeur.status===true){
+      if(lesElements!==''){
+       lesElements+=' , ';
+      }
+      lesElements+='p('+objValeur.value+')';
+     }else{
+      lesElements='#(TODO ERREUR dans php_traite_Expr_List 0806)';
+     }
+     
+    }
+   }else{
+    lesElements+='#(todo dans php_traite_Expr_List 0811 '+element.items[i].nodeType+')'
+   }
+  }
+ }
+ t+='liste('+lesElements+')';
+ 
+ 
+
+ return {'status':true,'value':t};
+
+}
+//=====================================================================================================================
+function php_traite_Expr_Array(element , niveau){
+ console.log('%c entrée dans php_traite_Expr_Array 0843 element=','background:yellow;',element);
+ var t='';
+ 
+ var lesElements='';
+ if(element.items){
+  for(var i=0;i<element.items.length;i++){
+   if("ArrayItem"===element.items[i].nodeType){
+    var cle='';
+    if(element.items[i].key){
+     
+     var objcle=php_traite_Stmt_Expression(element.items[i].key,niveau);
+     if(objcle.status===true){
+      cle=objcle.value;
+     }else{
+      cle='#(TODO ERREUR dans php_traite_Expr_Array 0859)';
+     }
+     
+     
+    }
+    if(element.items[i].value){
+     var objValeur=php_traite_Stmt_Expression(element.items[i].value,niveau);
+     if(objValeur.status===true){
+      if(lesElements!==''){
+       lesElements+=' , ';
+      }
+      if(cle!=''){
+       lesElements+='('+cle+' , '+objValeur.value+')';
+      }else{
+       lesElements+='('+objValeur.value+')';
+      }
+      cle=objValeur.value;
+     }else{
+      cle='#(TODO ERREUR dans php_traite_Expr_Array 869)';
+     }
+     
+    }
+   }else{
+    lesElements+='#(todo dans php_traite_Expr_Array 0852 '+element.items[i].nodeType+')'
+   }
+  }
+ }
+ t+='defTab('+lesElements+')';
+
+
+ 
+ return {'status':true,'value':t}; 
+}
+
 /*
 =====================================================================================================================
 =====================================================================================================================
@@ -815,8 +903,15 @@ function php_traite_Stmt_Expression(element,niveau){
 
  /*===============================================*/
  }else if("Scalar_String"===element.nodeType){
-
-  t+="'"+element.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+"'"; // .replace(/\r/g,'\\r').replace(/\n/g,'\\n')
+  if(element.value==="\r"){
+   t+='"\\r"';
+  }else if(element.value==="\n"){
+   t+='"\\n"';
+  }else if(element.value==="\r\n"){
+   t+='"\\r\\n"';
+  }else{
+   t+="'"+element.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+"'"; // .replace(/\r/g,'\\r').replace(/\n/g,'\\n')
+  }
 
  /*===============================================*/
  }else if("Expr_ArrayDimFetch"===element.nodeType){
@@ -837,10 +932,6 @@ function php_traite_Stmt_Expression(element,niveau){
   }else{
    t+='#(todo erreur dans php_traite_Stmt_Expression 0331 )';
   }
-
-  
-  
-
 
  /*===============================================*/
  }else if("Scalar_MagicConst_File"===element.nodeType){
@@ -959,6 +1050,16 @@ function php_traite_Stmt_Expression(element,niveau){
    t+='#(todo erreur dans php_traite_Stmt_Switch 0824)';
   }   
    
+ /*===============================================*/
+ }else if("Expr_List"===element.nodeType){
+
+  var obj=php_traite_Expr_List( element , niveau,0);
+  if(obj.status===true){
+   t+=obj.value;
+  }else{
+   t+='#(todo erreur dans php_traite_Stmt_Expression 0492 )';
+  }
+  
   
   
  /*===============================================*/
@@ -996,15 +1097,28 @@ function php_traite_Stmt_Expression(element,niveau){
   }else{
    t+='#(todo dans php_traite_Stmt_Expression 842 '+element.nodeType+')';
   }
-
-   
   
   
  /*===============================================*/
    
- }else if(element.nodeType==="Expr_AssignOp_Concat"){
+ }else if(element.nodeType==="Expr_ErrorSuppress"){
   
-  var obj=php_traite_Expr_AssignOp_Concat(element,niveau);
+  if(element.expr){
+   var obj=php_traite_Stmt_Expression( element.expr , niveau);
+   if(obj.status===true){
+    t+='supprimeErreur('+obj.value+')';
+   }else{
+    t+='#(todo erreur dans php_traite_Stmt_Expression 1009 )';
+   }
+  }else{
+   t+='#(erreur php_traite_Stmt_Expression 1012)';
+  }
+  
+  
+ /*===============================================*/
+   
+ }else if(element.nodeType.substr(0,14)==="Expr_AssignOp_"){
+  var obj=php_traite_Expr_AssignOp_General(element,niveau,element.nodeType);
   if(obj.status===true){
    t+=obj.value;
   }else{
@@ -1019,7 +1133,7 @@ function php_traite_Stmt_Expression(element,niveau){
   if(obj.status===true){
    t+='\n'+esp0+obj.value;
   }else{
-   t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_print "'+stmts[i].nodeType+'")';
+   t+='\n'+esp0+'#(TODO dans php_traite_Stmt_Expression ERREUR php_traite_print "'+stmts[i].nodeType+'")';
   }
    
   
@@ -1031,11 +1145,35 @@ function php_traite_Stmt_Expression(element,niveau){
   if(obj.status===true){
    t+='\n'+esp0+obj.value;
   }else{
-   t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR php_traite_Expr_New "'+stmts[i].nodeType+'")';
+   t+='\n'+esp0+'#(TODO dans php_traite_Stmt_Expression ERREUR php_traite_Expr_New "'+stmts[i].nodeType+'")';
   }
    
   
-  
+ /*===============================================*/
+
+ }else if("Expr_PostInc"===element.nodeType){
+  if(element.var && element.var.nodeType==="Expr_Variable"){
+   t+='\n'+esp0+'affecte($'+element.var.name+' , plus($'+element.var.name+' , 1))';
+  }else{
+   var obj=php_traite_Stmt_Expression( element.var , niveau);
+   if(obj.status===true){
+    t+='\n'+esp0+'affecte('+obj.value+' , plus('+obj.value+' , 1))';
+   }else{
+    t+='\n'+esp0+'#(TODO dans php_traite_Stmt_Expression ERREUR php_traite_Stmt_Expression 1068 "'+element.nodeType+'")';
+   }
+  }
+
+ }else if("Expr_Cast_Double"===element.nodeType){
+  if(element.expr){
+   var obj=php_traite_Stmt_Expression( element.expr , niveau);
+   if(obj.status===true){
+    t+='castfloat('+obj.value+')';
+   }else{
+    t+='\n'+esp0+'#(TODO dans php_traite_Stmt_Expression ERREUR  1168 "'+element.nodeType+'")';
+   }
+  }else{
+    t+='\n'+esp0+'#(TODO dans php_traite_Stmt_Expression ERREUR 1165 "'+element.nodeType+'")';
+  }
   
 
  /*===============================================*/
@@ -1043,7 +1181,7 @@ function php_traite_Stmt_Expression(element,niveau){
  }else{
   
   console.log('%c 0845 non traité','background:red;color:yellow;',element)
-  t+='#(todo dans php_traite_Stmt_Expression 701 '+element.nodeType+')';
+  t+='#(todo dans php_traite_Stmt_Expression 1044 '+element.nodeType+')';
   
   
   
@@ -1052,55 +1190,6 @@ function php_traite_Stmt_Expression(element,niveau){
  return {'status':true,'value':t,'nodeType':element.nodeType};
 }
 
-//=====================================================================================================================
-function php_traite_Expr_Array(element , niveau){
- console.log('%c entrée dans php_traite_Expr_Array 0843 element=','background:yellow;',element);
- var t='';
- 
- var lesElements='';
- if(element.items){
-  for(var i=0;i<element.items.length;i++){
-   if("ArrayItem"===element.items[i].nodeType){
-    var cle='';
-    if(element.items[i].key){
-     
-     var objcle=php_traite_Stmt_Expression(element.items[i].key,niveau);
-     if(objcle.status===true){
-      cle=objcle.value;
-     }else{
-      cle='#(TODO ERREUR dans php_traite_Expr_Array 0859)';
-     }
-     
-     
-    }
-    if(element.items[i].value){
-     var objValeur=php_traite_Stmt_Expression(element.items[i].value,niveau);
-     if(objValeur.status===true){
-      if(lesElements!==''){
-       lesElements+=' , ';
-      }
-      if(cle!=''){
-       lesElements+='('+cle+' , '+objValeur.value+')';
-      }else{
-       lesElements+='('+objValeur.value+')';
-      }
-      cle=objValeur.value;
-     }else{
-      cle='#(TODO ERREUR dans php_traite_Expr_Array 869)';
-     }
-     
-    }
-   }else{
-    lesElements+='#(todo dans php_traite_Expr_Array 0852 '+element.items[i].nodeType+')'
-   }
-  }
- }
- t+='defTab('+lesElements+')';
-
-
- 
- return {'status':true,'value':t}; 
-}
 //=====================================================================================================================
 function php_traite_Expr_Ternary(element , niveau){
  var t=''
@@ -1221,10 +1310,31 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
  }else if(element.nodeType==='Expr_BinaryOp_Coalesce'){
   
   t+='??('+gauche+' , '+droite+')';
+
+ }else if(element.nodeType==='Expr_BinaryOp_Mul'){
+  
+  t+='mult('+gauche+' , '+droite+')';
+
+ }else if(element.nodeType==='Expr_BinaryOp_Plus'){
+  
+  t+='plus('+gauche+' , '+droite+')';
+
+ }else if(element.nodeType==='Expr_BinaryOp_Minus'){
+  
+  t+='moins('+gauche+' , '+droite+')';
+
+ }else if(element.nodeType==='Expr_BinaryOp_Smaller'){
+  
+  t+='inf('+gauche+' , '+droite+')';
+
+ }else if(element.nodeType==='Expr_BinaryOp_GreaterOrEqual'){
+  
+  t+='supeg('+gauche+' , '+droite+')';
+
   
  }else{
   
-  t+='#(Traitement non prévu '+element.nodeType+' 0844 '+gauche+' , '+droite+')';
+  t+='#(Traitement non prévu '+element.nodeType+' 1236 '+gauche+' , '+droite+')';
   
  }
  
@@ -1611,206 +1721,15 @@ function TransformAstPhpEnRev(stmts,niveau){
     
    }else if("Stmt_InlineHTML"===stmts[i].nodeType){
 
-     /*
-     ===========================================================================
-     */
-     function isHTML(str) {
-      var i=0;
-      var j=0;
-      var c0='';
-      var cp1='';
-      var cm1='';
-      var dansTag=false;
-      var dansInner=true;
-      var dansNomPropriete=false;
-      var dansValeurPropriete=false;
-      var dansNomTag=false;
-      var caractereDebutProp='';
-      var nomTag='';
-      var dansBaliseFermante=false;
-      var tabTags=[];
-      
-      var l01=str.length;
-      var niveau=0;
-      for(var i=0;i<l01;i++){
-       c0=str.substr(i,1);
-       if(i<l01-1){
-        cp1=str.substr(i+1,1);
-       }else{
-        cp1='';
-       }
-       if(i>0 && l01>0){
-        cm1=str.substr(i-1,1);
-       }else{
-        cm1='';
-       }
-       if(dansTag){
-        
-        if(dansNomPropriete){
-          if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
-           return false;
-          }else if(c0==='='){
-           if(cp1==="'" || cp1=='"'){
-            dansValeurPropriete=true;
-            dansNomPropriete=false;
-            caractereDebutProp=cp1;
-            i++;
-           }else{
-            return false;
-           }
-           
-          }else{
-           // on continue
-          }
-        }else if(dansValeurPropriete){
-         if(c0===caractereDebutProp){
-          if(cm1==='\\'){
-          // on continue
-          }else{
-           dansValeurPropriete=false;
-          }
-         }else{
-          // on continue
-         }
-         
-        }else if(dansNomTag){
-         
-         if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
-          tabTags.push(nomTag);
-          dansNomTag=false;
-         }else if(c0==='>'){
-          if(dansBaliseFermante){ // </a>
-           dansNomTag=false
-           dansInner=true;
-           dansTag=false;
-           tabTags.pop();
-           nomTag='';
-           dansBaliseFermante=false;
-           niveau--;
-          }else{
-           // <b>
-           dansNomTag=false
-           dansInner=true;
-           dansTag=false;
-           tabTags.pop();
-           nomTag='';
-           
-          }
 
-         }else if(c0==='=' || c0==='"' || c0==='\''){
-          return false;
-         }else{
-          nomTag+=c0;
-         }
-        }else{
-         
-         if(nomTag===''){
-          
-          if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
-           return false;
-           
-          }else{
-           dansNomTag=true;
-           nomTag+=c0;
-          }
-          
-         }else{
-          /* 
-            le tag a été fait, maintenant, c'est les propriétés 
-            ou la fin des propriétés ou un / pour une balise auto fermante ( <br /> )
-          */
-          if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
-           // on continue
-          }else if(c0==='/'){
-           if(cp1==='>'){
-            // balise auto fermante
-            nomTag='';
-            tabTags.pop();
-            niveau--
-            dansTag=false;
-            dansInner=true;
-            i++;
-           }
-          }else if(c0==='>'){
-           if(nomTag===''){
-            return false;
-           }
-           dansTag=false;
-           dansInner=true;
-           tabTags.pop();
-           nomTag='';
-          }else{
-           if(c0==='=' || c0==='"' || c0==='\''){
-            return false;
-           }else{
-            dansNomPropriete=true;
-           }
-          }
-         }
-        }
-        
-       }else if(dansInner){
-        if(c0==='<'){
-         if(cp1==='/'){ // fin de tag </a>
-          dansBaliseFermante=true;
-          i++;
-         }else{
-          niveau+=1;
-         }
-         dansInner=false;
-         dansTag=true;
-        }else if(c0==='>'){
-         if(niveau===0){
-          return false;
-         }
-        }else{
-         // caractere suivant
-        }
-        
-       }else{
-        if(c0==='<'){
-        }else if(c0==='>'){
-         debugger // on ne devrait pas passer par ici
-         niveau-=1;
-         if(niveau<0){
-          return false;
-         }
-        }
-       }
-       
-      }
-      if(tabTags.length>0){
-       return false;
-      }
-      if(dansTag){
-       return false;
-      }
-      return true;
-/*
-       liste des essais foireux trouvés sur stackoverflow      
-       try {
-           const fragment = new DOMParser().parseFromString(str,"application/xml");
-           return fragment.body.children.length>0
-         } catch(error) { ; }  
-         return false;
-  
-       return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(str);
-       var a = document.createElement('div');
-       a.innerHTML = str;
-
-       for (var c = a.childNodes, i = c.length; i--; ) {
-         if (c[i].nodeType == 1) return true; 
-       }
-
-       return false;
-*/       
-     }
 
      /*
      ===========================================================================
      */
      var estTraiteSansErreur=false;
-     if(isHTML(stmts[i].value)){
+     var obj=isHTML(stmts[i].value);
+//     console.log('obj=',obj , stmts[i].value );
+     if(obj.status===true){
       var obj1=TransformHtmlEnRev(stmts[i].value);
       if(obj1.status===true){
         StmtsHtmlPrecedentEstEcho=false;
@@ -1822,54 +1741,153 @@ function TransformAstPhpEnRev(stmts,niveau){
       
       numeroLigneCourantStmtHtmlStartLine = stmts[i].attributes.startLine;
       numeroLigneCourantStmtHtmlEndLine   = stmts[i].attributes.endLine;
-      var fragmentsHtml=stmts[i].value.split('\n');
-      for( var j=0;j<fragmentsHtml.length;j++){
-       if(isHTML(fragmentsHtml[j])){
-        
-        var obj1=TransformHtmlEnRev(fragmentsHtml[j]);
-        if(obj1.status===true){
-         if(obj1.value===''){
-          /*
-          si on est ici, c'est que c'est un fragment html qui contient du php
-          par exemple dans  "<a href="<?php echo $c;?>">b</a>",
-          on stmts[i].value contient <a href="
-          on fait donc un echo
-          
-          */
-          if(fragmentsHtml[j]!==''){
-           StmtsHtmlPrecedentEstEcho=true;
-           t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+      if(stmts[i].value.toLowerCase().indexOf('<script')<0 ){
+       /*
+         ================================================================================
+         C'est un html incomplet qui ne contient pas de script, on le transforme en echo
+         ================================================================================
+       */
+       
+       if( ( numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlStartLine || numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlEndLine )&& StmtsHtmlPrecedentEstEcho===true){
+        // todo, vérifier que la ligne précédente n'est pas trop longue avant de la concaténer
+        t=t.substr(0,t.length-2)+',p(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+       }else{
+        t+='\n'+esp0+'appelf(nomf(echo),p(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+       }
+//       t+='\n'+esp0+'appelf(nomf(echo),p(\''+stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+       StmtsHtmlPrecedentEstEcho=true;
+       numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
+       numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;      
+       
+      }else{
+       
+       /*
+       ===========================================================================
+       cas ou le html contenu contient des scripts
+       ===========================================================================
+       
+       */
+       
+       var obj1=mapDOM(stmts[i].value);
+       if(obj1 && obj1.type==='HTML'){
+        if( obj1.content && obj1.content.length>=0){
+         for(var j=0;j<obj1.content.length;j++){
+          console.log(obj1.content[j].type);
+          if(obj1.content[j].type==='BODY' || obj1.content[j].type==='HEAD' ){
+           if(obj1.content[j].content && obj1.content[j].content.length>0){
+            for(var k=0;k<obj1.content[j].content.length;k++){
+             if(obj1.content[j].content[k].type){
+              var lesProprietes='';
+              if(obj1.content[j].content[k].attributes){
+               for(var attr in obj1.content[j].content[k].attributes){
+                if(lesProprietes!==''){
+                 lesProprietes+=',';
+                }
+                lesProprietes+='(\''+attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\' , \''+obj1.content[j].content[k].attributes[attr].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')'
+               }
+              }
+              
+              
+              if(obj1.content[j].content[k].type==='SCRIPT'){
+//                console.log('source=',obj1.content[j].content[k].content[0]);
+                if(obj1.content[j].content[k].content){
+
+                 var objScr=transformJsEnRev(obj1.content[j].content[k].content[0]);
+                 if(objScr.status===true){
+                  if(objScr.value===''){
+                   t+='\n'+esp0+'html(script('+lesProprietes+'))';
+                  }else{
+                   t+='\n'+esp0+'html(script('+lesProprietes+',source('+objScr.value+')))';
+                  }
+ //                 console.log('un script OK ="'+ objScr.value + '"' )
+                  
+                 }else{
+ //                 console.log('un script KO')
+                 }
+
+
+                }else{
+                   t+='\n'+esp0+'html(script('+lesProprietes+'))';
+
+
+                }
+              }else{
+               
+               var obj=traiteJsonDeHtml(obj1.content[j].content[k],0,true,'');
+               if(obj.status===true){
+                //t=obj.value;
+                console.log(obj.value)
+                t+='\n'+esp0+'html('+obj.value+')';
+               }else{
+                t+='\n'+esp0+'#(erreur 1679 dans convertit-php-en-rev)';
+               }
+               
+              } 
+             }
+            }
+           }
+          }else{
+            t+='\n'+esp0+'#(cas non traité convertit-php-en-rev 1669)';
+          }
+         }
+        }
+       }
+       /*
+       console.log('obj1=',obj1)
+       
+       var fragmentsHtml=stmts[i].value.split('\n');
+       for( var j=0;j<fragmentsHtml.length;j++){
+        var obj=isHTML(fragmentsHtml[j]);
+        if(obj.status===true){
+         
+         var obj1=TransformHtmlEnRev(fragmentsHtml[j]);
+         if(obj1.status===true){
+          if(obj1.value===''){
+           //
+           // si on est ici, c'est que c'est un fragment html qui contient du php
+           // par exemple dans  "<a href="<?php echo $c;?>">b</a>",
+           // on stmts[i].value contient <a href="
+           //  on fait donc un echo
+           //
+           
+           if(fragmentsHtml[j]!==''){
+            StmtsHtmlPrecedentEstEcho=true;
+            t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+           }
+          }else{
+           StmtsHtmlPrecedentEstEcho=false;
+           t+='\n'+esp0+'html('+obj1.value+')';
           }
          }else{
           StmtsHtmlPrecedentEstEcho=false;
-          t+='\n'+esp0+'html('+obj1.value+')';
+          t+='\n'+esp0+'html(#(erreur convertit-php-en-rev0 dans la conversion html 1618 ))';
          }
+         
+         
         }else{
-         StmtsHtmlPrecedentEstEcho=false;
-         t+='\n'+esp0+'html(#(erreur convertit-php-en-rev0 dans la conversion html 1618 ))';
-        }
-        
-        
-       }else{
-         if(fragmentsHtml[j]!==''){
-          if( ( numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlStartLine || numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlEndLine )&& StmtsHtmlPrecedentEstEcho===true){
-           console.log('optimiserIci t=',t);
-           /*
-           t finit par appelf(nomf(echo),p($d)),"
-           */
-           t=t.substr(0,t.length-2)+',p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
- //          t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
-          }else{
-           t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+         
+          if(fragmentsHtml[j]!==''){
+           if( ( numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlStartLine || numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlEndLine )&& StmtsHtmlPrecedentEstEcho===true){
+//            console.log('optimiserIci t=',t);
+            //            t finit par appelf(nomf(echo),p($d)),"
+            
+            t=t.substr(0,t.length-2)+',p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+  //          t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+           }else{
+            t+='\n'+esp0+'appelf(nomf(echo),p(\''+fragmentsHtml[j].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
+           }
            StmtsHtmlPrecedentEstEcho=true;
+           numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
+           numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;
           }
-          numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
-          numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;
-         }
+        }
        }
+       numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
+       numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;      
+       */
+       
+       
       }
-      numeroLignePrecedentStmtHtmlStartLine = numeroLigneCourantStmtHtmlStartLine;
-      numeroLignePrecedentStmtHtmlEndLine   = numeroLigneCourantStmtHtmlEndLine;      
       
      }
 
@@ -1937,6 +1955,293 @@ function TransformAstPhpEnRev(stmts,niveau){
  }
  return {'status':true,'value':t};
 }
+
+/*
+===========================================================================
+*/
+function isHTML(str) {
+ var i=0;
+ var j=0;
+ var c0='';
+ var cp1='';
+ var cm1='';
+ var dansTag=false;
+ var dansInner=true;
+ var dansNomPropriete=false;
+ var dansValeurPropriete=false;
+ var dansNomTag=false;
+ var caractereDebutProp='';
+ var nomTag='';
+ var dansBaliseFermante=false;
+ var tabTags=[];
+ var presDe='';
+ var dansCdata=false;
+ 
+ var l01=str.length;
+ var niveau=0;
+ for(var i=0;i<l01;i++){
+  c0=str.substr(i,1);
+  if(i<l01-1){
+   cp1=str.substr(i+1,1);
+  }else{
+   cp1='';
+  }
+  if(i>0 && l01>0){
+   cm1=str.substr(i-1,1);
+  }else{
+   cm1='';
+  }
+  if(dansTag){
+   
+   if(dansNomPropriete){
+     if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+      if(i > 50){
+        presDe = str.substr(i-50,i+10);
+      }else{
+        presDe = str.substr(0,i+10);
+      }
+      return({status:false,id:i,message:'Erreur 1785 pres de "'+presDe+'"'});
+     }else if(c0==='='){
+      if(cp1==="'" || cp1=='"'){
+       dansValeurPropriete=true;
+       dansNomPropriete=false;
+       caractereDebutProp=cp1;
+       i++;
+      }else{
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1804 pres de "'+presDe+'"'});
+      }
+      
+     }else{
+      // on continue
+     }
+   }else if(dansValeurPropriete){
+    if(c0===caractereDebutProp){
+     if(cm1==='\\'){
+     // on continue
+     }else{
+      dansValeurPropriete=false;
+     }
+    }else{
+     // on continue
+    }
+    
+   }else if(dansNomTag){
+    
+    if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+     tabTags.push(nomTag);
+     dansNomTag=false;
+    }else if(c0==='>'){
+     if(dansBaliseFermante){ // </a>
+      dansNomTag=false
+      dansInner=true;
+      dansTag=false;
+      //tabTags.pop();
+      nomTag='';
+      dansBaliseFermante=false;
+      niveau--;
+     }else{
+      // <b>
+      if(nomTag===''){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1852 pres de "'+presDe+'"'});
+      }
+      tabTags.push(nomTag);
+      dansNomTag=false
+      dansInner=true;
+      dansTag=false;
+      nomTag='';
+      
+     }
+
+    }else if(c0==='=' || c0==='"' || c0==='\''){
+     if(i > 50){
+       presDe = str.substr(i-50,i+10);
+     }else{
+       presDe = str.substr(0,i+10);
+     }
+     return({status:false,id:i,message:'Erreur 1804 pres de "'+presDe+'"'});
+    }else{
+     nomTag+=c0;
+     if(nomTag==='![C'+'DATA['){
+      dansCdata=true;
+     }
+    }
+    
+    
+   }else{
+    
+    if(nomTag===''){
+     
+     if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1865 pres de "'+presDe+'"'});
+      
+     }else{
+      dansNomTag=true;
+      nomTag+=c0;
+     }
+     
+    }else{
+     /* 
+       le tag a été fait, maintenant, c'est les propriétés 
+       ou la fin des propriétés ou un / pour une balise auto fermante ( <br /> )
+     */
+     if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
+      // on continue
+     }else if(c0==='/'){
+      if(cp1==='>'){
+       // balise auto fermante
+       nomTag='';
+       if(tabTags.length===0){
+        if(i > 50){
+          presDe = str.substr(i-50,i+10);
+        }else{
+          presDe = str.substr(0,i+10);
+        }
+        return({status:false,id:i,message:'Erreur 1902 pres de "'+presDe+'"'});
+       }
+       tabTags.pop();
+       niveau--
+       dansTag=false;
+       dansInner=true;
+       i++;
+      }
+     }else if(c0==='>'){
+      if(nomTag===''){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1896 pres de "'+presDe+'"'});
+      
+      }
+      dansTag=false;
+      dansInner=true;
+      if(tabTags.length===0){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1929 pres de "'+presDe+'"'});
+      }
+      tabTags.pop();
+      nomTag='';
+     }else{
+      if(c0==='=' || c0==='"' || c0==='\''){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1910 pres de "'+presDe+'"'});
+      }else{
+       dansNomPropriete=true;
+      }
+     }
+    }
+   }
+   
+  }else if(dansInner){
+   if(c0==='<'){
+    if(cp1==='/'){ // fin de tag </a>
+     if(tabTags.length===0){
+      if(i > 50){
+        presDe = str.substr(i-50,i+10);
+      }else{
+        presDe = str.substr(0,i+10);
+      }
+      return({status:false,id:i,message:'Erreur 1982 pres de "'+presDe+'"'});
+     }
+    
+     dansBaliseFermante=true;
+     i++;
+    }else{
+     niveau+=1;
+    }
+    dansInner=false;
+    dansTag=true;
+   }else if(c0==='>'){
+    if(niveau===0){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1935 pres de "'+presDe+'"'});
+    }
+   }else{
+    // caractere suivant
+   }
+   
+  }else{
+   if(c0==='<'){
+   }else if(c0==='>'){
+    debugger // on ne devrait pas passer par ici
+    niveau-=1;
+    if(niveau<0){
+       if(i > 50){
+         presDe = str.substr(i-50,i+10);
+       }else{
+         presDe = str.substr(0,i+10);
+       }
+       return({status:false,id:i,message:'Erreur 1952 pres de "'+presDe+'"'});
+    }
+   }
+  }
+  
+ }
+ if(tabTags.length>0){
+  if(i > 50){
+    presDe = str.substr(i-50,i+10);
+  }else{
+    presDe = str.substr(0,i+10);
+  }
+  return({status:false,id:i,message:'Erreur 1964 pres de "'+presDe+'"'});
+ }
+ if(dansTag){
+  if(i > 50){
+    presDe = str.substr(i-50,i+10);
+  }else{
+    presDe = str.substr(0,i+10);
+  }
+  return({status:false,id:i,message:'Erreur 1972 pres de "'+presDe+'"'});
+ }
+ return({status:true});
+/*
+  liste des essais foireux trouvés sur stackoverflow      
+  try {
+      const fragment = new DOMParser().parseFromString(str,"application/xml");
+      return fragment.body.children.length>0
+    } catch(error) { ; }  
+    return false;
+
+  return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(str);
+  var a = document.createElement('div');
+  a.innerHTML = str;
+
+  for (var c = a.childNodes, i = c.length; i--; ) {
+    if (c[i].nodeType == 1) return true; 
+  }
+
+  return false;
+*/       
+}
+
 //=====================================================================================================================
 function traitementApresRecuperationAst(ret){
  

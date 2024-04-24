@@ -44,7 +44,11 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
    if(type==='script'){
     t+='\n'+esp0+'javascriptDansHtml(';
    }else{
-    t+='\n'+esp0+type+'(';
+    if("#comment"===type){
+     t+='\n'+esp0+'#(';
+    }else{
+     t+='\n'+esp0+type+'(';
+    }
    }
   }
   
@@ -115,7 +119,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
 
   }else{
    try{
-    contenu=jsonDeHtml.replace(/\r/g,'').replace(/\n/g,'').trim();
+    contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
    }catch(e){
     /*
     dans le cas où le jsonDeHtml n'existe pas
@@ -167,7 +171,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
      /*
       si le head n'a aucun enfant
      */
-     if(nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
+     if(nouveauTableau1.length>=2 && nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
       
       var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
 
@@ -253,55 +257,6 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   A partir d'un html, on reconstruit un équivalent "ast" ( abstract syntax tree )
   =======================================================================================
 */
-function mapDOMOld(element, json) {
-    var treeObject = {};
-    
-    // If string convert to document Node
-    if (typeof element === "string") {
-        if (window.DOMParser)
-        {
-              var parser = new DOMParser();
-              var docNode = parser.parseFromString(element,"text/html");
-        }
-        else // Microsoft strikes again
-        {
-              docNode = new ActiveXObject("Microsoft.XMLDOM");
-              docNode.async = false;
-              docNode.loadXML(element); 
-        } 
-        element = docNode.firstChild;
-    }
-    
-    //Recursively loop through DOM elements and assign properties to object
-    function treeHTML(element, object) {
-        object["type"] = element.nodeName;
-        var nodeList = element.childNodes;
-        if (nodeList != null) {
-            if (nodeList.length) {
-                object["content"] = [];
-                for (var i = 0; i < nodeList.length; i++) {
-                    if (nodeList[i].nodeType == 3) {
-                        object["content"].push(nodeList[i].nodeValue);
-                    } else {
-                        object["content"].push({});
-                        treeHTML(nodeList[i], object["content"][object["content"].length -1]);
-                    }
-                }
-            }
-        }
-        if (element.attributes != null) {
-            if (element.attributes.length) {
-                object["attributes"] = {};
-                for (var i = 0; i < element.attributes.length; i++) {
-                    object["attributes"][element.attributes[i].nodeName] = element.attributes[i].nodeValue;
-                }
-            }
-        }
-    }
-    treeHTML(element, treeObject);
-    
-    return (json) ? JSON.stringify(treeObject) : treeObject;
-}
 function mapDOM(element){
     var treeObject={};
     if(typeof element === 'string'){
@@ -313,7 +268,7 @@ function mapDOM(element){
         object['type']=element.nodeName;
         var i=0;
         var nodeList=element.childNodes;
-        if(nodeList != null){
+        if(nodeList !== null){
             if(nodeList.length){
                 object['content']=[];
                 for(i=0;i < nodeList.length;i=i+1){
@@ -324,13 +279,28 @@ function mapDOM(element){
                         treeHTML(nodeList[i],object["content"][object["content"].length -1]);
                     }
                 }
+            }else{
+                if(element.nodeValue){
+                    object['content']=[];
+                    object['content'].push(element.nodeValue);
+                }
             }
         }
         if(element.attributes != null){
             if(element.attributes.length){
                 object['attributes']={};
                 for(i=0;i < element.attributes.length;i=i+1){
-                    object['attributes'][element.attributes[i].nodeName]=element.attributes[i].nodeValue;
+                    if(element.attributes[i].nodeName==='"'){
+                     /*
+                       =========================================
+                       vraiment bizarre un attribut = '"'
+                       =========================================
+                     */
+                     console.log('element.attributes[i].nodeName=<'+element.attributes[i].nodeName+'>')
+                    }else{
+                     object['attributes'][element.attributes[i].nodeName]=element.attributes[i].nodeValue;
+                    }
+                     
                 }
             }
         }
@@ -533,7 +503,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
  }else if(dansJs&&tab[id][1]=='source'){ // i18
   // analyse de source javascript
   t+=CRLF;
-  t+='<![CDATA[';
+  t+='//<![CDATA['+CRLF;
   t+='// = = = = <source javascript = = = ='+CRLF;
   t+='"use strict";'+CRLF;
 //  console.error('todo')
@@ -547,7 +517,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
    return logerreur({status:false,value:t,message:'erreur de script dans un html'});
   }
   t+=CRLF+'// = = = = source javascript> = = = ='+CRLF;
-  t+=']]>'+CRLF;
+  t+='//]]>'+CRLF;
   
   return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
 
@@ -580,7 +550,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
        Ecriture de la propriété
        ==============================================================================================================
        */
-       temp+=' '+tab[i+1][1]+'=\''+tab[i+2][1].replace(/\\\\\\\'/g,'"').replace(/\\\\\\\\/g,'\\').replace(/\"/g,'&quot;').replace(/\\\\/g,'\\')+'\'';
+       temp+=' '+tab[i+1][1]+'="'+tab[i+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
        
        if(tab[i+1][1]=='data-lang' && ( tab[i+2][1]=='fr' ||tab[i+2][1]=='en' ) ){
         globale_LangueCourante=tab[i+2][1];
@@ -593,10 +563,10 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
         temp+=' '+tab[i+1][1]+''; // contenteditable , selected
        }
       }else{
-       return logerreur({status:false,id:i,value:t,message:'1 les propriété d\'un tag html doivent contenir une ou deux constantes'});  
+       return logerreur({status:false,id:i,value:t,message:'1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'});  
       }
      }else{
-      return logerreur({status:false,id:i,value:t,message:'2 les propriété d\'un tag html doivent contenir une ou deux constantes'});  
+      return logerreur({status:false,id:i,value:t,message:'2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599'});  
      }
     }
     if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...)
@@ -630,7 +600,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
 
-      if(tab[i][1]==='javascriptdanshtml'){
+      if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
        /*
        dans ce cas, c'est un tag <script avec des propriétés 
        */
@@ -640,7 +610,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
         if(tab[j][7]===i){
          if(tab[j][2]==='f'){
           if(tab[j][1]==='' ){
-           lesProprietes+=' '+tab[j+1][1]+'=\''+tab[j+2][1].replace(/\"/g,'&quot;')+'\'';
+           lesProprietes+=' '+tab[j+1][1]+'="'+tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
           }else{
            if(indiceDebutJs===-1){
             indiceDebutJs=j;
@@ -649,36 +619,52 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
          }
         }
        }
-debugger        
-       
-       niveau++;
-       ob=parseJavascript0(tab,indiceDebutJs,niveau);
-       niveau--;
-       
-       if(ob.status===true){
+
+       if(indiceDebutJs===-1){
         /*
-         ===========================================================================================
-         ecriture de la valeur dans le cas d'un tag javascriptdanshtml
-         ===========================================================================================
+         c'est une balise <script src=""></script>
         */
-        t+=CRLF;
-        t+='<script'+lesProprietes+'>'+CRLF;
-        t+='//<![CDATA['+CRLF;
-        t+='//<source_javascript_rev>'+CRLF;
-        t+=ob.value+CRLF;
-        t+='//</source_javascript_rev>'+CRLF;
-        t+='//]]>'+CRLF
-        t+='</script>'+CRLF;
-        
+
+         t+=CRLF;
+         t+='<script'+lesProprietes+'></script>'+CRLF;
         
        }else{
-        return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0653'});  
+
+        /*
+         c'est un script dans un html
+        */
+        
+        niveau++;
+        ob=parseJavascript0(tab,indiceDebutJs,niveau);
+        niveau--;
+        
+        if(ob.status===true){
+         /*
+          ===========================================================================================
+          ecriture de la valeur dans le cas d'un tag javascriptdanshtml
+          ===========================================================================================
+         */
+         t+=CRLF;
+         t+='<script'+lesProprietes+'>'+CRLF;
+         t+='//<![CDATA['+CRLF;
+         t+='//<source_javascript_rev>'+CRLF;
+         t+=ob.value+CRLF;
+         t+='//</source_javascript_rev>'+CRLF;
+         t+='//]]>'+CRLF
+         t+='</script>'+CRLF;
+         
+         
+        }else{
+         return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0653'});  
+        }
+        
        }
-       
+
        var max=l01-1;
        for(var j=i+1;j<l01;j++){
         if(tab[j][3]<=tab[i][3]){
-         max=j;
+         max=j-1;
+         break;
         }
        }
        i=max;
