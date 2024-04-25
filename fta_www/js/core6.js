@@ -1,4 +1,43 @@
 "use strict";
+/*
+todo traiter tous les escapes
+https://stackoverflow.com/questions/21672334/javascript-how-to-show-escape-characters-in-a-string
+
+js :
+
+\' single quote
+\" double quote
+\ backslash
+\n new line
+\r carriage return
+
+\t tab
+\v vertical tab (IE < 9 treats '\v' as 'v' instead of a vertical tab ('\x0B'). If cross-browser compatibility is a concern, use \x0B instead of \v.)
+\f form feed
+
+\b backspace
+\0 null character (U+0000 NULL) (only if the next character is not a decimal digit; else it’s an octal escape sequence)
+
+
+php : 
+
+\' single quote
+\"	double-quote
+\\	backslash
+\n	linefeed (LF or 0x0A (10) in ASCII)
+\r	carriage return (CR or 0x0D (13) in ASCII)
+
+\t	horizontal tab (HT or 0x09 (9) in ASCII)
+\v	vertical tab (VT or 0x0B (11) in ASCII)
+\f	form feed (FF or 0x0C (12) in ASCII)
+
+\e	escape (ESC or 0x1B (27) in ASCII)
+\$	dollar sign
+\[0-7]{1,3}	Octal: the sequence of characters matching the regular expression [0-7]{1,3} is a character in octal notation (e.g. "\101" === "A"), which silently overflows to fit in a byte (e.g. "\400" === "\000")
+\x[0-9A-Fa-f]{1,2}	Hexadecimal: the sequence of characters matching the regular expression [0-9A-Fa-f]{1,2} is a character in hexadecimal notation (e.g. "\x41" === "A")
+\u{[0-9A-Fa-f]+}	Unicode: the sequence of characters matching the regular expression [0-9A-Fa-f]+ is a Unicode codepoint, which will be output to the string as that codepoint's UTF-8 representation. The braces are required in the sequence. E.g. "\u{41}" === "A"
+
+*/
 var DEBUTCOMMENTAIRE='#';
 var DEBUTBLOC='@';
 var CRLF='\r\n';
@@ -803,26 +842,44 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
           ======================================
         */
         if(arr[i][2] == 'c'){
-            if(coloration){
-                if(arr[i][4] == 1){
-                    t=concat(t,'\'',strToHtml(arr[i][1]),'\'');
-                }else if(arr[i][4] == 2){
-                    t=concat(t,'`',strToHtml(arr[i][1]),'`');
-                }else if(arr[i][4] == 3){
-                    t=concat(t,'"',strToHtml(arr[i][1]),'"');
-                }else{
-                    t=concat(t,strToHtml(arr[i][1]));
-                }
+            var chaine='';
+            if(arr[i][4] == 1){
+             chaine=arr[i][1].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n').replace(/\\\\r/g,'\\r').replace(/\\\\t/g,'\\t');
+             if(coloration){
+              t=concat(t,'\'',strToHtml(chaine),'\'');
+             }else{
+              t=concat(t,'\'',chaine,'\'');
+             }
+            }else if(arr[i][4] == 3){
+             chaine=arr[i][1].replace(/\\/g,'\\\\').replace(/\"/g,'\\\"').replace(/\\\\n/g,'\\n').replace(/\\\\r/g,'\\r').replace(/\\\\/g,'\\');
+             if(coloration){
+              t=concat(t,'"',strToHtml(chaine),'"');
+             }else{
+              t=concat(t,'"',chaine,'"');
+             }
             }else{
-                if(arr[i][4] == 1){
-                    t=concat(t,'\'',arr[i][1],'\'');
-                }else if(arr[i][4] == 2){
-                    t=concat(t,'`',arr[i][1],'`');
-                }else if(arr[i][4] == 3){
-                    t=concat(t,'"',arr[i][1],'"');
-                }else{
-                    t=concat(t,arr[i][1]);
-                }
+             
+              if(coloration){
+                  if(arr[i][4] == 1){
+                      t=concat(t,'\'',strToHtml(arr[i][1].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')),'\'');
+                  }else if(arr[i][4] == 2){
+                      t=concat(t,'`',strToHtml(arr[i][1]).replace(/\\/g,'\\\\').replace(/`/g,'\\`'),'`');
+                  }else if(arr[i][4] == 3){
+                      t=concat(t,'"',strToHtml(arr[i][1]),'"');
+                  }else{
+                      t=concat(t,strToHtml(arr[i][1]));
+                  }
+              }else{
+                  if(arr[i][4] == 1){
+                      t=concat(t,'\'',arr[i][1].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/\\\\n/g,'\\n'),'\'');
+                  }else if(arr[i][4] == 2){
+                      t=concat(t,'`',arr[i][1].replace(/\\/g,'\\\\').replace(/`/g,'\\`'),'`');
+                  }else if(arr[i][4] == 3){
+                      t=concat(t,'"',arr[i][1],'"');
+                  }else{
+                      t=concat(t,arr[i][1]);
+                  }
+              }
             }
             continue;
         }
@@ -1358,6 +1415,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var c1='';
     var c2='';
     var chaineTableau='';
+    var typePrecedent='';
+    var niveauPrecedent=0;
     /*
       =========================
       les entiers
@@ -1376,6 +1435,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var posFerPar=0;
     var niveauDebutCommentaire=0;
     var niveauDansCommentaire=0;
+    var indiceTabCommentaire=0;
     /*
       =========================
       les booléens
@@ -1392,6 +1452,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       Le tableau en sortie si tout va bien
       ====================================
     */
+    var tabCommentaireEtFinParentheses=[];
     var T= new Array();
     var temp={};
     /*
@@ -1404,7 +1465,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     */
 
 //    T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-        T[indice]=[0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//        T[indice]=[0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+      chaineTableau+='[0,"'+texte+'","INIT",-1,'+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+      typePrecedent='INIT';
+      niveauPrecedent=niveau;
+      
+      
     
     var l01=tableauEntree.length;
     /*
@@ -1430,8 +1496,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c == ')'){
                 if((niveau == (niveauDebutCommentaire+1)) && (niveauDansCommentaire == 0)){
                     posFerPar=i;
-                    T[indice][13]=commentaire;
-                    T[indice][12]=posFerPar;
+                    tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
+                    indiceTabCommentaire++
+//                    T[indice][13]=commentaire;
+//                    T[indice][12]=posFerPar;
                     commentaire='';
                     dsComment=false;
                     niveau=niveau-1;
@@ -1506,12 +1574,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 indice=(indice+1);
-                constanteQuotee=1;
+                constanteQuotee=3;
+/*                
                 if(texte==='\\n' || texte==='\\r' || texte==='\\r\\n' ){
                  constanteQuotee=3;
+                 chaineTableau+=',['+indice+',"'+texte.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/\r/g,'\\r')+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                }else{
+//                  chaineTableau+=',['+indice+',"'+texte.replace(/\\/g,'\\\\').replace(/\\\'/g,'\'').replace(/\n/g,'\\n').replace(/\r/g,'\\r')+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                    chaineTableau+=',['+indice+',"'+texte.replace(/\\/g,'\\\\').replace(/\\\'/g,'\'').replace(/\\\\n/g,'\\n').replace(/\\\\r/g,'\\r')+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
                 }
+*/                
+                chaineTableau+=',['+indice+',"'+texte.replace(/\\/g,'\\\\').replace(/\\\'/g,'\'').replace(/\\\\n/g,'\\\\n').replace(/\\\\r/g,'\\\\r').replace(/\\\\t/g,'\\\\t').replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\t/g,'\\t').replace(/\\\\"/g,'\\"')+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                
 //                T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                    T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                    T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+
+                  typePrecedent='c';
+                  niveauPrecedent=niveau;
+
+
                 texte='';
                 constanteQuotee=0;
             }else if(c == '\\'){
@@ -1597,7 +1678,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
 //                T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                    T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                    T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+                  chaineTableau+=',['+indice+',"'+texte.replace(/\\\`/g,'\`').replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t').replace(/"/g,'\\"')+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                  typePrecedent='c';
+                  niveauPrecedent=niveau;
+
                 texte='';
                 constanteQuotee=0;
             }else if(c == '\\'){
@@ -1677,7 +1762,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 indice=(indice+1);
                 constanteQuotee=1;
 //                T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                    T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                    T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+                  chaineTableau+=',['+indice+',"'+texte.replace(/\\/g,'\\\\').replace(/\\\'/g,'\'').replace(/"/g,'\\"').replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t').replace(/\\'/g,'\'')+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                  typePrecedent='c';
+                  niveauPrecedent=niveau;
                 texte='';
                 constanteQuotee=0;
             }else if(c == '\\'){
@@ -1751,7 +1839,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     niveauDebutCommentaire=niveau;
                 }
 //                T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                    T[indice]=[indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                    T[indice]=[indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+                  chaineTableau+=',['+indice+',"'+texte+'",'+'"f"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                  typePrecedent='f';
+                  niveauPrecedent=niveau;
+
                 niveau=(niveau+1);
                 texte='';
                 dansCstSimple=false;
@@ -1786,7 +1878,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                     indice=(indice+1);
 //                    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
-                        T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+//                        T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+                    chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                    typePrecedent='c';
+                    niveauPrecedent=niveau;
+
                     texte='';
                 }
                 niveau=niveau-1;
@@ -1795,12 +1891,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   maj de la position de fermeture de la parenthèse
                   
                 */
+/*                
                 for(j=indice;j >= 0;j=j-1){
                     if((T[j][3] == niveau) && (T[j][2] == 'f')){
                         T[j][12]=posFerPar;
                         break;
                     }
                 }
+*/                
                 posFerPar=0;
                 dansCstSimple=false;
                 dansCstDouble=false;
@@ -1854,7 +1952,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(texte!==''){
                         indice=(indice+1);
 //                        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+                    chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                    typePrecedent='c';
+                    niveauPrecedent=niveau;
+
                         texte='';
                     }
                     dansCstSimple=true;
@@ -1881,7 +1983,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(texte!==''){
                         indice=(indice+1);
 //                        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+                          chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                        typePrecedent='c';
+                        niveauPrecedent=niveau;
                         texte='';
                     }
                     dansCstModele=true;
@@ -1908,7 +2013,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(texte!==''){
                         indice=(indice+1);
 //                        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
-                            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+//                            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''];
+                        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                        typePrecedent='c';
+                        niveauPrecedent=niveau;
                         texte='';
                     }
                     dansCstDouble=true;
@@ -1937,18 +2045,34 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }
                     }
 //                    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
-                        T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+//                        T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+                     chaineTableau+=',['+indice+',"'+texte+'","c",'+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                     typePrecedent='c';
+                     niveauPrecedent=niveau;
                 }else{
+/*                 
                     if(T[indice][2] == 'f'){
-                        /*ne rien faire*/
+                        //ne rien faire
                     }else{
                         if(T[indice][3] >= niveau){
-                            /*ne rien faire*/
+                            //ne rien faire
                         }else{
                             temp={'status':false,'value':T,'id':i,'message':'une virgule ne doit pas être précédée d\'un vide'};
                             return(logerreur(temp));
                         }
                     }
+*/
+                    if(typePrecedent == 'f'){
+                        //ne rien faire
+                    }else{
+                        if(niveauPrecedent >= niveau){
+                            //ne rien faire
+                        }else{
+                            temp={'status':false,'value':T,'id':i,'message':'une virgule ne doit pas être précédée d\'un vide'};
+                            return(logerreur(temp));
+                        }
+                    }
+                    
                 }
                 texte='';
                 dansCstSimple=false;
@@ -1978,7 +2102,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }
                     }
 //                    T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
-                        T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+//                        T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+                        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,0,0,""]';
+                     typePrecedent='c';
+                     niveauPrecedent=niveau;
                     texte='';
                     dansCstSimple=false;
                     dansCstDouble=false;
@@ -2026,9 +2153,29 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         }
         /**/
 //        T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
-            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+//            T[indice]=[indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''];
+            chaineTableau+=',['+indice+',"'+texte+'",'+'\'c\''+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,0,0,""]';
+            typePrecedent='c';
+            niveauPrecedent=niveau;
         
     }
+    
+    chaineTableau='['+chaineTableau+']';
+    T=JSON.parse(chaineTableau);
+    
+    // tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
+    // T[indice][13]=commentaire;
+    // T[indice][12]=posFerPar;
+    
+    l01=tabCommentaireEtFinParentheses.length;
+    for(i=0;i<l01;i++){
+     T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1];
+     T[tabCommentaireEtFinParentheses[i][0]][12]=tabCommentaireEtFinParentheses[i][2];
+    }
+    
+//    console.log('T=',T);
+    
+    
     /*
       
       ==============================================================

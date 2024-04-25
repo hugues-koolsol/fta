@@ -88,7 +88,7 @@ function html_header1($p){
     $t=$t.'  <title>'.($p['title']??'title').'</title>'.CRLF;
     $t=$t.'  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
     $t=$t.'  <link rel="stylesheet" href="index.css" />'.CRLF;
-    $t=$t.'  <script type="text/javascript" src="js/core5.js"></script>'.CRLF;
+    $t=$t.'  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
     $t=$t.' </head>'.CRLF;
     if((isset($p['opt']['bodyPaddingTop']))){
         $t=$t.' <body style="padding-top:'.$p['opt']['bodyPaddingTop'].'px;">'.CRLF;

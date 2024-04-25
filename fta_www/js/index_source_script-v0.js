@@ -234,6 +234,7 @@ function enregistrer2(){
     clearMessages('zone_global_messages');
     document.getElementById('arrayed').innerHTML='';
     var zonedonneesComplementaires = document.getElementById('donneesComplementaires');
+    console.clear();
     zonedonneesComplementaires.innerHTML='';
     var a = document.getElementById('zonesource');
     var startMicro = performance.now();
@@ -241,11 +242,16 @@ function enregistrer2(){
     global_messages.data.tableau=tableau1;
     var endMicro = performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
+    
+    
     var startMicro = performance.now();
     var matriceFonction = functionToArray2(tableau1.out,true,false);
-    global_messages.data.matrice=matriceFonction;
     var endMicro = performance.now();
     console.log('analyse syntaxique et mise en matrice endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
+    global_messages.data.matrice=matriceFonction;
+    
+    
+    
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.status === true){
         var startMicro = performance.now();

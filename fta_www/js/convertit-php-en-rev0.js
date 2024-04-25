@@ -388,24 +388,6 @@ function php_traite_Expr_FuncCall(element,niveau){
    lesArgumentsCourts=lesArgumentsCourts.substr(1);
   }
   t+=''+nomFonction+'('+lesArgumentsCourts+')';
- }else if(nomFonction==='define'){
-  /*
-  Dans le cas du define, il faut que les valeurs soient entre doubles quotes 
-  */
-  if(tabArgs.length===2 && tabArgs[0][1]==='Scalar_String' && tabArgs[1][1]==='Scalar_String' ){
-   if(tabArgs[1][0].substr(0,1)==='\''){
-    var contenu=tabArgs[1][0].substr(1,tabArgs[1][0].length-2);
-    contenu=contenu.replace(/\\\\/g,'\\');
-    contenu=contenu.replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\'/g,'\\\'');
-    t+='definir('+tabArgs[0][0]+' , "'+contenu+'")';
-   }else{
-    var contenu=tabArgs[1][0].substr(1,tabArgs[1][0].length-2);
-    contenu=contenu.replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\'/g,'\\\'');
-    t+='definir('+tabArgs[0][0]+' , "'+contenu+'")';
-   }
-  }else{
-   t+='definir('+tabArgs[0][0]+' , '+tabArgs[1][0]+')';
-  }
  }else{
   t+='appelf(nomf('+nomFonction+')'+lesArguments+')';
  }
@@ -903,15 +885,7 @@ function php_traite_Stmt_Expression(element,niveau){
 
  /*===============================================*/
  }else if("Scalar_String"===element.nodeType){
-  if(element.value==="\r"){
-   t+='"\\r"';
-  }else if(element.value==="\n"){
-   t+='"\\n"';
-  }else if(element.value==="\r\n"){
-   t+='"\\r\\n"';
-  }else{
-   t+="'"+element.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+"'"; // .replace(/\r/g,'\\r').replace(/\n/g,'\\n')
-  }
+  t+=element.attributes.rawValue;
 
  /*===============================================*/
  }else if("Expr_ArrayDimFetch"===element.nodeType){
