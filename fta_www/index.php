@@ -7,6 +7,9 @@ session_start();
 $o1='';
 $o1=html_header1(array('title'=>'php home' , 'description'=>'php home'));
 print($o1);$o1='';
+
+ $o1.='<script>window.jQuery || document.write(\'<script>alert("hello")<\/script>\')</script>'.CRLF;
+print($o1);$o1='';
 ?>
         <h1>PHP HOME</h1>
         <ul class="menu2">
@@ -18,7 +21,7 @@ print($o1);$o1='';
         <a href="javascript:transformLeRev()">transform</a>
         <div id="message1"></div>
         <div id="resultat1"></div>
-<script type="text/javascript" src="js/core5.js"></script>
+<script type="text/javascript" src="js/core6.js"></script>
 
 <script type="text/javascript">
 //<![CDATA[

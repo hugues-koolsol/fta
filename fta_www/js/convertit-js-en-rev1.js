@@ -546,6 +546,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
       en ceci
       [[egal[d,1]],ou[[egal[e,2]]],ou[[egal[f,3]]]]
     */
+
     var o = functionToArray(t,true,true); // si on reçoit un [], par exemple window.dataLayer = window.dataLayer || []; dans le source google
     if(o.status === true){
         if((o.value.length > 3) && (o.value[1][1] == '') && (o.value[1][2] == 'f') && (o.value[2][1] == '') && (o.value[2][2] == 'f') && (o.value[3][1] == '') && (o.value[3][2] == 'f')){
@@ -857,10 +858,18 @@ function traiteCallExpression1(element,niveau,parent,opt){
     var LF='\n';
     var parentProperty='';
     if(parent.property){
-        if(parent.property.type === 'Identifier'){
-            parentProperty='prop('+parent.property.name+')';
+        if(parent.computed && parent.computed===true){
+         /*
+         le parent est un tableau => les propriétés sont les indices du tableau
+         */
         }else{
-            return(astjs_logerreur({status:false,message:'erreur dans traiteCallExpression1 0514',element:element}));
+            if(parent.property.type === 'Identifier'){
+                parentProperty='prop('+parent.property.name+')';
+            }else if(parent.property.type === 'Literal'){
+                parentProperty='prop('+parent.property.raw+')';
+            }else{
+                return(astjs_logerreur({status:false,message:'erreur dans traiteCallExpression1 0514 '+parent.property.type,element:element}));
+            }
         }
     }
     if(opt['sansLF']){
@@ -879,6 +888,14 @@ function traiteCallExpression1(element,niveau,parent,opt){
             lesArguments+=',';
             if('Literal' === element.arguments[i].type){
                 if(element.arguments[i].regex){
+
+                    var leParam = '/'+element.arguments[i].regex.pattern+'/';
+                    if(element.arguments[i].regex.flags){
+                     leParam+=element.arguments[i].regex.flags;
+                    }
+                    lesArguments+='p('+leParam+')';
+                 
+                    /*
                     if((element.arguments[i].raw.substr(0,1) == '/') && (element.arguments[i].raw.substr(element.arguments[i].raw.length-1,1) == 'g')){
                         if(element.callee.property.name === 'split'){
                             transformeEnReplaceAllOuMyReplace='splitAll';
@@ -887,9 +904,14 @@ function traiteCallExpression1(element,niveau,parent,opt){
                         }else{
                             return(astjs_logerreur({status:false,message:'erreur traiteCallExpression1 1151 ',element:element}));
                         }
-                        var leParam = replaceAll(element.arguments[i].raw,'\\\\','\\\\');
-                        leParam=leParam.substr(1,leParam.length-3);
-                        leParam='\''+leParam+'\'';
+                        //
+                        //var leParam = replaceAll(element.arguments[i].raw,'\\\\','\\\\');
+                        //leParam=leParam.substr(1,leParam.length-3);
+                        //leParam='\''+leParam+'\'';
+                        //
+                        debugger
+//                        var leParam = '"'+element.arguments[i].regex.pattern.replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"';
+                        var leParam = '"'+element.arguments[i].regex.pattern.replace(/\\'/g,'\'').replace(/"/g,'\\"')+'"';
                         lesArguments+='p('+leParam+')';
                     }else if((element.arguments[i].raw.substr(0,1) == '/') && (element.arguments[i].raw.substr(element.arguments[i].raw.length-1,1) == '/')){
                         if(element.callee.property.name === 'split'){
@@ -913,6 +935,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
                         }
                         lesArguments+='p('+element.arguments[i].raw+')';
                     }
+                    */
                 }else{
                     lesArguments+='p('+element.arguments[i].raw+')';
                 }
@@ -989,7 +1012,11 @@ function traiteCallExpression1(element,niveau,parent,opt){
         if(element.callee.property){
             if(element.callee.property.type === 'Identifier'){
                 if((element.callee.object) && (element.callee.object.type === 'Identifier')){
-                    t+='appelf(nomf('+element.callee.object.name+'.'+element.callee.property.name+')'+lesArguments+')';
+                    if(transformeEnReplaceAllOuMyReplace !== ''){
+                        t+='appelf(nomf('+transformeEnReplaceAllOuMyReplace+'),p('+element.callee.object.name+'),'+lesArguments+')';
+                    }else{
+                        t+='appelf(element('+element.callee.object.name+'),nomf('+element.callee.property.name+')'+lesArguments+')';
+                    }
                 }else if((element.callee.object) && (element.callee.object.type === 'Literal')){
                     t+='appelf(element('+element.callee.object.raw+'),nomf('+element.callee.property.name+')'+lesArguments+')';
                 }else{
@@ -1112,6 +1139,13 @@ function traiteArrayExpression1(element,niveau){
             }
         }else if(element.elements[i].type === 'MemberExpression'){
             var obj1 = traiteMemberExpression1(element.elements[i],niveau,element,'');
+            if(obj1.status === true){
+                lesPar+=',p('+obj1.value+')';
+            }else{
+                return(astjs_logerreur({status:false,'message':'erreur traiteObjectExpression1 0799 pour '+eval.value.type,element:element}));
+            }
+        }else if(element.elements[i].type === 'CallExpression'){
+            var obj1 = traiteCallExpression1(element.elements[i],element,{},'');
             if(obj1.status === true){
                 lesPar+=',p('+obj1.value+')';
             }else{
@@ -1306,6 +1340,16 @@ function traiteMemberExpression1(element,niveau,parent){
                 }else{
                     return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1526 pour '+element.type,element:element}));
                 }
+            }else if(element.object.type === "CallExpression"){
+             
+                var obj1 = traiteCallExpression1(element.object,niveau,element,{});
+                if(obj1.status === true){
+                    objTxt=obj1.value;
+                }else{
+                    return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1316 pour '+element.object.type,element:element}));
+                }
+             
+             
             }else{
                 return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1582 pour '+element.object.type,element:element}));
             }
@@ -2204,7 +2248,7 @@ function transformSourceJavascriptEnRev(sourceDuJavascript){
   
  }catch(e){
   console.log('erreur esprima',e);
-  return logerreur({status:false,message:'erreur convertir-js-en-rev 2725'});
+  return logerreur({status:false,message:'erreur convertir-js-en-rev 2725 e='+e.message });
  }
  if(ret!==false){
   tabComment=ret.comments;
@@ -2247,6 +2291,7 @@ function transformJsEnRev(texteJs){
 =====================================================================================================================
 */
 function transformJsDeTextAreaEnRev(){
+    var startMicro=performance.now();
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     document.getElementById('resultat1').innerHTML='';
@@ -2261,17 +2306,24 @@ function transformJsDeTextAreaEnRev(){
         console.log('ret.body=',ret);
     }catch(e){
         console.log('erreur esprima',e);
+        if(e.lineNumber){
+         astjs_logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne '+e.lineNumber,line:e.lineNumber});
+        }
         ret=false;
     }
     if(ret !== false){
         tabComment=ret.comments;
         var obj = TransformAstEnRev(ret.body,0);
+        var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
+        astjs_logerreur({status:true,message:'pas d\'erreur pour la conversion du js en rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
         if(obj.status == true){
             document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;')+'</pre>';
             document.getElementById('txtar2').value=obj.value;
             var obj1 = functionToArray(obj.value,true,false);
             if(obj.status === true){
-                astjs_logerreur({status:true,message:'pas d\'erreur pour le rev'});
+            var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+             
+                astjs_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
             }else{
                 astjs_logerreur({status:false,message:'erreur pour le rev'});
             }
@@ -2279,7 +2331,7 @@ function transformJsDeTextAreaEnRev(){
     }else{
         astjs_logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine'});
     }
-    displayMessages('zone_global_messages');
+    displayMessages('zone_global_messages','txtar1');
     rangeErreurSelectionne=false;
 }
 function chargerSourceDeTest(){
@@ -2302,12 +2354,9 @@ function traiteCommentaire2(texte, niveau, ind) {
   return s;
 }
 
-function displayMessages() {
+function tagada() {
   for (var i = 0; i < global_messages.errors.length; i++) {
     document.getElementById("global_messages").innerHTML += '<div class="yyerror">' + global_messages.errors[i] + "</div>";
-  }
-  for (var i = 0; i < global_messages.lines.length; i++) {
-    document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (global_messages.lines[i] + 1) + ')" class="yyerror" style="border:2px red outset;">go to line ' + global_messages.lines[i] + "</a>&nbsp;";
   }
   var numLignePrecedente = -1;
   for (var i = 0; i < global_messages.ids.length; i++) {

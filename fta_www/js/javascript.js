@@ -856,6 +856,16 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
     for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
         if((tab[j][1] == 'nomt') && (tab[j][2] == 'f') && (tab[j][3] == (tab[i][3]+1))){
             positionAppelTableau=j;
+            
+            var obj1=js_traiteInstruction1(tab,niveau,(j+1));
+            if(obj1.status === true){
+                nomTableau=obj1.value;
+            }else{
+                return(logerreur({status:false,value:t,id:i,tab:tab,message:'864 js_traiteTableau1 nomt'}));
+            }
+            break;
+/*            
+            
             if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
                 nomTableau=tab[j+1][1];
                 if(nomTableau == 'Array'){
@@ -868,8 +878,9 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
                 }else{
                     logerreur({status:false,value:t,id:i,tab:tab,message:'1045 problème dans un tableau de tableau '});
                 }
+            }else{
             }
-            break;
+*/            
         }
     }
     if((positionAppelTableau > 0) && (nomTableau != '')){
@@ -1285,9 +1296,13 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                 }
             }else if((tab[j][1] == 'p') && (tab[j][3] == (tab[i][3]+1))){
                 if((tab[j][8] == 0) && (tab[j+1][2] == 'f')){
+                 
                     argumentsFonction+=',';
+                    
                 }else if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
+                 
                     argumentsFonction+=','+maConstante(tab[j+1]);
+                    
                 }else if((tab[j][8] > 1) && (tab[j+1][2] == 'c')){
                     var opPrecedente='';
                     for(k=(j+1);k < l01;k=k+1){

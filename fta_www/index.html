@@ -31,6 +31,23 @@
   <script type="text/javascript" src="js/core6.js"></script>
 
 <script type="text/javascript">
+/*
+var chaine = '  antislash \\ quot \' antislash*3+quot \\\' ';
+var t=chaine.replace(/[^\\]'/g,"\\'");
+alert('{'+chaine +'}\n{'+ t+'}');
+*/
+/*
+var aa='"\'';
+alert('<'+aa+'>')
+var bb=aa.replace(/"/,'\\"')
+var c='';
+var me='c="<'+bb+'>"';
+eval(me);
+alert(c);
+*/
+//var aaa="\\'\"\\[]";
+//var bbb=aaa.replace(/\\/g,"&#92;").replace(/'/g,'&apos;').replace(/"/g,"&quot;").replace(/\[/g,"crochetOuvrant");
+//alert(bbb);
 //=====================================================================================================================
 function chargerSourceDeTest(){
  var t=`#( début aaaa  debut),
@@ -69,7 +86,52 @@ blu),
   #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
   ​f(​g​)​,
   #(👍😁💥💪👎☀🌞🟥🟩"àà")
-)`;
+)
+a( p(/ " \\' \\" \\n \\r \\\\r \\\\n \\\\\\\\ /g) , p(" \\\\ \\" \\\\\\" \\n \\r '") , p(' \\\\ \\' \\n \\r "  ') ),
+#(
+p('\\\\\\' \\' \\r \\n ')
+
+
+        a( p(/ " \\' \\" \\n \\r \\\\r \\\\n \\\\\\\\ /g) , p(" \\\\ \\" \\n \\r '") , p(' \\\\ \\n \\r "  ') ),
+
+appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
+      affecte(sql , "\\r\\n \\" \\\\\\\\
+      select * from toto
+      "),
+
+      affecte(sql , '\\n \\r \\\\r \\\\n 
+      select * from toto
+      '),
+
+\
+)
+
+
+
+`;
+/*
+
+a( p(/ " \' \" \n \r \\r \\n \\\\ /g) , p(" \\ \" \\\" \n \r '") , p(' \\ \' \n \r "  ') ),
+#(
+p('\\\' \' \r \n ')
+
+
+        a( p(/ " \' \" \n \r \\r \\n \\\\ /g) , p(" \\ \" \n \r '") , p(' \\ \n \r "  ') ),
+
+appelf(nomf(f),p(/\\\\n/g),p('\\n'),p('\\r'))
+      affecte(sql , "\r\n \" \\\\
+      select * from toto
+      "),
+
+      affecte(sql , '\n \r \\r \\n 
+      select * from toto
+      '),
+
+
+)
+
+*/
+
  dogid('txtar1').value=t;
 }
 //=====================================================================================================================
@@ -104,7 +166,7 @@ function transformLeRev(){
   var startMicro=performance.now();
   var tableau1=iterateCharacters2(a.value);
   var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
-  console.log(a.value.substr(4,1),a.value.length)
+//  console.log(a.value.substr(4,1),a.value.length)
   
   var startMicro=performance.now();
   var matriceFonction1=functionToArray2(tableau1.out,true,false);

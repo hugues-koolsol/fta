@@ -87,65 +87,6 @@ function parentheses(){
 /*
   =====================================================================================================================
 */
-function selectTextareaLine(tarea,lineNum){
-    lineNum=((lineNum <= 0)?1:lineNum);
-    lineNum=lineNum-1;
-    var lines = tarea.value.split('\n');
-    var startPos=0;
-    var endPos=tarea.value.length;
-    var x=0;
-    for(x=0;x < lines.length;x=x+1){
-        if(x == lineNum){
-            break;
-        }
-        startPos+=(lines[x].length+1);
-    }
-    var endPos = lines[lineNum].length+startPos;
-    if(typeof tarea.selectionStart != 'undefined'){
-        tarea.focus();
-        tarea.selectionStart=startPos;
-        tarea.selectionEnd=endPos;
-        var debut=startPos;
-        var fin=endPos;
-        tarea.select();
-        tarea.selectionStart=debut;
-        tarea.selectionEnd=fin;
-        var texteDebut = tarea.value.substr(0,debut);
-        var texteFin = tarea.value.substr(debut);
-        tarea.value=texteDebut;
-        tarea.scrollTo(0,9999999);
-        var nouveauScroll=tarea.scrollTop;
-        tarea.value=texteDebut+texteFin;
-        if(nouveauScroll > 50){
-            tarea.scrollTo(0,(nouveauScroll+50));
-        }else{
-            tarea.scrollTo(0,0);
-        }
-        tarea.selectionStart=debut;
-        tarea.selectionEnd=fin;
-        return true;
-    }
-    if((document.selection) && (document.selection.createRange)){
-        tarea.focus();
-        tarea.select();
-        var range = document.selection.createRange();
-        range.collapse(true);
-        range.moveEnd('character',endPos);
-        range.moveStart('character',startPos);
-        range.select();
-        return true;
-    }
-    return false;
-}
-/*
-  =====================================================================================================================
-*/
-function jumpToError(i){
-    selectTextareaLine(document.getElementById('zonesource'),i);
-}
-/*
-  =====================================================================================================================
-*/
 function reprendre(){
     document.getElementById('zonesource').value=document.getElementById('normalise').value;
 }
@@ -352,7 +293,7 @@ function enregistrer2(){
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere2);
         voirSourceGenere();
     }
-    displayMessages('zone_global_messages');
+    displayMessages('zone_global_messages' , 'zonesource');
 }
 /*
   =====================================================================================================================
@@ -766,7 +707,7 @@ function chargerLaListeDesSourcesRev(){
                             global_messages['errors'].push(errors.messages[elem]);
                         }
                         global_messages['e500logged']=true;
-                        displayMessages('zone_global_messages');
+                        displayMessages('zone_global_messages' , 'zonesource');
                         console.log(global_messages);
                     }catch(e){
                     }
@@ -796,7 +737,7 @@ function chargerLaListeDesSourcesRev(){
             for(elem in errors.messages){
                 global_messages['errors'].push(errors.messages[elem]);
             }
-            displayMessages('zone_global_messages');
+            displayMessages('zone_global_messages' , 'zonesource');
             console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
             return;
         }

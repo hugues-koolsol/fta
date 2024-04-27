@@ -2227,7 +2227,8 @@ function traitementApresRecuperationAst(ret){
   if(obj.status===true){
    document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
    document.getElementById('txtar2').value=obj.value;
-   var obj1=functionToArray2(obj.value,false,true);
+   var tableau1 = iterateCharacters2(obj.value);
+   var obj1=functionToArray2(tableau1,false,true);
    if(obj.status===true){
     astphp_logerreur({status:true,message:'pas d\'erreur pour le rev'});
    }else{
