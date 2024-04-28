@@ -1,5 +1,6 @@
 "use strict";
 var rangeErreurSelectionne=false;
+/* =================================================================================== */
 function jumpToRange(debut,fin){
     var zoneSource = dogid('txtar1');
     zoneSource.select();
@@ -19,6 +20,7 @@ function jumpToRange(debut,fin){
     zoneSource.selectionStart=debut;
     zoneSource.selectionEnd=fin;
 }
+/* =================================================================================== */
 function astjs_logerreur(o){
     logerreur(o);
     if(rangeErreurSelectionne === false){
@@ -29,6 +31,114 @@ function astjs_logerreur(o){
     }
     return o;
 }
+/* =================================================================================== */
+
+function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucle ){
+    console.log('%c dans traiteUpdateExpress1 , element=','color:red;background:yellow;',element);
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+ 
+    if('Literal' === element.type){
+        t+=element.raw;
+    }else if('Identifier' === element.type){
+        t+=element.name;
+    }else if('MemberExpression' === element.type){
+        var obj1 = traiteMemberExpression1(element,niveau,element,'');
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur pour traiteUneComposante 0049 '+element.type,element:element}));
+        }
+    }else if('CallExpression' === element.type){
+        var obj1 = traiteCallExpression1(element,niveau,element,{});
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur pour traiteUneComposante 0056 '+element.type,element:element}));
+        }
+    }else if('ObjectExpression' === element.type){
+        var obj1 = traiteObjectExpression1(element,niveau);
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0063',element:element}));
+        }
+    }else if('UnaryExpression' === element.type){
+     
+     
+        var nomDuTestUnary = recupNomOperateur(element.operator);
+        
+        var obj1=traiteUneComposante(element.argument , niveau, parentEstCrochet , dansSiOuBoucle );
+        if(obj1.status===true){
+          t+=nomDuTestUnary+'('+obj1.value+')'
+        }else{
+            return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0076',element:element}));
+        }
+
+    }else if('LogicalExpression' === element.type){
+        var obj = traiteLogicalExpression1(element,niveau,true);
+        if(obj.status === true){
+           if(dansSiOuBoucle){
+               if(obj.value.substr(0,1) === ','){
+                   t+=''+obj.value.substr(1)+'';
+               }else{
+                   t+=''+obj.value+'';
+               }
+           }else{
+               if(obj.value.substr(0,1) === ','){
+                   t+='condition('+obj.value.substr(1)+')';
+               }else{
+                   t+='condition('+obj.value+')';
+               }
+           }
+        }else{
+            return(astjs_logerreur({'status':false,'message':'erreur dans traiteUneComposante 0080 '}));
+        }
+    }else if('NewExpression' === element.type){
+        var obj1 = traiteCallExpression1(element,niveau,element,{});
+        if(obj1.status === true){
+            t+='new('+obj1.value+')';
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur pour traiteUneComposante 0087 '+element.type,element:element}));
+        }
+    }else if('ArrayExpression' === element.type){
+        var obj1 = traiteArrayExpression1(element,niveau);
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0094',element:element}));
+        }
+    }else if('BinaryExpression' === element.type){
+        var obj1 = traiteBinaryExpress1(element,niveau,parentEstCrochet , dansSiOuBoucle);
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({'status':false,'message':'erreur dans traiteUneComposante 0101 ',element:element}));
+        }
+    }else if('ConditionalExpression' === element.type){
+        var obj1 = traiteConditionalExpression1(element,niveau);
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({'status':false,'message':'erreur dans traiteUneComposante 0108 ',element:element}));
+        }
+    }else if('TemplateLiteral' === element.type){
+        var obj1 = traiteTemplateLiteral1(element,niveau);
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({'status':false,'message':'erreur dans traiteUneComposante 0115 ',element:element}));
+        }
+    }else{
+        return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0118 '+element.type,element:element}));
+    } 
+
+    return({status:true,value:t});
+
+}
+/* =================================================================================== */
+
 function recupNomOperateur(s){
     if(s === 'typeof'){
         return 'Typeof';
@@ -74,82 +184,92 @@ function recupNomOperateur(s){
         return('TODO recupNomOperateur pour "'+s+'"');
     }
 }
+/*
+============================================================================
+*/
 function traiteConditionalExpression1(element,niveau){
     var t='';
     console.log('element=',element);
-    if(element.test.type === 'BinaryExpression'){
-        var objtest1 = traiteBinaryExpress1(element.test,niveau,false,false);
-        if(objtest1.status === true){
-        }else{
-            return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 94 ',element:element}));
-        }
-    }else if('MemberExpression' === element.test.type){
-        var objtest1 = traiteMemberExpression1(element.test,niveau,element,'');
-        if(objtest1.status === true){
-        }else{
-            return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 99 '}));
-        }
+
+    var objtest1=traiteUneComposante(element.test , niveau , false , false );
+    if(objtest1.status === true){
     }else{
-        return(astjs_logerreur({status:false,'message':'erreur traiteConditionalExpression1 0092 pour '+element.test.type,element:element}));
+        return(astjs_logerreur({status:false,'message':'erreur pour traiteConditionalExpression1 0180 '+element.type,element:element}));
     }
+    
     var objSiVrai={};
-    if(element.consequent.type === 'Literal'){
-        objSiVrai={'value':element.consequent.raw};
-    }else if(element.consequent.type === 'Identifier'){
-        objSiVrai={'value':element.consequent.name};
-    }else if(element.consequent.type === 'CallExpression'){
-        var objSiVrai = traiteCallExpression1(element.consequent,niveau,element,{});
-        if(objSiVrai.status === true){
-        }else{
-            return(astjs_logerreur({status:false,'message':'erreur traiteConditionalExpression1 0115 pour '+element.consequent.type,element:element}));
-        }
-    }else if(element.consequent.type === 'BinaryExpression'){
-        var objSiVrai = traiteBinaryExpress1(element.consequent,niveau,false,false);
-        if(objSiVrai.status === true){
-        }else{
-            return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 0258 ',element:element}));
-        }
+    var objSiVrai=traiteUneComposante(element.consequent , niveau , false , false );
+    if(objSiVrai.status === true){
     }else{
-        return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 0118 '+element.consequent.type,element:element}));
+        return(astjs_logerreur({status:false,'message':'erreur pour traiteUpdateExpress1 1707 '+element.type,element:element}));
     }
+
     var objSiFaux={};
-    if(element.alternate.type === 'Literal'){
-        objSiFaux={'value':element.alternate.raw};
-    }else if(element.alternate.type === 'Identifier'){
-        objSiFaux={'value':element.alternate.name};
-    }else if('MemberExpression' == element.alternate.type){
-        var objSiFaux = traiteMemberExpression1(element.alternate,niveau,element,'');
-        if(objSiFaux.status === true){
-        }else{
-            return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 0133 ',element:element}));
-        }
-    }else if('ConditionalExpression' == element.alternate.type){
-        var objSiFaux = traiteConditionalExpression1(element.alternate,niveau,element);
-        if(objSiFaux.status === true){
-        }else{
-            return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 0133 ',element:element}));
-        }
-    }else if('BinaryExpression' == element.alternate.type){
-        var objSiFaux = traiteBinaryExpress1(element.alternate,niveau,false,false);
-        if(objSiFaux.status === true){
-        }else{
-            return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 0258 ',element:element}));
-        }
-    }else if(element.alternate.type === 'CallExpression'){
-        var objSiFaux = traiteCallExpression1(element.alternate,niveau,element,{});
-        if(objSiFaux.status === true){
-        }else{
-            return(astjs_logerreur({status:false,'message':'erreur traiteConditionalExpression1 0115 pour '+element.consequent.type,element:element}));
-        }
+
+    var objSiFaux=traiteUneComposante(element.alternate , niveau , false , false );
+    if(objSiFaux.status === true){
     }else{
-        return(astjs_logerreur({'status':false,'message':'erreur dans traiteConditionalExpression1 0102 '+element.alternate.type,element:element}));
+        return(astjs_logerreur({status:false,'message':'erreur pour traiteUpdateExpress1 1707 '+element.type,element:element}));
     }
+    
     t+='testEnLigne(condition(('+objtest1.value+')),siVrai('+objSiVrai.value+'),siFaux('+objSiFaux.value+'))';
     return({status:true,value:t});
 }
+/*
+============================================================================
+*/
 function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     var t='';
-    console.log('%c dans traiteBinaryExpress1 element=','color:red;background:yellow;font-weight:bold;',element);
+
+    var nomDuTest = recupNomOperateur(element.operator);
+//    debugger
+    var gauche=traiteUneComposante(element.left , niveau , parentEstCrochet,dansSiOuBoucle );
+    if(gauche.status === true){
+    }else{
+        return(astjs_logerreur({status:false,'message':'erreur pour traiteBinaryExpress1 0215 '+element.type,element:element}));
+    }
+
+
+    var droite=traiteUneComposante(element.right , niveau , parentEstCrochet,dansSiOuBoucle );
+    if(droite.status === true){
+    }else{
+        return(astjs_logerreur({status:false,'message':'erreur pour traiteUpdateExpress1 0222 '+element.type,element:element}));
+    }
+
+    if( 
+             ( element.right.type === 'Literal' && ( element.right.raw.substr(0,1)==="'" || element.right.raw.substr(0,1)==='"') && nomDuTest==='plus' )
+          || ( element.left.type === 'Literal'  && ( element.left.raw.substr(0,1)==="'"  || element.left.raw.substr(0,1)==='"' ) && nomDuTest==='plus' )
+     ){
+      
+       t+='concat('+gauche.value+','+droite.value+')';
+     
+     }else if( (parentEstCrochet) && ( (nomDuTest === 'plus') || (nomDuTest === 'moins')) ){
+     
+             
+       if(
+       
+            ( element.right.type == 'Literal'               && element.left.type === 'CallExpression' )
+         || ( element.right.type == 'ConditionalExpression' && element.left.type === 'CallExpression' )
+         || ( element.right.type == 'Literal'               && element.left.type === 'Identifier' )
+         || ( element.right.type == 'Identifier'            && element.left.type === 'Identifier' )
+         
+      ){
+       
+        t+=''+gauche.value+element.operator+droite.value+'';
+        
+      }else{
+       
+        t+=''+nomDuTest+'('+gauche.value+','+droite.value+')';
+        
+      }
+    
+    }else{
+        t+=''+nomDuTest+'('+gauche.value+','+droite.value+')';
+    }
+
+
+    console.log('%c dans traiteBinaryExpress1 element=','color:red;background:pink;font-weight:bold;',element);
+/*    
     if((element.left) && (element.left.type === 'CallExpression')){
         var nomDuTest = recupNomOperateur(element.operator);
         var obj0 = traiteCallExpression1(element.left,niveau,element,{});
@@ -176,6 +296,20 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
                 console.error('erreur traiteMemberExpression1 element=',element);
                 return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 237 pour '+element.right.type,element:element}));
             }
+        }else if((element.right) && (element.right.type === 'BinaryExpression')){
+            var obj1 = traiteBinaryExpress1(element.right,niveau,parentEstCrochet,dansSiOuBoucle);
+            if(obj1.status === true){
+                t+=''+nomDuTest+'('+obj0.value+','+obj1.value+')';
+            }else{
+                return(astjs_logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 0184 ',element:element}));
+            }
+        }else if((element.right) && (element.right.type === 'CallExpression')){
+            var obj1 = traiteCallExpression1(element.right,niveau,element,{});
+            if(obj1.status === true){
+                t+=''+nomDuTest+'('+obj0.value+','+obj1.value+')';
+            }else{
+                return(astjs_logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 0184 ',element:element}));
+            }
         }else{
             return(astjs_logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 0234 '+element.right.type,element:element}));
         }
@@ -191,7 +325,11 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
             if((parentEstCrochet) && ((nomDuTest === 'plus') || (nomDuTest === 'moins'))){
                 t+=''+element.left.name+element.operator+element.right.raw+'';
             }else{
-                t+=''+nomDuTest+'('+element.left.name+','+element.right.raw+')';
+                if( (element.right.raw.substr(0,1)==="'" || element.right.raw.substr(0,1)==='"') && nomDuTest==='plus' ){
+                 t+='concat('+element.left.name+','+element.right.raw+')';
+                }else{
+                 t+=''+nomDuTest+'('+element.left.name+','+element.right.raw+')';
+                }
             }
         }else if((element.right) && (element.right.type === 'BinaryExpression')){
             var obj1 = traiteBinaryExpress1(element.right,niveau,parentEstCrochet,dansSiOuBoucle);
@@ -390,6 +528,21 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         console.log('element=',element);
         return(astjs_logerreur({'status':false,'message':'erreur dans traiteBinaryExpress1 0508 '+element.left.type,element:element}));
     }
+*/    
+    
+    if( t.substr(0,14) === 'concat(concat(' || t.substr(0,12) === 'concat(plus('  || t.substr(0,12) === 'plus(concat('  ){
+        var o = functionToArray(t,true,false);
+        if(o.status === true){
+            console.log('%c simplifier les concat concat','background:pink;',t,o.value);
+            var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
+            console.log('nouveauTableau=',nouveauTableau);
+            var obj = a2F1(nouveauTableau,0,false,1,false);
+            if(obj.status === true){
+                console.log('apres simplification obj.value=',obj.value);
+                t=obj.value;
+            }
+        }
+    }
     if((t.substr(0,10) === 'plus(plus(') || (t.substr(0,12) === 'moins(moins(')){
         var o = functionToArray(t,true,false);
         if(o.status === true){
@@ -461,6 +614,15 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
     var t='';
     var i=0;
     var j=0;
+    
+    var obj1=traiteUneComposante(element , niveau , false,dansSiOuBoucle );
+    if(obj1.status === true){
+        t+='('+obj1.value+')';
+    }else{
+        return(astjs_logerreur({status:false,'message':'erreur pour js_traiteCondition1 0614 '+element.type,element:element}));
+    }
+/*
+    
     if(element.type === 'BinaryExpression'){
         var obj1 = traiteBinaryExpress1(element,niveau,false,dansSiOuBoucle);
         if(obj1.status === true){
@@ -527,7 +689,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
             return(astjs_logerreur({'status':false,'message':'erreur dans traiteCondition1 0414 '+element.operator+' '+element.argument.type,element:element}));
         }
     }else if(element.type === 'Literal'){
-        t+=element.raw;
+        t+='('+element.raw+')';
     }else if(element.type === 'ArrayExpression'){
         var obj1 = traiteArrayExpression1(element,niveau);
         if(obj1.status === true){
@@ -540,6 +702,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
         console.error('traiteCondition1 todo 0560 ',element);
         return(astjs_logerreur({'status':false,'message':'erreur dans traiteCondition1 0420 ',element:element}));
     }
+*/
     /*
       il faut transformer ceci :
       [[[egal[a,1]],ou[[egal[b,2]]]],ou[[egal[c,3]]]],
@@ -1569,6 +1732,7 @@ function traiteMemberExpression2OLD(element,niveau,parent){
     }
     return({status:true,value:t,prop:propriete,'razCumulPropMembre':razCumulPropMembre,retourneUnTableau:retourneUnTableau});
 }
+/* =================================================================================== */
 function traiteUpdateExpress1(element,niveau,opt){
     console.log('%c dans traiteUpdateExpress1 , element=','color:red;background:yellow;',element);
     var t='';
@@ -1580,19 +1744,31 @@ function traiteUpdateExpress1(element,niveau,opt){
         esp0='';
         esp1='';
     }
-    if('Identifier' === element.argument.type){
-        if(('++' === element.operator) && (element.prefix == false)){
-            t+='affecte('+element.argument.name+','+element.argument.name+'+1)';
-        }else if(('--' === element.operator) && (element.prefix == false)){
-            t+='affecte('+element.argument.name+','+element.argument.name+'-1)';
-        }else{
-            return(astjs_logerreur({status:false,'message':'erreur traiteUpdateExpress1 867 pour '+element.argument.operator,element:element}));
-        }
+    var elem='';
+    var obj=traiteUneComposante(element.argument , niveau, false , false );
+    if(obj.status === true){
+      elem=obj.value;
     }else{
-        return(astjs_logerreur({status:false,'message':'erreur traiteUpdateExpress1 628 pour '+element.argument.type,element:element}));
+        return(astjs_logerreur({status:false,'message':'erreur pour traiteUpdateExpress1 1707 '+element.type,element:element}));
     }
+    if(      ('++' === element.operator) && (element.prefix == false)){
+        t+='postinc('+elem+')';
+    }else if(('--' === element.operator) && (element.prefix == false)){
+        t+='postdec('+elem+')';
+    }else if(('++' === element.operator) && (element.prefix == true)){
+        t+='preinc('+elem+')';
+    }else if(('--' === element.operator) && (element.prefix == true)){
+        t+='predec('+elem+')';
+    }
+    
     return({status:true,value:t});
 }
+
+/*
+=========================================================
+*/
+
+
 function traiteAssignmentExpress1(element,niveau,opt){
     console.log('%c dans traiteAssignmentExpress1 element=','color:red;background:yellow;font-weight:bold;',element);
     var t='';
@@ -1606,6 +1782,7 @@ function traiteAssignmentExpress1(element,niveau,opt){
     }else{
         t+=ajouteCommentaireAvant(element,niveau);
     }
+    
     var valeurLeft='';
     if((element.left) && (element.left.type === 'Identifier')){
         if(element.operator === '='){
@@ -1672,7 +1849,7 @@ function traiteAssignmentExpress1(element,niveau,opt){
                 return(astjs_logerreur({status:false,message:'erreur dans traiteAssignmentExpress1 1027',element:element}));
             }
         }else if((element.right) && (element.right.type === 'LogicalExpression')){
-            var obj1 = traiteLogicalExpression1(element.right,niveau,false);
+            var obj1 = traiteLogicalExpression1(element.right,niveau,true);
             if(obj1.status === true){
                 t+=valeurLeft+'condition('+obj1.value+'))';
             }else{
@@ -2199,6 +2376,8 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
                 }else{
                     return(astjs_logerreur({status:false,'message':'erreur pour TransformAstEnRev 1994 '+element.type,element:element}));
                 }
+            }else if('EmptyStatement' === element.type){
+                    t+='\n'+esp0+'#(un point virgule est-il en trop ?)';
             }else{
                 astjs_logerreur({status:false,'message':'erreur922 pour '+element.type,element:element});
                 console.error('non pris en compte element.type='+element.type,element);

@@ -66,7 +66,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                         }else{
                             return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans obj de "return" ou "dans" il y a un problème'}));
                         }
-                    }else if((tab[i+1][2] == 'f') && (tab[i+1][1] == 'plus')){
+                    }else if((tab[i+1][2] == 'f') && (tab[i+1][1] == 'plus' || (tab[i+1][1] == 'concat')  )){
                         t+=espacesn(true,niveau);
                         var objOperation = TraiteOperations1(tab,tab[i+1][0],niveau);
                         if(objOperation.status == true){
@@ -294,6 +294,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                     }
                 }else if(tabchoix[j][1] == 'increment'){
                     niveau=niveau+1;
+
                     obj=js_tabTojavascript1(tab,(tabchoix[j][0]+1),true,true,niveau);
                     niveau=niveau-1;
                     if(obj.status == true){
@@ -305,13 +306,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                         return(logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,'message':'problème sur le alors du choix en indice '+tabchoix[j][0]}));
                     }
                 }else if(tabchoix[j][1] == 'faire'){
-                    niveau=niveau+1;
-                    obj=js_tabTojavascript1(tab,(tabchoix[j][0]+1),dansFonction,false,niveau);
-                    niveau=niveau-1;
-                    if(obj.status == true){
-                        faire+=obj.value;
+
+                    if(tab[tabchoix[j][0]][8]===0){
+                     /* pas d'enfants, ne rien faire !*/
                     }else{
-                        return(logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,'message':'problème sur le alors du choix en indice '+tabchoix[j][0]}));
+                     niveau=niveau+1;
+                     obj=js_tabTojavascript1(tab,(tabchoix[j][0]+1),dansFonction,false,niveau);
+                     niveau=niveau-1;
+                     if(obj.status == true){
+                         faire+=obj.value;
+                     }else{
+                         return(logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,'message':'problème sur le alors du choix en indice '+tabchoix[j][0]}));
+                     }
                     }
                 }
             }
@@ -759,7 +765,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                             }else{
                                 return(logerreur({status:false,value:t,id:id,message:'erreur dans une condition'}));
                             }
-                        }else if((tabdeclare[1][2] === 'f') && ((tabdeclare[1][1] == 'plus') || (tabdeclare[1][1] == 'moins') || (tabdeclare[1][1] == 'mult') || (tabdeclare[1][1] == 'divi'))){
+                        }else if((tabdeclare[1][2] === 'f') && ((tabdeclare[1][1] == 'plus') || (tabdeclare[1][1] == 'moins') || (tabdeclare[1][1] == 'mult') || (tabdeclare[1][1] == 'divi') || (tabdeclare[1][1] == 'concat'))){
                             var objOperation = TraiteOperations1(tab,tabdeclare[1][0],niveau);
                             if(objOperation.status == true){
                                 t+='var '+tabdeclare[0][1]+' = '+objOperation.value+';';
@@ -808,6 +814,35 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                 t+='\n';
             }
             t+='*/';
+        }else if((  tab[i][1] == 'postinc' || tab[i][1] == 'postdec'  || tab[i][1] == 'preinc' || tab[i][1] == 'predec' ) && (tab[i][2] == 'f')){
+            if( !(dansInitialisation)){
+              t+=espacesn(true,niveau);
+            }
+            if( (tab[i+1][2] == 'c') && (tab[i][8] == 1) ){
+                if(tab[i][1] == 'preinc'){
+                 t+='++';
+                }else if(tab[i][1] == 'predec'){
+                 t+='--';
+                }
+                t+=tab[i+1][1];
+                if(tab[i][1] == 'postinc'){
+                 t+='++';
+                }else if(tab[i][1] == 'postdec'){
+                 t+='--';
+                }
+                
+                if( !(dansInitialisation)){
+                  t+=';';
+                }
+            }else{
+              return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans un postinc'}));
+            }
+            reprise=(i+1);
+            max=(i+1);
+            for(j=max;(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
+                reprise=j;
+            }
+            i=reprise;
         }else if((tab[i][1] == 'throw') && (tab[i][2] == 'f')){
             t+=espacesn(true,niveau);
             if((tab[i+1][1] == 'new') && (tab[i+1][8] == 1) && (tab[i+2][1] == 'appelf')){
@@ -939,7 +974,7 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
                             }else{
                                 return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'}));
                             }
-                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins')){
+                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins') || (tab[j+1][1] == 'concat')){
                             var objOperation = TraiteOperations1(tab,(j+1),niveau);
                             if(objOperation.status == true){
                                 argumentsFonction+='['+objOperation.value+']';
@@ -1001,7 +1036,7 @@ function js_traiteInstruction1(tab,niveau,id){
         }else{
             return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteInstruction1 1043 '}));
         }
-    }else if((tab[id][1] == 'plus') || (tab[id][1] == 'mult') || (tab[id][1] == 'divi') || (tab[id][1] == 'moins') || (tab[id][1] == 'etBin')){
+    }else if((tab[id][1] == 'plus') || (tab[id][1] == 'mult') || (tab[id][1] == 'divi') || (tab[id][1] == 'moins') || (tab[id][1] == 'etBin') || (tab[id][1] == 'concat')){
         var objOperation = TraiteOperations1(tab,tab[id][0]);
         if(objOperation.status == true){
             t+=objOperation.value;
@@ -1099,7 +1134,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction){
                             }else{
                                 return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'}));
                             }
-                        }else if(tab[j+2][1] == 'plus'){
+                        }else if(tab[j+2][1] == 'plus' || tab[j+2][1] == 'concat' ){
                             var objOperation = TraiteOperations1(tab,(j+2),0);
                             if(objOperation.status == true){
                                 textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objOperation.value;
@@ -1364,7 +1399,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                         }else if(tab[j+1][1] == '@'){
                             argumentsFonction+=',';
                             argumentsFonction+=tab[j+1][13];
-                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins')){
+                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins') || (tab[j+1][1] == 'concat')){
                             var objOperation = TraiteOperations1(tab,(j+1),niveau);
                             if(objOperation.status == true){
                                 argumentsFonction+=',';
@@ -1447,6 +1482,8 @@ function TraiteOperations1(tab,id,niveau){
                         t+='*';
                     }else if(tab[parentId][1] == 'plus'){
                         t+='+';
+                    }else if(tab[parentId][1] == 'concat'){
+                        t+='+';
                     }else if(tab[parentId][1] == 'moins'){
                         t+='-';
                     }else if(tab[parentId][1] == 'etBin'){
@@ -1475,7 +1512,7 @@ function TraiteOperations1(tab,id,niveau){
                         }
                     }else if(tab[i][2] == 'f'){
                         if(tab[i][1] == '#'){
-                        }else if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'moins') || (tab[i][1] == 'mult') || (tab[i][1] == 'divi') || (tab[i][1] == 'etBin')){
+                        }else if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'mult') || (tab[i][1] == 'divi') || (tab[i][1] == 'etBin')){
                             var objOperation = TraiteOperations1(tab,i);
                             if(objOperation.status == true){
                                 t+=''+objOperation.value+'';
@@ -1530,13 +1567,15 @@ function TraiteOperations1(tab,id,niveau){
                         t+='/(';
                     }else if(tab[parentId][1] == 'plus'){
                         t+='+';
+                    }else if(tab[parentId][1] == 'concat'){
+                        t+='+';
                     }else if(tab[parentId][1] == 'moins'){
                         t+='-';
                     }else if(tab[parentId][1] == 'etBin'){
                         t+='&';
                     }
                     if(tab[i][2] === 'f'){
-                        if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin')){
+                        if((tab[i][1] == 'mult') || (tab[i][1] == 'plus')  || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin')){
                             var objOperation = TraiteOperations1(tab,i);
                             if(objOperation.status == true){
                                 t+=objOperation.value;
@@ -1725,7 +1764,7 @@ function js_condition1(tab,id,niveau){
                             }
                         }else if((tab[tabPar[0]][2] == 'f') && (tab[tabPar[0]][1] == 'Typeof')){
                             t+='typeof '+(tab[tabPar[0]+1][1]);
-                        }else if((tab[tabPar[0]][2] == 'f') && ((tab[tabPar[0]][1] == 'plus') || (tab[tabPar[0]][1] == 'moins'))){
+                        }else if((tab[tabPar[0]][2] == 'f') && ( (tab[tabPar[0]][1] == 'plus') || (tab[tabPar[0]][1] == 'concat') || (tab[tabPar[0]][1] == 'moins'))){
                             var objOperation = TraiteOperations1(tab,tab[tabPar[0]][0]);
                             if(objOperation.status == true){
                                 t+=objOperation.value;
@@ -1783,7 +1822,7 @@ function js_condition1(tab,id,niveau){
                             }else{
                                 return(logerreur({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'}));
                             }
-                        }else if((tab[tabPar[1]][2] == 'f') && ((tab[tabPar[1]][1] == 'moins') || (tab[tabPar[1]][1] == 'plus'))){
+                        }else if((tab[tabPar[1]][2] == 'f') && ((tab[tabPar[1]][1] == 'moins') || (tab[tabPar[1]][1] == 'plus') || (tab[tabPar[1]][1] == 'concat'))){
                             var objOperation = TraiteOperations1(tab,tab[tabPar[1]][0]);
                             if(objOperation.status == true){
                                 t+=objOperation.value;

@@ -219,28 +219,28 @@ function clearMessages(nomZone){
 function displayMessages(nomZone,zoneScriptOriginal){
     reactiverLesBoutons();
     var i=0;
-    for(i=0;i < global_messages.errors.length;i=(i+1)){
+    for(i=0;i < global_messages.errors.length;i++){
         document.getElementById(nomZone).innerHTML+='<div class="yyerror">'+global_messages.errors[i]+'</div>';
     }
-    for(i=0;i < global_messages.warnings.length;i=(i+1)){
+    for(i=0;i < global_messages.warnings.length;i++){
         document.getElementById(nomZone).innerHTML+='<div class="yywarning">'+global_messages.warnings[i]+'</div>';
     }
-    for(i=0;i < global_messages.infos.length;i=(i+1)){
+    for(i=0;i < global_messages.infos.length;i++){
         document.getElementById(nomZone).innerHTML+='<div class="yyinfo">'+global_messages.infos[i]+'</div>';
     }
-    for(i=0;i < global_messages.lines.length;i=(i+1)){
+    for(i=0;i < global_messages.lines.length;i++){
         document.getElementById(nomZone).innerHTML+='<a href="javascript:jumpToError('+(global_messages.lines[i]+1)+',\''+zoneScriptOriginal+'\')" class="yyerror" style="border:2px red outset;">go to line '+global_messages.lines[i]+'</a>&nbsp;';
     }
     if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
         var numLignePrecedente=-1;
-        for(i=0;i < global_messages.ids.length;i=(i+1)){
+        for(i=0;i < global_messages.ids.length;i++){
             var id = global_messages.ids[i];
             if((global_messages.data.matrice) && (id < global_messages.data.matrice.value.length)){
                 var ligneMatrice = global_messages.data.matrice.value[id];
                 var caractereDebut = ligneMatrice[5];
                 var numeroDeLigne=0;
                 var j=caractereDebut;
-                for(j=caractereDebut;j >= 0;j=j-1){
+                for(j=caractereDebut;j >= 0;j--){
                     if(global_messages.data.tableau.out[j][0] == '\n'){
                         numeroDeLigne=(numeroDeLigne+1);
                     }
@@ -254,7 +254,7 @@ function displayMessages(nomZone,zoneScriptOriginal){
             }
         }
     }
-    for(i=0;i < global_messages.ranges.length;i=(i+1)){
+    for(i=0;i < global_messages.ranges.length;i++){
         document.getElementById(nomZone).innerHTML+='<a href="javascript:jumpToRange('+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+')" class="yyerror" style="border:2px red outset;">go to range '+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+'</a>&nbsp;';
     }
 }
@@ -304,7 +304,7 @@ function selectTextareaLine(tarea,lineNum){
     var startPos=0;
     var endPos=tarea.value.length;
     var x=0;
-    for(x=0;x < lines.length;x=x+1){
+    for(x=0;x < lines.length;x++){
         if(x == lineNum){
             break;
         }
@@ -555,9 +555,9 @@ function reIndicerLeTableau(tab){
       parent et nombre d'enfants
       =================================================================================================================
     */
-    for(i=l01-1;i > 0;i=i-1){
+    for(i=l01-1;i > 0;i--){
         niveau=tab[i][3];
-        for(j=i;j >= 0;j=j-1){
+        for(j=i;j >= 0;j--){
             if(tab[j][3] == niveau-1){
                 tab[i][7]=j;
                 tab[j][8]=(tab[j][8]+1);
@@ -570,11 +570,11 @@ function reIndicerLeTableau(tab){
       numéro d'enfant
       =================================================================================================================
     */
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         k=0;
-        for(j=(i+1);j < l01;j=(j+1)){
+        for(j=(i+1);j < l01;j++){
             if(tab[j][7] == tab[i][0]){
-                k=(k+1);
+                k++;
                 tab[j][9]=k;
             }
         }
@@ -585,14 +585,14 @@ function reIndicerLeTableau(tab){
       =================================================================================================================
     */
     var l=0;
-    for(i=l01-1;i > 0;i=i-1){
+    for(i=l01-1;i > 0;i--){
         if(tab[i][2] == 'c'){
             tab[i][10]=0;
         }
         if(tab[i][7] > 0){
             k=tab[i][3];
             l=tab[i][7];
-            for(j=1;j <= k;j=(j+1)){
+            for(j=1;j <= k;j++){
                 if(tab[l][10] < j){
                     tab[l][10]=j;
                 }
@@ -613,12 +613,12 @@ function baisserNiveauEtSupprimer(tab,id,niveau){
         if(tab[i][7] === id){
             tab[i][3]=tab[i][3]-1;
             if(tab[i][2] === 'f'){
-                niveau=niveau+1;
+                niveau++;
                 /*
-                  appel récursif pour baisser les enfants des enfants
+                  appel récursif pour baisser le niveau des enfants des enfants des enfants ....
                 */
                 baisserNiveauEtSupprimer(tab,i,niveau);
-                niveau=niveau-1;
+                niveau--;
             }
         }
     }
@@ -681,9 +681,9 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             */
             t='';
             min=99999;
-            for(i=1;i < l01;i=(i+1)){
+            for(i=1;i < l01;i++){
                 ligne=tab[i];
-                for(j=0;j < ligne.length;j=(j+1)){
+                for(j=0;j < ligne.length;j++){
                     /*
                       on balaye toutes les lignes pour détecter 
                       le nombre d'espaces minimal à gauche
@@ -701,7 +701,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             }
             if(min > 2){
                 /*tout décaler à gauche*/
-                for(i=1;i < l01;i=(i+1)){
+                for(i=1;i < l01;i++){
                     tab[i]=tab[i].substr(min-2);
                 }
             }
@@ -729,10 +729,10 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     unBlocPlus1=' '.repeat(nbEspacesSrc1*(niveau)+2);
     var s1='';
     var s2='';
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         t='';
         /*on enlève les espaces au début*/
-        for(j=0;j < tab[i].length;j=(j+1)){
+        for(j=0;j < tab[i].length;j++){
             temps=tab[i].substr(j,1);
             if(temps != ' '){
                 temps=tab[i].substr(j);
@@ -827,7 +827,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
       boucle principale qui commence à partir de "debut" passé en paramètre
       =====================================================================
     */
-    for(i=debut;i < l01;i=(i+1)){
+    for(i=debut;i < l01;i++){
         /*
           on ne traite que les enfants et les éléments 
           dont le niveau est supérieur au niveau du parent
@@ -857,7 +857,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
               Si c'est la premier enfant d'une fonction, 
               on teste si il existe des enfants de type commentaires
             */
-            for(j=debut;(j < l01) && (arr[j][3] > arr[parentId][3]);j=(j+1)){
+            for(j=debut;(j < l01) && (arr[j][3] > arr[parentId][3]);j++){
                 if((arr[j][1] == DEBUTCOMMENTAIRE) && (arr[j][2] == 'f') && (arr[j][3] < arr[parentId][3]+profondeurLimite)){
                     /*
                       il y a un commentaire
@@ -868,7 +868,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                     break;
                 }
             }
-            for(j=debut;(j < l01) && (arr[j][3] > arr[parentId][3]) && forcerRetourLigne===false ;j=(j+1)){
+            for(j=debut;(j < l01) && (arr[j][3] > arr[parentId][3]) && forcerRetourLigne===false ;j++){
                 if(arr[j][8] > nombreEnfantsLimite){
                     /*
                       si le nombre d'enfants est supérieur à 3
@@ -914,8 +914,8 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
              
              /* methode3' simple quote */
              chaine=arr[i][1];           
-             chaine=replaceAll(chaine,chLF,'\n')
-             chaine=replaceAll(chaine,chCR,'\r')
+             chaine=replaceAll(chaine,chLF,'\n');
+             chaine=replaceAll(chaine,chCR,'\r');
              
              if(coloration){
               t=concat(t,'\'',strToHtml(chaine),'\'');
@@ -927,8 +927,8 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
              /* methode3modele ` */
              
              chaine=arr[i][1];           
-             chaine=replaceAll(chaine,chLF,'\n')
-             chaine=replaceAll(chaine,chCR,'\r')
+             chaine=replaceAll(chaine,chLF,'\n');
+             chaine=replaceAll(chaine,chCR,'\r');
 
              if(coloration){
               t=concat(t,'`',strToHtml(chaine),'`');
@@ -941,8 +941,8 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
              
              /* methode3" double quote */
              chaine=arr[i][1];           
-             chaine=replaceAll(chaine,chLF,'\n')
-             chaine=replaceAll(chaine,chCR,'\r')
+             chaine=replaceAll(chaine,chLF,'\n');
+             chaine=replaceAll(chaine,chCR,'\r');
 
              if(coloration){
               t=concat(t,'"',strToHtml(chaine),'"');
@@ -1117,7 +1117,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     tr1.appendChild(td1);
     /*boucle principale*/
     l01=out.length;
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         var td1={};
         td1=document.createElement('td');
         td1.innerHTML=out[i][0].replace('\n','\\n');
@@ -1146,7 +1146,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             td1.setAttribute('class','td2');
             td1.innerHTML='&nbsp;';
             tr1.appendChild(td1);
-            for(j=debut;j < i;j=(j+1)){
+            for(j=debut;j < i;j++){
                 var td1={};
                 td1=document.createElement('td');
                 if(out[j][1] == 1){
@@ -1183,7 +1183,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
             td1.setAttribute('class','td2');
             td1.innerHTML='&nbsp;';
             tr1.appendChild(td1);
-            for(j=debut;j < i;j=(j+1)){
+            for(j=debut;j < i;j++){
                 var td1={};
                 td1=document.createElement('td');
                 if(out[j][1] == 1){
@@ -1249,7 +1249,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     td1.setAttribute('class','td2');
     td1.innerHTML='&nbsp;';
     tr1.appendChild(td1);
-    for(j=debut;j < i;j=(j+1)){
+    for(j=debut;j < i;j++){
         var td1={};
         td1=document.createElement('td');
         if(out[j][1] == 1){
@@ -1279,7 +1279,7 @@ function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
     td1.setAttribute('class','td2');
     td1.innerHTML='&nbsp;';
     tr1.appendChild(td1);
-    for(j=debut;j < i;j=(j+1)){
+    for(j=debut;j < i;j++){
         var td1={};
         td1=document.createElement('td');
         if(out[j][1] == 1){
@@ -1329,7 +1329,7 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
       =================
     */
     l01=global_enteteTableau.length;
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         var td1={};
         td1=document.createElement('th');
         td1.innerHTML=concat(i,global_enteteTableau[i][0]);
@@ -1346,10 +1346,10 @@ function ConstruitHtmlMatrice(t1,matriceFonction){
       ===================
     */
     l01=matriceFonction.value.length;
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         var tr1={};
         tr1=document.createElement('tr');
-        for(j=0;j < matriceFonction.value[i].length;j=(j+1)){
+        for(j=0;j < matriceFonction.value[i].length;j++){
             var td1={};
             td1=document.createElement('td');
             if((j == 1) || (j == 13)){
@@ -1404,7 +1404,7 @@ function iterateCharacters2(str){
     var retour={};
     var temp=0;
     var indiceTab=0;
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         codeCaractere=str.charCodeAt(i);
         /*
           zero width space , vertical tab
@@ -1422,7 +1422,7 @@ function iterateCharacters2(str){
 */                
                 out[indiceTab]=[str.substr(i,2),2,i,numLigne];
                 indiceTab++;
-                i=(i+1);
+                i++;
             }else{
 /*             
                 out.push(Array(
@@ -1432,7 +1432,7 @@ function iterateCharacters2(str){
                 out[indiceTab]=[str.substr(i,1),1,i,numLigne];
                 indiceTab++;
                 if(codeCaractere === 10){
-                    numLigne=(numLigne+1);
+                    numLigne++;
                 }
             }
         }else{
@@ -1455,7 +1455,7 @@ function iterateCharacters2(str){
 function reconstruitChaine(tab,debut,fin){
     var t='';
     var i=debut;
-    for(i=debut;(i <= fin) && (i < tab.length);i=(i+1)){
+    for(i=debut;(i <= fin) && (i < tab.length);i++){
         t+=tab[i][0];
     }
     return t;
@@ -1579,7 +1579,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       // ====================================================================
       // ====================================================================
     */
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         c=tableauEntree[i][0];
         if(dsComment){
             /*
@@ -1705,10 +1705,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         premier=i;
                     }
                     texte=concat(texte,'\\',c1);
-                    i=(i+1);
+                    i++;
                 }else if(c1 == '"'){
                     texte=concat(texte,'"');
-                    i=(i+1);
+                    i++;
                 }else{
                     if(i > 100){
                         var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
@@ -1809,7 +1809,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     premier=i;
                 }
                 texte=concat(texte,'\\',c1);
-                i=(i+1);
+                i++;
             }else{
                 if(texte == ''){
                     premier=i;
@@ -1890,16 +1890,24 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
+/*                
+                // Dans une variable js, il y avait un exemple php : use PhpParser\Error; . ceci n'est pas une erreur 
                 if((c1 == '\\') || (c1 == '`') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u')){
                     if(texte == ''){
                         premier=i;
                     }
                     texte=concat(texte,'\\',c1);
-                    i=(i+1);
+                    i++;
                 }else{
                     temp={'status':false,'value':T,'id':i,'message':'1293 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u'};
                     return(logerreur(temp));
                 }
+*/                
+                if(texte == ''){
+                    premier=i;
+                }
+                texte=concat(texte,'\\',c1);
+                i++;
             }else{
                 if(texte == ''){
                     premier=i;
@@ -1998,13 +2006,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         premier=i;
                     }
                     texte=concat(texte,c1);
-                    i=(i+1);
+                    i++;
                 }else if( (c1 == '\\') || (c1 == '\'') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u' ) || (c1 == '/')){
                     if(texte == ''){
                         premier=i;
                     }
                     texte=concat(texte,'\\',c1);
-                    i=(i+1);
+                    i++;
                 }else{
                     if(i > 100){
                         var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
@@ -2111,7 +2119,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   
                 */
 /*                
-                for(j=indice;j >= 0;j=j-1){
+                for(j=indice;j >= 0;j--){
                     if((T[j][3] == niveau) && (T[j][2] == 'f')){
                         T[j][12]=posFerPar;
                         break;
@@ -2391,7 +2399,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       ========================================
     */
     if((niveau != 0) && (quitterSiErreurNiveau)){
-        temp={'status':false,'value':T,'message':'des parenthèses ne correspondent pas'};
+        temp={'status':false,'value':T,'message':'2401 des parenthèses ne correspondent pas'};
         return(logerreur(temp));
     }
     /**/
@@ -2417,7 +2425,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             niveauPrecedent=niveau;
         
     }
-    
+    /*
+     Les performances sur chrome sont très mauvaises en utilisant des push
+     c'est pourquoi on construit cette variable texte : "chaineTableau" qu'on
+     transforme en tableau ici, sur un tableau de 25000 éléments, on multiplie
+     la vitesse d'exécution pas un facteur compris entre 30 et 60
+    */
     chaineTableau='['+chaineTableau+']';
     T=JSON.parse(chaineTableau);
     
@@ -2441,12 +2454,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       ============================================================== 
     */
     l01=T.length;
-    for(i=l01-1;i > 0;i=i-1){
+    for(i=l01-1;i > 0;i--){
         niveau=T[i][3];
-        for(j=i;j >= 0;j=j-1){
+        for(j=i;j >= 0;j--){
             if(T[j][3] == niveau-1){
                 T[i][7]=j;
-                T[j][8]=T[j][8]+1;
+                T[j][8]++;
                 break;
             }
         }
@@ -2459,9 +2472,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       ==============================
     */
     k=0;
-    for(i=0;i < l01;i=(i+1)){
+    for(i=0;i < l01;i++){
         k=0;
-        for(j=(i+1);j < l01;j=(j+1)){
+        for(j=(i+1);j < l01;j++){
             if(T[j][7] == T[i][0]){
                 k=(k+1);
                 T[j][9]=k;
@@ -2475,14 +2488,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       l=idParent
       =======================================
     */
-    for(i=l01-1;i > 0;i=i-1){
+    for(i=l01-1;i > 0;i--){
         if(T[i][2] == 'c'){
             T[i][10]=0;
         }
         if(T[i][7] > 0){
             k=T[i][3];
             l=T[i][7];
-            for(j=1;j <= k;j=(j+1)){
+            for(j=1;j <= k;j++){
                 if(T[l][10] < j){
                     T[l][10]=j;
                 }

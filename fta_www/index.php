@@ -8,8 +8,7 @@ $o1='';
 $o1=html_header1(array('title'=>'php home' , 'description'=>'php home'));
 print($o1);$o1='';
 
- $o1.='<script>window.jQuery || document.write(\'<script>alert("hello")<\/script>\')</script>'.CRLF;
-print($o1);$o1='';
+
 ?>
         <h1>PHP HOME</h1>
         <ul class="menu2">
