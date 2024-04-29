@@ -106,9 +106,8 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY][
     */
     $o1=htmlDansPhp('
     <form id=\'boite_de_connexion\' method=\'post\'>
-        <span>logout</span>
         <input type=\'hidden\' name=\'logout\' id=\'logout\' value=\'\' />
-        <input type=\'submit\' value=\'envoyer\' />
+        <button type=\'submit\'>cliquez ici pour vous déconnecter</button>
     </form>
 ');
 }else{
@@ -127,7 +126,7 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY][
             mot de passe
         </label>
         <input type=\'password\' name=\'mot_de_passe\' id=\'mot_de_passe\' value=\'\' />
-        <input type=\'submit\' value=\'envoyer\' />
+        <button type=\'submit\'>cliquez ici pour vous connecter</button>
     </form>
 <script type=\'text/javascript\'>
 //<![CDATA[

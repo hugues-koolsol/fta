@@ -1,41 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
- <meta charset="utf-8" />
- <title>html home</title>
- <meta name="viewport" content="width=device-width, initial-scale=1" />
- <meta http-equiv="Refresh" content="0; url='index.php'" />
- <link rel="stylesheet" href="index.css" />
-
-</head>
-<body>
-<div style="height:24px;"></div>
-<nav style="background: aliceblue;border: 1px red outset;position: fixed;top: 0;left: 0;width: 100%;">
-    <a href="index.html">html home</a>
-    <a href="index.php">php home</a>
-    <a href="todo.html">todo</a>
-    <a href="traiteJs4.html">traiteJs4</a>
-    <a href="traitePhp0.html">traitePhp0</a>
-    <a href="aa_login.php">login</a>
-  </nav>
-
-  <h1>HTML HOME  🌞aa</h1>
-  
-  
-  <ul class="menu2">
-    <li><a href="javascript:chargerSourceDeTest()">source de test</a></li>
-  </ul>
-  <textarea class="txtar1" id="txtar1" rows="10"></textarea>
-  <a href="javascript:transformLeRev()">transform</a>
-  <div id="message1"></div>
-  <div id="resultat1"></div>
-  <script type="text/javascript" src="js/core6.js"></script>
-
-<script type="text/javascript">
-
+/*
 var startMicro=performance.now();
 var endMicro=performance.now();  console.log('temps=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
-
+*/
 /*
 var chaine = '  antislash \\ quot \' antislash*3+quot \\\' ';
 var t=chaine.replace(/[^\\]'/g,"\\'");
@@ -50,10 +16,13 @@ var me='c="<'+bb+'>"';
 eval(me);
 alert(c);
 */
-//var aaa="\\'\"\\[]";
-//var bbb=aaa.replace(/\\/g,"&#92;").replace(/'/g,'&apos;').replace(/"/g,"&quot;").replace(/\[/g,"crochetOuvrant");
-//alert(bbb);
-//=====================================================================================================================
+/*
+var aaa="\\'\"\\[]";
+var bbb=aaa.replace(/\\/g,"&#92;").replace(/'/g,'&apos;').replace(/"/g,"&quot;").replace(/\[/g,"crochetOuvrant");
+alert(bbb);
+*/
+/*=====================================================================================================================*/
+
 function chargerSourceDeTest(){
  var t=`#( début aaaa  debut),
 a(
@@ -110,51 +79,22 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
 
 \
 )
-
-
-
 `;
-/*
-
-a( p(/ " \' \" \n \r \\r \\n \\\\ /g) , p(" \\ \" \\\" \n \r '") , p(' \\ \' \n \r "  ') ),
-#(
-p('\\\' \' \r \n ')
-
-
-        a( p(/ " \' \" \n \r \\r \\n \\\\ /g) , p(" \\ \" \n \r '") , p(' \\ \n \r "  ') ),
-
-appelf(nomf(f),p(/\\\\n/g),p('\\n'),p('\\r'))
-      affecte(sql , "\r\n \" \\\\
-      select * from toto
-      "),
-
-      affecte(sql , '\n \r \\r \\n 
-      select * from toto
-      '),
-
-
-)
-
-*/
 
  dogid('txtar1').value=t;
+ var lines = t.split(/\r|\r\n|\n/);
+ var count = lines.length;
+ dogid('txtar1').setAttribute('rows',count+1);
+ transformLeRev();
+ 
 }
-//=====================================================================================================================
-function chargerLeDernierSourceRev(){
- var fta_indexhtml_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_dernier_fichier_charge");
-// console.log('fta_indexhtml_dernier_fichier_charge=' , fta_indexhtml_dernier_fichier_charge );
- if(fta_indexhtml_dernier_fichier_charge!==null){
-  dogid('txtar1').value=fta_indexhtml_dernier_fichier_charge;
- }
-}
-//=====================================================================================================================
+/*=====================================================================================================================*/
 
 
 function transformLeRev(){
   //"àà"
-  clearMessages();
+  clearMessages('zone_global_messages');
   console.log('\n=========================\ndébut de transforme')
-  document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
 
   var a=document.getElementById('txtar1');
@@ -168,6 +108,7 @@ function transformLeRev(){
   
   
   
+  var beginMicro=performance.now();
   var startMicro=performance.now();
   var tableau1=iterateCharacters2(a.value);
   var endMicro=performance.now();  
@@ -179,11 +120,12 @@ function transformLeRev(){
   var endMicro=performance.now();  
   console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
+  var tempsTraitement=parseInt(((endMicro-beginMicro)*1000),10)/1000+' ms'
+
   console.log(matriceFonction1);
 //  console.log(JSON.stringify(matriceFonction1.value));
   
 
-  document.getElementById('message1').innerHTML='';
   document.getElementById('resultat1').innerHTML='';
 
 
@@ -208,9 +150,15 @@ function transformLeRev(){
      
      if(compacteOriginal.status==true && compacteReecrit.status===true){
       if(compacteOriginal.value == compacteReecrit.value){
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><textarea rows="1" cols="30">'+strToHtml(compacteOriginal.value)+'</textarea>';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;">'+strToHtml(compacteOriginal.value)+'</textarea>';
+       
+        logerreur({'status':true,'message':'👍 sources compactés Egaux : ' + tempsTraitement});
+       
+       
       }else{
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
+       logerreur({'status':false,'message':'💥sources compactés différents'});
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.value;
       }
@@ -230,7 +178,7 @@ function transformLeRev(){
     
     var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.value,true,true);
     var difonctionReecriteAvecRetour1=document.createElement('pre');
-    difonctionReecriteAvecRetour1.style.fontSize='0.8em';
+    difonctionReecriteAvecRetour1.style.fontSize='0.9em';
     if(fonctionReecriteAvecEtColoration1.status===true){
      difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr />'+fonctionReecriteAvecEtColoration1.value;
     }else{
@@ -239,14 +187,20 @@ function transformLeRev(){
     document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
     
     
+    var t0=document.createElement('div');
+    t0.style.overflowX='scroll';
     var t1=document.createElement('table');
     ConstruitHtmlMatrice(t1,matriceFonction1);
-    document.getElementById('resultat1').appendChild(t1);
+    t0.appendChild(t1);
+    document.getElementById('resultat1').appendChild(t0);
     
+
+    var t0=document.createElement('div');
+    t0.style.overflowX='scroll';
     var t2=document.createElement('table');
-    
     ConstruitHtmlTableauCaracteres(t2,a.value,tableau1)
-    document.getElementById('resultat1').appendChild(t2);
+    t0.appendChild(t2);
+    document.getElementById('resultat1').appendChild(t0);
     
     
     
@@ -256,14 +210,24 @@ function transformLeRev(){
     ConstruitHtmlTableauCaracteres( t2 , a.value , tableau1 );
     document.getElementById('resultat1').appendChild(t2);
   }
-  displayMessages('message1');
+  displayMessages('zone_global_messages');
 
   
  
 }
+/*=====================================================================================================================*/
+function chargerLeDernierSourceRev(){
+ var fta_indexhtml_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_dernier_fichier_charge");
+// console.log('fta_indexhtml_dernier_fichier_charge=' , fta_indexhtml_dernier_fichier_charge );
+ if(fta_indexhtml_dernier_fichier_charge!==null){
+  dogid('txtar1').value=fta_indexhtml_dernier_fichier_charge;
+  
+  var lines = fta_indexhtml_dernier_fichier_charge.split(/\r|\r\n|\n/);
+  var count = lines.length;
+  dogid('txtar1').setAttribute('rows',count+1);
+  
+  
+ }
+}
 
 chargerLeDernierSourceRev();
-//transform();
-</script>
-  
-</body></html>

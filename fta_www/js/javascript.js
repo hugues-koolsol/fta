@@ -1021,7 +1021,7 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
             t+=';';
         }
     }else{
-        return(logerreur({status:false,value:t,id:i,tab:tab,message:' dans js_traiteTableau1 il faut un nom de tableau nomt(xxxx)'}));
+        return(logerreur({status:false,value:t,id:i,tab:tab,message:' dans js_traiteTableau1 1024 il faut un nom de tableau nomt(xxxx)'}));
     }
     return({status:true,value:t,'forcerNvelleLigneEnfant':forcerNvelleLigneEnfant,'termineParUnePropriete':termineParUnePropriete});
 }
@@ -1427,19 +1427,35 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
         }
         t+=((nomRetour != '')?nomRetour+'=':'');
         if((recursif === true) && (nomRetour == '') &&  !(dansConditionOuDansFonction)){
-            t+=espacesn(true,(niveau+1))+((nomElement == '')?'':nomElement+'.')+nomFonction;
+            t+=espacesn(true,(niveau+1))+((nomElement == '')?'':nomElement+'.');
         }else{
-            t+=((nomElement == '')?'':nomElement+'.')+nomFonction;
+            t+=((nomElement == '')?'':nomElement+'.');
+        }
+        /* 
+          le nom de la fonction ici 
+        */
+        if(nomFonction==='Array' && !(enfantTermineParUnePropriete)){
+         t+=''; /* */
+        }else{
+         t+=nomFonction;
         }
         if( !(enfantTermineParUnePropriete)){
-            t+='(';
+            if(nomFonction==='Array'){
+                t+='[';
+            }else{
+                t+='(';
+            }
         }
         t+=((argumentsFonction !== '')?argumentsFonction.substr(1):'');
         if(((aDesAppelsRecursifs) &&  !(dansConditionOuDansFonction) && (nomRetour == '') && (nomElement == '') && (enfantTermineParUnePropriete === false)) || (forcerNvelleLigneEnfant)){
             t+=espacesn(true,niveau);
         }
         if( !(enfantTermineParUnePropriete)){
-            t+=')';
+            if(nomFonction==='Array'){
+                t+=']';
+            }else{
+                t+=')';
+            }
         }
         if(nomFonction == 'function'){
             t+='{'+contenu;

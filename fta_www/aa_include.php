@@ -80,46 +80,62 @@ function html_header1($p){
     if(!ob_start("ob_gzhandler")){
      ob_start();
     }
-    $t='';
-    $t=$t.'<!DOCTYPE html>'.CRLF;
-    $t=$t.'<html lang="fr">'.CRLF;
-    $t=$t.' <head>'.CRLF;
-    $t=$t.'  <meta charset="utf-8" />'.CRLF;
-    $t=$t.'  <title>'.($p['title']??'title').'</title>'.CRLF;
-    $t=$t.'  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
-    $t=$t.'  <link rel="stylesheet" href="index.css" />'.CRLF;
-    $t=$t.'  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
-    $t=$t.' </head>'.CRLF;
-    if((isset($p['opt']['bodyPaddingTop']))){
-        $t=$t.' <body style="padding-top:'.$p['opt']['bodyPaddingTop'].'px;">'.CRLF;
-    }else{
-        $t=$t.' <body style="padding-top:24px;">'.CRLF;
-    }
-    $t=$t.' <nav style="position: fixed;top: 0;left: 0;width:100%;">'.CRLF;
-    $t=$t.'   <a href="index.html">html home</a>'.CRLF;
-    $t=$t.'   <a href="index.php">php home</a>'.CRLF;
-    $t=$t.'   <a href="todo.html">todo</a>'.CRLF;
-    $t=$t.'   <a href="traiteJs4.html">traiteJs4</a>'.CRLF;
-    $t=$t.'   <a href="traitePhp0.html">traitePhp0</a>'.CRLF;
+    $o1='';
+    $o1=$o1.'<!DOCTYPE html>'.CRLF;
+    $o1=$o1.'<html lang="fr">'.CRLF;
+    $o1=$o1.' <head>'.CRLF;
+    $o1=$o1.'  <meta charset="utf-8" />'.CRLF;
+    $o1=$o1.'  <title>'.($p['title']??'title').'</title>'.CRLF;
+    $o1=$o1.'  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
+    $o1=$o1.'  <link rel="stylesheet" href="6.css" />'.CRLF;
+    $o1=$o1.' </head>'.CRLF;
+    $o1=$o1.' <body>'.CRLF;
+    $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
+    $o1.='    <div class="yydivBoutonhome"><a href="index.php" id="buttonhome" class="'.('index.php'===BNF?'yymenusel1':'').'" style="font-size:1.5em;line-height:25px;height:40px;">&#127968;</a></div>'.CRLF;
+    $o1.='    <div id="menuScroller" class="menuScroller">'.CRLF;
+    $o1.='      <div>'.CRLF;
+    $o1.='        <ul>'.CRLF;
+    $o1.='          <li></li>'.CRLF;
+    $o1.='          <li><a class="" href="traiteJs4.html">traiteJs4</a></li>'.CRLF;
+    $o1.='          <li><a class="" href="traitePhp0.html">traitePhp0</a></li>'.CRLF;
+    $o1.='          <li><a class="" href="traiteJs4.html">traiteJs4</a></li>'.CRLF;
     if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
-        $t=$t.'   <a href="index_source.php">index_source</a>'.CRLF;
-        $t=$t.'   <a href="aa_login.php?a=logout">logout</a>'.CRLF;
+        $o1=$o1.'   <li><a class="" href="index_source.php">index_source</a></li>'.CRLF;
+        $o1=$o1.'   <li><a class="" href="aa_login.php?a=logout">logout</a></li>'.CRLF;
     }else{
-        $t=$t.'   <a href="aa_login.php">login</a>'.CRLF;
+        $o1=$o1.'   <li><a class="" href="aa_login.php">login</a></li>'.CRLF;
     }
-    $t=$t.' </nav>'.CRLF;
-    $t=$t.' <div id="zone_global_messages"></div>'.CRLF;
-    return($t);
+    $o1.='        </ul>'.CRLF;
+    $o1.='      </div>'.CRLF;
+    $o1.='    </div>'.CRLF;
+    if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
+      $o1.='    <div class="yydivBoutonquit">'.CRLF;
+      $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
+      $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
+      $o1.='    </div>'.CRLF;
+    }else{
+      $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysuccess">e</a></div>'.CRLF;
+    }
+    $o1.='  </nav>'.CRLF;
+    $o1.='    <main id="contenuPrincipal">'.CRLF;
+    
+    $o1=$o1.' <div id="zone_global_messages" style=""></div>'.CRLF;
+    return($o1);
 }
+/*===================================================================================================================*/
 function html_footer1($p=array()){
-    $t='';
+    $o1='';
+    $o1.='</main>'.CRLF;
+    $o1=$o1.'  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
+    $o1=$o1.'  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;
+
     if((isset($p['js']))){
         foreach($p['js'] as $k1 => $v1){
-            $t=$t.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
+            $o1=$o1.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
         }
     }
-    $t=$t.'</body></html>'.CRLF;
-    return($t);
+    $o1=$o1.'</body></html>'.CRLF;
+    return($o1);
 }
 /*
 date_default_timezone_set('Europe/Paris'); // todo put here your default timezone (https://raw.githubusercontent.com/leon-do/Timezones/main/timezone.json)
