@@ -92,10 +92,10 @@ function html_header1($p){
     $o1=$o1.' <body>'.CRLF;
     $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
     $o1.='    <div class="yydivBoutonhome"><a href="index.php" id="buttonhome" class="'.('index.php'===BNF?'yymenusel1':'').'" style="font-size:1.5em;line-height:25px;height:40px;">&#127968;</a></div>'.CRLF;
-    $o1.='    <div id="menuScroller" class="menuScroller">'.CRLF;
+    $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
     $o1.='      <div>'.CRLF;
     $o1.='        <ul>'.CRLF;
-    $o1.='          <li></li>'.CRLF;
+//    $o1.='          <li></li>'.CRLF;
     $o1.='          <li><a class="" href="traiteJs4.html">traiteJs4</a></li>'.CRLF;
     $o1.='          <li><a class="" href="traitePhp0.html">traitePhp0</a></li>'.CRLF;
     $o1.='          <li><a class="" href="traiteJs4.html">traiteJs4</a></li>'.CRLF;
@@ -111,10 +111,9 @@ function html_header1($p){
     if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
       $o1.='    <div class="yydivBoutonquit">'.CRLF;
       $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
-      $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
       $o1.='    </div>'.CRLF;
     }else{
-      $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysuccess">e</a></div>'.CRLF;
+      $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysuccess">🔑</a></div>'.CRLF;
     }
     $o1.='  </nav>'.CRLF;
     $o1.='    <main id="contenuPrincipal">'.CRLF;
@@ -123,17 +122,36 @@ function html_header1($p){
     return($o1);
 }
 /*===================================================================================================================*/
-function html_footer1($p=array()){
+function html_footer1($par=array()){
     $o1='';
     $o1.='</main>'.CRLF;
     $o1=$o1.'  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
     $o1=$o1.'  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;
 
-    if((isset($p['js']))){
-        foreach($p['js'] as $k1 => $v1){
+    if((isset($par['js_a_inclure']))){
+        foreach($par['js_a_inclure'] as $k1 => $v1){
             $o1=$o1.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
         }
     }
+    $o1.='<script type="text/javascript">'.CRLF;
+    if(isset($par['js_a_executer_apres_chargement'])){
+     $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){'.CRLF;
+     $txt1='';
+     foreach($par['js_a_executer_apres_chargement'] as $k1 => $v1){
+      if(isset($v1['nomDeLaFonctionAappeler'])){
+       if($txt1!='') $txt1.=','.CRLF;
+       $txt1.=' '.json_encode($v1,JSON_FORCE_OBJECT).'';
+      }
+     }
+     $o1.=' arrayLocalJs=['.CRLF.$txt1.CRLF.' ];'.CRLF;
+     $o1.=' executerCesActionsPourLaPageLocale(arrayLocalJs);'.CRLF;
+     $o1.='}'.CRLF;
+    }else{
+     $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* do nothing */};'.CRLF;
+    }
+    $o1.='</script>'.CRLF;
+    
+    
     $o1=$o1.'</body></html>'.CRLF;
     return($o1);
 }

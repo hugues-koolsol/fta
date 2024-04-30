@@ -20,10 +20,23 @@ print($o1);$o1='';
             </ul>
         </div>
         <h1>PHP HOME</h1>
+
+        <div class="not menuScroller">
+         <a href='javascript:parentheses(&quot;txtar1&quot;);' title='repérer la parenthèse ouvrante ou fermante correspondante'>(|.|)</a>
+        </div>
+        
         <textarea class="txtar1" id="txtar1" rows="10"></textarea>
         <div id="resultat1"></div>
 
 <?php
-$par=array('js'=>array('js/pour-index_php0.js'));
+$js_a_executer_apres_chargement=array(
+    array(
+     'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'txtar1'
+    ),
+    array(
+     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+    )
+);
+$par=array('js_a_inclure'=>array('js/pour-index_php0.js'),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);$o1='';

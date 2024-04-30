@@ -23,24 +23,33 @@ $o1=$o1.'</style>';
 print($o1);
 $o1='';?>
 
-    <nav style='position: fixed;top: 24px;left: 0;background: aliceblue;width:100%;'>
-        <button onclick='enregistrer2()'>Enregistrer</button>
-        <a href='javascript:insertSource(&quot;choix&quot;);'>choix</a>
-        <a href='javascript:insertSource(&quot;boucle&quot;);'>Boucle</a>
-        <a href='javascript:insertSource(&quot;appelf&quot;);'>appelf</a>
-        <a href='javascript:insertSource(&quot;affecte&quot;);'>affecte</a>
-        <a href='javascript:parentheses();' title='repérer la parenthèse fermante correspondante'>(|...)</a>
-        <a href='javascript:decaler(&quot;droite&quot;);'>(|&gt;&gt;&gt;</a>
-        <a href='javascript:mettreEnCommentaire();'>#()</a>
-        <input type='text' id='nomDuSource' disabled='true' style='max-width: 150px;' />
-        <button id='sauvegarderLeNormalise' onclick='sauvegardeTexteSource()' disabled='true' data-fichiertexte=''>sauvegarder le texte normalise</button>
-    </nav>
+        <div class="menuScroller">
+            <ul class="menu2">
+                <li style="margin-top:-13px;">
+                    <button class="yysuccess" onclick='enregistrer2()'>Convertir</button>
+                    <a href="javascript:afficherOuMasquerLesMessages()" >a/m messages</a>&nbsp;
+                    
+                    <input type='text' id='nomDuSource' disabled='true' style='max-width: 150px;' />
+                    <button id='sauvegarderLeNormalise' onclick='sauvegardeTexteSource()' disabled='true' data-fichiertexte=''>sauvegarder le texte normalise</button>
+                </li>
+            </ul>
+        </div>
+        <h1>convertir un rev en js,php,html,sql...</h1>
+        <div class="not menuScroller">
+         <a href='javascript:insertSource(&quot;choix&quot;);'>choix</a>
+         <a href='javascript:insertSource(&quot;boucle&quot;);'>Boucle</a>
+         <a href='javascript:insertSource(&quot;appelf&quot;);'>appelf</a>
+         <a href='javascript:insertSource(&quot;affecte&quot;);'>affecte</a>
+         <a href="javascript:parentheses(&quot;zonesource&quot;);" title='repérer la parenthèse ouvrante ou fermante correspondante'>(|.|)</a>
+         <a href='javascript:decaler(&quot;droite&quot;);'>(|&gt;&gt;&gt;</a>
+         <a href='javascript:mettreEnCommentaire();'>#()</a>
+        </div>
     <table>
         <tbody>
             <tr>
                 <td id='zoneRevFiles' style='max-width:100px;overflow-x: hidden;'></td>
                 <td>
-                    <textarea id='zonesource' class='yytextSmall' cols='150' rows='60' spellcheck='false' style='height:75vh;padding:3px 3px 3px 8px;'></textarea>
+                    <textarea id='zonesource' class='yytextSmall' cols='150' rows='60' spellcheck='false' style='height:75vh;'></textarea>
                 </td>
                 <td style='vertical-align: text-top;'>
                     <textarea id='normalise' class='yytextSmall' style='display:none' cols='100' rows='10' spellcheck='false'></textarea>
@@ -59,7 +68,17 @@ $o1='';?>
 /*
   ici finit le php spécifique de la page
 */
-$a=array( 'js' => array( 'js/compile1.js', 'js/php.js', 'js/javascript.js', 'js/html.js', 'js/sql.js', 'js/index_source_script-v0.js'));
+$js_a_executer_apres_chargement=array(
+    array(
+     'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'zonesource'
+    )
+);
+
+
+$a=array( 
+  'js_a_inclure' => array( 'js/compile1.js', 'js/php.js', 'js/javascript.js', 'js/html.js', 'js/sql.js', 'js/index_source_script-v0.js'),
+  'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
+);
 $o1=concat($o1,html_footer1($a));
 print($o1);
 $o1='';

@@ -116,7 +116,7 @@ function transformLeRev(){
 //  console.log(a.value.substr(4,1),a.value.length)
   
   var startMicro=performance.now();
-  var matriceFonction1=functionToArray2(tableau1.out,true,false);
+  var matriceFonction1=functionToArray2(tableau1.out,true,false,false);
   var endMicro=performance.now();  
   console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
@@ -145,7 +145,7 @@ function transformLeRev(){
      
      
      var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
-     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false);
+     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,false);
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      
      if(compacteOriginal.status==true && compacteReecrit.status===true){
@@ -210,7 +210,7 @@ function transformLeRev(){
     ConstruitHtmlTableauCaracteres( t2 , a.value , tableau1 );
     document.getElementById('resultat1').appendChild(t2);
   }
-  displayMessages('zone_global_messages');
+  displayMessages('zone_global_messages','txtar1');
 
   
  

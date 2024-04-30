@@ -65,7 +65,7 @@ function logerreur(o){
     if(o.hasOwnProperty('tabs')){
         global_messages['tabs'].push(o.tabs);
     }
-    if(o.line){
+    if(o.line && o.line>0){
         global_messages['lines'].push(o.line);
     }
     return o;
@@ -166,9 +166,9 @@ function arrayToFunctNoComment(matrice){
 /*
   =====================================================================================================================
 */
-function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine){
+function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante){
     var tableau1 = iterateCharacters2(src);
-    var matriceFonction = functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine);
+    var matriceFonction = functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
     global_messages.data.matrice=matriceFonction;
     global_messages.data.tableau=tableau1;
     return matriceFonction;
@@ -820,16 +820,70 @@ function reconstruitChaine(tab,debut,fin){
   todo, à faire plus tard
   ==========================================
 */
-function formaterErreurRev(i,message,texte,chaineTableau,tCom,tabEn,qen,acdr){
-    chaineTableau='['+chaineTableau+']';
+function formaterErreurRev(obj){
+ /*
+ {
+    type:'rev',
+    status:false,
+    ind:i,
+    message : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+    texte:texte,
+    chaineTableau:chaineTableau,
+    tabComment:tabCommentaireEtFinParentheses,
+    tableauEntree:tableauEntree,
+    quitterSiErreurNiveau:quitterSiErreurNiveau,
+    autoriserCstDansRacine:autoriserCstDansRacine
+ }
+ */
+    var message='';
+    var chaineTableau='['+obj.chaineTableau+']';
     var T = JSON.parse(chaineTableau);
-    if(i > 100){
-        var presDe = reconstruitChaine(tabEn,i-100,(i+110));
-    }else{
-        var presDe = reconstruitChaine(tabEn,0,(i+10));
+    var t='';
+    var i=0;
+    var finGrasFait=false;
+    var presDe='';
+    var line=0;
+    
+    if(obj.hasOwnProperty('tableauEntree')){
+        if(obj.ind>50){
+            for(i=obj.ind-50;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
+                if(i===obj.ind-5){
+                 presDe+='<b>';
+                }
+                presDe+=strToHtml(obj.tableauEntree[i][0]);
+                if(i===obj.ind+5){
+                 presDe+='</b>';
+                 finGrasFait=true;
+                }
+            }
+            if(!finGrasFait){
+             presDe+='</b>'
+            }
+        }else{
+            presDe='<b>';
+            for(i=0;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
+                presDe+=strToHtml(obj.tableauEntree[i][0]);
+                if(i===obj.ind+5){
+                  presDe+='</b>';
+                  finGrasFait=true;
+                }
+            }
+            if(!finGrasFait){
+             presDe+='</b>'
+            }
+            
+        }
+        message+='ind='+obj.ind+'<br />';
+        message+='<br />----'+presDe+'----<br />';
+        for(i=obj.ind;i>=0;i--){
+            if(obj.tableauEntree[i][0]==='\n'){
+                line++;
+            }
+        }
     }
-    message=message+presDe;
-    var temp={'status':false,'value':T,'id':i,'message':message};
+    
+    var message=message+obj.message+presDe;
+    var temp={'status':obj.status,'value':T,'id':obj.ind,'message':message,'line':line};
     return temp;
 }
 /*
@@ -867,7 +921,7 @@ var global_enteteTableau = [
   ===================================================
   ===================================================
 */
-function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine){
+function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine,rechercheParentheseCorrespondante){
     /*
       =========================
       les chaines de caractères
@@ -977,6 +1031,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     */
                     tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
                     indiceTabCommentaire++;
+                    posFerPar=0;
                     /*
                       l'ancienne version faisait :
                       T[indice][13]=commentaire;
@@ -985,6 +1040,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     commentaire='';
                     dsComment=false;
                     niveau=niveau-1;
+                    if(niveau===0 && rechercheParentheseCorrespondante){
+                     debugger
+                    }
                 }else{
                     commentaire=concat(commentaire,c);
                     niveauDansCommentaire=niveauDansCommentaire-1;
@@ -1157,6 +1215,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /* methode3regex */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
                 if((texte.indexOf('\n') > 0) || (texte.indexOf('\r') > 0)){
+                    return logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
                     temp={'status':false,'id':i,'value':T,'message':'1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex '};
                     return(logerreur(temp));
                 }
@@ -1187,6 +1246,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 texte=concat(texte,'\\',c1);
                 i++;
+            }else if(c==='\n' || c==='\r' ){
+                return logerreur(formaterErreurRev({status:false,ind:premier,message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+             
             }else{
                 if(texte == ''){
                     premier=i;
@@ -1474,6 +1536,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte='';
                 }
                 niveau--;
+                if(niveau===0 && rechercheParentheseCorrespondante===true){
+                 return {status:true,'posFerPar':posFerPar};
+                }
+                
                 posFerPar=0;
                 dansCstSimple=false;
                 dansCstDouble=false;
@@ -1692,9 +1758,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte != ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau == 0){
-                            /*
-                              formaterErreurRev(i, '1602 la racine ne peut pas contenir des constantes' , texte , chaineTableau , tabCommentaireEtFinParentheses , tableauEntree , quitterSiErreurNiveau,autoriserCstDansRacine ) ;
-                            */
                             temp={'status':false,'value':T,'id':i,'message':'1602 la racine ne peut pas contenir des constantes'};
                             return(logerreur(temp));
                         }
@@ -1737,6 +1800,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         temp={'status':false,'value':T,'message':'💥2401 des parenthèses ne correspondent pas'};
         return(logerreur(temp));
     }
+
     /*
       Si on autorise les constantes à la racine, il reste peut être du texte à traiter
     */
@@ -1767,6 +1831,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     */
     chaineTableau='['+chaineTableau+']';
     T=JSON.parse(chaineTableau);
+    
+    if(rechercheParentheseCorrespondante===true){
+     l01=T.length;
+     for(i=l01-1;i>=0;i--){
+      if(T[i][3]===niveau){
+       return {status:true,'posOuvPar':T[i][11]};
+      }
+     }
+     return {status:false,'message':'pas de correspondance trouvée'};
+    }
+    
+    
     /*
       Puis on ajoute les commentaires 
       tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
@@ -1778,6 +1854,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1];
         T[tabCommentaireEtFinParentheses[i][0]][12]=tabCommentaireEtFinParentheses[i][2];
     }
+    
+    
+    
     /*
       
       ==============================================================
@@ -1786,15 +1865,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     */
     l01=T.length;
     for(i=l01-1;i > 0;i--){
-        niveau=T[i][3];
+        k=T[i][3];
         for(j=i;j >= 0;j--){
-            if(T[j][3] == niveau-1){
+            if(T[j][3] == k-1){
                 T[i][7]=j;
                 T[j][8]++;
                 break;
             }
         }
     }
+
+    
+    
     /*
       
       ============================== 

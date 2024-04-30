@@ -147,7 +147,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   Si ces balises ne contiennent pas d'éléments, on les retire 
   */
   var tableau1 = iterateCharacters2(t);
-  var matriceFonction = functionToArray2(tableau1.out,false,true);
+  var matriceFonction = functionToArray2(tableau1.out,false,true,false);
   if(matriceFonction.status===true){
 //   console.log('matriceFonction.value=',JSON.stringify(matriceFonction.value).replace(/\],/g,'],\n'));
    if(matriceFonction.value[1][1]==='html' && matriceFonction.value[1][8]<=2){

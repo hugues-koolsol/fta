@@ -51,7 +51,7 @@ if((isset($_POST) && count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$data['chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_groupe_utilisateur']=$data['chx_id_groupe_connexion_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']=$data['chx_id_groupe_connexion_utilisateur'];
-            rechargerPageCourante(BNF);
+            rechargerPageCourante('index.php');
         }else{
             supprimerLesValeursDeSession();
             $_SESSION[APP_KEY][MESSAGES]['errors'][]='erreur 47, identifiant ou mot de passe incorrectes';
