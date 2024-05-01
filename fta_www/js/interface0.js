@@ -1127,9 +1127,6 @@ function deplace_la_zone_de_message(){
    lesDivs[i].addEventListener('wheel',mouseWheelOnMenu, false);
    
    paddingTopBody=paddingTopBody+hauteurMenuUtilisateur;
-   dogid('zone_global_messages').style.top=paddingTopBody+'px';
-   
-   bod.style.paddingTop=paddingTopBody+'px';
    
    
    
@@ -1137,6 +1134,9 @@ function deplace_la_zone_de_message(){
    
   }
  }
+
+ dogid('zone_global_messages').style.top=(paddingTopBody+2)+'px';
+ bod.style.paddingTop=(paddingTopBody+2)+'px';
  
  document.getElementById('menuPrincipal').addEventListener('wheel',mouseWheelOnMenu, false);
  
@@ -1211,6 +1211,34 @@ function ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens(){
   
   
 }
+
+function decalerLaPage(destination, duree) {
+ 
+  Math.easeInOutQuad=function(t,b,c,d){
+    t /= d/2;
+    if(t<1){ 
+     return c/2*t*t+b
+    };
+    t--;
+    return -c/2*(t*(t-2)-1)+b;
+  };
+ 
+  var element=document.scrollingElement;
+  var positionDeDepart=(element && element.scrollTop)||window.pageYOffset,
+      change=destination-positionDeDepart,
+      increment=20;
+  var tempsCourant=0;
+  var animerLeDecalage=function(){
+      tempsCourant+=increment;
+      var val=Math.easeInOutQuad(tempsCourant, positionDeDepart, change, duree);
+      window.scrollTo(0,val);
+      if(tempsCourant < duree) {
+       window.setTimeout(animerLeDecalage, increment);
+      }
+  };
+  animerLeDecalage();
+}
+
 /*
 ===================================================================================
 */

@@ -129,6 +129,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                     if(nomFonction != ''){
                         t+=espacesn(true,niveau);
                         t+='function '+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
+
                         if(tab[positionContenu][8] == 0){
                             t+=espacesn(true,niveau);
                             t+='  // void';
@@ -861,6 +862,25 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                 reprise=j;
             }
             i=reprise;
+        }else if((tab[i][1] === 'new') && (tab[i][2] == 'f')){
+            
+            if( (tab[i+1][8] == 1) && (tab[i+1][1] == 'appelf')){
+                                          
+                obj=js_traiteAppelFonction(tab,(i+1),true,niveau,false);
+                if(obj.status == true){
+                    t+='throw new '+obj.value+';';
+                }else{
+                    return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration'}));
+                }
+            }else{
+                return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans throw 0953'}));
+            }
+            reprise=(i+1);
+            max=(i+1);
+            for(j=max;(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
+                reprise=j;
+            }
+            i=reprise;
         }else{
             t+=espacesn(true,niveau);
             logerreur({status:false,value:t,id:i,tab:tab,'message':'javascript.js traitement non prévu 1057 '+JSON.stringify(tab[i])});
@@ -1275,13 +1295,14 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                 }else{
                     return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans js_traiteAppelFonction Objet il y a un problème'}));
                 }
-                reprise=(i+1);
-                max=(i+1);
-                for(j=max;(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
+                reprise=(j+1);
+                max=(j+1);
+                for(k=max;(k < l01) && (tab[j][3] > tab[j][3]);k=k+1){
                     reprise=j;
                 }
-                i=reprise;
+                j=reprise;
             }else if((tab[j][1] == 'prop') && (tab[j][3] == (tab[i][3]+1))){
+
                 termineParUnePropriete=true;
                 if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
                     proprietesFonction+='.'+maConstante(tab[j+1]);
@@ -1299,7 +1320,17 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                             return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue '+tab[j][1]}));
                         }
                     }
+                    
                 }
+
+                reprise=(j+1);
+                max=(j+1);
+                for(k=max;(k < l01) && (tab[k][3] > tab[j][3]);k=k+1){
+                    reprise=k;
+                }
+                j=reprise;
+
+
             }else if((tab[j][1] == 'appelf') && (tab[j][3] == (tab[i][3]+1))){
                 aDesAppelsRecursifs=true;
                 if(tab[j+1][1] == 'cascade'){
@@ -1319,13 +1350,26 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                 }
             }else if((tab[j][1] == 'contenu') && (tab[j][3] == (tab[i][3]+1))){
                 if(nomFonction == 'function'){
+
                     contenu='';
-                    obj=js_tabTojavascript1(tab,(j+1),false,false,(niveau+1));
-                    if(obj.status == true){
-                        contenu+=obj.value;
+                    if(tab[j][8]===0){
+                     contenu='/* vide */';
                     }else{
-                        return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appelf sur  le contenu d\'une fonction "function" '}));
+                        obj=js_tabTojavascript1(tab,(j+1),false,false,(niveau+1));
+                        if(obj.status == true){
+                            contenu+=obj.value;
+                        }else{
+                            return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appelf sur  le contenu d\'une fonction "function" '}));
+                        }
+                        reprise=(j+1);
+                        max=(j+1);
+                        for(k=max;(k < l01) && (tab[j][3] > tab[j][3]);k=k+1){
+                            reprise=j;
+                        }
+                        j=reprise;
+                        
                     }
+                 
                 }else{
                     return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appelf, seule une fonction "function" peut avoir un contenu '}));
                 }
@@ -1416,7 +1460,14 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                                 return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 sur declaration '}));
                             }
                         }else{
-                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur 1651 dans un appel de fonction imbriqué pour la fonction inconnue '+(tab[j+1][1])}));
+                            objJs=js_tabTojavascript1(tab,tab[j+1][0],true,true,niveau);
+                            if(objJs.status == true){
+                                argumentsFonction+=',';
+                                argumentsFonction+=objJs.value;
+                            }else{
+                                 debugger
+                                return(logerreur({status:false,value:t,id:tab[j+1][0],tab:tab,'message':'erreur 1425 dans js_traiteAppelFonction '}));
+                            }
                         }
                     }
                 }
@@ -1749,7 +1800,7 @@ function js_condition1(tab,id,niveau){
                     return(logerreur({status:false,value:t,id:id,tab:tab,message:'erreur 1964 dans une condition'}));
                 }
                 i=max-1;
-            }else if(((tab[i][1] == 'egal') || (tab[i][1] == 'egalstricte') || (tab[i][1] == 'diff') || (tab[i][1] == 'diffstricte') || (tab[i][1] == 'sup') || (tab[i][1] == 'inf') || (tab[i][1] == 'supeg') || (tab[i][1] == 'infeg') || (tab[i][1] == 'Instanceof')) && (tab[i][2] == 'f')){
+            }else if(((tab[i][1] == 'egal') || (tab[i][1] == 'egalstricte') || (tab[i][1] == 'diff') || (tab[i][1] == 'diffstricte') || (tab[i][1] == 'sup') || (tab[i][1] == 'inf') || (tab[i][1] == 'supeg') || (tab[i][1] == 'infeg') || (tab[i][1] == 'Instanceof') || (tab[i][1] == 'in') ) && (tab[i][2] == 'f')){
                 if(tab[i][8] == 2){
                     tabPar=[];
                     for(j=(id+1);j <= max;j=j+1){
@@ -1816,6 +1867,8 @@ function js_condition1(tab,id,niveau){
                         t+=' <= ';
                     }else if(tab[i][1] == 'Instanceof'){
                         t+=' instanceof ';
+                    }else if(tab[i][1] == 'in'){
+                        t+=' in ';
                     }
                     if(tab[tabPar[1]][2] == 'c'){
                         /*

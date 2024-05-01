@@ -19,6 +19,24 @@ var global_enteteTableau=[
  
 ];
 */
+
+//=====================================================================================================================
+function tabToHtml1(tab,id,noHead,niveau){
+ // recherche du premier tag "html"
+ var startId=id;
+ for(var i=id;i<tab.length;i++){
+   if(tab[i][1]=='html'){
+    startId=i;
+    break;
+   }
+ }
+ 
+ var ob=tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
+ return ob;
+}
+
+
+
 /* 
   =======================================================================================
   Construit texte html à partir d'une matrice rev
@@ -446,20 +464,6 @@ function TransformHtmlEnRev(texteHtml,niveau){
     }
 }
 //=====================================================================================================================
-function tabToHtml1(tab,id,noHead,niveau){
- // recherche du premier tag "html"
- var startId=id;
- for(var i=id;i<tab.length;i++){
-   if(tab[i][1]=='html'){
-    startId=i;
-    break;
-   }
- }
- 
- var ob=tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
- return ob;
-}
-//=====================================================================================================================
 function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , niveau){
  var t='';
  var i=0;
@@ -550,7 +554,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
        Ecriture de la propriété
        ==============================================================================================================
        */
-       temp+=' '+tab[i+1][1]+'="'+tab[i+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
+       temp+=' '+tab[i+1][1]+'="'+tab[i+2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\')+'"'; // .replace(/\\/g,'&#92;')
        
        if(tab[i+1][1]=='data-lang' && ( tab[i+2][1]=='fr' ||tab[i+2][1]=='en' ) ){
         globale_LangueCourante=tab[i+2][1];
@@ -702,7 +706,7 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
         ecriture de la valeur dans le cas d'une constante
         ===========================================================================================
        */
-       t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\\/g,'\\');
+       t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
        contenuNiveauPlus1=tab[i][1];
       }
      }

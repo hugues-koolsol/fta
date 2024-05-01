@@ -836,6 +836,9 @@ function formaterErreurRev(obj){
  }
  */
     var message='';
+    if(obj.hasOwnProperty('erreurSurTableauEntree') && obj.erreurSurTableauEntree === true ){
+      return {'status':obj.status,'value':T,'id':obj.ind,'message':message};
+    }
     var chaineTableau='['+obj.chaineTableau+']';
     var T = JSON.parse(chaineTableau);
     var t='';
@@ -845,39 +848,41 @@ function formaterErreurRev(obj){
     var line=0;
     
     if(obj.hasOwnProperty('tableauEntree')){
-        if(obj.ind>50){
-            for(i=obj.ind-50;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
-                if(i===obj.ind-5){
-                 presDe+='<b>';
+        if(obj.hasOwnProperty('ind')){
+            if(obj.ind>50){
+                for(i=obj.ind-50;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
+                    if(i===obj.ind-5){
+                     presDe+='<b>';
+                    }
+                    presDe+=strToHtml(obj.tableauEntree[i][0]);
+                    if(i===obj.ind+5){
+                     presDe+='</b>';
+                     finGrasFait=true;
+                    }
                 }
-                presDe+=strToHtml(obj.tableauEntree[i][0]);
-                if(i===obj.ind+5){
-                 presDe+='</b>';
-                 finGrasFait=true;
+                if(!finGrasFait){
+                 presDe+='</b>'
                 }
-            }
-            if(!finGrasFait){
-             presDe+='</b>'
-            }
-        }else{
-            presDe='<b>';
-            for(i=0;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
-                presDe+=strToHtml(obj.tableauEntree[i][0]);
-                if(i===obj.ind+5){
-                  presDe+='</b>';
-                  finGrasFait=true;
+            }else{
+                presDe='<b>';
+                for(i=0;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
+                    presDe+=strToHtml(obj.tableauEntree[i][0]);
+                    if(i===obj.ind+5){
+                      presDe+='</b>';
+                      finGrasFait=true;
+                    }
                 }
+                if(!finGrasFait){
+                 presDe+='</b>'
+                }
+                
             }
-            if(!finGrasFait){
-             presDe+='</b>'
-            }
-            
-        }
-        message+='ind='+obj.ind+'<br />';
-        message+='<br />----'+presDe+'----<br />';
-        for(i=obj.ind;i>=0;i--){
-            if(obj.tableauEntree[i][0]==='\n'){
-                line++;
+            message+='ind='+obj.ind+'<br />';
+            message+='<br />----'+presDe+'----<br />';
+            for(i=obj.ind;i>=0;i--){
+                if(obj.tableauEntree[i][0]==='\n'){
+                    line++;
+                }
             }
         }
     }
@@ -1119,6 +1124,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=texte.replace(/"/g,'\\"');
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
+                texte=replaceAll(texte,'\t','\\t');
                 indice++;
                 chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
                 /*
@@ -1214,8 +1220,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /* methode3regex */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
-                if((texte.indexOf('\n') > 0) || (texte.indexOf('\r') > 0)){
-                    return logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                if((texte.indexOf('\n') > 0) || (texte.indexOf('\r')>=0) || (texte.indexOf('\t') > 0)){
+                    return logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
                     temp={'status':false,'id':i,'value':T,'message':'1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex '};
                     return(logerreur(temp));
                 }
@@ -1308,6 +1314,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=texte.replace(/"/g,'\\"');
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
+                texte=replaceAll(texte,'\t','\\t');
                 indice++;
                 chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
                 /*
@@ -1405,6 +1412,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=texte.replace(/"/g,'\\"');
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
+                texte=replaceAll(texte,'\t','\\t');
                 indice++;
                 chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
                 /*
@@ -1830,7 +1838,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =========================================================================
     */
     chaineTableau='['+chaineTableau+']';
-    T=JSON.parse(chaineTableau);
+    try{
+     T=JSON.parse(chaineTableau);
+    }catch(ejson){
+      console.log('ejson=',ejson);
+      return logerreur(formaterErreurRev({'erreurSurTableauEntree':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+     
+    }
     
     if(rechercheParentheseCorrespondante===true){
      l01=T.length;

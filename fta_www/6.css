@@ -13,7 +13,8 @@ body{margin:0;border:0;padding:0;overflow-y:scroll;
 *::-webkit-scrollbar-corner{background-color: #ECEFF1;border-radius: 4px;}
 *::-webkit-resizer{background-color: #ECEFF1;border-radius: 4px;}
 @media print {a[href]:after {content: none !important;}@page {size: auto;margin-bottom: 0;}}
-h1,h2,h3,h4,h5,h6{margin-left:5px;text-align:center;}
+h1,h2,h3{margin:3px;text-align:center;}
+h4,h5,h6{margin:3px;text-align:left;}
 pre{overflow:scroll;word-break: break-all;margin:0 0 0 0;}
 a{color:#263238;}
 #contenuPrincipal{margin-left:8px;margin-right:8px;width:auto;margin:0 auto;}
@@ -32,7 +33,7 @@ textarea{
  color:#263238;
  font-size:0.9em;
  font-family:monospace;
- line-height:1em;
+ line-height:1.3em;
  max-height: 80vh;
  white-space: pre;
  overflow:scroll;
@@ -208,6 +209,21 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
 }
 .yyfooter a{padding:0 5px!important;line-height: 20px;border-radius: 0;font-family: inherit;color:#263238;border-radius:3px;}
 tr:hover, a:hover, button:hover, select:hover{box-shadow:inset 0px 0px 7px ;}
+
+#boutonHautDePage {
+    position: fixed;
+    bottom: 3px;
+    right: 15px;
+    height: 40px;
+    width: 40px;
+    box-shadow: 0px 0px 3px 3px dodgerblue;
+    opacity: 0.4;
+    border-radius: 5px;
+    font-size: 2em;
+    text-align: center;
+    cursor:pointer;
+}
+
 /*======================================= tree =============================*/
 .class_treediv1{
  border:1px #DAE2E5 outset;

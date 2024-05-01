@@ -126,6 +126,16 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
         }else{
             return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0147 ',element:element}));
         }
+
+    }else if('AssignmentExpression' === element.type){
+
+        var obj1 = traiteAssignmentExpress1(element,niveau,{'sansLF':true});
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0136 ',element:element}));
+        }
+
         
     }else{
         return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0118 '+element.type,element:element}));
@@ -177,6 +187,8 @@ function recupNomOperateur(s){
         return 'ou';
     }else if(s === '&'){
         return 'etBin';
+    }else if(s === 'in'){
+        return 'in';
     }else{
         return('TODO recupNomOperateur pour "'+s+'"');
     }
@@ -1998,7 +2010,7 @@ function transformJsDeTextAreaEnRev(){
     displayMessages('zone_global_messages','txtar1');
     rangeErreurSelectionne=false;
 }
-function chargerSourceDeTest(){
+function chargerSourceDeTestJs(){
     var t=`/*
 a.b("c").d += '<e f="g">' + h.i[i] + "</e>";
 
