@@ -28,13 +28,15 @@ function transformHtmlEnRev(){
     var lines = mySplit(a.value , '\\r|\\r\\n|\\n');
     var count=lines.length;
     a.setAttribute('rows',(count+1));
+    var startMicro=performance.now();
     var obj = TransformHtmlEnRev(a.value,0);
     if(obj.status == true){
-        document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;')+'</pre>';
+        var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
+        document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
         document.getElementById('txtar2').value=obj.value;
         var obj1 = functionToArray2(obj.value,false,true,false);
         if(obj1.status === true){
-            asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev'});
+            asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
 //            debugger;
             var obj2=tabToHtml1(obj1.value,0,false,0);
             if(obj2.status===true){

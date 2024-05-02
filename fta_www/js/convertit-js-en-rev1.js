@@ -1967,7 +1967,6 @@ function transformJsEnRev(texteJs){
 =====================================================================================================================
 */
 function transformJsDeTextAreaEnRev(){
-    var startMicro=performance.now();
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     document.getElementById('resultat1').innerHTML='';
@@ -1977,6 +1976,7 @@ function transformJsDeTextAreaEnRev(){
     var lines = mySplit(a.value , '\\r|\\r\\n|\\n');
     var count=lines.length;
     a.setAttribute('rows',(count+1));
+    var startMicro=performance.now();
     try{
         var ret = esprima.parseScript(a.value,{range:true,comment:true});
         console.log('ret.body=',ret);

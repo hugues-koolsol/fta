@@ -39,12 +39,12 @@ function tabToHtml1(tab,id,noHead,niveau){
 
 /* 
   =======================================================================================
-  Construit texte html à partir d'une matrice rev
+  Construit texte html à partir d'un AST html
   l'option retirerHtmlHeadEtBody permet de retirer les html,body et head si ils ne sont 
   pas renseignés
   =======================================================================================  
 */
-function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
+function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -53,14 +53,34 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
  var contenu='';
  var obj={dernierEstTexte:false};
  var type='';
+ var typeScriptNonTraite=false;
  
  
 // console.log('jsonDeHtml=',jsonDeHtml);
  if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
   type=jsonDeHtml.type.toLowerCase();
   if(jsonDeHtml.type!==''){
-   if(type==='script'){
-    t+='\n'+esp0+'javascriptDansHtml(';
+   if(type==='script'){ // , text/javascript
+    if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
+      if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
+       t+='\n'+esp0+'ldPlusJsonDansHtml(';
+       type='ldPlusJsonDansHtml'
+      }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript'){
+       t+='\n'+esp0+'javascriptDansHtml(';
+       type='javascriptDansHtml'
+      }else{
+       typeScriptNonTraite=true;
+       type='script';
+       t+='\n'+esp0+'script(';
+       logerreur({status:false,'message':'html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
+      }
+    }else{
+     /*
+      sans aucun type renseigné, c'est un javascript
+     */
+     t+='\n'+esp0+'javascriptDansHtml(';
+     type='javascriptDansHtml'
+    }
    }else{
     if("#comment"===type){
      t+='\n'+esp0+'#(';
@@ -78,8 +98,39 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
     attributs+='('+i+',\''+jsonDeHtml.attributes[i].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
    }
   }
+  
+  /*
+   ajout des attributs
+  */
   t+=attributs;
-  if(jsonDeHtml.type==='javascriptDansHtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
+  
+  if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length>0 ){
+   
+
+    contenu=jsonDeHtml.content[0];
+    contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
+    if(attributs!==''){
+     t+=',';
+    }
+    t+='@('+contenu+')';
+    t+=')';
+
+   
+   
+  }else if(type.toLowerCase()==='ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
+   
+   
+   
+   var chaineJsEquivalente='var a='+jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
+   var obj=transformSourceJavascriptEnRev(chaineJsEquivalente);
+   if(obj.status===true){
+    t+=''+obj.value+'';
+   }else{
+    t+='#(Erreur de conversion du javascript 0066 )';
+   }
+   t+='\n'+esp0+')';
+   
+  }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
 
    var obj=transformSourceJavascriptEnRev(jsonDeHtml.content[0]);
    if(obj.status===true){
@@ -92,9 +143,15 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
    var count=0;
    for(var i=0;i<jsonDeHtml.content.length;i++){
     
+    /*
+      =======================
+      entree dans le récursif
+      =======================
+    */
     count++;
     niveau++;
-    obj=traiteJsonDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
+    
+    obj=traiteAstDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
     niveau--;
     if(obj.status===true){
      if((attributs!=='' || contenu!=='') && obj.value!==''){
@@ -127,7 +184,11 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   
   
  }else{
-  if(typeParent==='script'){
+  if(typeParent==='@'){
+    contenu=jsonDeHtml;
+//    debugger
+    t+=contenu;
+  }else if(typeParent==='script'){
    var obj=transformSourceJavascriptEnRev(jsonDeHtml);
    if(obj.status===true){
     t+=''+obj.value+'';
@@ -213,7 +274,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
         var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
 
         var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau3);
-        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
+        var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
         if(obj1.status===true){
          t=obj1.value;
         }else{
@@ -222,7 +283,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
 
        }else{
         var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
-        var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
+        var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
         if(obj.status===true){
          t=obj.value;
         }else{
@@ -231,7 +292,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
        }
       }else{
        var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
-       var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
+       var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
        if(obj1.status===true){
         t=obj1.value;
        }else{
@@ -244,7 +305,7 @@ function traiteJsonDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
         avec des retours de lignes et sans coloration
       */
       var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau1);
-      var obj1=traiteJsonDeHtml(nouveauJsonDeHtml,0,false,'');
+      var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
       if(obj1.status===true){
        t=obj1.value;
       }else{
@@ -353,9 +414,11 @@ function mapMatriceVersJsonDeHtml(matrice){
   récupération des attributs
   */
   var leJson={};
-  if(tab[parentId][8]===0 && parentId>0){
-   content.push('');
-  }else if(tab[parentId][1]==='javascriptDansHtml'){
+  
+  
+  
+  
+  if(tab[parentId][1].toLowerCase()==='ldplusjsondanshtml'){
 
     var debut=parentId+1;
     for( var j=parentId+1;j<l01;j++){
@@ -368,23 +431,86 @@ function mapMatriceVersJsonDeHtml(matrice){
      }
     }
 
-    
+
     var objContenuJs=parseJavascript0(tab,debut,0);
     if(objContenuJs.status===true){
+     var contenu=objContenuJs.value.substr(objContenuJs.value.indexOf('=')+1);
+     if(contenu.substr(contenu.length-1,1)===';'){
+      contenu=contenu.substr(0,contenu.length-1);
+     }
+     content.push(contenu);
+    }else{
+     content.push('<!-- erreur html.js 0428 -->');
+    }
+    console.log('objContenuJs=',objContenuJs);
+
+
+  }else if(tab[parentId][1].toLowerCase()==='javascriptdanshtml'){
+
+
+    var debut=parentId+1;
+    for( var j=parentId+1;j<l01;j++){
+     if(tab[j][7]===parentId){
+      if(tab[j][1]==='' && tab[j][2]==='f'){
+      }else{
+       debut=j;
+       break;
+      }
+     }
+    }
+
+
+    var objContenuJs=parseJavascript0(tab,debut,0);
+
+    if(objContenuJs.status===true){
+     
+     
      content.push(objContenuJs.value);
     }else{
      content.push('<!-- erreur html.js 377 -->');
     }
-    
     console.log('objContenuJs=',objContenuJs);
-
+    
+  }else if(tab[parentId][1]==='@'){
+   
+//   debugger
+   
+  }else if(tab[parentId][8]===0 && parentId>0){
+   
+   content.push('');
    
   }else{
    for(var indice=parentId+1;indice<l01;indice++){
     if(tab[indice][7]===parentId){
      if(tab[indice][1]!==''){
       if(tab[indice][2]==='f' ){
-       if('javascriptDansHtml'===tab[indice][1]){
+       
+       if('@'===tab[indice][1]){
+        
+         content.push(tab[indice][13].replace(/\\\'/g,'\'').replace(/\\\\/g,'\\')); // transformation inverse
+         var max=l01-1;
+         for( var j=indice+1;j<l01;j++){
+          if(tab[j][3]<=tab[indice][3]){
+           max=j-1;
+           break;
+          }
+         }
+         indice=max;
+
+
+       }else if('ldplusjsondanshtml'===tab[indice][1].toLowerCase()){
+
+            content.push(reconstruit(tab,indice));
+            var max=l01-1;
+            for( var j=indice+1;j<l01;j++){
+             if(tab[j][3]<=tab[indice][3]){
+              max=j-1;
+              break;
+             }
+            }
+            indice=max;
+
+       }else if('javascriptdanshtml'===tab[indice][1].toLowerCase()){
 
             content.push(reconstruit(tab,indice));
             var max=l01-1;
@@ -410,7 +536,11 @@ function mapMatriceVersJsonDeHtml(matrice){
   if(parentId===0){
    type='';
   }else{
-   type=tab[parentId][1];
+   if(tab[parentId][1]==='@'){
+    type='';
+   }else{
+    type=tab[parentId][1];
+   }
   }
   leJson['type']=type;
   leJson['content']=content;
@@ -451,7 +581,7 @@ function TransformHtmlEnRev(texteHtml,niveau){
 //     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
      
      
-     var obj=traiteJsonDeHtml(elementsJson,0,true,'');
+     var obj=traiteAstDeHtml(elementsJson,0,true,'');
      if(obj.status===true){
       t=obj.value;
      }else{
@@ -604,7 +734,17 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
     if(tab[i][7]==id){ // pour tous les enfants
      if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
 
-      if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
+      if(tab[i][1].toLowerCase()==='@'){
+
+
+         t+=tab[i][13];
+       
+       
+       
+       
+      }else if(tab[i][1].toLowerCase()==='ldplusjsondanshtml'){
+//       debugger
+       
        /*
        dans ce cas, c'est un tag <script avec des propriétés 
        */
@@ -620,9 +760,91 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
             indiceDebutJs=j;
            }
           }
+         }else{
+          if(indiceDebutJs===-1){
+           indiceDebutJs=j;
+          }
          }
         }
        }
+
+
+       if(indiceDebutJs===-1){
+        /*
+         c'est une balise <script src=""></script>
+        */
+
+         t+=CRLF;
+         t+='<script'+lesProprietes+'></script>'+CRLF;
+        
+       }else{
+
+        /*
+         c'est un script dans un html
+        */
+        
+        niveau++;
+        ob=parseJavascript0(tab,indiceDebutJs,niveau);
+        niveau--;
+        
+        if(ob.status===true){
+         /*
+          ===========================================================================================
+          ecriture de la valeur dans le cas d'un tag ldplusjsondanshtml
+          ===========================================================================================
+         */
+         t+=CRLF;
+         t+='<script'+lesProprietes+'>'
+//         debugger
+         var contenu=ob.value.substr(ob.value.indexOf('=')+1);
+         if(contenu.substr(contenu.length-1,1)===';'){
+          contenu=contenu.substr(0,contenu.length-1);
+         }
+         t+=contenu+'</script>'+CRLF;
+         
+         
+        }else{
+         return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'});  
+        }
+        
+       }
+
+       var max=l01-1;
+       for(var j=i+1;j<l01;j++){
+        if(tab[j][3]<=tab[i][3]){
+         max=j-1;
+         break;
+        }
+       }
+       i=max;
+       
+       
+       
+       
+      }else if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
+       /*
+       dans ce cas, c'est un tag <script avec des propriétés 
+       */
+       var lesProprietes='';
+       var indiceDebutJs=-1;
+       for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+        if(tab[j][7]===i){
+         if(tab[j][2]==='f'){
+          if(tab[j][1]==='' ){
+           lesProprietes+=' '+tab[j+1][1]+'="'+tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
+          }else{
+           if(indiceDebutJs===-1){
+            indiceDebutJs=j;
+           }
+          }
+         }else{
+          if(indiceDebutJs===-1){
+           indiceDebutJs=j;
+          }
+         }
+        }
+       }
+       
 
        if(indiceDebutJs===-1){
         /*
@@ -675,9 +897,23 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
        
        
       }else{
-       niveau++;
-       ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
-       niveau--;
+       /*
+         ===========================================================================================
+         entrée dans le récursif
+         ===========================================================================================
+       */
+       if(tab[i][1]==='script'){
+        /*
+          dans le cas du script, on le met à la racine
+        */
+        ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,0);
+        
+        
+       }else{
+        niveau++;
+        ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
+        niveau--;
+       }
        
        if(ob.status===true){
         /*
