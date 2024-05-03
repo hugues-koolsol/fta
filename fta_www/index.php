@@ -25,7 +25,7 @@ print($o1);$o1='';
          <a href='javascript:parentheses(&quot;txtar1&quot;);' title='repérer la parenthèse ouvrante ou fermante correspondante'>(|.|)</a>
         </div>
         
-        <textarea class="txtar1" id="txtar1" rows="10"></textarea>
+        <textarea class="txtar1" id="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         <div id="resultat1"></div>
 
 <?php

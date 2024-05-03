@@ -671,9 +671,9 @@ function php_traite_Expr_AssignOp_General(element , niveau , nodeType ){
  t+='affecte('+gauche+' , '+operation+'( '+gauche+' , '+droite+' ))';
 
  if(droite.substr(0,operation.length+1)===operation+'('){
-  var o1 = functionToArray2(droite,false,true,false);
+  var o1 = functionToArray2(droite,false,true,'');
   if(o1.status === true){
-   var o2 = functionToArray2(gauche,false,true,false);
+   var o2 = functionToArray2(gauche,false,true,'');
    if(o2.status === true){
     for(var i=o2.value.length-1;i>=1;i--){
      o1.value.splice(2,0,o2.value[i]);
@@ -1467,7 +1467,7 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
  }
  
  if((t.substr(0,14) === 'concat(concat(')){
-     var o = functionToArray2(t,false,true,false);
+     var o = functionToArray2(t,false,true,'');
      if(o.status === true){
 //         console.log('%c simplifier les concat concat','background:yellow;',t,o.value);
          var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
@@ -2471,7 +2471,7 @@ function traitementApresRecuperationAst(ret){
    document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
    document.getElementById('txtar2').value=obj.value;
    var tableau1 = iterateCharacters2(obj.value);
-   var obj1=functionToArray2(tableau1,false,true,false);
+   var obj1=functionToArray2(tableau1,false,true,'');
    if(obj.status===true){
     astphp_logerreur({status:true,message:'pas d\'erreur pour le rev'});
    }else{
@@ -2613,7 +2613,7 @@ function transformPhpEnRev(){
 //=====================================================================================================================
 //=====================================================================================================================
 //=====================================================================================================================
-function chargerSourceDeTest(){
+function chargerSourceDeTestPhp(){
 // debut de backtic ``` ci dessous pour la variable t = = = = = = = = = = = = = = = = = = = = = = = = = 
  var t=`<?php
 $a=realpath(dirname(dirname(dirname(__FILE__))));
@@ -2636,7 +2636,7 @@ function recupererAstDePhp(&$data){
        return;
     }
 }
-hello<?php echo ' world';?> and others<?php
+?>hello<?php echo ' world';?> and others<?php
 
 `;
 

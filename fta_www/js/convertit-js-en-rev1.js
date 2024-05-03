@@ -280,7 +280,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     console.log('%c dans traiteBinaryExpress1 element=','color:red;background:pink;font-weight:bold;',element);
 
     if( t.substr(0,14) === 'concat(concat(' || t.substr(0,12) === 'concat(plus('  || t.substr(0,12) === 'plus(concat('  ){
-        var o = functionToArray(t,true,false,false);
+        var o = functionToArray(t,true,false,'');
         if(o.status === true){
             console.log('%c simplifier les concat concat','background:pink;',t,o.value);
             var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
@@ -293,7 +293,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         }
     }
     if((t.substr(0,10) === 'plus(plus(') || (t.substr(0,12) === 'moins(moins(')){
-        var o = functionToArray(t,true,false,false);
+        var o = functionToArray(t,true,false,'');
         if(o.status === true){
             console.log('%c simplifier les plus plus','background:pink;',t,o.value);
             var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
@@ -306,7 +306,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         }
     }
     if(t.substr(0,6) === 'moins('){
-        var o = functionToArray(t,true,false,false);
+        var o = functionToArray(t,true,false,'');
         if(o.status === true){
             console.log('%c réduire les moins(a,b)','background:pink;',t,o.value);
             var i=0;
@@ -378,7 +378,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
       [[egal[d,1]],ou[[egal[e,2]]],ou[[egal[f,3]]]]
     */
 
-    var o = functionToArray(t,true,true,false); // si on reçoit un [], par exemple window.dataLayer = window.dataLayer || []; dans le source google
+    var o = functionToArray(t,true,true,''); // si on reçoit un [], par exemple window.dataLayer = window.dataLayer || []; dans le source google
     if(o.status === true){
         if((o.value.length > 3) && (o.value[1][1] == '') && (o.value[1][2] == 'f') && (o.value[2][1] == '') && (o.value[2][2] == 'f') && (o.value[3][1] == '') && (o.value[3][2] == 'f')){
             var enfantDe2='';
@@ -1187,7 +1187,7 @@ function traiteMemberExpression1(element,niveau,parent){
         return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1512 pour '+element.type,element:element}));
     }
     if(t.substr(0,8) == 'tableau('){
-        var o = functionToArray(t,true,false,false);
+        var o = functionToArray(t,true,false,'');
         if(o.status === true){
             if((o.value[2][1] === 'nomt') && (o.value[2][8] === 1) && (o.value[3][2] === 'c')){
                 var i=0;
@@ -1995,7 +1995,7 @@ function transformJsDeTextAreaEnRev(){
         if(obj.status == true){
             document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;')+'</pre>';
             document.getElementById('txtar2').value=obj.value;
-            var obj1 = functionToArray(obj.value,true,false,false);
+            var obj1 = functionToArray(obj.value,true,false,'');
             if(obj.status === true){
             var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
              

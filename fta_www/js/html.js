@@ -226,7 +226,7 @@ function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   Si ces balises ne contiennent pas d'éléments, on les retire 
   */
   var tableau1 = iterateCharacters2(t);
-  var matriceFonction = functionToArray2(tableau1.out,false,true,false);
+  var matriceFonction = functionToArray2(tableau1.out,false,true,'');
   if(matriceFonction.status===true){
 //   console.log('matriceFonction.value=',JSON.stringify(matriceFonction.value).replace(/\],/g,'],\n'));
    if(matriceFonction.value[1][1]==='html' && matriceFonction.value[1][8]<=2){
@@ -663,7 +663,11 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
    t+=espacesn(true,niveau);
   }
   if(tab[id][1]=='#'){
-   temp+='<!-- '+traiteCommentaire2(tab[id][13],niveau,id);
+   if(tab[id][13]===''){
+    temp+='';
+   }else{
+    temp+='<!-- '+traiteCommentaire2(tab[id][13],niveau,id);
+   }
   }else if(tab[id][1]=='php'){
    temp+='';
   }else{
@@ -994,7 +998,14 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
     
     if(id>0){
      if(tab[id][1]=='#'){
-      t+=' -->';
+      if(tab[id][13]===''){
+       t+=CRLF;
+      }else{
+       t+=' -->';
+      }
+      
+      
+      
      }else if(tab[id][1]=='br' || tab[id][1]=='hr' || tab[id][1]=='meta' || tab[id][1]=='link' || tab[id][1]=='input' ){
       t+=' />';
      }else{

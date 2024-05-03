@@ -974,6 +974,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var dsComment=false;
     var dsBloc=false;
     var constanteQuotee=0;
+    var drapeauParenthese=rechercheParentheseCorrespondante===''?false:true;
     /*
       ====================================
       Le tableau en sortie si tout va bien
@@ -982,6 +983,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var tabCommentaireEtFinParentheses=[];
     var T=[];
     var temp={};
+    var tableauParenthesesCommentaires=[];
     /*
       =======================================================================
       initialisation du tableau contenant le source structuré en arborescence
@@ -1045,16 +1047,43 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     commentaire='';
                     dsComment=false;
                     niveau=niveau-1;
-                    if(niveau===0 && rechercheParentheseCorrespondante){
-                     debugger
+                    if(drapeauParenthese){
+                     
+                     if(i==l01-1){
+                      /*
+                        si on est en recherche de parenthèse correspondante et que c'est le dernier caractère du tableau en entrée
+                        alors c'est une recherche de parenthèse ouvrante correspondante
+                      */
+                      // OK VALIDE
+                      
+                      return {status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[tableauParenthesesCommentaires.length-1]][2]};
+                     
+                     }
+                     
+                     
+                     tableauParenthesesCommentaires.pop();
                     }
                 }else{
+                    
+                    if(drapeauParenthese){
+                     
+                     if(i===l01-1){
+                      
+                      // OK VALIDE
+                      return {status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[tableauParenthesesCommentaires.length-1]][2]};
+                     }
+                     tableauParenthesesCommentaires.pop();
+                    }
                     commentaire=concat(commentaire,c);
                     niveauDansCommentaire=niveauDansCommentaire-1;
+
                 }
             }else if(c == '('){
                 commentaire=concat(commentaire,c);
                 niveauDansCommentaire=(niveauDansCommentaire+1);
+                if(drapeauParenthese){
+                    tableauParenthesesCommentaires.push(i);
+                }
             }else{
                 commentaire=concat(commentaire,c);
             }
@@ -1492,6 +1521,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dsComment=true;
                     niveauDebutCommentaire=niveau;
                 }
+                if(drapeauParenthese){
+                    tableauParenthesesCommentaires.push(i);
+                }
                 /*
                   le nom d'une fonction peut être vide , par exemple dans le cas html, on écrit a[[href,'exemple']]
                 */
@@ -1544,8 +1576,45 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte='';
                 }
                 niveau--;
-                if(niveau===0 && rechercheParentheseCorrespondante===true){
-                 return {status:true,'posFerPar':posFerPar};
+                if(drapeauParenthese){
+                 if(i==l01-1){
+                  /*
+                    si on est en recherche de parenthèse correspondante et que c'est le dernier caractère du tableau en entrée
+                    alors c'est une recherche de parenthèse ouvrante correspondante
+                  */
+                  
+                  chaineTableau='['+chaineTableau+']';
+                  try{
+                   T=JSON.parse(chaineTableau);
+                  }catch(ejson){
+                    console.log('ejson=',ejson);
+                    return logerreur(formaterErreurRev({'erreurSurTableauEntree':true,status:false,message:'1555 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                  }
+
+                  if(rechercheParentheseCorrespondante==='('){
+                        return {status:true,'posFerPar':i};
+                  }else{
+                      for(j=T.length-1;j>=0;j--){
+                           if(T[j][3]<T[T.length-1][3]){
+
+                               return {status:true,'posOuvPar':tableauEntree[T[j][11]][2]};
+                               break;
+                           }
+                      }
+                  }
+                  
+                 }else{
+                  if(niveau===0 && rechercheParentheseCorrespondante==='('){
+                   /*
+                     il faut retourner la position réelle en tenant compte des
+                     caractères utf8
+                   */
+
+                   return {status:true,'posFerPar':tableauEntree[posFerPar][2]};
+                  }
+                 
+                 }
+                 
                 }
                 
                 posFerPar=0;
@@ -1846,11 +1915,15 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
      
     }
     
-    if(rechercheParentheseCorrespondante===true){
+    if(drapeauParenthese){
      l01=T.length;
      for(i=l01-1;i>=0;i--){
       if(T[i][3]===niveau){
-       return {status:true,'posOuvPar':T[i][11]};
+       /* 
+       à cause des décallages utf8, il faut prendre la position réelle dans le tableau en entrée
+       */
+       
+       return {status:true,'posOuvPar':tableauEntree[T[i][11]][2]};
       }
      }
      return {status:false,'message':'pas de correspondance trouvée'};

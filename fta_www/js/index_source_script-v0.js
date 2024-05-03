@@ -128,7 +128,7 @@ function enregistrer2(){
     
     
     var startMicro = performance.now();
-    var matriceFonction = functionToArray2(tableau1.out,true,false,false);
+    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
     var endMicro = performance.now();
     console.log('analyse syntaxique et mise en matrice endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
     global_messages.data.matrice=matriceFonction;
@@ -149,7 +149,7 @@ function enregistrer2(){
             var startMicro = performance.now();
             var compacteOriginal = arrayToFunct1(matriceFonction.value,false,false);
             var tableau2 = iterateCharacters2(fonctionReecriteAvecRetour1.value);
-            var matriceDeLaFonctionReecrite = functionToArray2(tableau2.out,true,false,false);
+            var matriceDeLaFonctionReecrite = functionToArray2(tableau2.out,true,false,'');
             var compacteReecrit = arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
             var endMicro = performance.now();
             console.log('comparaison des compactés=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');

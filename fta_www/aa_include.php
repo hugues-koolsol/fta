@@ -81,30 +81,26 @@ function html_header1($p){
      ob_start();
     }
     $o1='';
-    $o1=$o1.'<!DOCTYPE html>'.CRLF;
-    $o1=$o1.'<html lang="fr">'.CRLF;
-    $o1=$o1.' <head>'.CRLF;
-    $o1=$o1.'  <meta charset="utf-8" />'.CRLF;
-    $o1=$o1.'  <title>'.($p['title']??'title').'</title>'.CRLF;
-    $o1=$o1.'  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
-    $o1=$o1.'  <link rel="stylesheet" href="6.css" />'.CRLF;
-    $o1=$o1.' </head>'.CRLF;
-    $o1=$o1.' <body>'.CRLF;
+    $o1.='<!DOCTYPE html>'.CRLF;
+    $o1.='<html lang="fr">'.CRLF;
+    $o1.=' <head>'.CRLF;
+    $o1.='  <meta charset="utf-8" />'.CRLF;
+    $o1.='  <title>'.($p['title']??'title').'</title>'.CRLF;
+    $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
+    $o1.='  <link rel="stylesheet" href="6.css" />'.CRLF;
+    $o1.=' </head>'.CRLF;
+    $o1.=' <body>'.CRLF;
     $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
-    $o1.='    <div class="yydivBoutonhome"><a href="index.php" id="buttonhome" class="'.('index.php'===BNF?'yymenusel1':'').'" style="font-size:1.5em;line-height:25px;height:40px;">&#127968;</a></div>'.CRLF;
+    $o1.='    <div class="yydivBoutonhome"><a href="./" id="buttonhome" class="'.('index.php'===BNF?'yymenusel1':'').'" style="font-size:1.5em;line-height:25px;height:40px;">&#127968;</a></div>'.CRLF;
     $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
     $o1.='      <div>'.CRLF;
     $o1.='        <ul>'.CRLF;
-//    $o1.='          <li></li>'.CRLF;
-    $o1.='          <li><a class="" href="traiteHtml.php">HTML</a></li>'.CRLF;
-    $o1.='          <li><a class="" href="traiteJs.php">traiteJs</a></li>'.CRLF;
-    $o1.='          <li><a class="" href="traitePhp0.html">traitePhp0</a></li>'.CRLF;
-//    $o1.='          <li><a class="" href="traiteJs4.html">traiteJs4</a></li>'.CRLF;
+    $idMenu=0;
     if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
-        $o1=$o1.'   <li><a class="" href="index_source.php">index_source</a></li>'.CRLF;
-        $o1=$o1.'   <li><a class="" href="aa_login.php?a=logout">logout</a></li>'.CRLF;
-    }else{
-        $o1=$o1.'   <li><a class="" href="aa_login.php">login</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('traiteHtml.php'===BNF?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.($idMenu++).'">HTML</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('traiteJs.php'===BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
     }
     $o1.='        </ul>'.CRLF;
     $o1.='      </div>'.CRLF;

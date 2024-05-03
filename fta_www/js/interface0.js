@@ -45,6 +45,7 @@ function decaler(direction){
   =====================================================================================================================
 */
 function parentheses(nomDeLaTextAreaContenantLeSource){
+    var i=0;
     if(global_editeur_derniere_valeur_selecStart < 0){
         
         logerreur({'status':false,'message':'veuillez sélectionner une parenthèse dans la zone de texte'});
@@ -54,9 +55,13 @@ function parentheses(nomDeLaTextAreaContenantLeSource){
     var zoneSource = document.getElementById(nomDeLaTextAreaContenantLeSource);
     var texte=zoneSource.value;
     
-    if(texte.substr(global_editeur_derniere_valeur_selecStart-1,1) == '('){
+    if(global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart && texte.substr(global_editeur_derniere_valeur_selecStart-1,1) == '('){
+        /*
+        on s'est placé juste après une parenthèse ouvrante
+        */
         texte=texte.substr(global_editeur_derniere_valeur_selecStart-1);
-        var arr = functionToArray(texte,false,false,true);
+        console.log('texte="',texte+'"');
+        var arr = functionToArray(texte,false,false,'(');
         if(arr.status===true){
            zoneSource.select();
            zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
@@ -64,10 +69,13 @@ function parentheses(nomDeLaTextAreaContenantLeSource){
            initialisationEditeur();
            return;
         }
-    }else if(texte.substr(global_editeur_derniere_valeur_selecStart,1) == ')'){
+    }else if(global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart && texte.substr(global_editeur_derniere_valeur_selecStart,1) == ')'){
+        /*
+        on s'est placé juste avant une parenthèse fermante
+        */
         texte=texte.substr(0,global_editeur_derniere_valeur_selecStart+1);
-        
-        var arr = functionToArray(texte,false,false,true);
+//        console.log('texte="',texte+'"');
+        var arr = functionToArray(texte,false,false,')');
         if(arr.status===true){
            zoneSource.select();
            zoneSource.selectionStart=arr.posOuvPar+1;
@@ -75,6 +83,82 @@ function parentheses(nomDeLaTextAreaContenantLeSource){
            initialisationEditeur();
            return;
         }
+    }else{
+     
+     if(global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart){
+
+      /*
+        on est placé quelquepart, on recherche la parenthèse ouvrante précédente
+      */
+
+      for(i=global_editeur_derniere_valeur_selecStart-2;i>=1;i--){
+       if(texte.substr(i,1)==='('){
+        texte=texte.substr(i);
+        
+        var arr = functionToArray(texte,false,false,'(');
+        if(arr.status===true){
+           zoneSource.select();
+           zoneSource.selectionStart=i+1;
+           global_editeur_derniere_valeur_selecStart=i+1;
+           zoneSource.selectionEnd=global_editeur_derniere_valeur_selecStart+arr.posFerPar-1;
+           initialisationEditeur();
+           return;
+        }
+        
+       }
+      }
+
+
+      
+     }else if(global_editeur_derniere_valeur_selectEnd !== global_editeur_derniere_valeur_selecStart){
+       /*
+        c'est une sélection de plage entre 2 parenthèses
+       */
+      if(texte.substr(global_editeur_derniere_valeur_selecStart-1,1) == '(' && texte.substr(global_editeur_derniere_valeur_selectEnd,1) == ')'){
+          /*
+           la plage est contenue dans 2 parenthèses, on essaie de remonter d'un niveau
+           en allant chercher le parenthèse ouvrante précédente
+          */
+          console.log('texte=',texte);
+          
+          var tableau1 = iterateCharacters2(texte);
+          var matriceFonction = functionToArray2(tableau1.out,false,true,'');
+          if(matriceFonction.status===true){
+           var l01=matriceFonction.value.length;
+           for(i=0;i<l01;i++){
+            if(matriceFonction.value[i][11]===global_editeur_derniere_valeur_selecStart-1){
+             var positionParentheseDuParent=matriceFonction.value[matriceFonction.value[i][7]][11];
+             texte=texte.substr(positionParentheseDuParent);
+             
+             //debugger
+             
+             var arr = functionToArray(texte,false,false,'(');
+             if(arr.status===true){
+                zoneSource.select();
+                global_editeur_derniere_valeur_selecStart=positionParentheseDuParent+1;
+                global_editeur_derniere_valeur_selectEnd=global_editeur_derniere_valeur_selecStart+arr.posFerPar-1
+                zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
+                zoneSource.selectionEnd=global_editeur_derniere_valeur_selectEnd;
+                initialisationEditeur();
+                return;
+             }
+             
+             
+             
+            }
+           }
+           
+           /*
+              zoneSource.select();
+              zoneSource.selectionStart=i+1;
+              global_editeur_derniere_valeur_selecStart=i+1;
+              zoneSource.selectionEnd=global_editeur_derniere_valeur_selecStart+arr.posFerPar-1;
+              initialisationEditeur();
+              return;
+           */
+          }
+      }
+     }
     }
 }
 /*
@@ -242,6 +326,8 @@ function initialisationEditeur(){
     var toAdd='';
     var zoneSource = document.getElementById(global_editeur_nomDeLaTextArea);
     global_editeur_derniere_valeur_selecStart=zoneSource.selectionStart;
+//    console.log('ici'+global_editeur_derniere_valeur_selecStart)
+
     global_editeur_derniere_valeur_selectEnd=zoneSource.selectionEnd;
     global_editeur_debut_texte=zoneSource.value.substr(0,zoneSource.selectionStart);
     tabtext=global_editeur_debut_texte.split('\n');
@@ -271,6 +357,14 @@ function razEditeur(){
 
 function initialiserEditeurPourUneTextArea(nomDeLaTextArea){
     global_editeur_nomDeLaTextArea=nomDeLaTextArea;
+    document.getElementById(nomDeLaTextArea).onmouseup=function(e){
+        /*
+        dans chrome, si on click sur une zone sélectionnée,
+        la valeur de selectionStart n'est pas mise à jour
+        mais en exécutant ce petit hack, ça fonctionne
+        */
+        setTimeout(initialisationEditeur,16);
+    }
     document.getElementById(nomDeLaTextArea).onclick=function(e){
         initialisationEditeur();
         try{
@@ -1137,6 +1231,55 @@ function deplace_la_zone_de_message(){
 
  dogid('zone_global_messages').style.top=(paddingTopBody+2)+'px';
  bod.style.paddingTop=(paddingTopBody+2)+'px';
+
+ /*
+   ajustement de la position gauche des menus du haut, 
+   c'est utile quand il y a beaucoup de menus
+   en haut et qu'on est sur un petit appareil
+ */ 
+ var hrefActuel= window.location.href;
+ if(hrefActuel.indexOf('#')>=1){
+  hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('#'))
+ }
+ if(hrefActuel.lastIndexOf('/')>=1 && hrefActuel.substr(hrefActuel.lastIndexOf('/')+1)!==''){
+  hrefActuel=hrefActuel.substr(hrefActuel.lastIndexOf('/')+1);
+  var lienActuel=null;
+  var listeMenu=dogid('menuPrincipal').getElementsByTagName('a');
+  for(i=0;i<listeMenu.length;i++){
+   if(listeMenu[i].href && listeMenu[i].href.indexOf(hrefActuel)>=0){
+    lienActuel=listeMenu[i];
+    break;
+   }
+  }
+  if(lienActuel!==null){
+   for(i=0;i<listeMenu.length;i++){
+    if(listeMenu[i]===lienActuel ){
+     if(listeMenu[i].className!=='yymenusel1'){
+      listeMenu[i].className='yymenusel1';
+     }
+    }else{
+     if(listeMenu[i].className!==''){
+      listeMenu[i].className='';
+     }
+    }
+   }
+   var positionDuLien=lienActuel.getBoundingClientRect();
+   var boiteDesLiens=dogid('menuPrincipal').getBoundingClientRect();
+   var positionDroiteDuLienDansLaBoite=parseInt( positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
+   var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
+   if(positionDroiteDuLienDansLaBoite>largeurBoiteLiens){
+    var calcul=parseInt((boiteDesLiens.width-positionDuLien.width-60),10);
+    if(parseInt(positionDuLien.x,10)>calcul){
+     var nouveauScroll=positionDuLien.x-(boiteDesLiens.width-positionDuLien.width-60);
+     dogid('menuPrincipal').scrollLeft=nouveauScroll;
+    }
+   }
+  }
+  
+ }
+ 
+ 
+ 
  
  document.getElementById('menuPrincipal').addEventListener('wheel',mouseWheelOnMenu, false);
  

@@ -34,10 +34,10 @@ function transformHtmlEnRev(){
         var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
         document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
         document.getElementById('txtar2').value=obj.value;
-        var obj1 = functionToArray2(obj.value,false,true,false);
+        var obj1 = functionToArray2(obj.value,false,true,'');
         if(obj1.status === true){
             asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
-//            debugger;
+            debugger;
             var obj2=tabToHtml1(obj1.value,0,false,0);
             if(obj2.status===true){
              dogid('txtar3').value=obj2.value;
