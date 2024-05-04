@@ -37,7 +37,7 @@ function transformHtmlEnRev(){
         var obj1 = functionToArray2(obj.value,false,true,'');
         if(obj1.status === true){
             asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
-            debugger;
+            
             var obj2=tabToHtml1(obj1.value,0,false,0);
             if(obj2.status===true){
              dogid('txtar3').value=obj2.value;

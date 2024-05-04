@@ -5,7 +5,7 @@ session_start();
 
 
 $o1='';
-$o1=html_header1(array('title'=>'php home' , 'description'=>'php home'));
+$o1=html_header1(array('title'=>'Accueil' , 'description'=>'Accueil'));
 print($o1);$o1='';
 
 

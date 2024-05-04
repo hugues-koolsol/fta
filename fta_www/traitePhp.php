@@ -37,7 +37,7 @@ $js_a_executer_apres_chargement=array(
     )
 );
 $par=array(
-    'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js','js/esprima.js','js/convertit-php-en-rev0.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js'),
+    'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js','js/esprima.js','js/convertit-php-en-rev0.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js','js/php.js'),
      'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">

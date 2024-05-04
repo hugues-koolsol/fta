@@ -2257,7 +2257,14 @@ function isHTML(str) {
       dansNomTag=false
       dansInner=true;
       dansTag=false;
-      //tabTags.pop();
+      if(nomTag===tabTags[tabTags.length-1]){
+       /*
+        on a bien une balise fermante correspondant à la palise ouvrante précédente
+       */
+       tabTags.pop();
+      }else{
+       return({status:false,id:i,message:'Erreur 2266 les balises html ne sont pas équilibrées'});
+      }
       nomTag='';
       dansBaliseFermante=false;
       niveau--;
@@ -2463,17 +2470,23 @@ function isHTML(str) {
 function traitementApresRecuperationAst(ret){
  
 // console.log('ret=',ret);
- try{ 
+ try{
+  var startMicro=performance.now();
   var ast=JSON.parse(ret.value);
 //  console.log('ast=',ast);
   var obj=TransformAstPhpEnRev(ast,0,false);
   if(obj.status===true){
-   document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>'; //  style="white-space: normal;"
-   document.getElementById('txtar2').value=obj.value;
+   document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">php(\n'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+')\n</pre>'; //  style="white-space: normal;"
+   document.getElementById('txtar2').value='php('+obj.value+')';
    var tableau1 = iterateCharacters2(obj.value);
-   var obj1=functionToArray2(tableau1,false,true,'');
-   if(obj.status===true){
-    astphp_logerreur({status:true,message:'pas d\'erreur pour le rev'});
+   var obj1=functionToArray2(tableau1.out,false,true,'');
+   if(obj1.status===true){
+    var endMicro=performance.now();  
+    astphp_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
+    var tabToPhp=parsePhp0(obj1.value,0,0);
+    if(tabToPhp.status===true){
+      document.getElementById('txtar3').value=tabToPhp.value;
+    }
    }else{
     astphp_logerreur({status:false,message:'erreur pour le rev'});
    }
@@ -2621,9 +2634,9 @@ require($a.'/phplib/vendor/autoload.php');
 /*
 https://github.com/nikic/php-parser
 */
-use PhpParser\Error;
-use PhpParser\NodeDumper;
-use PhpParser\ParserFactory;
+use PhpParser\\Error;
+use PhpParser\\NodeDumper;
+use PhpParser\\ParserFactory;
 
 function recupererAstDePhp(&$data){
     $parser = (new ParserFactory())->createForNewestSupportedVersion();

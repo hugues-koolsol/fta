@@ -20,185 +20,17 @@ var global_enteteTableau=[
 */
 var php_contexte_commentaire_html=true;
 
-function php_traiteTableau1(tab,i,niveau){
-    var t='';
-    var j=0;
-    var k=0;
-    var obj={};
-    var nomTableau='';
-    var positionAppelTableau=0;
-    var argumentsFonction='';
-    var reprise=0;
-    var max=0;
-    var objTxt='';
-    var proprietesTableau='';
-    var aDesAppelsRecursifs=false;
-    var nbEnfants=0;
-    var forcerNvelleLigneEnfant=false;
-    var l01=tab.length;
-    var contenu='';
-    var termineParUnePropriete=false;
-    var enfantTermineParUnePropriete=false;
-    positionAppelTableau=-1;
-    for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
-        if((tab[j][1] == 'nomt') && (tab[j][2] == 'f') && (tab[j][3] == (tab[i][3]+1))){
-            positionAppelTableau=j;
-            if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
-                nomTableau=tab[j+1][1];
-                if(nomTableau == 'Array'){
-                    nbEnfants=tab[tab[tab[j+1][7]][7]][8]-1;
-                }
-            }else if((tab[j][8] == 1) && (tab[j+1][2] == 'f') && (tab[j+1][1] == 'tableau')){
-                var obj = php_traiteTableau1(tab,(j+1),niveau);
-                if(obj.status === true){
-                    nomTableau=obj.value;
-                }else{
-                    logerreur({status:false,value:t,id:i,tab:tab,message:'1045 problème dans un tableau de tableau '});
-                }
-            }
-            break;
-        }
-    }
-    if((positionAppelTableau > 0) && (nomTableau != '')){
-        for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
-            if(tab[j][3] == tab[i][3]){
-                break;
-            }
-            if((tab[j][2] == 'f') && (tab[j][3] == (tab[i][3]+1))){
-                if((tab[j][1] == 'nomt') || (tab[j][1] == 'p') || (tab[j][1] == '#') || (tab[j][1] == 'prop')){
-                    continue;
-                }else{
-                    logerreur({status:false,value:t,id:i,tab:tab,'message':'1107 les seuls paramètres de tableau sont nomt,p,prop "'+tab[j][1]+'"'});
-                }
-            }
-        }
-        argumentsFonction='';
-        for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
-           if(tab[j][7]===tab[i][0]){
-            if((tab[j][1] == 'nomt') && (tab[j][3] == (tab[i][3]+1))){
-             /* déjà traité */
-            }else if((tab[j][1] == 'p') && (tab[j][3] == (tab[i][3]+1))){
-                if((tab[j][8] == 0) && (tab[j][2] == 'f')){
-                    argumentsFonction+='[]';
-                }else if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
-                    argumentsFonction+='['+maConstante(tab[j+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r')+']';
-                }else if((tab[j][8] > 1) && (tab[j+1][2] == 'c')){
-                    return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 0083'}));
-/*                    
-                    var opPrecedente='';
-                    for(k=(j+1);k < l01;k=k+1){
-                        if(tab[k][3] <= tab[j][3]){
-                            break;
-                        }else{
-                            if(nomTableau == 'concat'){
-                                if(tab[k][1] == '+'){
-                                    argumentsFonction+=',';
-                                }else{
-                                    argumentsFonction+=maConstante(tab[k]);
-                                }
-                            }else{
-                                debugger;
-                            }
-                        }
-                    }
-*/                    
-                }else{
-                    var obj1=php_traiteElement(tab,j+1,niveau);
-                    if(obj1.status===true){
-                     argumentsFonction+='['+obj1.value+']';
-                    }else{
-                     return logerreur({status:false,value:t,id:j,tab:tab,message:'dans php_traiteTableau1 0110'});
-                    }
-/*                 
-                    if((tab[j][8] == 1) && (tab[j+1][2] == 'f')){
-                        if(tab[j+1][1] == 'tableau'){
-                            var objTableau = php_traiteTableau1(tab,(j+1),niveau);
-                            if(objTableau.status === true){
-                                argumentsFonction+='['+objTableau.value+']';
-                            }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 sur declaration '}));
-                            }
-                        }else{
-                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur 1145 dans un appel de fonction imbriqué pour la fonction inconnue '+(tab[j+1][1])}));
-                        }
-                    }else{
-                        return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 0115'}));
-                    }
-*/                    
-                 
-/*                 
-                    if((tab[j][8] == 1) && (tab[j+1][1] == 'obj')){
-                        obj=js_traiteDefinitionObjet(tab,(j+1),true);
-                        if(obj.status == true){
-                            argumentsFonction+='['+obj.value+']';
-                        }else{
-                            return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 Objet il y a un problème'}));
-                        }
-                    }else if((tab[j][8] == 1) && (tab[j+1][2] == 'f')){
-                        if(tab[j+1][1] == 'p'){
-                            obj=js_tabTojavascript1(tab,(j+1),false,false,niveau);
-                            if(obj.status == true){
-                                if((nomTableau == 'Array') && (nbEnfants >= 4)){
-                                    forcerNvelleLigneEnfant=true;
-                                }
-                                argumentsFonction+='['+obj.value+']';
-                            }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'}));
-                            }
-                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins')){
-                            var objOperation = TraiteOperations1(tab,(j+1),niveau);
-                            if(objOperation.status == true){
-                                argumentsFonction+='['+objOperation.value+']';
-                            }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur des opérations '}));
-                            }
-                        }
-                    }
-*/                    
-                }
-/*
-            }else if((tab[j][1] == 'prop') && (tab[j][3] == (tab[i][3]+1))){
-                termineParUnePropriete=true;
-                if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
-                    proprietesTableau+='.'+maConstante(tab[j+1]);
-                }else{
-                    if((tab[j][8] == 1) && (tab[j+1][2] == 'f')){
-                        if(tab[j+1][1] == 'appelf'){
-                            aDesAppelsRecursifs=true;
-                            obj=js_traiteAppelFonction(tab,(j+1),true,niveau,true);
-                            if(obj.status == true){
-                                proprietesTableau+='.'+obj.value;
-                            }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'}));
-                            }
-                        }else{
-                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue '+tab[j][1]}));
-                        }
-                    }
-                }
-              */
-            }else{
-               return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 0170'}));
-            }
-        }
-        }
-        t+=nomTableau;
-        t+=argumentsFonction;
-        t+=proprietesTableau;
-    }else{
-        return(logerreur({status:false,value:t,id:i,tab:tab,message:' dans php_traiteTableau1 il faut un nom de tableau nomt(xxxx)'}));
-    }
-    return({status:true,value:t});
-}
 
 //=====================================================================================================================
 function parsePhp0(tab,id,niveau){
  var i=0;
  var t='';
- var obj={};
+ var obj={}; 
+ php_contexte_commentaire_html=false;
  var retJS=php_tabToPhp1(tab,id+1,false,false,niveau);
  if(retJS.status===true){
-  t+=retJS.value;
+  var contenu=retJS.value;
+  t+=contenu;
  }else{
   console.error(retJS);
   return {status:false,value:t};
@@ -1269,6 +1101,179 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
 
  return {status:true,value:t};
 }
+
+
+function php_traiteTableau1(tab,i,niveau){
+    var t='';
+    var j=0;
+    var k=0;
+    var obj={};
+    var nomTableau='';
+    var positionAppelTableau=0;
+    var argumentsFonction='';
+    var reprise=0;
+    var max=0;
+    var objTxt='';
+    var proprietesTableau='';
+    var aDesAppelsRecursifs=false;
+    var nbEnfants=0;
+    var forcerNvelleLigneEnfant=false;
+    var l01=tab.length;
+    var contenu='';
+    var termineParUnePropriete=false;
+    var enfantTermineParUnePropriete=false;
+    positionAppelTableau=-1;
+    for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
+        if((tab[j][1] == 'nomt') && (tab[j][2] == 'f') && (tab[j][3] == (tab[i][3]+1))){
+            positionAppelTableau=j;
+            if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
+                nomTableau=tab[j+1][1];
+                if(nomTableau == 'Array'){
+                    nbEnfants=tab[tab[tab[j+1][7]][7]][8]-1;
+                }
+            }else if((tab[j][8] == 1) && (tab[j+1][2] == 'f') && (tab[j+1][1] == 'tableau')){
+                var obj = php_traiteTableau1(tab,(j+1),niveau);
+                if(obj.status === true){
+                    nomTableau=obj.value;
+                }else{
+                    logerreur({status:false,value:t,id:i,tab:tab,message:'1045 problème dans un tableau de tableau '});
+                }
+            }
+            break;
+        }
+    }
+    if((positionAppelTableau > 0) && (nomTableau != '')){
+        for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
+            if(tab[j][3] == tab[i][3]){
+                break;
+            }
+            if((tab[j][2] == 'f') && (tab[j][3] == (tab[i][3]+1))){
+                if((tab[j][1] == 'nomt') || (tab[j][1] == 'p') || (tab[j][1] == '#') || (tab[j][1] == 'prop')){
+                    continue;
+                }else{
+                    logerreur({status:false,value:t,id:i,tab:tab,'message':'1107 les seuls paramètres de tableau sont nomt,p,prop "'+tab[j][1]+'"'});
+                }
+            }
+        }
+        argumentsFonction='';
+        for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
+           if(tab[j][7]===tab[i][0]){
+            if((tab[j][1] == 'nomt') && (tab[j][3] == (tab[i][3]+1))){
+             /* déjà traité */
+            }else if((tab[j][1] == 'p') && (tab[j][3] == (tab[i][3]+1))){
+                if((tab[j][8] == 0) && (tab[j][2] == 'f')){
+                    argumentsFonction+='[]';
+                }else if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
+                    argumentsFonction+='['+maConstante(tab[j+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r')+']';
+                }else if((tab[j][8] > 1) && (tab[j+1][2] == 'c')){
+                    return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 0083'}));
+/*                    
+                    var opPrecedente='';
+                    for(k=(j+1);k < l01;k=k+1){
+                        if(tab[k][3] <= tab[j][3]){
+                            break;
+                        }else{
+                            if(nomTableau == 'concat'){
+                                if(tab[k][1] == '+'){
+                                    argumentsFonction+=',';
+                                }else{
+                                    argumentsFonction+=maConstante(tab[k]);
+                                }
+                            }else{
+                                debugger;
+                            }
+                        }
+                    }
+*/                    
+                }else{
+                    var obj1=php_traiteElement(tab,j+1,niveau);
+                    if(obj1.status===true){
+                     argumentsFonction+='['+obj1.value+']';
+                    }else{
+                     return logerreur({status:false,value:t,id:j,tab:tab,message:'dans php_traiteTableau1 0110'});
+                    }
+/*                 
+                    if((tab[j][8] == 1) && (tab[j+1][2] == 'f')){
+                        if(tab[j+1][1] == 'tableau'){
+                            var objTableau = php_traiteTableau1(tab,(j+1),niveau);
+                            if(objTableau.status === true){
+                                argumentsFonction+='['+objTableau.value+']';
+                            }else{
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 sur declaration '}));
+                            }
+                        }else{
+                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur 1145 dans un appel de fonction imbriqué pour la fonction inconnue '+(tab[j+1][1])}));
+                        }
+                    }else{
+                        return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 0115'}));
+                    }
+*/                    
+                 
+/*                 
+                    if((tab[j][8] == 1) && (tab[j+1][1] == 'obj')){
+                        obj=js_traiteDefinitionObjet(tab,(j+1),true);
+                        if(obj.status == true){
+                            argumentsFonction+='['+obj.value+']';
+                        }else{
+                            return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 Objet il y a un problème'}));
+                        }
+                    }else if((tab[j][8] == 1) && (tab[j+1][2] == 'f')){
+                        if(tab[j+1][1] == 'p'){
+                            obj=js_tabTojavascript1(tab,(j+1),false,false,niveau);
+                            if(obj.status == true){
+                                if((nomTableau == 'Array') && (nbEnfants >= 4)){
+                                    forcerNvelleLigneEnfant=true;
+                                }
+                                argumentsFonction+='['+obj.value+']';
+                            }else{
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'}));
+                            }
+                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins')){
+                            var objOperation = TraiteOperations1(tab,(j+1),niveau);
+                            if(objOperation.status == true){
+                                argumentsFonction+='['+objOperation.value+']';
+                            }else{
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur des opérations '}));
+                            }
+                        }
+                    }
+*/                    
+                }
+/*
+            }else if((tab[j][1] == 'prop') && (tab[j][3] == (tab[i][3]+1))){
+                termineParUnePropriete=true;
+                if((tab[j][8] == 1) && (tab[j+1][2] == 'c')){
+                    proprietesTableau+='.'+maConstante(tab[j+1]);
+                }else{
+                    if((tab[j][8] == 1) && (tab[j+1][2] == 'f')){
+                        if(tab[j+1][1] == 'appelf'){
+                            aDesAppelsRecursifs=true;
+                            obj=js_traiteAppelFonction(tab,(j+1),true,niveau,true);
+                            if(obj.status == true){
+                                proprietesTableau+='.'+obj.value;
+                            }else{
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans un appel de fonction imbriqué 1'}));
+                            }
+                        }else{
+                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue '+tab[j][1]}));
+                        }
+                    }
+                }
+              */
+            }else{
+               return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans php_traiteTableau1 0170'}));
+            }
+        }
+        }
+        t+=nomTableau;
+        t+=argumentsFonction;
+        t+=proprietesTableau;
+    }else{
+        return(logerreur({status:false,value:t,id:i,tab:tab,message:' dans php_traiteTableau1 il faut un nom de tableau nomt(xxxx)'}));
+    }
+    return({status:true,value:t});
+}
+
 //=====================================================================================================================
 function isNotSet(tab , id , niveau){
  var t='';

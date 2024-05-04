@@ -195,7 +195,7 @@ function convertSource(objMatSrc){
      php_contexte_commentaire_html=false;
      retProgrammeSource=parsePhp0(objMatSrc.value , i , 0 );
      if(retProgrammeSource.status==true){
-      t+='<?php\n'+retProgrammeSource.value+'\n?>';
+      t+='<?php'+CRLF+retProgrammeSource.value+CRLF+'?>';
      }else{
       return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
      }
@@ -213,6 +213,16 @@ function convertSource(objMatSrc){
    t=t.replace(/\/\*\*\//g,'');
    t=t.replace(/\?><\?php/g,'');
    t=t.replace(/<\?php\?>/g,'');
+   t=t.replace(/<\?php\r\?>/g,'');
+   t=t.replace(/<\?php\n\?>/g,'');
+   t=t.replace(/<\?php\r\n\?>/g,'');
+   if(t.substr(0,2)==='\r\n'){
+    t=t.substr(2);
+   }else{
+    if(t.substr(0,1)==='\r' || t.substr(0,1)==='\r' ){
+     t=t.substr(1);
+    }
+   }
    
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){

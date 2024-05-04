@@ -32,6 +32,11 @@ function tabToHtml1(tab,id,noHead,niveau){
  }
  
  var ob=tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
+ if(ob.status===true){
+  if(ob.value.substr(0,2)===CRLF){
+   ob.value=ob.value.substr(2);
+  }
+ }
  return ob;
 }
 

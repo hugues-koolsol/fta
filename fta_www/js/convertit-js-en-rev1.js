@@ -2000,6 +2000,13 @@ function transformJsDeTextAreaEnRev(){
             var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
              
                 astjs_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
+                
+                var resJs=parseJavascript0(obj1.value,1,0);
+                if(resJs.status===true){
+                   document.getElementById('txtar3').value=resJs.value;
+                }
+                
+                
             }else{
                 astjs_logerreur({status:false,message:'erreur pour le rev'});
             }

@@ -1592,7 +1592,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   }
 
                   if(rechercheParentheseCorrespondante==='('){
-                        return {status:true,'posFerPar':i};
+                        return {status:true,'posFerPar':tableauEntree[i][2]};
                   }else{
                       for(j=T.length-1;j>=0;j--){
                            if(T[j][3]<T[T.length-1][3]){

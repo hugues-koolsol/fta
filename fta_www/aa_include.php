@@ -3,6 +3,7 @@ date_default_timezone_set('Europe/Paris');
 define("APP_KEY","fta");
 define("BACKUP_PATH",'..'.DIRECTORY_SEPARATOR.APP_KEY.'_backup');
 define("INCLUDE_PATH",'..'.DIRECTORY_SEPARATOR.APP_KEY.'_inc');
+define("NAV","NAV");
 define("CRLF","\r\n");
 define("OK","OK");
 define("MESSAGES","messages");
@@ -75,6 +76,59 @@ function concat(...$ps){
     }
     return($t);
 }
+//========================================================================================================================
+function cleanSession1(){
+ if(isset($_GET['idMenu'])&&is_numeric($_GET['idMenu'])){
+  xcleanSession1( array( 'except' => '' ) );
+ }else{
+  xcleanSession1( array( 'except' => BNF ) );
+ }
+}
+//========================================================================================================================
+function xcleanSession1($par){
+ if(isset($_SESSION[APP_KEY][NAV])){
+  foreach($_SESSION[APP_KEY][NAV] as $k=>$v){
+   if($par['except']!=$k){
+    unset($_SESSION[APP_KEY][NAV][$k]);
+   }
+  }
+ }
+ if(isset($_SESSION[APP_KEY]['choose'])) unset($_SESSION[APP_KEY]['choose']);
+}
+
+//========================================================================================================================
+function saveSessionSearch1( $k , $bnf){
+ $ret='';
+ $ret = $_GET[$k]??'';
+ if(isset($_GET[$k])){
+  $_SESSION[APP_KEY][NAV][$bnf][$k]=$_GET[$k];
+  $ret=$_GET[$k];
+ }else{
+  if(isset($_SESSION[APP_KEY][NAV][$bnf][$k])){
+   $ret=$_SESSION[APP_KEY][NAV][$bnf][$k];
+  }else{
+   $ret='';
+  }
+ }
+ return($ret);
+}
+//========================================================================================================================
+function enti1($s){
+ return htmlentities( $s , ENT_COMPAT , 'utf-8' ) ;
+}
+//========================================================================================================================
+function addslashes1($s){
+ $s=addslashes($s);
+ $ua=array(    'à' => 'à' , 'â' => 'â' ,'ã' => 'ã' , 'á' => 'á' ,
+                            'é' => 'é' , 'è' => 'è' ,'ê' => 'ê' , 'É' => 'É' , 
+                            'ï' => 'ï' , 'î' => 'î' ,
+                            'ñ' => 'ñ' , 'Ñ' => 'Ñ' ,
+                            'ó' => 'ó' , 'ô' => 'ô' , 'ö' => 'ö' , 
+                            'ü' => 'ü' , 'Ü' => 'Ü' , 
+ ); 
+ return strtr( $s, $ua );  
+}
+
 /*===================================================================================================================*/
 function html_header1($p){
     if(!ob_start("ob_gzhandler")){
@@ -101,6 +155,7 @@ function html_header1($p){
         $o1.='          <li><a class="'.('traiteJs.php'===BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
         $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
         $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('zz_cibles.php'===BNF?'yymenusel1':'').'" href="zz_cibles?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
     }
     $o1.='        </ul>'.CRLF;
     $o1.='      </div>'.CRLF;
@@ -128,7 +183,9 @@ function html_footer1($par=array()){
 
     if((isset($par['js_a_inclure']))){
         foreach($par['js_a_inclure'] as $k1 => $v1){
-            $o1=$o1.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
+            if($v1!==''){
+                $o1=$o1.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
+            }
         }
     }
     $o1.='<script type="text/javascript">'.CRLF;

@@ -167,7 +167,7 @@ button[disabled]{
 .yytableResult1{border-radius:5px;border:1px #DAE2E5 outset;margin:0 auto;min-width:70%;border-collapse:separate;border-spacing:1px 6px;}
 .yytableResult1 a{border:1px #DAE2E5 outset;color:#263238;}
 .yytableResult1 td:last-child {border-radius: 4px;}
-.button_search{flex-grow:1;}
+.button_chercher{flex-grow:1;}
 .yyunset{border:1px #ECEFF1 solid!important;user-select: none;color:#CFD8DC;opacity:0.3;-webkit-tap-highlight-color: transparent;}
 thead tr{background-color:#B0BEC5;color:#263238;}
 thead th{padding:8px 3px;}
