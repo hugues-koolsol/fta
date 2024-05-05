@@ -12,7 +12,7 @@ $o1.='<h1>Liste des systèmes cibles</h1>';
 
 $__nbMax=20;
 $__debut=0;
-$__count=0;
+
 $__xpage=0;
 
 if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
@@ -21,26 +21,28 @@ if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
  if(isset($_SESSION[APP_KEY][NAV][BNF]['__xpage'])) $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
 }
 
-$xsrch_chi_id_cible  =saveSessionSearch1('xsrch_chi_id_cible',BNF);
-$xsrch_chp_nom_cible =saveSessionSearch1('xsrch_chp_nom_cible',BNF);
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $xsrch_chp_nom_cible , true ) . '</pre>' ; exit(0);
+$chi_id_cible          = sauvegarderLesParametresDeRecherche('chi_id_cible'          , BNF);
+$chp_nom_cible         = sauvegarderLesParametresDeRecherche('chp_nom_cible'         , BNF);
+$chp_commentaire_cible = sauvegarderLesParametresDeRecherche('chp_commentaire_cible' , BNF);
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chp_nom_cible , true ) . '</pre>' ; exit(0);
 
-$autofocus='xsrch_chi_id_cible';
-if($xsrch_chi_id_cible!=''){      $autofocus='xsrch_chi_id_cible'; } // fld_priority_todos
-else if($xsrch_chp_nom_cible!=''){ $autofocus='xsrch_chp_nom_cible'; } // fld_title_todos
+$autofocus='chi_id_cible';
+     if($chi_id_cible!=''){          $autofocus='chi_id_cible';          } 
+else if($chp_nom_cible!=''){         $autofocus='chp_nom_cible';         }
+else if($chp_commentaire_cible!=''){ $autofocus='chp_commentaire_cible'; }
 
 $o1.='<form method="get" class="yyfilterForm">'.CRLF;
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="xsrch_chi_id_cible">id cible</label>'.CRLF;
-$o1.='    <input  type="text" name="xsrch_chi_id_cible" id="xsrch_chi_id_cible"   value="'.enti1($xsrch_chi_id_cible).'"  size="8" maxlength="32"  '.($autofocus=='xsrch_chi_id_cible'?'autofocus="autofocus"':'').' />'.CRLF;
+$o1.='    <label for="chi_id_cible">id cible</label>'.CRLF;
+$o1.='    <input  type="text" name="chi_id_cible" id="chi_id_cible"   value="'.enti1($chi_id_cible).'"  size="8" maxlength="32"  '.($autofocus=='chi_id_cible'?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="xsrch_chp_nom_cibl">nom</label>'.CRLF;
-$o1.='    <input  type="text" name="xsrch_chp_nom_cible" id="xsrch_chp_nom_cible"   value="'.enti1($xsrch_chp_nom_cible).'"  size="8" maxlength="64"  '.($autofocus=='xsrch_chp_nom_cible'?'autofocus="autofocus"':'').' />'.CRLF;
+$o1.='    <input  type="text" name="chp_nom_cible" id="chp_nom_cible"   value="'.enti1($chp_nom_cible).'"  size="8" maxlength="64"  '.($autofocus=='chp_nom_cible'?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="xsrch_chp_commentaire_cible">commentaire</label>'.CRLF;
-$o1.='    <input  type="text" name="xsrch_chp_commentaire_cible" id="xsrch_chp_commentaire_cible"   value=""  size="8" maxlength="64"   />'.CRLF;
+$o1.='    <label for="chp_commentaire_cible">commentaire</label>'.CRLF;
+$o1.='    <input  type="text" name="chp_commentaire_cible" id="chp_commentaire_cible"   value="'.enti1($chp_commentaire_cible).'"  size="8" maxlength="64" '.($autofocus=='chp_commentaire_cible'?'autofocus="autofocus"':'').'  />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
@@ -55,28 +57,33 @@ $db = new SQLite3('../fta_inc/db/system.db');
 $__debut=$__xpage*$__nbMax;
 
 $sql='
- SELECT chi_id_cible, chp_nom_cible ,  chp_commentaire_cible
- FROM tbl_cibles T0
- WHERE T0.chi_id_cible>=0 
+ SELECT `chi_id_cible` , `chp_nom_cible` ,  `chp_commentaire_cible`
+ FROM `tbl_cibles` `T0`
+ WHERE "T0"."chi_id_cible">= \'0\' 
 ';
 
-if($xsrch_chi_id_cible!='' && is_numeric($xsrch_chi_id_cible)){
+if($chi_id_cible!='' && is_numeric($chi_id_cible)){
  $sql.='
-  AND T0.`chi_id_cible` = '.addslashes1($xsrch_chi_id_cible).'
+  AND `T0`.`chi_id_cible` = \''.addslashes1($chi_id_cible).'\'
  '; 
 }
 
-if($xsrch_chp_nom_cible!='' ){
+if($chp_nom_cible!='' ){
  $sql.='
-  AND T0.`chp_nom_cible` LIKE \'%'.addslashes1($xsrch_chp_nom_cible).'%\'
+  AND `T0`.`chp_nom_cible` LIKE \'%'.addslashes1($chp_nom_cible).'%\'
+ '; 
+}
+
+if($chp_commentaire_cible!='' ){
+ $sql.='
+  AND `T0`.`chp_commentaire_cible` LIKE \'%'.addslashes1($chp_commentaire_cible).'%\'
  '; 
 }
 
 
 
-$sql.=' LIMIT '.$__nbMax.' OFFSET '.$__debut.';';
+$sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
-$o1.=$sql;
 
 $data0=array();
 
@@ -101,7 +108,7 @@ if(count($data0)===0){
  $lst='';
  $lst.='<p class="yywarning">'.CRLF;
  $lst.='aucun enregistrement trouvé avec les critères indiqués'.CRLF;
- $lst.='<a class="yysuccess" href="cibles_action1.php?a=c">Créer une nouvelle cible</a>'.CRLF;
+ $lst.='<a class="yysuccess" href="zz_cibles_action1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
  $lst.='</p>'.CRLF;
  $o1.=''.$lst.''.CRLF;  
  
@@ -118,6 +125,10 @@ if(count($data0)===0){
   $lsttbl.='<tr>';
   $lsttbl.='<td data-label="" style="text-align:left!important;">';
   $lsttbl.='<div class="yyflex1">';
+  $lsttbl.=' <a class="yyedit yytxtSiz1" href="zz_cibles_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';//✎ #9998
+  if($v0['T0.chi_id_cible']!==1){
+   $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_cibles_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
+  }
   $lsttbl.='</div>';
   $lsttbl.='</td>';
   
@@ -138,7 +149,9 @@ if(count($data0)===0){
 
  $o1.='<table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table>'.CRLF;
  
- $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
+ $o1.='<a class="yysuccess" href="zz_cibles_action1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
+ 
+// $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
 }
 
 
@@ -153,4 +166,3 @@ $js_a_executer_apres_chargement=array(
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);$o1='';
-cleanSession1();

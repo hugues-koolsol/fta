@@ -8,7 +8,6 @@
 define("BNF",basename(__FILE__));
 require_once('aa_include.php');
 session_start();
-start_session_messages();
 $o1='';
 $a=array( 'title' => 'index source', 'description' => 'index source', 'opt' => array( 'bodyPaddingTop' => 48));
 $o1=html_header1($a);

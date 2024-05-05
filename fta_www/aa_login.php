@@ -12,13 +12,22 @@ define('BNF' , basename(__FILE__));
 */
 require_once('aa_include.php');
 session_start();
+
+/*===================================================================================================================*/
+function supprimerLesValeursDeSession(){
+    unset($_SESSION[APP_KEY]['sess_id_utilisateur']);
+    unset($_SESSION[APP_KEY]['sess_id_utilisateur_init']);
+    unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur']);
+    unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']);
+}
+
 /*
   =====================
   si on est en post ...
   =====================
 */
 if((isset($_POST) && count($_POST) > 0)){
-    start_session_messages();
+
     if((isset($_POST['nom_de_connexion']) && isset($_POST['mot_de_passe']))){
         $db=new SQLite3('../fta_inc/db/system.db');
         $req='
@@ -39,9 +48,9 @@ if((isset($_POST) && count($_POST) > 0)){
             }
             $stmt->close();
         }else{
-            $_SESSION[APP_KEY][MESSAGES]['errors'][]='ERROR 50 '.$db->lastErrorMsg();
+            ajouterMessage('erreur' , __LINE__.' '.$db->lastErrorMsg()  , BNF );
             supprimerLesValeursDeSession();
-            rechargerPageCourante(BNF);
+            recharger_la_page(BNF);
         }
         if((count($data) === 3 && password_verify($_POST['mot_de_passe'],$data['chp_mot_de_passe_utilisateur']))){
             /*  =============================*/
@@ -51,17 +60,18 @@ if((isset($_POST) && count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$data['chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_groupe_utilisateur']=$data['chx_id_groupe_connexion_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']=$data['chx_id_groupe_connexion_utilisateur'];
-            rechargerPageCourante('index.php');
+            ajouterMessage('info' , __LINE__.' connexion effectuée avec succes :-)' );
+            recharger_la_page('index.php');
         }else{
             supprimerLesValeursDeSession();
-            $_SESSION[APP_KEY][MESSAGES]['errors'][]='erreur 47, identifiant ou mot de passe incorrectes';
-            sleep(3);
-            rechargerPageCourante(BNF.'?raz1');
+            ajouterMessage('erreur' , __LINE__.' identifiant ou mot de passe incorrectes' , BNF );
+            sleep(2);
+            recharger_la_page(BNF.'?raz1');
         }
     }else if((isset($_POST['logout']))){
         supprimerLesValeursDeSession();
     }
-    rechargerPageCourante(BNF);
+    recharger_la_page(BNF);
 }
 /*
   =======================================================
@@ -72,7 +82,7 @@ if((isset($_POST) && count($_POST) > 0)){
 if((isset($_GET) && count($_GET) > 0)){
     if((isset($_GET['a']) && $_GET['a'] == 'logout')){
         supprimerLesValeursDeSession();
-        rechargerPageCourante(BNF);
+        recharger_la_page(BNF);
     }
 }
 /*
@@ -83,7 +93,6 @@ if((isset($_GET) && count($_GET) > 0)){
 $o1='';
 $a=array( 'title' => 'login', 'description' => 'login');
 $o1=html_header1($a);
-$o1=$o1.session_messages();
 /*
   ========================================================
   on imprime le l'entête ...
@@ -117,7 +126,9 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY][
       ======================================================== 
     */
     $o1=htmlDansPhp('
-    <form id=\'boite_de_connexion\' method=\'post\' onsubmit=\'return checkSubmit1()\'>
+    <form id=\'boite_de_connexion\' method=\'post\' onsubmit=\'return checkSubmit1()\' style="margin-top:50px;">
+        <div>Veuillez indiquer votre nom de connexion et votre mot de passe </div>
+        <hr />
         <label for=\'nom_de_connexion\'>
             nom de connexion
         </label>
@@ -178,7 +189,7 @@ $o1=$o1.html_footer1();
 print($o1);
 /*..., puis on le reinitialise */
 $o1=' ';
-clear_session_messages();
+
 
 
 /*

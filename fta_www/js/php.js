@@ -870,29 +870,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
    i=reprise;
   
    
-  }else if(tab[i][1]=='entete_page_standard'  && tab[i][2]=='f'){
-   if(tab[i][8]==2 && tab[i+1][2]=='c' && tab[i+1][2]=='c' ){
-    t+='\n';
-    t+='define(\'BNF\' , basename(__FILE__));\n';
-    t+='require_once(\'aa_include.php\');\n';
-    t+='session_start();\n';
-    t+='start_session_messages();\n';
-    t+='$o1=\'\';\n';
-    t+='$a=array( \'title\' => \''+(tab[i+1][1])+'\', \'description\' => \''+(tab[i+2][1])+'\');\n';
-    t+='$o1=html_header1($a);\n';
-    t+='$o1=concat($o1,session_messages());\n';
-    t+='print($o1);\n';
-    t+='$o1=\'\';';
-   }else{
-    return logerreur({status:false,value:t,id:i,message:'erreur ( php.js ) la fonction ente_page_standard doit contenir 2 constantes, le titre et la description'});     
-   }
-   reprise=i+1;
-   max=i+1;
-   for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
-    reprise=j;
-   }
-   i=reprise;
-   
   }else if(tab[i][1]=='bascule'  && tab[i][2]=='f'){
    
    var valeurQuand='';
