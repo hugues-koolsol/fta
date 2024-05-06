@@ -11,6 +11,7 @@ define("INPUT","input");
 define("VALUE","value");
 define("STATUS","status");
 
+
 $GLOBALS['__date']=date('Y-m-d H:i:s');
 /*===================================================================================================================*/
 function recharger_la_page($a){
@@ -31,6 +32,16 @@ function checkGroupAjaxPages(){
     return(true);
 }
 
+/*
+  =====================================================================================================================
+*/
+function le_dossier_est_vide($dossier){
+    if(is_dir($dossier)){
+        return (count(scandir($dossier)) == 2);
+    }else{
+        return true;
+    }
+}
 
 /*===================================================================================================================*/
 function pushkv(&$a,$k,$v){
@@ -101,24 +112,28 @@ function addslashes1($s){
   =====================================================================================================================
 */  
 function ajouterMessage($type_de_message , $message , $page='' ){
+ 
+ $tableauTypeMessage=array('normal' , 'succes' , 'info' , 'erreur' , 'danger' , 'avertissement');
+
  if($page===''){
   if(!isset($_SESSION[APP_KEY][NAV])){
-   $_SESSION[APP_KEY][NAV]['info']=array();
-   $_SESSION[APP_KEY][NAV]['erreur']=array();
-   $_SESSION[APP_KEY][NAV]['avertissement']=array();
+   foreach( $tableauTypeMessage as $v1){
+    $_SESSION[APP_KEY][NAV][$v1]=array();
+   }
+
   }
-  if($type_de_message==='erreur' || $type_de_message==='info' || $type_de_message==='avertissement'){
+  if(in_array($type_de_message , $tableauTypeMessage)){
    $_SESSION[APP_KEY][NAV][$type_de_message][]=$message;
   }else{
    $_SESSION[APP_KEY][NAV]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "'.$type_de_message.'" '.$message;
   }
  }else{
   if(!isset($_SESSION[APP_KEY][NAV][$page])){
-   $_SESSION[APP_KEY][NAV][$page]['info']=array();
-   $_SESSION[APP_KEY][NAV][$page]['erreur']=array();
-   $_SESSION[APP_KEY][NAV][$page]['avertissement']=array();
+   foreach($tableauTypeMessage as $v1){
+    $_SESSION[APP_KEY][NAV][$page][$v1]=array();
+   }
   }
-  if($type_de_message==='erreur' || $type_de_message==='info' || $type_de_message==='avertissement'){
+  if(in_array($type_de_message , $tableauTypeMessage)){
    $_SESSION[APP_KEY][NAV][$page][$type_de_message][]=$message;
   }else{
    $_SESSION[APP_KEY][NAV][$page]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "'.$type_de_message.'" '.$message;
@@ -131,61 +146,30 @@ function ajouterMessage($type_de_message , $message , $page='' ){
 */  
 function recupereLesMessagesDeSession($f){
  
- 
  $les_messages_a_afficher='';
-// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV]['erreur'] , true ) . '</pre>' ; exit(0);
- if(isset($_SESSION[APP_KEY][NAV][$f]['info'])){
-  if(count($_SESSION[APP_KEY][NAV][$f]['info'])>0){
-   foreach($_SESSION[APP_KEY][NAV][$f]['info'] as $kerr => $verr ){
-    $les_messages_a_afficher.='<div class="yymessageBox yysuccess">' . $verr . '</div>'.CRLF;
-   }
-  }
-  unset($_SESSION[APP_KEY][NAV][$f]['info']);
- }
- if(isset($_SESSION[APP_KEY][NAV]['info'])){
-  if(count($_SESSION[APP_KEY][NAV]['info'])>0){
-   foreach($_SESSION[APP_KEY][NAV]['info'] as $kerr => $verr ){
-    $les_messages_a_afficher.='<div class="yymessageBox yysuccess">' . $verr . '</div>'.CRLF;
-   }
-  }
-  unset($_SESSION[APP_KEY][NAV]['info']);
- }
-
- if(isset($_SESSION[APP_KEY][NAV][$f]['erreur'])){
-  if(count($_SESSION[APP_KEY][NAV][$f]['erreur'])>0){
-   foreach($_SESSION[APP_KEY][NAV][$f]['erreur'] as $kerr => $verr ){
-    $les_messages_a_afficher.='<div class="yymessageBox yyerror">' . $verr . '</div>'.CRLF;
-   }
-  }
-  unset($_SESSION[APP_KEY][NAV][$f]['erreur']);
- }
- if(isset($_SESSION[APP_KEY][NAV]['erreur'])){
-  if(count($_SESSION[APP_KEY][NAV]['erreur'])>0){
-   foreach($_SESSION[APP_KEY][NAV]['erreur'] as $kerr => $verr ){
-    $les_messages_a_afficher.='<div class="yymessageBox yyerror">' . $verr . '</div>'.CRLF;
-   }
-  }
-  unset($_SESSION[APP_KEY][NAV]['erreur']);
+ 
+ $tableauTypeMessage=array('normal' , 'succes' , 'info' , 'erreur' , 'danger' , 'avertissement');
+ foreach( $tableauTypeMessage as $v1){
+     if(isset($_SESSION[APP_KEY][NAV][$f][$v1])){
+      if(count($_SESSION[APP_KEY][NAV][$f][$v1])>0){
+       foreach($_SESSION[APP_KEY][NAV][$f][$v1] as $kerr => $verr ){
+        $les_messages_a_afficher.='<div class="yymessageBox yy'.$v1.'">' . $verr . '</div>'.CRLF;
+       }
+      }
+      unset($_SESSION[APP_KEY][NAV][$f][$v1]);
+     }
+     if(isset($_SESSION[APP_KEY][NAV][$v1])){
+      if(count($_SESSION[APP_KEY][NAV][$v1])>0){
+       foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr ){
+        $les_messages_a_afficher.='<div class="yymessageBox yy'.$v1.'">' . $verr . '</div>'.CRLF;
+       }
+      }
+      unset($_SESSION[APP_KEY][NAV][$v1]);
+     }
  }
 
- if(isset($_SESSION[APP_KEY][NAV][$f]['avertissement'])){
-  if(count($_SESSION[APP_KEY][NAV][$f]['avertissement'])>0){
-   foreach($_SESSION[APP_KEY][NAV][$f]['avertissement'] as $kerr => $verr ){
-    $les_messages_a_afficher.='<div class="yymessageBox yywarning">' . $verr . '</div>'.CRLF;
-   }
-  }
-  unset($_SESSION[APP_KEY][NAV][$f]['avertissement']);
- }
- if(isset($_SESSION[APP_KEY][NAV]['avertissement'])){
-  if(count($_SESSION[APP_KEY][NAV]['avertissement'])>0){
-   foreach($_SESSION[APP_KEY][NAV]['avertissement'] as $kerr => $verr ){
-    $les_messages_a_afficher.='<div class="yymessageBox yywarning">' . $verr . '</div>'.CRLF;
-   }
-  }
-  unset($_SESSION[APP_KEY][NAV]['avertissement']);
- }
  if($les_messages_a_afficher!==''){
-     $les_messages_a_afficher='<a class="yywarning" style="float:inline-end" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">masquer les messages</a>'.$les_messages_a_afficher;
+     $les_messages_a_afficher='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">masquer les messages</a>'.$les_messages_a_afficher;
  }
  return $les_messages_a_afficher;
 }
@@ -215,7 +199,8 @@ function html_header1($p){
         $o1.='          <li><a class="'.('traiteJs.php'===BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
         $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
         $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
-        $o1.='          <li><a class="'.('zz_cibles.php'===BNF?'yymenusel1':'').'" href="zz_cibles?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('zz_cibles1.php'===BNF?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
+        $o1.='          <li><a class="'.('zz_dossiers1.php'===BNF?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
     }
     $o1.='        </ul>'.CRLF;
     $o1.='      </div>'.CRLF;
@@ -225,7 +210,9 @@ function html_header1($p){
       $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
       $o1.='    </div>'.CRLF;
     }else{
-      $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysuccess">🔑</a></div>'.CRLF;
+      if(BNF!=='aa_login.php'){
+       $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysucces">🔑</a></div>'.CRLF;
+      }
     }
     $o1.='  </nav>'.CRLF;
     $o1.='    <main id="contenuPrincipal">'.CRLF;

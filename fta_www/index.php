@@ -14,7 +14,7 @@ print($o1);$o1='';
             <ul class="menu2">
                 <li style="margin-top:-13px;">
                     <a href="javascript:chargerSourceDeTest()">charger le source de test</a>&nbsp;
-                    <a href="javascript:transformLeRev()" class="yysuccess">traiter</a>&nbsp;
+                    <a href="javascript:transformLeRev()" class="yysucces">traiter</a>&nbsp;
                     <a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;
                 </li>
             </ul>

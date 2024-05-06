@@ -15,10 +15,7 @@ session_start();
 
 /*===================================================================================================================*/
 function supprimerLesValeursDeSession(){
-    unset($_SESSION[APP_KEY]['sess_id_utilisateur']);
-    unset($_SESSION[APP_KEY]['sess_id_utilisateur_init']);
-    unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur']);
-    unset($_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']);
+    unset($_SESSION[APP_KEY]);
 }
 
 /*

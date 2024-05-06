@@ -175,13 +175,13 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
 .yybackgroundYellow{background-color:#ffff00;color:#263238;}
 .yymessageBox{padding:10px;border-radius:5px;}
 
-.yynormal {background: linear-gradient(to bottom, #ECEFF1, #CFD8DC);}
-.yysuccess{color:#556B2F!important;background:linear-gradient(to bottom, #7FFF00, #68D200)!important;}
-.yyedit   {color:#ECEFF1!important;background:linear-gradient(to bottom, #2196F3, #1E87D8)!important;}
-.yywarning{color:#000000!important;background:linear-gradient(to bottom, #FFA500, #E28F00)!important;}
-.yydanger {color:#ECEFF1!important;background:linear-gradient(to bottom, #FF0000, #E50000)!important;}
-.yyerror  {color:#FFFF33!important;background:linear-gradient(to bottom, #FD3131, #D32A2A)!important;}
-.yybadge{border:1px outset;padding:3px;border-radius:6px;vertical-align:-webkit-baseline-middle;vertical-align:-moz-baseline-middle;vertical-align:baseline-middle;white-space:nowrap;display:inline-block;min-width:3em;text-align:center;}
+.yynormal       {background: linear-gradient(to bottom, #ECEFF1, #CFD8DC);}
+.yysucces       {color:#556B2F!important;background:linear-gradient(to bottom, #7FFF00, #68D200)!important;}
+.yyinfo         {color:#ECEFF1!important;background:linear-gradient(to bottom, #2196F3, #1E87D8)!important;}
+.yyavertissement{color:#000000!important;background:linear-gradient(to bottom, #FFA500, #E28F00)!important;}
+.yydanger       {color:#ECEFF1!important;background:linear-gradient(to bottom, #FF0000, #E50000)!important;}
+.yyerreur       {color:#FFFF33!important;background:linear-gradient(to bottom, #FD3131, #D32A2A)!important;}
+.yybadge {border:1px outset;padding:3px;border-radius:6px;vertical-align:-webkit-baseline-middle;vertical-align:-moz-baseline-middle;vertical-align:baseline-middle;white-space:nowrap;display:inline-block;min-width:3em;text-align:center;}
 .yybadge0{background-color:#D32F2F;color:#ECEFF1;}
 .yybadge1{background-color:#26A69A;color:#ECEFF1;}
 .yybadge2{background-color:#FFFF00;color:#0000FF;}

@@ -2,43 +2,14 @@
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();
+require_once('../fta_inc/db/acces_bdd_cibles1.php');
+
 
 /*
   ========================================================================================
 */
 function boutonRetourALaListe(){
-  return '&nbsp;<a href="zz_cibles.php" style="font-size:1rem;">retour à la liste</a>';
-}
-/*
-  ========================================================================================
-*/
-function recupere_une_donnees_des_cibles($id,$db){
- 
- $data0=array();
- $sql='
-  SELECT `chi_id_cible` , `chp_nom_cible` , `chp_commentaire_cible`
-  FROM `tbl_cibles` T0
-  WHERE `T0`.`chi_id_cible`=\''.addslashes1($id).'\'
- ';
-
-
- $stmt = $db->prepare($sql);
- if($stmt!==false){
-   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-   while($arr=$result->fetchArray(SQLITE3_NUM))
-   {
-    $data0=array(
-     'T0_chi_id_cible'          => $arr[0],
-     'T0_chp_nom_cible'         => $arr[1],
-     'T0_chp_commentaire_cible' => $arr[2],
-    );
-   }
-   $stmt->close(); 
- }else{
-  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
- }
- 
- return $data0;
+  return '&nbsp;<a href="zz_cibles1.php" style="font-size:1rem;">retour à la liste</a>';
 }
 /*
   ========================================================================================
@@ -65,6 +36,26 @@ function erreur_dans_champs_saisis_cibles(){
    $uneErreur=true;
    
   }
+
+
+  if($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']===''){
+   /*
+   // A=65 , a=97 z=122 , 0=48 , 9=57
+   // todo ajouter le test
+   */
+   $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|'; 
+   ajouterMessage('erreur' ,  __LINE__ .' : le nom cible doit etre indiqué et ne doit pas contenir les caractères espaces ' , BNF );
+   $uneErreur=true;
+  }
+  
+  if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'],0,1)===' '){
+   
+   ajouterMessage('erreur' ,  __LINE__ .' : le nom cible ne doit pas commencer par un espace ' , BNF );
+   
+   $uneErreur=true;
+   
+  }
+
  }
 
  return($uneErreur);
@@ -88,6 +79,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  
 // echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();
  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']          =$_POST['chp_nom_cible']         ?? '';
+ $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']      =$_POST['chp_dossier_cible']     ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']  =$_POST['chp_commentaire_cible'] ?? '';
 
  /*
@@ -102,7 +94,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    }else{
     ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'] );
-    recharger_la_page('zz_cibles.php');
+    recharger_la_page('zz_cibles1.php');
    }
   }
   
@@ -117,6 +109,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       $sql='
        UPDATE `tbl_cibles` SET 
           `chp_nom_cible`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])        .'\'
+        , `chp_dossier_cible`     = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])    .'\'
         , `chp_commentaire_cible` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
         WHERE 
           `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']).'\'
@@ -124,13 +117,20 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-
+  error_reporting(0);
   if(false === $db->exec($sql)){
-    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-    ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']); 
+    error_reporting(E_ALL);
+    if($db->lastErrorCode()===19){
+     ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']); 
+    }else{
+     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']); 
+    }
    
   }else{
+   error_reporting(E_ALL);
    if($db->changes()===1){
     
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
@@ -159,11 +159,20 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   */
   $__id= isset($_POST['__id1'])?(is_numeric($_POST['__id1'])?$_POST['__id1']:0):0;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
-  if($__id==='1'){
+
+  if($__id!==0){
+      $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+  }else{
       ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }
+
+  $dossier='../../'.$__valeurs['T0_chp_dossier_cible'];
   
+  if(is_dir($dossier)){
+    ajouterMessage('erreur' ,  __LINE__ .' le dossier existe , on ne peut pas supprimer cet enregistrement' , BNF );
+    recharger_la_page('zz_cibles1.php');
+  }
 
   $sql='DELETE FROM tbl_cibles WHERE `chi_id_cible` = \''.addslashes1($__id).'\' ' ;
   if(false === $db->exec($sql)){
@@ -174,7 +183,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }else{
    
      ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-     recharger_la_page('zz_cibles.php');
+     recharger_la_page('zz_cibles1.php');
 
   }
 
@@ -193,9 +202,10 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   INSERT INTO `tbl_cibles` (`chp_nom_cible` , `chp_commentaire_cible` ) VALUES
+   INSERT INTO `tbl_cibles` (`chp_nom_cible` , `chp_dossier_cible`, `chp_commentaire_cible` ) VALUES
      (
         \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])         .'\'
+      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])     .'\'
       , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) .'\'
      )
   ' ;
@@ -212,13 +222,107 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    
   }
  
+ }else if(isset($_POST['__action'])&&$_POST['__action']=='__creation_du_dossier'){
+
+  /*
+    ===================================================================================================================
+    ============================================= CREATION D'UN DOSSIER ===============================================
+    ===================================================================================================================
+  */
+
+  if(isset($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'])){
+   
+   $__id=$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'];
+   if(isset($_SESSION[APP_KEY][NAV][BNF])){
+    unset($_SESSION[APP_KEY][NAV][BNF]);
+   }
+   if($__id!==0){
+       $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+       $__dossier='../../'.$__valeurs['T0_chp_dossier_cible'];
+       if(mkdir($__dossier)){
+           ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été créé avec succès !'  , BNF );
+       }else{
+           ajouterMessage('erreur' , __LINE__ . ' il y a eu un problème lors de la création du dossier "'.$__dossier.'" '  , BNF );
+       }
+   }else{
+       ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
+   }
+   
+   
+  }else{
+  
+   unset($_SESSION[APP_KEY][NAV][BNF]);
+   ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
+  }
+
+  recharger_la_page($_SERVER['REQUEST_URI']);
+
+
+
+ }else if(isset($_POST['__action'])&&$_POST['__action']=='__suppression_du_dossier'){
+
+  /*
+    ===================================================================================================================
+    ============================================= SUPPRESSION D'UN DOSSIER ============================================
+    ===================================================================================================================
+  */
+
+   $__id=$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'];
+   if(isset($_SESSION[APP_KEY][NAV][BNF])){
+    unset($_SESSION[APP_KEY][NAV][BNF]);
+   }
+   if($__id!==0 && $__id!=='1'  && $__id!==1 ){
+       $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+       $__dossier='../../'.$__valeurs['T0_chp_dossier_cible'];
+       if(is_dir($__dossier)){
+          if(le_dossier_est_vide($__dossier)){
+              if(rmdir($__dossier)){
+                  ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été supprimé avec succès !'  , BNF );
+              }else{
+                  ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
+              }
+          }else{
+              ajouterMessage('avertissement' , __LINE__ . ' le dossier contient des éléments '  , BNF );
+          }
+       }else{
+         ajouterMessage('avertissement' , __LINE__ . ' le dossier est absent '  , BNF );
+       }
+    
+   }else{
+       ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
+   }
+   recharger_la_page($_SERVER['REQUEST_URI']);
+
+/*
+  if(is_dir($dossier)){
+   $o1.='le dossier existe '.CRLF;
+   
+   if(le_dossier_est_vide($dossier)){
+    
+    $o1.='<br />le dossier '.$dossier.' est vide'.CRLF;
+    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
+    $o1.=' <input type="hidden" value="__suppression_du_dossier" name="__action" id="__action" />'.CRLF;
+*/
+
+ }else{
+  
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SERVER['REQUEST_URI'] , true ) . '</pre>' ; exit(0);
+  unset($_SESSION[APP_KEY][NAV][BNF]);
+  
+  $__message=' cas à étudier ' . (isset($_POST['__action'])?' : "'.$_POST['__action'].'" ':' ').substr($GLOBALS['__date'],11);
+  ajouterMessage('avertissement' , __LINE__ . $__message  , BNF );
+  recharger_la_page($_SERVER['REQUEST_URI']);
+
  }
  /*
  on ne devrait pas arriver là car on a normalement capturé tous les cas
  */
 
- ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11) , BNF );
- recharger_la_page('zz_cibles.php');
+ if(isset($_SESSION[APP_KEY][NAV][BNF])){
+  unset($_SESSION[APP_KEY][NAV][BNF]);
+ }
+ ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11)  );
+ recharger_la_page('zz_cibles1.php');
 
 
 }
@@ -230,36 +334,49 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  ====================================================================================================================
  ====================================================================================================================
 */
-
 $__id='0';
 if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id===0 || $__id==='0' || $__id==='1'){
   ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer la cible 1'  );
-  recharger_la_page('zz_cibles.php');
+  recharger_la_page('zz_cibles1.php');
 
  }else{
   /*
   http://localhost/functToArray/fta/fta_www/zz_cibles_action1.php?__id=1&__action=__suppression
   */
   $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+  
 
   if($__valeurs['T0_chi_id_cible']===1){
    ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer la cible 1'  );
-   recharger_la_page('zz_cibles.php');
+   recharger_la_page('zz_cibles1.php');
   }
+  
+  $dossier='../../'.$__valeurs['T0_chp_dossier_cible'];
+  if(is_dir($dossier)){
+   ajouterMessage('erreur' , __LINE__ .' le dossier existe, on ne peut pas supprimer cet enregistrement'  );
+   recharger_la_page('zz_cibles1.php');
+  }
+  
+  
  }
 }  
 
 if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id==='0'){
-  recharger_la_page('zz_cibles.php');
+  recharger_la_page('zz_cibles1.php');
  }else{
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
   $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+  
+  
   if(!isset($__valeurs['T0_chi_id_cible'])){
-   recharger_la_page('zz_cibles.php');
+   recharger_la_page('zz_cibles1.php');
+  }else{
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
  }
 }
@@ -292,7 +409,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;
  $o1.='   veuillez confirmer le suppression de  : '.CRLF;
  $o1.='   <br /><br /><b>'.
-       '('.$__valeurs['T0_chi_id_cible'].') : ' .$__valeurs['T0_chp_nom_cible'].' <br /> '.
+       '('.$__valeurs['T0_chi_id_cible'].') : nom : ' .$__valeurs['T0_chp_nom_cible'].' , dossier : ' .$__valeurs['T0_chp_dossier_cible'].'  <br /> '.
        '</b><br />'.CRLF;
  $o1.='   <input type="hidden" value="'.$_GET['__id'].'" name="__id1" id="__id1" />'.CRLF;
  $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
@@ -320,6 +437,15 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_cible).'" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="max-width:3em;" />'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
+
+  $chp_dossier_cible =isset($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']:'';
+  $o1.=' <div class="yyfdiv1">'.CRLF;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.CRLF;
+  $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_dossier_cible).'" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="max-width:3em;" />'.CRLF;
+  $o1.='  </div></div>'.CRLF;
+  $o1.=' </div>'.CRLF;
+
 
 
   $chp_commentaire_cible =isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']:'';
@@ -349,27 +475,59 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   ============================================================================
   */
 
-
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
   $o1.='<h2>modifier une cible</h2>'.CRLF;
 
   $_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']=$__id;
-  $__valeurs['T0_chp_nom_cible']          =$_SESSION[APP_KEY][NAV][BNF]['T0_chp_nom_cible']??$__valeurs['T0_chp_nom_cible'];
-  $__valeurs['T0_chp_commentaire_cible']  =$_SESSION[APP_KEY][NAV][BNF]['T0_chp_commentaire_cible']??$__valeurs['T0_chp_commentaire_cible'];
+  $__valeurs['T0_chp_nom_cible']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']        ??$__valeurs['T0_chp_nom_cible'];
+  $__valeurs['T0_chp_dossier_cible']      =$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']    ??$__valeurs['T0_chp_dossier_cible'];
+  
+  $__valeurs['T0_chp_commentaire_cible']  =$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']??$__valeurs['T0_chp_commentaire_cible'];
   
   $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
 
   $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.CRLF;
+  
+
+  $o1.=' <div class="yyfdiv1">'.CRLF;
+  $o1.='  <div class="yyflab1">'.CRLF;
+  $o1.='   <div style="word-break:break-word;">id</div>'.CRLF;
+  $o1.='  </div>'.CRLF;
+  $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <span>'.$__id.'</span>'.CRLF;
+  $o1.='  </div></div>'.CRLF;
+  $o1.=' </div>'.CRLF;
+  
   if($__id!='1'){
    $o1.=' <div class="yyfdiv1">'.CRLF;
-   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
+   $o1.='  <div class="yyflab1">'.CRLF;
+   $o1.='   <div style="word-break:break-word;">nom</div>'.CRLF;
+   $o1.='  </div>'.CRLF;
    $o1.='  <div class="yyfinp1"><div>'.CRLF;
    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0_chp_nom_cible']).'" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="width:100%;max-width:3em;" />'.CRLF;
+   $o1.='   <span>3 caractères écrits en minuscules</span>'.CRLF;
    $o1.='  </div></div>'.CRLF;
    $o1.=' </div>'.CRLF;
+   
+   $o1.=' <div class="yyfdiv1">'.CRLF;
+   $o1.='  <div class="yyflab1">'.CRLF;
+   $o1.='   <div style="word-break:break-word;">dossier</div>'.CRLF;
+   $o1.='  </div>'.CRLF;
+   $o1.='  <div class="yyfinp1"><div>'.CRLF;
+   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0_chp_dossier_cible']).'" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="width:100%;max-width:3em;" />'.CRLF;
+   $o1.='   <span>3 caractères écrits en minuscules</span>'.CRLF;
+   $o1.='  </div></div>'.CRLF;
+   $o1.=' </div>'.CRLF;
+   
+   
+   
   }
 
   $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.CRLF;
+  $o1.='  <div class="yyflab1">'.CRLF;
+  $o1.='   <div style="word-break:break-word;">commentaire</div>'.CRLF;
+  $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
+  $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.htmlentities($__valeurs['T0_chp_commentaire_cible'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
@@ -382,6 +540,49 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.='</div>'.CRLF;
+
+  $o1.='</form>'.CRLF;
+  
+  
+
+  
+  
+
+  $dossier='../../'.$__valeurs['T0_chp_dossier_cible'];
+  
+  if(is_dir($dossier)){
+   $o1.='le dossier existe '.CRLF;
+   
+   if(le_dossier_est_vide($dossier)){
+    
+    $o1.='<br />le dossier '.$dossier.' est vide'.CRLF;
+    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
+    $o1.=' <input type="hidden" value="__suppression_du_dossier" name="__action" id="__action" />'.CRLF;
+    $o1.='<div class="yyfdiv1">'.CRLF;
+    $o1.='  <div class="yyfinp1"><div>'.CRLF;
+    $o1.='   <button type="submit" class="">supprimer le dossier</button>'.CRLF;
+    $o1.='  </div></div>'.CRLF;
+    $o1.='</div>'.CRLF;
+    $o1.='</form>'.CRLF;
+   
+   
+   }else{
+    $o1.='<br />le dossier '.$dossier.' contient des fichiers ou des dossiers '.CRLF;
+   }
+  
+   
+  }else{
+    $o1.='le dossier '.$dossier.' n\'existe pas '.CRLF;
+    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
+    $o1.=' <input type="hidden" value="__creation_du_dossier" name="__action" id="__action" />'.CRLF;
+    $o1.='<div class="yyfdiv1">'.CRLF;
+    $o1.='  <div class="yyfinp1"><div>'.CRLF;
+    $o1.='   <button type="submit" class="">créer le dossier</button>'.CRLF;
+    $o1.='  </div></div>'.CRLF;
+    $o1.='</div>'.CRLF;
+    $o1.='</form>'.CRLF;
+  }
+
 
 
 }else{

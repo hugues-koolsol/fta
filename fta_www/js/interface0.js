@@ -877,7 +877,7 @@ function affichageBoiteServeurLent(){
     divId.style.fontSize='2em';
     divId.style.width='99.99%';
     divId.style.borderRadius='3px';
-    divId.className='yyerror';
+    divId.className='yyerreur';
     divId.style.opacity=0.0;
     divId.innerHTML='désolé, le serveur est lent, veuillez patienter';
     document.getElementsByTagName('body')[0].appendChild(divId);
@@ -976,19 +976,19 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     var affichagesPresents=false;
     var zon = document.getElementById(nomZone);
     for(i=0;i < global_messages.errors.length;i++){
-        zon.innerHTML+='<div class="yyerror">'+global_messages.errors[i]+'</div>';
+        zon.innerHTML+='<div class="yyerreur">'+global_messages.errors[i]+'</div>';
         affichagesPresents=true;
     }
     for(i=0;i < global_messages.warnings.length;i++){
-        zon.innerHTML+='<div class="yywarning">'+global_messages.warnings[i]+'</div>';
+        zon.innerHTML+='<div class="yyavertissement">'+global_messages.warnings[i]+'</div>';
         affichagesPresents=true;
     }
     for(i=0;i < global_messages.infos.length;i++){
-        zon.innerHTML+='<div class="yysuccess">'+global_messages.infos[i]+'</div>';
+        zon.innerHTML+='<div class="yysucces">'+global_messages.infos[i]+'</div>';
         affichagesPresents=true;
     }
     for(i=0;i < global_messages.lines.length;i++){
-        zon.innerHTML='<a href="javascript:allerAlaLigne('+(global_messages.lines[i]+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerror" style="border:2px red outset;">sélectionner la ligne '+global_messages.lines[i]+'</a>&nbsp;'+zon.innerHTML;
+        zon.innerHTML='<a href="javascript:allerAlaLigne('+(global_messages.lines[i]+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne '+global_messages.lines[i]+'</a>&nbsp;'+zon.innerHTML;
         affichagesPresents=true;
     }
     if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
@@ -1008,7 +1008,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
             }
             if(numeroDeLigne > 0){
                 if(numeroDeLigne != numLignePrecedente){
-                    zon.innerHTML='<a href="javascript:allerAlaLigne('+(numeroDeLigne+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerror" style="border:2px red outset;">go to line '+numeroDeLigne+'</a>&nbsp;'+zon.innerHTML;
+                    zon.innerHTML='<a href="javascript:allerAlaLigne('+(numeroDeLigne+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">go to line '+numeroDeLigne+'</a>&nbsp;'+zon.innerHTML;
                     affichagesPresents=true;
                     numLignePrecedente=numeroDeLigne;
                 }
@@ -1016,11 +1016,11 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         }
     }
     for(i=0;i < global_messages.ranges.length;i++){
-        zon.innerHTML+='<a href="javascript:selectionnerUnePlage('+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerror" style="border:2px red outset;">go to range '+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+'</a>&nbsp;';
+        zon.innerHTML+='<a href="javascript:selectionnerUnePlage('+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">go to range '+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+'</a>&nbsp;';
         affichagesPresents=true;
     }
     if(affichagesPresents){
-     var ttt='<a class="yywarning" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
+     var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
      zon.innerHTML=ttt+zon.innerHTML;
     }
 }
@@ -1064,7 +1064,7 @@ function afficherOuMasquerLesMessages(){
     if(zon.style.display==='none' || zon.innerHTML===''){ 
      zon.style.display='';
      if(zon.innerHTML==''){
-      var ttt='<a class="yywarning" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
+      var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
       zon.innerHTML=ttt+zon.innerHTML;
      } 
     }else{

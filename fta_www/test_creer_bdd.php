@@ -1,5 +1,57 @@
 <?php
+
+$db = new SQLite3('../fta_inc/db/system.db');
+
+$uneErreur=false;
+if((false === $db->exec('BEGIN IMMEDIATE TRANSACTION'))){
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+    $uneErreur=true;
+}
+
+if((false === $db->exec('
+  CREATE TABLE tbl_dossiers (
+     chi_id_dossier           INTEGER PRIMARY KEY 
+   , chp_nom_dossier          CHARACTER(256) NOT NULL DEFAULT \'\' 
+  )
+'))){
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+}
+
+if(false===$db->exec(' ALTER TABLE tbl_dossiers ADD COLUMN chx_cible_dossier INTEGER REFERENCES tbl_cibles(chi_id_cible) ' ) ){
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 
+ $uneErreur=true;
+}
+
+if(false===$db->exec(' CREATE UNIQUE INDEX IF NOT EXISTS idx_cible_et_nom ON tbl_dossiers (  chx_cible_dossier , chp_nom_dossier ) ' ) ){
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 
+ $uneErreur=true;
+}
+
+if(    $uneErreur===true){
+ if((false === $db->exec('ROLLBACK'))){
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+     $uneErreur=true;
+ }
+}else{
+ if((false === $db->exec('COMMIT'))){
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+ }else{
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>Bon travail</pre>' ;
+ }
+}
+
+
+exit();
+
 //===================================================================================
+
+$db = new SQLite3('../fta_inc/db/system.db');
+
+
+if(false===$db->exec('ALTER TABLE tbl_cibles ADD COLUMN chp_dossier_cible CHARACTER(3) NOT NULL DEFAULT \'xxx\'' ) ){
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 
+ $uneErreur=true;
+}
 
 exit();
 
@@ -66,18 +118,19 @@ if((false === $db->exec('
   CREATE TABLE tbl_cibles (
    chi_id_cible                   INTEGER PRIMARY KEY 
    , chp_nom_cible                  STRING 
+   , chp_dossier_cible CHARACTER(3) NOT NULL DEFAULT \'xxx\'
    , chp_commentaire_cible          STRING 
   )
 '))){
     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
 }
-if(false===$db->exec(' CREATE UNIQUE INDEX IF NOT EXISTS idx_nom_cible ON tbl_cibles (  chp_nom_cible ) ' ) ){
+if(false===$db->exec(' CREATE UNIQUE INDEX IF NOT EXISTS idx_nom_cible ON tbl_cibles (  chp_dossier_cible ) ' ) ){
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 
 }
 
 if(false===$db->exec('
- INSERT INTO tbl_cibles ( chp_nom_cible , chp_commentaire_cible  ) VALUES '.
- ' ( \'fta\'             , \'la racine\'  )'.
+ INSERT INTO tbl_cibles ( chp_nom_cible , chp_dossier_cible , chp_commentaire_cible  ) VALUES '.
+ ' ( \'fta\' ,  \'fta\'  , \'la racine\'  )'.
 '')
 ){
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 

@@ -12,7 +12,7 @@ print($o1);$o1='';
             <ul class="menu2">
                 <li style="margin-top:-13px;">
                     <a href="javascript:chargerSourceDeTestHtml()">source de test</a>&nbsp;
-                    <a href="javascript:transformHtmlEnRev()"  class="yysuccess">convertir</a>&nbsp;
+                    <a href="javascript:transformHtmlEnRev()"  class="yysucces">convertir</a>&nbsp;
                     <a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;
                 </li>
             </ul>

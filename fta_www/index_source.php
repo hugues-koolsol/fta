@@ -25,7 +25,7 @@ $o1='';?>
         <div class="menuScroller">
             <ul class="menu2">
                 <li style="margin-top:-13px;">
-                    <button class="yysuccess" onclick='enregistrer2()'>Convertir</button>
+                    <button class="yyinfo" onclick='enregistrer2()'>Convertir</button>
                     <a href="javascript:afficherOuMasquerLesMessages()" >a/m messages</a>&nbsp;
                     
                     <input type='text' id='nomDuSource' disabled='true' style='max-width: 150px;' />

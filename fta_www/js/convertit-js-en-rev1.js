@@ -2039,7 +2039,7 @@ function traiteCommentaire2(texte, niveau, ind) {
 
 function tagada() {
   for (var i = 0; i < global_messages.errors.length; i++) {
-    document.getElementById("global_messages").innerHTML += '<div class="yyerror">' + global_messages.errors[i] + "</div>";
+    document.getElementById("global_messages").innerHTML += '<div class="yyerreur">' + global_messages.errors[i] + "</div>";
   }
   var numLignePrecedente = -1;
   for (var i = 0; i < global_messages.ids.length; i++) {
@@ -2056,7 +2056,7 @@ function tagada() {
     }
     if (numeroDeLigne > 0) {
       if (numeroDeLigne != numLignePrecedente) {
-        document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (numeroDeLigne + 1) + ')" class="yyerror" style="border:2px red outset;">go to line ' + numeroDeLigne + "</a>&nbsp;";
+        document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (numeroDeLigne + 1) + ')" class="yyerreur" style="border:2px red outset;">go to line ' + numeroDeLigne + "</a>&nbsp;";
         numLignePrecedente = numeroDeLigne;
       }
     }
