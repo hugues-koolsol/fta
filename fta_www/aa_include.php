@@ -10,6 +10,7 @@ define("MESSAGES","messages");
 define("INPUT","input");
 define("VALUE","value");
 define("STATUS","status");
+define("CLE_ENCRIPTION","Ma_super_cle_pourencripter_les_ids_des_formulaires_post_fnu943/mYvETfAsYFmbras7Dxw8t3vA=");
 
 
 $GLOBALS['__date']=date('Y-m-d H:i:s');
@@ -174,7 +175,7 @@ function recupereLesMessagesDeSession($f){
  return $les_messages_a_afficher;
 }
 /*===================================================================================================================*/
-function html_header1($p){
+function html_header1($parametres){
     if(!ob_start("ob_gzhandler")){
      ob_start();
     }
@@ -183,40 +184,42 @@ function html_header1($p){
     $o1.='<html lang="fr">'.CRLF;
     $o1.=' <head>'.CRLF;
     $o1.='  <meta charset="utf-8" />'.CRLF;
-    $o1.='  <title>'.($p['title']??'titre de la page à compléter').'</title>'.CRLF;
+    $o1.='  <title>'.($parametres['title']??'titre de la page à compléter').'</title>'.CRLF;
     $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
     $o1.='  <link rel="stylesheet" href="6.css" />'.CRLF;
     $o1.=' </head>'.CRLF;
     $o1.=' <body>'.CRLF;
-    $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
-    $o1.='    <div class="yydivBoutonhome"><a href="./" id="buttonhome" class="'.('index.php'===BNF?'yymenusel1':'').'" style="font-size:1.5em;line-height:25px;height:40px;">&#127968;</a></div>'.CRLF;
-    $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
-    $o1.='      <div>'.CRLF;
-    $o1.='        <ul>'.CRLF;
-    $idMenu=0;
-    if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
-        $o1.='          <li><a class="'.('traiteHtml.php'===BNF?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.($idMenu++).'">HTML</a></li>'.CRLF;
-        $o1.='          <li><a class="'.('traiteJs.php'===BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
-        $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
-        $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
-        $o1.='          <li><a class="'.('zz_cibles1.php'===BNF?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
-        $o1.='          <li><a class="'.('zz_dossiers1.php'===BNF?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
+    if(!isset($parametres['pas_de_menu'])){
+        $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
+        $o1.='    <div class="yydivBoutonhome"><a href="./" id="buttonhome" class="'.('index.php'===BNF?'yymenusel1':'').'" style="font-size:1.5em;line-height:25px;height:40px;">&#127968;</a></div>'.CRLF;
+        $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
+        $o1.='      <div>'.CRLF;
+        $o1.='        <ul>'.CRLF;
+        $idMenu=0;
+        if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
+            $o1.='          <li><a class="'.('traiteHtml.php'===BNF?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.($idMenu++).'">HTML</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('traiteJs.php'===BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('zz_cibles1.php'===BNF?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('zz_dossiers1.php'===BNF?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('zz_sources1.php'===BNF?'yymenusel1':'').'" href="zz_sources1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
+        }
+        $o1.='        </ul>'.CRLF;
+        $o1.='      </div>'.CRLF;
+        $o1.='    </div>'.CRLF;
+        if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
+          $o1.='    <div class="yydivBoutonquit">'.CRLF;
+          $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
+          $o1.='    </div>'.CRLF;
+        }else{
+          if(BNF!=='aa_login.php'){
+           $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysucces">🔑</a></div>'.CRLF;
+          }
+        }
+        $o1.='  </nav>'.CRLF;
     }
-    $o1.='        </ul>'.CRLF;
-    $o1.='      </div>'.CRLF;
-    $o1.='    </div>'.CRLF;
-    if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
-      $o1.='    <div class="yydivBoutonquit">'.CRLF;
-      $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yydanger">×</a>'.CRLF;
-      $o1.='    </div>'.CRLF;
-    }else{
-      if(BNF!=='aa_login.php'){
-       $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysucces">🔑</a></div>'.CRLF;
-      }
-    }
-    $o1.='  </nav>'.CRLF;
     $o1.='    <main id="contenuPrincipal">'.CRLF;
-    
     $o1=$o1.' <div id="zone_global_messages" style="">'.recupereLesMessagesDeSession(BNF).'</div>'.CRLF;
     return($o1);
 }
@@ -242,25 +245,26 @@ function supprimerLesParametresDeNavigationEnSession(){
  }
 }
 /*===================================================================================================================*/
-function html_footer1($par=array()){
+function html_footer1($parametres=array()){
     $o1='';
     $o1.='</main>'.CRLF;
+    $o1.='<dialog id="modale1"><iframe id="iframe_modale_1" src=""></iframe></dialog>'.CRLF;
     $o1.='<div id="boutonHautDePage" onclick="decalerLaPage(0,200)">⇑</div>'.CRLF;
     $o1=$o1.'  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
     $o1=$o1.'  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;
 
-    if((isset($par['js_a_inclure']))){
-        foreach($par['js_a_inclure'] as $k1 => $v1){
+    if((isset($parametres['js_a_inclure']))){
+        foreach($parametres['js_a_inclure'] as $k1 => $v1){
             if($v1!==''){
                 $o1=$o1.'  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
             }
         }
     }
     $o1.='<script type="text/javascript">'.CRLF;
-    if(isset($par['js_a_executer_apres_chargement'])){
+    if(isset($parametres['js_a_executer_apres_chargement'])){
      $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){'.CRLF;
      $txt1='';
-     foreach($par['js_a_executer_apres_chargement'] as $k1 => $v1){
+     foreach($parametres['js_a_executer_apres_chargement'] as $k1 => $v1){
       if(isset($v1['nomDeLaFonctionAappeler'])){
        if($txt1!='') $txt1.=','.CRLF;
        $txt1.=' '.json_encode($v1,JSON_FORCE_OBJECT).'';
@@ -276,6 +280,9 @@ function html_footer1($par=array()){
     
     
     $o1=$o1.'</body></html>'.CRLF;
-    supprimerLesParametresDeNavigationEnSession();
+    if(isset($parametres['ne_pas_supprimer_les_valeurs_de_session_sur_un_choix'])){
+    }else{
+      supprimerLesParametresDeNavigationEnSession();
+    }
     return($o1);
 }

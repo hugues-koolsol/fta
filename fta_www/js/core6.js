@@ -33,6 +33,10 @@ var CRLF='\r\n';
 var NBESPACESREV=3;
 var globale_LangueCourante='fr';
 var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+var NBESPACESSOURCEPRODUIT=4;
+var php_contexte_commentaire_html=false;
+
+
 
 /*
   =====================================================================================================================
@@ -101,6 +105,20 @@ function maConstante(eltTab){
     }
     return t;
 }
+//=====================================================================================================================
+function espacesn(optionCRLF,i){
+ var t='';
+ if(optionCRLF){
+  t='\r\n';
+ }else{
+  t='\n';
+ }
+ if(i>0){
+  t+=' '.repeat(NBESPACESSOURCEPRODUIT*i);
+ }
+ return t;
+}
+
 /*
   =====================================================================================================================
 */
@@ -317,6 +335,16 @@ function baisserNiveauEtSupprimer(tab,id,niveau){
         return tab;
     }
 }
+/*
+  ========================================================================================================================
+  fonction transforme un commentaire pour un fichier source à générer
+*/
+function traiteCommentaire2(texte,niveau,ind){
+    var s='';
+    s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
+    return s;
+}
+
 /*
   =====================================================================================================================
   fonction transforme un commentaire pour un fichier rev

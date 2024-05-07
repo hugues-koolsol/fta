@@ -1,28 +1,4 @@
 "use strict";
-var NBESPACESSOURCEPRODUIT=4;
-/*
-  ========================================================================================================================
-  fonction transforme un commentaire pour un fichier source à générer
-*/
-function traiteCommentaire2(texte,niveau,ind){
-    var s='';
-    s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
-    return s;
-}
-
-//=====================================================================================================================
-function espacesn(optionCRLF,i){
- var t='';
- if(optionCRLF){
-  t='\r\n';
- }else{
-  t='\n';
- }
- if(i>0){
-  t+=' '.repeat(NBESPACESSOURCEPRODUIT*i);
- }
- return t;
-}
 
 //=====================================================================================================================
 function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){

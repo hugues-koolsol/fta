@@ -194,14 +194,17 @@ if(count($data0)===0){
    }else{
     $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
    }
- }else{
-  $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
- }
- if(isset( $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ) && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===$v0['T0.chi_id_cible']){
-  $lsttbl.='<span class=" yybtn yyunset"  title="selectionner cette cible">⇒</span>';
- }else{
-  $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_cibles1.php?__action=__selectionner_cette_cible&amp;__id='.$v0['T0.chi_id_cible'].'" title="selectionner cette cible">⇒</a>';
- }
+  }else{
+   $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
+  }
+  if(isset( $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ) && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===$v0['T0.chi_id_cible']){
+   $lsttbl.='<span class=" yybtn yyunset"  title="selectionner cette cible">⇒</span>';
+   $lsttbl.=' <a class="yysucces yytxtSiz1" href="zz_dossiers1.php" title="aller aux dossiers">📁</a>';
+  }else{
+   $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_cibles1.php?__action=__selectionner_cette_cible&amp;__id='.$v0['T0.chi_id_cible'].'" title="selectionner cette cible">⇒</a>';
+   $lsttbl.='<span class=" yybtn yyunset"  title="aller aux dossiers">⇒</span>';
+  }
+  
   
   
   $lsttbl.='</div>';

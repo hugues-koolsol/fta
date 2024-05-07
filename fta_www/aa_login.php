@@ -18,6 +18,20 @@ function supprimerLesValeursDeSession(){
     unset($_SESSION[APP_KEY]);
 }
 
+/*===================================================================================================================*/
+function texte_aleatoire($length){
+    $str = random_bytes($length);
+    $str = base64_encode($str);
+    $str = str_replace(["+", "/", "="], "", $str);
+    $str = substr($str, 0, $length);
+    return $str;
+}
+/*===================================================================================================================*/
+
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( random_string(rand(1,2)*10+20) , true ) . '</pre>' ; exit(0);
+
+
+
 /*
   =====================
   si on est en post ...
@@ -57,6 +71,8 @@ if((isset($_POST) && count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$data['chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_groupe_utilisateur']=$data['chx_id_groupe_connexion_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']=$data['chx_id_groupe_connexion_utilisateur'];
+            $_SESSION[APP_KEY]['sess_cle_complementaire']=openssl_random_pseudo_bytes(16);
+            $_SESSION[APP_KEY]['sess_complement_id']=texte_aleatoire(rand(1,2)*10+20);
             ajouterMessage('info' , __LINE__.' connexion effectuée avec succes :-)' );
             recharger_la_page('index.php');
         }else{

@@ -8,6 +8,8 @@ var global_editeur_debut_texte_tab=[];
 var global_editeur_scrolltop=0;
 var global_editeur_nomDeLaTextArea='';
 var global_editeur_timeout=null;
+var global_modale1=null;
+var global_modale1_iframe=null;
 
 var global_editeur_largeur_des_ascenseurs=-1; 
 
@@ -1307,44 +1309,47 @@ function deplace_la_zone_de_message(){
  if(hrefActuel.lastIndexOf('/')>=1 && hrefActuel.substr(hrefActuel.lastIndexOf('/')+1)!==''){
   hrefActuel=hrefActuel.substr(hrefActuel.lastIndexOf('/')+1);
   var lienActuel=null;
-  var listeMenu=dogid('menuPrincipal').getElementsByTagName('a');
-  for(i=0;i<listeMenu.length;i++){
-   if(listeMenu[i].href && listeMenu[i].href.indexOf(hrefActuel)>=0){
-    lienActuel=listeMenu[i];
-    break;
-   }
-  }
-  if(lienActuel!==null){
+  var menuPrincipal=dogid('menuPrincipal');
+  if(menuPrincipal){
+   
+   var listeMenu=menuPrincipal.getElementsByTagName('a');
    for(i=0;i<listeMenu.length;i++){
-    if(listeMenu[i]===lienActuel ){
-     if(listeMenu[i].className!=='yymenusel1'){
-      listeMenu[i].className='yymenusel1';
-     }
-    }else{
-     if(listeMenu[i].className!==''){
-      listeMenu[i].className='';
-     }
+    if(listeMenu[i].href && listeMenu[i].href.indexOf(hrefActuel)>=0){
+     lienActuel=listeMenu[i];
+     break;
     }
    }
-   var positionDuLien=lienActuel.getBoundingClientRect();
-   var boiteDesLiens=dogid('menuPrincipal').getBoundingClientRect();
-   var positionDroiteDuLienDansLaBoite=parseInt( positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
-   var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
-   if(positionDroiteDuLienDansLaBoite>largeurBoiteLiens){
-    var calcul=parseInt((boiteDesLiens.width-positionDuLien.width-60),10);
-    if(parseInt(positionDuLien.x,10)>calcul){
-     var nouveauScroll=positionDuLien.x-(boiteDesLiens.width-positionDuLien.width-60);
-     dogid('menuPrincipal').scrollLeft=nouveauScroll;
+   if(lienActuel!==null){
+    for(i=0;i<listeMenu.length;i++){
+     if(listeMenu[i]===lienActuel ){
+      if(listeMenu[i].className!=='yymenusel1'){
+       listeMenu[i].className='yymenusel1';
+      }
+     }else{
+      if(listeMenu[i].className!==''){
+       listeMenu[i].className='';
+      }
+     }
     }
-   }
+    var positionDuLien=lienActuel.getBoundingClientRect();
+    var boiteDesLiens=menuPrincipal.getBoundingClientRect();
+    var positionDroiteDuLienDansLaBoite=parseInt( positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
+    var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
+    if(positionDroiteDuLienDansLaBoite>largeurBoiteLiens){
+     var calcul=parseInt((boiteDesLiens.width-positionDuLien.width-60),10);
+     if(parseInt(positionDuLien.x,10)>calcul){
+      var nouveauScroll=positionDuLien.x-(boiteDesLiens.width-positionDuLien.width-60);
+      menuPrincipal.scrollLeft=nouveauScroll;
+     }
+    }
+   }   
+   menuPrincipal.addEventListener('wheel',mouseWheelOnMenu, false);
   }
-  
  }
  
  
  
  
- document.getElementById('menuPrincipal').addEventListener('wheel',mouseWheelOnMenu, false);
  
 }
 /*
@@ -1474,6 +1479,20 @@ function executerCesActionsPourLaPageLocale(par){
    
    
 }
+/*
+===================================================================================
+*/
+function afficherModale1(url_du_contenu){
+ global_modale1_iframe.src=url_du_contenu;
+ global_modale1.showModal();
+}
+/*
+===================================================================================
+*/
+function choisir_de_iframe1(valeur , nom_du_champ){
+ window.parent.document.getElementById(nom_du_champ).value=valeur;
+ window.parent.global_modale1.close();
+}
 
 /*
 ===================================================================================
@@ -1482,6 +1501,9 @@ window.addEventListener('load', function () {
 // console.log("interface js")
  ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens();
  deplace_la_zone_de_message();
+ global_modale1=document.getElementById('modale1');
+ global_modale1_iframe=document.getElementById('iframe_modale_1');
+ 
  fonctionDeLaPageAppeleeQuandToutEstCharge();
  
 })

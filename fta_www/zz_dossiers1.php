@@ -9,8 +9,46 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    recharger_la_page('zz_cibles1.php'); 
 }
 
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
+
+$dossier_racine='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'';
+
 /*
-  ========================================================================================
+  =====================================================================================================================
+*/
+if(isset($_GET['__action']) && '__integration_des_dossiers_existants'===$_GET['__action']){
+ 
+ $arr=listerLesDossiers($dossier_racine);
+ if(count($arr)>0){
+  $db = new SQLite3('../fta_inc/db/system.db');
+
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[1] , true ) . '</pre>' ; exit(0);
+  foreach( $arr[1] as $k1 => $v1){
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1['chemin'] , true ) . '</pre>' ; 
+   $nomDossier=substr( $v1['chemin'] , strlen($dossier_racine ) );
+   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomDossier , true ) . '</pre>' ; 
+   
+   $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
+
+
+   if( false === $db->exec($sql) ){
+       echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+   }
+
+   
+  }
+
+
+  
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+ } 
+ 
+ recharger_la_page(BNF); 
+ 
+
+}
+/*
+  =====================================================================================================================
 */
 
 function listerLesDossiers($dir,$niveau=0){
@@ -143,12 +181,21 @@ $o1.='</form>'.CRLF;
 
 $db = new SQLite3('../fta_inc/db/system.db');
 
+$nomDossier='/';
+$sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
+if( false === $db->exec($sql) ){
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+}
+
+
+
+
 $__debut=$__xpage*$__nbMax;
 
 $sql='
  SELECT `chi_id_dossier` , `chp_nom_dossier` 
  FROM `tbl_dossiers` `T0`
- WHERE "T0"."chi_id_dossier">= \'0\' 
+ WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
 ';
 
 if($chi_id_dossier!='' && is_numeric($chi_id_dossier)){
@@ -189,99 +236,72 @@ if($stmt!==false){
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
-$dossier_racine='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'';
-
-if(count($data0)===0){
- $lst='';
- $lst.='<p class="yyinfo">'.CRLF;
- $lst.='aucun enregistrement trouvé avec les critères indiqués'.CRLF;
- $lst.='<a class="yysucces" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
- $lst.='</p>'.CRLF;
- $o1.=''.$lst.''.CRLF;  
  
- $arr=listerLesDossiers($dossier_racine);
- if(count($arr)>0){
-// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[1] , true ) . '</pre>' ; exit(0);
- $o1.='<p class="yyinfo">'.CRLF;
- $o1.='... mais il existe des dossiers qui ne sont pas référencés en base.'.CRLF;
- $o1.='<a class="yyavertissement" href="zz_dossiers1.php?__action=__integration_des_dossiers_exiatants">Intégrer ces dossiers</a>'.CRLF;
- $o1.='</p>'.CRLF;
-  
- }
+
+$lsttbl='';
+$lsttbl.='<thead><tr>';
+$lsttbl.='<th>action</th>';
+$lsttbl.='<th>id</th>';
+$lsttbl.='<th>nom</th>';
+$lsttbl.='</tr></thead><tbody>';
+foreach($data0 as $k0=>$v0){
  
-}else{
- $lsttbl='';
- $lsttbl.='<thead><tr>';
- $lsttbl.='<th>action</th>';
- $lsttbl.='<th>id</th>';
- $lsttbl.='<th>nom</th>';
- $lsttbl.='<th>dossier</th>';
- $lsttbl.='</tr></thead><tbody>';
- foreach($data0 as $k0=>$v0){
-  
-  
-  
-
-  
-  
-  
-  $lsttbl.='<tr>';
-  $lsttbl.='<td data-label="" style="text-align:left!important;">';
-  $lsttbl.='<div class="yyflex1">';
-  
-  $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0_chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
-  if($v0['T0_chi_id_dossier']!==1){
-   if(!is_dir($dossier)){
-    $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0_chi_id_dossier'].'" title="supprimer">✘</a>';
-   }else{
-    $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
-   }
- }else{
-  $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
- }
-  
-  
-  $lsttbl.='</div>';
-  
-  $lsttbl.='</td>';
-
-  $lsttbl.='<td data-label="etat" style="text-align:center;">';
-  
-  $listeDesEtats='';
-  
+ $lsttbl.='<tr>';
+ $lsttbl.='<td data-label="" style="text-align:left!important;">';
+ $lsttbl.='<div class="yyflex1">';
+/*  
+ $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0_chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
+ if($v0['T0_chi_id_dossier']!==1){
   if(!is_dir($dossier)){
-   $listeDesEtats.='Le dossier n\'existe pas ';
+   $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0_chi_id_dossier'].'" title="supprimer">✘</a>';
   }else{
-   $listeDesEtats.='Le dossier existe ';
-   if(le_dossier_est_vide($dossier)){
-    $listeDesEtats.='<br />Le dossier est vide';
-   }else{
-    $listeDesEtats.='<br />Le dossier contient des éléments';
-   }
+   $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
   }
-  $lsttbl.=$listeDesEtats.'</td>';
-
-
-
-  
-  $lsttbl.='<td data-label="id" style="text-align:center;">';
-  $lsttbl.=''.$v0['T0_chi_id_dossier'].'';
-  $lsttbl.='</td>';
-  
-  $lsttbl.='<td data-label="id" style="text-align:left;">';
-  $lsttbl.=''.$v0['T0_chp_nom_dossier'].'';
-  $lsttbl.='</td>';
-  
-  
-  $lsttbl.='<tr>';
- }
-
- $o1.='<table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table>'.CRLF;
- 
- $o1.='<a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
- 
-// $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
+}else{
+ $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
 }
+*/  
+ 
+ $lsttbl.='</div>';
+ 
+ $lsttbl.='</td>';
+
+/*  
+ $lsttbl.='<td data-label="etat" style="text-align:center;">';
+ $listeDesEtats='';
+ if(!is_dir($dossier)){
+  $listeDesEtats.='Le dossier n\'existe pas ';
+ }else{
+  $listeDesEtats.='Le dossier existe ';
+  if(le_dossier_est_vide($dossier)){
+   $listeDesEtats.='<br />Le dossier est vide';
+  }else{
+   $listeDesEtats.='<br />Le dossier contient des éléments';
+  }
+ }
+ $lsttbl.=$listeDesEtats.'</td>';
+*/
+
+
+ 
+ $lsttbl.='<td data-label="id" style="text-align:center;">';
+ $lsttbl.=''.$v0['T0_chi_id_dossier'].'';
+ $lsttbl.='</td>';
+ 
+ $lsttbl.='<td data-label="id" style="text-align:left;">';
+ $lsttbl.=''.$v0['T0_chp_nom_dossier'].'';
+ $lsttbl.='</td>';
+ 
+ 
+ $lsttbl.='<tr>';
+}
+
+$o1.='<table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table>'.CRLF;
+
+$o1.='<a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+
+// $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
+
 
 
 /*
