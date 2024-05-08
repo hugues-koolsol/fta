@@ -10,7 +10,8 @@ define("MESSAGES","messages");
 define("INPUT","input");
 define("VALUE","value");
 define("STATUS","status");
-define("CLE_ENCRIPTION","Ma_super_cle_pourencripter_les_ids_des_formulaires_post_fnu943/mYvETfAsYFmbras7Dxw8t3vA=");
+define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_et_"suffisament"_longue'));
+define('ENCRYPTION_METHODE','aes-256-cbc');
 
 
 $GLOBALS['__date']=date('Y-m-d H:i:s');
@@ -175,6 +176,41 @@ function recupereLesMessagesDeSession($f){
  return $les_messages_a_afficher;
 }
 /*===================================================================================================================*/
+function encrypter($donnee){ 
+    $donnee=ENCRYPTION_DONNEES_EN_PLUS.$donnee;
+    $premiere_cle = base64_decode($_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']);
+    $deuxieme_cle = base64_decode($_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']);
+        
+    $iv_length = openssl_cipher_iv_length(ENCRYPTION_METHODE);
+    $iv = openssl_random_pseudo_bytes($iv_length);
+            
+    $first_encrypted = openssl_encrypt($donnee,ENCRYPTION_METHODE,$premiere_cle, OPENSSL_RAW_DATA ,$iv);    
+    $second_encrypted = hash_hmac('sha3-512', $first_encrypted, $deuxieme_cle, TRUE);
+                
+    $output = base64_encode($iv.$second_encrypted.$first_encrypted);    
+    return $output;        
+}
+/*===================================================================================================================*/
+function decrypter($entree){
+    $premiere_cle = base64_decode($_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']);
+    $deuxieme_cle = base64_decode($_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']);
+    $mix = base64_decode($entree);
+            
+    $iv_length = openssl_cipher_iv_length(ENCRYPTION_METHODE);
+                
+    $iv = substr($mix,0,$iv_length);
+    $second_encrypted = substr($mix,$iv_length,64);
+    $first_encrypted = substr($mix,$iv_length+64);
+                
+    $donnee = @openssl_decrypt($first_encrypted,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
+    $second_encrypted_new = hash_hmac('sha3-512', $first_encrypted, $deuxieme_cle, TRUE);
+        
+    if(@hash_equals($second_encrypted,$second_encrypted_new)){
+     return substr($donnee,strlen(ENCRYPTION_DONNEES_EN_PLUS));
+    }
+    return false;
+}
+/*===================================================================================================================*/
 function html_header1($parametres){
     if(!ob_start("ob_gzhandler")){
      ob_start();
@@ -248,7 +284,7 @@ function supprimerLesParametresDeNavigationEnSession(){
 function html_footer1($parametres=array()){
     $o1='';
     $o1.='</main>'.CRLF;
-    $o1.='<dialog id="modale1"><iframe id="iframe_modale_1" src=""></iframe></dialog>'.CRLF;
+    $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><iframe id="iframe_modale_1" src=""></iframe></dialog>'.CRLF;
     $o1.='<div id="boutonHautDePage" onclick="decalerLaPage(0,200)">⇑</div>'.CRLF;
     $o1=$o1.'  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
     $o1=$o1.'  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;

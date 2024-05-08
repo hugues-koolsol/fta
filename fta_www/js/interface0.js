@@ -1094,7 +1094,7 @@ function display_ajax_error_in_cons(jsonRet){
             txt+='messages[]=\n';
             var elem={};
             for(elem in jsonRet.messages){
-                global_messages[errors].push(jsonRet.messages[elem]);
+                global_messages['errors'].push(jsonRet.messages[elem]);
                 txt+=''+jsonRet.messages[elem]+'\n';
             }
             txt+='\n';
@@ -1489,6 +1489,12 @@ function afficherModale1(url_du_contenu){
 /*
 ===================================================================================
 */
+function fermerModale1(){
+ global_modale1.close();
+}
+/*
+===================================================================================
+*/
 function choisir_de_iframe1(valeur , nom_du_champ){
  window.parent.document.getElementById(nom_du_champ).value=valeur;
  window.parent.global_modale1.close();
@@ -1503,7 +1509,12 @@ window.addEventListener('load', function () {
  deplace_la_zone_de_message();
  global_modale1=document.getElementById('modale1');
  global_modale1_iframe=document.getElementById('iframe_modale_1');
- 
+ global_modale1.addEventListener('click',function(e){
+  var dim=global_modale1.getBoundingClientRect();
+  if(e.clientX  < dim.left || e.clientX  > dim.right || e.clientY  < dim.top || e.clientY  > dim.bottom ){
+   global_modale1.close();
+  }
+ })
  fonctionDeLaPageAppeleeQuandToutEstCharge();
  
 })

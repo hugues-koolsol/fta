@@ -13,6 +13,75 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
 $dossier_racine='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'';
 
+
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
+ $le_dossier_a_recuperer='../../'.$_GET['__racine'];
+ $listeDesDossiersSurDisque=listerLesDossiers($le_dossier_a_recuperer);
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[1] , true ) . '</pre>' ; exit(0);
+ $les_valeurs_sql='';
+ 
+ $listeDesDossiersactuels=array();
+ 
+ $db = new SQLite3('../fta_inc/db/system.db');
+
+ /*
+  sélection des dossiers actuels
+ */
+ $sql='SELECT chp_nom_dossier FROM tbl_dossiers WHERE chx_cible_dossier=\''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\'';
+ $stmt = $db->prepare($sql);
+ if($stmt!==false){
+   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+   while($arr=$result->fetchArray(SQLITE3_NUM)){
+    
+    $listeDesDossiersactuels[$arr[0]]='present';
+    
+   }
+   $stmt->close(); 
+   
+   foreach($listeDesDossiersSurDisque[1] as $k1 => $v1){
+     $nom_du_dossier_a_creer=substr( $v1['chemin'] , strlen($le_dossier_a_recuperer) );
+     if(isset($listeDesDossiersactuels[$nom_du_dossier_a_creer])){
+      /* dossier déjà existant */
+     }else{
+      $les_valeurs_sql.='INSERT OR IGNORE INTO tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.addslashes1($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
+     }
+   }
+   
+   
+ }else{
+  ajouterMessage('erreur' ,  __LINE__ .' : erreur de récupération des dossiers actuels ' . $db->lastErrorMsg() . ' ' . $db->lastErrorCode()  , BNF  );
+ }
+ 
+ 
+      
+   
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nom_du_dossier_a_creer , true ) . '</pre>' ; exit(0);
+  
+ 
+ if($les_valeurs_sql!==''){
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $les_valeurs_sql  . '</pre>' ; exit(0);
+     $resultat=$db->exec($les_valeurs_sql);
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $resultat , true ) . '</pre>' ; exit(0);
+     if( true === $resultat){
+         ajouterMessage('succes' ,  __LINE__ .' : les dossiers ont été importés' , BNF  );
+     }else{
+         ajouterMessage('erreur' ,  __LINE__ .' : erreur d\'importation des dossiers ' . $db->lastErrorMsg() . ' ' . $db->lastErrorCode()  , BNF  );
+     }
+
+    }else{
+     ajouterMessage('info' ,  __LINE__ .' : aucun dossier à importer ' , BNF  );
+
+ }
+ recharger_la_page(BNF); 
+ 
+ 
+ 
+}
 /*
   =====================================================================================================================
 */
@@ -53,7 +122,7 @@ if(isset($_GET['__action']) && '__integration_des_dossiers_existants'===$_GET['_
 
 function listerLesDossiers($dir,$niveau=0){
     
-    $str='';
+    $chaineRev='';
     $ffs = scandir($dir);
 
     unset($ffs[array_search('.', $ffs, true)]);
@@ -72,29 +141,30 @@ function listerLesDossiers($dir,$niveau=0){
         }
     }
     foreach($temp as $k1 => $v1){
-     $sousChaine='';
+     $sousChaineRev='';
      if($k1!=='vendor'){
+      /*
+       on ne met pas le sous dossier vendor qui contient des bibliothèques importées par composer
+      */
       $niveau++;
       $sousDossiers=listerLesDossiers($v1, $niveau);
       $niveau--;
       if(count($sousDossiers[0])>0){
        $temp[$k1]=array('chemin' => $v1 , 'dossiers' => $sousDossiers[0] );
 //       $temp[$k1]=$sousDossiers[0];
-       $sousChaine=$sousDossiers[1];
+       $sousChaineRev=$sousDossiers[1];
       }else{
        $temp[$k1]=array('chemin' => $v1 );
       }
-     }else{
-       $temp[$k1]=array('chemin' => $v1 );
      }
-     if($str!==''){
-      $str.=',';
+     if($chaineRev!==''){
+      $chaineRev.=',';
      }
-     $str.=$k1.'(';
-     if($sousChaine!==''){
-      $str.=$sousChaine;
+     $chaineRev.=$k1.'(';
+     if($sousChaineRev!==''){
+      $chaineRev.=$sousChaineRev;
      }
-     $str.=')';
+     $chaineRev.=')';
      
     }     
 
@@ -119,9 +189,9 @@ function listerLesDossiers($dir,$niveau=0){
      $lineaire=array();
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $temp , true ) . '</pre>' ; exit(0);
      linearise($temp,$lineaire);
-     return(array($temp , $lineaire , $str));
+     return(array($temp , $lineaire , $chaineRev));
     }else{
-     return(array($temp,$str));
+     return(array($temp,$chaineRev));
     }
     
 }
@@ -134,6 +204,7 @@ function listerLesDossiers($dir,$niveau=0){
 $o1='';
 $o1=html_header1(array('title'=>'Dossiers' , 'description'=>'Dossiers'));
 print($o1);$o1='';
+
 
 $o1.='<h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>';
 
@@ -193,8 +264,9 @@ if( false === $db->exec($sql) ){
 $__debut=$__xpage*$__nbMax;
 
 $sql='
- SELECT `chi_id_dossier` , `chp_nom_dossier` 
+ SELECT `chi_id_dossier` , `chp_nom_dossier` , T1.chp_nom_cible
  FROM `tbl_dossiers` `T0`
+  LEFT JOIN tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
  WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
 ';
 
@@ -219,17 +291,18 @@ $sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
 
 $data0=array();
-
+$cle_de_la_cible='';
 
 $stmt = $db->prepare($sql);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-  while($arr=$result->fetchArray(SQLITE3_NUM))
-  {
+  while($arr=$result->fetchArray(SQLITE3_NUM)){
    array_push($data0, array(
-    'T0_chi_id_dossier'          => $arr[0],
-    'T0_chp_nom_dossier'         => $arr[1],
+    'T0.chi_id_dossier'          => $arr[0],
+    'T0.chp_nom_dossier'         => $arr[1],
+    'T1.chp_nom_cible'           => $arr[2],
    ));
+   $cle_de_la_cible=$arr[2];
   }
   $stmt->close(); 
 }else{
@@ -238,36 +311,31 @@ if($stmt!==false){
 
  
 
-$lsttbl='';
-$lsttbl.='<thead><tr>';
-$lsttbl.='<th>action</th>';
-$lsttbl.='<th>id</th>';
-$lsttbl.='<th>nom</th>';
-$lsttbl.='</tr></thead><tbody>';
+$__lsttbl='';
+$__lsttbl.='<thead><tr>';
+$__lsttbl.='<th>action</th>';
+$__lsttbl.='<th>id</th>';
+$__lsttbl.='<th>nom</th>';
+$__lsttbl.='</tr></thead><tbody>';
 foreach($data0 as $k0=>$v0){
  
- $lsttbl.='<tr>';
- $lsttbl.='<td data-label="" style="text-align:left!important;">';
- $lsttbl.='<div class="yyflex1">';
-/*  
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0_chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
- if($v0['T0_chi_id_dossier']!==1){
-  if(!is_dir($dossier)){
-   $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0_chi_id_dossier'].'" title="supprimer">✘</a>';
-  }else{
-   $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
-  }
-}else{
- $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
-}
-*/  
+ $__lsttbl.='<tr>';
+ $__lsttbl.='<td data-label="" style="text-align:left!important;">';
+ $__lsttbl.='<div class="yyflex1">';
+ if($v0['T0.chp_nom_dossier']!=='/'){
+  $__lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
+  $__lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+ }else{
+  $__lsttbl.='<span class=" yybtn yyunset" title="modifier">✎</span>';
+  $__lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
+ }
  
- $lsttbl.='</div>';
+ $__lsttbl.='</div>';
  
- $lsttbl.='</td>';
+ $__lsttbl.='</td>';
 
 /*  
- $lsttbl.='<td data-label="etat" style="text-align:center;">';
+ $__lsttbl.='<td data-label="etat" style="text-align:center;">';
  $listeDesEtats='';
  if(!is_dir($dossier)){
   $listeDesEtats.='Le dossier n\'existe pas ';
@@ -279,26 +347,58 @@ foreach($data0 as $k0=>$v0){
    $listeDesEtats.='<br />Le dossier contient des éléments';
   }
  }
- $lsttbl.=$listeDesEtats.'</td>';
+ $__lsttbl.=$listeDesEtats.'</td>';
 */
 
 
  
- $lsttbl.='<td data-label="id" style="text-align:center;">';
- $lsttbl.=''.$v0['T0_chi_id_dossier'].'';
- $lsttbl.='</td>';
+ $__lsttbl.='<td style="text-align:center;">';
+ $__lsttbl.=''.$v0['T0.chi_id_dossier'].'';
+ $__lsttbl.='</td>';
  
- $lsttbl.='<td data-label="id" style="text-align:left;">';
- $lsttbl.=''.$v0['T0_chp_nom_dossier'].'';
- $lsttbl.='</td>';
+ $__lsttbl.='<td style="text-align:left;">';
+ $__lsttbl.=$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].''.$v0['T0.chp_nom_dossier'].'';
+ $__lsttbl.='</td>';
  
  
- $lsttbl.='<tr>';
+ $__lsttbl.='<tr>';
 }
 
-$o1.='<table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table>'.CRLF;
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
 
 $o1.='<a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+
+if($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']===APP_KEY){
+ 
+  $o1.='<a class="yyinfo" href="zz_dossiers1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.CRLF;
+ 
+}else{
+    if($cle_de_la_cible!==''){
+
+     $sql='
+      SELECT `chp_dossier_cible` 
+      FROM `tbl_cibles` `T0`
+      WHERE "T0"."chp_nom_cible" = \''.addslashes1($cle_de_la_cible).'\' 
+        AND "T0"."chp_dossier_cible" <> \''.addslashes1($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']).'\' 
+     ';
+
+     $stmt = $db->prepare($sql);
+     if($stmt!==false){
+      
+       $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+       while($arr=$result->fetchArray(SQLITE3_NUM)){
+        
+        //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[0] , true ) . '</pre>' ; exit(0);
+        $o1.='<a class="yyinfo" href="zz_dossiers1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode($arr[0]).'">recupérer les dossiers de '.$arr[0].'</a>'.CRLF;
+        
+       }
+       $stmt->close(); 
+
+      }
+     
+    }
+    
+}
 
 // $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
 
@@ -312,6 +412,7 @@ $js_a_executer_apres_chargement=array(
      'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
     )
 );
+print($o1); $o1='';
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);$o1='';

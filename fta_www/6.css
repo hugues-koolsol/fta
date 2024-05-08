@@ -77,9 +77,15 @@ textarea{
  width:100%;
  min-height:75vh;
  border:0;
- 
 }
-
+dialog::backdrop{
+ background-color:rgba(0,0,0,0.8);
+}
+#__fermerModale1{
+  position:absolute;
+  top:0;
+  right:0;
+}
 .yytableauMatrice1{
  font-size:0.8em;
  border-collapse:collapse;

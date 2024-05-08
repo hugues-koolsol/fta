@@ -250,7 +250,7 @@ if(count($data0)===0){
   $lsttbl.='<tr>';
  }
 
- $o1.='<table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table>'.CRLF;
+ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
  
  $o1.='<a class="yyinfo" href="zz_cibles_action1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
  
@@ -267,5 +267,6 @@ $js_a_executer_apres_chargement=array(
     )
 );
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
+print($o1); $o1='';
 $o1.=html_footer1($par);
 print($o1);$o1='';

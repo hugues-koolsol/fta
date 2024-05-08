@@ -220,11 +220,16 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      
      
      if(nomFonction!=''){
-      t+='\nfunction '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
+      t+='\n';
+      t+=espacesn(true,niveau);
+      t+='function '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
+      t+='\n';
       obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,1);
       if(obj.status==true){
        t+=obj.value;
-       t+='\n}';
+       t+='\n';
+       t+=espacesn(true,niveau);
+       t+='}';
        max=Math.max(positionDeclarationFonction,positionContenu);
        for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
         reprise=j;
@@ -585,6 +590,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      
     }else if(tabchoix[j][1]=='si'){
      
+     t+='\n';
      t+=espacesn(true,niveau);
      t+='if(';
      
@@ -602,6 +608,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      t+='){';
+     t+='\n';
      
      
      
@@ -621,13 +628,16 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      }else{
       if(aUnSinon){
       }else{
+       t+='\n';
        t+=espacesn(true,niveau);
        t+='}';
+       t+='\n';
       }
      }
      
     }else if(tabchoix[j][1]=='sinonsi'){
      
+     t+='\n';
      t+=espacesn(true,niveau); // espaces
      t+='}else if(';
      
@@ -646,6 +656,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       return logerreur({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'3 problème sur la condition du choix en indice '+tabchoix[j][0] });
      }
      t+='){';
+     t+='\n';
      
      
      if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
@@ -662,14 +673,18 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      if(aUnSinon){
      }else{
       if(j==tabchoix.length-1){ // si c'est le dernier sinonsi
+       t+='\n';
        t+=espacesn(true,niveau);
        t+='}';
+       t+='\n';
       }
      }
      
     }else{
+     t+='\n';
      t+=espacesn(true,niveau);
      t+='}else{';
+     t+='\n';
      if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
       niveau++;
       obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
@@ -682,6 +697,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      }
      t+=espacesn(true,niveau);
      t+='}';
+     t+='\n';
     }
    }
 
@@ -824,9 +840,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
    
   }else if(tab[i][1]=='php'  && tab[i][2]=='f'){
 
-   debugger; // on ne devrait pas passer par là
+//   debugger; 
    php_contexte_commentaire_html=false;
-   obj=php_tabToPhp1(obj.value,i,false,false,niveau);
+   obj=php_tabToPhp1(tab,i+1,false,false,niveau); // tab,id,dansFonction,dansInitialisation,niveau){
    if(obj.status==true){
     t+='<?'+'php'+obj.value+'\n?>';
     php_contexte_commentaire_html=true;

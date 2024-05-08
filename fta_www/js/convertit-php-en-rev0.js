@@ -2540,7 +2540,8 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
     for(var elem in jsonRet.messages){
      astphp_logerreur( {'status':true,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
-    f_traitementApresRecuperationAst({status:true,value:jsonRet.value});
+//    console.log('jsonRet=',jsonRet);
+    f_traitementApresRecuperationAst({status:true,value:jsonRet.value,input:jsonRet.input});
    }else{
     for(var elem in jsonRet.messages){
      astphp_logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
@@ -2577,7 +2578,8 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
    'file'                      : 'ast'  ,
    'funct'                     : 'recupererAstDePhp' ,
   },
-  'texteSource':texteSource
+  'texteSource':texteSource,
+  'opt':opt
  }
  try{
   r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  

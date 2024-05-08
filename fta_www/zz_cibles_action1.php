@@ -17,7 +17,7 @@ function boutonRetourALaListe(){
 //========================================================================================================================
 function erreur_dans_champs_saisis_cibles(){
  $uneErreur=false;
- if($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']==='1'){
+ if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']==='1'){
  }else{
   if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']===''){
    /*
@@ -81,7 +81,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']          =$_POST['chp_nom_cible']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']      =$_POST['chp_dossier_cible']     ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']  =$_POST['chp_commentaire_cible'] ?? '';
-
+ $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']           =isset($_POST['chi_id_cible'])?decrypter($_POST['chi_id_cible']) : '';
  /*
    ====================================================================================================================
    ============================================= MODIFICATION =========================================================
@@ -89,21 +89,21 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  */
  if(isset($_POST['__action'])&&$_POST['__action']=='__modification'){
   if(erreur_dans_champs_saisis_cibles()){
-   if(isset($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'])&&is_numeric($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'])){
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']);
+   if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])&&is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
+    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
    }else{
-    ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'] );
+    ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'] );
     recharger_la_page('zz_cibles1.php');
    }
   }
   
-  if($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']==='1'){
+  if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']==='1'){
       $sql='
        UPDATE `tbl_cibles` SET 
           `chp_commentaire_cible` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
         WHERE 
-          `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']).'\'
+          `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
       ';
   }else{
       $sql='
@@ -112,7 +112,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         , `chp_dossier_cible`     = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])    .'\'
         , `chp_commentaire_cible` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
         WHERE 
-          `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']).'\'
+          `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
       ';
   }
 
@@ -122,11 +122,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     error_reporting(E_ALL);
     if($db->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']); 
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
     }else{
      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
      ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']); 
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
     }
    
   }else{
@@ -136,12 +136,12 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
     ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']);
+    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
     
    }else{
     
     ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']);
+    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
     
    }
   }
@@ -230,9 +230,9 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     ===================================================================================================================
   */
 
-  if(isset($_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'])){
+  if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
    
-   $__id=$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'];
+   $__id=$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
    if(isset($_SESSION[APP_KEY][NAV][BNF])){
     unset($_SESSION[APP_KEY][NAV][BNF]);
    }
@@ -267,7 +267,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     ===================================================================================================================
   */
 
-   $__id=$_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible'];
+   $__id=$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
    if(isset($_SESSION[APP_KEY][NAV][BNF])){
     unset($_SESSION[APP_KEY][NAV][BNF]);
    }
@@ -407,6 +407,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   http://localhost/functToArray/fta/fta_www/zz_cibles_action1.php?__id=2&__action=__suppression
   */
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;
+ $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
  $o1.='   veuillez confirmer le suppression de  : '.CRLF;
  $o1.='   <br /><br /><b>'.
        '('.$__valeurs['T0_chi_id_cible'].') : nom : ' .$__valeurs['T0_chp_nom_cible'].' , dossier : ' .$__valeurs['T0_chp_dossier_cible'].'  <br /> '.
@@ -478,7 +479,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
   $o1.='<h2>modifier une cible</h2>'.CRLF;
 
-  $_SESSION[APP_KEY][NAV][BNF]['T0_chi_id_cible']=$__id;
+  $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']=$__id;
   $__valeurs['T0_chp_nom_cible']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']        ??$__valeurs['T0_chp_nom_cible'];
   $__valeurs['T0_chp_dossier_cible']      =$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']    ??$__valeurs['T0_chp_dossier_cible'];
   
@@ -487,6 +488,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
 
   $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.CRLF;
+  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
   
 
   $o1.=' <div class="yyfdiv1">'.CRLF;

@@ -1,5 +1,30 @@
 <?php
 //if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
+
+//==========================================================================================================
+function charger_un_fichier_avec_un_nom_encrypte(&$data){
+
+ if((isset($data['input']['file_name']))){
+  
+  $nomFichierDecripte=decrypter($data['input']['file_name']);
+  $contenu=file_get_contents($nomFichierDecripte);
+  if($contenu===false){
+   
+      $data['messages'][]='impossible de lire le fichier';   
+   
+  }else{
+    
+      $data['value']=$contenu;
+      $data['status']='OK';
+   
+  }
+ }else{
+  $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';
+ }
+
+
+}
+
 //==========================================================================================================
 function loadRevFile(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}

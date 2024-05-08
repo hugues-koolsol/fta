@@ -9,7 +9,6 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    recharger_la_page('zz_cibles1.php'); 
 }
 
-
 $o1='';
 $o1=html_header1(array('title'=>'Dossiers' , 'description'=>'Dossiers' , 'pas_de_menu' => true ));
 print($o1);$o1='';
@@ -84,11 +83,6 @@ if($chp_nom_dossier!='' ){
  '; 
 }
 
-
-
-
-
-
 $sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
 
@@ -124,7 +118,7 @@ foreach($data0 as $k0=>$v0){
  $lsttbl.='<tr>';
  $lsttbl.='<td data-label="" style="text-align:left!important;">';
  $lsttbl.='<div class="yyflex1">';
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="javascript:choisir_de_iframe1(\''.$v0['T0_chi_id_dossier'].'\',\''.$_GET['__nom_champ_dans_parent'].'\')" title="choisir">✎</a>';
+ $lsttbl.=' <a class="yyinfo yytxtSiz1" href="javascript:choisir_de_iframe1(\''.encrypter($v0['T0_chi_id_dossier']).'\',\''.$_GET['__nom_champ_dans_parent'].'\')" title="choisir">✎</a>';
  $lsttbl.='</div>';
  
  $lsttbl.='</td>';
