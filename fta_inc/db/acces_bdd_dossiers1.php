@@ -18,9 +18,9 @@ function recupere_une_donnees_des_dossiers($id,$db){
    while($arr=$result->fetchArray(SQLITE3_NUM))
    {
     $data0=array(
-     'T0_chi_id_dossier'           => $arr[0],
-     'T0_chp_nom_dossier'          => $arr[1],
-     'T0_chx_cible_dossier'        => $arr[2],
+     'T0.chi_id_dossier'           => $arr[0],
+     'T0.chp_nom_dossier'          => $arr[1],
+     'T0.chx_cible_dossier'        => $arr[2],
     );
    }
    $stmt->close(); 

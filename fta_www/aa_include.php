@@ -240,6 +240,7 @@ function html_header1($parametres){
             $o1.='          <li><a class="'.('zz_cibles1.php'===BNF?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
             $o1.='          <li><a class="'.('zz_dossiers1.php'===BNF?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
             $o1.='          <li><a class="'.('zz_sources1.php'===BNF?'yymenusel1':'').'" href="zz_sources1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('zz_bdds1.php'===BNF?'yymenusel1':'').'" href="zz_bdds1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
         }
         $o1.='        </ul>'.CRLF;
         $o1.='      </div>'.CRLF;

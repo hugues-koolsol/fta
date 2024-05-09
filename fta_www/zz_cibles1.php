@@ -14,14 +14,14 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible'===$_GET['__action'])
  }
  $__id=isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id!==0){
-      $db = new SQLite3('../fta_inc/db/system.db');
+      $db = new SQLite3('../fta_inc/db/sqlite/system.db');
       $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
       $db->close();
-      if(isset($__valeurs['T0_chi_id_cible'])){
+      if(isset($__valeurs['T0.chi_id_cible'])){
           $_SESSION[APP_KEY]['cible_courante']=array(
-            'chi_id_cible'          => $__valeurs['T0_chi_id_cible'],
-            'chp_nom_cible'         => $__valeurs['T0_chp_nom_cible'],
-            'chp_dossier_cible'     => $__valeurs['T0_chp_dossier_cible'],
+            'chi_id_cible'          => $__valeurs['T0.chi_id_cible'],
+            'chp_nom_cible'         => $__valeurs['T0.chp_nom_cible'],
+            'chp_dossier_cible'     => $__valeurs['T0.chp_dossier_cible'],
           );
           ajouterMessage('info' ,  __LINE__ .' : une nouvelle cible a été sélectionnée ' , BNF );
       }
@@ -99,7 +99,7 @@ $o1.='   </div>'.CRLF;
 $o1.=' </form>'.CRLF;
 
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 $__debut=$__xpage*$__nbMax;
 

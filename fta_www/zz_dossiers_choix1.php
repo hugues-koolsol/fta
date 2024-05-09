@@ -89,15 +89,15 @@ $sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 $data0=array();
 
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 $stmt = $db->prepare($sql);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
   while($arr=$result->fetchArray(SQLITE3_NUM))
   {
    array_push($data0, array(
-    'T0_chi_id_dossier'          => $arr[0],
-    'T0_chp_nom_dossier'         => $arr[1],
+    'T0.chi_id_dossier'          => $arr[0],
+    'T0.chp_nom_dossier'         => $arr[1],
    ));
   }
   $stmt->close(); 
@@ -118,17 +118,17 @@ foreach($data0 as $k0=>$v0){
  $lsttbl.='<tr>';
  $lsttbl.='<td data-label="" style="text-align:left!important;">';
  $lsttbl.='<div class="yyflex1">';
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="javascript:choisir_de_iframe1(\''.encrypter($v0['T0_chi_id_dossier']).'\',\''.$_GET['__nom_champ_dans_parent'].'\')" title="choisir">✎</a>';
+ $lsttbl.=' <a class="yyinfo yytxtSiz1" href="javascript:choisir_de_iframe1(\''.encrypter($v0['T0.chi_id_dossier']).'\',\''.$_GET['__nom_champ_dans_parent'].'\')" title="choisir">✎</a>';
  $lsttbl.='</div>';
  
  $lsttbl.='</td>';
  
  $lsttbl.='<td data-label="id" style="text-align:center;">';
- $lsttbl.=''.$v0['T0_chi_id_dossier'].'';
+ $lsttbl.=''.$v0['T0.chi_id_dossier'].'';
  $lsttbl.='</td>';
  
  $lsttbl.='<td data-label="id" style="text-align:left;">';
- $lsttbl.=''.$v0['T0_chp_nom_dossier'].'';
+ $lsttbl.=''.$v0['T0.chp_nom_dossier'].'';
  $lsttbl.='</td>';
  
  

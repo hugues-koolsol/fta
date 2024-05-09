@@ -1,5 +1,11 @@
 "use strict";
 /*
+sur sqlite
+selection des tables
+SELECT * FROM sqlite_master WHERE  name NOT LIKE 'sqlite_%'
+PRAGMA table_info('tbl_cibles')
+PRAGMA foreign_key_list('tbl_dossiers');
+
 var global_enteteTableau=[
  ['id','id'                                 ,''], // 00
  ['val','value'                             ,''],

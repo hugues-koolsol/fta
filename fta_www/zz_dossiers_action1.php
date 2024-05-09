@@ -50,7 +50,7 @@ function erreur_dans_champs_saisis_dossiers(){
   ========================================================================================
 */
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 /*
   ====================================================================================================================
@@ -68,7 +68,98 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']           =isset($_POST['chi_id_dossier'])?decrypter($_POST['chi_id_dossier']) : '';
  
  
- if(isset($_POST['__importer_ce_fichier_de_'.APP_KEY])){
+ 
+ 
+ if(isset($_POST['__effacer_du_disque'])){
+  
+  /*
+    ====================================================================================================================
+    ============================================= SUPPRIMER LE FICHIER DU DISQUE =======================================
+    ====================================================================================================================
+  */
+
+  $fichier_cible='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'].'/'.$_POST['__effacer_du_disque'];
+  
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
+  
+  if(unlink($fichier_cible)){
+    ajouterMessage('succes' , __LINE__ .' : le fichier a bien été supprimé du disque' , BNF );
+  }else{
+    ajouterMessage('erreur' , __LINE__ .' : le fichier n\'a pas été supprimé du disque' , BNF );
+  }
+  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
+
+
+  
+ }else if(isset($_POST['__creer_le_fichier_en_base'])){
+
+  /*
+    ====================================================================================================================
+    ============================================= CREER LE FICHIER EN BASE =============================================
+    ====================================================================================================================
+  */
+
+//  echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();
+  
+  $nom_complet_source=$_POST['__creer_le_fichier_en_base'];
+  
+  $fichier_cible='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'].'/'.$_POST['__creer_le_fichier_en_base'];
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
+
+  $contenuFichier=file_get_contents($fichier_cible);
+  
+  $sql='
+   INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
+     (
+        \''.addslashes1($nom_complet_source)                                 .'\'
+      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'])      .'\'
+      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])   .'\'
+      , \''.addslashes1('Importé le '.date('Y-m-d H:i:s').'') .'\'
+      , \''.addslashes1('')                                                  .'\'
+      , \''.addslashes1($contenuFichier)                                     .'\'      
+     )
+  ' ;
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($sql) , true ) . '</pre>' ; exit(0);
+  if(false === $db->exec($sql)){ // 
+   
+      ajouterMessage('erreur' , __LINE__ .' : le fichier n\'a pas été créé en base' , BNF );
+    
+  }else{
+   
+    ajouterMessage('succes' , __LINE__ .' : le fichier a bien été créé en base' , BNF );
+   
+  }
+  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
+  
+  
+  // chp_nom_source	chp_commentaire_source	chx_cible_id_source	chx_dossier_id_source	chp_rev_source
+
+
+
+ }else if(isset($_POST['__supprimer_ce_repertoire_du_disque'])){
+
+  /*
+    ====================================================================================================================
+    ============================================= SUPPRIMER UN REPERTOIRE DU DISQUE ====================================
+    ====================================================================================================================
+  */
+
+//     echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();
+     
+     if(rmdir($_POST['__supprimer_ce_repertoire_du_disque'])){
+      
+       ajouterMessage('succes' , __LINE__ .' : la suppression du répertoire a réussi' , BNF );
+       
+     }else{
+      
+       ajouterMessage('erreur' , __LINE__ .' : la suppression du répertoire a échoué' , BNF );
+       
+     }
+
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
+  
+  
+ }else if(isset($_POST['__importer_ce_fichier_de_'.APP_KEY])){
   
   /*
     ====================================================================================================================
@@ -206,7 +297,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    
      $__valeurs=recupere_une_donnees_des_dossiers($__id,$db);
 
-     if($__valeurs['T0_chp_nom_dossier']=='/'){
+     if($__valeurs['T0.chp_nom_dossier']=='/'){
       
          ajouterMessage('erreur' ,  __LINE__ .' : on ne peut pas supprimer le dossier racine' , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
@@ -216,7 +307,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      if($nombre_de_sources>0){
 
-         ajouterMessage('erreur' ,  __LINE__ .' : ce dossier contient encore des sources rattachés <a class="yyinfo" href="zz_sources1.php?chi_id_dossier='.$__valeurs['T0_chi_id_dossier'].'">voir les sources du dossier '.$__valeurs['T0_chp_nom_dossier'].'</a>' , BNF );
+         ajouterMessage('erreur' ,  __LINE__ .' : ce dossier contient encore des sources rattachés <a class="yyinfo" href="zz_sources1.php?chi_id_dossier='.$__valeurs['T0.chi_id_dossier'].'">voir les sources du dossier '.$__valeurs['T0.chp_nom_dossier'].'</a>' , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
      }else{
@@ -318,7 +409,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   recharger_la_page('zz_dossiers1.php');
  }else{
   $__valeurs=recupere_une_donnees_des_dossiers($__id,$db);
-  if($__valeurs['T0_chp_nom_dossier']==='/'){
+  if($__valeurs['T0.chp_nom_dossier']==='/'){
     recharger_la_page('zz_dossiers1.php');
   }
   
@@ -335,12 +426,12 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   
   // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
-  if($__valeurs['T0_chp_nom_dossier']==='/'){
+  if($__valeurs['T0.chp_nom_dossier']==='/'){
     recharger_la_page('zz_dossiers1.php');
   }
   
   
-  if(!isset($__valeurs['T0_chi_id_dossier'])){
+  if(!isset($__valeurs['T0.chi_id_dossier'])){
    recharger_la_page('zz_dossiers1.php');
   }else{
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
@@ -377,7 +468,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;
  $o1.='   veuillez confirmer le suppression de  : '.CRLF;
  $o1.='   <br /><br /><b>'.
-       '('.$__valeurs['T0_chi_id_dossier'].')  nom : ' .$__valeurs['T0_chp_nom_dossier'].'    <br /> '.
+       '('.$__valeurs['T0.chi_id_dossier'].')  nom : ' .$__valeurs['T0.chp_nom_dossier'].'    <br /> '.
        '</b><br />'.CRLF;
  $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.CRLF;
  $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
@@ -431,8 +522,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='<h2>modifier un dossier</h2>'.CRLF;
 
   $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
-  $__valeurs['T0_chp_nom_dossier']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']         ??$__valeurs['T0_chp_nom_dossier']        ;
-  $__valeurs['t0_chx_cible_dossier']     =$_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier']    ??$__valeurs['T0_chx_cible_dossier']   ;
+  $__valeurs['T0.chp_nom_dossier']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']         ??$__valeurs['T0.chp_nom_dossier']        ;
+  $__valeurs['T0.chx_cible_dossier']     =$_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier']    ??$__valeurs['T0.chx_cible_dossier']   ;
   
   
   
@@ -449,7 +540,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <span>'.$__id.'</span>'.CRLF;
-  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0_chp_nom_dossier']).'" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="width:100%;max-width:20em;" />'.CRLF;
+  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_dossier']).'" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="width:100%;max-width:20em;" />'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
   
@@ -462,7 +553,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='</div>'.CRLF;
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
-  $chemin_relatif='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T0_chp_nom_dossier'];
+  $chemin_relatif='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T0.chp_nom_dossier'];
   
   if(is_dir($chemin_relatif)){
 
@@ -472,12 +563,65 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
      
      $chemin_du_repertoire=$chemin_reel.'/*.*';
      $glob=glob($chemin_du_repertoire);
+     $tabl=array();
      if($glob!==false){
       
          $o1.='<div>il y a '.count($glob).' élément(s) dans ce répertoire</div>';
          if(count($glob)<100){
+          $liste_des_fichiers='';
           foreach($glob as $k1=>$v1){
-           $o1.='<div>'.$k1.' =>'.substr(str_replace( $chemin_reel,'',$v1),1).'</div>';
+           $nom_court_du_fichier=substr(str_replace($chemin_reel,'',$v1),1);
+           $tabl[$nom_court_du_fichier]=array(
+            'sur_disque' => true,
+            'en_base' => 0
+           );
+           $liste_des_fichiers.=',\''.$nom_court_du_fichier.'\'';
+          }
+          if($liste_des_fichiers!==''){
+           $liste_des_fichiers=substr($liste_des_fichiers,1);
+           $sql='
+            SELECT `chp_nom_source`  , chi_id_source
+            FROM `tbl_sources` `T0`
+            WHERE "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
+            AND `chp_nom_source` IN ('.$liste_des_fichiers.')
+            AND `chx_dossier_id_source` = '.$__id.'
+           ';
+//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
+//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+           
+           $stmt = $db->prepare($sql);
+           if($stmt!==false){
+             $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+             while($arr=$result->fetchArray(SQLITE3_NUM)){
+
+              $tabl[$arr[0]]['en_base']=$arr[1];
+             }
+             $stmt->close(); 
+             foreach($tabl as $k1 => $v1){
+              if($v1['en_base']===0){
+               $o1.='<div>';
+               $o1.=$k1.' n\'existe pas en base';
+               $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
+               $o1.=' <button name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
+               $o1.='</div>';
+              }else{
+               $o1.='<div>'.$k1.' existe en base <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a></div>';
+              }
+              
+             }
+           }else{
+            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+           }
+           
+           
+           
+           
+          }
+          
+         }else{
+          if(count($glob)===0){
+              $o1.='<div><button name="__supprimer_ce_repertoire_du_disque" value="'.$chemin_relatif.'" >supprimer ce répertoire du disque</button></div>';
+          }else{
           }
          }
          
@@ -489,7 +633,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
          $o1.='<hr /><div>Liste des éléments de '.APP_KEY.'</div>';
 
-         $chemin_relatif='../../'.APP_KEY.$__valeurs['T0_chp_nom_dossier'];
+         $chemin_relatif='../../'.APP_KEY.$__valeurs['T0.chp_nom_dossier'];
 //         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
          
          if(is_dir($chemin_relatif)){
@@ -506,7 +650,25 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                 $o1.='<div>il y a '.count($glob).' élément(s) dans le répertoire correspondant de '.APP_KEY.'</div>';
                 if(count($glob)<100){
                     foreach($glob as $k1=>$v1){
-                        $o1.='<div><button name="__importer_ce_fichier_de_'.APP_KEY.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.substr(str_replace( $chemin_reel,'',$v1),1).'</button></div>';
+                        $nom_fichier=substr(str_replace( $chemin_reel,'',$v1),1);
+//                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+                        if(isset($tabl[$nom_fichier])){
+                         $o1.='<div class="yysucces">le fichier '.$nom_fichier.' a été importé sur disque</div>';
+                        }else{
+                          $positionDernierPoint=strrpos($nom_fichier,'.');
+                          if($positionDernierPoint===null){
+                           $extension='';
+                          }else{
+                           $extension=substr($nom_fichier,$positionDernierPoint);
+                          }
+                          if(   $extension==='.php' || $extension==='.js' || $extension==='.html' || $extension==='.htm'  || $extension==='.htm'
+                             || $extension==='.json' || $extension==='.bat' || $extension==='.rev'  || $extension==='.css'  || $extension==='.sql'  
+                             || $extension==='.txt' ){
+                            $o1.='<div><button name="__importer_ce_fichier_de_'.APP_KEY.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.$nom_fichier.'</button></div>';
+                          }else{
+                            $o1.='<div class="yyavertissement">le fichier '.$nom_fichier.' ne comporte pas une extension connue</div>';
+                          }
+                        }
                     }
                 }
              
@@ -523,7 +685,11 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    
   }else{
 
-           $o1.='<div class="yyavertissement">ce répertoire n\'existe pas sur le disque<button id="__creer_le_repertoire_sur_le_disque" name="__creer_le_repertoire_sur_le_disque" >crére le répertoire</div>';
+           $o1.='<div class="yyavertissement">';
+           $o1.='ce répertoire n\'existe pas sur le disque';
+           $o1.='<button id="__creer_le_repertoire_sur_le_disque" name="__creer_le_repertoire_sur_le_disque" >Créer le répertoire</button>';
+           $o1.='<a class="yydanger" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$__id.'" title="supprimer de la Bdd">supprimer de la base</a>';
+           $o1.='</div>';
   
   }
 

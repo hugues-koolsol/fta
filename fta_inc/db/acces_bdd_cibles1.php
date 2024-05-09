@@ -18,10 +18,10 @@ function recupere_une_donnees_des_cibles($id,$db){
    while($arr=$result->fetchArray(SQLITE3_NUM))
    {
     $data0=array(
-     'T0_chi_id_cible'          => $arr[0],
-     'T0_chp_nom_cible'         => $arr[1],
-     'T0_chp_dossier_cible'     => $arr[2],
-     'T0_chp_commentaire_cible' => $arr[3],
+     'T0.chi_id_cible'          => $arr[0],
+     'T0.chp_nom_cible'         => $arr[1],
+     'T0.chp_dossier_cible'     => $arr[2],
+     'T0.chp_commentaire_cible' => $arr[3],
     );
    }
    $stmt->close(); 

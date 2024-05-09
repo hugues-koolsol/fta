@@ -40,7 +40,7 @@ function texte_aleatoire($length){
 if((isset($_POST) && count($_POST) > 0)){
 
     if((isset($_POST['nom_de_connexion']) && isset($_POST['mot_de_passe']))){
-        $db=new SQLite3('../fta_inc/db/system.db');
+        $db=new SQLite3('../fta_inc/db/sqlite/system.db');
         $req='
          SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur , chx_id_groupe_connexion_utilisateur 
          FROM tbl_utilisateurs 
@@ -214,7 +214,7 @@ session_start();
 if((isset($_POST) && count($_POST) > 0)){
     start_session_messages();
     if((isset($_POST['nom_de_connexion']) && isset($_POST['mot_de_passe']))){
-        $db=new SQLite3('../fta_inc/db/system.db');
+        $db=new SQLite3('../fta_inc/db/sqlite/system.db');
         $req='
          SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur , chx_id_groupe_connexion_utilisateur 
          FROM tbl_utilisateurs 

@@ -36,7 +36,6 @@ if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
 
 $chi_id_source          = sauvegarderLesParametresDeRecherche('chi_id_source'          , BNF);
 $chp_nom_source         = sauvegarderLesParametresDeRecherche('chp_nom_source'         , BNF);
-$chp_type_source        = sauvegarderLesParametresDeRecherche('chp_type_source'        , BNF);
 $chp_nom_dossier        = sauvegarderLesParametresDeRecherche('chp_nom_dossier'        , BNF);
 $chi_id_dossier         = sauvegarderLesParametresDeRecherche('chi_id_dossier'         , BNF);
 
@@ -44,7 +43,6 @@ $chi_id_dossier         = sauvegarderLesParametresDeRecherche('chi_id_dossier'  
 $autofocus='chi_id_source';
      if($chi_id_source!=''){          $autofocus='chi_id_source';          } 
 else if($chp_nom_source!=''){         $autofocus='chp_nom_source';         }
-else if($chp_type_source!=''){        $autofocus='chp_type_source';        }
 else if($chp_nom_dossier!=''){        $autofocus='chp_nom_dossier';        }
 else if($chi_id_dossier!=''){         $autofocus='chi_id_dossier';        }
 
@@ -60,11 +58,6 @@ $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="chp_nom_source">nom</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_nom_source" id="chp_nom_source"   value="'.enti1($chp_nom_source).'"  size="8" maxlength="64"  '.($autofocus=='chp_nom_source'?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_type_source">type</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_type_source" id="chp_type_source"   value="'.enti1($chp_type_source).'"  size="8" maxlength="64"  '.($autofocus=='chp_type_source'?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 
 $o1.='   <div>'.CRLF;
@@ -88,13 +81,13 @@ $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 
 $__debut=$__xpage*$__nbMax;
 
 $sql='
- SELECT `chi_id_source`          , `chp_nom_source` , chp_type_source , T1.chp_nom_dossier , chp_commentaire_source , 
+ SELECT `chi_id_source`          , `chp_nom_source` , T1.chp_nom_dossier , chp_commentaire_source , 
         T0.chx_dossier_id_source 
  FROM `tbl_sources` `T0`
   LEFT JOIN tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_source  
@@ -113,11 +106,6 @@ if($chp_nom_source!='' ){
  '; 
 }
 
-if($chp_type_source!='' ){
- $sql.='
-  AND `T0`.`chp_type_source` LIKE \'%'.addslashes1($chp_type_source).'%\'
- '; 
-}
 if($chp_nom_dossier!='' ){
  $sql.='
   AND `T1`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
@@ -145,12 +133,11 @@ if($stmt!==false){
   while($arr=$result->fetchArray(SQLITE3_NUM))
   {
    array_push($data0, array(
-    'T0_chi_id_source'          => $arr[0],
-    'T0_chp_nom_source'         => $arr[1],
-    'T0_chp_type_source'        => $arr[2],
-    'T1_chp_nom_dossier'        => $arr[3],
-    'T0_chp_commentaire_source' => $arr[4],
-    'T0_chx_dossier_id_source'  => $arr[5],
+    'T0.chi_id_source'          => $arr[0],
+    'T0.chp_nom_source'         => $arr[1],
+    'T1.chp_nom_dossier'        => $arr[2],
+    'T0.chp_commentaire_source' => $arr[3],
+    'T0.chx_dossier_id_source'  => $arr[4],
    ));
   }
   $stmt->close(); 
@@ -165,7 +152,6 @@ $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';
 $lsttbl.='<th>id</th>';
 $lsttbl.='<th>nom</th>';
-$lsttbl.='<th>type</th>';
 $lsttbl.='<th>dossier</th>';
 $lsttbl.='<th>commentaire</th>';
 $lsttbl.='</tr></thead><tbody>';
@@ -174,11 +160,11 @@ foreach($data0 as $k0=>$v0){
  $lsttbl.='<tr>';
  $lsttbl.='<td data-label="" style="text-align:left!important;">';
  $lsttbl.='<div class="yyflex1">';
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0_chi_id_source'].'" title="modifier">✎</a>';//✎ #9998
+ $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';//✎ #9998
 /*  
- if($v0['T0_chi_id_source']!==1){
+ if($v0['T0.chi_id_source']!==1){
   if(!is_dir($dossier)){
-   $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0_chi_id_source'].'" title="supprimer">✘</a>';
+   $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✘</a>';
   }else{
    $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
   }
@@ -210,23 +196,19 @@ foreach($data0 as $k0=>$v0){
 
  
  $lsttbl.='<td style="text-align:center;">';
- $lsttbl.=''.$v0['T0_chi_id_source'].'';
+ $lsttbl.=''.$v0['T0.chi_id_source'].'';
  $lsttbl.='</td>';
  
  $lsttbl.='<td style="text-align:left;">';
- $lsttbl.=''.$v0['T0_chp_nom_source'].'';
+ $lsttbl.=''.$v0['T0.chp_nom_source'].'';
  $lsttbl.='</td>';
  
  $lsttbl.='<td style="text-align:left;">';
- $lsttbl.=''.$v0['T0_chp_type_source'].'';
+ $lsttbl.='('.$v0['T0.chx_dossier_id_source'].')'.$v0['T1.chp_nom_dossier'].'';
  $lsttbl.='</td>';
  
  $lsttbl.='<td style="text-align:left;">';
- $lsttbl.='('.$v0['T0_chx_dossier_id_source'].')'.$v0['T1_chp_nom_dossier'].'';
- $lsttbl.='</td>';
- 
- $lsttbl.='<td style="text-align:left;">';
- $lsttbl.=''.$v0['T0_chp_commentaire_source'].'';
+ $lsttbl.=''.enti1(mb_substr( $v0['T0.chp_commentaire_source'], 0 , 50 , 'UTF-8')).'';
  $lsttbl.='</td>';
  
  

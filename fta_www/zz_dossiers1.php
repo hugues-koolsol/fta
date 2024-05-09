@@ -27,7 +27,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
  
  $listeDesDossiersactuels=array();
  
- $db = new SQLite3('../fta_inc/db/system.db');
+ $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
  /*
   sélection des dossiers actuels
@@ -89,7 +89,7 @@ if(isset($_GET['__action']) && '__integration_des_dossiers_existants'===$_GET['_
  
  $arr=listerLesDossiers($dossier_racine);
  if(count($arr)>0){
-  $db = new SQLite3('../fta_inc/db/system.db');
+  $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[1] , true ) . '</pre>' ; exit(0);
   foreach( $arr[1] as $k1 => $v1){
@@ -250,7 +250,7 @@ $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 $nomDossier='/';
 $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
