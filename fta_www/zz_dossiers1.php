@@ -5,7 +5,7 @@ session_start();
 require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
-   ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible avant d\'accéder aux dossiers'  );
+   ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
    recharger_la_page('zz_cibles1.php'); 
 }
 

@@ -4,6 +4,10 @@ require_once 'aa_include.php';
 session_start();
 require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
 
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
+   ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
+   recharger_la_page('zz_cibles1.php'); 
+}
 
 /*
   =====================================================================================================================
@@ -102,9 +106,9 @@ if($stmt!==false){
   while($arr=$result->fetchArray(SQLITE3_NUM))
   {
    array_push($data0, array(
-    'T0_chi_id_basedd'          => $arr[0],
-    'T0_chp_nom_basedd'         => $arr[1],
-    'T0_chp_commentaire_basedd' => $arr[2],
+    'T0.chi_id_basedd'          => $arr[0],
+    'T0.chp_nom_basedd'         => $arr[1],
+    'T0.chp_commentaire_basedd' => $arr[2],
    ));
   }
   $stmt->close(); 
@@ -127,23 +131,23 @@ foreach($data0 as $k0=>$v0){
  $lsttbl.='<td data-label="" style="text-align:left!important;">';
  
  $lsttbl.='<div class="yyflex1">';
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_bdds_action1.php?__action=__modification&amp;__id='.$v0['T0_chi_id_basedd'].'" title="modifier">✎</a>';//✎ #9998
+ $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_bdds_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_basedd'].'" title="modifier">✎</a>';//✎ #9998
  $lsttbl.='</div>';
  
  $lsttbl.='</td>';
 
  
  $lsttbl.='<td style="text-align:center;">';
- $lsttbl.=''.$v0['T0_chi_id_basedd'].'';
+ $lsttbl.=''.$v0['T0.chi_id_basedd'].'';
  $lsttbl.='</td>';
  
  $lsttbl.='<td style="text-align:left;">';
- $lsttbl.=''.$v0['T0_chp_nom_basedd'].'';
+ $lsttbl.=''.$v0['T0.chp_nom_basedd'].'';
  $lsttbl.='</td>';
  
  
  $lsttbl.='<td style="text-align:left;">';
- $lsttbl.=''.enti1(mb_substr( $v0['T0_chp_commentaire_basedd'], 0 , 50 , 'UTF-8')).'';
+ $lsttbl.=''.enti1(mb_substr( $v0['T0.chp_commentaire_basedd'], 0 , 50 , 'UTF-8')).'';
  $lsttbl.='</td>';
  
  

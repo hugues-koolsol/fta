@@ -47,13 +47,23 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
  var value='';
  var values='';
  var obj=null;
+ 
  for(i=id+1;i<tab.length;i++){
   
   if(tab[i][7]==id){
    
    
    
-   if(tab[i][1]=='insert_into'){
+   if(tab[i][1]=='sql'){
+    
+    var obj=tabToSql0( tab ,i+1 , false , niveau );
+    if(obj.status===true){
+     t+=obj.value;
+    }else{
+      return logerreur({status:false,message:'erreur 0062'});
+    }
+    
+   }else if(tab[i][1]=='insert_into'){
      nam='';
      list='';
      for(j=i+1;j<tab.length;j++){
@@ -100,7 +110,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
    }else if(tab[i][1]=='add_index'){
      nam='';
      list='';
-     uniq='';
+     uniq=' INDEX ';
      def='';
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==tab[i][0]){
@@ -111,7 +121,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
         def=tab[j+1][1];
        }
        if(tab[j][1]=='unique' && tab[j][8]==0){
-        uniq=' UNIQUE';
+        uniq=' UNIQUE INDEX ';
        }
        if(tab[j][1]=='fields' && tab[j][8]>=1){
         for(k=j+1;k<tab.length;k++){
@@ -124,7 +134,10 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
      }
      if(nam!='' && list!='' && def!=''){
       t+=espacesn(true,niveau);
-      t+='ALTER TABLE '+nam+' ADD'+uniq+' '+def+' ('+list.substr(0,list.length-1)+');';
+      t+='/*==========DEBUT DEFINITION===========*/';
+      t+=espacesn(true,niveau);
+//      t+='ALTER TABLE '+nam+' ADD'+uniq+' '+def+' ('+list.substr(0,list.length-1)+');'; // mySql / liteSql
+      t+='CREATE '+uniq+' '+def+' ON '+nam+'('+list.substr(0,list.length-1)+') ;'; // mySql / liteSql
      }
    }else if(tab[i][1]=='change_field'){
      nam='';
@@ -247,17 +260,29 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
         t+=' '+tab[j+1][1]+'';
         j++;
        }else if(tab[j][1]=='#'){
-        t+='';
+        t+='/*'+tab[j][13].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')+'*/';
        }else if(tab[j][1]=='auto_increment' && tab[j][8]==0){
-        t+=' AUTO_INCREMENT';
+//        t+=' AUTO_INCREMENT';
+        t+=' AUTOINCREMENT'; // mySql / liteSql
+        
        }else if(tab[j][1]=='unsigned' && tab[j][8]==0){
         t+=' UNSIGNED';
-       }else if(tab[j][1]=='notnull' && tab[j][8]==0){
+       }else if( ( tab[j][1]=='notnull' || tab[j][1]=='not_null' ) && tab[j][8]==0){
         t+=' NOT NULL';
        }else if(tab[j][1]=='default' && tab[j][8]==1){
         t+=' DEFAULT ';
-        t+=' \''+(tab[j+1][1])+'\' ';
+        if(false && tab[j+1][1]==='NULL'){
+         t+=' NULL ';
+        }else{
+         t+=' '+maConstante(tab[j+1])+' ';
+        }
         j++;
+       }else if(tab[j][1]=='primary_key' && tab[j][8]==0){
+        t+=' PRIMARY KEY ';
+       }else if(tab[j][1]=='references' && ( tab[j][8]==2) && tab[j+1][2]=='c'){
+        t+=' REFERENCES '+maConstante(tab[j+1])+'('+maConstante(tab[j+2])+') ';
+        j+=2;
+        
        }else if(tab[j][1]=='type' && (tab[j][8]==1 || tab[j][8]==2) && tab[j+1][2]=='c'){
         if(tab[j][8]==1){
          t+=' '+tab[j+1][1]+'';
@@ -266,11 +291,11 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
          t+=' '+tab[j+1][1]+'('+tab[j+2][1]+')';
          j+=2;
         }else{
-         logerreur({status:false,id:i,message:'sql.js erreur dans un field'});
+         logerreur({status:false,id:i,message:'0271 sql.js erreur dans un field'});
          t+=' /* todo sql.js repere 66 '+tab[j][1] + ' */';
         }
        }else{
-        logerreur({status:false,id:i,message:'sql.js erreur dans un field'});
+        logerreur({status:false,id:i,message:'0275 sql.js erreur dans un field pour '+tab[j][1]});
         t+='/* todo sql.js repere 69 '+tab[j][1] + ' */';
        }
       }
@@ -290,6 +315,10 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
     var auto_increment=0;
     var charset=0;
     var collate=0;
+    t+=espacesn(true,niveau);
+    t+=espacesn(true,niveau);
+    t+='/*==========DEBUT DEFINITION===========*/';
+    t+=espacesn(true,niveau);
     t+=espacesn(true,niveau);
     t+='CREATE TABLE';
     for(j=i+1;j<tab.length;j++){
@@ -344,8 +373,10 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
           break;
          }
         }
+       }else if(tab[j][1].substr(0,5)=='meta_' && tab[j][8]>0  ){
+        t+=CRLF+' /*'+tab[j][1]+'*/ ';
        }else{
-        t+=' todo sql.js repere 49 '+tab[j][1];
+        t+=' todo sql.js repere 0350 '+tab[j][1];
        }
       }
      }else{
@@ -370,7 +401,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
         t+=' '+tab[j+1][1]+'';
         j++;
        }else{
-        t+=' todo sql.js repere 49 '+tab[j][1];
+        t+=' todo sql.js repere 0375 '+tab[j][1];
        }
       }
      }else{
@@ -430,6 +461,9 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
     t+='/*';
     t+=traiteCommentaire2(tab[i][13],niveau,i);
     t+='*/';
+
+   }else if(tab[i][1].substr(0,5)=='meta_' ){
+    t+=CRLF+' /*'+tab[i][1]+'*/ '+CRLF + '    ';
     
    }else{
     t+=espacesn(true,niveau);

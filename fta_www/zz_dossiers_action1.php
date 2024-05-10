@@ -601,7 +601,21 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
               if($v1['en_base']===0){
                $o1.='<div>';
                $o1.=$k1.' n\'existe pas en base';
-               $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
+               $positionDernierPoint=strrpos($k1,'.');
+               if($positionDernierPoint===null){
+                $extension='';
+               }else{
+                $extension=substr($k1,$positionDernierPoint);
+               }
+//               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $extension , true ) . '</pre>' ; exit(0);
+  
+               /*
+                les fichiers sqlite  binaire ne sont pas en base
+               */
+               if($extension==='.db'){
+               }else{
+                 $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
+               }
                $o1.=' <button name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
                $o1.='</div>';
               }else{
@@ -663,10 +677,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                           }
                           if(   $extension==='.php' || $extension==='.js' || $extension==='.html' || $extension==='.htm'  || $extension==='.htm'
                              || $extension==='.json' || $extension==='.bat' || $extension==='.rev'  || $extension==='.css'  || $extension==='.sql'  
-                             || $extension==='.txt' ){
+                             || $extension==='.txt' || $extension==='.db' ){
                             $o1.='<div><button name="__importer_ce_fichier_de_'.APP_KEY.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.$nom_fichier.'</button></div>';
                           }else{
-                            $o1.='<div class="yyavertissement">le fichier '.$nom_fichier.' ne comporte pas une extension connue</div>';
+                            $o1.='<div class="yyavertissement">'.__LINE__.' le fichier '.$nom_fichier.' ne comporte pas une extension connue</div>';
                           }
                         }
                     }

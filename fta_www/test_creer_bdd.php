@@ -1,6 +1,70 @@
 <?php
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
+$uneErreur=false;
+if((false === $db->exec('BEGIN TRANSACTION'))){
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+    $uneErreur=true;
+}
+
+if(false===$db->exec(' ALTER TABLE tbl_bases_de_donnees ADD COLUMN chx_cible_id_basedd INTEGER DEFAULT NULL REFERENCES tbl_cibles(chi_id_cible)' ) ){
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 
+ $uneErreur=true;
+}
+
+if(    $uneErreur===true){
+ if((false === $db->exec('ROLLBACK'))){
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+     $uneErreur=true;
+ }
+}else{
+ if((false === $db->exec('COMMIT'))){
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+ }else{
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>Bon travail</pre>' ;
+ }
+}
+
+exit();
+//=======================================================================================================
+//=======================================================================================================
+//=======================================================================================================
+
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
+$uneErreur=false;
+if((false === $db->exec('BEGIN IMMEDIATE TRANSACTION'))){
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+    $uneErreur=true;
+}
+
+
+
+
+if(false===$db->exec(' ALTER TABLE tbl_bases_de_donnees ADD COLUMN chx_dossier_id_basedd INTEGER DEFAULT NULL REFERENCES tbl_dossiers(chi_id_dossier)' ) ){
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; 
+ $uneErreur=true;
+}
+
+
+if(    $uneErreur===true){
+ if((false === $db->exec('ROLLBACK'))){
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+     $uneErreur=true;
+ }
+}else{
+ if((false === $db->exec('COMMIT'))){
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+ }else{
+     echo __FILE__.' '.__LINE__.' __LINE__ = <pre>Bon travail</pre>' ;
+ }
+}
+
+
+
+exit();
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 $uneErreur=false;
 if((false === $db->exec('BEGIN IMMEDIATE TRANSACTION'))){
@@ -45,7 +109,7 @@ exit();
 
 //===================================================================================
 
-$db = new SQLite3('../fta_inc/db/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 
 if(false===$db->exec('ALTER TABLE tbl_cibles ADD COLUMN chp_dossier_cible CHARACTER(3) NOT NULL DEFAULT \'xxx\'' ) ){
@@ -55,8 +119,8 @@ if(false===$db->exec('ALTER TABLE tbl_cibles ADD COLUMN chp_dossier_cible CHARAC
 
 exit();
 
-//unlink('../fta_inc/db/system.db');
-$db = new SQLite3('../fta_inc/db/system.db');
+//unlink('../fta_inc/db/sqlite/system.db');
+$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 $uneErreur=false;
 if((false === $db->exec('BEGIN IMMEDIATE TRANSACTION'))){
@@ -69,7 +133,6 @@ if((false === $db->exec('
    chi_id_source                   INTEGER PRIMARY KEY 
    , chp_nom_source                  STRING 
    , chp_chemin_source                  STRING 
-   , chp_type_source                  STRING 
    , chp_commentaire_source          STRING 
   )
 '))){

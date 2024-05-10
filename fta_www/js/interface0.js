@@ -1466,12 +1466,9 @@ function executerCesActionsPourLaPageLocale(par){
  
  for (var i = 0; i < par.length; i++) {
      switch (par[i].nomDeLaFonctionAappeler) {
-         case 'neRienFaire':
-             neRienFaire(par[i].parametre);
-             break;
-         case 'initialiserEditeurPourUneTextArea':
-             initialiserEditeurPourUneTextArea(par[i].parametre);
-             break;
+         case 'neRienFaire':                          neRienFaire(par[i].parametre);                            break;
+         case 'initialiserEditeurPourUneTextArea':    initialiserEditeurPourUneTextArea(par[i].parametre);      break;
+         case 'traite_le_tableau_de_la_base_sqlite':  traite_le_tableau_de_la_base_sqlite(par[i].parametre);    break;
      }
  }
              

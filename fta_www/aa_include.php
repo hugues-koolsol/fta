@@ -238,9 +238,13 @@ function html_header1($parametres){
             $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
             $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
             $o1.='          <li><a class="'.('zz_cibles1.php'===BNF?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
-            $o1.='          <li><a class="'.('zz_dossiers1.php'===BNF?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
-            $o1.='          <li><a class="'.('zz_sources1.php'===BNF?'yymenusel1':'').'" href="zz_sources1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
-            $o1.='          <li><a class="'.('zz_bdds1.php'===BNF?'yymenusel1':'').'" href="zz_bdds1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
+            if(isset($_SESSION[APP_KEY]['cible_courante'])){
+            
+                $o1.='          <li><a class="'.('zz_dossiers1.php'===BNF?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
+                $o1.='          <li><a class="'.('zz_sources1.php'===BNF?'yymenusel1':'').'" href="zz_sources1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
+                $o1.='          <li><a class="'.('zz_bdds1.php'===BNF?'yymenusel1':'').'" href="zz_bdds1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
+                
+            }
         }
         $o1.='        </ul>'.CRLF;
         $o1.='      </div>'.CRLF;
