@@ -226,6 +226,21 @@ function parentheses(nomDeLaTextAreaContenantLeSource){
      }
     }
 }
+
+function formatter_le_source_rev(nom_de_la_textarea){
+ 
+ var a=dogid(nom_de_la_textarea);
+ 
+ var tableau1 = iterateCharacters2(a.value);
+ var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+ if(matriceFonction.status===true){
+  var obj2=arrayToFunct1(matriceFonction.value,true,false);
+  if(obj2.status===true){
+   a.value=obj2.value;
+  }
+ }
+ 
+}
 /*
   =====================================================================================================================
 */
@@ -990,7 +1005,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         affichagesPresents=true;
     }
     for(i=0;i < global_messages.lines.length;i++){
-        zon.innerHTML='<a href="javascript:allerAlaLigne('+(global_messages.lines[i]+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne '+global_messages.lines[i]+'</a>&nbsp;'+zon.innerHTML;
+        zon.innerHTML='<a href="javascript:allerAlaLigne('+(global_messages.lines[i]+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne '+(global_messages.lines[i]+1)+'</a>&nbsp;'+zon.innerHTML;
         affichagesPresents=true;
     }
     if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
@@ -1008,9 +1023,9 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
                     }
                 }
             }
-            if(numeroDeLigne > 0){
+            if(numeroDeLigne >= 0){
                 if(numeroDeLigne != numLignePrecedente){
-                    zon.innerHTML='<a href="javascript:allerAlaLigne('+(numeroDeLigne+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">go to line '+numeroDeLigne+'</a>&nbsp;'+zon.innerHTML;
+                    zon.innerHTML='<a href="javascript:allerAlaLigne('+(numeroDeLigne+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">go to line '+(numeroDeLigne+1)+'</a>&nbsp;'+zon.innerHTML;
                     affichagesPresents=true;
                     numLignePrecedente=numeroDeLigne;
                 }

@@ -101,6 +101,7 @@ function convertSource(objMatSrc){
  var retProgrammeSource={};
  var obj={};
  var l01=objMatSrc.value.length;
+ var position_de_la_balise_source=-1;
  for(var i=1;i<l01;i++){
   if(objMatSrc.value[i][3]==0){
    if(objMatSrc.value[i][1]=='#'){
@@ -144,6 +145,7 @@ function convertSource(objMatSrc){
    }else if( objMatSrc.value[i][1]!=''){ //fonctions de niveau 1 NON vides
     if(objMatSrc.value[i][1]=='#'){
     }else if(objMatSrc.value[i][1]=='source'){
+     position_de_la_balise_source=i;
     }else if(objMatSrc.value[i][1]=='concatFichier'){
     }else{
      return logerreur({status:false,id:i,message:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.value[i])});
@@ -166,8 +168,10 @@ function convertSource(objMatSrc){
  if(file_name!='' && file_path!='' && idJs>0){
   
   if(type_source=='src_php'  && (file_extension=='php')){
+   var baliseHtmlOuPhpTrouvee=false;
    for(var i=idJs+1;i<objMatSrc.value.length;i++){
     if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='php'){
+     baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=false;
      retProgrammeSource=parsePhp0(objMatSrc.value , i , 0 );
      if(retProgrammeSource.status==true){
@@ -176,6 +180,7 @@ function convertSource(objMatSrc){
       return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
      }
     }else if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='html'){
+     baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=true;
      //                             tab             , id , noHead , niveau
      retProgrammeSource=tabToHtml1( objMatSrc.value , i  , true   , 0      );
@@ -185,6 +190,20 @@ function convertSource(objMatSrc){
       return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
      }
     }
+   }
+   if(baliseHtmlOuPhpTrouvee===false && position_de_la_balise_source>0){
+    /*
+    on a oubblié la balise php ou html, on suppose que c'est du php !
+    
+    */
+    php_contexte_commentaire_html=false;
+    retProgrammeSource=parsePhp0(objMatSrc.value , position_de_la_balise_source , 0 );
+    if(retProgrammeSource.status==true){
+     t+='<?php'+CRLF+retProgrammeSource.value+CRLF+'?>';
+    }else{
+     return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+    }
+    
    }
    t=t.replace(/\/\*\*\//g,'');
    t=t.replace(/\?><\?php/g,'');

@@ -690,7 +690,15 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
             if(objInstructionGauche.status === true){
                 var objInstructionDroite = js_traiteInstruction1(tab,niveau,tabAffecte['par1'][0]);
                 if(objInstructionDroite.status === true){
-                    t+=''+objInstructionGauche.value+signe+objInstructionDroite.value;
+                    /* on écrit l'affectation ici */
+                    if(signe=='=' && objInstructionDroite.value.substr(0,objInstructionGauche.value.length) && objInstructionDroite.value.substr(objInstructionGauche.value.length,1)==='+'){
+                     t+=''+objInstructionGauche.value+'+='+objInstructionDroite.value.substr(objInstructionGauche.value.length+1);
+                    }else{
+                     t+=''+objInstructionGauche.value+signe+objInstructionDroite.value;
+                    }
+                    
+                    
+                    
                     if( !(dansInitialisation)){
                         t+=';';
                     }
@@ -782,10 +790,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau){
                             }
                         }else if((tabdeclare[1][1] == 'testEnLigne') && (tabdeclare[1][2] === 'f')){
                             var objtestLi = js_traiteInstruction1(tab,niveau,tabdeclare[1][0]);
-                            if(obj.status == true){
+                            if(objtestLi.status == true){
                                 t+='var '+tabdeclare[0][1]+' = '+objtestLi.value+';';
                             }else{
-                                return(logerreur({status:false,value:t,id:id,tab:tab,message:'erreur TraiteOperations1 1351'}));
+                                return(logerreur({status:false,value:t,id:tabdeclare[0][0],tab:tab,message:'erreur TraiteOperations1 0796'}));
                             }
                         }else{
                             return(logerreur({status:false,id:i,message:'javascript.js 0957 : cas dans declare non prévu'}));
@@ -1598,7 +1606,7 @@ function TraiteOperations1(tab,id,niveau){
                             if(obj.status == true){
                                 t+=obj.value;
                             }else{
-                                return(logerreur({status:false,value:t,id:id,tab:tab,message:'erreur TraiteOperations1 1351'}));
+                                return(logerreur({status:false,value:t,id:id,tab:tab,message:'erreur TraiteOperations1 1609'}));
                             }
                         }else if(tab[i][1] == 'tableau'){
                             var objTableau = js_traiteTableau1(tab,i,true,niveau,false);

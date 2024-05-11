@@ -70,6 +70,7 @@ $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 if(isset($_POST)&&sizeof($_POST)>=1){
 
  
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);
  
  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']          =$_POST['chp_nom_source']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']     =$_POST['chx_cible_id_source']    ?? $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
@@ -80,7 +81,72 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']   =isset($_POST['chx_dossier_id_source'])?decrypter($_POST['chx_dossier_id_source']) : '';
  
  
- if(isset($_POST['__ecrire_sur_disque'])){
+ 
+ 
+ 
+ if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
+
+ /*
+   ====================================================================================================================
+   ============================================= CONVERTIR UN SQL EN REV ==============================================
+   ====================================================================================================================
+ */
+  $chemin_fichier_temporaire='..'.DIRECTORY_SEPARATOR.APP_KEY.'_temp/'.date('Y/m/d');
+  $continuer=true;
+  if(!is_dir($chemin_fichier_temporaire)){
+   if(!mkdir($chemin_fichier_temporaire,0777,true)){
+     ajouterMessage('erreur' , __LINE__ .' : impossible de créer le répertoire temporaire ' );
+     $continuer=false;
+   }
+  }
+  if($continuer===true){
+   
+//      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);
+      
+      if($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']!==''){
+       
+          $fichier_temporaire=$chemin_fichier_temporaire.DIRECTORY_SEPARATOR.sha1(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).'.db';
+          
+//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']  . '</pre>' ; exit(0);
+          
+          $dbtemp = new SQLite3($fichier_temporaire);
+          if(is_file($fichier_temporaire)){
+           
+           
+           $res0= $dbtemp->exec($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
+           if($res0===true){
+             $dbtemp->close();
+             require_once('../fta_inc/phplib/sqlite.php');
+             $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($fichier_temporaire);
+             if($ret['status']===true){
+              $tableauDesTables=$ret['value'];
+              $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
+
+             }else{
+               ajouterMessage('erreur' , ' erreur sur la structure de la base ' , BNF  );
+              
+             }
+            
+
+           }
+           @unlink($fichier_temporaire);
+
+          }else{
+            ajouterMessage('erreur' , __LINE__ .' : impossible de créer fichier temporaire ' );
+          }
+          
+       
+      }else{
+       
+          ajouterMessage('erreur' , __LINE__ .' : il n\'y a rien à convertir ' );
+             
+      }
+  }
+
+  
+  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+  
+ }else if(isset($_POST['__ecrire_sur_disque'])){
  /*
    ====================================================================================================================
    ============================================= ECRIRE SUR DISQUE ====================================================
@@ -98,23 +164,25 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
          fclose($fd);
          ajouterMessage('succes' , __LINE__ .' : Le généré a bien été écrit sur le disque' );
-         recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
         
        }else{
        
          ajouterMessage('erreur' , __LINE__ .' : il y a eu un problème lors de l\'écriture ' );
-         recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
        
        }
       }else{
        
          ajouterMessage('erreur' , __LINE__ .' : il y a eu un problème lors de l\'ouverture du fichier ' );
-         recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
        
       }
+     }else{
+      
+         ajouterMessage('erreur' , __LINE__ .' : problème sur le dossier cible ' );
+         
      }
      
      
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
 
 
@@ -337,7 +405,7 @@ $o1='';
 $o1=html_header1(array('title'=>'sources' , 'description'=>'sources'));
 print($o1);$o1='';
 
-$o1.='<h1>gestion de source '.boutonRetourALaListe().'</h1>';
+$o1.='<h1>gestion de source (dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].')'.boutonRetourALaListe().'</h1>';
 
 
 
@@ -490,6 +558,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <a href="javascript:parentheses(&quot;chp_rev_source&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
+  $o1.='   <a href="javascript:formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -510,11 +579,33 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="word-break:break-word;">outils de convertion</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\')">R2H&#8615;</a>'.CRLF;
-  $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
-  $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
-  $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\')">R2P&#8615;</a>'.CRLF;
-  $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
+  
+  if(strpos($__valeurs['T0.chp_nom_source'],'.htm')!==false){
+   
+   $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\')">R2H&#8615;</a>'.CRLF;
+   $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
+   $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+   
+  }
+  
+  if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
+   
+   $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\')">R2P&#8615;</a>'.CRLF;
+   $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
+   $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+   
+  }
+  
+  if(strpos($__valeurs['T0.chp_nom_source'],'.sql')!==false){
+   
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
+   $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" >&#8613; sql =&gt; rev &#8613;</button>'.CRLF;
+   $o1.='   <a class="yyavertissement" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+   
+  }
+  
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -599,6 +690,34 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 ============================================================================
 ============================================================================
 */
-$par=array('js_a_inclure'=>array('js/javascript','js/html' ,'js/php' , 'js/convertit-php-en-rev0.js', 'js/pour_zz_source1.js'),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
+$js_a_executer_apres_chargement[]=array(
+    'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+);
+
+if(isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) && count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'])>0){
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; 
+ 
+ $js_a_executer_apres_chargement[]=array(
+   'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_source'  )
+ 
+ );
+ unset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']);
+}
+
+$par=array(
+ 'js_a_inclure'=>array(
+  'js/javascript','js/html' ,
+  'js/php' , 
+  'js/convertit-php-en-rev0.js', 
+  'js/pour_zz_source1.js', 
+  'js/pour_zz_bdds_action1.js', 
+  'js/sql.js'
+  ),
+  'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
+);
+
+
+
+
 $o1.=html_footer1($par);
 print($o1);$o1='';

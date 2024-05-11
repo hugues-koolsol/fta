@@ -109,7 +109,20 @@ function addslashes1($s){
  ); 
  return strtr( $s, $ua );  
 }
+/*
+  ========================================================================================
+*/
+function signaler_erreur($tab){
+ 
+ if(isset($tab['provenance']) && $tab['provenance']!==''){
+  ajouterMessage('erreur' ,  $tab['message'] , $tab['provenance']  );
+ }else{
+  ajouterMessage('erreur' ,  $tab['message']   );
+ }
 
+ return $tab;
+ 
+}
 /*
   =====================================================================================================================
 */  

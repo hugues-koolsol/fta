@@ -799,7 +799,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
        
       }
      }
-     t+=avantEgal+'='+apresEgal;
+     if(apresEgal.substr(0,avantEgal.length)==avantEgal && apresEgal.substr(avantEgal.length,1)==='.'){
+      t+=avantEgal+'.='+apresEgal.substr(avantEgal.length+1);
+     }else{
+      t+=avantEgal+'='+apresEgal;
+     }
      if(!dansInitialisation){
       t+=';';
      }
@@ -1008,7 +1012,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
         }
        }
       }
-     }else if(tab[j][1]==='faire' && tab[j][2]==='f' && tab[j][8]===1 ){
+     }else if(tab[j][1]==='faire' && tab[j][2]==='f' ){
       if(tab[k][8]>=1){
        niveau+=1;
 
@@ -1343,7 +1347,7 @@ function php_traiteElement(tab , ind , niveau){
    return logerreur({status:false,value:t,id:ind,tab:tab,message:'dans appelf de php_traiteElement 0835'});
   }
 
- }else if(tab[ind][2]=='f' && ( tab[ind][1]=='concat' ||  tab[ind][1]=='plus' || tab[ind][1]=='moins' || tab[ind][1]=='mult' || tab[ind][1]=='divi' || tab[ind][1]=='infeg' || tab[ind][1]=='modulo' ) ){
+ }else if(tab[ind][2]=='f' && ( tab[ind][1]=='concat' ||  tab[ind][1]=='plus' || tab[ind][1]=='moins' || tab[ind][1]=='mult' || tab[ind][1]=='divi' || tab[ind][1]=='infeg' || tab[ind][1]=='modulo'  || tab[ind][1]=='div' ) ){
 
   obj=php_traiteOperation(tab,ind,niveau);
   if(obj.status==true){
@@ -1780,7 +1784,11 @@ function php_traiteOperation(tab,id,niveau){
                         if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin')  || (tab[i][1] == '??') || (tab[i][1] == 'modulo') ){
                             var objOperation = php_traiteOperation(tab,i,niveau);
                             if(objOperation.status == true){
-                                t+=objOperation.value;
+                                if(tab[parentId][1]==='concat'){
+                                   t+='('+objOperation.value+')';
+                                }else{
+                                   t+=objOperation.value;
+                                }
                                 if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){
                                     t+=')';
                                 }
@@ -1848,7 +1856,7 @@ function php_traiteOperation(tab,id,niveau){
                                     */
                                     t+='('+tab[i][1]+')';
                                 }else{
-                                    t+=tab[i][1];
+                                     t+=tab[i][1];
                                 }
                             }
                             if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){

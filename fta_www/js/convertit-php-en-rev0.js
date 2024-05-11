@@ -684,7 +684,7 @@ function php_traite_Expr_AssignOp_General(element , niveau , nodeType ){
      o1.value[i][0]=o1.value[i][0]+o2.value.length-1;
     }
     var nouveauTableau=reIndicerLeTableau(o1.value);
-    var obj = a2F1(nouveauTableau,0,false,1,false);
+    var obj = a2F1(nouveauTableau,0,true,1,false);
     if(obj.status === true){
      t='affecte('+gauche+' , '+obj.value+' )';
     }
@@ -1460,6 +1460,10 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
   
   t+='modulo('+gauche+' , '+droite+')';
   
+ }else if(element.nodeType==='Expr_BinaryOp_Div'){
+  
+  t+='divi('+gauche+' , '+droite+')';
+  
  }else{
   
   t+='#(Traitement non prévu '+element.nodeType+' 1236 '+gauche+' , '+droite+')';
@@ -1472,7 +1476,7 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
 //         console.log('%c simplifier les concat concat','background:yellow;',t,o.value);
          var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
 //         console.log('nouveauTableau=',nouveauTableau);
-         var obj = a2F1(nouveauTableau,0,false,1,false);
+         var obj = a2F1(nouveauTableau,0,true,1,false);
          if(obj.status === true){
              console.log('apres simplification obj.value=',obj.value);
              t=obj.value;

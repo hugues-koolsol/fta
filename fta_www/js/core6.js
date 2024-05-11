@@ -69,7 +69,7 @@ function logerreur(o){
     if(o.hasOwnProperty('tabs')){
         global_messages['tabs'].push(o.tabs);
     }
-    if(o.line && o.line>0){
+    if(o.hasOwnProperty('line') && o.line>=0){
         global_messages['lines'].push(o.line);
     }
     return o;
@@ -850,6 +850,7 @@ function reconstruitChaine(tab,debut,fin){
 */
 function formaterErreurRev(obj){
  /*
+ exemple de donnée en entrée
  {
     type:'rev',
     status:false,
@@ -863,8 +864,11 @@ function formaterErreurRev(obj){
     autoriserCstDansRacine:autoriserCstDansRacine
  }
  */
-    var message='';
-    if(obj.hasOwnProperty('erreurSurTableauEntree') && obj.erreurSurTableauEntree === true ){
+    var messageAjoute='';
+    /*
+     su il y a eu une 
+    */
+    if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true ){
       return {'status':obj.status,'value':T,'id':obj.ind,'message':message};
     }
     var chaineTableau='['+obj.chaineTableau+']';
@@ -905,8 +909,9 @@ function formaterErreurRev(obj){
                 }
                 
             }
-            message+='ind='+obj.ind+'<br />';
-            message+='<br />----'+presDe+'----<br />';
+            messageAjoute+='position caractère='+obj.ind+'';
+            messageAjoute+='<br />près de ----'+presDe+'----<br />';
+            line=0;
             for(i=obj.ind;i>=0;i--){
                 if(obj.tableauEntree[i][0]==='\n'){
                     line++;
@@ -915,7 +920,7 @@ function formaterErreurRev(obj){
         }
     }
     
-    var message=message+obj.message+presDe;
+    var message=obj.message+messageAjoute;
     var temp={'status':obj.status,'value':T,'id':obj.ind,'message':message,'line':line};
     return temp;
 }
@@ -1279,8 +1284,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
                 if((texte.indexOf('\n') > 0) || (texte.indexOf('\r')>=0) || (texte.indexOf('\t') > 0)){
                     return logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-                    temp={'status':false,'id':i,'value':T,'message':'1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex '};
-                    return(logerreur(temp));
                 }
                 indice++;
                 chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
@@ -1289,7 +1292,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 */
                 /*
-                  pour une regex, on met les drapeaux ( g,...) dans la zone commentaire
+                  pour une regex, on met les drapeaux ( g,...) dans la zone commentaire [13]
                 */
                 tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,drapeauRegex,0];
                 indiceTabCommentaire++;
@@ -1500,13 +1503,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte=concat(texte,'\\',c1);
                     i++;
                 }else{
-                    if(i > 100){
-                        var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
-                    }else{
-                        var presDe = reconstruitChaine(tableauEntree,0,(i+10));
-                    }
-                    temp={'status':false,'value':T,'id':i,'message':'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u près de '+presDe};
-                    return(logerreur(temp));
+                    return logerreur(formaterErreurRev({status:false,ind:i,message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
                 }
             }else{
                 if(texte == ''){
@@ -1616,7 +1613,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                    T=JSON.parse(chaineTableau);
                   }catch(ejson){
                     console.log('ejson=',ejson);
-                    return logerreur(formaterErreurRev({'erreurSurTableauEntree':true,status:false,message:'1555 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                    return logerreur(formaterErreurRev({'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1555 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
                   }
 
                   if(rechercheParentheseCorrespondante==='('){
@@ -1901,7 +1898,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       on est en dehors de la boucle principale
       ========================================
     */
-    if((niveau != 0) && (quitterSiErreurNiveau)){
+    if((niveau !== 0) && (quitterSiErreurNiveau)){
+        return logerreur(formaterErreurRev({status:false,ind:l01-1,message:'💥2401 des parenthèses ne correspondent pas, ('+(niveau>0?'il en manque :':'il y en a trop : ')+'niveau='+niveau+') ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+     
         temp={'status':false,'value':T,'message':'💥2401 des parenthèses ne correspondent pas'};
         return(logerreur(temp));
     }
@@ -1913,13 +1912,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         indice=(indice+1);
         if(autoriserCstDansRacine !== true){
             if(niveau == 0){
-                if(i > 100){
-                    var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
-                }else{
-                    var presDe = reconstruitChaine(tableauEntree,0,(i+10));
-                }
-                temp={'status':false,'value':T,'message':'1641 la racine ne peut pas contenir des constantes près de'+presDe};
-                return(logerreur(temp));
+                return logerreur(formaterErreurRev({status:false,ind:l01-1,message:'1641 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
             }
         }
         /*
@@ -1939,7 +1932,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
      T=JSON.parse(chaineTableau);
     }catch(ejson){
       console.log('ejson=',ejson);
-      return logerreur(formaterErreurRev({'erreurSurTableauEntree':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+      return logerreur(formaterErreurRev({'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
      
     }
     

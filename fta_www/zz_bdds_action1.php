@@ -3,144 +3,12 @@ define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();
 require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
+require_once('../fta_inc/phplib/sqlite.php');
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
    recharger_la_page('zz_cibles1.php'); 
-}
-/*
-  ========================================================================================
-*/
-function signaler_erreur($tab){
- 
- if(isset($tab['provenance']) && $tab['provenance']!==''){
-  ajouterMessage('erreur' ,  $tab['message'] , $tab['provenance']  );
- }else{
-  ajouterMessage('erreur' ,  $tab['message']   );
- }
-
- return $tab;
- 
-}
-/*
-  ========================================================================================
-*/
-function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db){
- 
-    $t='';
-    
-    $auto_increment=false;
-    $sql='SELECT * FROM sqlite_sequence WHERE name = \''.$nom_de_la_table.'\'';
-    $stmt = $db->prepare($sql); 
-    if($stmt!==false){
-        $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-        while($arr=$result->fetchArray(SQLITE3_NUM)){
-            $auto_increment=true;
-        }
-        $stmt->close(); 
-    }
-
-
-    $liste_des_champs=array();
-    $sql= 'PRAGMA table_info(\''.$nom_de_la_table.'\'  ) ';
-    $stmt = $db->prepare($sql); 
-    if($stmt!==false){
-        $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-        while($arr=$result->fetchArray(SQLITE3_NUM)){
-            $liste_des_champs[$arr[1]]=array( // cid	name	type	notnull	dflt_value	pk
-                'cid'             => $arr[0],	
-                'name'	           => $arr[1],	
-                'type'            => $arr[2],	
-                'notnull'  	      => $arr[3],	
-                'dflt_value'      => $arr[4],		
-                'pk'              => $arr[5],	
-                'auto_increment'  => false,	
-                'cle_etrangere'   => array(),	
-            );
-            if($arr[2]==='INTEGER' && $arr[5]===1 && $auto_increment===true){
-                $liste_des_champs[$arr[1]]['auto_increment']=true;
-            }
-        }
-        $stmt->close(); 
-    }else{
-      return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des champs de la table '.$nom_de_la_table.'  ' ,  'provenance' => BNF) );
-    }
-
-    $liste_des_cles_etrangeres=array();
-
-    $sql= 'PRAGMA foreign_key_list(\''.$nom_de_la_table.'\') ';
-    $stmt = $db->prepare($sql); 
-    if($stmt!==false){
-        $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-        while($arr=$result->fetchArray(SQLITE3_NUM)){
-            $liste_des_champs[$arr[3]]['cle_etrangere']=array(
-                'cid'        => $arr[0],	
-                'seq'	       => $arr[1],	
-                'table'      => $arr[2],	
-                'from'  	    => $arr[3],	
-                'to'         => $arr[4],		
-                'on_update'  => $arr[5]??null,	
-                'on_delete'  => $arr[6]??null,	
-                'match'      => $arr[7]??null,	
-            );
-        }
-        $stmt->close(); 
-    }else{
-      return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des clés étrangères de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
-    }
-
-    
-    $liste_des_indexes=array();
-
-    $sql= 'PRAGMA index_list(\''.$nom_de_la_table.'\') ';
-    $stmt = $db->prepare($sql); 
-    if($stmt!==false){
-        $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-        while($arr=$result->fetchArray(SQLITE3_NUM)){
-            $liste_des_indexes[$arr[1]]=array( // seq	name	unique	origin	partial	on_update	on_delete	match
-                'seq'	       => $arr[0],	
-                'name'       => $arr[1],	
-                'unique'  	  => $arr[2],	
-                'origin'     => $arr[3],		
-                'partial'    => $arr[4],	
-                'on_update'  => $arr[5]??null,	
-                'on_delete'  => $arr[6]??null,	
-                'match'      => $arr[7]??null,	
-                'champs'     => array(),
-            );
-            
-            $sql1= 'PRAGMA index_info(\''.$arr[1].'\') ';
-            $stmt1 = $db->prepare($sql1); 
-            if($stmt1!==false){
-                $result1 = $stmt1->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-                while($arr1=$result1->fetchArray(SQLITE3_NUM)){
-                    $liste_des_indexes[$arr[1]]['champs'][$arr1[2]]=array( // seqno	cid	name	origin	partial	on_update	on_delete	match
-                        'seqno'      => $arr1[0],	
-                        'cid'        => $arr1[1],	
-                        'name'       => $arr1[2],	
-                    );
-                }
-                $stmt1->close(); 
-            }else{
-              return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
-            }
-            
-            
-            
-        }
-        $stmt->close(); 
-    }else{
-      return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
-    }
-
-   
-    $tableau=array(
-     'liste_des_champs'             => $liste_des_champs             ,
-     'liste_des_indexes'            => $liste_des_indexes            ,
-    );
-
-    return array('status'=>true,'value'=>$tableau);
 }
 
 /*
@@ -219,38 +87,14 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
       
    //   $o1.='&nbsp <span>Ce '.$chemin_fichier.'</span>';  
-     $tableauDesTables=array();   
 
      if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
-         $db1 = new SQLite3($chemin_fichier);
-//         ajouterMessage('info' , ' le fichier sqlite a pu être ouvert' , BNF );
-         
-         
-         $sql='SELECT tbl_name FROM sqlite_master WHERE  name NOT LIKE \'sqlite_%\' AND type == \'table\'';
-         $listeDesTables=array();
-         $stmt = $db1->prepare($sql);
-         
-         if($stmt!==false){
-           $t='';
-           $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-           while($arr=$result->fetchArray(SQLITE3_NUM)){
-
-            
-               $obj=obtenir_tableau_sqlite_de_la_table($arr[0] , $db1 );
-               if($obj['status']===true){
-                $tableauDesTables[$arr[0]]=$obj['value'];
-               }else{
-                 ajouterMessage('erreur' , ' erreur sur la table "'.$arr[0].'"' , BNF  );
-               }
-            
-           }
-           $stmt->close(); 
-           
-           
+         $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
+         if($ret['status']===true){
+          $tableauDesTables=$ret['value'];
          }else{
-          
-             ajouterMessage('erreur' , __LINE__ .' erreur sql ' , BNF );
+           ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
           
          }
        

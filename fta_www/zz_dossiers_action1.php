@@ -612,11 +612,11 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                /*
                 les fichiers sqlite  binaire ne sont pas en base
                */
-               if($extension==='.db'){
+               if($extension==='.db' || $extension==='.exe'){
                }else{
                  $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
                }
-               $o1.=' <button name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
+               $o1.=' <button class="yydanger" name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
                $o1.='</div>';
               }else{
                $o1.='<div>'.$k1.' existe en base <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a></div>';
