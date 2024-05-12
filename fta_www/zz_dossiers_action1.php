@@ -106,7 +106,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $fichier_cible='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'].'/'.$_POST['__creer_le_fichier_en_base'];
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
 
-  $contenuFichier=file_get_contents($fichier_cible);
+  $taille_contenu=filesize($fichier_cible);
+  $contenuFichier='';
+  if($taille_contenu<=64000){
+   $contenuFichier=file_get_contents($fichier_cible);
+  }
   
   $sql='
    INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
@@ -127,6 +131,9 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }else{
    
     ajouterMessage('succes' , __LINE__ .' : le fichier a bien été créé en base' , BNF );
+    if($taille_contenu>64000){
+     ajouterMessage('avertissement' , __LINE__ .' sa taille est supérieure à 64000 caractère et il n\'a pas été intégré dans le champ "genere" ' , BNF );
+    }
    
   }
   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 

@@ -226,7 +226,21 @@ function parentheses(nomDeLaTextAreaContenantLeSource){
      }
     }
 }
-
+/*
+  =====================================================================================================================
+*/
+function ajouter_un_commentaire_vide_et_reformater(nom_de_la_textarea){
+ var a=dogid(nom_de_la_textarea);
+ a.focus();
+ if(a.selectionStart===a.selectionEnd){
+  var nouveau_source=a.value.substr(0,a.selectionStart)+'#()'+a.value.substr(a.selectionStart);
+  a.value=nouveau_source;
+  formatter_le_source_rev(nom_de_la_textarea);
+ }
+}
+/*
+  =====================================================================================================================
+*/
 function formatter_le_source_rev(nom_de_la_textarea){
  
  var a=dogid(nom_de_la_textarea);
@@ -1481,9 +1495,11 @@ function executerCesActionsPourLaPageLocale(par){
  
  for (var i = 0; i < par.length; i++) {
      switch (par[i].nomDeLaFonctionAappeler) {
-         case 'neRienFaire':                          neRienFaire(par[i].parametre);                            break;
-         case 'initialiserEditeurPourUneTextArea':    initialiserEditeurPourUneTextArea(par[i].parametre);      break;
-         case 'traite_le_tableau_de_la_base_sqlite':  traite_le_tableau_de_la_base_sqlite(par[i].parametre);    break;
+         case 'neRienFaire'                            : neRienFaire(par[i].parametre);                            break;
+         case 'initialiserEditeurPourUneTextArea'      : initialiserEditeurPourUneTextArea(par[i].parametre);      break;
+         case 'traite_le_tableau_de_la_base_sqlite'    : traite_le_tableau_de_la_base_sqlite(par[i].parametre);    break;
+         case 'comparer_deux_tableaux_de_bases_sqlite' : comparer_deux_tableaux_de_bases_sqlite(par[i].parametre); break;
+         default: console.log('fonction non prévue dans interface0.js: '+par[i].nomDeLaFonctionAappeler); break;
      }
  }
              

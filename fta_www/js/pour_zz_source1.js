@@ -160,8 +160,9 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere){
 
 }
 function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
- console.log(nom_de_fichier_encrypte);
+// console.log(nom_de_fichier_encrypte);
  
+ clearMessages('zone_global_messages');
  
  var r = new XMLHttpRequest();
  r.open("POST",'za_ajax.php?charger_un_fichier_avec_un_nom_encrypte',true);
@@ -178,7 +179,8 @@ function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
    }else{
     display_ajax_error_in_cons(jsonRet);
     console.log(r);
-    alert('Problème XMLHttpRequest, voir la console javascript !');
+    displayMessages('zone_global_messages');
+//    alert('Problème XMLHttpRequest, voir la console javascript !');
     return;
    }
   }catch(e){

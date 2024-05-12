@@ -10,13 +10,18 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
    recharger_la_page('zz_cibles1.php'); 
 }
-
+$js_a_executer_apres_chargement=array();
 /*
-  ========================================================================================
+  =====================================================================================================================
 */
 function boutonRetourALaListe(){
   return '&nbsp;<a href="zz_bdds1.php" style="font-size:1rem;">retour à la liste</a>';
 }
+/*
+  =====================================================================================================================
+*/
+
+
 /*
   ========================================================================================
 */
@@ -78,8 +83,71 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  
 
 
+ if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
 
- if( isset($_POST['___produire_le_rev']) ){
+ /*
+   ====================================================================================================================
+   ============================================= CONVERTIR UN SQL EN REV ==============================================
+   ====================================================================================================================
+ */
+  $chemin_fichier_temporaire='..'.DIRECTORY_SEPARATOR.APP_KEY.'_temp/'.date('Y/m/d');
+  $continuer=true;
+  if(!is_dir($chemin_fichier_temporaire)){
+   if(!mkdir($chemin_fichier_temporaire,0777,true)){
+     ajouterMessage('erreur' , __LINE__ .' : impossible de créer le répertoire temporaire ' );
+     $continuer=false;
+   }
+  }
+  if($continuer===true){
+   
+//      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);
+      
+      if($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']!==''){
+       
+          $fichier_temporaire=$chemin_fichier_temporaire.DIRECTORY_SEPARATOR.sha1(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).'.db';
+          
+//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']  . '</pre>' ; exit(0);
+          
+          $dbtemp = new SQLite3($fichier_temporaire);
+          if(is_file($fichier_temporaire)){
+           
+           
+           $res0= $dbtemp->exec($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
+           if($res0===true){
+             $dbtemp->close();
+             require_once('../fta_inc/phplib/sqlite.php');
+             $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($fichier_temporaire);
+             if($ret['status']===true){
+              $tableauDesTables=$ret['value'];
+              $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
+
+             }else{
+               ajouterMessage('erreur' , ' erreur sur la structure de la base ' , BNF  );
+              
+             }
+            
+
+           }
+           @unlink($fichier_temporaire);
+
+          }else{
+            ajouterMessage('erreur' , __LINE__ .' : impossible de créer fichier temporaire ' );
+          }
+          
+       
+      }else{
+       
+          ajouterMessage('erreur' , __LINE__ .' : il n\'y a rien à convertir ' );
+             
+      }
+  }
+
+  
+  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+
+
+
+ }else if( isset($_POST['___produire_le_dump'])){
   
      $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
@@ -92,7 +160,20 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
          $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
          if($ret['status']===true){
-          $tableauDesTables=$ret['value'];
+          
+          
+          //echo __FILE__ . ' ' . __LINE__ . ' $__valeurs = <pre>' . var_export( $__valeurs , true ) . '</pre> $ret = <pre>' . var_export( $ret , true ) . '</pre>' ; exit(0);
+          $nom_du_fichier_dump   ='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/donnees.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
+          
+          $retour_ecriture=ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier,$nom_du_fichier_dump,$ret['value']);
+          if($retour_ecriture['status']===true){
+             ajouterMessage('info' , __LINE__ .' le fichier dump a bien été produit ' , BNF );
+          }else{
+             ajouterMessage('erreur' , __LINE__ .' problème pour produire le dump ' , BNF );
+          }
+          
+
+          
          }else{
            ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
           
@@ -104,6 +185,84 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      }
      $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; exit(0);
+    
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
+
+  
+  
+ }else if( isset($_POST['__comparer_les_structures']) ){
+  
+  
+
+     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+     
+     $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
+      
+   //   $o1.='&nbsp <span>Ce '.$chemin_fichier.'</span>';  
+
+     if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
+
+         $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
+         if($ret['status']===true){
+          $tableauDesTables=$ret['value'];
+          $ret2=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']);
+          if($ret2['status']===true){
+           $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
+//           echo __FILE__ . ' ' . __LINE__ . ' $ret2 = <pre>' . var_export( $ret2['value'] , true ) . '</pre>' ; exit(0);
+          }else{
+
+           ajouterMessage('erreur' , __LINE__ . ' erreur sur la structure de la base 2 de la zone "genere" ' , BNF  );
+
+          }
+          
+          
+         }else{
+          
+           ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
+          
+         }
+       
+     }else{
+
+             ajouterMessage('erreur' , __LINE__ .' fichier de la base de donnée sqlite introuvable ' , BNF );
+
+     }
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; exit(0);
+    
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
+
+  
+  
+ }else if( isset($_POST['___produire_le_rev']) ){
+  
+     
+     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+     
+     $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
+      
+   //   $o1.='&nbsp <span>Ce '.$chemin_fichier.'</span>';  
+
+     if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
+
+         $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
+         if($ret['status']===true){
+
+          $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$ret['value'];
+          
+         }else{
+          
+           ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
+          
+         }
+       
+     }else{
+
+             ajouterMessage('erreur' , __LINE__ .' fichier de la base de donnée sqlite introuvable ' , BNF );
+
+     }
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; exit(0);
     
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -328,6 +487,17 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   if(!isset($__valeurs['T0.chi_id_basedd'])){
    recharger_la_page('zz_bdds1.php');
   }else{
+   
+   
+  $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']=$__id;
+  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']         = $__valeurs['T0.chp_nom_basedd'];
+  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] = $__valeurs['T0.chp_commentaire_basedd'];
+  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']         = $__valeurs['T0.chp_rev_basedd'];
+  $_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']         = $__valeurs['T0.chp_php_basedd'];
+  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']      = $__valeurs['T0.chp_genere_basedd'];
+  $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']  = $__valeurs['T0.chx_dossier_id_basedd'] ;
+   
+   
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
  }
@@ -485,6 +655,23 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    if(is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
     
     $o1.='&nbsp <button name="___produire_le_rev" >produire le rev</button>';    
+    $o1.='&nbsp <button name="___produire_le_dump" >produire le dump</button>';    
+    
+    $o1.='  <br />'.CRLF;
+    $chemin_fichier_structure='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql';
+    if(is_file($chemin_fichier_structure)){
+     $o1.='  un fichier structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql existe <button name="__comparer_les_structures" class="yyinfo" name="">comparer les structures</button>'.CRLF;
+    }else{
+     $o1.='  le fichier structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql est absent'.CRLF;
+    }
+    
+    $o1.='  <br />'.CRLF;
+    $chemin_fichier_donnees='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/donnees.'.$__valeurs['T0.chp_nom_basedd'].'.sql';
+    if(is_file($chemin_fichier_donnees)){
+     $o1.='  un fichier donnees.'.$__valeurs['T0.chp_nom_basedd'].'.sql existe'.CRLF;
+    }else{
+     $o1.='  le fichier donnees.'.$__valeurs['T0.chp_nom_basedd'].'.sql est absent'.CRLF;
+    }
     
    }
    
@@ -501,6 +688,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <a href="javascript:parentheses(&quot;chp_rev_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
+  $o1.='   <a href="javascript:formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -577,7 +766,29 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='</form>'.CRLF;
   
   
+  $js_a_executer_apres_chargement[]=array(
+   'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'chp_rev_basedd'
+  );
 
+  if(isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) && count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'])>0){
+   
+      $js_a_executer_apres_chargement[]=array(
+        'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_basedd'  )
+      );
+      unset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']);
+   
+  }
+  
+  if(isset($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']) && count($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'])>0){
+
+      $js_a_executer_apres_chargement[]=array(
+        'nomDeLaFonctionAappeler' => 'comparer_deux_tableaux_de_bases_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'] , 'zone_resultat' => 'chp_commentaire_basedd'  )
+      );
+      unset($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']);
+   
+  }
+  
+  
 
 
 }else{
@@ -594,21 +805,13 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 ============================================================================
 */
 
-$js_a_executer_apres_chargement=array(
-    array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
-    )
+$js_a_executer_apres_chargement[]=array(
+  'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
 );
 
-if(isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) && count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'])>0){
-// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; 
- 
- $js_a_executer_apres_chargement[]=array(
-   'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_basedd'  )
- 
- );
- unset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']);
-}
+
+
+
 
 
 $par=array('js_a_inclure'=>array('js/pour_zz_bdds_action1.js','js/sql.js'),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);

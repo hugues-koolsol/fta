@@ -490,7 +490,7 @@ function traite_le_tableau_de_la_base_sqlite(par){
  for( var nom_table in par['donnees']){
   t+='\n'+'create_table(';
   t+='\n'+' n(\''+nom_table+'\'),';
-  t+='\n'+' fields(';
+  t+='\n'+' fields(#(),';
   
   for(var nom_champ in par['donnees'][nom_table]['liste_des_champs']){
      var pc=par['donnees'][nom_table]['liste_des_champs'][nom_champ]
@@ -564,7 +564,10 @@ function traite_le_tableau_de_la_base_sqlite(par){
 
  
  t=t.substr(1);
- dogid(par['zone_rev']).value='sql(transaction(\n'+t+'\n\n))';
+ if(par['zone_rev']){
+  dogid(par['zone_rev']).value='sql(transaction(\n'+t+'\n\n))';
+  formatter_le_source_rev(par['zone_rev']);
+ }
 // console.log('t=',t); 
  
  // CREATE TABLE 'tbl_bases_de_donnees' ('chi_id_basedd' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'chp_nom_basedd' TEXT NOT NULL DEFAULT '', 'chp_rev_basedd' TEXT, 'chp_commentaire_basedd' TEXT, chx_dossier_id_basedd INTEGER DEFAULT NULL REFERENCES tbl_dossiers(chi_id_dossier))

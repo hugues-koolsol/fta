@@ -211,6 +211,7 @@ foreach($data0 as $k0=>$v0){
  $lsttbl.='<div class="yyflex1">';
  
  $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';//✎ #9998
+ $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">x</a>';
  
  $lsttbl.='</div>';
  
