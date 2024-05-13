@@ -7,16 +7,22 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
  if((isset($data['input']['file_name']))){
   
   $nomFichierDecripte=decrypter($data['input']['file_name']);
-  $contenu=file_get_contents($nomFichierDecripte);
-  if($contenu===false){
-   
-      $data['messages'][]='impossible de lire le fichier';   
+  $taille_en_octets=filesize($nomFichierDecripte);
+  if($taille_en_octets<=64000){
+   $contenu=file_get_contents($nomFichierDecripte);
+   if($contenu===false){
+    
+       $data['messages'][]='impossible de lire le fichier';   
+    
+   }else{
+     
+       $data['value']=$contenu;
+       $data['status']='OK';
+    
+   }
    
   }else{
-    
-      $data['value']=$contenu;
-      $data['status']='OK';
-   
+       $data['messages'][]='le fichier fait plus de 64000 octets et il ne peut pas être intégré dans une zone de texte';   
   }
  }else{
   $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';

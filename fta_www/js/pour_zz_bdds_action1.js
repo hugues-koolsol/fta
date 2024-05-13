@@ -2,6 +2,7 @@
 
 function comparer_deux_tableaux_de_bases_sqlite(par){
  clearMessages('zone_global_messages');
+ var differences_entre_les_tables=false;
 
  console.log(par['donnees']);
  var tables={}; 
@@ -14,19 +15,86 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
    tables[a2].presente_dans_tableau_2=true;
   }else{
    tables[a2]={ 'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
-   logerreur({status:false,message:' la table'  + a2 + ' est absente du tableau2 '});
+   logerreur({status:false,message:' la table '  + a2 + ' est absente du tableau1 '});
+   differences_entre_les_tables=true;
    
   }
  }
  for(var a0 in tables){
-  if(tables[a0].presente_dans_tableau_1===false){
-   logerreur({status:false,message:' la table '  + a0 + ' est absente du tableau1'});
-  }
   if(tables[a0].presente_dans_tableau_2===false){
    logerreur({status:false,message:' la table '  + a0 + ' est absente du tableau2'});
+   differences_entre_les_tables=true;
   }
  }
- 
+ if(differences_entre_les_tables===true){
+   logerreur({status:false,message:' des tables ne sont pas les mêmes'});
+ }else{
+   logerreur({status:true,message:' il y a les mêmes tables dans les deux tableaux'});
+ }
+ console.log('tables=',tables)
+ /*
+   analyse des champs des tables
+ */ 
+ for(var a0 in tables){
+  var differences_entre_les_champs=false;
+  if(tables[a0].presente_dans_tableau_1===true && tables[a0].presente_dans_tableau_2===true ){
+//   debugger
+   var champs={};
+   for(var champ1 in par['donnees']['tableau1'][a0]['liste_des_champs']){
+    champs[champ1]={'presente_dans_tableau_1' : true , champs1 : par['donnees']['tableau1'][a0]['liste_des_champs'][champ1] ,  'presente_dans_tableau_2' : false , champs2 : null};
+    differences_entre_les_champs=true;
+   } 
+   for(var champ2 in par['donnees']['tableau2'][a0]['liste_des_champs']){
+    if(champs.hasOwnProperty(champ2)){
+     champs[champ2].presente_dans_tableau_2=true;
+     champs[champ2].champs2=par['donnees']['tableau2'][a0]['liste_des_champs'][champ2];
+    }else{
+     champs[champ2]={ 'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
+     differences_entre_les_champs=true;
+    }
+   }
+   if(differences_entre_les_champs===true){
+    for( var champ in champs){
+     if(champs[champ].presente_dans_tableau_1===true && champs[champ].presente_dans_tableau_2===true ){
+      for( var typechamp in champs[champ]['champs1'] ){
+       if(typeof champs[champ].champs1[typechamp]==='object'){
+       }else{
+        if(champs[champ].champs1[typechamp]===champs[champ].champs2[typechamp]){
+        }else{
+         if('cid'===typechamp){
+         }else if(typechamp==='auto_increment'){
+             logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' , le type '+typechamp +' on a une différence mais ce n\'est peut-être pas une erreur ! ' });
+         }else{
+             logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' , le type '+typechamp +' on a une différence' });
+         }
+        }
+       }
+      }
+      /*
+      auto_increment: false
+      cid: 0
+      cle_etrangere: {}
+      dflt_value: null
+      name: "chi_id_groupe"
+      notnull: 0
+      pk: 1
+      type: "INTEGER"
+      */
+      
+     }else{
+         if(champs[champ].presente_dans_tableau_1===true && champs[champ].presente_dans_tableau_2===false){
+             logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' est dans le tableau 1 mais pas dans le tableau 2 ' });
+         }else{
+             logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' est dans le tableau 2 mais pas dans le tableau 1 ' });
+         }
+     }
+    }
+   }else{
+   }
+   console.log('pour "'+a0+'" champs=',champs);
+  }
+ }
+
  
  
  console.log(tables);

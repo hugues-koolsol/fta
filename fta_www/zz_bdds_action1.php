@@ -83,17 +83,44 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  
 
 
- if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
+ 
+
+ if(isset($_POST['__importer_le_system_de_fta'])){
+
+   if(APP_KEY === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] && APP_KEY !== $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] &&  $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']==='ftb' ){    
+   
+    $nom_de_la_base_source='../../'.APP_KEY.'/fta_inc/db/sqlite/system.db';
+    $nom_de_la_base_cible ='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'/fta_inc/db/sqlite/system.db';
+    
+    if(copy($nom_de_la_base_source , $nom_de_la_base_cible )){
+
+            ajouterMessage('info' , __LINE__ .' la base a bien été importée ' );
+    }else{
+            ajouterMessage('erreur' , __LINE__ .' la base n\'a pas été importée ' );
+    }
+   
+   }
+   
+
+   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
+
 
  /*
    ====================================================================================================================
    ============================================= CONVERTIR UN SQL EN REV ==============================================
    ====================================================================================================================
  */
-  $chemin_fichier_temporaire='..'.DIRECTORY_SEPARATOR.APP_KEY.'_temp/'.date('Y/m/d');
+ }else if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
+
+ /*
+   ====================================================================================================================
+   ============================================= CONVERTIR UN SQL EN REV ==============================================
+   ====================================================================================================================
+ */
+  $chemin_base_temporaire='..'.DIRECTORY_SEPARATOR.APP_KEY.'_temp/'.date('Y/m/d');
   $continuer=true;
-  if(!is_dir($chemin_fichier_temporaire)){
-   if(!mkdir($chemin_fichier_temporaire,0777,true)){
+  if(!is_dir($chemin_base_temporaire)){
+   if(!mkdir($chemin_base_temporaire,0777,true)){
      ajouterMessage('erreur' , __LINE__ .' : impossible de créer le répertoire temporaire ' );
      $continuer=false;
    }
@@ -104,19 +131,19 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       
       if($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']!==''){
        
-          $fichier_temporaire=$chemin_fichier_temporaire.DIRECTORY_SEPARATOR.sha1(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).'.db';
+          $base_temporaire=$chemin_base_temporaire.DIRECTORY_SEPARATOR.sha1(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).'.db';
           
 //          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']  . '</pre>' ; exit(0);
           
-          $dbtemp = new SQLite3($fichier_temporaire);
-          if(is_file($fichier_temporaire)){
+          $dbtemp = new SQLite3($base_temporaire);
+          if(is_file($base_temporaire)){
            
            
            $res0= $dbtemp->exec($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
            if($res0===true){
              $dbtemp->close();
              require_once('../fta_inc/phplib/sqlite.php');
-             $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($fichier_temporaire);
+             $ret=obtenir_la_structure_de_la_base_sqlite($base_temporaire, true);
              if($ret['status']===true){
               $tableauDesTables=$ret['value'];
               $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
@@ -128,7 +155,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
             
 
            }
-           @unlink($fichier_temporaire);
+           @unlink($base_temporaire);
 
           }else{
             ajouterMessage('erreur' , __LINE__ .' : impossible de créer fichier temporaire ' );
@@ -143,7 +170,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
 
   
-  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
 
 
@@ -158,7 +185,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
-         $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
+         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
          if($ret['status']===true){
           
           
@@ -198,15 +225,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      
-     $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
+     $chemin_bdd='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
       
-   //   $o1.='&nbsp <span>Ce '.$chemin_fichier.'</span>';  
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_bdd , true ) . '</pre>' ; exit(0);
 
-     if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
+     if( is_file($chemin_bdd)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
-         $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
+         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_bdd,true);
          if($ret['status']===true){
           $tableauDesTables=$ret['value'];
+//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'] , true ) . '</pre>' ; exit(0);
           $ret2=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']);
           if($ret2['status']===true){
            $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
@@ -247,7 +275,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
-         $ret=obtenir_la_structure_de_la_base_sqlite_grace_au_fichier($chemin_fichier);
+         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
          if($ret['status']===true){
 
           $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$ret['value'];
@@ -488,7 +516,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
    recharger_la_page('zz_bdds1.php');
   }else{
    
-   
+/*   
   $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']=$__id;
   $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']         = $__valeurs['T0.chp_nom_basedd'];
   $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] = $__valeurs['T0.chp_commentaire_basedd'];
@@ -496,7 +524,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   $_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']         = $__valeurs['T0.chp_php_basedd'];
   $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']      = $__valeurs['T0.chp_genere_basedd'];
   $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']  = $__valeurs['T0.chx_dossier_id_basedd'] ;
-   
+*/   
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
@@ -660,7 +688,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
     $o1.='  <br />'.CRLF;
     $chemin_fichier_structure='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql';
     if(is_file($chemin_fichier_structure)){
-     $o1.='  un fichier structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql existe <button name="__comparer_les_structures" class="yyinfo" name="">comparer les structures</button>'.CRLF;
+     $o1.='  un fichier structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql existe '.CRLF;
     }else{
      $o1.='  le fichier structure.'.$__valeurs['T0.chp_nom_basedd'].'.sql est absent'.CRLF;
     }
@@ -672,8 +700,19 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
     }else{
      $o1.='  le fichier donnees.'.$__valeurs['T0.chp_nom_basedd'].'.sql est absent'.CRLF;
     }
+    $o1.='  <br />'.CRLF;
+    $o1.='<button name="__comparer_les_structures" class="yyinfo" name="">comparer les structures de la base et du champ "genere"</button>';
     
    }
+   
+   if(APP_KEY === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] && APP_KEY !== $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] &&  $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']==='ftb' ){    
+    /*
+     cas spécial car on développe un clone de fta sur ftb
+    */
+    $o1.='<br />'.CRLF;
+    $o1.='<button name="__importer_le_system_de_fta" >importer la base système de fta</button>';    
+   }
+   
    
   }
   
