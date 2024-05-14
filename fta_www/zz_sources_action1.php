@@ -85,7 +85,42 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  
  
  
- if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
+ if(isset($_POST['__importer_le_fichier_source_de_fta'])){
+   /*
+     ====================================================================================================================
+     ============================================= IMPORTER LE SOURCE DE FTA ============================================
+     ====================================================================================================================
+   */
+   
+   if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!=='fta'){
+    
+    $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$db);
+    
+    
+    $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+    if(is_file($nom_complet_du_source_dans_fta)){
+      $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+      if(copy( $nom_complet_du_source_dans_fta , $nomCompletSource )){
+        ajouterMessage('succes' , __LINE__ .' : le fichier a bien été importé ' );
+      }else{
+        ajouterMessage('erreur' , __LINE__ .' : il y a eu une erreur lors de la copie du fichier ' );
+      }
+    }else{
+      ajouterMessage('erreur' , __LINE__ .' : le fichier n\'existe pas dans fta ' );
+    }
+   }else{
+      ajouterMessage('erreur' , __LINE__ .' : on ne peut pas faire de copie sur cet environnement ' );
+   }
+   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+
+   
+   
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
+//   $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']   
+
+
+
+ }else if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
 
  /*
    ====================================================================================================================
@@ -424,14 +459,14 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   if(!isset($__valeurs['T0.chi_id_source'])){
    recharger_la_page('zz_sources1.php');
   }else{
-   
+/*   
    $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']         = $__valeurs['T0.chp_nom_source']        ;
    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']  = $__valeurs['T0.chx_dossier_id_source'] ;
    $_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']    = $__valeurs['T0.chx_cible_id_source']   ;
    $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] = $__valeurs['T0.chp_commentaire_source'];
    $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']         = $__valeurs['T0.chp_rev_source'];
    $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']      = $__valeurs['T0.chp_genere_source'];
-   
+*/   
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
@@ -603,6 +638,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a href="javascript:parentheses(&quot;chp_rev_source&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
   $o1.='   <a href="javascript:formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
+  $o1.='   <a class="yysucces" href="javascript:aller_a_la_position(&quot;chp_rev_source&quot;)">aller à la position</a>'.CRLF;
+  
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -685,6 +722,20 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
     $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.CRLF;
     
    }
+
+
+   if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!=='fta'){
+    
+    $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+    if(is_file($nom_complet_du_source_dans_fta)){
+     $o1.='   <button name="__importer_le_fichier_source_de_fta" class="yyinfo">importer le fichier source de fta</button>'.CRLF;
+    }else{
+     $o1.='   ce fichier n\'a pas de correspondant dans fta'.CRLF;
+    }
+    
+    
+   }
+
    
   }
   
@@ -755,7 +806,10 @@ $par=array(
   'js/convertit-php-en-rev0.js', 
   'js/pour_zz_source1.js', 
   'js/pour_zz_bdds_action1.js', 
-  'js/sql.js'
+  'js/sql.js' ,
+  'js/convertit-js-en-rev1.js' ,
+  'js/esprima.js' ,
+  'js/javascript.js' ,
   ),
   'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );

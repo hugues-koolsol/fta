@@ -23,14 +23,9 @@ $__nbMax=20;
 $__debut=0;
 $__xpage=0;
 
-if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
- $__xpage=$_GET['__xpage'];
-}else{
- if(isset($_SESSION[APP_KEY][NAV][BNF]['__xpage'])) $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
-}
-
-$chi_id_dossier          = sauvegarderLesParametresDeRecherche('choix_chi_id_dossier'          , BNF);
-$chp_nom_dossier         = sauvegarderLesParametresDeRecherche('choix_chp_nom_dossier'         , BNF);
+$__xpage                 = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                , BNF);
+$chi_id_dossier          = recuperer_et_sauvegarder_les_parametres_de_recherche('choix_chi_id_dossier'   , BNF);
+$chp_nom_dossier         = recuperer_et_sauvegarder_les_parametres_de_recherche('choix_chp_nom_dossier'  , BNF);
 
 $autofocus='chi_id_dossier';
      if($chi_id_dossier!=''){          $autofocus='chi_id_dossier';          } 

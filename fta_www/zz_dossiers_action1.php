@@ -568,11 +568,18 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
      $chemin_reel=realpath($chemin_relatif);
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_reel , true ) . '</pre>' ; exit(0);
      
-     $chemin_du_repertoire=$chemin_reel.'/*.*';
-     $glob=glob($chemin_du_repertoire);
-     $tabl=array();
-     if($glob!==false){
-      
+     
+     $chemin_du_repertoire=$chemin_reel.'/';
+     $monscan=scandir($chemin_du_repertoire);
+     if($monscan!==false){
+         $glob=array();
+         foreach( $monscan as $k0 => $v0){
+          if($v0!=='.' && $v0!=='..'){
+          $glob[]=$chemin_du_repertoire.$v0;
+          }
+         }
+         $tabl=array();
+         
          $o1.='<div>il y a '.count($glob).' élément(s) dans ce répertoire</div>';
          if(count($glob)<100){
           $liste_des_fichiers='';
@@ -644,15 +651,15 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
               $o1.='<div><button name="__supprimer_ce_repertoire_du_disque" value="'.$chemin_relatif.'" >supprimer ce répertoire du disque</button></div>';
           }else{
           }
-         }
+         }         
          
-         
-      
-   //    echo "$filename occupe " . filesize($filename) . "\n";
-     }   
-     if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']===APP_KEY && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!==APP_KEY){
+     }
+     
+     
+     
+     if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!=='fta'){
 
-         $o1.='<hr /><div>Liste des éléments de '.APP_KEY.'</div>';
+         $o1.='<hr /><div>Liste des éléments de '.'fta'.'</div>';
 
          $chemin_relatif='../../'.APP_KEY.$__valeurs['T0.chp_nom_dossier'];
 //         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
@@ -663,14 +670,22 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
             $chemin_reel=realpath($chemin_relatif);
        //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_reel , true ) . '</pre>' ; exit(0);
             
-            $chemin_du_repertoire=$chemin_reel.'/*.*';
-            $glob=glob($chemin_du_repertoire);
             
-            if($glob!==false){
+            $glob=array(); /* la fonction glob ne prend pas en compte le fichier .htaccess */
+            $chemin_du_repertoire=$chemin_reel.'/';
+            $monscan=scandir($chemin_du_repertoire);
+            if($monscan!==false){
+                foreach( $monscan as $k0 => $v0){
+                 if($v0!=='.' && $v0!=='..'){
+                 $glob[]=$chemin_du_repertoire.$v0;
+                 }
+                }
              
-                $o1.='<div>il y a '.count($glob).' élément(s) dans le répertoire correspondant de '.APP_KEY.'</div>';
+                $o1.='<div>il y a '.count($glob).' élément(s) dans le répertoire correspondant de '.'fta'.'</div>';
                 if(count($glob)<100){
+//                    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $glob , true ) . '</pre>' ; exit(0);
                     foreach($glob as $k1=>$v1){
+//                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ;
                         $nom_fichier=substr(str_replace( $chemin_reel,'',$v1),1);
 //                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
                         if(isset($tabl[$nom_fichier])){
@@ -684,17 +699,16 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                           }
                           if(   $extension==='.php' || $extension==='.js' || $extension==='.html' || $extension==='.htm'  || $extension==='.htm'
                              || $extension==='.json' || $extension==='.bat' || $extension==='.rev'  || $extension==='.css'  || $extension==='.sql'  
-                             || $extension==='.txt' || $extension==='.db' ){
-                            $o1.='<div><button name="__importer_ce_fichier_de_'.APP_KEY.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.$nom_fichier.'</button></div>';
+                             || $extension==='.txt' || $extension==='.db' || $extension==='.htaccess' ){
+                            $o1.='<div><button name="__importer_ce_fichier_de_'.'fta'.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.$nom_fichier.'</button></div>';
                           }else{
                             $o1.='<div class="yyavertissement">'.__LINE__.' le fichier '.$nom_fichier.' ne comporte pas une extension connue</div>';
                           }
                         }
                     }
-                }
-             
-                //    echo "$filename occupe " . filesize($filename) . "\n";
+                }             
             }
+
          }
          
          

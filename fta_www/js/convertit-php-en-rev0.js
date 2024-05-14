@@ -361,7 +361,8 @@ function php_traite_Expr_FuncCall(element,niveau){
    }else{
     nomFonction='#(todo php_traite_Expr_FuncCall 0389 )';
    }   
-   
+  }else if("Identifier"===element.name.nodeType){   
+   nomFonction=element.name.name;
   }else{
    t+='#(todo dans php_traite_Expr_FuncCall 0163 pas de name)';
   }
@@ -405,7 +406,11 @@ function php_traite_Expr_FuncCall(element,niveau){
   }
   t+=''+nomFonction+'('+lesArgumentsCourts+')';
  }else{
-  t+='appelf(nomf('+nomFonction+')'+lesArguments+')';
+  if(element.class && "Expr_StaticCall"===element.nodeType && element.class.nodeType==='Name'){
+   t+='appelf(element('+element.class.name+'::),nomf('+nomFonction+')'+lesArguments+')';
+  }else{
+   t+='appelf(nomf('+nomFonction+')'+lesArguments+')';
+  }
  }
  return {'status':true,'value':t};
 }
@@ -725,7 +730,7 @@ function php_traite_Expr_Assign(element,niveau){
   if(obj.status===true){
    droite=obj.value;
   }else{
-   droite='#(todo erreur dans php_traite_Expr_Assign 0726 pas de expr '+element.nodeType+')';
+   return( astphp_logerreur({'status':false,'message':'0733  erreur dans une assignation ',element:element}));
   }
  }else{
   droite='#(todo dans php_traite_Expr_Assign 0729 pas de expr '+element.nodeType+')';
@@ -857,7 +862,7 @@ function php_traite_Expr_Array(element , niveau){
       }
       cle=objValeur.value;
      }else{
-      cle='#(TODO ERREUR dans php_traite_Expr_Array 869)';
+      return(astphp_logerreur({'status':false,'message':'ERREUR dans php_traite_Expr_Array 869','element':element }));
      }
      
     }
@@ -904,7 +909,40 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
 
  }else if("Scalar_String"===element.nodeType){
 
-  t+=element.attributes.rawValue;
+  if(element.attributes.rawValue.substr(0,1)==='\'' || element.attributes.rawValue.substr(0,1)==='"'){
+   /*
+     en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
+     mais pour les fichiers rev, c'est pas excellent, 
+     on accepte les \r \n \t \x \o , \" et \' \\ donc on fait un 
+     petit parsing et on remonte une erreur si on n'est pas dans ces cas là
+   */
+   var rv=element.attributes.rawValue;
+   var l01=rv.length-2;
+   for(var i=l01;i>=0;i--){
+    if(rv.substr(i,1)=='\\'){
+     if(i===l01){
+      /* position du \ en dernier */
+       return( astphp_logerreur({'status':false,'message':'0925  une chaine ne toit pas contenir un \\ en dernière position  ',element:element}));
+      
+     }else{
+      if(i>=1){
+       if(rv.substr(i-1,1)==='\\' ){
+         i--;
+       }else{
+        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  || rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='\'' ){
+        }else{
+         return( astphp_logerreur({'status':false,'message':'0930  après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrx] ',element:element}));
+        }
+       }
+      }
+     }
+    }
+   }
+   t+=element.attributes.rawValue;
+   
+  }else{
+   t+=element.attributes.rawValue;
+  }
 
  /*===============================================*/
 
@@ -982,7 +1020,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
   if(obj.status===true){
    t+=obj.value;
   }else{
-   t+='#(todo erreur dans php_traite_Stmt_Expression 0512 )';
+   return( astphp_logerreur({'status':false,'message':'erreur dans php_traite_Stmt_Expression 0512 ',element:element}));
   }
   
  
@@ -1076,7 +1114,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
   if(obj.status===true){
    t+=obj.value;
   }else{
-   t+='#(todo erreur dans php_traite_Stmt_Switch 0824)';
+   return(astphp_logerreur({'status':false,'message':'erreur dans php_traite_Stmt_Expression 1117','element':element }));
   }   
    
  /*===============================================*/
@@ -1086,7 +1124,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
   if(obj.status===true){
    t+=obj.value;
   }else{
-   t+='#(todo erreur dans php_traite_Stmt_Expression 0492 )';
+   return( astphp_logerreur({'status':false,'message':'erreur dans php_traite_Stmt_Expression 0492',element:element}));
   }
   
   
@@ -1265,6 +1303,18 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
 
  /*===============================================*/
 
+ }else if("Expr_StaticCall"===element.nodeType){
+
+
+  var obj=php_traite_Expr_FuncCall(element,niveau);
+  if(obj.status===true){
+   t+=obj.value;
+  }else{
+   t+='#(todo erreur dans php_traite_Stmt_Expression 252)';
+  }
+
+ /*===============================================*/
+
  }else if("StaticVar"===element.nodeType){
   
   
@@ -1280,8 +1330,6 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
   }else{
    astphp_logerreur({'status':false,'message':'1197  dans php_traite_Stmt_Expression pas de StaticVar ',element:element});
   }
-
- /*===============================================*/
 
   var valeurDef="";
   if(element.default && element.default!==null){
@@ -1871,7 +1919,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
     if(obj.status===true){
      t+='\n'+esp0+obj.value;
     }else{
-     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR "'+stmts[i].nodeType+'")';
+     return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev 1922 "'+stmts[i].nodeType+'" ',element:stmts[i]}));
     }
     
 
@@ -2022,7 +2070,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                 }
               }else{
                
-               var obj=traiteJsonDeHtml(obj1.content[j].content[k],0,true,'');
+               var obj=traiteAstDeHtml(obj1.content[j].content[k],0,true,'');
                if(obj.status===true){
                 //t=obj.value;
                 console.log(obj.value)
@@ -2162,7 +2210,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
    }else{
     console.log('%cAvant erreur :stmts[i]=' , 'background:red;' , stmts[i] );
     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev 0439 "'+stmts[i].nodeType+'")';
-    astphp_logerreur({'status':false,'message':'0440  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] });
+    return(astphp_logerreur({'status':false,'message':'0440  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] }));
     
    }
   }
@@ -2367,7 +2415,10 @@ function isHTML(str) {
        }
        return({status:false,id:i,message:'Erreur 1929 pres de "'+presDe+'"'});
       }
-      tabTags.pop();
+      /*
+      pas de pop ici, dans <a b="c">d</a>, on est sur le > avant le d
+      */
+//      tabTags.pop();
       nomTag='';
      }else{
       if(c0==='=' || c0==='"' || c0==='\''){
@@ -2494,6 +2545,8 @@ function traitementApresRecuperationAst(ret){
    }else{
     astphp_logerreur({status:false,message:'erreur pour le rev'});
    }
+  }else{
+   displayMessages('zone_global_messages', 'txtar1');
   }
  }catch(e){
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })

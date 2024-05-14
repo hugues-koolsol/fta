@@ -49,18 +49,12 @@ $o1.='<h1>Liste des systèmes cibles</h1>';
 
 $__nbMax=20;
 $__debut=0;
-$__xpage=0;
 
-if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
- $__xpage=$_GET['__xpage'];
-}else{
- if(isset($_SESSION[APP_KEY][NAV][BNF]['__xpage'])) $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
-}
-
-$chi_id_cible          = sauvegarderLesParametresDeRecherche('chi_id_cible'          , BNF);
-$chp_nom_cible         = sauvegarderLesParametresDeRecherche('chp_nom_cible'         , BNF);
-$chp_dossier_cible     = sauvegarderLesParametresDeRecherche('chp_dossier_cible'     , BNF);
-$chp_commentaire_cible = sauvegarderLesParametresDeRecherche('chp_commentaire_cible' , BNF);
+$__xpage               = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'               , BNF);
+$chi_id_cible          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_cible'          , BNF);
+$chp_nom_cible         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_cible'         , BNF);
+$chp_dossier_cible     = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_dossier_cible'     , BNF);
+$chp_commentaire_cible = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_commentaire_cible' , BNF);
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chp_nom_cible , true ) . '</pre>' ; exit(0);
 
 $autofocus='chi_id_cible';

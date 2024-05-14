@@ -30,8 +30,8 @@ $o1='';
 
 $__nbMax=10;
 $__debut=0;
-$__xpage=0;
 $__nbEnregs=0;
+/*
 
 if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
  $__xpage=$_GET['__xpage'];
@@ -40,18 +40,21 @@ if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
   $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
  }
 }
+*/
 
-$chi_id_source          = sauvegarderLesParametresDeRecherche('chi_id_source'          , BNF);
-$chp_nom_source         = sauvegarderLesParametresDeRecherche('chp_nom_source'         , BNF);
-$chp_nom_dossier        = sauvegarderLesParametresDeRecherche('chp_nom_dossier'        , BNF);
-$chi_id_dossier         = sauvegarderLesParametresDeRecherche('chi_id_dossier'         , BNF);
+$__xpage                = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                , BNF);
+$chi_id_source          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_source'          , BNF);
+$chp_nom_source         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_source'         , BNF);
+$chp_nom_dossier        = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier'        , BNF);
+$chi_id_dossier         = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier'         , BNF);
 
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['filtres'][BNF]['__xpage'] , true ) . '</pre>' ; exit(0);
 
 $autofocus='chi_id_source';
-     if($chi_id_source!=''){          $autofocus='chi_id_source';          } 
-else if($chp_nom_source!=''){         $autofocus='chp_nom_source';         }
-else if($chp_nom_dossier!=''){        $autofocus='chp_nom_dossier';        }
-else if($chi_id_dossier!=''){         $autofocus='chi_id_dossier';        }
+     if($chp_nom_source!=''){         $autofocus='chp_nom_source';       } 
+else if($chi_id_source!=''){          $autofocus='chi_id_source';        }
+else if($chp_nom_dossier!=''){        $autofocus='chp_nom_dossier';      }
+else if($chi_id_dossier!=''){         $autofocus='chi_id_dossier';       }
 
 
 

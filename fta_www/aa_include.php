@@ -78,19 +78,38 @@ function xcleanSession1($par){
 }
 
 //========================================================================================================================
-function sauvegarderLesParametresDeRecherche( $k , $bnf){
+function recuperer_et_sauvegarder_les_parametres_de_recherche( $k , $bnf){
+ /*
+ on veut garder les paramètres de navigation des pages
+ */
+ if(!isset($_SESSION[APP_KEY]['__filtres'][BNF])){
+  $_SESSION[APP_KEY]['__filtres'][BNF]=array();
+  $_SESSION[APP_KEY]['__filtres'][BNF]['champs']=array();
+ }
+
  $ret='';
  $ret = $_GET[$k]??'';
  if(isset($_GET[$k])){
-  $_SESSION[APP_KEY][NAV][$bnf][$k]=$_GET[$k];
+  $_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]=$_GET[$k];
   $ret=$_GET[$k];
  }else{
-  if(isset($_SESSION[APP_KEY][NAV][$bnf][$k])){
-   $ret=$_SESSION[APP_KEY][NAV][$bnf][$k];
+  if(isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k])){
+   if(isset($_GET['idMenu']) && '__xpage'===$k){
+    $_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]=0;
+    $ret=0;
+   }else{
+    $ret=$_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k];
+   }
+   
   }else{
    $ret='';
+   if('__xpage'===$k){
+    $ret=0;
+   }
   }
  }
+ 
+ 
  return($ret);
 }
 //========================================================================================================================

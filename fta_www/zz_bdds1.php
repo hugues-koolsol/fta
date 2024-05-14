@@ -33,9 +33,9 @@ if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
 }else{
  if(isset($_SESSION[APP_KEY][NAV][BNF]['__xpage'])) $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
 }
-
-$chi_id_basedd          = sauvegarderLesParametresDeRecherche('chi_id_basedd'          , BNF);
-$chp_nom_basedd         = sauvegarderLesParametresDeRecherche('chp_nom_basedd'         , BNF);
+$__xpage               = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                 , BNF);
+$chi_id_basedd          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_basedd'          , BNF);
+$chp_nom_basedd         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_basedd'         , BNF);
 
 
 $autofocus='chi_id_basedd';

@@ -1,5 +1,24 @@
 "use strict";
 
+
+
+
+/*
+//=====================================================================================================================
+*/
+function aller_a_la_position(nom_textarea){
+ var resultat = window.prompt('aller à la position', 1);
+ if(resultat && isNumeric(resultat)){
+  var a=dogid(nom_textarea);
+  a.rows="100";
+  a.focus();
+  a.selectionStart=0;
+  a.selectionEnd=resultat;
+ }  
+}
+/*
+//=====================================================================================================================
+*/
 function aller_a_la_ligne(nom_textarea){
  var resultat = window.prompt('aller à la ligne n°?', 1);
  if(resultat && isNumeric(resultat)){
@@ -20,40 +39,12 @@ function aller_a_la_ligne(nom_textarea){
    a.selectionEnd=position;
    
   }
-  
-  alert(resultat);
  }
 }
 
-function convertir_rev_en_php(nom_zone_source , nom_zone_genere){
-
- clearMessages('zone_global_messages');
- var a=dogid(nom_zone_source);
- var startMicro = performance.now();
- var tableau1 = iterateCharacters2(a.value);
- global_messages.data.tableau=tableau1;
- var endMicro = performance.now();
- console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
- var startMicro = performance.now();
- var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
- 
- if(matriceFonction.status===true){
-  
-  var objPhp=parsePhp0(matriceFonction.value,0,0);
-  
-  if(objPhp.status===true){
-   
-   dogid(nom_zone_genere).value=objPhp.value;
-   
-  }
-  
- }else{
-  
- }
- displayMessages('zone_global_messages');
-}
-
+/*
 //=====================================================================================================================
+*/
 function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
  
  console.log('ret=',ret.input.opt);
@@ -65,20 +56,9 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
   if(obj.status===true){
    console.log( ret.input.opt.nom_zone_rev )
    document.getElementById(ret.input.opt.nom_zone_rev).value='php('+obj.value+')';
-/*   
-   var tableau1 = iterateCharacters2(obj.value);
-   var obj1=functionToArray2(tableau1.out,false,true,'');
-   if(obj1.status===true){
-    var endMicro=performance.now();  
-    astphp_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
-    var tabToPhp=parsePhp0(obj1.value,0,0);
-    if(tabToPhp.status===true){
-      document.getElementById('txtar3').value=tabToPhp.value;
-    }
-   }else{
-    astphp_logerreur({status:false,message:'erreur pour le rev'});
-   }
-*/   
+  }else{
+    debugger
+    displayMessages('zone_global_messages' , ret.input.opt.nom_zone_genere);
   }
  }catch(e){
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })

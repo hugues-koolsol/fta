@@ -32,7 +32,7 @@ var DEBUTBLOC='@';
 var CRLF='\r\n';
 var NBESPACESREV=3;
 var globale_LangueCourante='fr';
-var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
 var NBESPACESSOURCEPRODUIT=4;
 var php_contexte_commentaire_html=false;
 
@@ -72,6 +72,10 @@ function logerreur(o){
     if(o.hasOwnProperty('line') && o.line>=0){
         global_messages['lines'].push(o.line);
     }
+    if(o.hasOwnProperty('position_caractere')){
+        global_messages['positions_caracteres'].push(o.tabs);
+    }
+    
     return o;
 }
 

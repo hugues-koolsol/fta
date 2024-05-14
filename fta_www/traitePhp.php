@@ -3,7 +3,6 @@ define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();
 
-
 $o1='';
 $o1=html_header1(array('title'=>'convertir un php en rev' , 'description'=>'convertir un php en rev'));
 print($o1);$o1='';
@@ -23,7 +22,14 @@ print($o1);$o1='';
   <!-- label>Nom du fichier Js<input name="NomDuJs" id="NomDuJs" value="" style="border: 1px lightgrey inset;" /></label -->
   <textarea class="txtar1" id="txtar1" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
+  <div>
+   <a href="javascript:formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
+   <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
+  </div>
   <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <br />
+  <a class="yyinfo" href="javascript:convertir_rev_en_php('txtar2','txtar3')">R2P↧</a>
+  <br />
   <textarea class="txtar1" id="txtar3" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 
 

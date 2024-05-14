@@ -12,6 +12,40 @@ var global_modale1=null;
 var global_modale1_iframe=null;
 
 var global_editeur_largeur_des_ascenseurs=-1; 
+var global_indice_erreur_originale_traitee=-1;
+
+/*
+  =====================================================================================================================
+  convertir un textarea source rev et mettre le résultat dans un textarea php
+  =====================================================================================================================
+*/
+function convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php){
+
+ clearMessages('zone_global_messages');
+ var a=dogid(nom_zone_source_rev);
+ var startMicro = performance.now();
+ var tableau1 = iterateCharacters2(a.value);
+ global_messages.data.tableau=tableau1;
+ var endMicro = performance.now();
+ console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
+ var startMicro = performance.now();
+ var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+ 
+ if(matriceFonction.status===true){
+  
+  var objPhp=parsePhp0(matriceFonction.value,0,0);
+  
+  if(objPhp.status===true){
+   
+   dogid(nom_zone_genere_php).value=objPhp.value;
+   
+  }
+  
+ }else{
+  
+ }
+ displayMessages('zone_global_messages');
+}
 
 /*
   =====================================================================================================================
@@ -988,13 +1022,15 @@ function clickButton1(e){
   =====================================================================================================================
 */
 function clearMessages(nomZone){
+    
+    global_indice_erreur_originale_traitee=-1;
     try{
         document.getElementById(nomZone).innerHTML='';
         /* display a pu être mis à "none" ailleurs */
         document.getElementById(nomZone).style.display=''; 
     }catch(e){
     }
-    global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+    global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
 }
 /*
   =====================================================================================================================
@@ -1006,20 +1042,24 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     var i=0;
     var affichagesPresents=false;
     var zon = document.getElementById(nomZone);
-    for(i=0;i < global_messages.errors.length;i++){
+    while(global_messages.errors.length>0){
         zon.innerHTML+='<div class="yyerreur">'+global_messages.errors[i]+'</div>';
+        global_messages.errors.splice(0,1);
         affichagesPresents=true;
     }
-    for(i=0;i < global_messages.warnings.length;i++){
+    while(global_messages.warnings.length>0){
         zon.innerHTML+='<div class="yyavertissement">'+global_messages.warnings[i]+'</div>';
+        global_messages.warnings.splice(0,1);
         affichagesPresents=true;
     }
-    for(i=0;i < global_messages.infos.length;i++){
+    while(global_messages.infos.length>0){
         zon.innerHTML+='<div class="yysucces">'+global_messages.infos[i]+'</div>';
+        global_messages.infos.splice(0,1);
         affichagesPresents=true;
     }
-    for(i=0;i < global_messages.lines.length;i++){
+    while(global_messages.lines.length>0){
         zon.innerHTML='<a href="javascript:allerAlaLigne('+(global_messages.lines[i]+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne '+(global_messages.lines[i]+1)+'</a>&nbsp;'+zon.innerHTML;
+        global_messages.infos.splice(0,1);
         affichagesPresents=true;
     }
     if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
@@ -1046,9 +1086,10 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
             }
         }
     }
-    for(i=0;i < global_messages.ranges.length;i++){
-        zon.innerHTML+='<a href="javascript:selectionnerUnePlage('+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">go to range '+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+'</a>&nbsp;';
-        affichagesPresents=true;
+    while(global_messages.ranges.length>0){
+     zon.innerHTML+='<a href="javascript:selectionnerUnePlage('+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">go to range '+global_messages.ranges[i][0]+','+global_messages.ranges[i][1]+'</a>&nbsp;';
+     global_messages.ranges.splice(0,1);
+     affichagesPresents=true;
     }
     if(affichagesPresents){
      var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
