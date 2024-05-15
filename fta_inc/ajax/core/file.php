@@ -1,14 +1,39 @@
 <?php
 //if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
 
+
+//==========================================================================================================
+function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
+ 
+ if((isset($data['input']['file_name']))){
+  $nomFichierDecripte=decrypter($data['input']['file_name']);
+  if(unlink($nomFichierDecripte)){
+
+       $data['status']='OK';
+    
+    
+   }else{
+     
+       $data['messages'][]='impossible de supprimer le fichier';   
+    
+   }
+   
+ }else{
+  $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';
+ }
+
+
+}
+
 //==========================================================================================================
 function charger_un_fichier_avec_un_nom_encrypte(&$data){
 
+ 
  if((isset($data['input']['file_name']))){
   
   $nomFichierDecripte=decrypter($data['input']['file_name']);
   $taille_en_octets=filesize($nomFichierDecripte);
-  if($taille_en_octets<=64000){
+  if($taille_en_octets<=TAILLE_MAXI_SOURCE){
    $contenu=file_get_contents($nomFichierDecripte);
    if($contenu===false){
     
@@ -22,7 +47,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
    }
    
   }else{
-       $data['messages'][]='le fichier fait plus de 64000 octets et il ne peut pas être intégré dans une zone de texte';   
+       $data['messages'][]='le fichier fait plus de '.TAILLE_MAXI_SOURCE.' octets et il ne peut pas être intégré dans une zone de texte';   
   }
  }else{
   $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';

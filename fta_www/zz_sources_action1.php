@@ -661,30 +661,37 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   
-  if(strpos($__valeurs['T0.chp_nom_source'],'.htm')!==false){
+  $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
+  if(strpos($__valeurs['T0.chp_nom_source'],'.js')!==false){
    
-   $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
+
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\')">R-&gt;J&#8615;</a>'.CRLF;
+   $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;J-&gt;R</a>'.CRLF;
+   $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+   
+  }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm')!==false){
+   
+
    $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\')">R2H&#8615;</a>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
    $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    
-  }
-  
-  if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
+  }else if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
    
-   $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
+
    $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\')">R2P&#8615;</a>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
    $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    
-  }
-  
-  if(strpos($__valeurs['T0.chp_nom_source'],'.sql')!==false){
+  }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql')!==false){
    
    $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
    $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" >&#8613; sql =&gt; rev &#8613;</button>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    
+  }else{
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; texte &#8615;</a>'.CRLF;
+   $o1.='   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>'.CRLF;
   }
   
   $o1.='  </div></div>'.CRLF;
@@ -720,7 +727,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    if(is_file($nomCompletSource)){
     
     $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.CRLF;
+    $o1.='   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">supprimer du disque</a>'.CRLF;
     
+   }else{
+    $o1.='   <span>le fichier est absent du disque</span>'.CRLF;
    }
 
 
@@ -810,6 +820,7 @@ $par=array(
   'js/convertit-js-en-rev1.js' ,
   'js/esprima.js' ,
   'js/javascript.js' ,
+  'js/texte.js' ,
   ),
   'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );

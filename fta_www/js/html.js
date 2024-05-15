@@ -189,7 +189,23 @@ function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   
   
  }else{
-  if(typeParent==='@'){
+  if(typeParent==='#comment'){
+   debugger
+    if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
+     contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
+     t+=contenu;
+    }else{
+     if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
+      /*
+      c'est un commentaire vide
+      */
+     }else{
+      contenu=jsonDeHtml;
+      t+=contenu;
+     }
+    }
+    dernierEstTexte=true;
+  }else if(typeParent==='@'){
     contenu=jsonDeHtml;
 //    debugger
     t+=contenu;
@@ -574,6 +590,9 @@ function mapMatriceVersJsonDeHtml(matrice){
  return obj;
  
 }
+/* 
+ ======================================================================================================================
+*/
 
 function TransformHtmlEnRev(texteHtml,niveau){
     var t='';

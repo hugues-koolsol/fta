@@ -175,9 +175,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
   }else if(tab[i][1]=='fonction' && tab[i][2]=='f' ){
   
   
-   if(dansFonction==true){
-    return {status:false,value:t,id:i,tab:tab,message:'on ne peut pas déclarer une fonction dans une fonction'};
-   }else{
     dansFonction=true;
     positionDeclarationFonction=-1;
     for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -245,7 +242,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       t+=espacesn(true,niveau);
       t+='function '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
       t+='\n';
-      obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,1);
+      obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,niveau+1);
       if(obj.status==true){
        t+=obj.value;
        t+='\n';
@@ -264,7 +261,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      return {status:false,value:t,id:i,tab:tab,message:'il faut une declaration d(n(),a()...) et un contenu c(...) pour définir une fonction f()'};
     }
     dansFonction=false;
-   }
+   
    
     max=i+1;
     for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -368,7 +365,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       }
       initialisation=initialisation.replace(/\n/g,'');
      }else{
-      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0371 problème sur le alors du choix en indice '+tabchoix[j][0] });
      }
      
     }else if(tabchoix[j][1]=='condition'){
@@ -393,7 +390,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       }
       increment=increment.replace(/\n/g,'');
      }else{
-      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0396 problème sur le alors du choix en indice '+tabchoix[j][0] });
      }
      
     }else if(tabchoix[j][1]=='faire'){
@@ -513,7 +510,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
        t+=espacesn(true,niveau);
        t+='}';
       }else{
-       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0516 problème sur le alors du choix en indice '+tabchoix[j][0] });
       }
       
      }else if(tab[j][1]=='#'){
@@ -640,7 +637,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       if(obj.status==true){
        t+=obj.value;
       }else{
-       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0643 problème sur le alors du choix en indice '+tabchoix[j][0] });
       }
      }
      
@@ -687,7 +684,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       if(obj.status==true){
        t+=obj.value;
       }else{
-       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0690 problème sur le alors du choix en indice '+tabchoix[j][0] });
       }
      }
      
@@ -713,7 +710,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       if(obj.status==true){
        t+=obj.value;
       }else{
-       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le alors du choix en indice '+tabchoix[j][0] });
+       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0716 problème sur le alors du choix en indice '+tabchoix[j][0] });
       }
      }
      t+=espacesn(true,niveau);

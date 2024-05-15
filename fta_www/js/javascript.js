@@ -1650,7 +1650,7 @@ function TraiteOperations1(tab,id,niveau){
                         t+='&';
                     }
                     if(tab[i][2] === 'f'){
-                        if((tab[i][1] == 'mult') || (tab[i][1] == 'plus')  || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin')){
+                        if((tab[i][1] == 'mult') || (tab[i][1] == 'divi') || (tab[i][1] == 'plus')  || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin')){
                             var objOperation = TraiteOperations1(tab,i);
                             if(objOperation.status == true){
                                 t+=objOperation.value;

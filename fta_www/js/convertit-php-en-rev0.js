@@ -1233,7 +1233,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
  /*===============================================*/
  }else if("Expr_PostDec"===element.nodeType){
   if(element.var && element.var.nodeType==="Expr_Variable"){
-   t+='postdec($'+element.var.name+'))';
+   t+='postdec($'+element.var.name+')';
   }else{
    var obj=php_traite_Stmt_Expression( element.var , niveau,dansFor);
    if(obj.status===true){
@@ -1261,11 +1261,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
 
  }else if("Expr_PreInc"===element.nodeType){
   if(element.var && element.var.nodeType==="Expr_Variable"){
-   t+='preinc($'+element.var.name+'))';
+   t+='preinc($'+element.var.name+')';
   }else{
    var obj=php_traite_Stmt_Expression( element.var , niveau,dansFor);
    if(obj.status===true){
-    t+='preinc('+obj.value+' , 1))';
+    t+='preinc('+obj.value+' , 1)';
    }else{
     t+='\n'+esp0+'#(TODO dans php_traite_Stmt_Expression ERREUR php_traite_Stmt_Expression 1162 "'+element.nodeType+'")';
    }

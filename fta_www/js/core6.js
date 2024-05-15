@@ -596,8 +596,14 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         }
         /*
           ici la variable forcerRetourLigne est éventuellement mise à true 
+          
         */
+        if(forcerRetourLigne===false && arr[i][2]=='c' && arr[i][1].length>100){
+         forcerRetourLigne=true;
+        }
+        
         condition1=((arr[parentId][2] == 'f') && (arr[parentId][8] <= nombreEnfantsLimite)) && (arr[parentId][10] <= profondeurLimite);
+        /* si le numéro enfant ets >1, on ajoute une virgule */
         if(arr[i][9] > 1){
             /*!forcerRetourLigne && retourLigne==true && condition1*/
             if(( !(forcerRetourLigne)) && (retourLigne == true) && (condition1)){
@@ -1864,6 +1870,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte != ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau == 0){
+                            return logerreur(formaterErreurRev({status:false,ind:i,message:'1602 la racine ne peut pas contenir des constantes',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
                             temp={'status':false,'value':T,'id':i,'message':'1602 la racine ne peut pas contenir des constantes'};
                             return(logerreur(temp));
                         }
@@ -1905,8 +1912,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     if((niveau !== 0) && (quitterSiErreurNiveau)){
         return logerreur(formaterErreurRev({status:false,ind:l01-1,message:'💥2401 des parenthèses ne correspondent pas, ('+(niveau>0?'il en manque :':'il y en a trop : ')+'niveau='+niveau+') ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
      
-        temp={'status':false,'value':T,'message':'💥2401 des parenthèses ne correspondent pas'};
-        return(logerreur(temp));
     }
 
     /*

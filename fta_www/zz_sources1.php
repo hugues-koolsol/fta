@@ -138,6 +138,14 @@ if($chi_id_dossier!='' ){
 
 $sql0.=$where0;
 
+$order0='
+ ORDER BY `T0`.`chp_nom_source` ASC
+'; 
+
+$sql0.=$order0;
+
+
+
 $plage0=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
 $sql0.=$plage0;

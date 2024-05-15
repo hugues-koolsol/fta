@@ -108,7 +108,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   $taille_contenu=filesize($fichier_cible);
   $contenuFichier='';
-  if($taille_contenu<=64000){
+  if($taille_contenu<=TAILLE_MAXI_SOURCE){
    $contenuFichier=file_get_contents($fichier_cible);
   }
   
@@ -131,8 +131,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }else{
    
     ajouterMessage('succes' , __LINE__ .' : le fichier a bien été créé en base' , BNF );
-    if($taille_contenu>64000){
-     ajouterMessage('avertissement' , __LINE__ .' sa taille est supérieure à 64000 caractère et il n\'a pas été intégré dans le champ "genere" ' , BNF );
+    if($taille_contenu>TAILLE_MAXI_SOURCE){
+     ajouterMessage('avertissement' , __LINE__ .' sa taille est supérieure à '.TAILLE_MAXI_SOURCE.' caractère et il n\'a pas été intégré dans le champ "genere" ' , BNF );
     }
    
   }

@@ -19,7 +19,7 @@ print($o1);$o1='';
         </div>
 
   <h1>Convertir un php en rev</h1>
-  <!-- label>Nom du fichier Js<input name="NomDuJs" id="NomDuJs" value="" style="border: 1px lightgrey inset;" /></label -->
+  
   <textarea class="txtar1" id="txtar1" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
   <div>

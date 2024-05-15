@@ -10,6 +10,7 @@ define("MESSAGES","messages");
 define("INPUT","input");
 define("VALUE","value");
 define("STATUS","status");
+define('TAILLE_MAXI_SOURCE',512000);
 define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_et_"suffisament"_longue'));
 define('ENCRYPTION_METHODE','aes-256-cbc');
 

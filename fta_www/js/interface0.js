@@ -281,11 +281,14 @@ function formatter_le_source_rev(nom_de_la_textarea){
  
  var tableau1 = iterateCharacters2(a.value);
  var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+ 
  if(matriceFonction.status===true){
   var obj2=arrayToFunct1(matriceFonction.value,true,false);
   if(obj2.status===true){
    a.value=obj2.value;
   }
+ }else{
+  displayMessages('zone_global_messages' , nom_de_la_textarea)
  }
  
 }
@@ -1059,7 +1062,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     }
     while(global_messages.lines.length>0){
         zon.innerHTML='<a href="javascript:allerAlaLigne('+(global_messages.lines[i]+1)+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne '+(global_messages.lines[i]+1)+'</a>&nbsp;'+zon.innerHTML;
-        global_messages.infos.splice(0,1);
+        global_messages.lines.splice(0,1);
         affichagesPresents=true;
     }
     if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
