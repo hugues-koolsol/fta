@@ -929,9 +929,9 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
        if(rv.substr(i-1,1)==='\\' ){
          i--;
        }else{
-        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  || rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='\'' ){
+        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  || rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='\''  ){
         }else{
-         return( astphp_logerreur({'status':false,'message':'0930  après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrx] ',element:element}));
+         return( astphp_logerreur({'status':false,'message':'0930  après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
         }
        }
       }
