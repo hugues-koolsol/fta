@@ -169,10 +169,48 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
   
-  if(is_dir($dossier)){
-    ajouterMessage('erreur' ,  __LINE__ .' le dossier existe , on ne peut pas supprimer cet enregistrement' , BNF );
-    recharger_la_page('zz_cibles1.php');
-  }
+        $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
+
+        if($__id==='1'){
+
+           if(APP_KEY==='fta'){
+
+                ajouterMessage('avertissement',__LINE__.' on ne peut pas supprimer ce dossier',BNF);
+                recharger_la_page('zz_cibles1.php');
+           }else{
+
+            if($__valeurs['T0.chp_dossier_cible']==='fta'){
+
+             
+                // on peut y aller sans test de dossier
+            }else{
+             
+              if((is_dir($dossier))){
+
+                  ajouterMessage('erreur',__LINE__.' le dossier existe , on ne peut pas supprimer cet enregistrement',BNF);
+                  recharger_la_page('zz_cibles1.php');
+
+              }
+             
+            }
+             
+           }
+        }else{
+
+
+
+
+            if((is_dir($dossier))){
+
+                ajouterMessage('erreur',__LINE__.' le dossier existe , on ne peut pas supprimer cet enregistrement',BNF);
+                recharger_la_page('zz_cibles1.php');
+
+            }
+        }
+  
+  
+  
+  
 
   $sql='DELETE FROM tbl_cibles WHERE `chi_id_cible` = \''.addslashes1($__id).'\' ' ;
   if(false === $db->exec($sql)){
@@ -268,9 +306,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   */
 
    $__id=$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
-   if(isset($_SESSION[APP_KEY][NAV][BNF])){
-    unset($_SESSION[APP_KEY][NAV][BNF]);
-   }
    if($__id!==0 && $__id!=='1'  && $__id!==1 ){
        $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
        $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
@@ -339,8 +374,18 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id===0 || $__id==='0' || $__id==='1'){
-  ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer la cible 1'  );
-  recharger_la_page('zz_cibles1.php');
+       if($__id === '1'){
+
+        if(APP_KEY === 'fta'){
+            ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer la cible 1');
+            recharger_la_page('zz_cibles1.php');
+        }else{
+         /*
+          on peut y aller à priori
+         */
+         
+        }
+       }
 
  }else{
   /*
@@ -560,6 +605,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
     $o1.='<br />le dossier '.$dossier.' est vide'.CRLF;
     $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
     $o1.=' <input type="hidden" value="__suppression_du_dossier" name="__action" id="__action" />'.CRLF;
+    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
     $o1.='<div class="yyfdiv1">'.CRLF;
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
     $o1.='   <button type="submit" class="">supprimer le dossier</button>'.CRLF;
@@ -577,6 +623,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
     $o1.='le dossier '.$dossier.' n\'existe pas '.CRLF;
     $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
     $o1.=' <input type="hidden" value="__creation_du_dossier" name="__action" id="__action" />'.CRLF;
+    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
     $o1.='<div class="yyfdiv1">'.CRLF;
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
     $o1.='   <button type="submit" class="">créer le dossier</button>'.CRLF;
@@ -602,7 +649,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 */
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);

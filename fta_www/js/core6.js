@@ -93,12 +93,19 @@ function maConstante(eltTab){
     if(eltTab[4] === 1){
         t='\''+eltTab[1]+'\'';
     }else if(eltTab[4] === 2){
+        /*
+        constante avec des apostrophes inversées
+        */
         t='`'+eltTab[1]+'`';
+        t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
     }else if(eltTab[4] === 3){
         t='"'+eltTab[1]+'"';
     }else if(eltTab[4] === 4){
         t='/'+eltTab[1]+'/'+eltTab[13];
     }else{
+        /*
+        constante non quotée, généralement une variable
+        */
         if(eltTab[1] === 'vrai'){
             t='true';
         }else if(eltTab[1] === 'faux'){
@@ -1214,7 +1221,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                if((c1 == '\\') || (c1 == '"') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u')){
+                if((c1 == '\\') || (c1 == '"') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '>' ) || (c1 == '<') || (c1 == '/')){
                     if(texte == ''){
                         premier=i;
                     }
@@ -1224,6 +1231,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte=concat(texte,'"');
                     i++;
                 }else{
+                    return logerreur(formaterErreurRev({status:false,ind:i,message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                 
                     if(i > 100){
                         var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
                     }else{
@@ -1402,19 +1411,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                /*
-                  // Dans une variable js, il y avait un exemple php : use PhpParser\Error; . ceci n'est pas une erreur 
-                  if((c1 == '\\') || (c1 == '`') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u')){
-                  if(texte == ''){
-                  premier=i;
-                  }
-                  texte=concat(texte,'\\',c1);
-                  i++;
-                  }else{
-                  temp={'status':false,'value':T,'id':i,'message':'1293 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u'};
-                  return(logerreur(temp));
-                  }
-                */
                 if(texte == ''){
                     premier=i;
                 }
@@ -1506,7 +1502,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                     texte=concat(texte,c1);
                     i++;
-                }else if((c1 == '\\') || (c1 == '\'') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == '/')){
+                }else if((c1 == '\\') || (c1 == '\'') || (c1 == '/') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '$') ){
                     if(texte == ''){
                         premier=i;
                     }

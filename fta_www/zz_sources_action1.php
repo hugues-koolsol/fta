@@ -332,14 +332,28 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   if($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']!==false){
       $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$db);
+      
+            if(APP_KEY !== 'fta' && $__valeurs['T2.chp_dossier_cible']==='fta' ){
+            /*
+             si on est dans l'environnement ftx ( APP_KEY !== 'fta' ) 
+             et que le dossier cible est fta ( $__valeurs['T2.chp_dossier_cible'] === 'fta' )
+             on ne doit pas effacer ce fichier car il appartient à fta et il n'y a que fta
+             qui peut gérer les fichiers de fta
+            */            
+//             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+            }else{
+      
+      
+      
 //      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
-      $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
-      if(is_file($nom_complet_de_l_ancien_fichier)){
-       if(!unlink($nom_complet_de_l_ancien_fichier)){
-         ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer le fichier du disque ' , BNF );
-         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-       }
-      }
+               $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+               if(is_file($nom_complet_de_l_ancien_fichier)){
+                if(!unlink($nom_complet_de_l_ancien_fichier)){
+                  ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer le fichier du disque ' , BNF );
+                  recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+                }
+               }
+            }
   }else{
       ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
@@ -805,7 +819,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 ============================================================================
 */
 $js_a_executer_apres_chargement[]=array(
-    'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+    'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
 );
 
 

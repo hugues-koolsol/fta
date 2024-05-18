@@ -34,7 +34,7 @@ $js_a_executer_apres_chargement=array(
      'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'txtar1'
     ),
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 $par=array('js_a_inclure'=>array('js/pour-index_php0.js'),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);

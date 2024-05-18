@@ -182,6 +182,43 @@ if(count($data0)===0){
   $lsttbl.='<div class="yyflex1">';
   
   $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_cibles_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';//✎ #9998
+  
+
+        if(isset($_SESSION[APP_KEY]['cible_courante'])){
+     
+                 if(APP_KEY===$v0['T0.chp_nom_cible']){
+                     $lsttbl.='a<span class=" yybtn yyunset" title="supprimer">✘</span>';
+                 }else{
+                    if($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']===$v0['T0.chp_dossier_cible']){
+                        $lsttbl.='b<span class=" yybtn yyunset" title="supprimer">✘</span>';
+                    }else{
+                      if($v0['T0.chp_dossier_cible'] === $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']  && $v0['T0.chp_nom_cible'] === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']){
+                          $lsttbl.='<cspan class=" yybtn yyunset" title="supprimer">✘</span>';
+                      }else{
+                          if( APP_KEY === $v0['T0.chp_dossier_cible'] ){
+                            $lsttbl.='d<span class=" yybtn yyunset" title="supprimer">✘</span>';
+                          }else{
+                            if($v0['T0.chp_dossier_cible']==='fta' && APP_KEY !== 'fta' ){
+                                  $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_cibles_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
+                            }else{
+                              if(( !(is_dir($dossier)))){
+                                  $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_cibles_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
+                              }else{
+                                  $lsttbl.='e<span class=" yybtn yyunset" title="supprimer">✘</span>';
+                              }
+                            }
+                          }
+                      }
+                    }
+                 }
+                 
+                 
+        }else{
+                 $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
+        }
+/*  
+  
+  
   if($v0['T0.chi_id_cible']!==1){
    if(!is_dir($dossier)){
     $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_cibles_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
@@ -191,6 +228,8 @@ if(count($data0)===0){
   }else{
    $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
   }
+  
+*/  
   if(isset( $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ) && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===$v0['T0.chi_id_cible']){
    $lsttbl.='<span class=" yybtn yyunset"  title="selectionner cette cible">⇒</span>';
    $lsttbl.=' <a class="yysucces yytxtSiz1" href="zz_dossiers1.php" title="aller aux dossiers">📁</a>';
@@ -257,7 +296,7 @@ if(count($data0)===0){
 */
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);

@@ -72,6 +72,10 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
  var reprise = 0;
  var tabchoix=[];
  var l01=tab.length;
+ 
+ /*
+ todo virer les reprises
+ */
 
  for(i=id;i<l01 && tab[i][3]>=tab[id][3] ;i++){
   // console.log(tab[i]);
@@ -151,9 +155,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     t+='return;'
    }else if(tab[i][8]==1 && tab[i+1][2]=='c' ){
     t+=espacesn(true,niveau);
-    t+='return(';
-    t+=(tab[i+1][4]===true?'\''+(tab[i+1][1])+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
-    t+=');'
+    t+='return('+maConstante(tab[i+1])+');';
     i++;
    }else{
     t+=espacesn(true,niveau);
@@ -924,15 +926,16 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          valeurCas=null;
         }else if(tab[k][1]==='valeur' && tab[k][2]==='f' ){
          
-         var obj=php_traiteElement(tab , k+1 , niveau,{})
-         if(obj.status===true){
-          valeurCas=obj.value;
-         }else{
-          return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php dans bascule 1069'});
+         if(tab[k+1][2]=='f'){
+          var obj=php_traiteElement(tab , k+1 , niveau,{})
+          if(obj.status===true){
+           valeurCas=obj.value;
+          }else{
+           return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php dans bascule 1069'});
+          }
+         }else{         
+          valeurCas=maConstante(tab[k+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
          }
-         
-         
-         valeurCas=maConstante(tab[k+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
         }else if(tab[k][1]==='faire' && tab[k][2]==='f' ){
          if(tab[k][8]>=1){
           niveau+=2;

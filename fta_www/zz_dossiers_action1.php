@@ -302,12 +302,19 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   if($__id!==false){
    
-     $__valeurs=recupere_une_donnees_des_dossiers($__id,$db);
+     $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
 
      if($__valeurs['T0.chp_nom_dossier']=='/'){
       
-         ajouterMessage('erreur' ,  __LINE__ .' : on ne peut pas supprimer le dossier racine' , BNF );
-         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+      
+   
+
+            if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
+            }else{
+               ajouterMessage('erreur' ,  __LINE__ .' : on ne peut pas supprimer le dossier racine' , BNF );
+               recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+            }
+      
          
      }
      $nombre_de_sources=recupere_le_nombre_de_sources_de_dossier($__id,$db);
@@ -415,7 +422,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
   recharger_la_page('zz_dossiers1.php');
  }else{
-  $__valeurs=recupere_une_donnees_des_dossiers($__id,$db);
+  $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
   if($__valeurs['T0.chp_nom_dossier']==='/'){
     recharger_la_page('zz_dossiers1.php');
   }
@@ -429,12 +436,27 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   recharger_la_page('zz_dossiers1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_dossiers($__id,$db);
+  $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
   
   // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
   if($__valeurs['T0.chp_nom_dossier']==='/'){
-    recharger_la_page('zz_dossiers1.php');
+   
+
+            if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
+             
+              /*
+               si on est dans un environnement ftx et que la cible courante est fta,
+               on a le droit de supprimer le dossier da la base
+              
+              
+              */
+
+            }else{
+                recharger_la_page('zz_dossiers1.php');
+            }
+   
+   
   }
   
   
@@ -558,164 +580,179 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.='</div>'.CRLF;
-  
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
-  $chemin_relatif='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T0.chp_nom_dossier'];
-  
-  if(is_dir($chemin_relatif)){
 
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
-     $chemin_reel=realpath($chemin_relatif);
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_reel , true ) . '</pre>' ; exit(0);
+
+    if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
+     
+     /*
+      si on est dans un environnement ftx et que la cible courante est fta,
+      il ne faut pas afficher les éléments de fta
      
      
-     $chemin_du_repertoire=$chemin_reel.'/';
-     $monscan=scandir($chemin_du_repertoire);
-     if($monscan!==false){
-         $glob=array();
-         foreach( $monscan as $k0 => $v0){
-          if($v0!=='.' && $v0!=='..'){
-          $glob[]=$chemin_du_repertoire.$v0;
-          }
-         }
-         $tabl=array();
+     */
+    }else{
+
          
-         $o1.='<div>il y a '.count($glob).' élément(s) dans ce répertoire</div>';
-         if(count($glob)<100){
-          $liste_des_fichiers='';
-          foreach($glob as $k1=>$v1){
-           $nom_court_du_fichier=substr(str_replace($chemin_reel,'',$v1),1);
-           $tabl[$nom_court_du_fichier]=array(
-            'sur_disque' => true,
-            'en_base' => 0
-           );
-           $liste_des_fichiers.=',\''.$nom_court_du_fichier.'\'';
-          }
-          if($liste_des_fichiers!==''){
-           $liste_des_fichiers=substr($liste_des_fichiers,1);
-           $sql='
-            SELECT `chp_nom_source`  , chi_id_source
-            FROM `tbl_sources` `T0`
-            WHERE "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
-            AND `chp_nom_source` IN ('.$liste_des_fichiers.')
-            AND `chx_dossier_id_source` = '.$__id.'
-           ';
-//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
-//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
-           
-           $stmt = $db->prepare($sql);
-           if($stmt!==false){
-             $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-             while($arr=$result->fetchArray(SQLITE3_NUM)){
-
-              $tabl[$arr[0]]['en_base']=$arr[1];
-             }
-             $stmt->close(); 
-             foreach($tabl as $k1 => $v1){
-              if($v1['en_base']===0){
-               $o1.='<div>';
-               $o1.=$k1.' n\'existe pas en base';
-               $positionDernierPoint=strrpos($k1,'.');
-               if($positionDernierPoint===null){
-                $extension='';
-               }else{
-                $extension=substr($k1,$positionDernierPoint);
-               }
-//               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $extension , true ) . '</pre>' ; exit(0);
-  
-               /*
-                les fichiers sqlite  binaire ne sont pas en base
-               */
-               if($extension==='.db' || $extension==='.exe'){
-               }else{
-                 $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
-               }
-               $o1.=' <button class="yydanger" name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
-               $o1.='</div>';
-              }else{
-               $o1.='<div>'.$k1.' existe en base <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a></div>';
-              }
-              
-             }
-           }else{
-            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
-           }
-           
-           
-           
-           
-          }
-          
-         }else{
-          if(count($glob)===0){
-              $o1.='<div><button name="__supprimer_ce_repertoire_du_disque" value="'.$chemin_relatif.'" >supprimer ce répertoire du disque</button></div>';
-          }else{
-          }
-         }         
+       //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
+         $chemin_relatif='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T0.chp_nom_dossier'];
          
-     }
-     
-     
-     
-     if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!=='fta'){
-
-         $o1.='<hr /><div>Liste des éléments de '.'fta'.'</div>';
-
-         $chemin_relatif='../../'.APP_KEY.$__valeurs['T0.chp_nom_dossier'];
-//         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
+         
          
          if(is_dir($chemin_relatif)){
 
-//            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
+       //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
             $chemin_reel=realpath($chemin_relatif);
        //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_reel , true ) . '</pre>' ; exit(0);
             
             
-            $glob=array(); /* la fonction glob ne prend pas en compte le fichier .htaccess */
             $chemin_du_repertoire=$chemin_reel.'/';
             $monscan=scandir($chemin_du_repertoire);
             if($monscan!==false){
+                $glob=array();
                 foreach( $monscan as $k0 => $v0){
                  if($v0!=='.' && $v0!=='..'){
                  $glob[]=$chemin_du_repertoire.$v0;
                  }
                 }
-             
-                $o1.='<div>il y a '.count($glob).' élément(s) dans le répertoire correspondant de '.'fta'.'</div>';
+                $tabl=array();
+                
+                $o1.='<div>il y a '.count($glob).' élément(s) dans ce répertoire</div>';
                 if(count($glob)<100){
-//                    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $glob , true ) . '</pre>' ; exit(0);
-                    foreach($glob as $k1=>$v1){
-//                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ;
-                        $nom_fichier=substr(str_replace( $chemin_reel,'',$v1),1);
-//                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
-                        if(isset($tabl[$nom_fichier])){
-                         $o1.='<div class="yysucces">le fichier '.$nom_fichier.' a été importé sur disque</div>';
-                        }else{
-                          $positionDernierPoint=strrpos($nom_fichier,'.');
-                          if($positionDernierPoint===null){
-                           $extension='';
-                          }else{
-                           $extension=substr($nom_fichier,$positionDernierPoint);
-                          }
-                          if(   $extension==='.php' || $extension==='.js' || $extension==='.html' || $extension==='.htm'  || $extension==='.htm'
-                             || $extension==='.json' || $extension==='.bat' || $extension==='.rev'  || $extension==='.css'  || $extension==='.sql'  
-                             || $extension==='.txt' || $extension==='.db' || $extension==='.htaccess' ){
-                            $o1.='<div><button name="__importer_ce_fichier_de_'.'fta'.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.$nom_fichier.'</button></div>';
-                          }else{
-                            $o1.='<div class="yyavertissement">'.__LINE__.' le fichier '.$nom_fichier.' ne comporte pas une extension connue</div>';
-                          }
-                        }
-                    }
-                }             
-            }
+                 $liste_des_fichiers='';
+                 foreach($glob as $k1=>$v1){
+                  $nom_court_du_fichier=substr(str_replace($chemin_reel,'',$v1),1);
+                  $tabl[$nom_court_du_fichier]=array(
+                   'sur_disque' => true,
+                   'en_base' => 0
+                  );
+                  $liste_des_fichiers.=',\''.$nom_court_du_fichier.'\'';
+                 }
+                 if($liste_des_fichiers!==''){
+                  $liste_des_fichiers=substr($liste_des_fichiers,1);
+                  $sql='
+                   SELECT `chp_nom_source`  , chi_id_source
+                   FROM `tbl_sources` `T0`
+                   WHERE "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
+                   AND `chp_nom_source` IN ('.$liste_des_fichiers.')
+                   AND `chx_dossier_id_source` = '.$__id.'
+                  ';
+       //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
+       //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+                  
+                  $stmt = $db->prepare($sql);
+                  if($stmt!==false){
+                    $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+                    while($arr=$result->fetchArray(SQLITE3_NUM)){
 
+                     $tabl[$arr[0]]['en_base']=$arr[1];
+                    }
+                    $stmt->close(); 
+                    foreach($tabl as $k1 => $v1){
+                     if($v1['en_base']===0){
+                      $o1.='<div>';
+                      $o1.=$k1.' n\'existe pas en base';
+                      $positionDernierPoint=strrpos($k1,'.');
+                      if($positionDernierPoint===null){
+                       $extension='';
+                      }else{
+                       $extension=substr($k1,$positionDernierPoint);
+                      }
+       //               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $extension , true ) . '</pre>' ; exit(0);
+         
+                      /*
+                       les fichiers sqlite  binaire ne sont pas en base
+                      */
+                      if($extension==='.db' || $extension==='.exe'){
+                      }else{
+                        $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
+                      }
+                      $o1.=' <button class="yydanger" name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
+                      $o1.='</div>';
+                     }else{
+                      $o1.='<div>'.$k1.' existe en base <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a></div>';
+                     }
+                     
+                    }
+                  }else{
+                   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+                  }
+                  
+                  
+                  
+                  
+                 }
+                 
+                }else{
+                 if(count($glob)===0){
+                     $o1.='<div><button name="__supprimer_ce_repertoire_du_disque" value="'.$chemin_relatif.'" >supprimer ce répertoire du disque</button></div>';
+                 }else{
+                 }
+                }         
+                
+            }
+            
+            
+            
+            if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!=='fta'){
+
+                $o1.='<hr /><div>Liste des éléments de '.'fta'.'</div>';
+
+                $chemin_relatif='../../'.APP_KEY.$__valeurs['T0.chp_nom_dossier'];
+       //         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
+                
+                if(is_dir($chemin_relatif)){
+
+       //            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
+                   $chemin_reel=realpath($chemin_relatif);
+              //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_reel , true ) . '</pre>' ; exit(0);
+                   
+                   
+                   $glob=array(); /* la fonction glob ne prend pas en compte le fichier .htaccess */
+                   $chemin_du_repertoire=$chemin_reel.'/';
+                   $monscan=scandir($chemin_du_repertoire);
+                   if($monscan!==false){
+                       foreach( $monscan as $k0 => $v0){
+                        if($v0!=='.' && $v0!=='..'){
+                        $glob[]=$chemin_du_repertoire.$v0;
+                        }
+                       }
+                    
+                       $o1.='<div>il y a '.count($glob).' élément(s) dans le répertoire correspondant de '.'fta'.'</div>';
+                       if(count($glob)<100){
+       //                    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $glob , true ) . '</pre>' ; exit(0);
+                           foreach($glob as $k1=>$v1){
+       //                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ;
+                               $nom_fichier=substr(str_replace( $chemin_reel,'',$v1),1);
+       //                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+                               if(isset($tabl[$nom_fichier])){
+                                $o1.='<div class="yysucces">le fichier '.$nom_fichier.' a été importé sur disque</div>';
+                               }else{
+                                 $positionDernierPoint=strrpos($nom_fichier,'.');
+                                 if($positionDernierPoint===null){
+                                  $extension='';
+                                 }else{
+                                  $extension=substr($nom_fichier,$positionDernierPoint);
+                                 }
+                                 if(   $extension==='.php' || $extension==='.js' || $extension==='.html' || $extension==='.htm'  || $extension==='.htm'
+                                    || $extension==='.json' || $extension==='.bat' || $extension==='.rev'  || $extension==='.css'  || $extension==='.sql'  
+                                    || $extension==='.txt' || $extension==='.db' || $extension==='.htaccess' ){
+                                   $o1.='<div><button name="__importer_ce_fichier_de_'.'fta'.'" value="'.$chemin_relatif.str_replace( $chemin_reel,'',$v1).'" >importer le fichier '.$nom_fichier.'</button></div>';
+                                 }else{
+                                   $o1.='<div class="yyavertissement">'.__LINE__.' le fichier '.$nom_fichier.' ne comporte pas une extension connue</div>';
+                                 }
+                               }
+                           }
+                       }             
+                   }
+
+                }
+                
+                
+             
+       //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
+             
+            }
          }
-         
-         
-      
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
-      
-     }
      
    
   }else{

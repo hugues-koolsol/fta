@@ -1,4 +1,24 @@
 'use strict';
+/*
+  var global_enteteTableau=[
+  ['id','id'                                 ,''], // 00
+  ['val','value'                             ,''],
+  ['typ','type'                              ,''],
+  ['niv','niveau'                            ,''],
+  ['coQ','constante quotee'                  ,''], // 04
+  ['pre','position du premier caractère'     ,''], // 05
+  ['der','position du dernier caractère'     ,''], // 06
+  ['pId','Id du parent'                      ,''], // 07
+  ['nbE','nombre d\'enfants'                 ,''], // 08
+  ['nuE','numéro enfants'                    ,''], // 09
+  ['pro','profondeur'                        ,''], // 10
+  ['pop','position ouverture parenthese'     ,''], // 11
+  ['pfp','position fermeture parenthese'     ,''], // 12
+  ['com','commentaire'                       ,''], // 13
+  
+  ];
+*/
+
 function parseJavascript0(tab,id,niveau){
     var t='';
     var obj={};
@@ -1949,7 +1969,7 @@ function TraiteOperations1(tab,id,niveau){
                 if(numEnfant == 1){
                     numEnfant=numEnfant+1;
                     if(tab[i][2] == 'c'){
-                        if((tab[i][4] === 1) || (tab[i][4] === 2)){
+                        if((tab[i][4] === 1) || (tab[i][4] === 2) || (tab[i][4] === 3) || (tab[i][4] === 4)){
                             t+=maConstante(tab[i]);
                         }else{
                             if(condi0){
@@ -1958,7 +1978,11 @@ function TraiteOperations1(tab,id,niveau){
                                 if(( tab[id][1]==='mult' || tab[id][1]==='divi' ) && ( tab[i][1].indexOf('+')>0 || tab[i][1].indexOf('-')>0 ) ) {
                                  t+='('+tab[i][1]+')';
                                 }else{
-                                 t+=tab[i][1];
+                                 if(tab[id][1]==='moins' && tab[id][8] === 1){
+                                  t+='-'+tab[i][1];
+                                 }else{
+                                  t+=tab[i][1];
+                                 }
                                 }
                             }
                         }

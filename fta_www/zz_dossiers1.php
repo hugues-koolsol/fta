@@ -247,12 +247,21 @@ $o1.='</form>'.CRLF;
 
 $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
-$nomDossier='/';
-$sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
-if( false === $db->exec($sql) ){
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
-}
+if($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===APP_KEY){
+    /*
+    si la cible courante EST la clé de l'application,
+    il faut créer le dossier racine en base
+    */
+    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+    $nomDossier='/';
+    $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
 
+    if((false === $db->exec($sql))){
+
+        echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+
+    }
+}
 
 
 
@@ -321,8 +330,30 @@ foreach($data0 as $k0=>$v0){
   $__lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
   $__lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
  }else{
-  $__lsttbl.='<span class=" yybtn yyunset" title="modifier">✎</span>';
-  $__lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
+  
+        $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$db);
+        
+        if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
+         
+           /*
+           si c'est la racine d'un autre environnement, on peut le faire
+           */
+         
+         
+           $__lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
+           /*✎ #9998*/
+           $__lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+        }else{
+        
+        
+        
+
+
+          $__lsttbl.='<span class=" yybtn yyunset" title="modifier">✎</span>';
+          $__lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
+        }
+  
+  
  }
  
  $__lsttbl.='</div>';
@@ -404,7 +435,7 @@ if($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']===APP_KEY){
 */
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 print($o1); $o1='';
