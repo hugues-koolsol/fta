@@ -81,11 +81,10 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $fichier_cible='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'].'/'.$_POST['__effacer_du_disque'];
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
-  
-  if(unlink($fichier_cible)){
+  if(sauvegarder_et_supprimer_fichier($fichier_cible)){
     ajouterMessage('succes' , __LINE__ .' : le fichier a bien été supprimé du disque' , BNF );
   }else{
-    ajouterMessage('erreur' , __LINE__ .' : le fichier n\'a pas été supprimé du disque' , BNF );
+    ajouterMessage('erreur' , __LINE__ .' : la copie du fichier dans le répertoire de sauvegarde a échoué ' , BNF );
   }
   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
 
@@ -166,7 +165,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
   
   
- }else if(isset($_POST['__importer_ce_fichier_de_'.APP_KEY])){
+ }else if(isset($_POST['__importer_ce_fichier_de_'.'fta'])){
   
   /*
     ====================================================================================================================
@@ -175,11 +174,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   */
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre><pre>' . var_export($_POST,true) . '</pre>' ; exit(0);
-  $fichier_cible='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'].substr($_POST['__importer_ce_fichier_de_'.APP_KEY],strrpos($_POST['__importer_ce_fichier_de_'.APP_KEY],'/'));
+  $fichier_cible='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'].substr($_POST['__importer_ce_fichier_de_'.'fta'],strrpos($_POST['__importer_ce_fichier_de_'.'fta'],'/'));
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
 
 
-  if(copy($_POST['__importer_ce_fichier_de_'.APP_KEY] , $fichier_cible)){
+  if(copy($_POST['__importer_ce_fichier_de_'.'fta'] , $fichier_cible)){
 
        ajouterMessage('succes' , __LINE__ .' : l\'import du fichier a réussi' , BNF );
        
@@ -582,21 +581,22 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='</div>'.CRLF;
 
 
+
+
     if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
      
      /*
       si on est dans un environnement ftx et que la cible courante est fta,
       il ne faut pas afficher les éléments de fta
-     
-     
      */
     }else{
 
          
        //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
          $chemin_relatif='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T0.chp_nom_dossier'];
+//         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs['T0.chp_nom_dossier'] , true ) . '</pre>' ; exit(0);
          
-         
+//         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs['T0.chp_nom_dossier'] , true ) . '</pre>' ; exit(0);
          
          if(is_dir($chemin_relatif)){
 
@@ -607,80 +607,171 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
             
             $chemin_du_repertoire=$chemin_reel.'/';
             $monscan=scandir($chemin_du_repertoire);
+            
+//            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $monscan , true ) . '</pre>' ; exit(0);
+            
             if($monscan!==false){
                 $glob=array();
-                foreach( $monscan as $k0 => $v0){
-                 if($v0!=='.' && $v0!=='..'){
-                 $glob[]=$chemin_du_repertoire.$v0;
-                 }
-                }
-                $tabl=array();
                 
+                foreach( $monscan as $k0 => $v0){
+                    if($v0!=='.' && $v0!=='..'){
+                      $glob[]=array( 
+                       'nom'          => $chemin_du_repertoire.$v0 , 
+                       'type_fichier' => @is_file($chemin_du_repertoire.$v0) 
+                      );
+                    }
+                }
+                
+                $tabl=array();
                 $o1.='<div>il y a '.count($glob).' élément(s) dans ce répertoire</div>';
+                
+                
                 if(count($glob)<100){
-                 $liste_des_fichiers='';
-                 foreach($glob as $k1=>$v1){
-                  $nom_court_du_fichier=substr(str_replace($chemin_reel,'',$v1),1);
-                  $tabl[$nom_court_du_fichier]=array(
-                   'sur_disque' => true,
-                   'en_base' => 0
-                  );
-                  $liste_des_fichiers.=',\''.$nom_court_du_fichier.'\'';
-                 }
-                 if($liste_des_fichiers!==''){
-                  $liste_des_fichiers=substr($liste_des_fichiers,1);
-                  $sql='
-                   SELECT `chp_nom_source`  , chi_id_source
-                   FROM `tbl_sources` `T0`
-                   WHERE "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
-                   AND `chp_nom_source` IN ('.$liste_des_fichiers.')
-                   AND `chx_dossier_id_source` = '.$__id.'
-                  ';
-       //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
-       //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
-                  
-                  $stmt = $db->prepare($sql);
-                  if($stmt!==false){
-                    $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-                    while($arr=$result->fetchArray(SQLITE3_NUM)){
+                 
+                 
+                    $liste_des_fichiers='';
+                    $liste_des_dossiers='';
+                    foreach($glob as $k1=>$v1){
+                        $nom_court_de_l_element=substr(str_replace($chemin_reel,'',$v1['nom']),1);
+                        $tabl[$nom_court_de_l_element]=array(
+                         'sur_disque' => true,
+                         'en_base' => 0,
+                         'type_fichier' => false,
+                         'nom_relatif_dossier' => '',
+                        );
+                        if($v1['type_fichier']===true){
+                            $tabl[$nom_court_de_l_element]['type_fichier']=true;
+                            $liste_des_fichiers.=',\''.$nom_court_de_l_element.'\'';
+                        }else{
+                            $tabl[$nom_court_de_l_element]['nom_relatif_dossier']=$__valeurs['T0.chp_nom_dossier'].'/'.$nom_court_de_l_element;
+                            
+                            $liste_des_dossiers.=',\''.$__valeurs['T0.chp_nom_dossier'].'/'.$nom_court_de_l_element.'\'';
+                        }
+                    }
+   //                 echo __FILE__ . ' ' . __LINE__ . ' $liste_des_dossiers = <pre>' . var_export( $liste_des_dossiers , true ) . '</pre>' ; exit(0);
+                    if($liste_des_fichiers!=='' ){
+                        $liste_des_fichiers=substr($liste_des_fichiers,1);
+                        $sql='
+                         SELECT `chp_nom_source`  , chi_id_source
+                         FROM `tbl_sources` `T0`
+                         WHERE "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
+                         AND `chp_nom_source` IN ('.$liste_des_fichiers.')
+                         AND `chx_dossier_id_source` = '.$__id.'
+                        ';
+             //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
+             //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+                        
+                        $stmt = $db->prepare($sql);
+                        if($stmt!==false){
+                            $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+                            while($arr=$result->fetchArray(SQLITE3_NUM)){
+                                $tabl[$arr[0]]['en_base']=$arr[1];
+                            }
+                            $stmt->close(); 
+                        }else{
+                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+                        }
+                    }
+                       
+                    if($liste_des_dossiers!=='' ){
+                        $liste_des_dossiers=substr($liste_des_dossiers,1);
+                        $sql='
+                         SELECT `chp_nom_dossier`  , chi_id_dossier
+                         FROM `tbl_dossiers` `T0`
+                         WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
+                         AND `chp_nom_dossier` IN ('.$liste_des_dossiers.')
+                        ';
+//                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
+                        //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+                        
+                        $stmt = $db->prepare($sql);
+                        if($stmt!==false){
+                            $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+                            while($arr=$result->fetchArray(SQLITE3_NUM)){
+                             
+          //                     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr , true ) . '</pre>' ; exit(0);
+                               
+                               $cle=substr($arr[0],strlen($__valeurs['T0.chp_nom_dossier'])+1);
 
-                     $tabl[$arr[0]]['en_base']=$arr[1];
+                               $tabl[$cle]['en_base']=$arr[1];
+//                               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ ='.$arr[1].' <pre>"' . $cle. '"</pre> <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
+                            }
+                            $stmt->close(); 
+                        }else{
+                         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+                        }
                     }
-                    $stmt->close(); 
+                       
+//                    echo __FILE__ . ' ' . __LINE__ . ' $tabl = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
                     foreach($tabl as $k1 => $v1){
-                     if($v1['en_base']===0){
-                      $o1.='<div>';
-                      $o1.=$k1.' n\'existe pas en base';
-                      $positionDernierPoint=strrpos($k1,'.');
-                      if($positionDernierPoint===null){
-                       $extension='';
-                      }else{
-                       $extension=substr($k1,$positionDernierPoint);
-                      }
-       //               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $extension , true ) . '</pre>' ; exit(0);
-         
-                      /*
-                       les fichiers sqlite  binaire ne sont pas en base
-                      */
-                      if($extension==='.db' || $extension==='.exe'){
-                      }else{
-                        $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
-                      }
-                      $o1.=' <button class="yydanger" name="__effacer_du_disque" value="'.$k1.'">supprimer '.$k1.' ce fichier du disque</button>';
-                      $o1.='</div>';
-                     }else{
-                      $o1.='<div>'.$k1.' existe en base <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a></div>';
-                     }
+                        $o1.='<div>';
+                        $o1.=$k1;
                      
+                        if($v1['type_fichier']===true){
+                            $o1.=' est un fichier';
+                            
+                            $nom_absolu_du_fichier=$chemin_du_repertoire.$k1;
+                            //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nom_absolu_du_fichier , true ) . '</pre>' ; exit(0);
+                            if(is_file($nom_absolu_du_fichier)){
+                               $o1.=' présent sur disque ';
+                               
+                               if($v1['en_base']>0){
+                                  $o1.=' , présent dans la base ';
+                                  $o1.=' <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a>';
+                               }else{
+                                  $o1.=' absent de la base ';
+                                  
+                                  $positionDernierPoint=strrpos($k1,'.');
+                                  if($positionDernierPoint===null){
+                                   $extension='';
+                                  }else{
+                                   $extension=substr($k1,$positionDernierPoint);
+                                  }
+                   //               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $extension , true ) . '</pre>' ; exit(0);
+                     
+                                   
+                                  
+                                  // les fichiers sqlite  binaire ne sont pas en base
+                                  
+                                  if($extension==='.db' || $extension==='.exe'){
+                                  }else{
+                                      $o1.=' <button name="__creer_le_fichier_en_base" value="'.$k1.'">créer '.$k1.' en base</button>';
+                                  }
+                                  
+                               }
+                               $o1.=' <button class="yydanger" name="__effacer_du_disque" value="'.$k1.'">supprimer du disque</button>';
+                            }else{
+                               $o1.=' <b>absent du disque</b> ';
+                               if($v1['en_base']>0){
+                                  $o1.=' présent dans la base ';
+                               }else{
+                                  $o1.=' absent de la base ';
+                               }
+                            }
+                            
+                            
+                            
+                        }else{
+                            $o1.=' est un répertoire';
+                            $nom_absolu_du_dossier=$chemin_du_repertoire.$k1;
+                            //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nom_absolu_du_fichier , true ) . '</pre>' ; exit(0);
+                            if(is_dir($nom_absolu_du_dossier)){
+                               $o1.=' présent sur disque ';
+                               if($v1['en_base']>0){
+                                  $o1.=' , présent dans la base <a class="yysucces" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a>';
+                               }else{
+                                  $o1.=' absent de la base ';
+                               }
+                            }
+                        }
+                     
+                        $o1.='</div>';
                     }
-                  }else{
-                   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
-                  }
                   
                   
                   
                   
-                 }
+                 
                  
                 }else{
                  if(count($glob)===0){
@@ -697,7 +788,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
                 $o1.='<hr /><div>Liste des éléments de '.'fta'.'</div>';
 
-                $chemin_relatif='../../'.APP_KEY.$__valeurs['T0.chp_nom_dossier'];
+                $chemin_relatif='../../'.'fta'.$__valeurs['T0.chp_nom_dossier'];
        //         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_relatif , true ) . '</pre>' ; exit(0);
                 
                 if(is_dir($chemin_relatif)){
@@ -752,10 +843,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
        //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
              
             }
-         }
+         
      
    
-  }else{
+         }else{
 
            $o1.='<div class="yyavertissement">';
            $o1.='ce répertoire n\'existe pas sur le disque';
@@ -763,9 +854,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
            $o1.='<a class="yydanger" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$__id.'" title="supprimer de la Bdd">supprimer de la base</a>';
            $o1.='</div>';
   
-  }
+         }
 
-  
+    }
   
   
 

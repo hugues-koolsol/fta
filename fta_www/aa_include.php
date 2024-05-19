@@ -16,6 +16,30 @@ define('ENCRYPTION_METHODE','aes-256-cbc');
 
 
 $GLOBALS['__date']=date('Y-m-d H:i:s');
+
+
+/*===================================================================================================================*/
+function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_copie=false){
+ /*
+ il n'y a qu'ici qu'on trouve unlink
+ */
+ if($ne_pas_faire_de_copie){
+  if(@unlink($chemin_du_fichier)){
+   return true;
+  }
+ }else{
+  $repertoire=BACKUP_PATH.DIRECTORY_SEPARATOR.date('Y/m/d');
+  if(is_dir($repertoire) || mkdir($repertoire,0777,true)){
+    $chemin_fichier_copie=$repertoire.DIRECTORY_SEPARATOR.md5(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).str_replace('\\','_',str_replace('/','_',$chemin_du_fichier));
+    if(@copy($chemin_du_fichier , $chemin_fichier_copie)){
+     if(@unlink($chemin_du_fichier)){
+      return true;
+     }
+    }
+  }
+ }
+ return false;
+}
 /*===================================================================================================================*/
 function recharger_la_page($a){
     header("HTTP/1.1 303 See Other");

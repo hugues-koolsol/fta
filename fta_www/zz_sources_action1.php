@@ -43,12 +43,6 @@ function erreur_dans_champs_saisis_sources(){
   
  }
 
- 
- if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']==='' || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===false ){
-  ajouterMessage('erreur' ,  __LINE__ .' : le dossier doit être indiqué ' , BNF );
-  $uneErreur=true;
- }
-
 
 
 
@@ -156,6 +150,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      if($__valeurs['T2.chp_dossier_cible']!==null && $__valeurs['T1.chp_nom_dossier']!==null ){
       $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
+      if(is_file($nomCompletSource)){
+        if(!sauvegarder_et_supprimer_fichier($nomCompletSource)){
+          ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer le fichier du disque ' , BNF );
+          recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+        }
+      }
+
 //      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomCompletSource , true ) . '</pre>' ; exit(0);
       if($fd=fopen($nomCompletSource,'w')){
 //       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] , true ) . '</pre>' ; exit(0);
@@ -218,34 +219,37 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
   
-  $nouveau_dossier=recupere_une_donnees_des_dossiers_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'],$db);
-//  echo __FILE__ . ' ' . __LINE__ . ' $nouveau_dossier = <pre>' . var_export( $nouveau_dossier , true ) . '</pre>' ; exit(0);
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);
   
-  
-  $nom_complet_du_nouveau_fichier='../../'.$nouveau_dossier['T1.chp_dossier_cible'].$nouveau_dossier['T0.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
-  
-//  echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>, $nom_complet_du_nouveau_fichier<pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>' ; exit(0);
-  if($nom_complet_du_nouveau_fichier!==$nom_complet_de_l_ancien_fichier){
-     /*
-       si on renomme le fichier, il faut aussi le déplacer sur disque s'il existe
-     */
-     if(is_file($nom_complet_du_nouveau_fichier)){
-         /* si le fichier existe déjà sur le disque */
-         ajouterMessage('erreur' , __LINE__ .' :  ce fichier existe déjà sur disque' );
-         recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+  if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===''){
+  }else{
+      $nouveau_dossier=recupere_une_donnees_des_dossiers_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'],$db);
+//      echo __FILE__ . ' ' . __LINE__ . ' $nouveau_dossier = <pre>' . var_export( $nouveau_dossier , true ) . '</pre>' ; exit(0);
       
-     }
-     if(!@rename($nom_complet_de_l_ancien_fichier , $nom_complet_du_nouveau_fichier )){
-      /*
-        si pour une raison inconnue, on n'arrive pas à rennomer le fichier
-      */
-      ajouterMessage('erreur' , __LINE__ .' :  impossible de renommer ce fichier sur disque' );
-      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
-     }
-     $le_fichier_est_renomme=true;
-//     echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>' ; exit(0);
+      
+      $nom_complet_du_nouveau_fichier='../../'.$nouveau_dossier['T1.chp_dossier_cible'].$nouveau_dossier['T0.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
+      
+    //  echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>, $nom_complet_du_nouveau_fichier<pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>' ; exit(0);
+      if($nom_complet_du_nouveau_fichier!==$nom_complet_de_l_ancien_fichier){
+         /*
+           si on renomme le fichier, il faut aussi le déplacer sur disque s'il existe
+         */
+         if(is_file($nom_complet_du_nouveau_fichier)){
+             /* si le fichier existe déjà sur le disque */
+             ajouterMessage('erreur' , __LINE__ .' :  ce fichier existe déjà sur disque' );
+             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+          
+         }
+//         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);
+         @rename($nom_complet_de_l_ancien_fichier , $nom_complet_du_nouveau_fichier );
+          /*
+            si pour une raison inconnue, on n'arrive pas à rennomer le fichier
+          */
+         $le_fichier_est_renomme=true;
+    //     echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>' ; exit(0);
+      }
+//      echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_du_nouveau_fichier = <pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>' ; exit(0);
   }
-//  echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_du_nouveau_fichier = <pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>' ; exit(0);
   
   
   $sql='
@@ -348,7 +352,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
                $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
                if(is_file($nom_complet_de_l_ancien_fichier)){
-                if(!unlink($nom_complet_de_l_ancien_fichier)){
+                 ; 
+                if(!sauvegarder_et_supprimer_fichier($nom_complet_de_l_ancien_fichier)){
                   ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer le fichier du disque ' , BNF );
                   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
                 }
@@ -634,8 +639,39 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <span>'.$__id.'</span>'.CRLF;
   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_source']).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="width:100%;max-width:20em;" />'.CRLF;
-  $o1.='   <input  type="text" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.CRLF;
-  $o1.='   <a href="javascript:afficherModale1(\'zz_dossiers_choix1.php?__nom_champ_dans_parent=chx_dossier_id_source\')" title="selectionner">📁</a>'.CRLF;
+  $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.CRLF;
+  
+  $__parametres_pour_la_modale=array(
+   '__url' => 'zz_dossiers_choix1.php',
+   '__nom_champ_dans_parent' => 'chx_dossier_id_source',
+   '__champs_texte_a_rapatrier' => array(
+    'T0.chp_nom_dossier' => array(
+     '__libelle_avant' => 'rattaché à "<b style="color:red;">' , 
+     '__libelle_apres' => '</b>"' ,
+     '__libelle_si_vide' => 'source non rattaché à un dossier'
+    )
+   )
+  );
+  $paramUrl=json_encode($__parametres_pour_la_modale,JSON_FORCE_OBJECT);
+  $paramUrl=str_replace('\\','\\\\',$paramUrl);
+  $paramUrl=str_replace('\'','\\\'',$paramUrl);
+  $paramUrl=str_replace('"','\\"',$paramUrl);
+  $paramUrl=rawurlencode($paramUrl);
+
+  
+  $o1.='   <a href="javascript:afficherModale1(\''.enti1($paramUrl).'\')" title="selectionner">📁</a>'.CRLF;
+  $o1.='   <a class="yyavertissement" href="javascript:annuler_champ(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.CRLF;
+  
+  
+  if($__valeurs['T0.chx_dossier_id_source']==='' || $__valeurs['T0.chx_dossier_id_source']===false){
+   $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.CRLF;
+  }else{
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+   $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T1.chp_nom_dossier'].'</b>" </span>'.CRLF;
+  }
+  
+  
+  
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
   
@@ -832,7 +868,7 @@ $par=array(
   'js/pour_zz_bdds_action1.js', 
   'js/sql.js' ,
   'js/convertit-js-en-rev1.js' ,
-  'js/esprima.js' ,
+  'js/jslib/esprima.js' ,
   'js/javascript.js' ,
   'js/texte.js' ,
   ),

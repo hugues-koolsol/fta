@@ -33,7 +33,7 @@ $js_a_executer_apres_chargement=array(
     )
 );
 $par=array(
-    'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js','js/esprima.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js'),
+    'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js','js/jslib/esprima.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js'),
      'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">
@@ -46,22 +46,3 @@ setTimeout(
 </script>';
 $o1.=html_footer1($par);
 print($o1);$o1='';
-/*  
-
-
-  
-  <script type="text/javascript" src="js/core6.js"></script>
-  <script type="text/javascript" src="js/html.js"></script>
-  <script type="text/javascript" src="js/compile1.js"></script>
-  <script type="text/javascript" src="js/javascript.js"></script>
-  <!-- https://esprima.org/doc/videos.html -->
-  <script type="text/javascript" src="js/esprima.js"></script>
-  <script type="text/javascript" src="js/convertit-js-en-rev1.js"></script>
-  <script type="text/javascript" src="js/convertit-html-en-rev1.js"></script>
-  
-<script type="text/javascript">
-chargerLeDernierSourceHTML();
-transformHtmlEnRev();
-</script>  
-</body></html>
-*/

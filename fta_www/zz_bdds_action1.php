@@ -155,7 +155,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
             
 
            }
-           @unlink($base_temporaire);
+           /* ne pas créer une copie de sauvefarde d'un fichier temporaire */
+           sauvegarder_et_supprimer_fichier($base_temporaire,true); 
 
           }else{
             ajouterMessage('erreur' , __LINE__ .' : impossible de créer fichier temporaire ' );
