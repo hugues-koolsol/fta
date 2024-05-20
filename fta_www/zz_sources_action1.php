@@ -557,6 +557,31 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <input type="text" value="'.encrypter($chx_dossier_id_source).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:9em;" />'.CRLF;
+  
+  
+  
+  $__parametres_pour_la_modale=array(
+   '__url' => 'zz_dossiers_choix1.php',
+   '__nom_champ_dans_parent' => 'chx_dossier_id_source',
+   '__champs_texte_a_rapatrier' => array(
+    'T0.chp_nom_dossier' => array(
+     '__libelle_avant' => 'rattaché à "<b style="color:red;">' , 
+     '__libelle_apres' => '</b>"' ,
+     '__libelle_si_vide' => 'source non rattaché à un dossier'
+    )
+   )
+  );
+  $paramUrl=json_encode($__parametres_pour_la_modale,JSON_FORCE_OBJECT);
+  $paramUrl=str_replace('\\','\\\\',$paramUrl);
+  $paramUrl=str_replace('\'','\\\'',$paramUrl);
+  $paramUrl=str_replace('"','\\"',$paramUrl);
+  $paramUrl=rawurlencode($paramUrl);
+
+  
+  $o1.='   <a href="javascript:afficherModale1(\''.enti1($paramUrl).'\')" title="selectionner">📁</a>'.CRLF;
+  $o1.='   <a class="yyavertissement" href="javascript:annuler_champ(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.CRLF;
+  
+  
   $o1.='   <a href="javascript:afficherModale1(\'zz_dossiers_choix1.php?__nom_champ_dans_parent=chx_dossier_id_source\')">selectionner</a>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
@@ -715,14 +740,14 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   if(strpos($__valeurs['T0.chp_nom_source'],'.js')!==false){
    
 
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\')">R-&gt;J&#8615;</a>'.CRLF;
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;J-&gt;R</a>'.CRLF;
    $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    
   }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm')!==false){
    
 
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\')">R2H&#8615;</a>'.CRLF;
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2H&#8615;</a>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
    $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    
@@ -740,7 +765,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    $o1.='   <a class="yyavertissement" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    
   }else{
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; texte &#8615;</a>'.CRLF;
+   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; texte &#8615;</a>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>'.CRLF;
   }
   

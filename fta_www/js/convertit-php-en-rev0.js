@@ -921,15 +921,19 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
    for(var i=l01;i>=0;i--){
     if(rv.substr(i,1)=='\\'){
      if(i===l01){
-      /* position du \ en dernier */
+      if(rv.length>=2 && l01>1 && rv.substr(i-1,1)){
+       i--;
+      }else{
+       /* position du \ en dernier */
        return( astphp_logerreur({'status':false,'message':'0925  une chaine ne toit pas contenir un \\ en dernière position  ',element:element}));
+      }
       
      }else{
       if(i>=1){
        if(rv.substr(i-1,1)==='\\' ){
          i--;
        }else{
-        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  || rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='\''  ){
+        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  || rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='\'' ){
         }else{
          return( astphp_logerreur({'status':false,'message':'0930  après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
         }

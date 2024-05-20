@@ -9,6 +9,8 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    recharger_la_page('zz_cibles1.php'); 
 }
 
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
+
 /*
   =====================================================================================================================
 */
@@ -75,7 +77,7 @@ $__debut=$__xpage*$__nbMax;
 $sql='
  SELECT `chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd 
  FROM `tbl_bases_de_donnees` `T0`
- WHERE "T0"."chi_id_basedd" >= 0 
+ WHERE "T0"."chx_cible_id_basedd" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].' 
 ';
 
 if($chi_id_basedd!='' && is_numeric($chi_id_basedd)){
@@ -95,7 +97,7 @@ if($chp_nom_basedd!='' ){
 
 $sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql  . '</pre>' ; exit(0);
 
 $data0=array();
 

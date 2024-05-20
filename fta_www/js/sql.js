@@ -29,14 +29,22 @@ var global_enteteTableau=[
 =====================================================================================================================
 */
 function tabToSql1(tab,id , niveau){
- 
- var ob=tabToSql0(tab,id,false , niveau);
+ var options={
+   'dans_definition_de_champ':false,
+   'longueur_maximum_des_champs':0,
+   'nom_du_champ_max':'',
+   'tableau_tables_champs':[],
+ };
+ var ob=tabToSql0(tab,id, options );
+ ob.longueur_maximum_des_champs=options.longueur_maximum_des_champs;
+ ob.nom_du_champ_max=options.nom_du_champ_max;
+ ob.tableau_tables_champs=options.tableau_tables_champs;
  return ob;
 }
 /*
 =====================================================================================================================
 */
-function tabToSql0( tab ,id , inFieldDef , niveau ){
+function tabToSql0( tab ,id ,  niveau , options){
  var t='';
  var i=0;
  var j=0;
@@ -52,6 +60,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
  var values='';
  var obj=null;
  
+ 
  for(i=id+1;i<tab.length;i++){
   
   if(tab[i][7]==id){
@@ -60,7 +69,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
    
    if(tab[i][1]=='sql'){
     
-    var obj=tabToSql0( tab ,i , false , niveau );
+    var obj=tabToSql0( tab ,i , false , niveau , options);
     if(obj.status===true){
      t+=obj.value;
     }else{
@@ -157,9 +166,10 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
        }
        
        if(tab[j][1]=='new_def' ){
-        inFieldDef=true;
-        obj=tabToSql0(tab,j, inFieldDef,niveau);
-        inFieldDef=false;
+        dans_definition_de_champ=true;
+        options.dans_definition_de_champ=true;
+        obj=tabToSql0(tab,j, niveau,options);
+        options.dans_definition_de_champ=false;
         if(obj.status===true){
          
          for(k=obj.value.length-1;k>=0;k--){
@@ -241,7 +251,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
      t+='-- todo ligne 35 temp '+tab[i][1];
     }
     
-   }else if(tab[i][1]=='field' && inFieldDef==true){
+   }else if(tab[i][1]=='field' && options.hasOwnProperty('dans_definition_de_champ') && options.dans_definition_de_champ==true){
     
 /*
                 field(
@@ -256,43 +266,68 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
 
 */    
 //    console.log(tab);
-    
+    var variables_pour_tableau_tables={
+     'nom_du_champ'   : '',
+     'autoincrement'  : false,
+     'is_not_null'    : false,
+     'defaut'         : {'est_defini':false,'valeur':null},
+     'cle_primaire'   : false,
+     'reference'      : {'est_defini':false,'table':'','champ':''},
+     'type'           : {'nom':false,'longueur':false},
+    };
+    // options.tableau_tables_champs
     for(j=i+1;j<tab.length;j++){
      if(tab[j][3]>tab[i][3]){
       if(tab[j][3]==tab[i][3]+1){
        if(tab[j][1]=='n' && tab[j][8]==1 && tab[j+1][2]=='c'){
+        if(options.longueur_maximum_des_champs<tab[j+1][1].length+1){
+         options.longueur_maximum_des_champs=tab[j+1][1].length+1;
+         options.nom_du_champ_max=tab[j+1][1];
+        }
         t+=' '+tab[j+1][1]+'';
+        variables_pour_tableau_tables.nom_du_champ=tab[j+1][1];
         j++;
        }else if(tab[j][1]=='#'){
         t+='/*'+tab[j][13].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')+'*/';
+        t+=espacesn(true,niveau);
        }else if(tab[j][1]=='auto_increment' && tab[j][8]==0){
 //        t+=' AUTO_INCREMENT';
         t+=' AUTOINCREMENT'; // mySql / liteSql
-        
+        variables_pour_tableau_tables.autoincrement=true;
        }else if(tab[j][1]=='unsigned' && tab[j][8]==0){
         t+=' UNSIGNED';
        }else if( ( tab[j][1]=='notnull' || tab[j][1]=='not_null' ) && tab[j][8]==0){
         t+=' NOT NULL';
+        variables_pour_tableau_tables.is_not_null=true;
        }else if(tab[j][1]=='default' && tab[j][8]==1){
         t+=' DEFAULT ';
         if(false && tab[j+1][1]==='NULL'){
          t+=' NULL ';
         }else{
          t+=' '+maConstante(tab[j+1])+' ';
+         variables_pour_tableau_tables.defaut.est_defini=true;
+         variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j+1]);
         }
         j++;
        }else if(tab[j][1]=='primary_key' && tab[j][8]==0){
         t+=' PRIMARY KEY ';
+        variables_pour_tableau_tables.cle_primaire=true;
        }else if(tab[j][1]=='references' && ( tab[j][8]==2) && tab[j+1][2]=='c'){
         t+=' REFERENCES '+maConstante(tab[j+1])+'('+maConstante(tab[j+2])+') ';
+        variables_pour_tableau_tables.reference.est_defini=true;
+        variables_pour_tableau_tables.reference.table=+maConstante(tab[j+1]);
+        variables_pour_tableau_tables.reference.champ=+maConstante(tab[j+2]);
         j+=2;
         
        }else if(tab[j][1]=='type' && (tab[j][8]==1 || tab[j][8]==2) && tab[j+1][2]=='c'){
         if(tab[j][8]==1){
          t+=' '+tab[j+1][1]+'';
+         variables_pour_tableau_tables.type.nom=tab[j+1][1];
          j++;
         }else if(tab[j][8]==2){
          t+=' '+tab[j+1][1]+'('+tab[j+2][1]+')';
+         variables_pour_tableau_tables.type.nom=tab[j+1][1];
+         variables_pour_tableau_tables.type.longueur=tab[j+2][1];
          j+=2;
         }else{
          logerreur({status:false,id:i,message:'0271 sql.js erreur dans un field'});
@@ -306,6 +341,10 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
      }else{
       break;
      }
+    }
+//    console.log('variables_pour_tableau_tables=',variables_pour_tableau_tables);
+    if(options.dans_definition_de_champ===true){
+       options.tableau_tables_champs[options.tableau_tables_champs.length-1].champs.push(variables_pour_tableau_tables);
     }
     
     t+=',';
@@ -324,6 +363,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
     t+='/*==========DEBUT DEFINITION===========*/';
     t+=espacesn(true,niveau);
     t+=espacesn(true,niveau);
+    var nom_table_en_cours='';
     t+='CREATE TABLE';
     for(j=i+1;j<tab.length;j++){
      if(tab[j][3]>tab[i][3]){
@@ -342,15 +382,21 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
         collate=' COLLATE='+tab[j+1][1]+'';
        }else if(tab[j][1]=='n' && tab[j][8]==1 && tab[j+1][2]=='c'){
         t+=' '+tab[j+1][1]+'';
+        nom_table_en_cours=tab[j+1][1];
         j++;
        }else if(tab[j][1]=='fields' && tab[j][8]>0  ){
         t+=' (';
+//        console.log('nom_table_en_cours=',nom_table_en_cours);
         
-        inFieldDef=true;
+        options.dans_definition_de_champ=true;
+        options.tableau_tables_champs.push({'nom_de_la_table' : nom_table_en_cours, 'champs' : []})
         niveau++;
-        obj=tabToSql0(tab,j, inFieldDef,niveau);
+        obj=tabToSql0(tab,j, niveau,options);
         niveau--;
-        inFieldDef=false;
+        options.dans_definition_de_champ=false;
+        
+//        console.log('options.tableau_tables_champs=',options.tableau_tables_champs);
+        
         if(obj.status===true){
          t+=espacesn(true,niveau);
          for(k=obj.value.length-1;k>=0;k--){
@@ -377,6 +423,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
           break;
          }
         }
+        nom_table_en_cours='';
        }else if(tab[j][1].substr(0,5)=='meta_' && tab[j][8]>0  ){
         t+=CRLF+' /*'+tab[j][1]+'*/ ';
        }else{
@@ -447,7 +494,7 @@ function tabToSql0( tab ,id , inFieldDef , niveau ){
     
    }else if(tab[i][1]=='transaction'){
     niveau++;
-    obj=tabToSql0(tab,i, inFieldDef,niveau);
+    obj=tabToSql0(tab,i, niveau, options);
     niveau--;
     if(obj.status===true){
      t+=espacesn(true,niveau);

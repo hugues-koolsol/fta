@@ -45,7 +45,7 @@ function aller_a_la_ligne(nom_textarea){
 /*
   =====================================================================================================================
 */
-function convertir_rev_en_js(chp_rev_source,chp_genere_source){
+function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible){
    clearMessages('zone_global_messages');
    var a = document.getElementById(chp_rev_source);
    var startMicro=performance.now();
@@ -55,7 +55,7 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source){
    var endMicro = performance.now();
    var startMicro = performance.now();
    var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
-   
+   global_messages.data.matrice=matriceFonction;
    if(matriceFonction.status===true){
     
     var objJs=parseJavascript0(matriceFonction.value,1,0);
@@ -65,6 +65,17 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source){
      dogid(chp_genere_source).value=objJs.value;
      
     }
+    
+    
+    var parametres_sauvegarde={
+     'matrice': matriceFonction.value,
+     'chp_provenance_rev' : 'source',
+     'chx_id_provanance_rev' : id_source,
+     'id_cible' : id_cible
+    }
+    
+    sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+    
     
    }
    
@@ -128,7 +139,7 @@ function convertir_texte_en_rev(nom_zone_genere, nom_zone_source){
 /*
   =====================================================================================================================
 */
-function convertir_rev_en_texte(nom_zone_source , nom_zone_genere){
+function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , id_cible){
  clearMessages('zone_global_messages');
  var a=dogid(nom_zone_source);
  var startMicro = performance.now();
@@ -153,6 +164,16 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere){
    displayMessages('zone_global_messages' , nom_zone_source);
    
   }
+  
+  var parametres_sauvegarde={
+   'matrice': matriceFonction.value,
+   'chp_provenance_rev' : 'source',
+   'chx_id_provanance_rev' : id_source,
+   'id_cible' : id_cible
+  }
+  
+  sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+  
   
  }
  
@@ -181,7 +202,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
  }
  
- displayMessages('zone_global_messages');
+ displayMessages('zone_global_messages' , ret.input.opt.nom_zone_genere);
  rangeErreurSelectionne=false;
  
 }
@@ -238,7 +259,7 @@ function convertir_html_en_rev(nom_zone_genere, nom_zone_source){
   =====================================================================================================================
 */
 
-function convertir_rev_en_html(nom_zone_source , nom_zone_genere){
+function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id_cible){
  
  clearMessages('zone_global_messages');
  var a=dogid(nom_zone_source);
@@ -259,6 +280,15 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere){
    dogid(nom_zone_genere).value=objHtml.value
    
   }
+  
+  var parametres_sauvegarde={
+   'matrice': matriceFonction.value,
+   'chp_provenance_rev' : 'source',
+   'chx_id_provanance_rev' : id_source,
+   'id_cible' : id_cible
+  }
+  
+  sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
   
  }else{
   

@@ -1528,14 +1528,12 @@ function decalerLaPage(destination, duree) {
 /*
 ===================================================================================
 */
-
 function neRienFaire(par){
 // console.log('par=',par)
 }
 /*
 ===================================================================================
 */
-
 function executerCesActionsPourLaPageLocale(par){
 // console.log('par=',par);
  
@@ -1556,8 +1554,13 @@ function executerCesActionsPourLaPageLocale(par){
 /*
 ===================================================================================
 */
-function afficherModale1(url_du_contenu){
- global_modale1_iframe.src=url_du_contenu;
+function afficherModale1(parametres){
+// console.log('parametres='+parametres)
+ var jsn1=JSON.parse(parametres);
+ var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'] , '__nom_champ_dans_parent' :jsn1['__nom_champ_dans_parent'] }
+// console.log('jsn1=' , jsn1 );
+
+ global_modale1_iframe.src=jsn1['__url']+'?__parametres_choix='+encodeURIComponent(JSON.stringify(paramatresModale));
  global_modale1.showModal();
 }
 /*
@@ -1569,8 +1572,40 @@ function fermerModale1(){
 /*
 ===================================================================================
 */
-function choisir_de_iframe1(valeur , nom_du_champ){
- window.parent.document.getElementById(nom_du_champ).value=valeur;
+function annuler_champ(parametres){
+ var jsn1=JSON.parse(parametres);
+ document.getElementById(jsn1['__nom_champ_dans_parent']).value='';
+ try{
+  if(jsn1.__champs_texte_a_rapatrier){
+   for(var i in jsn1.__champs_texte_a_rapatrier){
+    window.parent.document.getElementById(i).innerHTML = jsn1.__champs_texte_a_rapatrier[i].__libelle_si_vide;
+   }
+  }   
+  
+ }catch(e){
+  console.log(e);
+ }
+
+}
+/*
+===================================================================================
+*/
+function choisir_de_iframe1(parametres){
+
+ var jsn1=JSON.parse(parametres);
+
+ window.parent.document.getElementById(jsn1['__nom_champ_rapatrie']).value=jsn1['__valeur_champ_id_rapatrie'];
+ try{
+  if(jsn1.__champs_texte_a_rapatrier){
+   for(var i in jsn1.__champs_texte_a_rapatrier){
+    window.parent.document.getElementById(i).innerHTML = jsn1.__champs_texte_a_rapatrier[i].__libelle_avant+jsn1.__champs_texte_a_rapatrier[i].__valeur+jsn1.__champs_texte_a_rapatrier[i].__libelle_apres;
+   }
+  }   
+  
+ }catch(e){
+  console.log(e);
+ }
+ 
  window.parent.global_modale1.close();
 }
 

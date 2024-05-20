@@ -33,9 +33,9 @@ $__nbMax=20;
 $__debut=0;
 $__xpage=0;
 
-$__xpage                 = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                , BNF);
-$chi_id_dossier          = recuperer_et_sauvegarder_les_parametres_de_recherche('choix_chi_id_dossier'   , BNF);
-$chp_nom_dossier         = recuperer_et_sauvegarder_les_parametres_de_recherche('choix_chp_nom_dossier'  , BNF);
+$__xpage                 = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'           , BNF);
+$chi_id_dossier          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier'   , BNF);
+$chp_nom_dossier         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier'   , BNF);
 
 $autofocus='chi_id_dossier';
      if($chi_id_dossier!=''){          $autofocus='chi_id_dossier';          } 
@@ -91,6 +91,7 @@ if($chp_nom_dossier!='' ){
 
 $sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
 
 $data0=array();
 
