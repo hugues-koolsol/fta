@@ -45,9 +45,9 @@ if((isset($_POST) && count($_POST) > 0)){
 
         $db=new SQLite3('../fta_inc/db/sqlite/system.db');
         $req='
-         SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur , chx_id_groupe_connexion_utilisateur 
+         SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur  
          FROM tbl_utilisateurs 
-         WHERE chp_nom_de_connexion_utilisateur=\''.addslashes($_POST['nom_de_connexion']).'\'
+         WHERE chp_nom_de_connexion_utilisateur=\''.sq0($_POST['nom_de_connexion']).'\'
          LIMIT 1 OFFSET 0
         ';
         $stmt=$db->prepare($req);
@@ -64,6 +64,7 @@ if((isset($_POST) && count($_POST) > 0)){
             }
             $stmt->close();
 
+
         }else{
 
             ajouterMessage('erreur',__LINE__.' '.$db->lastErrorMsg(),BNF);
@@ -72,15 +73,13 @@ if((isset($_POST) && count($_POST) > 0)){
         }
 
 
-        if((count($data) === 3 && password_verify($_POST['mot_de_passe'],$data['chp_mot_de_passe_utilisateur']))){
+        if((count($data) === 2 && password_verify($_POST['mot_de_passe'],$data['chp_mot_de_passe_utilisateur']))){
 
             /*  =============================*/
             /*  ... soit nom_de_connexion et mot_de_passe sont bons*/
             /*  et on met les données en session*/
             $_SESSION[APP_KEY]['sess_id_utilisateur']=$data['chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$data['chi_id_utilisateur'];
-            $_SESSION[APP_KEY]['sess_id_groupe_utilisateur']=$data['chx_id_groupe_connexion_utilisateur'];
-            $_SESSION[APP_KEY]['sess_id_groupe_utilisateur_init']=$data['chx_id_groupe_connexion_utilisateur'];
             $_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']=base64_encode(openssl_random_pseudo_bytes(16));
             $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*(10)+20));
             $_SESSION[APP_KEY]['__filtres']=array();

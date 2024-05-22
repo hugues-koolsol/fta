@@ -11,6 +11,241 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
 function boutonRetourALaListe(){
   return '&nbsp;<a href="zz_cibles1.php" style="font-size:1rem;">retour à la liste</a>';
 }
+
+
+ /*debutspécifiquefta*/
+ if(isset($_POST['__copier_les_fichiers_de_base_dans_ftb'])){
+   
+   $tab=array(
+      /* doit être en premier pour avoir l'indice 2 pour la base */
+      'fta_inc/db/sqlite/structure.system.db.sql' => array(),
+      'fta_www/aa_include.php' => array(
+         'remplacer' => array( 
+           array( 
+             'a_remplacer_chaine' => 'define("APP_KEY","fta");' ,
+             'par'                => 'define("APP_KEY","ftb");'
+           ),
+           array( 
+             'a_remplacer_chaine' => 'define("PREFIXE_REPERTOIRES","fta");' ,
+             'par'                => 'define("PREFIXE_REPERTOIRES","fta");'
+           ),
+           
+         )
+      ),
+      'fta_inc/.htaccess' => array(),
+      'fta_inc/ajax/core/bdd.php' => array(),
+      'fta_inc/ajax/core/file.php' => array(),
+      'fta_inc/ajax/php/ast.php' => array(),
+      'fta_inc/db/acces_bdd_bases_de_donnees1.php' => array(),
+      'fta_inc/db/acces_bdd_cibles1.php' => array(),
+      'fta_inc/db/acces_bdd_dossiers1.php' => array(),
+      'fta_inc/db/acces_bdd_sources1.php' => array(),
+      'fta_inc/db/sqlite/structure.system.db.sql' => array(),
+      'fta_inc/phplib/mesBibliotheques.bat'=>array(),
+      'fta_inc/phplib/sqlite.php'=>array(),      
+      'fta_inc/rev/test_factorielle.rev'=>array(),      
+      'fta_www/.htaccess' => array(),
+      'fta_www/6.css' => array(),
+      'fta_www/aa_login.php' => array(),
+      'fta_www/index.php' => array(),
+      'fta_www/index_source.php' => array(),
+      'fta_www/traiteHtml.php' => array(),
+      'fta_www/traiteJs.php' => array(),
+      'fta_www/traitePhp.php' => array(),
+      'fta_www/za_ajax.php' => array(),
+      'fta_www/zz_bdds1.php' => array(),
+      'fta_www/zz_bdds_action1.php' => array(),
+      'fta_www/zz_cibles1.php' => array(),
+      'fta_www/zz_cibles_action1.php' => array(),
+      'fta_www/zz_dossiers1.php' => array(),
+      'fta_www/zz_dossiers_action1.php' => array(),
+      'fta_www/zz_dossiers_choix1.php' => array(),
+      'fta_www/zz_sources1.php' => array(),
+      'fta_www/zz_sources_action1.php' => array(),
+      'fta_www/phpliteadmin.config.php' => array(),
+      'fta_www/phpliteadmin.php' => array(),      
+      'fta_www/js/compile1.js' => array(),
+      'fta_www/js/convertit-html-en-rev1.js' => array(),
+      'fta_www/js/convertit-js-en-rev1.js' => array(),
+      'fta_www/js/convertit-php-en-rev0.js' => array(),
+      'fta_www/js/core6.js' => array(),
+      'fta_www/js/html.js' => array(),
+      'fta_www/js/interface0.js' => array(),
+      'fta_www/js/javascript.js' => array(),
+      'fta_www/js/php.js' => array(),
+      'fta_www/js/pour-index_php0.js' => array(),
+      'fta_www/js/pour_zz_bdds_action1.js' => array(),
+      'fta_www/js/pour_zz_source1.js' => array(),
+      'fta_www/js/sql.js' => array(),
+      'fta_www/js/texte.js' => array(),
+      'fta_www/js/jslib/esprima.js' => array(),
+      
+   );
+   $indice_du_dossier=2; /* le dossier 1 est celui de la racine */
+   $tableau_des_dossiers=array();
+   foreach( $tab as $k1 => $v1){
+     $dossier_cible='../../ftb/'.substr($k1,0,strrpos($k1,'/'));
+     if(!isset($tableau_des_dossiers[$dossier_cible])){
+      $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
+      $indice_du_dossier++;
+     }
+     $tab[$k1]['dossier']=$tableau_des_dossiers[$dossier_cible];
+    
+    
+   }
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tableau_des_dossiers , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tab , true ) . '</pre>' ; exit(0);
+   foreach( $tab as $k1 => $v1){
+       $contenu=file_get_contents('../'.$k1);
+       if($contenu===false){
+           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+       }
+       //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu , true ) . '</pre>' ; exit(0);
+       if(isset($v1['remplacer'])){
+           foreach($v1['remplacer'] as $k2 => $v2){
+            if(isset($v2['a_remplacer_chaine'])){
+//            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v2 , true ) . '</pre>' ; exit(0);
+              $contenu = str_replace($v2['a_remplacer_chaine'] , $v2['par'] , $contenu);
+//              echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
+            }else if(isset($v2['a_remplacer_preg'])){
+/*             
+             $contenu=preg_replace($v2['a_remplacer_preg'],$v2['par'], $contenu);
+             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
+            /*
+            
+             $text = '<p style="padding:0px;"><strong style="padding:0;margin:0;">hello</strong></p>';
+
+             echo preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/si",'<$1$2>', $text);
+
+             // <p><strong>hello</strong></p>            
+            
+            */
+            }
+            
+            
+           }
+           
+           
+           
+       }
+
+       $contenu=preg_replace('/\\/\\*debut'.'spécifiquefta\\*\\/(.*?)\\/\\*fin'.'spécifiquefta\\*\\//us','/* spécifique fta */', $contenu);
+       if($k1==='fta_www/zz_cibles_action1.php'){
+//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
+       }
+
+
+       
+       $dossier_cible='../../ftb/'.substr($k1,0,strrpos($k1,'/'));
+//       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $dossier_cible , true ) . '</pre>' ; exit(0);
+       if(is_dir($dossier_cible)){
+       }else{
+        if(!mkdir($dossier_cible,0777,true)){
+         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' impossible de créer le répertoire "'.$dossier_cible.'" </pre>' ; exit(0);
+        }
+       }
+       $fichier_cible=$dossier_cible.substr($k1,strrpos($k1,'/'));
+//       echo __FILE__ . ' ' . __LINE__ . ' $fichier_cible = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
+       if($fd=fopen($fichier_cible,'w')){
+        if(fwrite($fd,$contenu)){
+         fclose($fd);
+        }else{
+         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fwrite a échoué sur '.$k1.'</pre>' ; exit(0);
+        }
+       }else{
+         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fopen a échoué sur '.$k1.'</pre>' ; exit(0);
+       }
+    
+   }
+   
+   $contenu_fichier_structure=$contenu=file_get_contents('../'.'fta_inc/db/sqlite/structure.system.db.sql');
+   
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_fichier_structure ) . '</pre>' ; exit(0);
+   
+   if($contenu_fichier_structure===false){
+    echo __FILE__ . ' ' . __LINE__ . ' fichier structure introuvable = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+   }
+
+   
+   /* on supprime la base systeme ftb */
+   $chemin_base_systeme='../../ftb/fta_inc/db/sqlite/system.db';
+   if(is_file($chemin_base_systeme)){
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
+    if(!unlink($chemin_base_systeme)){
+     echo __FILE__ . ' ' . __LINE__ . ' unlink base system impossible = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+    }
+   }else{
+    echo __FILE__ . ' ' . __LINE__ . ' $chemin_base_systeme = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
+   }
+   
+   $base_ftb = new SQLite3($chemin_base_systeme);
+   if(false === $base_ftb->exec($contenu_fichier_structure)){
+    echo __FILE__ . ' ' . __LINE__ . ' erreur de création de la structure base system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+   }
+   
+   // donnees.system.db.sql   
+   $contenu_initialisation="
+    INSERT INTO `tbl_cibles`( `chi_id_cible`, `chp_nom_cible`, `chp_commentaire_cible`, `chp_dossier_cible`) VALUES ('1','fta','la racine','ftb');
+    INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_dossier`) VALUES ('1','/','1');
+    INSERT INTO `tbl_bases_de_donnees`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_basedd`, `chp_commentaire_basedd`, `chx_dossier_id_basedd`, `chp_genere_basedd`, `chx_cible_id_basedd`, `chp_php_basedd`) VALUES ('1','system.db','','initialisation','2','','1','');
+    INSERT INTO `tbl_utilisateurs`( `chi_id_utilisateur`, `chp_nom_de_connexion_utilisateur`, `chp_mot_de_passe_utilisateur`, `chp_commentaire_utilisateur`) VALUES ('1','admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK','mdp = admin');
+   ";
+
+   if(false === $base_ftb->exec($contenu_initialisation)){
+    echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+   }
+
+   $contenu_table_dossiers ='';
+   foreach( $tableau_des_dossiers as $k1 => $v1 ){
+    $contenu_table_dossiers.=",('".$v1."','".substr($k1,strlen('../../ftb'))."','1')";
+    
+   }
+   if($contenu_table_dossiers!==''){
+    
+    $contenu_table_dossiers=substr($contenu_table_dossiers,1);
+    $contenu_table_dossiers ='INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_dossier`) VALUES '.$contenu_table_dossiers;
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu_table_dossiers , true ) . '</pre>' ; exit(0);
+    
+    if(false === $base_ftb->exec($contenu_table_dossiers)){
+     echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+    }
+    
+   }else{
+        echo __FILE__ . ' ' . __LINE__ . ' problème sur le contenu des dossiers = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+   }
+
+   $contenu_table_sources ='';
+   foreach( $tab as $k1 => $v1 ){
+    $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."')\r\n";
+    
+   }
+   if($contenu_table_sources!==''){
+    
+    $contenu_table_sources=substr($contenu_table_sources,1);
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_table_sources ) . '</pre>' ; exit(0);
+    
+    $contenu_table_sources ='INSERT INTO `tbl_sources`( `chp_nom_source`, `chx_cible_id_source`, `chx_dossier_id_source`) VALUES '.$contenu_table_sources;
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_table_sources ) . '</pre>' ; exit(0);
+    if(false === $base_ftb->exec($contenu_table_sources)){
+     echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+    }
+    
+    
+   }
+   
+   
+   
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+
+    ajouterMessage('info' , ' les fichiers ont été copiés' , BNF );
+
+    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+
+
+ }
+  /*finspécifiquefta*/
+
+
 /*
   ========================================================================================
 */
@@ -82,6 +317,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']      =$_POST['chp_dossier_cible']     ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']  =$_POST['chp_commentaire_cible'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']           =isset($_POST['chi_id_cible'])?decrypter($_POST['chi_id_cible']) : '';
+ 
+ 
+ 
+ 
+
  /*
    ====================================================================================================================
    ============================================= MODIFICATION =========================================================
@@ -101,18 +341,18 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']==='1'){
       $sql='
        UPDATE `tbl_cibles` SET 
-          `chp_commentaire_cible` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
+          `chp_commentaire_cible` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
         WHERE 
-          `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
+          `chi_id_cible`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
       ';
   }else{
       $sql='
        UPDATE `tbl_cibles` SET 
-          `chp_nom_cible`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])        .'\'
-        , `chp_dossier_cible`     = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])    .'\'
-        , `chp_commentaire_cible` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
+          `chp_nom_cible`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])        .'\'
+        , `chp_dossier_cible`     = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])    .'\'
+        , `chp_commentaire_cible` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
         WHERE 
-          `chi_id_cible`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
+          `chi_id_cible`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
       ';
   }
 
@@ -211,8 +451,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   
   
-
-  $sql='DELETE FROM tbl_cibles WHERE `chi_id_cible` = \''.addslashes1($__id).'\' ' ;
+  $db->querySingle('PRAGMA foreign_keys=ON');
+  $sql='DELETE FROM tbl_cibles WHERE `chi_id_cible` = \''.sq0($__id).'\' ' ;
   if(false === $db->exec($sql)){
 
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
@@ -242,9 +482,9 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $sql='
    INSERT INTO `tbl_cibles` (`chp_nom_cible` , `chp_dossier_cible`, `chp_commentaire_cible` ) VALUES
      (
-        \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])         .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])     .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) .'\'
+        \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])         .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])     .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) .'\'
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
@@ -590,9 +830,15 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
   $o1.='</form>'.CRLF;
   
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( basename(dirname(dirname(__FILE__))) , true ) . '</pre>' ; exit(0);
   
-
-  
+  /*debutspécifiquefta*/
+  if(APP_KEY==='fta' && basename(dirname(dirname(__FILE__)))==='fta' ){
+    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
+    $o1.='   <button name="__copier_les_fichiers_de_base_dans_ftb" class="">copier les fichiers de base dans ftb</button>'.CRLF;
+    $o1.='</form>'.CRLF;
+  }
+  /*finspécifiquefta*/
   
 
   $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];

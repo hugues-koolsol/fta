@@ -114,12 +114,12 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $sql='
    INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
      (
-        \''.addslashes1($nom_complet_source)                                 .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'])      .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])   .'\'
-      , \''.addslashes1('Importé le '.date('Y-m-d H:i:s').'') .'\'
-      , \''.addslashes1('')                                                  .'\'
-      , \''.addslashes1($contenuFichier)                                     .'\'      
+        \''.sq0($nom_complet_source)                                 .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'])      .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])   .'\'
+      , \''.sq0('Importé le '.date('Y-m-d H:i:s').'') .'\'
+      , \''.sq0('')                                                  .'\'
+      , \''.sq0($contenuFichier)                                     .'\'      
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($sql) , true ) . '</pre>' ; exit(0);
@@ -245,12 +245,12 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   $sql='
    UPDATE `tbl_dossiers` SET 
-      `chp_nom_dossier`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'])        .'\'
-    , `chx_cible_dossier`    = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])   .'\'
+      `chp_nom_dossier`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'])        .'\'
+    , `chx_cible_dossier`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])   .'\'
     
     
     WHERE 
-      `chi_id_dossier`          = '.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']).'
+      `chi_id_dossier`          = '.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']).'
   '; // 
 //  echo $sql;
 
@@ -324,8 +324,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
      }else{
-
-         $sql='DELETE FROM tbl_dossiers WHERE `chi_id_dossier` = \''.addslashes1($__id).'\' ' ;
+         $db->querySingle('PRAGMA foreign_keys=ON');
+         $sql='DELETE FROM tbl_dossiers WHERE `chi_id_dossier` = \''.sq0($__id).'\' ' ;
          if(false === $db->exec($sql)){
 
              ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
@@ -365,8 +365,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $sql='
    INSERT INTO `tbl_dossiers` (`chp_nom_dossier`  , chx_cible_dossier  ) VALUES
      (
-        \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'])        .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])    .'\'
+        \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'])        .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])    .'\'
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);

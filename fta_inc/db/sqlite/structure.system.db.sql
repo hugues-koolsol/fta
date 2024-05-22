@@ -1,16 +1,5 @@
+
 BEGIN TRANSACTION;
-    
-    
-    
-    CREATE TABLE tbl_groupes (
-    
-        /**/ chi_id_groupe INTEGER PRIMARY KEY ,
-         chp_nom_groupe STRING,
-         chp_commentaire_groupe STRING,
-         chx_id_metier_groupe INTEGER
-    );
-    
-    CREATE  UNIQUE INDEX  idxNomGroupe ON tbl_groupes( chp_nom_groupe ) ;
     
     
     
@@ -68,19 +57,6 @@ BEGIN TRANSACTION;
     
     
     
-    CREATE TABLE tbl_utilisateurs (
-    
-        /**/ chi_id_utilisateur INTEGER PRIMARY KEY ,
-         chp_nom_de_connexion_utilisateur STRING,
-         chp_mot_de_passe_utilisateur STRING,
-         chp_commentaire_utilisateur TEXT,
-         chx_id_groupe_connexion_utilisateur INTEGER
-    );
-    
-    CREATE  UNIQUE INDEX  idxNomUtilisateur ON tbl_utilisateurs( chp_nom_de_connexion_utilisateur ) ;
-    
-    
-    
     CREATE TABLE tbl_rev (
     
         /**/ chx_cible_rev INTEGER REFERENCES 'tbl_cibles'('chi_id_cible') ,
@@ -101,4 +77,16 @@ BEGIN TRANSACTION;
          chp_pos_fermer_parenthese_rev INTEGER,
          chp_commentaire_rev TEXT
     );
+    
+    
+    
+    CREATE TABLE tbl_utilisateurs (
+    
+        /**/ chi_id_utilisateur INTEGER PRIMARY KEY ,
+         chp_nom_de_connexion_utilisateur STRING,
+         chp_mot_de_passe_utilisateur STRING,
+         chp_commentaire_utilisateur TEXT
+    );
+    
+    CREATE  UNIQUE INDEX  idxNomUtilisateur ON tbl_utilisateurs( chp_nom_de_connexion_utilisateur ) ;
 COMMIT;

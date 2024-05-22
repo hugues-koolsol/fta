@@ -46,6 +46,9 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
     var argumentsFonction='';
     var tabchoix=[];
     var l01=tab.length;
+    if(l01<=1){
+      return {'status':true,'value':''};
+    }
     var id_du_parent=tab[id][7];
     var terminateur=';';
     var espcLigne=espacesn(true,niveau);
@@ -207,7 +210,21 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                 if(tab[j][8] == 1){
                                     argumentsFonction+=','+(tab[j+1][1]);
                                 }else{
-                                    return(logerreur({status:false,value:t,id:id,tab:tab,message:'les arguments passés à la fonction doivent être sous la forme  a(xxx) '}));
+                                    if(tab[j][8] == 2 && tab[j+2][1]==='defaut'){
+                                        argumentsFonction+=','+(tab[j+1][1]);
+                                        var objdef=js_traiteInstruction1(tab,niveau,j+3);
+                                        
+                                        if( objdef.status===true){
+                                            argumentsFonction+='='+objdef.value;
+                                        }else{
+                                            return(logerreur({status:false,value:t,id:id,tab:tab,message:'0220 les arguments passés à la fonction doivent être sous la forme argument(xxx,[defaut(yyy)]) '}));
+                                        }
+                                        
+                                        
+                                        
+                                    }else{
+                                      return(logerreur({status:false,value:t,id:id,tab:tab,message:'0224 les arguments passés à la fonction doivent être sous la forme argument(xxx,[defaut(yyy)]) '}));
+                                    }
                                 }
                             }
                         }
@@ -864,7 +881,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     var objInstructionDroite = js_traiteInstruction1(tab,niveau,tabAffecte['par1'][0]);
                     if(objInstructionDroite.status === true){
                         /* on écrit l'affectation ici */
-                        if(signe=='=' && objInstructionDroite.value.substr(0,objInstructionGauche.value.length) && objInstructionDroite.value.substr(objInstructionGauche.value.length,1)==='+'){
+                        if(signe=='=' && objInstructionGauche.value===objInstructionDroite.value.substr(0,objInstructionGauche.value.length) && objInstructionDroite.value.substr(objInstructionGauche.value.length,1)==='+'){
                          t+=''+objInstructionGauche.value+'+='+objInstructionDroite.value.substr(objInstructionGauche.value.length+1);
                         }else{
                          t+=''+objInstructionGauche.value+signe+objInstructionDroite.value;
@@ -950,6 +967,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                     || (tabdeclare[1][1] === 'moins') 
                                     || (tabdeclare[1][1] === 'mult') 
                                     || (tabdeclare[1][1] === 'divi') 
+                                    || (tabdeclare[1][1] === 'modulo') 
                                     || (tabdeclare[1][1] === 'concat')
                                     || (tabdeclare[1][1] === 'egalstricte')
                                     || (tabdeclare[1][1] === 'diffstricte')
@@ -1383,7 +1401,7 @@ function js_traiteInstruction1(tab,niveau,id){
         }else{
             return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteInstruction1 1043 '}));
         }
-    }else if((tab[id][1] == 'plus') || (tab[id][1] == 'mult') || (tab[id][1] == 'divi') || (tab[id][1] == 'moins') || (tab[id][1] == 'etBin') || (tab[id][1] == 'decalDroite') || (tab[id][1] == 'concat')){
+    }else if((tab[id][1] == 'plus') || (tab[id][1] == 'mult') || (tab[id][1] == 'divi')  || (tab[id][1] == 'modulo') || (tab[id][1] == 'moins') || (tab[id][1] == 'etBin') || (tab[id][1] == 'decalDroite') || (tab[id][1] == 'concat')){
         var objOperation = TraiteOperations1(tab,tab[id][0]);
         if(objOperation.status == true){
             t+=objOperation.value;
@@ -1954,6 +1972,8 @@ function TraiteOperations1(tab,id,niveau){
                         t+='+';
                     }else if(tab[parentId][1] == 'concat'){
                         t+='+';
+                    }else if(tab[parentId][1] == 'modulo'){
+                        t+='%';
                     }else if(tab[parentId][1] == 'moins'){
                         t+='-';
                     }else if(tab[parentId][1] == 'decalDroite'){
@@ -1975,7 +1995,7 @@ function TraiteOperations1(tab,id,niveau){
                             if(condi0){
                                 t+='('+tab[i][1];
                             }else{
-                                if(( tab[id][1]==='mult' || tab[id][1]==='divi' ) && ( tab[i][1].indexOf('+')>0 || tab[i][1].indexOf('-')>0 ) ) {
+                                if(( tab[id][1]==='mult' || tab[id][1]==='divi'  || tab[id][1]==='modulo' ) && ( tab[i][1].indexOf('+')>0 || tab[i][1].indexOf('-')>0 ) ) {
                                  t+='('+tab[i][1]+')';
                                 }else{
                                  if(tab[id][1]==='moins' && tab[id][8] === 1){
@@ -1988,7 +2008,7 @@ function TraiteOperations1(tab,id,niveau){
                         }
                     }else if(tab[i][2] == 'f'){
                         if(tab[i][1] == '#'){
-                        }else if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'mult') || (tab[i][1] == 'divi') || (tab[i][1] == 'etBin') || (tab[i][1] == 'decalDroite' )){
+                        }else if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'mult') || (tab[i][1] == 'divi')  || (tab[i][1] == 'modulo') || (tab[i][1] == 'etBin') || (tab[i][1] == 'decalDroite' )){
                             var objOperation = TraiteOperations1(tab,i);
                             if(objOperation.status == true){
                                 t+=''+objOperation.value+'';
@@ -2041,6 +2061,8 @@ function TraiteOperations1(tab,id,niveau){
                         t+='*(';
                     }else if((tab[parentId][1] == 'divi')){
                         t+='/(';
+                    }else if((tab[parentId][1] == 'modulo')){
+                        t+='%';
                     }else if(tab[parentId][1] == 'plus'){
                         t+='+';
                     }else if(tab[parentId][1] == 'concat'){
@@ -2053,11 +2075,11 @@ function TraiteOperations1(tab,id,niveau){
                         t+='>>';
                     }
                     if(tab[i][2] === 'f'){
-                        if((tab[i][1] == 'mult') || (tab[i][1] == 'divi') || (tab[i][1] == 'plus')  || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin') || (tab[i][1] == 'decalDroite')){
+                        if((tab[i][1] == 'mult') || (tab[i][1] == 'divi')  || (tab[i][1] == 'modulo') || (tab[i][1] == 'plus')  || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'etBin') || (tab[i][1] == 'decalDroite')){
                             var objOperation = TraiteOperations1(tab,i);
                             if(objOperation.status == true){
                                 t+=objOperation.value;
-                                if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){
+                                if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi') || (tab[parentId][1] == 'modulo')){
                                     t+=')';
                                 }
                             }else{
@@ -2067,7 +2089,7 @@ function TraiteOperations1(tab,id,niveau){
                             var obj = js_traiteAppelFonction(tab,i,true,niveau,false);
                             if(obj.status == true){
                                 t+=obj.value;
-                                if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){
+                                if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi') || (tab[parentId][1] == 'modulo')){
                                     t+=')';
                                 }
                             }else{
@@ -2091,9 +2113,9 @@ function TraiteOperations1(tab,id,niveau){
                             return(logerreur({status:false,'message':'fonction paramètre non reconnu 1391 "'+tab[i][1]+'"'}));
                         }
                     }else{
-                        if((tab[i][4] === 1) || (tab[i][4] === 2)){
+                        if((tab[i][4] !== 0)){
                             t+=maConstante(tab[i]);
-                            if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){
+                            if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')  ){
                                 t+=')';
                             }
                         }else{
@@ -2110,7 +2132,7 @@ function TraiteOperations1(tab,id,niveau){
                                     t+=tab[i][1];
                                 }
                             }
-                            if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')){
+                            if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')  ){
                                 t+=')';
                             }
                         }
@@ -2233,7 +2255,7 @@ function js_condition1(tab,id,niveau){
                          
                             t+='typeof '+(tab[tabPar[0]+1][1]);
                             
-                        }else if((tab[tabPar[0]][2] == 'f') && ( (tab[tabPar[0]][1] == 'plus') || (tab[tabPar[0]][1] == 'concat') || (tab[tabPar[0]][1] == 'moins'))){
+                        }else if((tab[tabPar[0]][2] == 'f') && ( (tab[tabPar[0]][1] == 'plus') || (tab[tabPar[0]][1] == 'concat') || (tab[tabPar[0]][1] == 'moins')  || (tab[tabPar[0]][1] == 'modulo') )){
                          
                             var objOperation = TraiteOperations1(tab,tab[tabPar[0]][0]);
                             if(objOperation.status == true){

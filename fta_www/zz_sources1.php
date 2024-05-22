@@ -88,7 +88,6 @@ $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
 $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-/* &#128270;*/
 $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$__xpage.'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
@@ -228,8 +227,11 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
     $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
-    /*✎ #9998*/
-    $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">x</a>';
+    
+    $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">x</a>';
+    
+    $lsttbl.=' <a class="yyavertissement yytxtSiz1" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+    
     $lsttbl.='</div>';
     $lsttbl.='</td>';
     $lsttbl.='<td style="text-align:center;">';
@@ -253,7 +255,7 @@ $o1.='<a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer
   ============================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$par=array( 'js_a_inclure' => array( 'js/pour_zz_source1.js', 'js/convertit-php-en-rev0.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

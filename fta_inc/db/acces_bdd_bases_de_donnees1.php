@@ -53,7 +53,6 @@ function recupere_une_donnees_des_bases_de_donnees_avec_parents($id,$db){
   WHERE `T0`.`chi_id_basedd`=\''.addslashes1($id).'\'
  ';
 
-
  $stmt = $db->prepare($sql);
  if($stmt!==false){
    $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC

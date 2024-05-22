@@ -1,23 +1,46 @@
 <?php
 //if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
 
+function charger_un_fichier_source_par_son_identifiant(&$data){
 
+ if((isset($data['input']['id_source']))){
+     $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
+     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
+     $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
+     $chemin_fichier='..'.$ret['T1.chp_nom_dossier'].''.$ret['T0.chp_nom_source'];
+     if(is_file($chemin_fichier)){
+      
+      $contenu_du_fichier = file_get_contents($chemin_fichier);
+      if($contenu_du_fichier!==false){
+          $data['contenu_du_fichier']=$contenu_du_fichier;
+          $data['db']=$ret;
+          $data['db']=$ret;
+          $data['status']='OK';
+      }
+      
+      
+      
+  }else{
+      $data['messages'][]='fichier introuvable';
+  }
+  
+ }else{
+     $data['messages'][]='champ id_source introuvable';
+ }
+
+
+}
 //==========================================================================================================
 function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
  
  if((isset($data['input']['file_name']))){
   $nomFichierDecripte=decrypter($data['input']['file_name']);
-  if(unlink($nomFichierDecripte)){
-
-       $data['status']='OK';
-    
-    
-   }else{
-     
-       $data['messages'][]='impossible de supprimer le fichier';   
-    
-   }
-   
+  
+  if(sauvegarder_et_supprimer_fichier($nomFichierDecripte)){
+    $data['status']='OK';
+  }else{
+    $data['messages'][]='la copie du fichier dans le répertoire de sauvegarde est impossible';
+  }
  }else{
   $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';
  }

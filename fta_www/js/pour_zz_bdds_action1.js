@@ -208,20 +208,6 @@ function convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_php ,
       
      }
      
-/*
-{nom_de_la_table: 'tbl_groupes', champs:{
-     'nom_du_champ'   : '',
-     'autoincrement'  : false,
-     'is_not_null'    : false,
-     'defaut'         : {'est_defini':false,'valeur':null},
-     'cle_primaire'   : false,
-     'reference'      : {'est_defini':false,'table':'','champ':''},
-     'type'           : {'nom':false,'longueur':false},
-    };
-
-*/     
-
-     
      dogid(nom_zone_php).value=lePhp;
     
 

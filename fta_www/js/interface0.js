@@ -38,6 +38,7 @@ function convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php){
   if(objPhp.status===true){
    
    dogid(nom_zone_genere_php).value=objPhp.value;
+   return({status:true,value:matriceFonction.value});
    
   }
   
@@ -45,6 +46,7 @@ function convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php){
   
  }
  displayMessages('zone_global_messages');
+ return({status:true});
 }
 
 /*
@@ -1045,6 +1047,10 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     var i=0;
     var affichagesPresents=false;
     var zon = document.getElementById(nomZone);
+    var zone_message_est_vide=true
+    if(zon.innerHTML!==''){
+     zone_message_est_vide=false;
+    }
     var numLignePrecedente=-1;
     var nombre_de_boutons_affiches=0;
     while(global_messages.errors.length>0){
@@ -1090,13 +1096,14 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
                 }
             }
         }
+        global_messages.ids=[];
     }
     while(global_messages.ranges.length>0){
      zon.innerHTML='&nbsp;<a href="javascript:selectionnerUnePlage('+global_messages.ranges[0][0]+','+global_messages.ranges[0][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">plage '+global_messages.ranges[0][0]+','+global_messages.ranges[0][1]+'</a>'+zon.innerHTML;
      global_messages.ranges.splice(0,1);
      affichagesPresents=true;
     }
-    if(affichagesPresents){
+    if(affichagesPresents && zone_message_est_vide){
      var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
      zon.innerHTML=ttt+zon.innerHTML;
     }

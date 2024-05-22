@@ -254,16 +254,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   $sql='
    UPDATE `tbl_sources` SET 
-      `chp_nom_source`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])        .'\'
-    , `chx_dossier_id_source`  = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) .'\'
-    , `chx_cible_id_source`    = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])   .'\'
-    , `chp_commentaire_source` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']).'\'
-    , `chp_rev_source`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])        .'\'
-    , `chp_genere_source`      = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])     .'\'
+      `chp_nom_source`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])        .'\'
+    , `chx_dossier_id_source`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) .'\'
+    , `chx_cible_id_source`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])   .'\'
+    , `chp_commentaire_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']).'\'
+    , `chp_rev_source`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])        .'\'
+    , `chp_genere_source`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])     .'\'
     
     
     WHERE 
-      `chi_id_source`          = '.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'
+      `chi_id_source`          = '.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'
   '; // 
 //  echo $sql;
 
@@ -368,8 +368,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 //  $nom_fichier_disque=
-
-  $sql='DELETE FROM tbl_sources WHERE `chi_id_source` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'\' ' ;
+  $db->querySingle('PRAGMA foreign_keys=ON');
+  $sql='DELETE FROM tbl_sources WHERE `chi_id_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'\' ' ;
   if(false === $db->exec($sql)){
 
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
@@ -399,12 +399,12 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $sql='
    INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
      (
-        \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])         .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])  .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])    .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])         .'\'
-      , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])      .'\'      
+        \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])         .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])  .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])    .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])         .'\'
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])      .'\'      
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
@@ -582,7 +582,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a class="yyavertissement" href="javascript:annuler_champ(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.CRLF;
   
   
-  $o1.='   <a href="javascript:afficherModale1(\'zz_dossiers_choix1.php?__nom_champ_dans_parent=chx_dossier_id_source\')">selectionner</a>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -754,7 +753,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   }else if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
    
 
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\')">R2P&#8615;</a>'.CRLF;
+   $o1.='   <a class="yyinfo" href="javascript:pour_zz_source_convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.CRLF;
    $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
    $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
    

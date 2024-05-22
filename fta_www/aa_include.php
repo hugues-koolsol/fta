@@ -1,8 +1,9 @@
 <?php
 date_default_timezone_set('Europe/Paris');
 define("APP_KEY","fta");
-define("BACKUP_PATH",'..'.DIRECTORY_SEPARATOR.APP_KEY.'_backup');
-define("INCLUDE_PATH",'..'.DIRECTORY_SEPARATOR.APP_KEY.'_inc');
+define("PREFIXE_REPERTOIRES","fta");
+define("BACKUP_PATH",'..'.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_backup');
+define("INCLUDE_PATH",'..'.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_inc');
 define("NAV","NAV");
 define("CRLF","\r\n");
 define("OK","OK");

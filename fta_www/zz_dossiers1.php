@@ -264,54 +264,108 @@ if($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===APP_KEY){
 }
 
 
-
-$__debut=$__xpage*$__nbMax;
-
-$sql='
- SELECT `chi_id_dossier` , `chp_nom_dossier` , T1.chp_nom_cible
+$__debut=$__xpage*($__nbMax);
+$champs0='`chi_id_dossier`          , `chp_nom_dossier` 
+';
+$sql0='SELECT '.$champs0;
+$from0='
  FROM `tbl_dossiers` `T0`
-  LEFT JOIN tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
- WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
+ 
+';
+$sql0.=$from0;
+$where0='
+ WHERE  "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
 ';
 
-if($chi_id_dossier!='' && is_numeric($chi_id_dossier)){
- $sql.='
-  AND `T0`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
- '; 
-}
 
-if($chp_nom_dossier!='' ){
- $sql.='
-  AND `T0`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
- '; 
+if(($chp_nom_dossier != '')){
+
+    $where0.='
+  AND `T1`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
+ ';
+
 }
 
 
+if(($chi_id_dossier != '')){
 
+    $where0.='
+  AND `T1`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
+ ';
 
+}
 
-
-$sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$sql0.=$where0;
+$order0='
+ ORDER BY `T0`.`chp_nom_dossier` ASC
+';
+$sql0.=$order0;
+$plage0=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$sql0.=$plage0;
 
 
 $data0=array();
-$cle_de_la_cible='';
 
-$stmt = $db->prepare($sql);
+
+$stmt = $db->prepare($sql0);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
   while($arr=$result->fetchArray(SQLITE3_NUM)){
    array_push($data0, array(
     'T0.chi_id_dossier'          => $arr[0],
     'T0.chp_nom_dossier'         => $arr[1],
-    'T1.chp_nom_cible'           => $arr[2],
    ));
-   $cle_de_la_cible=$arr[2];
   }
   $stmt->close(); 
+  
+    $__nbEnregs=count($data0);
+
+    if(($__nbEnregs >= $__nbMax || $__xpage > 0)){
+
+        $sql1='SELECT COUNT(*) '.$from0.$where0;
+        $__nbEnregs=$db->querySingle($sql1);
+
+    }
+  
+  
 }else{
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
+
+$consUrlRedir=''.'&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
+$__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
+
+if(($__debut+$__nbMax < $__nbEnregs)){
+
+    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($__xpage+1)).$consUrlRedir.'">&raquo;</a>';
+
+}
+
+$__bouton_enregs_prec=' <span class="yybtn yyunset">&laquo;</span>';
+
+if(($__xpage > 0)){
+
+    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($__xpage-1).$consUrlRedir.'">&laquo;</a>';
+
+}
+
+
+$o1.='<div>';
+$o1.='<form class="yylistForm1">';
+$o1.=' <a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer un nouveau source</a>'.CRLF;
+$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
+
+if(($__nbEnregs > 0)){
+
+    $o1.='page '.(($__xpage+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
+
+}else{
+
+    $o1.='pas d\'enregistrements'.CRLF;
+}
+
+$o1.='</form>';
+$o1.='</div>';
 
  
 
@@ -360,22 +414,6 @@ foreach($data0 as $k0=>$v0){
  
  $__lsttbl.='</td>';
 
-/*  
- $__lsttbl.='<td data-label="etat" style="text-align:center;">';
- $listeDesEtats='';
- if(!is_dir($dossier)){
-  $listeDesEtats.='Le dossier n\'existe pas ';
- }else{
-  $listeDesEtats.='Le dossier existe ';
-  if(le_dossier_est_vide($dossier)){
-   $listeDesEtats.='<br />Le dossier est vide';
-  }else{
-   $listeDesEtats.='<br />Le dossier contient des éléments';
-  }
- }
- $__lsttbl.=$listeDesEtats.'</td>';
-*/
-
 
  
  $__lsttbl.='<td style="text-align:center;">';
@@ -383,7 +421,7 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='</td>';
  
  $__lsttbl.='<td style="text-align:left;">';
- $__lsttbl.=$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].''.$v0['T0.chp_nom_dossier'].'';
+ $__lsttbl.='['.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].']'.$v0['T0.chp_nom_dossier'].'';
  $__lsttbl.='</td>';
  
  
@@ -394,35 +432,10 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__ls
 
 $o1.='<a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
 
-if($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']===APP_KEY){
+if(( $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta' )){
  
   $o1.='<a class="yyinfo" href="zz_dossiers1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.CRLF;
  
-}else{
-    if($cle_de_la_cible!==''){
-
-     $sql='
-      SELECT `chp_dossier_cible` 
-      FROM `tbl_cibles` `T0`
-      WHERE "T0"."chp_nom_cible" = \''.addslashes1($cle_de_la_cible).'\' 
-        AND "T0"."chp_dossier_cible" <> \''.addslashes1($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']).'\' 
-     ';
-
-     $stmt = $db->prepare($sql);
-     if($stmt!==false){
-      
-       $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-       while($arr=$result->fetchArray(SQLITE3_NUM)){
-        
-        //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[0] , true ) . '</pre>' ; exit(0);
-        $o1.='<a class="yyinfo" href="zz_dossiers1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode($arr[0]).'">recupérer les dossiers de '.$arr[0].'</a>'.CRLF;
-        
-       }
-       $stmt->close(); 
-
-      }
-     
-    }
     
 }
 

@@ -913,23 +913,30 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
    /*
      en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
      mais pour les fichiers rev, c'est pas excellent, 
-     on accepte les \r \n \t \x \o , \" et \' \\ donc on fait un 
-     petit parsing et on remonte une erreur si on n'est pas dans ces cas là
+     on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
+     petite analyse et on remonte une erreur si on n'est pas dans ces cas
    */
    var rv=element.attributes.rawValue;
    var l01=rv.length-2;
-   for(var i=l01;i>=0;i--){
+   /* 
+     la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
+     on les retire pour l'analyse, donc on part de l'avant dernier caractère 
+     et on redescend jusqu'à l'indice 1
+   */
+   for(var i=l01;i>0;i--){
     if(rv.substr(i,1)=='\\'){
+     /* on remonte à partir du dernier caractère */
      if(i===l01){
-      if(rv.length>=2 && l01>1 && rv.substr(i-1,1)){
+      /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
+      if(rv.length>2 && l01>1 && i>1 && rv.substr(i-1,1)==='\\'){
        i--;
       }else{
        /* position du \ en dernier */
-       return( astphp_logerreur({'status':false,'message':'0925  une chaine ne toit pas contenir un \\ en dernière position  ',element:element}));
+       return( astphp_logerreur({'status':false,'message':'0925  une chaine ne doit pas contenir un simple \\ en dernière position  ',element:element}));
       }
       
      }else{
-      if(i>=1){
+      if(i>1){
        if(rv.substr(i-1,1)==='\\' ){
          i--;
        }else{

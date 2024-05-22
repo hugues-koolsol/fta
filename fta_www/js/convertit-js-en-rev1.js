@@ -24,6 +24,7 @@ point d'entrée = TransformAstEnRev
      //
         'ArrayExpression'       === element.type
      || 'AssignmentExpression'  === element.type
+     || "AssignmentPattern"     === element.type
      || 'BinaryExpression'      === element.type
      || 'CallExpression'        === element.type
      || 'ConditionalExpression' === element.type
@@ -175,6 +176,16 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
             return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0147 ',element:element}));
         }
 
+
+    }else if('AssignmentPattern' === element.type){
+
+        var obj1 = traiteAssignmentPattern(element,niveau,{'sansLF':true});
+        if(obj1.status === true){
+            t+=obj1.value;
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0136 ',element:element}));
+        }
+
     }else if('AssignmentExpression' === element.type){
 
         var obj1 = traiteAssignmentExpress1(element,niveau,{'sansLF':true});
@@ -243,6 +254,8 @@ function recupNomOperateur(s){
         return 'mult';
     }else if(s === '/'){
         return 'divi';
+    }else if(s === '%'){
+        return 'modulo';
     }else if(s === '=='){
         return 'egal';
     }else if(s === '==='){
@@ -1526,6 +1539,41 @@ function traiteUpdateExpress1(element,niveau,opt){
 /*
 =========================================================
 */
+function traiteAssignmentPattern(element,niveau,opt){
+    console.log('%c dans traiteAssignmentExpress1 element=','color:red;background:yellow;font-weight:bold;',element);
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    var LF='\n';
+    if(opt['sansLF']){
+        LF='';
+        esp0='';
+        esp1='';
+    }else{
+        t+=ajouteCommentaireAvant(element,niveau);
+    }
+    if(element.left && element.right){
+     
+        var objgauche = traiteUneComposante(element.left , niveau , false , false );
+        var objdroite = traiteUneComposante(element.right , niveau , false , false );
+        if( objgauche.status===true && objdroite.status){
+            t+=objgauche.value+',defaut('+objdroite.value+')';
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur traiteAssignmentPattern 1558 pour '+element.type,element:element}));
+        }
+     
+     
+    }else{
+        return(astjs_logerreur({status:false,'message':'erreur traiteAssignmentPattern 1554 pour '+element.type,element:element}));
+    }
+    
+    
+    return({status:true,value:t});    
+    
+}
+/*
+=========================================================
+*/
 
 
 function traiteAssignmentExpress1(element,niveau,opt){
@@ -2044,8 +2092,21 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
                     t+=',';
                     var j=0;
                     for(j=0;j < element.params.length;j=j+1){
-                        t+='\n'+esp0+esp1+esp1+'argument('+element.params[j].name+')';
+                        if(element.params[j].type==="Identifier"){
+                            t+='\n'+esp0+esp1+esp1+'argument('+element.params[j].name+')';
+                        }else if(element.params[j].type==="AssignmentPattern"){
+                         var obj=traiteAssignmentPattern(element.params[j],niveau,{});
+                         if(obj.status===true){
+                            
+                            t+='\n'+esp0+esp1+esp1+'argument('+obj.value+')';
+                         }else{
+                            return(astjs_logerreur({status:false,'message':'erreur pour TransformAstEnRev 2101 type argument non prévu '+element.params[j].type,element:element}));
+                         }
+                        }else{
+                            return(astjs_logerreur({status:false,'message':'erreur pour TransformAstEnRev 2053 type argument non prévu '+element.params[j].type,element:element}));
+                        }
                         if(j < element.params.length-1){
+                        
                             t+=',';
                         }
                     }

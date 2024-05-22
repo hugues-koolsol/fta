@@ -371,15 +371,15 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
       $sql='
        UPDATE `tbl_bases_de_donnees` SET 
-          `chp_nom_basedd`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
-        , `chp_commentaire_basedd` = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
-        , `chp_rev_basedd`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
-        , `chp_php_basedd`         = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
-        , `chp_genere_basedd`      = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
-        , `chx_dossier_id_basedd`  = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
-        , `chx_cible_id_basedd`    = \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
+          `chp_nom_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
+        , `chp_commentaire_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
+        , `chp_rev_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
+        , `chp_php_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
+        , `chp_genere_basedd`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
+        , `chx_dossier_id_basedd`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
+        , `chx_cible_id_basedd`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
         WHERE 
-          `chi_id_basedd`          = \''.addslashes($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']).'\'
+          `chi_id_basedd`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']).'\'
       ';
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
@@ -430,8 +430,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }
 
-  
-  $sql='DELETE FROM tbl_bases_de_donnees WHERE `chi_id_basedd` = \''.addslashes1($__id).'\' ' ;
+  $db->querySingle('PRAGMA foreign_keys=ON');  
+  $sql='DELETE FROM tbl_bases_de_donnees WHERE `chi_id_basedd` = \''.sq0($__id).'\' ' ;
   if(false === $db->exec($sql)){
 
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
@@ -461,13 +461,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     $sql='
      INSERT INTO `tbl_bases_de_donnees` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd ) VALUES
        (
-          \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
-        , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
-        , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
-        , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
-        , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
-        , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
-        , \''.addslashes1($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
+          \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
         
        )
     ' ;

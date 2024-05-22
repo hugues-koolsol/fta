@@ -137,8 +137,9 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
            }
 
          }
+         /* ne pas créer une copie de sauvefarde d'un fichier temporaire */
+         sauvegarder_et_supprimer_fichier($nomFichierDecripte,true); 
          
-         @unlink($fichier_temporaire);
      
         }else{
          
@@ -237,6 +238,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
                         $stmt->close(); 
                     }
                     error_reporting($niveau_erreur_php);
+                    $db->querySingle('PRAGMA foreign_keys=ON');
                     $sql3  ='DELETE FROM `'.$nom_de_la_table . '` WHERE `'.$a_des_champs_index.'` = 1';
                     $essai_delete = $db->querySingle($sql3);
                  

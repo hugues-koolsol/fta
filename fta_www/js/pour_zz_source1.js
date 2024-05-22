@@ -1,6 +1,70 @@
 "use strict";
 
 
+function traitement_pour_conversion_fichier_php(par){
+ console.log('par=',par);
+
+  var ast=JSON.parse(par.value);
+ 
+  var obj=TransformAstPhpEnRev(ast,0,false);
+  if(obj.status===true){
+   console.log(obj.value)
+  }
+ 
+ 
+}
+/*
+==========================================
+*/
+function convertir_un_source_sur_disque(id_source){
+
+// console.log(nom_de_fichier_encrypte);
+ 
+ clearMessages('zone_global_messages');
+ 
+ var r = new XMLHttpRequest();
+ r.open("POST",'za_ajax.php?charger_un_fichier_source_par_son_identifiant',true);
+ r.timeout=6000;
+ r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+ r.onreadystatechange = function () {
+  if (r.readyState != 4 || r.status != 200) return;
+  try{
+   var jsonRet=JSON.parse(r.responseText);
+   if(jsonRet.status=='OK'){
+    console.log('jsonRet=',jsonRet);
+//    dogid('chp_genere_source').value=jsonRet.value;
+    if(jsonRet.db['T0.chp_nom_source'].indexOf('.php')>=0){
+     var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_pour_conversion_fichier_php); // ,{'comment':true}
+    }
+
+    return;
+   }else{
+    display_ajax_error_in_cons(jsonRet);
+    console.log(r);
+    displayMessages('zone_global_messages');
+//    alert('Problème XMLHttpRequest, voir la console javascript !');
+    return;
+   }
+  }catch(e){
+   console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
+   return;
+  }
+ };
+ r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
+ r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
+ var ajax_param={
+  call:{
+   lib                       : 'core'          ,
+   file                      : 'file' ,
+   funct                     : 'charger_un_fichier_source_par_son_identifiant' ,
+  },
+  id_source                  : id_source   ,
+ }
+ r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+ 
+  
+ 
+}
 
 
 /*
@@ -192,7 +256,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
 //  console.log('ast=',ast);
   var obj=TransformAstPhpEnRev(ast,0,false);
   if(obj.status===true){
-   console.log( ret.input.opt.nom_zone_rev )
+//   console.log( ret.input.opt.nom_zone_rev )
    document.getElementById(ret.input.opt.nom_zone_rev).value='php('+obj.value+')';
   }else{
     
@@ -296,6 +360,29 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id
  displayMessages('zone_global_messages');
 
 }
+/*
+  =====================================================================================================================
+  convertir un textarea source rev et mettre le résultat dans un textarea php
+  =====================================================================================================================
+*/
+function pour_zz_source_convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php , id_source , id_cible ){
+ var obj=convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php);
+ if(obj.status===true){
+  var parametres_sauvegarde={
+   'matrice': obj.value,
+   'chp_provenance_rev' : 'source',
+   'chx_id_provanance_rev' : id_source,
+   'id_cible' : id_cible
+  }
+  
+  sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+ }else{
+  console.error('TODO')
+ }
+ displayMessages('zone_global_messages');
+}
+
+
 /*
   =====================================================================================================================
 */
