@@ -255,7 +255,7 @@ $o1.='<a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer
   ============================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array( 'js_a_inclure' => array( 'js/pour_zz_source1.js', 'js/convertit-php-en-rev0.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$par=array( 'js_a_inclure' => array( 'js/pour_zz_source1.js', 'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js', 'js/html.js' , 'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 'js/jslib/esprima.js'  , 'js/sql.js' ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

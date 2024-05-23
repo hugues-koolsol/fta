@@ -660,22 +660,25 @@ function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp ,
 
  }else if(dansJs&&tab[id][1]=='source'){ // i18
   // analyse de source javascript
-  t+=CRLF;
-  t+='//<![CDATA['+CRLF;
-  t+='// = = = = <source javascript = = = ='+CRLF;
-  t+='"use strict";'+CRLF;
 //  console.error('todo')
 //  bug();
   php_contexte_commentaire_html=false;
   ob=parseJavascript0(tab,id+1,0);
   php_contexte_commentaire_html=true;
   if(ob.status===true){
+   t+=CRLF;
+   t+='//<![CDATA['+CRLF;
+   t+='// = = = = <source javascript = = = ='+CRLF;
+   if(ob.value.indexOf('use strict')>=0){
+   }else{
+       t+='"use strict";'+CRLF;
+   }
    t+=ob.value;
+   t+=CRLF+'// = = = = source javascript> = = = ='+CRLF;
+   t+='//]]>'+CRLF;
   }else{
    return logerreur({status:false,value:t,message:'erreur de script dans un html'});
   }
-  t+=CRLF+'// = = = = source javascript> = = = ='+CRLF;
-  t+='//]]>'+CRLF;
   
   return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
 
