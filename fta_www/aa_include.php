@@ -22,7 +22,8 @@ $GLOBALS['__date']=date('Y-m-d H:i:s');
 /*===================================================================================================================*/
 function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_copie=false){
  /*
- il n'y a qu'ici qu'on trouve unlink
+ Il n'y a qu'ici qu'on trouve unlink.
+ Quand on crée un fichier temporaire et qu'on le supprime, on ne fait pas de copie dans le répertoire BACKUP_PATH
  */
  if($ne_pas_faire_de_copie){
   if(@unlink($chemin_du_fichier)){
@@ -298,6 +299,7 @@ function html_header1($parametres){
             $o1.='          <li><a class="'.('traiteHtml.php'===BNF?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.($idMenu++).'">HTML</a></li>'.CRLF;
             $o1.='          <li><a class="'.('traiteJs.php'===BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
             $o1.='          <li><a class="'.('traitePhp.php'===BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
+            $o1.='          <li><a class="'.('traiteSql.php'===BNF?'yymenusel1':'').'" href="traiteSql.php?idMenu='.($idMenu++).'">SQL</a></li>'.CRLF;
             $o1.='          <li><a class="'.('index_source.php'===BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
             $o1.='          <li><a class="'.('zz_cibles1.php'===BNF?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
             if(isset($_SESSION[APP_KEY]['cible_courante'])){

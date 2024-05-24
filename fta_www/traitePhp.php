@@ -56,19 +56,3 @@ setTimeout(
 </script>';
 $o1.=html_footer1($par);
 print($o1);$o1='';
-/*  
-  
-  <script type="text/javascript" src="js/core6.js"></script>
-  <script type="text/javascript" src="js/compile1.js"></script>
-  <script type="text/javascript" src="js/javascript.js"></script>
-  <script type="text/javascript" src="js/html.js"></script>
-  <!-- https://esprima.org/doc/videos.html -->
-  <script type="text/javascript" src="js/convertit-php-en-rev0.js"></script>
-  <script type="text/javascript" src="js/convertit-js-en-rev1.js"></script>
-  <script type="text/javascript" src="esprima.js"></script>
-<script type="text/javascript">
-chargerLeDernierSourcePhp();
-transformPhpEnRev();
-</script>  
-</body></html>
-*/

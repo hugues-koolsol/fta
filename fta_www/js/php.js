@@ -95,7 +95,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       return php_logerr({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
      }
     }else if(tab[i+2][2]=='c' ){
-     t+='"'+tab[i+2][1].replace(/\"/g,'\\"')+'"';
+     t+=maConstante(tab[i+2]);
     }else{
      
      var obj1=php_traiteElement(tab,i+2,niveau,{});
@@ -1884,18 +1884,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
     // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
 
     if(tab[j][8]==1 && tab[j+1][2]=='c' ){ // le paramètre est une constante
-     if(nomFonction==='define'){
-      /* dans un define, \r\n doit être entre double quotes !!! */
-      var temp=maConstante(tab[j+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-      temp=temp.substr(1,temp.length-2);
-      temp=temp.replace(/\\\'/g,'\'');
-      temp=temp.replace(/"/g,'\\"');
-      temp='"'+temp+'"';
-//      console.log('temp=',temp);
-      argumentsFonction+=','+temp;
-     }else{
-      argumentsFonction+=','+maConstante(tab[j+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-     }
+     argumentsFonction+=','+maConstante(tab[j+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
     }else{
      var obj1=php_traiteElement(tab , j+1 , niveau,{});
      if(obj1.status===true){

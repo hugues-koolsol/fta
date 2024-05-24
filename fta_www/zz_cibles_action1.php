@@ -62,8 +62,8 @@ function boutonRetourALaListe(){
       'fta_www/zz_dossiers_choix1.php' => array(),
       'fta_www/zz_sources1.php' => array(),
       'fta_www/zz_sources_action1.php' => array(),
-      'fta_www/phpliteadmin.config.php' => array(),
-      'fta_www/phpliteadmin.php' => array(),      
+      'fta_www/phpliteadmin.config.php' => array('chp_type_source' => 'bibliotheque'),
+      'fta_www/phpliteadmin.php' => array('chp_type_source' => 'bibliotheque'),      
       'fta_www/js/compile1.js' => array(),
       'fta_www/js/convertit-html-en-rev1.js' => array(),
       'fta_www/js/convertit-js-en-rev1.js' => array(),
@@ -78,7 +78,10 @@ function boutonRetourALaListe(){
       'fta_www/js/pour_zz_source1.js' => array(),
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
-      'fta_www/js/jslib/esprima.js' => array(),
+      /*https://github.com/jquery/esprima*/
+      'fta_www/js/jslib/esprima.js' => array('chp_type_source' => 'bibliotheque'),
+      /*https://github.com/codeschool/sqlite-parser*/
+      'fta_www/js/jslib/sqlite_parser_from_demo.js' => array('chp_type_source' => 'bibliotheque'),
       
    );
    $indice_du_dossier=2; /* le dossier 1 est celui de la racine */
@@ -216,7 +219,11 @@ function boutonRetourALaListe(){
 
    $contenu_table_sources ='';
    foreach( $tab as $k1 => $v1 ){
-    $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."')\r\n";
+    if(isset($v1['chp_type_source'])){
+     $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."' , '".$v1['chp_type_source']."')\r\n";
+    }else{
+     $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."' , 'normal')\r\n";
+    }
     
    }
    if($contenu_table_sources!==''){
@@ -224,7 +231,7 @@ function boutonRetourALaListe(){
     $contenu_table_sources=substr($contenu_table_sources,1);
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_table_sources ) . '</pre>' ; exit(0);
     
-    $contenu_table_sources ='INSERT INTO `tbl_sources`( `chp_nom_source`, `chx_cible_id_source`, `chx_dossier_id_source`) VALUES '.$contenu_table_sources;
+    $contenu_table_sources ='INSERT INTO `tbl_sources`( `chp_nom_source`, `chx_cible_id_source`, `chx_dossier_id_source` , `chp_type_source` ) VALUES '.$contenu_table_sources;
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_table_sources ) . '</pre>' ; exit(0);
     if(false === $base_ftb->exec($contenu_table_sources)){
      echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);

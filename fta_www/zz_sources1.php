@@ -47,6 +47,7 @@ $chi_id_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_sour
 $chp_nom_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_source',BNF);
 $chp_nom_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier',BNF);
 $chi_id_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier',BNF);
+$chp_type_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_type_source',BNF);
 /*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['filtres'][BNF]['__xpage'] , true ) . '</pre>' ; exit(0);*/
 $autofocus='chi_id_source';
 
@@ -54,13 +55,17 @@ if(($chp_nom_source != '')){
 
     $autofocus='chp_nom_source';
 
-}else if(($chi_id_source != '')){
+}else if(($chp_type_source != '')){
 
-    $autofocus='chi_id_source';
+    $autofocus='chp_type_source';
 
 }else if(($chp_nom_dossier != '')){
 
     $autofocus='chp_nom_dossier';
+
+}else if(($chi_id_source != '')){
+
+    $autofocus='chi_id_source';
 
 }else if(($chi_id_dossier != '')){
 
@@ -73,14 +78,22 @@ $o1.='   <div>'.CRLF;
 $o1.='    <label for="chp_nom_source">nom</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_nom_source" id="chp_nom_source"   value="'.enti1($chp_nom_source).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
+
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_source">id</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_source" id="chi_id_source"   value="'.enti1($chi_id_source).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_source')?'autofocus="autofocus"':'').' />'.CRLF;
+$o1.='    <label for="chp_type_source">type</label>'.CRLF;
+$o1.='    <input  type="text" name="chp_type_source" id="chp_type_source"   value="'.enti1($chp_type_source).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_type_source')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
+
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="chp_nom_dossier">dossier</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.CRLF;
+$o1.='    <label for="chi_id_source">id</label>'.CRLF;
+$o1.='    <input  type="text" name="chi_id_source" id="chi_id_source"   value="'.enti1($chi_id_source).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_source')?'autofocus="autofocus"':'').' />'.CRLF;
+$o1.='   </div>'.CRLF;
+
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
 $o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
@@ -92,8 +105,9 @@ $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$__xpage.'" 
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 $__debut=$__xpage*($__nbMax);
-$champs0='`chi_id_source`          , `chp_nom_source` , T1.chp_nom_dossier , chp_commentaire_source , 
-          T0.chx_dossier_id_source 
+$champs0='
+ `chi_id_source`          , `chp_nom_source` , T1.chp_nom_dossier , chp_commentaire_source , T0.chx_dossier_id_source , 
+  T0.chp_type_source  
 ';
 $sql0='SELECT '.$champs0;
 $from0='
@@ -123,6 +137,14 @@ if(($chp_nom_source != '')){
 
 }
 
+
+if(($chp_type_source != '')){
+
+    $where0.='
+  AND `T1`.`chp_type_source` LIKE \'%'.addslashes1($chp_type_source).'%\'
+ ';
+
+}
 
 if(($chp_nom_dossier != '')){
 
@@ -157,12 +179,15 @@ if(($stmt0 !== false)){
 
     $res0=$stmt0->execute();
     while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
-        array_push($data0,array(
+        $data0[]=array(
             'T0.chi_id_source' => $tab0[0],
             'T0.chp_nom_source' => $tab0[1],
             'T1.chp_nom_dossier' => $tab0[2],
             'T0.chp_commentaire_source' => $tab0[3],
-            'T0.chx_dossier_id_source' => $tab0[4]));
+            'T0.chx_dossier_id_source' => $tab0[4] ,
+            'T0.chp_type_source'       => $tab0[5] ,
+        );
+            
     }
     $stmt0->close();
     $__nbEnregs=count($data0);
@@ -219,6 +244,7 @@ $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';
 $lsttbl.='<th>id</th>';
 $lsttbl.='<th>nom</th>';
+$lsttbl.='<th>type</th>';
 $lsttbl.='<th>dossier</th>';
 $lsttbl.='<th>commentaire</th>';
 $lsttbl.='</tr></thead><tbody>';
@@ -229,8 +255,11 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
     $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">x</a>';
-    
-    $lsttbl.=' <a class="yyavertissement yytxtSiz1" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+    if( $v0['T0.chp_type_source']==='normal' && substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' ){ // || substr($v0['T0.chp_nom_source'],-4)==='.sql'
+     $lsttbl.=' <a class="yyavertissement yytxtSiz1" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+    }else{
+     $lsttbl.='<span class=" yybtn yyunset"  title="convertir un source">😊</span>';
+    }
     
     $lsttbl.='</div>';
     $lsttbl.='</td>';
@@ -240,6 +269,11 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<td style="text-align:left;">';
     $lsttbl.=''.$v0['T0.chp_nom_source'].'';
     $lsttbl.='</td>';
+    
+    $lsttbl.='<td style="text-align:left;">';
+    $lsttbl.=''.$v0['T0.chp_type_source'].'';
+    $lsttbl.='</td>';
+    
     $lsttbl.='<td style="text-align:left;">';
     $lsttbl.='('.$v0['T0.chx_dossier_id_source'].')'.$v0['T1.chp_nom_dossier'].'';
     $lsttbl.='</td>';

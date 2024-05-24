@@ -1,17 +1,183 @@
 "use strict";
 
 
-function traitement_pour_conversion_fichier_php(par){
- console.log('par=',par);
+function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source , contenuRev , contenuSource , date_de_debut_traitement ){
+ 
+ 
+    var r = new XMLHttpRequest();
+    r.open("POST",'za_ajax.php?sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant',true);
+    r.timeout=6000;
+    r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+    r.onreadystatechange = function () {
+        if (r.readyState != 4 || r.status != 200) return;
+        try{
+            var jsonRet=JSON.parse(r.responseText);
+            if(jsonRet.status=='OK'){
+             
+                var date_de_fin_traitement = new Date();
+                date_de_fin_traitement = date_de_fin_traitement.getTime();
+             
+                var date_de_debut_traitement=jsonRet.input.date_de_debut_traitement;
+                var nombre_de_secondes = (date_de_fin_traitement-date_de_debut_traitement)/1000;
 
-  var ast=JSON.parse(par.value);
+             
+                logerreur({status:true,message:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
+                displayMessages('zone_global_messages');
+                return;
+            }else{
+                display_ajax_error_in_cons(jsonRet);
+                console.log(r);
+                displayMessages('zone_global_messages');
+                return;
+            }
+        }catch(e){
+         console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
+         return;
+        }
+    };
+    r.onerror=function(e){console.error('e=',e); /* a_faire(); */    return;}
+    r.ontimeout=function(e){console.error('e=',e); /* a_faire(); */    return;}
+    var ajax_param={
+        call:{
+         lib       : 'core'          ,
+         file      : 'file' ,
+         funct     : 'sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant' ,
+        },
+        id_source                : id_source   ,
+        rev                      : contenuRev,
+        source                   : contenuSource,
+        date_de_debut_traitement : date_de_debut_traitement
+    }
+    r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
  
-  var obj=TransformAstPhpEnRev(ast,0,false);
-  if(obj.status===true){
-   console.log(obj.value)
-  }
+ 
+}
+/*
+*/
+function traitement_apres_ajax_pour_conversion_fichier_sql(par){
+ 
+    var objRev = TransformHtmlEnRev(par.contenu_du_fichier,0);
+    
+    if(objRev.status===true){
+
+       var tableau1 = iterateCharacters2(objRev.value);
+       var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+       
+       if(matriceFonction.status===true){
+        
+           var objSql=tabToSql1(matriceFonction.value,0,0);
+           if(objSql.status===true){
+            
+                var contenu=objSql.value.replace(/\/\*==========DEBUT DEFINITION===========\*\//g,'');            
+                console.log(objSql.value);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , contenu , par.input.date_de_debut_traitement );
+               
+           }
+
+       }
+
+    }
+
+}
+
+function traitement_apres_ajax_pour_conversion_fichier_html(par){
+
+    var objRev = TransformHtmlEnRev(par.contenu_du_fichier,0);
+    if(objRev.status===true){
+
+       var tableau1 = iterateCharacters2(objRev.value);
+       var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+       
+       if(matriceFonction.status===true){
+        
+           var objHtml=tabToHtml1(matriceFonction.value,0,false,0);
+           
+           if(objHtml.status===true){
+          
+                console.log(objHtml.value);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objHtml.value , par.input.date_de_debut_traitement );
+               
+           }
+       }
+    }
+
+}
+
+function traitement_apres_ajax_pour_conversion_fichier_js(par){
+ 
+
+   try{
+       
+       var ret = esprima.parseScript(par.contenu_du_fichier,{range:true,comment:true});
+       tabComment=ret.comments;
+       var objRev = TransformAstEnRev(ret.body,0);
+       if(objRev.status == true){
+        
+        var tableau1 = iterateCharacters2(objRev.value);
+        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+        if(matriceFonction.status===true){
+            console.log(matriceFonction);
+            
+            var objJs=parseJavascript0(matriceFonction.value,1,0);
+            
+            if(objJs.status===true){           
+//              console.log(objJs.value);
+              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement );
+             
+            }
+            
+            
+        }
+        
+       }else{
+       }
+
+   }catch(e){
+       console.log('erreur esprima',e);
+       if(e.lineNumber){
+        logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne'});
+        displayMessages('zone_global_messages');        
+       }
+       ret=false;
+   }
+   
  
  
+ 
+}
+
+function traitement_apres_ajax_pour_conversion_fichier_php(par){
+    console.log('par=',par);
+
+    var ast=JSON.parse(par.value);
+   
+    var objRev=TransformAstPhpEnRev(ast,0,false);
+    if(objRev.status===true){
+        /*
+        on a obtenu le format rev du php,
+        on peut le convertir en php
+        */
+        console.log(objRev.value)
+        
+        var tableau1 = iterateCharacters2('php('+objRev.value+')');
+        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+        if(matriceFonction.status===true){
+            var objPhp=parsePhp0(matriceFonction.value,0,0);
+            
+            if(objPhp.status===true){
+                /*
+                on a obtenu le php à partir du rev,
+                on peut tout enregistrer
+                */
+//                console.log(objPhp.value)
+                
+//                console.log(par.input.opt.jsonRet.input.id_source);
+                
+               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.jsonRet.input.id_source , objRev.value , objPhp.value , par.input.opt.jsonRet.input.date_de_debut_traitement);
+                
+            }
+        }
+    }
 }
 /*
 ==========================================
@@ -33,8 +199,15 @@ function convertir_un_source_sur_disque(id_source){
    if(jsonRet.status=='OK'){
     console.log('jsonRet=',jsonRet);
 //    dogid('chp_genere_source').value=jsonRet.value;
-    if(jsonRet.db['T0.chp_nom_source'].indexOf('.php')>=0){
-     var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_pour_conversion_fichier_php); // ,{'comment':true}
+    var nom_source=jsonRet.db['T0.chp_nom_source'];
+    if(nom_source.substr(nom_source.length-4)==='.php'){
+     var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_apres_ajax_pour_conversion_fichier_php); // ,{'comment':true}
+    }else if(nom_source.substr(nom_source.length-3)==='.js'){
+     traitement_apres_ajax_pour_conversion_fichier_js(jsonRet);
+    }else if(nom_source.substr(nom_source.length-5)==='.html' || nom_source.substr(nom_source.length-4)==='.htm'){
+     traitement_apres_ajax_pour_conversion_fichier_html(jsonRet);
+    }else if(nom_source.substr(nom_source.length-4)==='.sql' ){
+     traitement_apres_ajax_pour_conversion_fichier_sql(jsonRet);
     }
 
     return;
@@ -52,6 +225,8 @@ function convertir_un_source_sur_disque(id_source){
  };
  r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
  r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
+ var date_de_debut_traitement=new Date();
+ date_de_debut_traitement = date_de_debut_traitement.getTime();
  var ajax_param={
   call:{
    lib                       : 'core'          ,
@@ -59,6 +234,7 @@ function convertir_un_source_sur_disque(id_source){
    funct                     : 'charger_un_fichier_source_par_son_identifiant' ,
   },
   id_source                  : id_source   ,
+  date_de_debut_traitement   : date_de_debut_traitement
  }
  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
  

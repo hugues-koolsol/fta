@@ -69,6 +69,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  
  $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']           =isset($_POST['chi_id_source'])?decrypter($_POST['chi_id_source']) : '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']          =$_POST['chp_nom_source']         ?? '';
+ $_SESSION[APP_KEY][NAV][BNF]['chp_type_source']         =$_POST['chp_type_source']        ?? 'normal';
  $_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']     =$_POST['chx_cible_id_source']    ?? $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']  =$_POST['chp_commentaire_source'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']          =$_POST['chp_rev_source']         ?? '';
@@ -255,6 +256,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $sql='
    UPDATE `tbl_sources` SET 
       `chp_nom_source`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])        .'\'
+    , `chp_type_source`        = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source'])        .'\'
     , `chx_dossier_id_source`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) .'\'
     , `chx_cible_id_source`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])   .'\'
     , `chp_commentaire_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']).'\'
@@ -400,6 +402,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])         .'\'
+        \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source'])        .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])  .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])    .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) .'\'
@@ -477,17 +480,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   
   if(!isset($__valeurs['T0.chi_id_source'])){
    recharger_la_page('zz_sources1.php');
-  }else{
-/*   
-   $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']         = $__valeurs['T0.chp_nom_source']        ;
-   $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']  = $__valeurs['T0.chx_dossier_id_source'] ;
-   $_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']    = $__valeurs['T0.chx_cible_id_source']   ;
-   $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] = $__valeurs['T0.chp_commentaire_source'];
-   $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']         = $__valeurs['T0.chp_rev_source'];
-   $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']      = $__valeurs['T0.chp_genere_source'];
-*/   
-   
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
  }
 }
@@ -550,6 +542,15 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
+  $chp_type_source =isset($_SESSION[APP_KEY][NAV][BNF]['chp_type_source'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_type_source']:'normal';
+  $o1.=' <div class="yyfdiv1">'.CRLF;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">type</div></div>'.CRLF;
+  $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_type_source).'" name="chp_type_source" id="chp_type_source" maxlength="32" style="max-width:32em;" />'.CRLF;
+  $o1.='  </div></div>'.CRLF;
+  $o1.=' </div>'.CRLF;
+
+
 
 
   $chx_dossier_id_source =isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] )?$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']:'';
@@ -585,7 +586,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
-
+/*
 
   $chp_rev_source =isset($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']:'';
   $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -604,7 +605,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
-
+*/
 
 
 
@@ -641,6 +642,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
   $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
   $__valeurs['T0.chp_nom_source']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']         ??$__valeurs['T0.chp_nom_source']        ;
+  $__valeurs['T0.chp_type_source']         =$_SESSION[APP_KEY][NAV][BNF]['chp_type_source']        ??$__valeurs['T0.chp_type_source']        ;
   $__valeurs['T0.chx_dossier_id_source']   =$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']  ??$__valeurs['T0.chx_dossier_id_source'] ;
   $__valeurs['T0.chx_cible_id_source']     =$_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']    ??$__valeurs['T0.chx_cible_id_source']   ;
   $__valeurs['T0.chp_commentaire_source']  =$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] ??$__valeurs['T0.chp_commentaire_source'];
@@ -663,6 +665,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <span>'.$__id.'</span>'.CRLF;
   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_source']).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="width:100%;max-width:20em;" />'.CRLF;
+  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_type_source']).'" name="chp_type_source" id="chp_type_source" maxlength="64" style="width:100%;max-width:8em;" />'.CRLF;
+  
   $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.CRLF;
   
   $__parametres_pour_la_modale=array(
@@ -736,36 +740,39 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   
   $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
-  if(strpos($__valeurs['T0.chp_nom_source'],'.js')!==false){
-   
+  
+  if($__valeurs['T0.chp_type_source']==='normal'){
+      if(strpos($__valeurs['T0.chp_nom_source'],'.js')!==false){
+       
 
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.CRLF;
-   $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;J-&gt;R</a>'.CRLF;
-   $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
-   
-  }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm')!==false){
-   
+       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.CRLF;
+       $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;J-&gt;R</a>'.CRLF;
+       $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+       
+      }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm')!==false){
+       
 
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2H&#8615;</a>'.CRLF;
-   $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
-   $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
-   
-  }else if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
-   
+       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2H&#8615;</a>'.CRLF;
+       $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
+       $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+       
+      }else if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
+       
 
-   $o1.='   <a class="yyinfo" href="javascript:pour_zz_source_convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.CRLF;
-   $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
-   $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
-   
-  }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql')!==false){
-   
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
-   $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" >&#8613; sql =&gt; rev &#8613;</button>'.CRLF;
-   $o1.='   <a class="yyavertissement" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
-   
-  }else{
-   $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; texte &#8615;</a>'.CRLF;
-   $o1.='   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>'.CRLF;
+       $o1.='   <a class="yyinfo" href="javascript:pour_zz_source_convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.CRLF;
+       $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
+       $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+       
+      }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql')!==false){
+       
+       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
+       $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" >&#8613; sql =&gt; rev &#8613;</button>'.CRLF;
+       $o1.='   <a class="yyavertissement" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
+       
+      }else{
+       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; texte &#8615;</a>'.CRLF;
+       $o1.='   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>'.CRLF;
+      }
   }
   
   $o1.='  </div></div>'.CRLF;
@@ -800,8 +807,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
    if(is_file($nomCompletSource)){
     
-    $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.CRLF;
-    $o1.='   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">supprimer du disque</a>'.CRLF;
+      if($__valeurs['T0.chp_type_source']==='normal'){
+          $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.CRLF;
+          $o1.='   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">supprimer du disque</a>'.CRLF;
+      }
     
    }else{
     $o1.='   <span>le fichier est absent du disque</span>'.CRLF;
@@ -895,6 +904,7 @@ $par=array(
   'js/jslib/esprima.js' ,
   'js/javascript.js' ,
   'js/texte.js' ,
+  'js/jslib/sqlite_parser_from_demo.js' ,
   ),
   'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
