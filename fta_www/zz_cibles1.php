@@ -128,8 +128,6 @@ if($chp_commentaire_cible!='' ){
  '; 
 }
 
-
-
 $sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 
 

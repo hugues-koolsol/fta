@@ -18,10 +18,10 @@ print($o1);$o1='';
         </div>
   <h1>Convertir un sql en rev</h1>
   
-  <textarea class="txtar1" id="txtar1" rows="50" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <textarea class="txtar1" id="txtar1" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
-  <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-  <textarea class="txtar1" id="txtar3" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <textarea class="txtar1" id="txtar2" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <textarea class="txtar1" id="txtar3" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 <?php
 $js_a_executer_apres_chargement=array(
     array(

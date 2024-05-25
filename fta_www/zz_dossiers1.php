@@ -281,7 +281,7 @@ $where0='
 if(($chp_nom_dossier != '')){
 
     $where0.='
-  AND `T1`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
+  AND `T0`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
  ';
 
 }
@@ -290,7 +290,7 @@ if(($chp_nom_dossier != '')){
 if(($chi_id_dossier != '')){
 
     $where0.='
-  AND `T1`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
+  AND `T0`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
  ';
 
 }
