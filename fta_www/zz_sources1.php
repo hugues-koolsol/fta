@@ -32,23 +32,13 @@ $o1='';
 $__nbMax=10;
 $__debut=0;
 $__nbEnregs=0;
-/*
-  
-  if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
-  $__xpage=$_GET['__xpage'];
-  }else{
-  if(isset($_SESSION[APP_KEY][NAV][BNF]['__xpage'])){
-  $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
-  }
-  }
-*/
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
 $chi_id_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_source',BNF);
 $chp_nom_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_source',BNF);
 $chp_nom_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier',BNF);
 $chi_id_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier',BNF);
 $chp_type_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_type_source',BNF);
-/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['filtres'][BNF]['__xpage'] , true ) . '</pre>' ; exit(0);*/
+
 $autofocus='chi_id_source';
 
 if(($chp_nom_source != '')){
@@ -101,10 +91,10 @@ $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
 $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$__xpage.'" />'.CRLF;
+$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
-$__debut=$__xpage*($__nbMax);
+$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
 $champs0='
  `chi_id_source`          , `chp_nom_source` , T1.chp_nom_dossier , chp_commentaire_source , T0.chx_dossier_id_source , 
   T0.chp_type_source  
@@ -141,7 +131,7 @@ if(($chp_nom_source != '')){
 if(($chp_type_source != '')){
 
     $where0.='
-  AND `T1`.`chp_type_source` LIKE \'%'.addslashes1($chp_type_source).'%\'
+  AND `T0`.`chp_type_source` LIKE \'%'.addslashes1($chp_type_source).'%\'
  ';
 
 }
@@ -170,7 +160,7 @@ $order0='
 $sql0.=$order0;
 $plage0=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
 $sql0.=$plage0;
-/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);*/
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();
 $db=new SQLite3('../fta_inc/db/sqlite/system.db');
 $stmt0=$db->prepare($sql0);
@@ -192,7 +182,7 @@ if(($stmt0 !== false)){
     $stmt0->close();
     $__nbEnregs=count($data0);
 
-    if(($__nbEnregs >= $__nbMax || $__xpage > 0)){
+    if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
         $__nbEnregs=$db->querySingle($sql1);
@@ -211,15 +201,15 @@ $__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
 
 if(($__debut+$__nbMax < $__nbEnregs)){
 
-    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($__xpage+1)).$consUrlRedir.'">&raquo;</a>';
+    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
 
 }
 
 $__bouton_enregs_prec=' <span class="yybtn yyunset">&laquo;</span>';
 
-if(($__xpage > 0)){
+if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
-    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($__xpage-1).$consUrlRedir.'">&laquo;</a>';
+    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
 
 }
 
@@ -230,7 +220,7 @@ $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:i
 
 if(($__nbEnregs > 0)){
 
-    $o1.='page '.(($__xpage+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
+    $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
 
 }else{
 
@@ -255,7 +245,7 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
     $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">x</a>';
-    if( $v0['T0.chp_type_source']==='normal' && substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' ){ // || substr($v0['T0.chp_nom_source'],-4)==='.sql'
+    if( $v0['T0.chp_type_source']==='normal' && ( substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' || substr($v0['T0.chp_nom_source'],-4)==='.sql' ) ){
      $lsttbl.=' <a class="yyavertissement yytxtSiz1" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
     }else{
      $lsttbl.='<span class=" yybtn yyunset"  title="convertir un source">😊</span>';
@@ -289,7 +279,7 @@ $o1.='<a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer
   ============================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array( 'js_a_inclure' => array( 'js/pour_zz_source1.js', 'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js', 'js/html.js' , 'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 'js/jslib/esprima.js'  , 'js/sql.js' ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$par=array( 'js_a_inclure' => array( 'js/pour_zz_source1.js', 'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js', 'js/html.js' , 'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 'js/jslib/esprima.js'  , 'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js' ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

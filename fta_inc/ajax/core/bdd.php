@@ -1,9 +1,15 @@
 <?php
 //==========================================================================================================
 function sauvegarder_format_rev_en_dbb(&$data){
+
+/*
+if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
+*/
+
  
     $db = new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
     $db->querySingle('PRAGMA foreign_keys=ON');
+
     
     $sql0='
      DELETE FROM `tbl_rev` 

@@ -765,8 +765,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
        
       }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql')!==false){
        
-       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
-       $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" >&#8613; sql =&gt; rev &#8613;</button>'.CRLF;
+       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
+       $o1.='   <a class="yyavertissement" href="javascript:convertir_sqlite_en_rev(\'chp_rev_source\',\'chp_genere_source\')">&#8613; sql =&gt; rev &#8613;</a>'.CRLF;
+//       $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" ></button>'.CRLF;
        $o1.='   <a class="yyavertissement" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
        
       }else{
@@ -905,6 +906,7 @@ $par=array(
   'js/javascript.js' ,
   'js/texte.js' ,
   'js/jslib/sqlite_parser_from_demo.js' ,
+  'js/convertion_sql_en_rev.js' ,
   ),
   'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );

@@ -26,7 +26,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
  }else if(element.type && 'join'===element.type){
   
      if(element.variant==='cross join'){
-         t+='jointure_croisee(';
+         t+='jointure_croisée(';
      }else if(element.variant==='left join'){
          t+='jointure_gauche(';
      }else{
@@ -77,9 +77,13 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      if(element.variant==='column'){
          t+='champ('+element.name+')';
      }else if(element.variant==='function'){
-         t+=element.name;
+         if(element.name==='count'){
+             t+='compter';
+         }else{
+             t+=element.name;
+         }
      }else if(element.variant==='star'){
-         t+='etoile()';
+         t+='tous_les_champs()';
      }else if(element.variant==='table'){
          if(element.alias){
              t+='nom_table('+element.name+','+element.alias+')';
@@ -115,22 +119,35 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
          logerreur({status:false,message:'0016 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'});
      }
   
+ }else if(element.type && 'expression'===element.type && element.variant==='order'){
+
+     var obj1=recupere_element_de_ast_sql(element.expression,niveau,parent,options);
+     if(obj1.status===true){
+        t+='('+obj1.value;
+        if(element.direction){
+         if(element.direction==='desc'){
+           t+=',décroissant()';
+         }else{
+           t+=',croissant()';
+         }
+        }else{
+           t+=',croissant()';
+        }
+        t+=')';
+     }else{
+       t+='#(TODO 0042 "'+JSON.stringify(json_partiel(element))+'")';
+       logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'});
+     }
+
+
  }else if(element.type && 'expression'===element.type && element.format && element.format==='binary'){
+
      var obj1=traite_operation_dans_ast_sql(element,niveau,parent,options);
      if(obj1.status===true){
         t+=obj1.value;
      }else{
        t+='#(TODO 0042 "'+JSON.stringify(json_partiel(element))+'")';
        logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'});
-     }
-  
- }else if(element.type && 'function'===element.type ){
-     var obj1=traite_fonction_dans_ast_sql(element,niveau,null,options);
-     if(obj1.status===true){
-         t+=obj1.value;
-     }else{
-         t+='#(TODO 0051 "'+JSON.stringify(json_partiel(element))+'")';
-         logerreur({status:false,message:'0051 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element))});
      }
   
  }else if(element.type && 'expression'===element.type && 'list'===element.variant ){
@@ -155,6 +172,15 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
         logerreur({status:false,message:'0137 recupere_element_de_ast_sql pas de expression : "'+JSON.stringify(json_partiel(element))+'"'});
      }
 
+ }else if(element.type && 'function'===element.type ){
+     var obj1=traite_fonction_dans_ast_sql(element,niveau,null,options);
+     if(obj1.status===true){
+         t+=obj1.value;
+     }else{
+         t+='#(TODO 0051 "'+JSON.stringify(json_partiel(element))+'")';
+         logerreur({status:false,message:'0051 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element))});
+     }
+  
   
  }else if(element.type && 'assignment'===element.type ){
   var cible='';
@@ -507,13 +533,22 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      if(element.from.source){
          var obj1=recupere_element_de_ast_sql(element.from.source,niveau,parent,options);
          if(obj1.status===true){
-             t+='\n'+esp0+esp1+esp1+'source('+obj1.value+'),';
+             t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.value+')),';
          }else{
            t+='#(TODO 0240 "'+JSON.stringify(json_partiel(element))+'")';
            logerreur({status:false,message:'0240 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'});
          }
        
+     }else{
+         var obj1=recupere_element_de_ast_sql(element.from,niveau,parent,options);
+         if(obj1.status===true){
+             t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.value+')),';
+         }else{
+           t+='#(TODO 0240 "'+JSON.stringify(json_partiel(element))+'")';
+           logerreur({status:false,message:'0240 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'});
+         }
      }
+     
      if(element.from.map && element.from.map.length>0){
       for(var i=0;i<element.from.map.length;i++){
          var obj1=recupere_element_de_ast_sql(element.from.map[i],niveau,parent,options);
@@ -543,8 +578,22 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      }
      t+='\n'+esp0+esp1+')';
  }
+ if(element.order && element.order.length>0){
+     t+='\n'+esp0+esp1+',trier_par(';
+     for(var i=0;i<element.order.length;i++){
+        var obj1=recupere_element_de_ast_sql(element.order[i],niveau,parent,options);
+        if(obj1.status===true){
+            t+=obj1.value+',';
+        }else{
+          t+='#(TODO 0557 "'+JSON.stringify(json_partiel(element.order[i]))+'")';
+          logerreur({status:false,message:'0340 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.order[i]))+'"'});
+        }
+     }
+     t+=')';
+     
+ }
  if(element.limit){
-     t+='\n'+esp0+esp1+',limites(';
+     t+='\n'+esp0+esp1+',limité_à(';
      if(element.limit.start){
         var obj1=recupere_element_de_ast_sql(element.limit.start,niveau,parent,options);
         if(obj1.status===true){
@@ -566,7 +615,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      t+=')';
   
  }
-
+ 
  t+='\n'+esp0+'),';
 
 

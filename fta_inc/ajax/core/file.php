@@ -1,19 +1,43 @@
 <?php
 //if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
 
+function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
+
+    if((isset($data['input']['id_source']))){
+        $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
+        require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
+        $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
+        $chemin_fichier='..'.$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
+        if($fd=fopen($chemin_fichier,'w')){
+            fwrite($fd,$data['input']['source']);
+            fclose($fd);
+            $data['status']='OK';
+            
+            $data['input']['parametres_sauvegarde'] = array(
+                  'id_cible'               => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+                  'chp_provenance_rev'     => 'source'                                             ,
+                  'chx_id_provanance_rev'  => $data['input']['id_source']                          ,
+                  'matrice'                => $data['input']['matrice']
+            );
+            require_once(realpath(INCLUDE_PATH.'/ajax/core/bdd.php'));
+            sauvegarder_format_rev_en_dbb($data);
+            
+        }
+    }
+}
+
 function charger_un_fichier_source_par_son_identifiant(&$data){
 
  if((isset($data['input']['id_source']))){
      $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
      require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
      $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
-     $chemin_fichier='..'.$ret['T1.chp_nom_dossier'].''.$ret['T0.chp_nom_source'];
+     $chemin_fichier='..'.$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
      if(is_file($chemin_fichier)){
       
       $contenu_du_fichier = file_get_contents($chemin_fichier);
       if($contenu_du_fichier!==false){
           $data['contenu_du_fichier']=$contenu_du_fichier;
-          $data['db']=$ret;
           $data['db']=$ret;
           $data['status']='OK';
       }

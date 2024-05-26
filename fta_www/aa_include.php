@@ -111,12 +111,18 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche( $k , $bnf){
  */
  if(!isset($_SESSION[APP_KEY]['__filtres'][BNF])){
   $_SESSION[APP_KEY]['__filtres'][BNF]=array();
-  $_SESSION[APP_KEY]['__filtres'][BNF]['champs']=array();
+  $_SESSION[APP_KEY]['__filtres'][BNF]['champs']=array('__xpage' => 0);
  }
-
+ if(!isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'])){
+  $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']=0;
+ }
  $ret='';
  $ret = $_GET[$k]??'';
  if(isset($_GET[$k])){
+  /* si on a changé un critère de recherche, il faut revenir à la première page */
+  if(isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]) && $_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]!==$_GET[$k]){
+      $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']=0;
+  }
   $_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]=$_GET[$k];
   $ret=$_GET[$k];
  }else{

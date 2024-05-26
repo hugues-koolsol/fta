@@ -1,7 +1,64 @@
 "use strict";
 
+/*
+  =====================================================================================================================
+*/
+function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cible){
+   clearMessages('zone_global_messages');
+   var a = document.getElementById(chp_rev_source);
+   var startMicro=performance.now();
+   
+   var tableau1 = iterateCharacters2(a.value);
+   global_messages.data.tableau=tableau1;
+   var endMicro = performance.now();
+   var startMicro = performance.now();
+   var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+   global_messages.data.matrice=matriceFonction;
+   if(matriceFonction.status===true){
 
-function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source , contenuRev , contenuSource , date_de_debut_traitement ){
+    var objSql=tabToSql1(matriceFonction.value,0,0);
+    
+    if(objSql.status===true){
+     
+        dogid(chp_genere_source).value=objSql.value;
+     
+    }
+    
+    
+    var parametres_sauvegarde={
+     'matrice': matriceFonction.value,
+     'chp_provenance_rev' : 'source',
+     'chx_id_provanance_rev' : id_source,
+     'id_cible' : id_cible
+    }
+    
+    sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+    
+    
+   }
+    
+}
+
+/*
+  =====================================================================================================================
+*/
+function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
+ var source_sqlite=dogid(chp_genere_source).value;
+
+ 
+ var obj=convertion_texte_sql_en_rev(source_sqlite);
+ if(obj.status===true){
+  dogid(chp_rev_source).value=obj.value;
+ }else{
+   logerreur({status:false,message:'Erreur de convertion'})
+ }
+ displayMessages('zone_global_messages');
+}
+
+/*
+  =====================================================================================================================
+*/
+function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source , contenuRev , contenuSource , date_de_debut_traitement , matrice){
  
  
     var r = new XMLHttpRequest();
@@ -46,7 +103,8 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
         id_source                : id_source   ,
         rev                      : contenuRev,
         source                   : contenuSource,
-        date_de_debut_traitement : date_de_debut_traitement
+        date_de_debut_traitement : date_de_debut_traitement,
+        matrice                  : matrice
     }
     r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
  
@@ -56,7 +114,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
 */
 function traitement_apres_ajax_pour_conversion_fichier_sql(par){
  
-    var objRev = TransformHtmlEnRev(par.contenu_du_fichier,0);
+    var objRev = convertion_texte_sql_en_rev(par.contenu_du_fichier);
     
     if(objRev.status===true){
 
@@ -69,8 +127,8 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
            if(objSql.status===true){
             
                 var contenu=objSql.value.replace(/\/\*==========DEBUT DEFINITION===========\*\//g,'');            
-                console.log(objSql.value);
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , contenu , par.input.date_de_debut_traitement );
+//                console.log(objSql.value);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , contenu , par.input.date_de_debut_traitement , matriceFonction.value);
                
            }
 
@@ -95,7 +153,7 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
            if(objHtml.status===true){
           
                 console.log(objHtml.value);
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objHtml.value , par.input.date_de_debut_traitement );
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objHtml.value , par.input.date_de_debut_traitement , matriceFonction.value);
                
            }
        }
@@ -122,7 +180,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par){
             
             if(objJs.status===true){           
 //              console.log(objJs.value);
-              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement );
+              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement , matriceFonction.value);
              
             }
             
@@ -173,7 +231,7 @@ function traitement_apres_ajax_pour_conversion_fichier_php(par){
                 
 //                console.log(par.input.opt.jsonRet.input.id_source);
                 
-               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.jsonRet.input.id_source , objRev.value , objPhp.value , par.input.opt.jsonRet.input.date_de_debut_traitement);
+               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.jsonRet.input.id_source , objRev.value , objPhp.value , par.input.opt.jsonRet.input.date_de_debut_traitement , matriceFonction.value) ;
                 
             }
         }
@@ -281,6 +339,7 @@ function aller_a_la_ligne(nom_textarea){
   }
  }
 }
+
 
 /*
   =====================================================================================================================

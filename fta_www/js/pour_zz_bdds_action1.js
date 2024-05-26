@@ -102,7 +102,7 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
  
 }
 
-function convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_php , id_bdd  , id_cible ){
+function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_php , id_bdd  , id_cible ){
  
  clearMessages('zone_global_messages');
  var a=dogid(nom_zone_source);

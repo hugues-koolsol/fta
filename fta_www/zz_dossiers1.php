@@ -214,7 +214,7 @@ $o1.='<h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_doss
 
 $__nbMax=20;
 $__debut=0;
-$__xpage=0;
+
 
 $__xpage                 = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                 , BNF);
 $chi_id_dossier          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier'          , BNF);
@@ -239,7 +239,7 @@ $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
 $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF; // &#128270;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$__xpage.'" />'.CRLF;
+$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 
 $o1.='</form>'.CRLF;
@@ -264,7 +264,7 @@ if($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===APP_KEY){
 }
 
 
-$__debut=$__xpage*($__nbMax);
+$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
 $champs0='`chi_id_dossier`          , `chp_nom_dossier` 
 ';
 $sql0='SELECT '.$champs0;
@@ -320,7 +320,7 @@ if($stmt!==false){
   
     $__nbEnregs=count($data0);
 
-    if(($__nbEnregs >= $__nbMax || $__xpage > 0)){
+    if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
         $__nbEnregs=$db->querySingle($sql1);
@@ -337,15 +337,15 @@ $__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
 
 if(($__debut+$__nbMax < $__nbEnregs)){
 
-    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($__xpage+1)).$consUrlRedir.'">&raquo;</a>';
+    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
 
 }
 
 $__bouton_enregs_prec=' <span class="yybtn yyunset">&laquo;</span>';
 
-if(($__xpage > 0)){
+if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
-    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($__xpage-1).$consUrlRedir.'">&laquo;</a>';
+    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
 
 }
 
@@ -357,7 +357,7 @@ $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:i
 
 if(($__nbEnregs > 0)){
 
-    $o1.='page '.(($__xpage+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
+    $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
 
 }else{
 

@@ -28,13 +28,8 @@ $o1.='<h1>Liste des bases de données</h1>';
 
 $__nbMax=20;
 $__debut=0;
-$__xpage=0;
 
-if(isset($_GET['__xpage'])&&is_numeric($_GET['__xpage'])){
- $__xpage=$_GET['__xpage'];
-}else{
- if(isset($_SESSION[APP_KEY][NAV][BNF]['__xpage'])) $__xpage=$_SESSION[APP_KEY][NAV][BNF]['__xpage'];
-}
+
 $__xpage               = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                 , BNF);
 $chi_id_basedd          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_basedd'          , BNF);
 $chp_nom_basedd         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_basedd'         , BNF);
@@ -63,7 +58,7 @@ $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
 $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF; // &#128270;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$__xpage.'" />'.CRLF;
+$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 
 $o1.='</form>'.CRLF;
@@ -72,7 +67,7 @@ $o1.='</form>'.CRLF;
 $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 
-$__debut=$__xpage*$__nbMax;
+$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
 $sql='
  SELECT `chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd 
