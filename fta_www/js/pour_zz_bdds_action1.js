@@ -115,18 +115,19 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_p
  var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
  
  if(matriceFonction.status===true){
-  
+
   var objSql=tabToSql1(matriceFonction.value,0,0);
+  
   
   if(objSql.status===true){
    
 
-   var contenu=objSql.value.replace(/\/\*==========DEBUT DEFINITION===========\*\//g,'')
+   var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
    dogid(nom_zone_genere).value=contenu;
    
    if(nom_zone_php && nom_zone_php!==''){
     
-     var tabPhp=objSql.value.split('/*==========DEBUT DEFINITION===========*/');
+     var tabPhp=objSql.value.split('/* ==========DEBUT DEFINITION=========== */');
   //   console.log('tabPhp=',tabPhp);
 
      var lePhp='\$db = new SQLite3(\'temporaire_pour_test.db\');'+CRLF;

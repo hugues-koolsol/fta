@@ -7,7 +7,11 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
         require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
         $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
-        $chemin_fichier='..'.$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
+        
+        
+        $chemin_fichier='../../'.$ret['T2.chp_dossier_cible'].$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
+        
+        
         if($fd=fopen($chemin_fichier,'w')){
             fwrite($fd,$data['input']['source']);
             fclose($fd);
@@ -32,21 +36,22 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
      $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
      require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
      $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
-     $chemin_fichier='..'.$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
+
+     $chemin_fichier='../../'.$ret['T2.chp_dossier_cible'].$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
      if(is_file($chemin_fichier)){
       
-      $contenu_du_fichier = file_get_contents($chemin_fichier);
-      if($contenu_du_fichier!==false){
-          $data['contenu_du_fichier']=$contenu_du_fichier;
-          $data['db']=$ret;
-          $data['status']='OK';
-      }
+          $contenu_du_fichier = file_get_contents($chemin_fichier);
+          if($contenu_du_fichier!==false){
+              $data['contenu_du_fichier']=$contenu_du_fichier;
+              $data['db']=$ret;
+              $data['status']='OK';
+          }
       
       
       
-  }else{
-      $data['messages'][]='fichier introuvable';
-  }
+     }else{
+         $data['messages'][]='fichier introuvable '.$chemin_fichier;
+     }
   
  }else{
      $data['messages'][]='champ id_source introuvable';

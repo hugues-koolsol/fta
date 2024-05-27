@@ -95,7 +95,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      if($__valeurs['T2.chp_dossier_cible']!==null && $__valeurs['T1.chp_nom_dossier']!==null ){
       
-      $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/structure.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
+      $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'_structure.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
 
       if(is_file($nomCompletSource)){
         if(!sauvegarder_et_supprimer_fichier($nomCompletSource)){
@@ -245,7 +245,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
           
           
           //echo __FILE__ . ' ' . __LINE__ . ' $__valeurs = <pre>' . var_export( $__valeurs , true ) . '</pre> $ret = <pre>' . var_export( $ret , true ) . '</pre>' ; exit(0);
-          $nom_du_fichier_dump   ='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/donnees.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
+          $nom_du_fichier_dump   ='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'_donnees.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
           
 //          echo __FILE__ . ' ' . __LINE__ . ' $nom_du_fichier_dump = <pre>' . var_export( $nom_du_fichier_dump , true ) . '</pre>' ; exit(0);
           
@@ -849,7 +849,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="word-break:break-word;">outils</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_basedd\',\'chp_genere_basedd\' ,  \'chp_php_basedd\' , ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2S&#8615;</a>'.CRLF;
+  $o1.='   <a class="yyinfo" href="javascript:bdd_convertir_rev_en_sql(\'chp_rev_basedd\',\'chp_genere_basedd\' ,  \'chp_php_basedd\' , ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2S&#8615;</a>'.CRLF;
   $o1.='   <button id="__ecrire_sur_disque" name="__ecrire_sur_disque" class="yyinfo">ecrire le structure.'.enti1($__valeurs['T0.chp_nom_basedd']).'.sql sur le disque</button>'.CRLF;
   $o1.='   '.CRLF;
   $o1.='  </div></div>'.CRLF;

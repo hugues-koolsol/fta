@@ -204,7 +204,7 @@ function tabToSql0( tab ,id ,  niveau , options){
    
    if(tab[i][1]=='sql'){
     
-    var obj=tabToSql0( tab ,i , false , niveau , options);
+    var obj=tabToSql0( tab ,i ,  niveau , options);
     if(obj.status===true){
      t+=obj.value;
     }else{
@@ -772,7 +772,10 @@ function tabToSql0( tab ,id ,  niveau , options){
         variables_pour_tableau_tables.nom_du_champ=tab[j+1][1];
         j++;
        }else if(tab[j][1]=='#'){
-        t+='/*'+tab[j][13].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')+'*/';
+        if(tab[j][13]===''){
+        }else{
+         t+='/* '+tab[j][13].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')+' */';
+        }
         t+=espacesn(true,niveau);
        }else if(tab[j][1]=='auto_increment' && tab[j][8]==0){
 //        t+=' AUTO_INCREMENT';
@@ -994,11 +997,13 @@ function tabToSql0( tab ,id ,  niveau , options){
     }
     
    }else if(tab[i][1]=='#'){
-    
-    t+=espacesn(true,niveau);
-    t+='/*';
-    t+=traiteCommentaire2(tab[i][13],niveau,i);
-    t+='*/';
+    if(tab[i][13]===''){
+    }else{
+      t+=espacesn(true,niveau);
+      t+='/*';
+      t+=traiteCommentaire2(tab[i][13],niveau,i);
+      t+='*/';
+    }
 
    }else if(tab[i][1].substr(0,5)=='meta_' ){
     t+=CRLF+' /*'+tab[i][1]+'*/ '+CRLF + '    ';

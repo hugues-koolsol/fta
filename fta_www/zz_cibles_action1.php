@@ -398,7 +398,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   /*
     ===================================================================================================================
-    ============================================= CONFIRMATION DE LA SUPPRESSION ======================================
+    ============================================= CONFIRMATION DE LA SUPPRESSION DE CIBLE =============================
     ===================================================================================================================
   */
 
@@ -414,61 +414,73 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }
-
-  $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
   
-        $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
-
-        if($__id==='1'){
-
-           if(APP_KEY==='fta'){
-
-                ajouterMessage('avertissement',__LINE__.' on ne peut pas supprimer ce dossier',BNF);
-                recharger_la_page('zz_cibles1.php');
-           }else{
-
-            if($__valeurs['T0.chp_dossier_cible']==='fta'){
-
-             
-                // on peut y aller sans test de dossier
-            }else{
-             
-              if((is_dir($dossier))){
-
-                  ajouterMessage('erreur',__LINE__.' le dossier existe , on ne peut pas supprimer cet enregistrement',BNF);
-                  recharger_la_page('zz_cibles1.php');
-
-              }
-             
-            }
-             
-           }
-        }else{
-
-
-
-
-            if((is_dir($dossier))){
-
-                ajouterMessage('erreur',__LINE__.' le dossier existe , on ne peut pas supprimer cet enregistrement',BNF);
-                recharger_la_page('zz_cibles1.php');
-
-            }
-        }
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
   
-  
+  if($__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta'){
+    ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer "fta"');
+    recharger_la_page('zz_cibles1.php');
+  }
   
   $db->querySingle('PRAGMA foreign_keys=ON');
+  
+  
+  $db->querySingle('BEGIN TRANSACTION');
+  
+  
+  $sql='DELETE FROM tbl_rev WHERE `chx_cible_rev` = '.sq0($__id).' ';
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
+  if(false === $db->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+   $db->querySingle('ROLLBACK');
+   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+  }else{
+   ajouterMessage('info' ,  __LINE__ .' : la suppression des rev a fonctionné' , BNF );
+  }
+
+  $sql='DELETE FROM tbl_sources WHERE `chx_cible_id_source` = '.sq0($__id).' ';
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
+  if(false === $db->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+   $db->querySingle('ROLLBACK');
+   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+  }else{
+   ajouterMessage('info' ,  __LINE__ .' : la suppression des sources a fonctionné' , BNF );
+  }
+
+  $sql='DELETE FROM tbl_bases_de_donnees WHERE `chx_cible_id_basedd` = '.sq0($__id).' ';
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
+  if(false === $db->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+   $db->querySingle('ROLLBACK');
+   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+  }else{
+   ajouterMessage('info' ,  __LINE__ .' : la suppression des bases_de_données a fonctionné' , BNF );
+  }
+
+  $sql='DELETE FROM tbl_dossiers WHERE `chx_cible_dossier` = '.sq0($__id).' ';
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
+  if(false === $db->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+   $db->querySingle('ROLLBACK');
+   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+  }else{
+   ajouterMessage('info' ,  __LINE__ .' : la suppression des dossiers a fonctionné' , BNF );
+  }
+
+  
   $sql='DELETE FROM tbl_cibles WHERE `chi_id_cible` = \''.sq0($__id).'\' ' ;
   if(false === $db->exec($sql)){
 
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      $db->querySingle('ROLLBACK');
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
   }else{
    
-     ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
+     $db->querySingle('COMMIT');
+     ajouterMessage('succes' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
      recharger_la_page('zz_cibles1.php');
 
   }
@@ -487,6 +499,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       
   }
   
+  if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']==='fta' && $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] ==='fta'){
+      ajouterMessage('erreur' , __LINE__ .' : le projet fta est la racine et est déjà créé' , BNF );
+      recharger_la_page(BNF.'?__action=__creation');
+  }
+  
   $sql='
    INSERT INTO `tbl_cibles` (`chp_nom_cible` , `chp_dossier_cible`, `chp_commentaire_cible` ) VALUES
      (
@@ -503,8 +520,28 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     
   }else{
    
-    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$db->lastInsertRowID().') a bien été créé' , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$db->lastInsertRowID()); 
+    
+   
+    $__nouvel_id=$db->lastInsertRowID();
+    
+    /* insertion du dossier racine */    
+    $sql=' INSERT INTO `tbl_dossiers` (`chp_nom_dossier` , `chx_cible_dossier` ) VALUES   (  \'/\' ,   '.sq0($__nouvel_id)     .'  ) ' ;
+    if(false === $db->exec($sql)){ // 
+     
+        ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+        recharger_la_page(BNF.'?__action=__creation'); 
+        
+      
+    }else{
+
+        
+        $nom_du_dossier='../../'.$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'];
+        @mkdir($nom_du_dossier);
+        
+       
+        ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$__nouvel_id.') a bien été créé' , BNF );
+        recharger_la_page(BNF.'?__action=__modification&__id='.$__nouvel_id); 
+    }
    
   }
  
@@ -646,10 +683,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer la cible 1'  );
    recharger_la_page('zz_cibles1.php');
   }
-  
-  $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
-  if(is_dir($dossier)){
-   ajouterMessage('erreur' , __LINE__ .' le dossier existe, on ne peut pas supprimer cet enregistrement'  );
+  if($__valeurs['T0.chp_dossier_cible']!=='fta'){
+   $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
+  }else{
+   ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer fta"'  );
    recharger_la_page('zz_cibles1.php');
   }
   

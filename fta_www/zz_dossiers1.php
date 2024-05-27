@@ -352,7 +352,8 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
 $o1.='<div>';
 $o1.='<form class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer un nouveau source</a>'.CRLF;
+$o1.=' <a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+
 $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
 
 if(($__nbEnregs > 0)){
@@ -430,7 +431,7 @@ foreach($data0 as $k0=>$v0){
 
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
 
-$o1.='<a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+
 
 if(( $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta' )){
  

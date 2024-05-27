@@ -18,11 +18,19 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
  foreach($structure_tableau_de_la_base as $k0 => $v0){
   if(isset($v0['liste_des_champs'])){
    $listeDesChamps='';
+   
+   $nom_du_champ_reference_cible='';
    foreach( $v0['liste_des_champs'] as $k1=>$v1){
      $listeDesChamps.=' `'.$k1.'`,';
+     if(strpos($k1,'chx_cible')!==false){
+      $nom_du_champ_reference_cible=$k1;
+     }
     
    }
-   if($listeDesChamps!==''){
+   if($k0==='tbl_cibles'){
+    $nom_du_champ_reference_cible='chi_id_cible';
+   }
+   if($listeDesChamps!=='' && $k0!=='tbl_rev' ){
     $listeDesChamps=substr($listeDesChamps,0,-1);
     
     $__nbEnregs= $db0->querySingle('SELECT COUNT(*) FROM `'.$k0.'`');
@@ -30,7 +38,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__nbEnregs . ' pour ' . $k0 , true ) . '</pre>' ; exit(0);
     if($__nbEnregs>0){
      
-     fwrite($fd,'/*'.CRLF);
+     fwrite($fd,'/*'.CRLF.CRLF.CRLF.CRLF);
      fwrite($fd,'  ========================================================================='.CRLF);
      fwrite($fd,'  Pour la table '.$k0.' il y a ' . $__nbEnregs . ' enregistrement(s) à insérer '.CRLF);
      fwrite($fd,'  ========================================================================='.CRLF);
@@ -41,8 +49,12 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
      */
      $indice_actuel=0;
      $sql='';
-     
-     $sql0='SELECT '. $listeDesChamps.' FROM `'.$k0.'`';
+     if($nom_du_champ_reference_cible!==''){
+      $sql0='SELECT '. $listeDesChamps.' FROM `'.$k0.'` WHERE '.$nom_du_champ_reference_cible.' ='.sq0($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']).'';
+
+     }else{
+      $sql0='SELECT '. $listeDesChamps.' FROM `'.$k0.'`';
+     }
      $stmt0 = $db0->prepare($sql0);
 
      if($stmt0!==false){

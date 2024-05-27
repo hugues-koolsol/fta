@@ -126,7 +126,7 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
            var objSql=tabToSql1(matriceFonction.value,0,0);
            if(objSql.status===true){
             
-                var contenu=objSql.value.replace(/\/\*==========DEBUT DEFINITION===========\*\//g,'');            
+                var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');            
 //                console.log(objSql.value);
                 sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , contenu , par.input.date_de_debut_traitement , matriceFonction.value);
                
@@ -259,6 +259,7 @@ function convertir_un_source_sur_disque(id_source){
 //    dogid('chp_genere_source').value=jsonRet.value;
     var nom_source=jsonRet.db['T0.chp_nom_source'];
     if(nom_source.substr(nom_source.length-4)==='.php'){
+     debugger
      var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_apres_ajax_pour_conversion_fichier_php); // ,{'comment':true}
     }else if(nom_source.substr(nom_source.length-3)==='.js'){
      traitement_apres_ajax_pour_conversion_fichier_js(jsonRet);
