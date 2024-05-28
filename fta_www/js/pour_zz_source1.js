@@ -28,7 +28,7 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
     var parametres_sauvegarde={
      'matrice': matriceFonction.value,
      'chp_provenance_rev' : 'source',
-     'chx_id_provanance_rev' : id_source,
+     'chx_source_rev' : id_source,
      'id_cible' : id_cible
     }
     
@@ -77,8 +77,12 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
                 var date_de_debut_traitement=jsonRet.input.date_de_debut_traitement;
                 var nombre_de_secondes = (date_de_fin_traitement-date_de_debut_traitement)/1000;
 
-             
-                logerreur({status:true,message:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
+                
+                if(jsonRet.input.parametres_sauvegarde.nom_du_source){
+                 logerreur({status:true,message:'la réécriture de '+jsonRet.input.parametres_sauvegarde.nom_du_source+' a été faite en '+nombre_de_secondes+' secondes'})
+                }else{
+                 logerreur({status:true,message:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
+                }
                 displayMessages('zone_global_messages');
                 return;
             }else{
@@ -259,7 +263,7 @@ function convertir_un_source_sur_disque(id_source){
 //    dogid('chp_genere_source').value=jsonRet.value;
     var nom_source=jsonRet.db['T0.chp_nom_source'];
     if(nom_source.substr(nom_source.length-4)==='.php'){
-     debugger
+
      var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_apres_ajax_pour_conversion_fichier_php); // ,{'comment':true}
     }else if(nom_source.substr(nom_source.length-3)==='.js'){
      traitement_apres_ajax_pour_conversion_fichier_js(jsonRet);
@@ -370,7 +374,7 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible
     var parametres_sauvegarde={
      'matrice': matriceFonction.value,
      'chp_provenance_rev' : 'source',
-     'chx_id_provanance_rev' : id_source,
+     'chx_source_rev' : id_source,
      'id_cible' : id_cible
     }
     
@@ -468,7 +472,7 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , 
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'source',
-   'chx_id_provanance_rev' : id_source,
+   'chx_source_rev' : id_source,
    'id_cible' : id_cible
   }
   
@@ -584,7 +588,7 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'source',
-   'chx_id_provanance_rev' : id_source,
+   'chx_source_rev' : id_source,
    'id_cible' : id_cible
   }
   
@@ -607,7 +611,7 @@ function pour_zz_source_convertir_rev_en_php(nom_zone_source_rev , nom_zone_gene
   var parametres_sauvegarde={
    'matrice': obj.value,
    'chp_provenance_rev' : 'source',
-   'chx_id_provanance_rev' : id_source,
+   'chx_source_rev' : id_source,
    'id_cible' : id_cible
   }
   

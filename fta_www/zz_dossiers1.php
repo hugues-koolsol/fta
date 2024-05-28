@@ -48,7 +48,17 @@ if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
      if(isset($listeDesDossiersactuels[$nom_du_dossier_a_creer])){
       /* dossier déjà existant */
      }else{
-      $les_valeurs_sql.='INSERT OR IGNORE INTO tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.addslashes1($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
+      if(    
+           ( substr($nom_du_dossier_a_creer,0,strlen('/fta_backup'))==='/fta_backup' && strlen( $nom_du_dossier_a_creer )>strlen('/fta_backup'))
+        || ( substr($nom_du_dossier_a_creer,0,strlen('/fta_temp'))==='/fta_temp' && strlen( $nom_du_dossier_a_creer )>strlen('/fta_temp'))
+           
+      ){
+          /*
+          on ne copie pas les sous dossiers de fta backup et de fta_temp
+          */
+      }else{
+          $les_valeurs_sql.='INSERT OR IGNORE INTO tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.addslashes1($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
+      }
      }
    }
    

@@ -1103,11 +1103,18 @@ function traite_le_tableau_de_la_base_sqlite(par){
  
  t=t.substr(1);
  if(par['zone_rev']){
-  dogid(par['zone_rev']).value='sql(transaction(\n'+t+'\n\n))';
-  formatter_le_source_rev(par['zone_rev']);
+  
+  if( '___produire_le_rev' === par['contexte'] ){
+    dogid(par['zone_rev']).value='sql(transaction(\n'+t+'\n\n),commit())';
+    formatter_le_source_rev(par['zone_rev']);
+  }else{
+   console.error('TODO')
+   debugger;
+  }
  }
 // console.log('t=',t); 
  
  // CREATE TABLE 'tbl_bases_de_donnees' ('chi_id_basedd' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'chp_nom_basedd' TEXT NOT NULL DEFAULT '', 'chp_rev_basedd' TEXT, 'chp_commentaire_basedd' TEXT, chx_dossier_id_basedd INTEGER DEFAULT NULL REFERENCES tbl_dossiers(chi_id_dossier))
+ 
  return {status:true,value:t};
 }

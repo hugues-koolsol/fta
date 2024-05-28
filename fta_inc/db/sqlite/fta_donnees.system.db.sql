@@ -3,7 +3,7 @@
 
 
   =========================================================================
-  Pour la table tbl_cibles il y a 1 enregistrement(s) à insérer 
+  Pour la table tbl_cibles il y a 2 enregistrement(s) à insérer 
   =========================================================================
 */
 
@@ -14,7 +14,7 @@ INSERT INTO `tbl_cibles`( `chi_id_cible`, `chp_nom_cible`, `chp_commentaire_cibl
 
 
   =========================================================================
-  Pour la table tbl_dossiers il y a 2 enregistrement(s) à insérer 
+  Pour la table tbl_dossiers il y a 17 enregistrement(s) à insérer 
   =========================================================================
 */
 
@@ -26,7 +26,7 @@ INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_doss
 
 
   =========================================================================
-  Pour la table tbl_sources il y a 4 enregistrement(s) à insérer 
+  Pour la table tbl_sources il y a 55 enregistrement(s) à insérer 
   =========================================================================
 */
 
@@ -106,7 +106,7 @@ LIMIT 10 OFFSET 0 ;','normal');
 
 
   =========================================================================
-  Pour la table tbl_bases_de_donnees il y a 1 enregistrement(s) à insérer 
+  Pour la table tbl_bases_de_donnees il y a 2 enregistrement(s) à insérer 
   =========================================================================
 */
 
@@ -163,7 +163,7 @@ INSERT INTO `tbl_bases_de_donnees`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_
             field(n(chp_php_basedd) , type(TEXT))
          )
       ),
-      add_index(n(''tbl_bases_de_donnees'') , unique() , index_name(''idx_nom_basedd'') , fields(''chp_nom_basedd'')),
+      add_index(n(''tbl_bases_de_donnees'') , unique() , index_name(''idx_nom_basedd'') , fields(''chp_nom_basedd'',''chx_cible_id_basedd'')),
       create_table(
          n(''tbl_rev''),
          fields(
@@ -208,8 +208,10 @@ INSERT INTO `tbl_bases_de_donnees`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_
             field(n(chp_texte_tache) , type(TEXT))
          )
       )
-   )
-)','bla','2','BEGIN TRANSACTION;
+   ),
+   commit()
+)','bla','2','
+BEGIN TRANSACTION;
     
     
     
@@ -260,7 +262,7 @@ INSERT INTO `tbl_bases_de_donnees`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_
          chp_php_basedd TEXT
     );
     
-    CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees`( `chp_nom_basedd` ) ;
+    CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees`( `chp_nom_basedd` , `chx_cible_id_basedd` ) ;
     
     
     
@@ -303,7 +305,8 @@ INSERT INTO `tbl_bases_de_donnees`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_
          chp_priorite_tache INTEGER,
          chp_texte_tache TEXT
     );
-','1','$db = new SQLite3(''temporaire_pour_test.db'');
+
+COMMIT;','1','$db = new SQLite3(''temporaire_pour_test.db'');
 $uneErreur=false;
 if((false === $db->exec(''BEGIN TRANSACTION''))){
     echo __FILE__.'' ''.__LINE__.'' __LINE__ = <pre>''.var_export($db->lastErrorMsg(),true).''</pre>'' ;
@@ -401,7 +404,7 @@ if((false === $db->exec($chaineSql))){
     $uneErreur=true;
 }
 $chaineSql=''
-    CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees`( `chp_nom_basedd` ) ;
+    CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees`( `chp_nom_basedd` , `chx_cible_id_basedd` ) ;
     
     '';
 if((false === $db->exec($chaineSql))){
@@ -464,7 +467,7 @@ $chaineSql=''
          chp_priorite_tache INTEGER,
          chp_texte_tache TEXT
     );
-'';
+COMMIT;'';
 if((false === $db->exec($chaineSql))){
     echo __FILE__.'' ''.__LINE__.'' __LINE__ = <pre>''.var_export($db->lastErrorMsg(),true).''</pre> <pre>''.var_export($chaineSql,true).''</pre> '' ;
     $uneErreur=true;
@@ -555,16 +558,3 @@ $sql=''INSERT INTO `tbl_taches`(
 
 INSERT INTO `tbl_utilisateurs`( `chi_id_utilisateur`, `chp_nom_de_connexion_utilisateur`, `chp_mot_de_passe_utilisateur`, `chp_commentaire_utilisateur`) VALUES
 ('1','admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK','mdp = admin');
-/*
-
-
-
-  =========================================================================
-  Pour la table tbl_taches il y a 3 enregistrement(s) à insérer 
-  =========================================================================
-*/
-
-INSERT INTO `tbl_taches`( `chi_id_tache`, `chx_utilisateur_tache`, `chp_priorite_tache`, `chp_texte_tache`) VALUES
-('1','','',''),
-('2','1','10','supprimer les addslashes1 de ftb'),
-('3','1','5','interface table rev');

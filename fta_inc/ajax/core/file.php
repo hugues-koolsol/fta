@@ -18,10 +18,13 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
             $data['status']='OK';
             
             $data['input']['parametres_sauvegarde'] = array(
-                  'id_cible'               => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
-                  'chp_provenance_rev'     => 'source'                                             ,
-                  'chx_id_provanance_rev'  => $data['input']['id_source']                          ,
-                  'matrice'                => $data['input']['matrice']
+                  'id_cible'                => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+                  'chp_provenance_rev'      => 'source'                                             ,
+                  'chx_source_rev'          => $data['input']['id_source']                          ,
+                  'matrice'                 => $data['input']['matrice']                            ,
+                  'nom_du_source'           => $ret['T0.chp_nom_source']                            ,
+                  'dossier_du_source'       => $ret['T1.chp_nom_dossier']                           ,
+                  'dossier_cible_du_source' => $ret['T2.chp_dossier_cible']                         ,
             );
             require_once(realpath(INCLUDE_PATH.'/ajax/core/bdd.php'));
             sauvegarder_format_rev_en_dbb($data);

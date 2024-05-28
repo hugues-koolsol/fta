@@ -17,8 +17,9 @@ function boutonRetourALaListe(){
  if(isset($_POST['__copier_les_fichiers_de_base_dans_ftb'])){
    
    $tab=array(
-      /* doit être en premier pour avoir l'indice 2 pour la base */
-      'fta_inc/db/sqlite/structure.system.db.sql' => array(),
+      /* doit être en premier pour avoir l'indice 2 dans la base clonée */
+      'fta_inc/db/sqlite/fta_structure.system.db.sql' => array(),
+      'fta_inc/db/sqlite/fta_structure.system.db.sql' => array(),
       'fta_www/aa_include.php' => array(
          'remplacer' => array( 
            array( 
@@ -40,7 +41,6 @@ function boutonRetourALaListe(){
       'fta_inc/db/acces_bdd_cibles1.php' => array(),
       'fta_inc/db/acces_bdd_dossiers1.php' => array(),
       'fta_inc/db/acces_bdd_sources1.php' => array(),
-      'fta_inc/db/sqlite/structure.system.db.sql' => array(),
       'fta_inc/phplib/mesBibliotheques.bat'=>array(),
       'fta_inc/phplib/sqlite.php'=>array(),      
       'fta_inc/rev/test_factorielle.rev'=>array(),      
@@ -162,7 +162,7 @@ function boutonRetourALaListe(){
     
    }
    
-   $contenu_fichier_structure=$contenu=file_get_contents('../'.'fta_inc/db/sqlite/structure.system.db.sql');
+   $contenu_fichier_structure=file_get_contents('../'.'fta_inc/db/sqlite/fta_structure.system.db.sql');
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_fichier_structure ) . '</pre>' ; exit(0);
    
@@ -179,7 +179,7 @@ function boutonRetourALaListe(){
      echo __FILE__ . ' ' . __LINE__ . ' unlink base system impossible = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
     }
    }else{
-    echo __FILE__ . ' ' . __LINE__ . ' $chemin_base_systeme = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
+     /* la base n'existe pas, on continue */
    }
    
    $base_ftb = new SQLite3($chemin_base_systeme);
@@ -429,7 +429,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $db->querySingle('BEGIN TRANSACTION');
   
   
-  $sql='DELETE FROM tbl_rev WHERE `chx_cible_rev` = '.sq0($__id).' ';
+  $sql='DELETE FROM tbl_revs WHERE `chx_cible_rev` = '.sq0($__id).' ';
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
   if(false === $db->exec($sql)){
    ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );

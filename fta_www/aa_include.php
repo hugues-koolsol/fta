@@ -505,6 +505,7 @@ function html_header1($parametres){
                 $o1.='          <li><a class="'.(('zz_dossiers1.php' === BNF)?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
                 $o1.='          <li><a class="'.(('zz_sources1.php' === BNF)?'yymenusel1':'').'" href="zz_sources1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
                 $o1.='          <li><a class="'.(('zz_bdds1.php' === BNF)?'yymenusel1':'').'" href="zz_bdds1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
+                $o1.='          <li><a class="'.(('zz_rev1.php' === BNF)?'yymenusel1':'').'" href="zz_revs1.php?idMenu='.($idMenu++).'">revs</a></li>'.CRLF;
 
             }
             $o1.='          <li><a class="'.(('zz_taches1.php' === BNF)?'yymenusel1':'').'" href="zz_taches1.php?idMenu='.($idMenu++).'">tâches</a></li>'.CRLF;

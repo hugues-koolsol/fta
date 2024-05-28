@@ -50,14 +50,14 @@ BEGIN TRANSACTION;
          chp_php_basedd TEXT
     );
     
-    CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees`( `chp_nom_basedd` ) ;
+    CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees`( `chp_nom_basedd` , `chx_cible_id_basedd` ) ;
     
     
     
-    CREATE TABLE tbl_rev (
+    CREATE TABLE tbl_revs (
      chx_cible_rev INTEGER REFERENCES 'tbl_cibles'('chi_id_cible') ,
          chp_provenance_rev CHARACTER(32),
-         chx_id_provanance_rev INTEGER,
+         chx_source_rev INTEGER,
          chp_id_rev INTEGER,
          chp_valeur_rev TEXT,
          chp_type_rev CHARACTER(4),
@@ -93,3 +93,5 @@ BEGIN TRANSACTION;
          chp_priorite_tache INTEGER,
          chp_texte_tache TEXT
     );
+
+COMMIT;

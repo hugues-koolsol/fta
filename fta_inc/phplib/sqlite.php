@@ -19,18 +19,42 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
   if(isset($v0['liste_des_champs'])){
    $listeDesChamps='';
    
+   
+   $extraire_les_donnees=true;
+   
+   //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
+   
+   /*
+   Quand on fait une extraction de fta ou bien de ses clones, on ne sélectionne que les données particulières
+   */
    $nom_du_champ_reference_cible='';
-   foreach( $v0['liste_des_champs'] as $k1=>$v1){
-     $listeDesChamps.=' `'.$k1.'`,';
-     if(strpos($k1,'chx_cible')!==false){
-      $nom_du_champ_reference_cible=$k1;
-     }
-    
+   
+   if( 'fta' === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] ){
+        if( 'fta' === $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] ){
+            /*
+            pour fta, on n'extrait pas certaines valeurs 
+            */
+            if($k0==='tbl_revs' || $k0 ==='tbl_taches'){
+                $extraire_les_donnees=false;
+               
+            }
+        }
+        
+        foreach( $v0['liste_des_champs'] as $k1=>$v1){
+          $listeDesChamps.=' `'.$k1.'`,';
+          if(strpos($k1,'chx_cible')!==false){
+           $nom_du_champ_reference_cible=$k1;
+          }
+         
+        }
+        if($k0==='tbl_cibles'){
+         $nom_du_champ_reference_cible='chi_id_cible';
+        }
+        
+        
    }
-   if($k0==='tbl_cibles'){
-    $nom_du_champ_reference_cible='chi_id_cible';
-   }
-   if($listeDesChamps!=='' && $k0!=='tbl_rev' ){
+   
+   if($listeDesChamps!=='' && $extraire_les_donnees===true ){
     $listeDesChamps=substr($listeDesChamps,0,-1);
     
     $__nbEnregs= $db0->querySingle('SELECT COUNT(*) FROM `'.$k0.'`');
@@ -50,7 +74,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
      $indice_actuel=0;
      $sql='';
      if($nom_du_champ_reference_cible!==''){
-      $sql0='SELECT '. $listeDesChamps.' FROM `'.$k0.'` WHERE '.$nom_du_champ_reference_cible.' ='.sq0($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']).'';
+      $sql0='SELECT '. $listeDesChamps.' FROM `'.$k0.'` WHERE '.$nom_du_champ_reference_cible.' = '.sq0($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']).'';
 
      }else{
       $sql0='SELECT '. $listeDesChamps.' FROM `'.$k0.'`';
@@ -96,7 +120,11 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
      
      
     }else{
-     fwrite($fd,' /* table '.$k0.' aucune données à insérer */'.CRLF);
+     fwrite($fd,'/*'.CRLF.CRLF.CRLF.CRLF);
+     fwrite($fd,'  ========================================================================='.CRLF);
+     fwrite($fd,'  Pour la table '.$k0.' il n\'y a aucune donnée à insérer'.CRLF);
+     fwrite($fd,'  ========================================================================='.CRLF);
+     fwrite($fd,'*/'.CRLF);
     }
     
    }

@@ -175,6 +175,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_p
          var la_table=objSql.tableau_tables_champs[i];
          var liste_des_champs='';
          var sql_insert='';
+         var php_select='';
          
 //         console.log('la_table=',la_table);
          
@@ -184,6 +185,9 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_p
              }
              var le_champ=la_table.champs[j];
              liste_des_champs+=',   `'+le_champ.nom_du_champ+'`        '+(' '.repeat(objSql.longueur_maximum_des_champs-le_champ.nom_du_champ.length));
+             php_select+=CRLF+'     \'T0.'+le_champ.nom_du_champ+'\''+(' '.repeat(objSql.longueur_maximum_des_champs-le_champ.nom_du_champ.length))+'=> $arr['+j+'],'
+             
+             
          }
          
          liste_des_champs=' '+liste_des_champs.substr(1);
@@ -204,6 +208,23 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_p
          sql_insert+='$sql=\'INSERT INTO `'+la_table.nom_de_la_table+'`('+CRLF+liste_des_champs+CRLF+') VALUES ('+CRLF+liste_des_tableaux_a_inserer+CRLF+')\';';
          
          lePhp+=CRLF+'/* ====== */'+CRLF+sql_insert+CRLF;
+         
+         lePhp+=CRLF+CRLF+'/* ============ */'+CRLF+'    $data0=array('+CRLF+php_select+CRLF+'    );'+CRLF+CRLF;
+         
+         
+         
+/*
+
+    $data0=array(
+     'T0.chi_id_dossier'           => $arr[0],
+     'T0.chp_nom_dossier'          => $arr[1],
+     'T0.chx_cible_dossier'        => $arr[2],
+    );
+
+
+*/         
+         
+         
 //         console.log('sql_insert='+sql_insert);
 
       
@@ -221,7 +242,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_p
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'bdd',
-   'chx_id_provanance_rev' : id_bdd,
+   'chx_source_rev' : id_bdd,
    'id_cible' : id_cible
   }
   
@@ -239,7 +260,7 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'bdd',
-   'chx_id_provanance_rev' : id_bdd,
+   'chx_source_rev' : id_bdd,
    'id_cible' : id_cible
   }
  
