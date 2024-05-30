@@ -318,7 +318,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_texte_tache).'" name="chp_texte_tache" id="chp_texte_tache" maxlength="64" style="max-width:64em;" />'.CRLF;
+  $o1.='   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache">'.enti1($chp_texte_tache).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 

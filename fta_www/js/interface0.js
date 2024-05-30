@@ -1,4 +1,5 @@
 "use strict";
+"use strict";
 
 var global_editeur_derniere_valeur_selecStart=-1;
 var global_editeur_derniere_valeur_selectEnd=-1;
@@ -14,6 +15,69 @@ var global_modale1_iframe=null;
 var global_editeur_largeur_des_ascenseurs=-1; 
 var global_indice_erreur_originale_traitee=-1;
 
+/*
+  =====================================================================================================================
+  fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
+  =====================================================================================================================
+*/
+function fixer_les_dimentions(type_d_element){
+ 
+  var ss = document.styleSheets[0];
+  console.log(ss);
+
+  
+  for( var i=ss.cssRules.length-1;i>=0;i--){
+//       console.log(ss.cssRules[i].selectorText);
+       if(ss.cssRules[i]['selectorText'] && ss.cssRules[i].selectorText.indexOf(':root')>=0){
+           console.log(ss.cssRules[i])
+           var a=ss.cssRules[i].cssText.split('{');
+           try{
+                console.log('a=',a);
+                var b=a[1].split('}');
+                var c=b[0].split(';');
+                var t={};
+                for(var j=0;j<c.length;j++){
+                     var d=c[j].split(':');
+                     if(d.length===2){
+                          console.log(d[0]+' '+d[1]);
+                          if('dimension_du_texte'===type_d_element && d[0].trim()==='--yyvtrt' ){
+                               if(d[1].trim().indexOf('18')>=0){
+                                   t[d[0].trim()]='14px';
+                               }else if(d[1].trim().indexOf('14')>=0){
+                                   t[d[0].trim()]='16px';
+                               }else{
+                                   t[d[0].trim()]='18px';                
+                               }
+                          }else if('dimension_du_bouton'===type_d_element && d[0].trim()==='--yyvtrp' ){
+                               if(d[1].trim().indexOf('2')>=0){
+                                   t[d[0].trim()]='4px';
+                               }else if(d[1].trim().indexOf('4')>=0){
+                                   t[d[0].trim()]='6px';
+                               }else{
+                                   t[d[0].trim()]='2px';                
+                               }
+                          }else{
+                           t[d[0].trim()]=d[1].trim();
+                          }
+                     }
+                }
+    //            console.log('t=',t);
+                var date = new Date();
+                var dateString = date.toGMTString();
+                var cookieString = APP_KEY+'_biscuit'+'='+encodeURIComponent(JSON.stringify(t));// + dateString;
+                document.cookie = cookieString;
+                window.location=window.location;
+                return;
+
+           }catch(e){
+            console.log('raaah',e);
+           }
+       }
+   }
+
+
+ 
+}
 /*
   =====================================================================================================================
   convertir un textarea source rev et mettre le résultat dans un textarea php
@@ -944,12 +1008,12 @@ function affichageBoiteServeurLent(){
     divId.style.padding='8px';
     divId.style.zIndex=10000;
     divId.style.textAlign='center';
-    divId.style.fontSize='2em';
+    divId.style.fontSize='1.5em';
     divId.style.width='99.99%';
     divId.style.borderRadius='3px';
     divId.className='yyerreur';
     divId.style.opacity=0.0;
-    divId.innerHTML='désolé, le serveur est lent, veuillez patienter';
+    divId.innerHTML='désolé, le serveur et/ou la connexion sont lents<br /> veuillez patienter';
     document.getElementsByTagName('body')[0].appendChild(divId);
     setTimeout(miseAjourAffichageServeurLent,0);
 }
@@ -1004,7 +1068,7 @@ function reactiverLesBoutons(){
 */
 function clickLink1(e){
     try{
-        e.target.className="yyunset";
+        e.target.classList.add("yyunset");
     }catch(e1){
     }
     globale_timeout_reference_timer_serveur_lent=setTimeout(affichageBoiteServeurLent,globale_timeout_serveur_lent);
@@ -1377,7 +1441,7 @@ function deplace_la_zone_de_message(){
  }
 
  dogid('zone_global_messages').style.top=(paddingTopBody+2)+'px';
- bod.style.paddingTop=(paddingTopBody+2)+'px';
+ bod.style.paddingTop=(paddingTopBody)+'px';
 
  /*
    ajustement de la position gauche des menus du haut, 
@@ -1390,6 +1454,9 @@ function deplace_la_zone_de_message(){
  }
  if(hrefActuel.lastIndexOf('/')>=1 && hrefActuel.substr(hrefActuel.lastIndexOf('/')+1)!==''){
   hrefActuel=hrefActuel.substr(hrefActuel.lastIndexOf('/')+1);
+  if(hrefActuel.indexOf('?')>=0){
+   hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('?'));
+  }
   var lienActuel=null;
   var menuPrincipal=dogid('menuPrincipal');
   if(menuPrincipal){
@@ -1404,13 +1471,9 @@ function deplace_la_zone_de_message(){
    if(lienActuel!==null){
     for(i=0;i<listeMenu.length;i++){
      if(listeMenu[i]===lienActuel ){
-      if(listeMenu[i].className!=='yymenusel1'){
-       listeMenu[i].className='yymenusel1';
-      }
+      listeMenu[i].classList.add('yymenusel1')
      }else{
-      if(listeMenu[i].className!==''){
-       listeMenu[i].className='';
-      }
+      listeMenu[i].classList.remove('yymenusel1')
      }
     }
     var positionDuLien=lienActuel.getBoundingClientRect();
@@ -1461,7 +1524,7 @@ function calculLaLargeurDesAscenseurs() { //setup global_editeur_largeur_des_asc
 ===================================================================================
 */
 function ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens(){
-  
+    calculLaLargeurDesAscenseurs();
     /*
       equivalent de window.onload = function() {
       fixMenu1();
@@ -1505,7 +1568,10 @@ function ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens(){
   
 }
 
-function decalerLaPage(destination, duree) {
+/*
+===================================================================================
+*/
+function vers_le_haut_de_la_page(destination, duree) {
  
   Math.easeInOutQuad=function(t,b,c,d){
     t /= d/2;

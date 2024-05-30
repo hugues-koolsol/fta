@@ -8,12 +8,10 @@ print($o1);$o1='';
 ?>
 
         <div class="menuScroller">
-            <ul class="menu2">
-                <li style="margin-top:-13px;">
-                    <a href="javascript:chargerSourceDeTestJs()">source de test</a>&nbsp;
-                    <a href="javascript:transformJsDeTextAreaEnRev()"  class="yysucces">convertir</a>&nbsp;
-                    <a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;
-                </li>
+            <ul>
+                <li><a href="javascript:chargerSourceDeTestJs()">source de test</a>&nbsp;</li>
+                <li><a href="javascript:transformJsDeTextAreaEnRev()"  class="yysucces">convertir</a>&nbsp;</li>
+                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;</li>
             </ul>
         </div>
   <h1>Convertir un js en rev</h1>
@@ -36,11 +34,10 @@ $par=array(
     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">
-setTimeout(
- function(){
+window.addEventListener(\'load\',function(){
   chargerLeDernierSourceJs();
   transformJsDeTextAreaEnRev();
- },500
+ }
 )
 </script>';
 

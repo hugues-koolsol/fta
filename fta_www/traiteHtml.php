@@ -9,12 +9,12 @@ $o1=html_header1(array('title'=>'convertir un html en rev' , 'description'=>'con
 print($o1);$o1='';
 ?>
         <div class="menuScroller">
-            <ul class="menu2">
-                <li style="margin-top:-13px;">
-                    <a href="javascript:chargerSourceDeTestHtml()">source de test</a>&nbsp;
-                    <a href="javascript:transformHtmlEnRev()"  class="yysucces">convertir</a>&nbsp;
-                    <a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;
-                </li>
+            <ul>
+                
+                <li><a href="javascript:chargerSourceDeTestHtml()">source de test</a>&nbsp;</li>
+                <li><a href="javascript:transformHtmlEnRev()"  class="yysucces">convertir</a>&nbsp;</li>
+                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;</li>
+                
             </ul>
         </div>
 
@@ -37,11 +37,10 @@ $par=array(
      'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">
-setTimeout(
- function(){
+window.addEventListener(\'load\',function(){
   chargerLeDernierSourceHTML();
   transformHtmlEnRev();
- },500
+ }
 )
 </script>';
 $o1.=html_footer1($par);

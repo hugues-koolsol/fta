@@ -197,7 +197,7 @@ if(($stmt0 !== false)){
 }
 
 $consUrlRedir=''.'&amp;chi_id_source='.rawurlencode($chi_id_source).'&amp;chp_nom_source='.rawurlencode($chp_nom_source).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
-$__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
+$__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
 
 if(($__debut+$__nbMax < $__nbEnregs)){
 
@@ -205,7 +205,7 @@ if(($__debut+$__nbMax < $__nbEnregs)){
 
 }
 
-$__bouton_enregs_prec=' <span class="yybtn yyunset">&laquo;</span>';
+$__bouton_enregs_prec=' <a class="yyunset">&laquo;</a>';
 
 if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
@@ -242,13 +242,13 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
-    $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
+    $lsttbl.=' <a class="yyinfo yytbnormal" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
-    $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">x</a>';
+    $lsttbl.=' <a class="yydanger yytbnormal" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✕🚮🗑</a>';
     if( $v0['T0.chp_type_source']==='normal' && ( substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' || substr($v0['T0.chp_nom_source'],-4)==='.sql' ) ){
-     $lsttbl.=' <a class="yyavertissement yytxtSiz1" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+     $lsttbl.=' <a class="yyavertissement yytbnormal" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
     }else{
-     $lsttbl.='<span class=" yybtn yyunset"  title="convertir un source">😊</span>';
+     $lsttbl.='<a  class="yytbnormal yyunset"  title="convertir un source">😊</a>';
     }
     
     $lsttbl.='</div>';
@@ -273,7 +273,6 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
 }
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
-$o1.='<a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer un nouveau source</a>'.CRLF;
 /* $o1.= __FILE__ . ' ' . __LINE__ . ' $tab0 = <pre>' . var_export( $data0 , true ) . '</pre>' ;*/
 /*
   ============================================================================

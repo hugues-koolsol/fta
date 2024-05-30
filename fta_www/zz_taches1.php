@@ -19,6 +19,56 @@ function obtenir_entete_de_la_page(){
 /*
   =====================================================================================================================
 */
+if(isset($_POST['__soustraire_1_aux_priorites'])){
+ 
+  $db=new SQLite3('../fta_inc/db/sqlite/system.db');
+  
+  $sql0='UPDATE tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$db->querySingle($sql0);
+  $sql1='UPDATE tbl_taches SET chp_priorite_tache=chp_priorite_tache-1 WHERE chp_priorite_tache<50 AND  chp_priorite_tache>1 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$db->querySingle($sql1);
+  
+  if( $ret===false ){
+
+    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() );
+   
+  }else{
+   
+    ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
+    
+  }   
+  recharger_la_page(BNF);
+}
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_POST['__ajouter_1_aux_priorites'])){
+ 
+  $db=new SQLite3('../fta_inc/db/sqlite/system.db');
+  
+  $sql0='UPDATE tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$db->querySingle($sql0);
+  $sql1='UPDATE tbl_taches SET chp_priorite_tache=chp_priorite_tache+1 WHERE chp_priorite_tache<50 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$db->querySingle($sql1);
+  
+  if( $ret===false ){
+
+    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() );
+   
+  }else{
+   
+    ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
+    
+  }   
+  recharger_la_page(BNF);
+}
+/*
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
+*/
+
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
 $o1='';
@@ -169,22 +219,19 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
 }
 
-$o1.='<div>';
-$o1.='<form class="yylistForm1">';
+$o1.='<div><form method="post" class="yylistForm1">';
 $o1.=' <a class="yyinfo" href="zz_taches_action1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
-$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
-
+$o1.=' <button name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
+$o1.=' <button name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.CRLF;
+$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv;
+$o1.=' <div style="display:inline-block;">';
 if(($__nbEnregs > 0)){
-
     $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
-
 }else{
-
     $o1.='pas d\'enregistrement'.CRLF;
 }
-
-$o1.='</form>';
 $o1.='</div>';
+$o1.='</form></div>';
 $lsttbl='';
 $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';
@@ -214,7 +261,7 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.=''.$v0['T0.chp_priorite_tache'].'';
     $lsttbl.='</td>';
 
-    $lsttbl.='<tr>';
+    $lsttbl.='</tr>';
 }
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
 
