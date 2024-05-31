@@ -63,6 +63,7 @@ a,button{
  margin:var(--yyvtrm);
  padding: var(--yyvtrp);
  user-select:none;
+ inline-size: max-content;
 }
 
 .yynavbar{
@@ -120,6 +121,7 @@ a,button{
  max-height: 200px;
  overflow-y: scroll;
  box-shadow: 0px 2px 5px #B0BEC5;
+ visibility:hidden;
 }
 #modale1{
  min-width:80vw;

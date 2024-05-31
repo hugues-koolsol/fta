@@ -31,7 +31,7 @@ $o1.='<h1>Liste des revs de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_
   =====================================================================================================================
 */
 
-$__nbMax=10;
+$__nbMax=20;
 $__debut=0;
 
 
@@ -120,7 +120,7 @@ $from0='
 ';
 $sql0.=$from0;
 $where0='
- WHERE  "T0"."chx_cible_rev" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
+ WHERE  "T0"."chx_cible_rev" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].' 
 ';
 
 
@@ -133,51 +133,60 @@ if(($chp_provenance_rev != '')){
 
 }
 
+function construction_where_sql_sur_id($nom_du_champ,$critere){
+
+    $champ_where='';
+    if(strpos($critere,',')!==false){
+        $tableau_liste_des_valeurs=explode(',',$critere);
+        $chaine_recherche='';
+        foreach($tableau_liste_des_valeurs as $k1=>$v1){
+            if(is_numeric($v1)){
+                $chaine_recherche.=','.$v1;
+            }
+        }
+        if($chaine_recherche!==''){
+            $chaine_recherche=substr($chaine_recherche,1);
+            $champ_where.=CRLF.'AND '.$nom_du_champ.' in ('.sq0($chaine_recherche).')'.CRLF;
+        }    
+     
+    }else{
+        $champ_where.=CRLF.'AND '.$nom_du_champ.' = (\''.sq0($critere).'\')'.CRLF;
+    }
+
+    return $champ_where;
+}
+
 
 if(($chx_source_rev != '')){
 
-    $where0.='
-  AND `T0`.`chx_source_rev` = '.sq0($chx_source_rev).'
- ';
+    $where0.=construction_where_sql_sur_id('`T0`.`chx_source_rev`' , $chx_source_rev );
+    $__nbMax=2*$__nbMax;
+
 
 }
 
 
 if(($chp_nom_source != '')){
 
-    $where0.='
-  AND `T1`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\'
- ';
+    $where0.=CRLF.'AND `T1`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\''.CRLF;
 
 }
 
 if(($chp_nom_source2 != '')){
 
-    $where0.='
-  AND `T1`.`chp_nom_source` NOT LIKE \'%'.sq0($chp_nom_source2).'%\'
- ';
+    $where0.=CRLF.'AND `T1`.`chp_nom_source` NOT LIKE \'%'.sq0($chp_nom_source2).'%\''.CRLF;
 
 }
-
-
 
 if(($chp_valeur_rev != '')){
 
-    $where0.='
-  AND `T0`.`chp_valeur_rev` LIKE \'%'.sq0($chp_valeur_rev).'%\'
- ';
+    $where0.=CRLF.'AND `T0`.`chp_valeur_rev` LIKE \'%'.sq0($chp_valeur_rev).'%\''.CRLF;
 
 }
 
-
-
-
-
 if(($chi_id_rev != '')){
 
-    $where0.='
-  AND `T0`.`chi_id_rev` = \''.sq0($chi_id_rev).'\'
- ';
+    $where0.=construction_where_sql_sur_id('`T0`.`chi_id_rev`' , $chi_id_rev );
 
 }
 
@@ -188,6 +197,9 @@ $order0='
 $sql0.=$order0;
 $plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
+
+
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = ' . htmlentities( $sql0 ) . '</pre>' ; exit(0);
 
 $__nbEnregs=0;
 $data0=array();
@@ -323,8 +335,10 @@ foreach($data0 as $k0=>$v0){
 
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
 
-$o1.='<pre>' . var_export( $tableau_pour_webworker001 , true).'</pre>';
-if(count($tableau_pour_webworker001)===1 && $__nbEnregs<= $__nbMax ){
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['travaux_en_arriere_plan'] , true ) . '</pre>' ; exit(0);
+
+//$o1.='<pre>' . var_export( $tableau_pour_webworker001 , true).'</pre>';
+if(count($tableau_pour_webworker001)>=1 && $__nbEnregs<= $__nbMax ){
  $liste_des_id_des_sources='';
  foreach($tableau_pour_webworker001 as $k1=>$v1){
   $chaine_a_remplacer=$k1;
@@ -335,7 +349,26 @@ if(count($tableau_pour_webworker001)===1 && $__nbEnregs<= $__nbMax ){
    $liste_des_id_des_sources=substr($liste_des_id_des_sources,1);
   }
   if($chaine_a_remplacer!==''){
-   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_id_des_sources=' . $liste_des_id_des_sources;
+//   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_id_des_sources=' . $liste_des_id_des_sources;
+   
+   
+   
+   $__parametres_pour_travail_en_arriere_plan=array(
+    'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
+    'chaine_a_remplacer' => $chaine_a_remplacer,
+    'liste_des_id_des_sources' => $liste_des_id_des_sources
+   );
+   $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
+   $paramUrl=str_replace('\\','\\\\',$paramUrl);
+   $paramUrl=str_replace('\'','\\\'',$paramUrl);
+   $paramUrl=str_replace('"','\\"',$paramUrl);
+   $paramUrl=rawurlencode($paramUrl);
+
+   
+   $o1.='   <a href="javascript:lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan</a>'.CRLF;
+   
+   
+   
   }
  }
 }
@@ -353,6 +386,7 @@ $js_a_executer_apres_chargement=array(
      'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
+//$o1.='<script type="module" src="js/module1.js"></script>';
 print($o1); $o1='';
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);

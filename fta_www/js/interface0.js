@@ -14,7 +14,141 @@ var global_modale1_iframe=null;
 
 var global_editeur_largeur_des_ascenseurs=-1; 
 var global_indice_erreur_originale_traitee=-1;
+var global_programme_en_arriere_plan=null;
 
+
+
+
+/*
+  =====================================================================================================================
+  si il y a des web workers qui ne sont pas terminés, il faut les relancer
+  =====================================================================================================================
+*/
+function recuperer_les_travaux_en_arriere_plan_de_la_session(){
+ 
+ 
+    var r = new XMLHttpRequest();
+    r.open("POST",'za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
+    r.timeout=6000;
+    r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+    r.onreadystatechange = function () {
+     if(r.readyState != 4 || r.status != 200){
+         if(r.status==404){
+          console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
+         }else if(r.status==500){
+             /*
+               normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+               au niveau du php za_ajax mais sait-on jamais
+             */
+             if(global_messages['e500logged']==false){
+                 try{
+                  console.log('r=',r);
+                 }catch(e){
+                 }
+             }
+         }
+         return;
+     }
+     try{
+         var jsonRet=JSON.parse(r.responseText);
+         if(jsonRet.status=='OK'){
+             console.log('il y a des travaux en arrière plan' , jsonRet.valeur );
+             var tableau_des_travaux=[];
+             for(var i in jsonRet.valeur){
+              console.log(jsonRet.valeur[i]);
+              tableau_des_travaux.push(jsonRet.valeur[i]);
+             }
+             
+             if(!window.Worker){
+              return;
+             }
+             if(global_programme_en_arriere_plan===null){
+                global_programme_en_arriere_plan = new Worker("./js/travail_en_arriere_plan.js");
+             }
+             global_programme_en_arriere_plan.postMessage({'type_de_message' : 'integrer_les_travaux_en_session' , 'tableau_des_travaux' : tableau_des_travaux});
+             
+             
+             return;
+         }else{
+//             console.log('pas de travail en arrière plan');
+             /* pas de travail en arrière plan' */
+             return;
+         }
+     }catch(e){
+         console.log('r=',r);
+         return;
+     }
+    };
+    r.onerror=function(e){
+        console.error('e=',e); /* whatever(); */
+        return;
+    }
+    
+    r.ontimeout=function(e){
+        console.error('e=',e);
+        return;
+    }
+    var ajax_param={
+        call:{
+         'lib'                       : 'php'   ,
+         'file'                      : 'session'  ,
+         'funct'                     : 'recuperer_les_travaux_en_arriere_plan_de_la_session' ,
+        },
+    }
+    try{
+        r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+    }catch(e){
+        console.error('e=',e); /* whatever(); */
+        return {status:false};  
+    }
+    return {status:true};    
+}
+
+/*
+  =====================================================================================================================
+  déclenchement d'un travail en arrière plan
+  =====================================================================================================================
+*/
+function lancer_un_travail_en_arriere_plan(parametre){
+    console.log('par=',parametre);
+    var json_param=JSON.parse(parametre);
+    console.log('json_param=' , json_param );
+    
+    if("replacer_des_chaines1"===json_param.nom_du_travail_en_arriere_plan){
+
+      /*
+      A réintégrer dans le prompt plus bas
+      */      
+      json_param.remplacer_par='sq0'; //remplacer_par;
+      /*
+      A réintégrer dans le prompt plus bas
+      */      
+      console.log(json_param);
+      if(!window.Worker){
+       return;
+      }
+      if(global_programme_en_arriere_plan===null){
+         global_programme_en_arriere_plan = new Worker("./js/travail_en_arriere_plan.js");
+      }
+      global_programme_en_arriere_plan.postMessage({'type_de_message' : 'déclencher_un_travail' , 'parametres' : json_param});
+      
+      global_programme_en_arriere_plan.onmessage = function (message_recu_du_worker) {         
+        console.log("message_recu_du_worker",message_recu_du_worker);
+      };
+     
+     
+/*     
+     var remplacer_par = prompt('remplacer "'+json_param.chaine_a_remplacer+'" dans les sources('+json_param.liste_des_id_des_sources+') par :');
+     if(remplacer_par!==null){
+       
+       
+     }
+*/     
+     
+     
+    }
+    
+}
 /*
   =====================================================================================================================
   fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
@@ -1096,7 +1230,7 @@ function clearMessages(nomZone){
     try{
         document.getElementById(nomZone).innerHTML='';
         /* display a pu être mis à "none" ailleurs */
-        document.getElementById(nomZone).style.display=''; 
+        document.getElementById(nomZone).style.visibility='hidden'; 
     }catch(e){
     }
     global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
@@ -1163,13 +1297,16 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         global_messages.ids=[];
     }
     while(global_messages.ranges.length>0){
-     zon.innerHTML='&nbsp;<a href="javascript:selectionnerUnePlage('+global_messages.ranges[0][0]+','+global_messages.ranges[0][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">plage '+global_messages.ranges[0][0]+','+global_messages.ranges[0][1]+'</a>'+zon.innerHTML;
-     global_messages.ranges.splice(0,1);
-     affichagesPresents=true;
+        zon.innerHTML='&nbsp;<a href="javascript:selectionnerUnePlage('+global_messages.ranges[0][0]+','+global_messages.ranges[0][1]+',\''+nomDeLaTextAreaContenantLeTexteSource+'\')" class="yyerreur" style="border:2px red outset;">plage '+global_messages.ranges[0][0]+','+global_messages.ranges[0][1]+'</a>'+zon.innerHTML;
+        global_messages.ranges.splice(0,1);
+        affichagesPresents=true;
     }
     if(affichagesPresents && zone_message_est_vide){
-     var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
-     zon.innerHTML=ttt+zon.innerHTML;
+        var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
+        zon.innerHTML=ttt+zon.innerHTML;
+    }
+    if(zon.innerHTML!==''){
+        zon.style.visibility='visible';
     }
 }
 
@@ -1201,7 +1338,7 @@ function selectionnerUnePlage(debut,fin,nomDeZoneSource){
 */
 function masquerLesMessage(nomZone){
     var zon = document.getElementById(nomZone);
-    zon.style.display='none'; 
+    zon.style.visibility='hidden'; 
 }
 /*
   =====================================================================================================================
@@ -1209,14 +1346,14 @@ function masquerLesMessage(nomZone){
 function afficherOuMasquerLesMessages(){
     var nomZone='zone_global_messages';
     var zon = document.getElementById(nomZone);
-    if(zon.style.display==='none' || zon.innerHTML===''){ 
-     zon.style.display='';
+    if(zon.style.visibility==='hidden' || zon.innerHTML===''){ 
+     zon.style.visibility='visible';
      if(zon.innerHTML==''){
       var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
       zon.innerHTML=ttt+zon.innerHTML;
      } 
     }else{
-     zon.style.display='none';
+     zon.style.visibility='hidden';
     }
 }
 
@@ -1698,6 +1835,7 @@ window.addEventListener('load', function () {
   }
  })
  fonctionDeLaPageAppeleeQuandToutEstCharge();
+ setTimeout(function(){recuperer_les_travaux_en_arriere_plan_de_la_session();},1000);
  
 })
 /*
