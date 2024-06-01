@@ -10,7 +10,9 @@ print($o1);$o1='';
         <div class="menuScroller">
             <ul>
                 <li><a href="javascript:chargerSourceDeTestJs()">source de test</a>&nbsp;</li>
-                <li><a href="javascript:transformJsDeTextAreaEnRev()"  class="yysucces">convertir</a>&nbsp;</li>
+                <li><a href="javascript:transformJsDeTextAreaEnRev()"  class="yysucces">convertir js esprima</a>&nbsp;</li>
+                <li><a href="javascript:transform_textarea_js_en_rev_avec_acorn( 'txtar1' , 'txtar2', 'script' )"  class="yysucces">convertir script acorn</a>&nbsp;</li>
+                <li><a href="javascript:transform_textarea_js_en_rev_avec_acorn( 'txtar1' , 'txtar2', 'module' )"  class="yysucces">convertir module acorn</a>&nbsp;</li>
                 <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;</li>
             </ul>
         </div>

@@ -15,9 +15,6 @@ print($o1);$o1='';
                 <li><a href="javascript:chargerSourceDeTest()">charger le source de test</a></li>
                 <li><a href="javascript:transformLeRev()" class="yysucces">traiter</a></li>
                 <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a></li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a></li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a></li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a></li>
             </ul>
         </div>
         <h1>PHP HOME</h1>

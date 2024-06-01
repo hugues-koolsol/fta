@@ -2281,6 +2281,39 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
                     return(astjs_logerreur({status:false,'message':'erreur pour '+objectEsprimaBody,element:element}));
                 }
                 
+            }else if('ClassDeclaration' === element.type){
+             var nom_de_la_classe='';
+             var super_classe='';
+             var corps_de_la_classe='';
+             if(element.id){
+                 if("Identifier"===element.id.type){
+                  
+                     nom_de_la_classe=element.id.name;
+                     
+                     
+                     
+                 }else{
+                     astjs_logerreur({status:false,'message':'erreur2289 le nom de la classe n\'est pas un identifiant '+element.id.type,element:element});
+                 }
+             }else{
+                astjs_logerreur({status:false,'message':'erreur2288 il manque id pour la définition de la classe '+element.type,element:element});
+             }
+             if(element.body && element.body.length>0 ){
+                 for(var i=0;i<element.body.length;i++){
+                   
+                   var obj = TransformAstEnRev(element.body[i],niveau+1);
+                   if(obj.status === true){
+                       corps_de_la_classe+=obj.value;
+                   }else{
+                       return(astjs_logerreur({status:false,'message':'2308 erreur pour le corps de la classe ',element:element}));
+                   }
+                  
+                 }
+                     
+                     
+             }
+             t+='definition_de_classe(nom_classe('+nom_de_la_classe+'),faire('+corps_de_la_classe+'))';
+             debugger
             }else{
                 astjs_logerreur({status:false,'message':'erreur922 pour '+element.type,element:element});
                 console.error('non pris en compte element.type='+element.type,element);
@@ -2372,6 +2405,142 @@ function transformJsEnRev(texteJs){
  
 }
 
+function traitement_apres_recuperation_ast_de_js_avec_acorn(obj){
+ console.log('obj=',obj);
+}
+
+function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apres_traitement){
+ 
+ 
+ var r = new XMLHttpRequest();
+ r.open("POST",'za_ajax.php?recupererAstDeJs',true);
+ r.timeout=6000;
+ r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+ r.onreadystatechange = function () {
+  if(r.readyState != 4 || r.status != 200){
+   if(r.status==500){
+    /*
+      normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+      au niveau du php za_ajax mais sait-on jamais
+    */
+    
+    if(global_messages['e500logged']==false){
+     try{
+//     console.log("r=",r);
+//     console.log("r="+r.response);
+      var errors=JSON.parse(r.responseText);
+      var t='';
+      for(var elem in errors.messages){
+       global_messages['errors'].push(errors.messages[elem]);
+      }
+      global_messages['e500logged']=true;
+      displayMessages('zone_global_messages');
+      console.log(global_messages);
+     }catch(e){
+     }
+    }
+   }
+   return;
+  }
+  try{
+   var jsonRet=JSON.parse(r.responseText);
+   if(jsonRet.status=='OK'){
+    for(var elem in jsonRet.messages){
+     logerreur( {'status':true,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
+    }
+    console.log('jsonRet=',jsonRet);
+    fonction_a_lancer_apres_traitement({status:true,value:jsonRet.value,input:jsonRet.input});
+   }else{
+    for(var elem in jsonRet.messages){
+     logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
+    }
+    displayMessages('zone_global_messages');
+//    display_ajax_error_in_cons(jsonRet);
+    console.log(r);
+//    alert('BAD job !');
+    return;
+   }
+  }catch(e){
+   var errors=JSON.parse(r.responseText);
+   var t='';
+   for(var elem in errors.messages){
+    global_messages['errors'].push(errors.messages[elem]);
+   }
+   displayMessages('zone_global_messages');
+   console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
+   return;
+  }
+ };
+ r.onerror=function(e){
+  console.error('e=',e); /* whatever(); */
+  return;
+ }
+ 
+ r.ontimeout=function(e){
+  console.error('e=',e);
+  return;
+ }
+ var ajax_param={
+  call:{
+   'lib'                       : 'js'   ,
+   'file'                      : 'ast'  ,
+   'funct'                     : 'recupererAstDeJs' ,
+  },
+  'texteSource':texteSource,
+  'type_de_source':options.type_de_source
+ }
+ try{
+  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+ }catch(e){
+  console.error('e=',e); /* whatever(); */
+  return {status:false};  
+ }
+ return {status:true};   
+ 
+}
+
+
+/*
+=====================================================================================================================
+*/
+function transform_source_js_en_rev_avec_acorn(source, type_de_source){
+ var ret={status:true,message:'OK'}
+ 
+  try{
+   var ret=recupere_ast_de_js_avec_acorn(source,{type_de_source:type_de_source},traitement_apres_recuperation_ast_de_js_avec_acorn);
+   if(ret.status===true){
+//    console.log('ret=',ret)
+   }else{
+    logerreur({status:false,message:'il y a une erreur d\'envoie du source js à convertir'})
+    displayMessages('zone_global_messages');
+    ret.status=false;
+   }
+  }catch(e){
+   console.log('erreur transform 2424',e);
+   ret.status=false;
+  }
+ 
+  return ret;
+
+  
+}
+
+
+/*
+=====================================================================================================================
+*/
+function transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev, type_de_source){
+ 
+ var a=document.getElementById(nom_de_la_text_area_source);
+ var obj=transform_source_js_en_rev_avec_acorn(a.value,type_de_source);
+ if(obj.status===true){
+//     document.getElementById(nom_de_la_text_area_rev).value=obj.value;
+ }else{
+    astjs_logerreur({status:false,message:'2446 erreur '});
+ }
+ 
+}
+
 
 /*
 =====================================================================================================================
@@ -2388,14 +2557,22 @@ function transformJsDeTextAreaEnRev(){
     a.setAttribute('rows',(count+1));
     var startMicro=performance.now();
     try{
+     
         var ret = esprima.parseScript(a.value,{range:true,comment:true});
         console.log('ret.body=',ret);
+        
     }catch(e){
+     
         console.log('erreur esprima',e);
+        
         if(e.lineNumber){
+         
          astjs_logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne '+e.lineNumber,line:e.lineNumber});
+         
         }
+        
         ret=false;
+
     }
     if(ret !== false){
         tabComment=ret.comments;

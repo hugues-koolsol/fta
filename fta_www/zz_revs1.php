@@ -386,7 +386,17 @@ $js_a_executer_apres_chargement=array(
      'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
-//$o1.='<script type="module" src="js/module1.js"></script>';
+//$o1.='<script type="module" src="js/module_rectangle_et_carre.js"></script>';
+$o1.='<script type="module">
+    import { Rectangle , Carre } from "./js/module_rectangle_et_carre.js";
+    window.Rectangle = Rectangle;
+    window.Carre = Carre;
+    import { Cercle } from "./js/module_cercle.js";
+    window.Cercle = Cercle;
+</script>
+';
+
+
 print($o1); $o1='';
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);

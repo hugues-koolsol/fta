@@ -110,6 +110,27 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
   =====================================================================================================================
 */
 function lancer_un_travail_en_arriere_plan(parametre){
+ 
+ 
+                 /*
+                 c'est interdit en javascript
+                 import { Rectangle , Carre } from "module_rectangle_et_carre.js";   
+                 */
+                 
+                 var le_carre=new Carre(10);
+                 console.log('%c le_carre=','background:yellow;color:red;', 'le_carre=',le_carre, 'le_carre.surface=' , le_carre.surface, 'le_carre.hauteur=' , le_carre.hauteur, 'le_carre.largeur=' , le_carre.largeur , 'le_rectangle.taille=',le_carre.taille);
+
+                 var le_rectangle=new Rectangle(10,20);
+                 console.log('%c le_rectangle=','background:yellow;color:red;', le_rectangle, le_rectangle.surface, le_rectangle.hauteur, le_rectangle.largeur );
+                 le_rectangle.transforme_en_carre();
+                 console.log('%c le_rectangle=','background:yellow;color:red;', le_rectangle, le_rectangle.surface, le_rectangle.hauteur, le_rectangle.largeur );
+                 le_rectangle.hauteur=20;
+                 console.log('%c le_rectangle=','background:yellow;color:red;', le_rectangle, le_rectangle.surface, le_rectangle.hauteur, le_rectangle.largeur );
+
+                 var le_cercle=new Cercle(10);
+                 console.log('%c le_cercle=','background:yellow;color:red;', 'le_cercle=',le_cercle, 'le_cercle.surface=' , le_cercle.surface, 'le_cercle.rayon=' , le_cercle.rayon);
+
+ 
     console.log('par=',parametre);
     var json_param=JSON.parse(parametre);
     console.log('json_param=' , json_param );
@@ -128,12 +149,22 @@ function lancer_un_travail_en_arriere_plan(parametre){
        return;
       }
       if(global_programme_en_arriere_plan===null){
-         global_programme_en_arriere_plan = new Worker("./js/travail_en_arriere_plan.js");
+         try{
+          global_programme_en_arriere_plan = new Worker("./js/module_travail_en_arriere_plan0.js" , { type: "module" });
+         }catch(e){
+          console.log('e=',e);
+         }
       }
-      global_programme_en_arriere_plan.postMessage({'type_de_message' : 'déclencher_un_travail' , 'parametres' : json_param});
+      console.log('on envoie le message');
+      try{
+       global_programme_en_arriere_plan.postMessage({'type_de_message' : 'déclencher_un_travail' , 'parametres' : json_param});
+      }catch(e){
+        console.log('e=',e);
+      }
+      console.log('le message est envoyé sans erreur');
       
       global_programme_en_arriere_plan.onmessage = function (message_recu_du_worker) {         
-        console.log("message_recu_du_worker",message_recu_du_worker);
+        console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
       };
      
      

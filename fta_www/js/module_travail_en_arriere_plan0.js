@@ -1,10 +1,9 @@
 
+import { Rectangle , Carre } from './module_rectangle_et_carre.js'
+import { Cercle } from './module_cercle.js'
+
 var liste_des_travaux_en_arriere_plan=[];
 var travail_en_cours=false;
-
-
-//import le_machin from "./module1.js";
-import { Rectangle , Carre } from 'module_rectangle_et_carre.js'
 
 /*
 ==============================================================================================================
@@ -34,11 +33,6 @@ function lancer_le_travail(){
                  */
                  console.log('j\'ai terminé le travail')
                  
-/*
-                 try{self.importScripts('module_rectangle_et_carre.js');}catch(e){
-                  console.error('e=',e)
-                 } 
-*/                 
                  var le_carre=new Carre(10);
                  console.log('%c le_carre=','background:yellow;color:red;', 'le_carre=',le_carre, 'le_carre.surface=' , le_carre.surface, 'le_carre.hauteur=' , le_carre.hauteur, 'le_carre.largeur=' , le_carre.largeur , 'le_rectangle.taille=',le_carre.taille);
 
@@ -48,6 +42,11 @@ function lancer_le_travail(){
                  console.log('%c le_rectangle=','background:yellow;color:red;', le_rectangle, le_rectangle.surface, le_rectangle.hauteur, le_rectangle.largeur );
                  le_rectangle.hauteur=20;
                  console.log('%c le_rectangle=','background:yellow;color:red;', le_rectangle, le_rectangle.surface, le_rectangle.hauteur, le_rectangle.largeur );
+
+                 var le_cercle=new Cercle(10);
+                 console.log('%c le_cercle=','background:yellow;color:red;', 'le_cercle=',le_cercle, 'le_cercle.surface=' , le_cercle.surface, 'le_cercle.rayon=' , le_cercle.rayon);
+
+
                  
              }catch(e){
               
