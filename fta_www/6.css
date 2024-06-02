@@ -24,7 +24,7 @@ input[type="radio"]{zoom:1.3;vertical-align:bottom;cursor:pointer;}
 input[type="checkbox"]{zoom:1.5;vertical-align:sub;cursor:pointer;}
 input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:6px;border;0;}
 b{font-weight:bold;}
-div{min-height:var(--yyvhmb);}
+div{min-height:var(--yyvhmc);line-height:var(--yyvhmc);}
 /* table{border-collapse:collapse;border-spacing:1px 6px;} */
 textarea{
  width:90%;

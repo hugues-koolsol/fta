@@ -1333,7 +1333,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         affichagesPresents=true;
     }
     if(affichagesPresents && zone_message_est_vide){
-        var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
+        var ttt='<a class="yyavertissement" style="float:inline-end;position:fixed;right:20px;" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)" title="masquer les messages">🙈</a>';
         zon.innerHTML=ttt+zon.innerHTML;
     }
     if(zon.innerHTML!==''){
@@ -1341,6 +1341,20 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     }
 }
 
+/*
+  =====================================================================================================================
+*/
+function agrandir_ou_reduire_la_none(nom_de_la_textarea){
+ try{
+  if(document.getElementById(nom_de_la_textarea)){
+   if(document.getElementById(nom_de_la_textarea).rows<=10){
+    document.getElementById(nom_de_la_textarea).rows=100;
+   }else{
+    document.getElementById(nom_de_la_textarea).rows=5;
+   }
+  }
+ }catch(e){}
+}
 /*
   =====================================================================================================================
 */
@@ -1380,7 +1394,7 @@ function afficherOuMasquerLesMessages(){
     if(zon.style.visibility==='hidden' || zon.innerHTML===''){ 
      zon.style.visibility='visible';
      if(zon.innerHTML==''){
-      var ttt='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)">masquer les messages</a>';
+      var ttt='<a class="yyavertissement" style="float:inline-end;position:fixed;right:20px;" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)"  title="masquer les messages">🙈</a>';
       zon.innerHTML=ttt+zon.innerHTML;
      } 
     }else{

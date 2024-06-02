@@ -13,6 +13,7 @@ process.argv.forEach(function (val, index, array) {
 });
 
 const fs = require('node:fs');
+
 let contenu_du_fichier='';
 try {
   contenu_du_fichier = fs.readFileSync(fichier_a_parser, 'utf8');

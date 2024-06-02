@@ -19,16 +19,21 @@ print($o1);$o1='';
 
   <h1>Convertir un php en rev</h1>
   
+  <div>
+   <a href="javascript:agrandir_ou_reduire_la_none(&quot;txtar1&quot;);" title="agrandir ou réduire la zone"> 👍👎</a>
+  </div>
   <textarea class="txtar1" id="txtar1" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
   <div>
    <a href="javascript:formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
    <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
+   <a href="javascript:agrandir_ou_reduire_la_none(&quot;txtar2&quot;);" title="agrandir ou réduire la zone"> 👍👎</a>
   </div>
   <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-  <br />
-  <a class="yyinfo" href="javascript:convertir_rev_en_php('txtar2','txtar3')">R2P↧</a>
-  <br />
+  <div>
+   <a class="yyinfo" href="javascript:convertir_rev_en_php('txtar2','txtar3')">R2P↧</a>
+   <a href="javascript:agrandir_ou_reduire_la_none(&quot;txtar3&quot;);" title="agrandir ou réduire la zone"> 👍👎</a>
+  </div>
   <textarea class="txtar1" id="txtar3" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 
 

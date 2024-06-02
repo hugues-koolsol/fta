@@ -27,11 +27,13 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
     if(($ne_pas_faire_de_copie)){
 
+        if(is_file($chemin_du_fichier)){
+         
+            if((@unlink($chemin_du_fichier))){
 
-        if((@unlink($chemin_du_fichier))){
+                return(true);
 
-            return(true);
-
+            }
         }
 
 
@@ -492,6 +494,7 @@ function html_header1($parametres){
     $css_taille_reference_margin=1;
     $css_hauteur_ligne=$css_taille_reference_textes+$css_taille_reference_padding;
     $css_hauteur_mini_bouton=$css_taille_reference_textes+4*$css_taille_reference_padding+2*$css_taille_reference_border;
+    $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
     $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
     $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-2*$css_taille_reference_margin-1;
     
@@ -515,7 +518,8 @@ function html_header1($parametres){
          $css_hauteur_mini_bouton      =isset($le_biscuit['--yyvhmb'])?(int)str_replace('px','',$le_biscuit['--yyvhmb']):$css_hauteur_mini_bouton;
          $css_hauteur_menu_defilement  =isset($le_biscuit['--yyvhmd'])?(int)str_replace('px','',$le_biscuit['--yyvhmd']):$css_hauteur_menu_defilement;
          $css_hauteur_grands_boutons   =isset($le_biscuit['--yyvhgb'])?(int)str_replace('px','',$le_biscuit['--yyvhgb']):$css_hauteur_grands_boutons;
-
+         $css_hauteur_mini_conteneur   =isset($le_biscuit['--yyvhmc'])?(int)str_replace('px','',$le_biscuit['--yyvhmc']):$css_hauteur_mini_conteneur;
+         
          
 
      }else{
@@ -529,6 +533,7 @@ function html_header1($parametres){
           '--yyvhal' =>  $css_hauteur_ligne.'px',
           '--yyvhmd' =>  $css_hauteur_menu_defilement.'px',
           '--yyvhgb' =>  $css_hauteur_grands_boutons.'px',
+          '--yyvhmc' =>  $css_hauteur_mini_conteneur.'px',
          );
      }
     }else{
@@ -552,17 +557,21 @@ function html_header1($parametres){
       '--yyvhal' =>  $css_hauteur_ligne.'px',
       '--yyvhmd' =>  $css_hauteur_menu_defilement.'px',
       '--yyvhgb' =>  $css_hauteur_grands_boutons.'px',
+      '--yyvhmc' =>  $css_hauteur_mini_conteneur.'px',
      );
     }
 
     $css_hauteur_ligne=$css_taille_reference_textes+$css_taille_reference_padding;
     $css_hauteur_mini_bouton=$css_taille_reference_textes+4*$css_taille_reference_padding+2*$css_taille_reference_border;
+    $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
     $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
     $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-2*$css_taille_reference_margin-1;
     $le_biscuit['--yyvhmb']=$css_hauteur_mini_bouton.'px';
     $le_biscuit['--yyvhal']=$css_hauteur_ligne.'px';
     $le_biscuit['--yyvhmd']=$css_hauteur_menu_defilement.'px';
     $le_biscuit['--yyvhgb']=$css_hauteur_grands_boutons.'px';
+    $le_biscuit['--yyvhmc']=$css_hauteur_mini_conteneur.'px';
+
     
     
     $texte_base_css='';
@@ -576,6 +585,7 @@ function html_header1($parametres){
     $texte_base_css.='--yyvhal:'.$le_biscuit['--yyvhal'].';';
     $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].';';
     $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].';';
+    $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].';';
     $texte_base_css.='}</style>';
 
     $o1.=$texte_base_css;

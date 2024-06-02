@@ -228,6 +228,98 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
         t='cascade('+t+')';
         
         
+    }else if('MethodDefinition' === element.type ){
+     
+         
+        if((element.kind==="method" || element.kind==="constructor" || element.kind==="get"  || element.kind==="set" ) && element.value && element.value.type==="FunctionExpression" && element.value.body){
+
+    
+            t+='\n'+esp0+'méthode(';
+            t+='\n'+esp0+esp1+'definition(';
+            if(element.kind==="get"  || element.kind==="set"){
+               t+='\n'+esp0+esp1+esp1+'type('+(element.kind==='get' ? 'lire' : 'écrire')+'),';
+            }
+            t+='\n'+esp0+esp1+esp1+'nom('+element.key.name+'),';
+            if(element.key.type==="PrivateIdentifier"){
+              t+='\n'+esp0+esp1+esp1+'mode(privée),';
+            }
+
+            if((element.value.params) && (element.value.params.length > 0)){
+                t+=',';
+                var j=0;
+                for(j=0;j < element.value.params.length;j=j+1){
+                    if(element.value.params[j].type==="Identifier"){
+                        t+='\n'+esp0+esp1+esp1+'argument('+element.value.params[j].name+')';
+                    }else if(element.params[j].type==="AssignmentPattern"){
+                     var obj=traiteAssignmentPattern(element.value.params[j],niveau,{});
+                     if(obj.status===true){
+                        
+                        t+='\n'+esp0+esp1+esp1+'argument('+obj.value+')';
+                     }else{
+                        return(astjs_logerreur({status:false,'message':'erreur pour TransformAstEnRev 2377 type argument non prévu '+element.value.params[j].type,element:element}));
+                     }
+                    }else{
+                        return(astjs_logerreur({status:false,'message':'erreur pour TransformAstEnRev 2380 type argument non prévu '+element.value.params[j].type,element:element}));
+                    }
+                    if(j < element.value.params.length-1){
+                    
+                        t+=',';
+                    }
+                }
+            }
+            t+='\n'+esp0+esp1+'),';
+            t+='\n'+esp0+esp1+'contenu(';
+            var prop={};
+            var bodyTrouve=false;
+            for(prop in element.value){
+                if(prop == 'body'){
+                    bodyTrouve=true;
+                    var obj = TransformAstEnRev(element.value[prop],niveau+2);
+                    if(obj.status === true){
+                        t+=obj.value;
+                    }else{
+                        return(astjs_logerreur({status:false,'message':'erreur pour TransformAstEnRev 2400 '+element.type,element:element}));
+                    }
+                }
+            }
+            t+='\n'+esp0+esp1+')';
+            t+='\n'+esp0+')';
+        }else{
+            debugger
+            return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0278 pour '+element.type,element:element}));
+        }
+        
+    }else if('PropertyDefinition' === element.type ){
+     if( element.key.type==='PrivateIdentifier' ){
+         t+='\n'+esp0+esp1+'variable_privée('+element.key.name;
+         if(element.value){
+          if(element.value.type==='Literal'){
+           t+=','+element.value.raw;
+          }else{
+            debugger
+            return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0295 '+element.value.type,element:element}));
+          }
+         }
+         t+=')';
+     }else{
+        return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0291 '+element.type,element:element}));
+     }
+    }else if('ExportNamedDeclaration' === element.type ){
+     if(element.specifiers && element.specifiers.length>0){
+      for(var j=0;j<element.specifiers.length;j++){
+       var specifier=element.specifiers[j];
+       if(specifier.exported){
+         if(specifier.exported.type==="Identifier"){
+          t+='exporter(nom_de_classe('+specifier.exported.name+'))';
+         }else{
+           return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0316 '+element.type,element:element}));  
+         }
+       }else{
+           return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0319 '+element.type,element:element}));  
+       }
+      }
+     }
+        
     }else{
         return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0118 '+element.type,element:element}));
     } 
@@ -888,12 +980,25 @@ function traiteIf1(element,niveau,type){
         return(astjs_logerreur({status:false,'message':'erreur traiteIf1 0826 pour '+element.type,element:element}));
     }
     if(element.alternate){
-        positionDebutBloc=element.alternate.range[0];
+        if(element.alternate.hasOwnProperty('range')){
+         positionDebutBloc=element.alternate.range[0];
+        }else if(element.alternate.hasOwnProperty('start')){
+         positionDebutBloc=element.alternate.start;
+        }else{
+         debugger
+        }
+        
         t+=ajouteCommentaireAvant(element.alternate,(niveau+3));
     }else{
         if(type == 'else'){
             /* il n'y a pas d'alternate mais il y a peut être des commentaires à la fin */
-            positionDebutBloc=element.range[1];
+            if(element.hasOwnProperty('range')){
+              positionDebutBloc=element.range[1];
+            }else if(element.hasOwnProperty('start')){
+              positionDebutBloc=element.start;
+            }else{
+             debugger;
+            }
             t+=ajouteCommentaireAvant(element,(niveau+3));
         }
     }
@@ -995,41 +1100,46 @@ function traiteCallExpression1(element,niveau,parent,opt){
     var laPropriete='';
     if(element.callee){
         if(element.callee.property){
-            if(element.callee.property.type === 'Identifier'){
+            if(element.callee.property.type === 'Identifier' || element.callee.property.type === 'PrivateIdentifier'){
+                var prefixe='';
+                if(element.callee.property.type === 'PrivateIdentifier'){
+                  prefixe='#';
+                }
                 if((element.callee.object) && (element.callee.object.type === 'Identifier')){
                     if(contenu===''){
-                     t+='appelf(element('+element.callee.object.name+'),nomf('+element.callee.property.name+')'+lesArguments+')';
+                     t+='appelf(element('+element.callee.object.name+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+')';
                     }else{
-                     t+='appelf(element('+element.callee.object.name+'),nomf('+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
+                     t+='appelf(element('+element.callee.object.name+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
                     }
                 }else if((element.callee.object) && (element.callee.object.type === 'Literal')){
                     if(contenu===''){
-                       t+='appelf(element('+element.callee.object.raw+'),nomf('+element.callee.property.name+')'+lesArguments+')';
+                       t+='appelf(element('+element.callee.object.raw+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+')';
                     }else{
-                       t+='appelf(element('+element.callee.object.raw+'),nomf('+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
+                       t+='appelf(element('+element.callee.object.raw+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
                     }
                 }else{
                     if((element.callee.object) && (element.callee.object.type === 'MemberExpression') &&  !(((element.callee.object.object) && (element.callee.object.property) && (element.callee.object.object.type === 'Identifier')) && (element.callee.object.property.type === 'Identifier'))){
                         var obj1 = traiteMemberExpression1(element.callee.object,niveau,element,'');
                         if(obj1.status === true){
                             if(contenu===''){
-                                t+='appelf(element('+obj1.value+'),nomf('+element.callee.property.name+')'+lesArguments+')';
+                                t+='appelf(element('+obj1.value+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+')';
                             }else{
-                                t+='appelf(element('+obj1.value+'),nomf('+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
+                                t+='appelf(element('+obj1.value+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
                             }
                         }else{
                             return(astjs_logerreur({status:false,message:'erreur dans traiteCallExpression1 485 ',element:element}));
                         }
                     }else{
                         if(contenu===''){
-                         laPropriete='prop(appelf(nomf('+element.callee.property.name+')'+lesArguments+'))';
+                         laPropriete='prop(appelf(nomf('+prefixe+element.callee.property.name+')'+lesArguments+'))';
                         }else{
                          console.error('\n\nATTENTION VERIFIER CECI\n\n')
-                         laPropriete='prop(appelf(nomf('+element.callee.property.name+')'+lesArguments+',contenu('+contenu+')))';
+                         laPropriete='prop(appelf(nomf('+prefixe+element.callee.property.name+')'+lesArguments+',contenu('+contenu+')))';
                         }
                     }
                 }
             }else{
+                
                 return(astjs_logerreur({status:false,message:'erreur dans traiteCallExpression1 0887 ',element:element}));
             }
         }
@@ -1300,6 +1410,9 @@ function traiteObjectExpression1(element,niveau){
     t='obj('+t+')';
     return({status:true,value:t});
 }
+/*
+=======================================================================================================================
+*/
 function recupProp(property){
     var t='';
     if(property){
@@ -1312,12 +1425,17 @@ function recupProp(property){
             }
         }else if(property.type === 'Identifier'){
             t+=property.name;
+        }else if(property.type === 'PrivateIdentifier'){
+            t+='#'+property.name+'';
         }else{
             return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1548  pour '+property.type,element:property}));
         }
     }
     return({status:true,value:t});
 }
+/*
+=======================================================================================================================
+*/
 function traiteMemberExpression1(element,niveau,parent){
     var t='';
     console.log('%c dans traiteMemberExpression1 element=','color:red;background:yellow;font-weight:bold;',element,'\nparent=',parent);
@@ -1815,7 +1933,7 @@ function traiteExpression1(element,niveau){
            || 'UnaryExpression' === element.expression.type
            || 'SequenceExpression' === element.expression.type
         ){
-            var obj1 = traiteUneComposante(element.expression , niveau , false , false );    // traiteExpression1 hugues         ;
+            var obj1 = traiteUneComposante(element.expression , niveau , false , false );
             if(obj1.status === true){
                 t+=obj1.value;
             }else{
@@ -2032,6 +2150,9 @@ function traiteTry1(element,niveau){
     t+='\n'+esp0+')';
     return({status:true,value:t});
 }
+/*
+  ===================================================================================================================
+*/
 function ajouteCommentaireAvant(element,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -2039,22 +2160,27 @@ function ajouteCommentaireAvant(element,niveau){
     var i=tabComment.length-1;
     for(i=tabComment.length-1;i >= 0;i=i-1){
         if(tabComment[i].type === 'Block'){
-            if(tabComment[i].range[1] < positionDebutBloc){
-                /*
-                  Attention, ici on remonte le tableau de caractères
-                  donc on ajoute le précédent après en changeant les parenthèses en []
-                */
-                var txtComment=tabComment[i].value;
-                
-                var c1=nbre_caracteres2('(',txtComment);
-                var c2=nbre_caracteres2(')',txtComment);
-                
-                if(c1===c2){
-                 t='\n'+esp0+'#('+txtComment+'),'+t;
-                }else{
-                 t='\n'+esp0+'#('+txtComment.replace(/\(/g,'[').replace(/\)/g,']')+'),'+t;
+
+            if(tabComment[i].hasOwnProperty('range')){
+                if(tabComment[i].range[1] < positionDebutBloc){
+                    /*
+                      Attention, ici on remonte le tableau de caractères
+                      donc on ajoute le précédent après en changeant les parenthèses en []
+                    */
+                    var txtComment=tabComment[i].value;
+                    
+                    var c1=nbre_caracteres2('(',txtComment);
+                    var c2=nbre_caracteres2(')',txtComment);
+                    
+                    if(c1===c2){
+                     t='\n'+esp0+'#('+txtComment+'),'+t;
+                    }else{
+                     t='\n'+esp0+'#('+txtComment.replace(/\(/g,'[').replace(/\)/g,']')+'),'+t;
+                    }
+                    tabComment.splice(i,1);
                 }
-                tabComment.splice(i,1);
+            }else{
+             debugger
             }
         }
     }
@@ -2062,23 +2188,39 @@ function ajouteCommentaireAvant(element,niveau){
 }
 var positionDebutBloc=0;
 var positionDebutBlocSuivant=0;
-function TransformAstEnRev(objectEsprimaBody,niveau){
+/*
+  ===================================================================================================================
+*/
+function TransformAstEnRev(les_elements,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
-    if(!Array.isArray(objectEsprimaBody)){
-     objectEsprimaBody=[objectEsprimaBody];
+    if(!Array.isArray(les_elements)){
+     les_elements=[les_elements];
     }
-//    console.log('typeof objectEsprimaBody=' , typeof objectEsprimaBody , Array.isArray(objectEsprimaBody)  )
+//    console.log('typeof les_elements=' , typeof les_elements , Array.isArray(les_elements)  )
     
-    if(objectEsprimaBody.length){
+    if(les_elements.length){
         var i=0;
-        for(i=0;i < objectEsprimaBody.length;i=i+1){
-            var element=objectEsprimaBody[i];
-            if(i < objectEsprimaBody.length-1){
-                positionDebutBlocSuivant=objectEsprimaBody[i+1].range[0];
+
+        for(i=0;i < les_elements.length;i=i+1){
+            var element=les_elements[i];
+            if(i < les_elements.length-1){
+                if(les_elements[i+1].hasOwnProperty('range')){
+                    positionDebutBlocSuivant=les_elements[i+1].range[0];
+                }else if(les_elements[i+1].hasOwnProperty('start')){
+                    positionDebutBlocSuivant=les_elements[i+1].start;
+                }else{
+                 debugger
+                }
             }
-            positionDebutBloc=element.range[0];
+            if(element.hasOwnProperty('range')){
+                positionDebutBloc=element.range[0];
+            }else if(element.hasOwnProperty('start')){
+                positionDebutBloc=element.start;
+            }else{
+                 debugger;
+            }
             t+=ajouteCommentaireAvant(element,niveau);
             var bodyTrouve=false;
             if(t != ''){
@@ -2278,7 +2420,7 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
                 if(obj.status === true){
                     t+=obj.value;
                 }else{
-                    return(astjs_logerreur({status:false,'message':'erreur pour '+objectEsprimaBody,element:element}));
+                    return(astjs_logerreur({status:false,'message':'2311 erreur TransformAstEnRev BlockStatement ',element:element}));
                 }
                 
             }else if('ClassDeclaration' === element.type){
@@ -2298,10 +2440,10 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
              }else{
                 astjs_logerreur({status:false,'message':'erreur2288 il manque id pour la définition de la classe '+element.type,element:element});
              }
-             if(element.body && element.body.length>0 ){
-                 for(var i=0;i<element.body.length;i++){
+             if(element.body && element.body.type==="ClassBody" && element.body.body && element.body.body.length>0 ){
+                 for(var j=0;j<element.body.body.length;j++){
                    
-                   var obj = TransformAstEnRev(element.body[i],niveau+1);
+                   var obj = TransformAstEnRev(element.body.body[j],niveau+1);
                    if(obj.status === true){
                        corps_de_la_classe+=obj.value;
                    }else{
@@ -2309,13 +2451,20 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
                    }
                   
                  }
-                     
-                     
              }
-             t+='definition_de_classe(nom_classe('+nom_de_la_classe+'),faire('+corps_de_la_classe+'))';
-             debugger
+             t+='definition_de_classe(nom_classe('+nom_de_la_classe+'),contenu('+corps_de_la_classe+'))';
+
+            }else if('MethodDefinition' === element.type  || "PropertyDefinition"=== element.type || "ExportNamedDeclaration" === element.type ){
+
+                var obj1=traiteUneComposante(element , niveau, false , false );
+                if(obj1.status===true){
+                  t+=obj1.value;
+                }else{
+                    return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0076',element:element}));
+                }
+             
             }else{
-                astjs_logerreur({status:false,'message':'erreur922 pour '+element.type,element:element});
+                astjs_logerreur({status:false,'message':'erreur 0922 pour '+element.type,element:element});
                 console.error('non pris en compte element.type='+element.type,element);
                 var prop={};
                 for(prop in element){
@@ -2336,18 +2485,18 @@ function TransformAstEnRev(objectEsprimaBody,niveau){
         on ne devrait plus passer par ici
         */
 //        debugger
-        if(objectEsprimaBody.type === 'BlockStatement'){
-            if(objectEsprimaBody.body){
+        if(les_elements.type === 'BlockStatement'){
+            if(les_elements.body){
                 niveau=niveau+1;
-                var obj = TransformAstEnRev(objectEsprimaBody.body,niveau);
+                var obj = TransformAstEnRev(les_elements.body,niveau);
                 if(obj.status === true){
                     t+=obj.value;
                 }else{
-                    return(astjs_logerreur({status:false,'message':'erreur pour '+objectEsprimaBody,element:element}));
+                    return(astjs_logerreur({status:false,'message':'erreur pour '+les_elements,element:element}));
                 }
                 niveau=niveau-1;
             }else{
-                console.log('Pas de body pour '+objectEsprimaBody.type);
+                console.log('Pas de body pour '+les_elements.type);
             }
         }
     }
@@ -2405,8 +2554,56 @@ function transformJsEnRev(texteJs){
  
 }
 
-function traitement_apres_recuperation_ast_de_js_avec_acorn(obj){
- console.log('obj=',obj);
+/*
+=====================================================================================================================
+*/
+function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
+ console.log('donnees_en_entree=',donnees_en_entree);
+ var texte_source_ast=donnees_en_entree.value;
+ try{
+  var ast_json=JSON.parse(texte_source_ast);
+  console.log('ast_json=', ast_json);
+  
+  if(ast_json.type==='Program' && ast_json.body){
+   var startMicro=performance.now();
+   var obj=TransformAstEnRev(ast_json.body,0);
+
+   if(obj.status===true){
+
+    if(donnees_en_entree.input.options.options.nom_de_la_text_area_rev){
+     document.getElementById(donnees_en_entree.input.options.options.nom_de_la_text_area_rev).value=obj.value;
+     
+     
+            var obj1 = functionToArray(obj.value,true,false,'');
+            if(obj1.status === true){
+                var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
+             
+                astjs_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
+                
+                var resJs=parseJavascript0(obj1.value,1,0);
+                if(resJs.status===true){
+                   document.getElementById('txtar3').value=resJs.value;
+                }else{
+                 astjs_logerreur({status:true,message:'2586 erreur de conversion de rev en javascript' });
+                }
+            }
+     
+     
+    }
+    //console.log('obj.value=',obj.value);
+   }else{
+   }
+  }else{
+  }
+  
+  
+ }catch(e){
+  console.error('e=',e);
+ }
+
+ displayMessages('zone_global_messages');
+
+ 
 }
 
 function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apres_traitement){
@@ -2454,6 +2651,9 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
     for(var elem in jsonRet.messages){
      logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
+    if(jsonRet.fichier_erreur){
+     logerreur( {'status':false,'message':'<pre>'+jsonRet.fichier_erreur.replace(/&/g,'&lt;').replace(/\n/,'<br />')+'</pre>'});
+    }
     displayMessages('zone_global_messages');
 //    display_ajax_error_in_cons(jsonRet);
     console.log(r);
@@ -2487,7 +2687,8 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
    'funct'                     : 'recupererAstDeJs' ,
   },
   'texteSource':texteSource,
-  'type_de_source':options.type_de_source
+  'type_de_source':options.type_de_source,
+  'options':options,
  }
  try{
   r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
@@ -2503,11 +2704,11 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
 /*
 =====================================================================================================================
 */
-function transform_source_js_en_rev_avec_acorn(source, type_de_source){
+function transform_source_js_en_rev_avec_acorn(source, type_de_source,options){
  var ret={status:true,message:'OK'}
  
   try{
-   var ret=recupere_ast_de_js_avec_acorn(source,{type_de_source:type_de_source},traitement_apres_recuperation_ast_de_js_avec_acorn);
+   var ret=recupere_ast_de_js_avec_acorn(source,{type_de_source:type_de_source,options:options},traitement_apres_recuperation_ast_de_js_avec_acorn);
    if(ret.status===true){
 //    console.log('ret=',ret)
    }else{
@@ -2530,9 +2731,10 @@ function transform_source_js_en_rev_avec_acorn(source, type_de_source){
 =====================================================================================================================
 */
 function transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev, type_de_source){
- 
+ clearMessages('zone_global_messages');
  var a=document.getElementById(nom_de_la_text_area_source);
- var obj=transform_source_js_en_rev_avec_acorn(a.value,type_de_source);
+ localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
+ var obj=transform_source_js_en_rev_avec_acorn(a.value,type_de_source,{nom_de_la_text_area_source:nom_de_la_text_area_source,nom_de_la_text_area_rev:nom_de_la_text_area_rev});
  if(obj.status===true){
 //     document.getElementById(nom_de_la_text_area_rev).value=obj.value;
  }else{
