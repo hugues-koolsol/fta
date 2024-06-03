@@ -20,19 +20,19 @@ print($o1);$o1='';
   <h1>Convertir un php en rev</h1>
   
   <div>
-   <a href="javascript:agrandir_ou_reduire_la_none(&quot;txtar1&quot;);" title="agrandir ou réduire la zone"> 👍👎</a>
+   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar1&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
   </div>
   <textarea class="txtar1" id="txtar1" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
   <div>
    <a href="javascript:formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
    <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
-   <a href="javascript:agrandir_ou_reduire_la_none(&quot;txtar2&quot;);" title="agrandir ou réduire la zone"> 👍👎</a>
+   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar2&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
   </div>
   <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div>
    <a class="yyinfo" href="javascript:convertir_rev_en_php('txtar2','txtar3')">R2P↧</a>
-   <a href="javascript:agrandir_ou_reduire_la_none(&quot;txtar3&quot;);" title="agrandir ou réduire la zone"> 👍👎</a>
+   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar3&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
   </div>
   <textarea class="txtar1" id="txtar3" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 
@@ -48,7 +48,8 @@ $js_a_executer_apres_chargement=array(
 );
 $par=array(
     'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js','js/jslib/esprima.js','js/convertit-php-en-rev0.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js','js/php.js'),
-     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
+    'module_a_inclure' => array('js/module_interface1.js','js/module_html.js'),
+    'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">
 setTimeout(

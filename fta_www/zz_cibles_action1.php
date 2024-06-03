@@ -64,6 +64,7 @@ function boutonRetourALaListe(){
       'fta_www/zz_sources_action1.php' => array(),
       'fta_www/phpliteadmin.config.php' => array('chp_type_source' => 'bibliotheque'),
       'fta_www/phpliteadmin.php' => array('chp_type_source' => 'bibliotheque'),      
+      
       'fta_www/js/compile1.js' => array(),
       'fta_www/js/convertit-html-en-rev1.js' => array(),
       'fta_www/js/convertit-html-en-rev1.js' => array(),
@@ -79,6 +80,8 @@ function boutonRetourALaListe(){
       'fta_www/js/pour_zz_source1.js' => array(),
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
+      'fta_www/js/module_interface1.js' => array(),
+      'fta_www/js/module_html.js' => array(),
       /*https://github.com/jquery/esprima*/
       'fta_www/js/jslib/esprima.js' => array('chp_type_source' => 'bibliotheque'),
       /*https://github.com/codeschool/sqlite-parser*/

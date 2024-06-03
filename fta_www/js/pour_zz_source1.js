@@ -152,7 +152,7 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
        
        if(matriceFonction.status===true){
         
-           var objHtml=tabToHtml1(matriceFonction.value,0,false,0);
+           var objHtml=__module_html1.tabToHtml1(matriceFonction.value,0,false,0);
            
            if(objHtml.status===true){
           
@@ -577,7 +577,7 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id
  
  if(matriceFonction.status===true){
   
-  var objHtml=tabToHtml1(matriceFonction.value,0,false,0);
+  var objHtml=__module_html1.tabToHtml1(matriceFonction.value,0,false,0);
   
   if(objHtml.status===true){
    

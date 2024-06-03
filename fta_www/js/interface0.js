@@ -1,5 +1,4 @@
 "use strict";
-"use strict";
 
 var global_editeur_derniere_valeur_selecStart=-1;
 var global_editeur_derniere_valeur_selectEnd=-1;
@@ -18,7 +17,6 @@ var global_programme_en_arriere_plan=null;
 
 
 
-
 /*
   =====================================================================================================================
   si il y a des web workers qui ne sont pas terminés, il faut les relancer
@@ -26,80 +24,81 @@ var global_programme_en_arriere_plan=null;
 */
 function recuperer_les_travaux_en_arriere_plan_de_la_session(){
  
- 
-    var r = new XMLHttpRequest();
-    r.open("POST",'za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange = function () {
-     if(r.readyState != 4 || r.status != 200){
-         if(r.status==404){
-          console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-         }else if(r.status==500){
-             /*
-               normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-               au niveau du php za_ajax mais sait-on jamais
-             */
-             if(global_messages['e500logged']==false){
-                 try{
-                  console.log('r=',r);
-                 }catch(e){
+    if(NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN>0){
+        var r = new XMLHttpRequest();
+        r.open("POST",'za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
+        r.timeout=6000;
+        r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+        r.onreadystatechange = function () {
+         if(r.readyState != 4 || r.status != 200){
+             if(r.status==404){
+              console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
+             }else if(r.status==500){
+                 /*
+                   normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+                   au niveau du php za_ajax mais sait-on jamais
+                 */
+                 if(global_messages['e500logged']==false){
+                     try{
+                      console.log('r=',r);
+                     }catch(e){
+                     }
                  }
              }
-         }
-         return;
-     }
-     try{
-         var jsonRet=JSON.parse(r.responseText);
-         if(jsonRet.status=='OK'){
-             console.log('il y a des travaux en arrière plan' , jsonRet.valeur );
-             var tableau_des_travaux=[];
-             for(var i in jsonRet.valeur){
-              console.log(jsonRet.valeur[i]);
-              tableau_des_travaux.push(jsonRet.valeur[i]);
-             }
-             
-             if(!window.Worker){
-              return;
-             }
-             if(global_programme_en_arriere_plan===null){
-                global_programme_en_arriere_plan = new Worker("./js/travail_en_arriere_plan.js");
-             }
-             global_programme_en_arriere_plan.postMessage({'type_de_message' : 'integrer_les_travaux_en_session' , 'tableau_des_travaux' : tableau_des_travaux});
-             
-             
-             return;
-         }else{
-//             console.log('pas de travail en arrière plan');
-             /* pas de travail en arrière plan' */
              return;
          }
-     }catch(e){
-         console.log('r=',r);
-         return;
-     }
-    };
-    r.onerror=function(e){
-        console.error('e=',e); /* whatever(); */
-        return;
-    }
-    
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        return;
-    }
-    var ajax_param={
-        call:{
-         'lib'                       : 'php'   ,
-         'file'                      : 'session'  ,
-         'funct'                     : 'recuperer_les_travaux_en_arriere_plan_de_la_session' ,
-        },
-    }
-    try{
-        r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
-    }catch(e){
-        console.error('e=',e); /* whatever(); */
-        return {status:false};  
+         try{
+             var jsonRet=JSON.parse(r.responseText);
+             if(jsonRet.status=='OK'){
+                 console.log('il y a des travaux en arrière plan' , jsonRet.valeur );
+                 var tableau_des_travaux=[];
+                 for(var i in jsonRet.valeur){
+                  console.log(jsonRet.valeur[i]);
+                  tableau_des_travaux.push(jsonRet.valeur[i]);
+                 }
+                 
+                 if(!window.Worker){
+                  return;
+                 }
+                 if(global_programme_en_arriere_plan===null){
+                    global_programme_en_arriere_plan = new Worker("./js/travail_en_arriere_plan.js");
+                 }
+                 global_programme_en_arriere_plan.postMessage({'type_de_message' : 'integrer_les_travaux_en_session' , 'tableau_des_travaux' : tableau_des_travaux});
+                 
+                 
+                 return;
+             }else{
+    //             console.log('pas de travail en arrière plan');
+                 /* pas de travail en arrière plan' */
+                 return;
+             }
+         }catch(e){
+             console.log('r=',r);
+             return;
+         }
+        };
+        r.onerror=function(e){
+            console.error('e=',e); /* whatever(); */
+            return;
+        }
+        
+        r.ontimeout=function(e){
+            console.error('e=',e);
+            return;
+        }
+        var ajax_param={
+            call:{
+             'lib'                       : 'php'   ,
+             'file'                      : 'session'  ,
+             'funct'                     : 'recuperer_les_travaux_en_arriere_plan_de_la_session' ,
+            },
+        }
+        try{
+            r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+        }catch(e){
+            console.error('e=',e); /* whatever(); */
+            return {status:false};  
+        }
     }
     return {status:true};    
 }
@@ -180,69 +179,7 @@ function lancer_un_travail_en_arriere_plan(parametre){
     }
     
 }
-/*
-  =====================================================================================================================
-  fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
-  =====================================================================================================================
-*/
-function fixer_les_dimentions(type_d_element){
- 
-  var ss = document.styleSheets[0];
-  console.log(ss);
 
-  
-  for( var i=ss.cssRules.length-1;i>=0;i--){
-//       console.log(ss.cssRules[i].selectorText);
-       if(ss.cssRules[i]['selectorText'] && ss.cssRules[i].selectorText.indexOf(':root')>=0){
-           console.log(ss.cssRules[i])
-           var a=ss.cssRules[i].cssText.split('{');
-           try{
-                console.log('a=',a);
-                var b=a[1].split('}');
-                var c=b[0].split(';');
-                var t={};
-                for(var j=0;j<c.length;j++){
-                     var d=c[j].split(':');
-                     if(d.length===2){
-                          console.log(d[0]+' '+d[1]);
-                          if('dimension_du_texte'===type_d_element && d[0].trim()==='--yyvtrt' ){
-                               if(d[1].trim().indexOf('18')>=0){
-                                   t[d[0].trim()]='14px';
-                               }else if(d[1].trim().indexOf('14')>=0){
-                                   t[d[0].trim()]='16px';
-                               }else{
-                                   t[d[0].trim()]='18px';                
-                               }
-                          }else if('dimension_du_bouton'===type_d_element && d[0].trim()==='--yyvtrp' ){
-                               if(d[1].trim().indexOf('2')>=0){
-                                   t[d[0].trim()]='4px';
-                               }else if(d[1].trim().indexOf('4')>=0){
-                                   t[d[0].trim()]='6px';
-                               }else{
-                                   t[d[0].trim()]='2px';                
-                               }
-                          }else{
-                           t[d[0].trim()]=d[1].trim();
-                          }
-                     }
-                }
-    //            console.log('t=',t);
-                var date = new Date();
-                var dateString = date.toGMTString();
-                var cookieString = APP_KEY+'_biscuit'+'='+encodeURIComponent(JSON.stringify(t));// + dateString;
-                document.cookie = cookieString;
-                window.location=window.location;
-                return;
-
-           }catch(e){
-            console.log('raaah',e);
-           }
-       }
-   }
-
-
- 
-}
 /*
   =====================================================================================================================
   convertir un textarea source rev et mettre le résultat dans un textarea php
@@ -1344,13 +1281,18 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
 /*
   =====================================================================================================================
 */
-function agrandir_ou_reduire_la_none(nom_de_la_textarea){
+function agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
  try{
   if(document.getElementById(nom_de_la_textarea)){
    if(document.getElementById(nom_de_la_textarea).rows<=10){
     document.getElementById(nom_de_la_textarea).rows=100;
+    document.getElementById(nom_de_la_textarea).style.height='100em';
+    document.getElementById(nom_de_la_textarea).focus();
    }else{
     document.getElementById(nom_de_la_textarea).rows=5;
+    document.getElementById(nom_de_la_textarea).style.height='5em';
+    document.getElementById(nom_de_la_textarea).focus();
+    
    }
   }
  }catch(e){}
@@ -1863,7 +1805,8 @@ function choisir_de_iframe1(parametres){
  
  window.parent.global_modale1.close();
 }
-
+var __gi1=null;
+var __module_html1=null;
 /*
 ===================================================================================
 */
@@ -1881,6 +1824,26 @@ window.addEventListener('load', function () {
  })
  fonctionDeLaPageAppeleeQuandToutEstCharge();
  setTimeout(function(){recuperer_les_travaux_en_arriere_plan_de_la_session();},1000);
+
+ import('./module_interface1.js').then(
+  function(Module){
+  __gi1=new Module.interface1('__gi1');
+ });
+ var liste_des_scripts=document.getElementsByTagName('script');
+ for(var i=0;i<liste_des_scripts.length;i++){
+  var element=liste_des_scripts[i];
+  if( element.type && element.type==='module'){
+   if(element.src && element.src.indexOf("js/module_html.js")>=0){
+  
+     import('./module_html.js').then(function(Module){__module_html1=new Module.traitements_sur_html('__module_html1');});
+
+
+
+     
+   }
+  }
+ }
+ 
  
 })
 /*

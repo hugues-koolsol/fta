@@ -16,12 +16,14 @@ function asthtml_logerreur(o){
 /*
   =================================================================================== 
 */
+//var __ht1=null;
 var tabComment=[];
 function transformHtmlEnRev(){
+ 
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     dogid('txtar3').value='';
-    document.getElementById('resultat1').innerHTML='';
+//    document.getElementById('resultat1').innerHTML='';
     clearMessages('zone_global_messages');
     var a = document.getElementById('txtar1');
     localStorage.setItem('fta_traitehtml_dernier_fichier_charge',a.value);
@@ -29,16 +31,17 @@ function transformHtmlEnRev(){
     var count=lines.length;
     a.setAttribute('rows',(count+1));
     var startMicro=performance.now();
-    var obj = TransformHtmlEnRev(a.value,0);
+    var obj=__module_html1.TransformHtmlEnRev(a.value,0);
+    
     if(obj.status == true){
         var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
-        document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
+//                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
         document.getElementById('txtar2').value=obj.value;
         var obj1 = functionToArray2(obj.value,false,true,'');
         if(obj1.status === true){
             asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
             
-            var obj2=tabToHtml1(obj1.value,0,false,0);
+            var obj2=__module_html1.tabToHtml1(obj1.value,0,false,0);
             if(obj2.status===true){
              dogid('txtar3').value=obj2.value;
              asthtml_logerreur({status:true,message:'html produit'});
@@ -51,6 +54,9 @@ function transformHtmlEnRev(){
     }
     displayMessages('zone_global_messages');
     rangeErreurSelectionne=false;
+    
+    return;
+    
 }
 /*
   =================================================================================== 

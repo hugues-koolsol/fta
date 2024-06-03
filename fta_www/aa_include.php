@@ -309,6 +309,8 @@ function signaler_erreur($tab){
 
 function ajouterMessage($type_de_message,$message,$page=''){
 
+
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
     $tableauTypeMessage=array(
         'normal',
         'succes',
@@ -362,7 +364,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
     }
 
-    /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV] , true ) . '</pre>' ; exit(0);*/
+    //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV] , true ) . '</pre>' ; exit(0);
 
 }
 /*
@@ -388,7 +390,7 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$f][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$f][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yymessageBox yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
                 }
 
             }
@@ -404,7 +406,7 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yymessageBox yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
                 }
 
             }
@@ -420,6 +422,8 @@ function recupereLesMessagesDeSession($f){
         $les_messages_a_afficher='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">masquer les messages</a>'.$les_messages_a_afficher;
 
     }
+
+
 
     return($les_messages_a_afficher);
 
@@ -574,19 +578,19 @@ function html_header1($parametres){
 
     
     
-    $texte_base_css='';
-    $texte_base_css.='<style type="text/css">:root{';
-    $texte_base_css.='--yyvtrg:'.$le_biscuit['--yyvtrg'].';';
-    $texte_base_css.='--yyvtrt:'.$le_biscuit['--yyvtrt'].';';
-    $texte_base_css.='--yyvtrp:'.$le_biscuit['--yyvtrp'].';';
-    $texte_base_css.='--yyvtrb:'.$le_biscuit['--yyvtrb'].';';
-    $texte_base_css.='--yyvtrm:'.$le_biscuit['--yyvtrm'].';';
-    $texte_base_css.='--yyvhmb:'.$le_biscuit['--yyvhmb'].';';
-    $texte_base_css.='--yyvhal:'.$le_biscuit['--yyvhal'].';';
-    $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].';';
-    $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].';';
-    $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].';';
-    $texte_base_css.='}</style>';
+    $texte_base_css=CRLF;
+    $texte_base_css.='<style type="text/css">:root{'.CRLF;
+    $texte_base_css.='--yyvtrg:'.$le_biscuit['--yyvtrg'].';'.CRLF;
+    $texte_base_css.='--yyvtrt:'.$le_biscuit['--yyvtrt'].'; /* taille de référence du texte */'.CRLF;
+    $texte_base_css.='--yyvtrp:'.$le_biscuit['--yyvtrp'].'; /* taille de référence du espaces ( padding ) */'.CRLF;
+    $texte_base_css.='--yyvtrb:'.$le_biscuit['--yyvtrb'].'; /* taille de référence des bordures */'.CRLF;
+    $texte_base_css.='--yyvtrm:'.$le_biscuit['--yyvtrm'].'; /* taille de référence dus marges */'.CRLF;
+    $texte_base_css.='--yyvhmb:'.$le_biscuit['--yyvhmb'].'; /* hauteur minimales des boutons */'.CRLF;
+    $texte_base_css.='--yyvhal:'.$le_biscuit['--yyvhal'].'; /* hauteur de ligne */'.CRLF;
+    $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].'; /* hauteur du menu à défilement */'.CRLF;
+    $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].'; /* hauteur des grands boutons ( quitter et index ) */'.CRLF;
+    $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.CRLF;
+    $texte_base_css.='}</style>'.CRLF;
 
     $o1.=$texte_base_css;
     
@@ -594,6 +598,8 @@ function html_header1($parametres){
     
     $o1.='<script type="text/javascript">'.CRLF;
     $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
+    $o1.=' var NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN='.(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])?count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']):0).';'.CRLF;
+    
     $o1.='</script>    '.CRLF;
     $o1.='    '.CRLF;
 
@@ -655,7 +661,12 @@ function html_header1($parametres){
     }
 
     $o1.='    <main id="contenuPrincipal">'.CRLF;
-    $o1.=' <div id="zone_global_messages" style="">'.recupereLesMessagesDeSession(BNF).'</div>'.CRLF;
+    $les_messages=recupereLesMessagesDeSession(BNF);
+    if($les_messages!==''){
+      $o1.=' <div id="zone_global_messages" style="visibility:visible;">'.$les_messages.'</div>'.CRLF;
+    }else{
+      $o1.=' <div id="zone_global_messages" style="">'.$les_messages.'</div>'.CRLF;
+    }
     return($o1);
 
 }
@@ -709,12 +720,30 @@ function html_footer1($parametres=array()){
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
     if(!(strpos(BNF,'_action')!==false)){
-        $o1.='<a href="javascript:fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;">A±</a>'.CRLF;
-        $o1.='<a href="javascript:fixer_les_dimentions(\'dimension_du_bouton\')" style="opacity:0.5;">b±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;">A±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_bouton\')" style="opacity:0.5;">b±</a>'.CRLF;
     }
     $o1.='</div>'.CRLF;
     $o1.='  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
-    $o1.='  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;
+    $o1.='  <script type="module" src="js/module_interface1.js"></script>'.CRLF;
+
+    /*
+     d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
+     mais grâce à ces lignes, le module js est mis en cache et les appels suivants sont plus rapides
+    */
+    if((isset($parametres['module_a_inclure']))){
+
+        foreach($parametres['module_a_inclure'] as $k1 => $v1){
+
+            if(($v1 !== '')){
+
+                $o1.='  <script type="module" src="'.$v1.'"></script>'.CRLF;
+
+            }
+
+        }
+
+    }
 
     if((isset($parametres['js_a_inclure']))){
 
@@ -762,6 +791,7 @@ function html_footer1($parametres=array()){
     }
 
     $o1.='</script>'.CRLF;
+    $o1.='  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;
     $o1.='</body></html>'.CRLF;
 
     if((isset($parametres['ne_pas_supprimer_les_valeurs_de_session_sur_un_choix']))){

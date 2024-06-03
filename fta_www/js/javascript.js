@@ -257,7 +257,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         if(nomFonction != ''){
                             t+=espcLigne;
                             if( 'méthode' === tab[i][1]){
-                                t+=typeFonction+typeFonction +nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
+                                t+=typeFonction+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
                             }else{
                                 t+='function '+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
                                 }
@@ -1253,7 +1253,7 @@ function js_traiteDefinitionTableau(tab,id,niveau,options={}){ // id = position 
       return(logerreur({status:false,value:t,id:j,tab:tab,'message':'js_traiteDefinitionTableau 1140 '}));
      }
     }else{
-      return(logerreur({status:false,value:t,id:j,tab:tab,'message':'js_traiteDefinitionTableau 1145 '}));
+      return(logerreur({status:false,value:t,id:j,tab:tab,'message':'js_traiteDefinitionTableau 1256 '}));
     }
    }
   }
@@ -1325,7 +1325,7 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
                 if((tab[j][1] == 'nomt') || (tab[j][1] == 'p') || (tab[j][1] == '#') || (tab[j][1] == 'prop')){
                     continue;
                 }else{
-                    logerreur({status:false,value:t,id:i,tab:tab,'message':'1107 les seuls paramètres de tableau sont nomt,p,prop "'+tab[j][1]+'"'});
+                    logerreur({status:false,value:t,id:i,tab:tab,'message':'1107 js_traiteTableau1 les seuls paramètres de tableau sont nomt,p,prop "'+tab[j][1]+'"'});
                 }
             }
         }
@@ -1377,14 +1377,14 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
                             if(objOperation.status == true){
                                 argumentsFonction+='['+objOperation.value+']';
                             }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 sur des opérations '}));
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1249 js_traiteTableau1 sur des opérations '}));
                             }
                         }else if(tab[j+1][1] == 'tableau'){
                             var objTableau = js_traiteTableau1(tab,(j+1),true,niveau,false);
                             if(objTableau.status === true){
                                 argumentsFonction+='['+objTableau.value+']';
                             }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 sur declaration '}));
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1007 js_traiteTableau1 sur declaration '}));
                             }
                         }else if(tab[j+1][1] == 'postinc'){
                             var obj1 = js_tabTojavascript1(tab,(j+1),true,true,niveau);
@@ -1392,11 +1392,21 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
                             if(obj1.status === true){
                                 argumentsFonction+='['+obj1.value+']';
                             }else{
-                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 sur declaration '}));
+                                return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1215 js_traiteTableau1 sur declaration '}));
                             }
                             
+                        }else if(tab[j+1][1] == 'appelf'){
+                         
+                            var obj = js_traiteAppelFonction(tab,j+1,true,niveau,false);
+                            if(obj.status == true){
+                                argumentsFonction+='['+obj.value+']';
+                            }else{
+                                return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteTableau1 1404 '}));
+                            }
+                         
                         }else{
-                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur 1145 dans un appel de fonction imbriqué pour la fonction inconnue '+(tab[j+1][1])}));
+                            debugger
+                            return(logerreur({status:false,value:t,id:j,tab:tab,'message':'erreur js_traiteTableau1 1145 pour '+(tab[j+1][1])}));
                         }
                     }
                 }
@@ -1432,6 +1442,9 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
     }
     return({status:true,value:t,'forcerNvelleLigneEnfant':forcerNvelleLigneEnfant,'termineParUnePropriete':termineParUnePropriete});
 }
+/*
+  ===================================================================================================================
+*/
 function js_traiteInstruction1(tab,niveau,id){
     var t='';
     if(tab[id][2] === 'c'){
@@ -1602,7 +1615,7 @@ function js_traiteDefinitionClasse(tab,id,niveau){
           if(obj.status == true){
               contenu_classe+=obj.value;
           }else{
-              logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans le contenu d\'une classe '});
+              return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur dans le contenu d\'une classe '}));
           }
        }
      }

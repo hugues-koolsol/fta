@@ -886,7 +886,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     t+='?><?php';
    }else{
     php_contexte_commentaire_html=true;
-    obj=tabToHtml1(tab,i,true,0);
+    obj=__module_html1.tabToHtml1(tab,i,true,0);
     if(obj.status==true){
      t+='?>\n'+obj.value+'<?php';
     }else{
@@ -1317,7 +1317,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
 
   php_contexte_commentaire_html=true;
   
-  obj=tabToHtml1(tab,ind,true,0);
+  obj=__module_html1.tabToHtml1(tab,ind,true,0);
   if(obj.status===true){
    t='htmlDansPhp(\''+obj.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
   }else{

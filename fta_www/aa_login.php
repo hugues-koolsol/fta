@@ -83,6 +83,8 @@ if((isset($_POST) && count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']=base64_encode(openssl_random_pseudo_bytes(16));
             $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*(10)+20));
             $_SESSION[APP_KEY]['__filtres']=array();
+            $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
+            
             ajouterMessage('info',__LINE__.' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
 

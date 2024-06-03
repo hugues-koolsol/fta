@@ -183,7 +183,7 @@ function convertSource(objMatSrc){
      baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=true;
      //                             tab             , id , noHead , niveau
-     retProgrammeSource=tabToHtml1( objMatSrc.value , i  , true   , 0      );
+     retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.value , i  , true   , 0      );
      if(retProgrammeSource.status==true){
       t+='\n'+retProgrammeSource.value+'\n';
      }else{
@@ -230,7 +230,7 @@ function convertSource(objMatSrc){
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_html'  && (file_extension=='html')){
    //                             tab             , id     , noHead , niveau
-   retProgrammeSource=tabToHtml1( objMatSrc.value , idJs+1 , false  , 0      );
+   retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.value , idJs+1 , false  , 0      );
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{

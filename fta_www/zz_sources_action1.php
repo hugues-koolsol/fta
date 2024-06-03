@@ -391,37 +391,40 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     ============================================= CREATION ============================================================
     ===================================================================================================================
   */
-  
   if(erreur_dans_champs_saisis_sources()){
    
       recharger_la_page(BNF.'?__action=__creation');
       
   }
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
   
   $sql='
-   INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
+   INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source , chp_type_source  ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])         .'\'
-        \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source'])        .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])  .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])    .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])         .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])      .'\'      
+      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source'])        .'\'
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
+  $val_erreur=error_reporting(0);
   if(false === $db->exec($sql)){ // 
-   
+//      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0); 
       ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__creation'); 
     
   }else{
    
+//      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0); 
     ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$db->lastInsertRowID().') a bien été créé' , BNF );
     recharger_la_page(BNF.'?__action=__modification&__id='.$db->lastInsertRowID()); 
    
   }
+  error_reporting($val_erreur);
  
 
  }else{
@@ -493,6 +496,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
 $o1='';
 $o1=html_header1(array('title'=>'sources' , 'description'=>'sources'));
 print($o1);$o1='';
+
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities(var_export( $_SESSION , true )) . '</pre>' ; exit(0);
 
 $o1.='<h1>gestion de source (dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].')'.boutonRetourALaListe().'</h1>';
 
