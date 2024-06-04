@@ -31,7 +31,7 @@ $o1.='<h1>Liste des revs de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_
   =====================================================================================================================
 */
 
-$__nbMax=20;
+$__nbMax=40;
 $__debut=0;
 
 
@@ -110,7 +110,8 @@ $o1.='</form>'.CRLF;
 
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
-$champs0='`chi_id_rev`          , `chp_provenance_rev` , T0.chx_source_rev , T1.chp_nom_source , T0.chp_valeur_rev
+$champs0='`chi_id_rev`          , `chp_provenance_rev` , T0.chx_source_rev , T1.chp_nom_source , T0.chp_valeur_rev ,
+          chp_type_rev          , T0.chp_niveau_rev
 ';
 $sql0='SELECT '.$champs0;
 $from0='
@@ -132,7 +133,10 @@ if(($chp_provenance_rev != '')){
  ';
 
 }
-
+/*
+quand un champ de recherche contenant des id ceux ci sont séparés par des virgules 
+par exemple, 1,2,3  , le where doit être sous la forme WHERE id in ( 1 , 2 , 3 )
+*/
 function construction_where_sql_sur_id($nom_du_champ,$critere){
 
     $champ_where='';
@@ -215,6 +219,8 @@ if($stmt!==false){
     'T0.chx_source_rev'      => $arr[2],
     'T1.chp_nom_source'      => $arr[3],
     'T0.chp_valeur_rev'      => $arr[4],
+    'T0.chp_type_rev'        => $arr[5],
+    'T0.chp_niveau_rev'      => $arr[6],
    ));
   }
   $stmt->close(); 
@@ -278,8 +284,11 @@ $__lsttbl.='<th>action</th>';
 $__lsttbl.='<th>id</th>';
 $__lsttbl.='<th>provenance</th>';
 $__lsttbl.='<th>nom source</th>';
-$__lsttbl.='<th>valeur(1)</th>';
 $__lsttbl.='<th>id source</th>';
+$__lsttbl.='<th>valeur(1)</th>';
+$__lsttbl.='<th>type(2)</th>';
+$__lsttbl.='<th>niveau(3)</th>';
+
 
 $__lsttbl.='</tr></thead><tbody>';
 $tableau_pour_webworker001=array();
@@ -301,31 +310,49 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='</td>';
  
  $__lsttbl.='<td style="text-align:left;">';
- $__lsttbl.=$v0['T0.chp_provenance_rev'].'';
+ $__lsttbl.=enti1($v0['T0.chp_provenance_rev']).'';
  $__lsttbl.='</td>';
  
  $__lsttbl.='<td style="text-align:left;">';
- $__lsttbl.=$v0['T1.chp_nom_source'].'';
+ $__lsttbl.=enti1($v0['T1.chp_nom_source'] ).'';
  $__lsttbl.='</td>';
+
+
+ $__lsttbl.='<td style="text-align:left;">';
+ $__lsttbl.=$v0['T0.chx_source_rev'].'';
+ $__lsttbl.='</td>';
+ 
+
  
  $__lsttbl.='<td style="text-align:left;">';
- $__lsttbl.=mb_substr( $v0['T0.chp_valeur_rev'] , 0 , 100).'';
+ 
+ $a=enti1(mb_substr( $v0['T0.chp_valeur_rev'] , 0 , 100));
+
+ $__lsttbl.=str_replace( '&para;CR&para;','<br />', str_replace( '&para;LF&para;','<br />', str_replace( '&para;CR&para;&para;LF&para;','<br />', $a))); // 
  $__lsttbl.='</td>';
  
- if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']])){
-  $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
- }else{
-  if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
-   $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
-  }else{
-   $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
-  }
+ if($chp_valeur_rev != ''){
+   if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']])){
+    $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+   }else{
+    if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
+     $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+    }else{
+     $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+    }
+   }
  }
 
  
  
+ 
  $__lsttbl.='<td style="text-align:left;">';
- $__lsttbl.=$v0['T0.chx_source_rev'].'';
+ $__lsttbl.=$v0['T0.chp_type_rev'].'';
+ $__lsttbl.='</td>';
+ 
+ 
+ $__lsttbl.='<td style="text-align:left;">';
+ $__lsttbl.=$v0['T0.chp_niveau_rev'].'';
  $__lsttbl.='</td>';
  
  
@@ -333,7 +360,11 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='</tr>';
 }
 
+
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
+
+
+
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['travaux_en_arriere_plan'] , true ) . '</pre>' ; exit(0);
 
@@ -356,7 +387,8 @@ if(count($tableau_pour_webworker001)>=1 && $__nbEnregs<= $__nbMax ){
    $__parametres_pour_travail_en_arriere_plan=array(
     'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
     'chaine_a_remplacer' => $chaine_a_remplacer,
-    'liste_des_id_des_sources' => $liste_des_id_des_sources
+    'liste_des_id_des_sources' => $liste_des_id_des_sources,
+    'critere_de_recherche' => $where0
    );
    $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
    $paramUrl=str_replace('\\','\\\\',$paramUrl);
@@ -398,6 +430,7 @@ $o1.='<script type="module">
 
 
 print($o1); $o1='';
+
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);$o1='';

@@ -913,6 +913,7 @@ $par=array(
   'js/jslib/sqlite_parser_from_demo.js' ,
   'js/convertion_sql_en_rev.js' ,
   ),
+ 'module_a_inclure' => array('js/module_html.js'),
   'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 

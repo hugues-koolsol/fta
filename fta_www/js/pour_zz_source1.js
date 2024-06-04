@@ -144,7 +144,7 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
 
 function traitement_apres_ajax_pour_conversion_fichier_html(par){
 
-    var objRev = TransformHtmlEnRev(par.contenu_du_fichier,0);
+    var objRev = __module_html1.TransformHtmlEnRev(par.contenu_du_fichier,0);
     if(objRev.status===true){
 
        var tableau1 = iterateCharacters2(objRev.value);
@@ -548,7 +548,7 @@ function convertir_html_en_rev(nom_zone_genere, nom_zone_source){
  clearMessages('zone_global_messages');
  var a=dogid(nom_zone_genere);
  var startMicro = performance.now();
- var objRev = TransformHtmlEnRev(a.value,0);
+ var objRev = __module_html1.TransformHtmlEnRev(a.value,0);
  if(objRev.status===true){
 
    dogid(nom_zone_source).value=objRev.value;

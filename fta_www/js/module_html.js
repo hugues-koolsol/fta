@@ -38,7 +38,7 @@ class traitements_sur_html{
            }
          }
          
-         var ob=tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
+         var ob=this.tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
          if(ob.status===true){
           if(ob.value.substr(0,2)===CRLF){
            ob.value=ob.value.substr(2);
@@ -163,7 +163,7 @@ class traitements_sur_html{
         count++;
         niveau++;
         
-        obj=traiteAstDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
+        obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
         niveau--;
         if(obj.status===true){
          if((attributs!=='' || contenu!=='') && obj.value!==''){
@@ -301,8 +301,8 @@ class traitements_sur_html{
 
             var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
 
-            var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau3);
-            var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
+            var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
+            var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
             if(obj1.status===true){
              t=obj1.value;
             }else{
@@ -310,8 +310,8 @@ class traitements_sur_html{
             }
 
            }else{
-            var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
-            var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
+            var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+            var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
             if(obj.status===true){
              t=obj.value;
             }else{
@@ -319,8 +319,8 @@ class traitements_sur_html{
             }
            }
           }else{
-           var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau2);
-           var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
+           var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+           var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
            if(obj1.status===true){
             t=obj1.value;
            }else{
@@ -332,8 +332,8 @@ class traitements_sur_html{
             la balise head contient des éléments, on reconstruit le source à partir de matriceFonction.value
             avec des retours de lignes et sans coloration
           */
-          var nouveauJsonDeHtml=mapMatriceVersJsonDeHtml(nouveauTableau1);
-          var obj1=traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
+          var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
+          var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
           if(obj1.status===true){
            t=obj1.value;
           }else{
@@ -606,13 +606,14 @@ class traitements_sur_html{
         var esp0 = ' '.repeat(NBESPACESREV*(niveau));
         var esp1 = ' '.repeat(NBESPACESREV);
         var elementsJson={};
+
         try{
          
-         elementsJson=mapDOM(texteHtml,false);
+         elementsJson=this.mapDOM(texteHtml,false);
     //     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
          
          
-         var obj=traiteAstDeHtml(elementsJson,0,true,'');
+         var obj=this.traiteAstDeHtml(elementsJson,0,true,'');
          if(obj.status===true){
           t=obj.value;
          }else{
@@ -944,12 +945,12 @@ class traitements_sur_html{
             /*
               dans le cas du script, on le met à la racine
             */
-            ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,0);
+            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,0);
             
             
            }else{
             niveau++;
-            ob=tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
+            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
             niveau--;
            }
            

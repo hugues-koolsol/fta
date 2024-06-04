@@ -604,7 +604,7 @@ function html_header1($parametres){
     $o1.='    '.CRLF;
 
     $o1.=' </head>'.CRLF;
-    $o1.=' <body>'.CRLF;
+    $o1.=' <body data-temp="temp">'.CRLF;
 
     $o1.='<!-- '.$texte_base_css.' -->';
 

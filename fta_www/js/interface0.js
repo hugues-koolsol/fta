@@ -115,7 +115,7 @@ function lancer_un_travail_en_arriere_plan(parametre){
                  c'est interdit en javascript
                  import { Rectangle , Carre } from "module_rectangle_et_carre.js";   
                  */
-                 
+/*                 
                  var le_carre=new Carre(10);
                  console.log('%c le_carre=','background:yellow;color:red;', 'le_carre=',le_carre, 'le_carre.surface=' , le_carre.surface, 'le_carre.hauteur=' , le_carre.hauteur, 'le_carre.largeur=' , le_carre.largeur , 'le_rectangle.taille=',le_carre.taille);
 
@@ -128,52 +128,49 @@ function lancer_un_travail_en_arriere_plan(parametre){
 
                  var le_cercle=new Cercle(10);
                  console.log('%c le_cercle=','background:yellow;color:red;', 'le_cercle=',le_cercle, 'le_cercle.surface=' , le_cercle.surface, 'le_cercle.rayon=' , le_cercle.rayon);
-
+*/
  
-    console.log('par=',parametre);
+//    console.log('par=',parametre);
     var json_param=JSON.parse(parametre);
-    console.log('json_param=' , json_param );
+//    console.log('json_param=' , json_param );
     
     if("replacer_des_chaines1"===json_param.nom_du_travail_en_arriere_plan){
 
-      /*
-      A réintégrer dans le prompt plus bas
-      */      
-      json_param.remplacer_par='sq0'; //remplacer_par;
-      /*
-      A réintégrer dans le prompt plus bas
-      */      
-      console.log(json_param);
-      if(!window.Worker){
-       return;
-      }
-      if(global_programme_en_arriere_plan===null){
-         try{
-          global_programme_en_arriere_plan = new Worker("./js/module_travail_en_arriere_plan0.js" , { type: "module" });
-         }catch(e){
-          console.log('e=',e);
-         }
-      }
-      console.log('on envoie le message');
-      try{
-       global_programme_en_arriere_plan.postMessage({'type_de_message' : 'déclencher_un_travail' , 'parametres' : json_param});
-      }catch(e){
-        console.log('e=',e);
-      }
-      console.log('le message est envoyé sans erreur');
-      
-      global_programme_en_arriere_plan.onmessage = function (message_recu_du_worker) {         
-        console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-      };
      
      
-/*     
+     
      var remplacer_par = prompt('remplacer "'+json_param.chaine_a_remplacer+'" dans les sources('+json_param.liste_des_id_des_sources+') par :');
      if(remplacer_par!==null){
+
+
+        json_param.remplacer_par=remplacer_par; //'sq0'; //remplacer_par;
+        console.log(json_param);
+        if(!window.Worker){
+         return;
+        }
+        if(global_programme_en_arriere_plan===null){
+           try{
+            global_programme_en_arriere_plan = new Worker("./js/module_travail_en_arriere_plan0.js" , { type: "module" });
+           }catch(e){
+            console.log('e=',e);
+           }
+        }
+        console.log('on envoie le message');
+        try{
+         global_programme_en_arriere_plan.postMessage({'type_de_message' : 'déclencher_un_travail' , 'parametres' : json_param});
+        }catch(e){
+          console.log('e=',e);
+        }
+        console.log('le message est envoyé sans erreur');
+        
+        global_programme_en_arriere_plan.onmessage = function (message_recu_du_worker) {         
+          console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
+        };
+
        
        
      }
-*/     
+     
      
      
     }
@@ -1811,6 +1808,7 @@ var __module_html1=null;
 ===================================================================================
 */
 window.addEventListener('load', function () {
+
 // console.log("interface js")
  ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens();
  deplace_la_zone_de_message();
@@ -1833,17 +1831,17 @@ window.addEventListener('load', function () {
  for(var i=0;i<liste_des_scripts.length;i++){
   var element=liste_des_scripts[i];
   if( element.type && element.type==='module'){
+//   console.log('element.src=' , element.src );
    if(element.src && element.src.indexOf("js/module_html.js")>=0){
-  
-     import('./module_html.js').then(function(Module){__module_html1=new Module.traitements_sur_html('__module_html1');});
-
-
-
      
+     import('./module_html.js').then(function(Module){
+       __module_html1=new Module.traitements_sur_html('__module_html1');
+//       console.log('__module_html1 initialise')
+     });
+    
    }
   }
  }
- 
  
 })
 /*
