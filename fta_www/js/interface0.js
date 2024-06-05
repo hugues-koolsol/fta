@@ -61,7 +61,7 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
                   return;
                  }
                  if(global_programme_en_arriere_plan===null){
-                    global_programme_en_arriere_plan = new Worker("./js/travail_en_arriere_plan.js");
+                    global_programme_en_arriere_plan = new Worker("./js/module_travail_en_arriere_plan0.js" );
                  }
                  global_programme_en_arriere_plan.postMessage({'type_de_message' : 'integrer_les_travaux_en_session' , 'tableau_des_travaux' : tableau_des_travaux});
                  
@@ -150,7 +150,7 @@ function lancer_un_travail_en_arriere_plan(parametre){
         }
         if(global_programme_en_arriere_plan===null){
            try{
-            global_programme_en_arriere_plan = new Worker("./js/module_travail_en_arriere_plan0.js" , { type: "module" });
+            global_programme_en_arriere_plan = new Worker("./js/module_travail_en_arriere_plan0.js" ); // , { type: "module" }
            }catch(e){
             console.log('e=',e);
            }

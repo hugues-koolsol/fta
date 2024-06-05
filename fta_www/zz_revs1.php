@@ -370,14 +370,11 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__ls
 
 //$o1.='<pre>' . var_export( $tableau_pour_webworker001 , true).'</pre>';
 if(count($tableau_pour_webworker001)>=1 && $__nbEnregs<= $__nbMax ){
- $liste_des_id_des_sources='';
+ $liste_des_id_des_sources=array();
  foreach($tableau_pour_webworker001 as $k1=>$v1){
   $chaine_a_remplacer=$k1;
   foreach($v1 as $k2=>$v2){
-   $liste_des_id_des_sources.=','.$k2;
-  }
-  if($liste_des_id_des_sources!=''){
-   $liste_des_id_des_sources=substr($liste_des_id_des_sources,1);
+   $liste_des_id_des_sources[]=array('id_source' => $k2 , 'etat' => 'a_faire');
   }
   if($chaine_a_remplacer!==''){
 //   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_id_des_sources=' . $liste_des_id_des_sources;

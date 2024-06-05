@@ -64,6 +64,8 @@ a,button{
  padding: var(--yyvtrp);
  user-select:none;
  inline-size: max-content;
+ /* pour les boutons, il faut préciser la taille de la police !!! */
+ font-size:var(--yyvtrt); 
 }
 
 .yynavbar{
