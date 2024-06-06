@@ -224,16 +224,6 @@ function myReplace(s,chaineAremplacer,chaineQuiRemplace){
 }
 /*
   =====================================================================================================================
-  fonction split avec regex, par exemple : var lines = a.value.split(/\r|\r\n|\n/);
-  =====================================================================================================================
-*/
-function mySplit(s,t){
-    var r1= new RegExp(t,'');
-    var ret = s.split(r1);
-    return ret;
-}
-/*
-  =====================================================================================================================
   compte le nombre de caractères dans une chaine
   =====================================================================================================================
 */
@@ -390,6 +380,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var unBlocPlus1='';
     var newTab = [];
     var tab = [];
+    var ne_contient_que_des_egals=false;
     /**/
     unBloc=' '.repeat(nbEspacesSrc1*(niveau));
     tab=texte.split('\n');
@@ -459,13 +450,13 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         for(j=0;j < tab[i].length;j++){
             temps=tab[i].substr(j,1);
             if(temps != ' '){
-                temps=tab[i].substr(j);
-                t=concat(t,temps);
+                t+=tab[i].substr(j)
                 break;
             }
         }
-        s1=concat(unBloc,t);
-        s2=concat(unBlocPlus1,t);
+        
+        s1=unBloc+t;
+        s2=unBlocPlus1+t;
         if(i == l01-1){
             /*la dernière ligne du commentaire de bloc doit être vide*/
             if(t == ''){
@@ -492,36 +483,44 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             newTab.push(s2);
         }
     }
+    
+    l01=newTab.length;
+    var l02=0;
+    for(i=0;i<l01;i++){
+     ligne=newTab[i];
+     if(ligne.indexOf('====')>=0){
+      ne_contient_que_des_egals=true;
+      l02=ligne.length;
+      for(j=0;j<l02;j++){
+       if(!(ligne.substr(j,1)==='=' || ligne.substr(j,1)===' ')){
+        ne_contient_que_des_egals=false;
+        break;
+       }
+      }
+      if(ne_contient_que_des_egals===true){
+       var calcul=117-2*niveau*nbEspacesSrc1;
+       if(calcul>0){
+        newTab[i]='  '+' '.repeat(niveau*nbEspacesSrc1)+'='.repeat(calcul);
+       }
+      }
+     }
+     
+     
+    }
     t=newTab.join('\n');
     return t;
 }
 /*
-  =============================================
-  =============================================
-  =============================================
-  fonction transforme un texte pour qu'il  soit 
-  visible en html, par exemple &nbsp; ou bien <
-  =============================================
-  =============================================
-  =============================================
+  =====================================================================================================================
+  fonction transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
+  =====================================================================================================================
 */
 function strToHtml(s){
-    var r1= new RegExp('&','g');
-    var r2= new RegExp('<','g');
-    var r3= new RegExp('>','g');
-    s=s.replace(r1,'&amp;');
-    s=s.replace(r2,'&lt;');
-    s=s.replace(r3,'&gt;');
-    return s;
+    return(s.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;'));
 }
 /*
   =================================================
-  =================================================
-  =================================================
-  fonction qui reconstitue un texte source à partir  
-  du tableau représentant la matrice  du  programme
-  =================================================
-  =================================================
+  fonction qui reconstitue un texte source à partir du tableau représentant la matrice  du  programme
   =================================================
 */
 function a2F1(arr,parentId,retourLigne,debut,coloration){
@@ -614,18 +613,18 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         if(arr[i][9] > 1){
             /*!forcerRetourLigne && retourLigne==true && condition1*/
             if(( !(forcerRetourLigne)) && (retourLigne == true) && (condition1)){
-                t=concat(t,' , ');
+                t+=' , ';
             }else{
-                t=concat(t,',');
+                t+=',';
             }
         }
         if((forcerRetourLigne) && (arr[parentId][2] != 'INIT')){
-            t=concat(t,espacesnrev(false,arr[i][3]));
+            t+=espacesnrev(false,arr[i][3]);
         }else if(retourLigne){
             if(((arr[parentId][2] == 'INIT') && (arr[i][9] == 1)) || (condition1)){
                 /*on ne fait rien*/
             }else{
-                t=concat(t,espacesnrev(false,arr[i][3]));
+                t+=espacesnrev(false,arr[i][3]);
             }
         }
         /*
@@ -643,9 +642,9 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t=concat(t,'\'',strToHtml(chaine),'\'');
+                    t+='\''+strToHtml(chaine)+'\'';
                 }else{
-                    t=concat(t,'\'',chaine,'\'');
+                    t+='\''+chaine+'\'';
                 }
             }else if(arr[i][4] == 2){
                 /* methode3modele ` */
@@ -653,9 +652,9 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t=concat(t,'`',strToHtml(chaine),'`');
+                    t+='`'+strToHtml(chaine)+'`';
                 }else{
-                    t=concat(t,'`',chaine,'`');
+                    t+='`'+chaine+'`';
                 }
             }else if(arr[i][4] == 3){
                 /* methode3" double quote */
@@ -663,23 +662,23 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t=concat(t,'"',strToHtml(chaine),'"');
+                    t+='"'+strToHtml(chaine)+'"';
                 }else{
-                    t=concat(t,'"',chaine,'"');
+                    t+='"'+chaine+'"';
                 }
             }else if(arr[i][4] == 4){
                 /* methode3regex */
                 chaine=arr[i][1];
                 if(coloration){
-                    t=concat(t,'/',strToHtml(chaine),'/'+arr[i][13]);
+                    t+='/'+strToHtml(chaine)+'/'+arr[i][13];
                 }else{
-                    t=concat(t,'/',chaine,'/'+arr[i][13]);
+                    t+='/'+chaine+'/'+arr[i][13];
                 }
             }else{
                 if(coloration){
-                    t=concat(t,strToHtml(arr[i][1]));
+                    t+=strToHtml(arr[i][1]);
                 }else{
-                    t=concat(t,arr[i][1]);
+                    t+=arr[i][1];
                 }
             }
             continue;
@@ -702,16 +701,16 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 /*mise en forme en HTML*/
                 commentaire=strToHtml(commentaire);
                 if(retourLigne){
-                    t=concat(t,'<span ','style="','color:darkgreen;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',commentaire,')','</span>');
+                    t+='<span style="color:darkgreen;background-color:lightgrey;">'+DEBUTCOMMENTAIRE+'('+commentaire+')</span>';
                 }else{
-                    t=concat(t,'<span ','style="','color:darkgreen;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',')','</span>');
+                    t+='<span style="color:darkgreen;background-color:lightgrey;">'+DEBUTCOMMENTAIRE+'()</span>';
                 }
             }else{
                 /*pas de mise en forme en HTML*/
                 if(retourLigne){
-                    t=concat(t,arr[i][1],'(',commentaire,')');
+                    t+=arr[i][1]+'('+commentaire+')';
                 }else{
-                    t=concat(t,arr[i][1],'()');
+                    t+=arr[i][1]+'()';
                 }
             }
             continue;
@@ -732,16 +731,16 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 /*mise en forme en HTML*/
                 commentaire=strToHtml(commentaire);
                 if(retourLigne){
-                    t=concat(t,'<span ','style="','color:navy;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',commentaire,')','</span>');
+                    t+='<span style="color:navy;background-color:lightgrey;">'+DEBUTBLOC+'('+commentaire+')</span>';
                 }else{
-                    t=concat(t,'<span ','style="','color:navy;','background-color:lightgrey;','"','>',strToHtml(arr[i][1]),'(',')','</span>');
+                    t+='<span style="color:navy;background-color:lightgrey;">'+DEBUTBLOC+'()</span>';
                 }
             }else{
                 /*pas de mise en forme en HTML*/
                 if(retourLigne){
-                    t=concat(t,arr[i][1],'(',commentaire,')');
+                    t+=arr[i][1]+'('+commentaire+')';
                 }else{
-                    t=concat(t,arr[i][1],'()');
+                    t+=arr[i][1]+'()';
                 }
             }
             continue;
@@ -758,37 +757,35 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         if(obj.status === true){
             /*on ajoute le nom de la fonction et on ouvre la parenthèse*/
             if(coloration){
-                t=concat(t,strToHtml(arr[i][1]),'(');
+                t+=strToHtml(arr[i][1])+'(';
             }else{
-                t=concat(t,arr[i][1],'(');
+                t+=arr[i][1]+'(';
             }
             /*
               ============================================
               on ajoute le contenu récursif de la fonction
               ============================================
             */
-            t=concat(t,obj.value);
+            t+=obj.value;
             /*
               on met les retours de ligne
             */
             if((forcerRetourLigne) && (obj.forcerRetourLigne == true)){
-                t=concat(t,espacesnrev(false,arr[i][3]));
+                t+=espacesnrev(false,arr[i][3]);
             }else if(retourLigne){
                 if( !((arr[i][8] <= nombreEnfantsLimite) && (arr[i][10] <= profondeurLimite))){
-                    t=concat(t,espacesnrev(false,arr[i][3]));
+                    t+=espacesnrev(false,arr[i][3]);
                 }
             }
             /*
               on ferme la parenthèse
             */
-            t=concat(t,')');
+            t+=')';
         }else{
-            obj={'status':false,'message':'erreur','id':i};
-            return obj;
+            return({'status':false,'message':'erreur','id':i});
         }
     }
-    obj={'status':true,'value':t,'forcerRetourLigne':forcerRetourLigne};
-    return obj;
+    return({'status':true,'value':t,'forcerRetourLigne':forcerRetourLigne});
 }
 
 /*
@@ -807,7 +804,6 @@ function iterateCharacters2(str){
     var numLigne=0;
     var l01=str.length;
     var codeCaractere='';
-    var retour={};
     var temp=0;
     var indiceTab=0;
     for(i=0;i < l01;i++){
@@ -821,15 +817,18 @@ function iterateCharacters2(str){
             */
             temp=codeCaractere&0xF800;
             if(temp === 55296){
+                
                 out[indiceTab]=[
                     str.substr(i,2),2,i,numLigne
                 ];
+                
                 indiceTab++;
                 i++;
             }else{
                 out[indiceTab]=[
                     str.substr(i,1),1,i,numLigne
                 ];
+                
                 indiceTab++;
                 if(codeCaractere === 10){
                     numLigne++;
@@ -839,8 +838,8 @@ function iterateCharacters2(str){
             exceptions=(exceptions+1);
         }
     }
-    retour={'out':out,'numLigne':numLigne,'exceptions':exceptions};
-    return retour;
+    
+    return({'out':out,'numLigne':numLigne,'exceptions':exceptions});
 }
 /*
   ==================================================
@@ -1059,13 +1058,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     niveauPrecedent=niveau;
     var l01=tableauEntree.length;
     /*
-      // ====================================================================
-      // ====================================================================
-      // boucle principale sur tous les caractères du texte passé en argument
-      // on commence par analyser les cas ou on est dans des chaines, puis on
-      // analyse les caractères
-      // ====================================================================
-      // ====================================================================
+      =============================================================================================================
+      =============================================================================================================
+      boucle principale sur tous les caractères du texte passé en argument,
+      on commence par analyser les cas ou on est dans  des commentaires ou des chaines, 
+      puis on analyse les caractères
+      =============================================================================================================
+      =============================================================================================================
     */
     for(i=0;i < l01;i++){
         c=tableauEntree[i][0];
@@ -1101,8 +1100,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                      
                      if(i==l01-1){
                       /*
-                        si on est en recherche de parenthèse correspondante et que c'est le dernier caractère du tableau en entrée
+                        ===============================================================
+                        si on est en recherche de parenthèse correspondante 
+                        et que c'est le dernier caractère du tableau en entrée
                         alors c'est une recherche de parenthèse ouvrante correspondante
+                        ===============================================================
                       */
                       // OK VALIDE
                       
@@ -1124,18 +1126,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                      }
                      tableauParenthesesCommentaires.pop();
                     }
-                    commentaire=concat(commentaire,c);
+                    commentaire+=c;
                     niveauDansCommentaire=niveauDansCommentaire-1;
 
                 }
             }else if(c == '('){
-                commentaire=concat(commentaire,c);
+                commentaire+=c;
                 niveauDansCommentaire=(niveauDansCommentaire+1);
                 if(drapeauParenthese){
                     tableauParenthesesCommentaires.push(i);
                 }
             }else{
-                commentaire=concat(commentaire,c);
+                commentaire+=c;
             }
             /*
               =============================
@@ -1225,10 +1227,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(texte == ''){
                         premier=i;
                     }
-                    texte=concat(texte,'\\',c1);
+                    texte+='\\'+c1;
                     i++;
                 }else if(c1 == '"'){
-                    texte=concat(texte,'"');
+                    texte+=texte+'"';
                     i++;
                 }else{
                     return logerreur(formaterErreurRev({status:false,ind:i,message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
@@ -1245,7 +1247,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte == ''){
                     premier=i;
                 }
-                texte=concat(texte,c);
+                texte+=c;
             }
             /*
               ==========================================
@@ -1329,7 +1331,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte == ''){
                     premier=i;
                 }
-                texte=concat(texte,'\\',c1);
+                texte+='\\'+c1;
                 i++;
             }else if(c==='\n' || c==='\r' ){
                 return logerreur(formaterErreurRev({status:false,ind:premier,message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
@@ -1338,12 +1340,16 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte == ''){
                     premier=i;
                 }
-                texte=concat(texte,c);
+                texte+=c;
             }
             /*
               ===============================
               Fin de Si on est dans une regex
               ===============================
+              
+              
+              
+              
             */
         }else if(dansCstModele == true){
             /*
@@ -1414,13 +1420,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte == ''){
                     premier=i;
                 }
-                texte=concat(texte,'\\',c1);
+                texte+='\\'+c1;
                 i++;
             }else{
                 if(texte == ''){
                     premier=i;
                 }
-                texte=concat(texte,c);
+                texte+=c;
             }
             /*
               ==========================================
@@ -1500,13 +1506,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(texte == ''){
                         premier=i;
                     }
-                    texte=concat(texte,c1);
+                    texte+=c1;
                     i++;
                 }else if((c1 == '\\') || (c1 == '\'') || (c1 == '/') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '$') ){
                     if(texte == ''){
                         premier=i;
                     }
-                    texte=concat(texte,'\\',c1);
+                    texte+='\\'+c1;
                     i++;
                 }else{
                     return logerreur(formaterErreurRev({status:false,ind:i,message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
@@ -1515,7 +1521,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte == ''){
                     premier=i;
                 }
-                texte=concat(texte,c);
+                texte+=c;
             }
             /*
               ==========================================
@@ -1695,9 +1701,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /*
                   
                   
-                  //=============
-                  // apostrophe '
-                  //=============
+                  =============
+                  apostrophe '
+                  =============
                 */
                 premier=i;
                 if(dansCstSimple == true){
@@ -1716,17 +1722,17 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstSimple=true;
                 }
                 /*
-                  //===============
-                  // FIN apostrophe
-                  //===============
+                  ===============
+                  FIN apostrophe
+                  ===============
                   
                   
                 */
             }else if(c == '/'){
                 /*
-                  //===========
-                  // regex /
-                  //===========
+                  ===========
+                  regex /
+                  ===========
                 */
                 premier=i;
                 if(dansCstRegex == true){
@@ -1745,17 +1751,17 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstRegex=true;
                 }
                 /*
-                  //===============
-                  // FIN regex /
-                  //===============
+                  ===============
+                  FIN regex /
+                  ===============
                 */
             }else if(c == '`'){
                 /*
                   
                   
-                  //===========
-                  // modele `
-                  //===========
+                  ===========
+                  modele `
+                  ===========
                 */
                 premier=i;
                 if(dansCstModele == true){
@@ -1774,9 +1780,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstModele=true;
                 }
                 /*
-                  //===============
-                  // FIN modele `
-                  //===============
+                  ===============
+                  FIN modele `
+                  ===============
                   
                   
                 */
@@ -1784,9 +1790,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /*
                   
                   
-                  //===============
-                  // double quote "
-                  //===============
+                  ===============
+                  double quote "
+                  ===============
                 */
                 premier=i;
                 if(dansCstDouble == true){
@@ -1805,9 +1811,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstDouble=true;
                 }
                 /*
-                  //===================
-                  // FIN double quote "
-                  //===================
+                  ===================
+                  FIN double quote "
+                  ===================
                   
                   
                 */
@@ -1815,9 +1821,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /*
                   
                   
-                  //========================
-                  // virgule donc séparateur
-                  //========================
+                  ========================
+                  virgule donc séparateur
+                  ========================
                 */
                 if(texte != ''){
                     if(autoriserCstDansRacine !== true){
@@ -1849,9 +1855,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 dansCstModele=false;
                 dansCstRegex=false;
                 /*
-                  //============================
-                  // FIN virgule donc séparateur
-                  //============================
+                  ============================
+                  FIN virgule donc séparateur
+                  ============================
                   
                   
                 */
@@ -1896,7 +1902,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     premier=i;
                 }
                 dernier=i;
-                texte=concat(texte,c);
+                texte+=c;
             }
         }
     }
@@ -1973,7 +1979,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     /*
       
       ==============================================================
-      // mise à jour de l'id du parent[7] et du nombre d'éléments[8]
+      mise à jour de l'id du parent[7] et du nombre d'éléments[8]
       ============================================================== 
     */
     l01=T.length;

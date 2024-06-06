@@ -38,6 +38,48 @@ class interface1{
       fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
       =====================================================================================================================
     */
+    convertir_textearea_rev_vers_textarea_js(chp_rev_source,chp_genere_source){
+     
+        clearMessages('zone_global_messages');
+        var a = document.getElementById(chp_rev_source);
+        var startMicro=performance.now();
+        
+        var tableau1 = iterateCharacters2(a.value);
+        global_messages.data.tableau=tableau1;
+        var endMicro = performance.now();
+        var startMicro = performance.now();
+        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+        global_messages.data.matrice=matriceFonction;
+        if(matriceFonction.status===true){
+         
+            var objJs=parseJavascript0(matriceFonction.value,1,0);
+            
+            if(objJs.status===true){
+             
+             dogid(chp_genere_source).value=objJs.value;
+             
+            }else{
+
+              displayMessages('zone_global_messages' , chp_rev_source);
+             
+             
+            }
+            
+         
+         
+         
+        }
+        
+        displayMessages('zone_global_messages' , chp_rev_source);
+        
+     
+     
+    }
+    /*
+      =====================================================================================================================
+      fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
+      =====================================================================================================================
+    */
     fixer_les_dimentions(type_d_element){
      
         var ss = document.styleSheets[0];
@@ -54,6 +96,8 @@ class interface1{
                            if(d.length===2){
                                 if('dimension_du_texte'===type_d_element && d[0].trim()==='--yyvtrt' ){
                                      if(d[1].trim().indexOf('18')>=0){
+                                         t[d[0].trim()]='12px';
+                                     }else if(d[1].trim().indexOf('12')>=0){
                                          t[d[0].trim()]='14px';
                                      }else if(d[1].trim().indexOf('14')>=0){
                                          t[d[0].trim()]='16px';

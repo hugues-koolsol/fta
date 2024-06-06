@@ -1002,6 +1002,14 @@ function traiteIf1(element,niveau,type){
             t+=ajouteCommentaireAvant(element,(niveau+3));
         }
     }
+    if(element.alternate===null){
+     positionDebutBloc=element.range[1];
+     t+=ajouteCommentaireAvant(element,(niveau+3));
+    }
+    console.log(tabComment);
+
+
+    
     t+='\n'+esp0+esp1+esp1+')';
     t+='\n'+esp0+esp1+')';
     if(element.alternate){
@@ -2562,7 +2570,7 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
  var texte_source_ast=donnees_en_entree.value.value;
  try{
      var ast_json=JSON.parse(texte_source_ast);
-     console.log('ast_json=', JSON.stringify(ast_json));
+//     console.log('ast_json=', JSON.stringify(ast_json));
      
      if(ast_json.type==='Program' && ast_json.body){
       
@@ -2755,7 +2763,8 @@ function transformJsDeTextAreaEnRev(){
     clearMessages('zone_global_messages');
     var a = document.getElementById('txtar1');
     localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
-    var lines = mySplit(a.value , '\\r|\\r\\n|\\n');
+    
+    var lines = a.value.split(/\r\n|\r|\n/);
     var count=lines.length;
     a.setAttribute('rows',(count+1));
     var startMicro=performance.now();

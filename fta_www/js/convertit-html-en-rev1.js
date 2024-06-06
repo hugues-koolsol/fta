@@ -27,7 +27,7 @@ function transformHtmlEnRev(){
     clearMessages('zone_global_messages');
     var a = document.getElementById('txtar1');
     localStorage.setItem('fta_traitehtml_dernier_fichier_charge',a.value);
-    var lines = mySplit(a.value , '\\r|\\r\\n|\\n');
+    var lines = a.value.split(/\r\n|\r|\n/);
     var count=lines.length;
     a.setAttribute('rows',(count+1));
     var startMicro=performance.now();

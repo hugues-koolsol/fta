@@ -923,12 +923,15 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
      on les retire pour l'analyse, donc on part de l'avant dernier caractère 
      et on redescend jusqu'à l'indice 1
    */
+   
+   var nouvelle_chaine='';
    for(var i=l01;i>0;i--){
     if(rv.substr(i,1)=='\\'){
      /* on remonte à partir du dernier caractère */
      if(i===l01){
       /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
       if(rv.length>2 && l01>1 && i>1 && rv.substr(i-1,1)==='\\'){
+       nouvelle_chaine='\\\\';
        i--;
       }else{
        /* position du \ en dernier */
@@ -937,19 +940,49 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
       
      }else{
       if(i>1){
+       /*
+       si on est avant le dernier caractère;
+       */
        if(rv.substr(i-1,1)==='\\' ){
+         nouvelle_chaine='\\\\'+nouvelle_chaine;
          i--;
        }else{
-        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  || rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='\'' ){
+        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  ||  rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='\'' || rv.substr(i+1,1)==='.' || rv.substr(i+1,1)==='-' ||rv.substr(i+1,1)==='d' || rv.substr(i+1,1)==='/'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  ){
+         if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='t' || rv.substr(i+1,1)==='n' || ( rv.substr(i+1,1)==='\'' && rv.substr(0,1) ==="'" ) || ( rv.substr(i+1,1)==='"' && rv.substr(0,1) ==='"' ) ){
+          nouvelle_chaine='\\'+nouvelle_chaine;
+         }else{
+          nouvelle_chaine='\\\\'+nouvelle_chaine;
+         }
+
+
         }else{
-         return( astphp_logerreur({'status':false,'message':'0930  après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
+         return( astphp_logerreur({'status':false,'message':'0958 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
         }
+       }
+      }else{
+       /*
+       si on est au premier caractère;
+       */
+       if(rv.substr(i,1)==='\\'){
+        var c=nouvelle_chaine.substr(0,1);
+        if( c==='.' || c==='-' || c==='d' || c==='/' ||  c==='x' ||  c==='o' ||  c==='b' || c==='\\' ){
+         nouvelle_chaine='\\\\'+nouvelle_chaine;
+        }else if( c==='r' || c==='n' || c==='t'  || ( c==='\'' && rv.substr(0,1)==='\'' )  || ( c==='"' && rv.substr(0,1)==='"' ) ){
+         nouvelle_chaine='\\'+nouvelle_chaine;
+        }else{
+         return( astphp_logerreur({'status':false,'message':'0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
+        }
+       }else{
+        nouvelle_chaine=rv.substr(i,1)+nouvelle_chaine;
        }
       }
      }
+    }else{
+     nouvelle_chaine=rv.substr(i,1)+nouvelle_chaine;
     }
    }
-   t+=element.attributes.rawValue;
+   
+   t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
    
   }else{
    t+=element.attributes.rawValue;
@@ -2533,7 +2566,7 @@ function isHTML(str) {
 }
 
 //=====================================================================================================================
-function traitementApresRecuperationAst(ret){
+function traitementApresRecuperationAst(ret){ // // {zone_php:'txtar1',zone_rev:'txtar2'}
  
 // console.log('ret=',ret);
  try{
@@ -2542,7 +2575,7 @@ function traitementApresRecuperationAst(ret){
 //  console.log('ast=',ast);
   var obj=TransformAstPhpEnRev(ast,0,false);
   if(obj.status===true){
-   document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">php(\n'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+')\n</pre>'; //  style="white-space: normal;"
+//   document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">php(\n'+obj.value.replace(/&/g,'&amp;').replace(/</g,'&lt;')+')\n</pre>'; //  style="white-space: normal;"
    document.getElementById('txtar2').value='php('+obj.value+')';
    var tableau1 = iterateCharacters2(obj.value);
    var obj1=functionToArray2(tableau1.out,false,true,'');
@@ -2562,14 +2595,19 @@ function traitementApresRecuperationAst(ret){
  }catch(e){
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
  }
- 
- displayMessages('zone_global_messages');
+ if(ret.opt && ret.opt.zone_rev){
+
+     displayMessages('zone_global_messages' , ret.opt.zone_rev );
+ }else{
+     
+     displayMessages('zone_global_messages');
+ }
  rangeErreurSelectionne=false;
  
  return {status:true,value:''}
 }
 //=====================================================================================================================
-function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
+function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){ 
  
  
  var r = new XMLHttpRequest();
@@ -2609,7 +2647,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
      astphp_logerreur( {'status':true,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
 //    console.log('jsonRet=',jsonRet);
-    f_traitementApresRecuperationAst({status:true,value:jsonRet.value,input:jsonRet.input});
+    f_traitementApresRecuperationAst({status:true,value:jsonRet.value,input:jsonRet.input,opt:opt});
    }else{
     for(var elem in jsonRet.messages){
      astphp_logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
@@ -2677,12 +2715,12 @@ function transformPhpEnRev(){
   
 //  console.log('a compiler="'+a.value+'"');
   try{
-   var ret=recupereAstDePhp(a.value,{},traitementApresRecuperationAst); // ,{'comment':true}
+   var ret=recupereAstDePhp(a.value,{zone_php:'txtar1',zone_rev:'txtar2'},traitementApresRecuperationAst); // ,{'comment':true}
    if(ret.status===true){
 //    console.log('ret=',ret)
    }else{
     astphp_logerreur({status:false,message:'il y a une erreur d\'envoie du source php à convertir'})
-    displayMessages('zone_global_messages');
+    displayMessages('zone_global_messages','txtar2');
     rangeErreurSelectionne=false;
     ret=false;
    }

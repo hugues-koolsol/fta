@@ -8,6 +8,12 @@
 
 
 importScripts('./core6.js');
+importScripts('./convertit-php-en-rev0.js');
+importScripts('./php.js');
+importScripts('./convertit-js-en-rev1.js');
+importScripts('./javascript.js');
+
+
 
 var liste_des_travaux_en_arriere_plan=[];
 var liste_des_taches_en_arriere_plan=[];
@@ -129,20 +135,11 @@ function enregistrer_les_sources_en_base(params){
  
  
 }
-
+/*
+=======================================================================================================================================
+*/
 function traite_un_remplacement(id_tache , arg){
  
-    var contient_du_html=false;
-    for( var id_source in arg){
-        var le_source=arg[id_source];
-        if(le_source.nom_source.lastIndexOf('.')>=0){
-            var extension=le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
-            if(extension==='.html' || extension==='.htm' ){
-             contient_du_html=true;
-            }
-        }
-    }
-    if(contient_du_html===true){
         import('./module_html.js').then(function(Module){
             __module_html1=new Module.traitements_sur_html('__module_html1');
             
@@ -172,11 +169,16 @@ function traite_un_remplacement(id_tache , arg){
                     }
                     
                     
-                    if(extension==='.html' || extension==='.htm' ){
+                    if((extension==='.html' || extension==='.htm') || extension==='.php' ){
                         tache_en_cours=true;
-                        var objHtml=__module_html1.tabToHtml1(tab,0,false,0);
-                        if(objHtml.status===true){
-                            console.log('pour id_source='+ id_source + ' ' + le_source.nom_source + '=' + objHtml.value);
+                        if( extension==='.html' || extension==='.htm' ){
+                         var objSource=__module_html1.tabToHtml1(tab,0,false,0);
+                        }else if( extension==='.php' ){
+                         var objSource=parsePhp0(tab,0,0);
+                        }
+                        
+                        if(objSource.status===true){
+                            console.log('pour html id_source='+ id_source + ' ' + le_source.nom_source + '=' + objSource.value);
                             
                             
                             // on reconstitue le source rev
@@ -189,7 +191,7 @@ function traite_un_remplacement(id_tache , arg){
                                  'id_tache'   : j                ,
                                  'id_source'  : id_source        ,
                                  'source_rev' : obj.value        ,
-                                 'source_genere' : objHtml.value ,
+                                 'source_genere' : objSource.value ,
                                 }
                                 enregistrer_les_sources_en_base(params)
 
@@ -218,6 +220,7 @@ function traite_un_remplacement(id_tache , arg){
                             );
                             return;
                         }
+                        
                     }else{
                         liste_des_taches_en_arriere_plan[j].etat='a_mettre_en_place';
                         tache_en_cours=false;
@@ -251,7 +254,7 @@ function traite_un_remplacement(id_tache , arg){
             
             
         });
-    } 
+    
     setTimeout(
      function(){
        traitement_apres_remplacement_chaine_en_bdd(arg)
@@ -291,18 +294,6 @@ function traitement_apres_remplacement_chaine_en_bdd(arg){
         console.log('arg=',arg );
 
         setTimeout(function(){lancer_le_travail();},100);
-/*        
-        for(var i=0;i<liste_des_travaux_en_arriere_plan.length;i++){
-         console.log(liste_des_travaux_en_arriere_plan[i]);
-         if(liste_des_travaux_en_arriere_plan[i].etat_du_travail==='travail_en_arriere_plan_enregistré_en_session'){
-           console.log('j\'ai terminé la tâche');
-           liste_des_travaux_en_arriere_plan[i].etat_du_travail='travail_en_arriere_plan_terminé';
-           travail_en_cours=false;
-           setTimeout(function(){lancer_les_travaux();},100);
-           return;
-         }
-        }
-*/        
      
     }
 

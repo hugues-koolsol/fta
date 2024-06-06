@@ -30,6 +30,7 @@ print($o1);$o1='';
   </div>
   <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div>
+   <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js(&quot;txtar2&quot; , &quot;txtar3&quot;);" title="convertir rev en JS">R2J</a>
    <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar3&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
   </div>
   <textarea class="txtar1" id="txtar3" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>

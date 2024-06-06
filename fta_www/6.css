@@ -35,9 +35,9 @@ textarea{
  background-color:#ECEFF1;
  margin:var(--yyvtrm);
  color:#263238;
- font-size:0.9rem;
+ font-size:1em;
  font-family:monospace;
- line-height:1.3rem;
+ line-height:1.2em;
  max-height: 80vh;
  white-space: pre;
  overflow:scroll;

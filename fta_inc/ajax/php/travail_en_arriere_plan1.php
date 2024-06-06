@@ -13,10 +13,32 @@ function enregistrer_les_sources_en_base(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql0='.var_export($sql0,true).CRLF.CRLF); fclose($fd);} 
  $db = new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
  $retour_sql=$db->querySingle($sql0);
- $data['status']='OK';     
+ 
+ $chemin_include=dirname(__FILE__,3).DIRECTORY_SEPARATOR.'db'.DIRECTORY_SEPARATOR.'acces_bdd_sources1.php';
+// if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_include='.var_export($chemin_include,true).CRLF.CRLF); fclose($fd);} 
+ 
+ require_once($chemin_include);
+ $valeurs=recupere_une_donnees_des_sources_avec_parents($data['input']['params']['id_source'],$db);
+ 
+ $chemin_fichier=realpath(dirname(__FILE__,5).DIRECTORY_SEPARATOR.$valeurs['T2.chp_dossier_cible'].DIRECTORY_SEPARATOR.$valeurs['T1.chp_nom_dossier'].DIRECTORY_SEPARATOR.$valeurs['T0.chp_nom_source']);
+// if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_fichier='.var_export($chemin_fichier,true).CRLF.CRLF); fclose($fd);} 
+
+ if($fd=fopen( $chemin_fichier , 'w')){
+  if(fwrite($fd,$data['input']['params']['source_genere'])){
+   fclose($fd);
+   $data['status']='OK';     
+  }
+ }
+ 
+
+ 
+ 
+ 
  
 }
-
+/*
+=======================================================================================================================
+*/
 function remplacer_des_chaine1(&$data){
 /*
     if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).CRLF.CRLF.'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);} 
