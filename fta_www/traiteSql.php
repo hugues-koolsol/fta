@@ -11,7 +11,7 @@ print($o1);$o1='';
             <ul>
                 <li><a href="javascript:charger_source_de_test_sql('txtar1')">source de test</a>&nbsp;</li>
                 <li><a href="javascript:transform_sql_de_textarea_en_rev('txtar1' , 'txtar2')"  class="yysucces">convertir</a>&nbsp;</li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;</li>
+                <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages">🙈</a>&nbsp;</li>
             </ul>
         </div>
   <h1>Convertir un sql en rev</h1>

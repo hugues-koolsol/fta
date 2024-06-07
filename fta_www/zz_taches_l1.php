@@ -72,7 +72,7 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
 $o1='';
-$__nbMax=10;
+$__nbMax=20;
 $__debut=0;
 $__nbEnregs=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
@@ -220,7 +220,7 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 }
 
 $o1.='<div><form method="post" class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_taches_action1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
+$o1.=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
 $o1.=' <button name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
 $o1.=' <button name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.CRLF;
 $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv;
@@ -243,9 +243,9 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
-    $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_taches_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_tache'].'" title="modifier">✎</a>';
+    $lsttbl.=' <a class="yyinfo" href="zz_taches_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_tache'].'" title="modifier">✎</a>';
     
-    $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_taches_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_tache'].'" title="supprimer">x</a>';
+    $lsttbl.=' <a class="yydanger" href="zz_taches_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_tache'].'" title="supprimer">x</a>';
     
     $lsttbl.='</div>';
     $lsttbl.='</td>';

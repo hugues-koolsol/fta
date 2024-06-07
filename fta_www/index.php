@@ -14,14 +14,20 @@ print($o1);$o1='';
             <ul>
                 <li><a href="javascript:chargerSourceDeTest()">charger le source de test</a></li>
                 <li><a href="javascript:transformLeRev()" class="yysucces">traiter</a></li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a></li>
+                <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages" >🙈</a></li>
             </ul>
         </div>
-        <h1>PHP HOME</h1>
-
-        <div class="not menuScroller">
-         <a href='javascript:parentheses(&quot;txtar1&quot;);' title='repérer la parenthèse ouvrante ou fermante correspondante'>(|.|)</a>
-        </div>
+        <h1>Page d'accueil</h1>
+        <p>Vous pouvez insérer un source de programme rev et cliquer sur le bouton vert pour le traiter</p>
+        <p>Vous pouvez aussi cliquer sur le bouton "charger le source de test" pour voir un exemple</p>
+        <p><b>Le résultat du traitement</b> sera alors affiché plus bas dans la page</p>
+        
+        <div>
+           <a href="javascript:parentheses(&quot;txtar1&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>
+           <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar1&quot;);" title="formatter le source rev">(😊)</a>
+           <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar1&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
+           <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar1&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
+        </div>        
         
         <textarea class="txtar1" id="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         <div id="resultat1"></div>

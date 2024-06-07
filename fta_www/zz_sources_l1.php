@@ -7,7 +7,7 @@ require_once('../fta_inc/db/acces_bdd_sources1.php');
 if(( !(isset($_SESSION[APP_KEY]['cible_courante'])))){
 
     ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible avant d\'accéder aux sources');
-    recharger_la_page('zz_cibles1.php');
+    recharger_la_page('zz_cibles_l1.php');
 
 }
 
@@ -29,7 +29,7 @@ function obtenir_entete_de_la_page(){
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
 $o1='';
-$__nbMax=10;
+$__nbMax=20;
 $__debut=0;
 $__nbEnregs=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
@@ -215,7 +215,7 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
 $o1.='<div>';
 $o1.='<form class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_sources_action1.php?__action=__creation">Créer un nouveau source</a>'.CRLF;
+$o1.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>'.CRLF;
 $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
 
 if(($__nbEnregs > 0)){
@@ -242,9 +242,9 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
-    $lsttbl.=' <a class="yyinfo yytbnormal" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
+    $lsttbl.=' <a class="yyinfo yytbnormal" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
-    $lsttbl.=' <a class="yydanger yytbnormal" href="zz_sources_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✕</a>';
+    $lsttbl.=' <a class="yydanger yytbnormal" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✕</a>';
     if( $v0['T0.chp_type_source']==='normal' && ( substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' || substr($v0['T0.chp_nom_source'],-4)==='.sql' ) ){
      $lsttbl.=' <a class="yyavertissement yytbnormal" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
     }else{

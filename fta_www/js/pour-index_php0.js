@@ -190,7 +190,7 @@ function transformLeRev(){
     var t0=document.createElement('div');
     t0.style.overflowX='scroll';
     var t1=document.createElement('table');
-    ConstruitHtmlMatrice(t1,matriceFonction1);
+    __gi1.construit_tableau_html_de_le_matrice_rev(t1,matriceFonction1);
     t0.appendChild(t1);
     document.getElementById('resultat1').appendChild(t0);
     
@@ -198,7 +198,7 @@ function transformLeRev(){
     var t0=document.createElement('div');
     t0.style.overflowX='scroll';
     var t2=document.createElement('table');
-    ConstruitHtmlTableauCaracteres(t2,a.value,tableau1)
+    __gi1.construit_un_html_du_tableau_des_caracteres(t2,a.value,tableau1)
     t0.appendChild(t2);
     document.getElementById('resultat1').appendChild(t0);
     
@@ -207,7 +207,7 @@ function transformLeRev(){
   
   }else{
     var t2=document.createElement('table');
-    ConstruitHtmlTableauCaracteres( t2 , a.value , tableau1 );
+    __gi1.construit_un_html_du_tableau_des_caracteres( t2 , a.value , tableau1 );
     document.getElementById('resultat1').appendChild(t2);
   }
   displayMessages('zone_global_messages','txtar1');

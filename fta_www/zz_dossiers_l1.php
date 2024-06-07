@@ -6,7 +6,7 @@ require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php'); 
 }
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
@@ -362,7 +362,7 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
 $o1.='<div>';
 $o1.='<form class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_dossiers_action1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+$o1.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
 
 $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
 
@@ -392,8 +392,8 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='<td data-label="" style="text-align:left!important;">';
  $__lsttbl.='<div class="yyflex1">';
  if($v0['T0.chp_nom_dossier']!=='/'){
-  $__lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
-  $__lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+  $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
+  $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
  }else{
   
         $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$db);
@@ -405,9 +405,9 @@ foreach($data0 as $k0=>$v0){
            */
          
          
-           $__lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
+           $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
            /*✎ #9998*/
-           $__lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+           $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
         }else{
         
         
@@ -445,7 +445,7 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__ls
 
 if(( $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta' )){
  
-  $o1.='<a class="yyinfo" href="zz_dossiers1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.CRLF;
+  $o1.='<a class="yyinfo" href="zz_dossiers_l1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.CRLF;
  
     
 }

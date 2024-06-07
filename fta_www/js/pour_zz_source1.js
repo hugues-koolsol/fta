@@ -602,11 +602,11 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id
 }
 /*
   =====================================================================================================================
-  convertir un textarea source rev et mettre le résultat dans un textarea php
+  convertir un textarea source rev et mettre le résultat dans un textarea php puis sauvegarder le rev en bdd
   =====================================================================================================================
 */
-function pour_zz_source_convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php , id_source , id_cible ){
- var obj=convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php);
+function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev , nom_zone_genere_php , id_source , id_cible ){
+ var obj=__gi1.convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev , nom_zone_genere_php);
  if(obj.status===true){
   var parametres_sauvegarde={
    'matrice': obj.value,

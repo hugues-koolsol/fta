@@ -6,7 +6,7 @@ require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php'); 
 }
 
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
@@ -128,7 +128,7 @@ foreach($data0 as $k0=>$v0){
  $lsttbl.='<td data-label="" style="text-align:left!important;">';
  
  $lsttbl.='<div class="yyflex1">';
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_bdds_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_basedd'].'" title="modifier">✎</a>';//✎ #9998
+ $lsttbl.=' <a class="yyinfo" href="zz_bdds_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_basedd'].'" title="modifier">✎</a>';//✎ #9998
  $lsttbl.='</div>';
  
  $lsttbl.='</td>';
@@ -154,7 +154,7 @@ foreach($data0 as $k0=>$v0){
 
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
 
-$o1.='<a class="yyinfo" href="zz_bdds_action1.php?__action=__creation">Créer une nouvelle base</a>'.CRLF;
+$o1.='<a class="yyinfo" href="zz_bdds_a1.php?__action=__creation">Créer une nouvelle base</a>'.CRLF;
 
 // $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
 

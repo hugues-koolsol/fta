@@ -6,7 +6,7 @@ require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible avant d\'accéder aux dossiers'  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php'); 
 }
 
 $o1='';
@@ -148,7 +148,7 @@ foreach($data0 as $k0=>$v0){
 
 
  
- $lsttbl.=' <a class="yyinfo yytxtSiz1" href="javascript:choisir_de_iframe1(\''.enti1($paramUrl).'\')" title="choisir">✎</a>';
+ $lsttbl.=' <a class="yyinfo" href="javascript:choisir_de_iframe1(\''.enti1($paramUrl).'\')" title="choisir">✎</a>';
  $lsttbl.='</div>';
  
  $lsttbl.='</td>';

@@ -8,20 +8,14 @@ require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible avant d\'accéder aux sources'  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php'); 
 }
 
 $js_a_executer_apres_chargement=array();
 /*
   ========================================================================================
 */
-function boutonRetourALaListe(){
-  return '&nbsp;<a href="zz_sources1.php" style="font-size:1rem;">retour à la liste</a>';
-}
-/*
-  ========================================================================================
-*/
-//========================================================================================================================
+
 function erreur_dans_champs_saisis_sources(){
  
  $uneErreur=false;
@@ -205,14 +199,14 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    }else{
     ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'] );
-    recharger_la_page('zz_sources1.php');
+    recharger_la_page('zz_sources_l1.php');
    }
   }
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
   
   if($_SESSION[APP_KEY][NAV][BNF]['verification'][0]!=$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']){
 //   ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'] );
-//   recharger_la_page('zz_sources1.php');   
+//   recharger_la_page('zz_sources_l1.php');   
   }
   
   $le_fichier_est_renomme=false;
@@ -332,7 +326,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'] , true ) . '</pre>' ; exit(0);
   /*
-  http://localhost/functToArray/fta/fta_www/zz_sources_action1.php?__id=2&__action=__suppression
+  http://localhost/functToArray/fta/fta_www/zz_sources_a1.php?__id=2&__action=__suppression
   */
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
@@ -380,7 +374,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }else{
    
      ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-     recharger_la_page('zz_sources1.php?chp_nom_dossier='.rawurlencode($__valeurs['T1.chp_nom_dossier']));
+     recharger_la_page('zz_sources_l1.php?chp_nom_dossier='.rawurlencode($__valeurs['T1.chp_nom_dossier']));
 
   }
 
@@ -445,7 +439,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   unset($_SESSION[APP_KEY][NAV][BNF]);
  }
  ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11)  );
- recharger_la_page('zz_sources1.php');
+ recharger_la_page('zz_sources_l1.php');
 
 
 }
@@ -463,7 +457,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id===0 || $__id==='0' ){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
-  recharger_la_page('zz_sources1.php');
+  recharger_la_page('zz_sources_l1.php');
  }else{
   $__valeurs=recupere_une_donnees_des_sources($__id,$db);
   
@@ -473,7 +467,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id==='0'){
-  recharger_la_page('zz_sources1.php');
+  recharger_la_page('zz_sources_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
   $__valeurs=recupere_une_donnees_des_sources_avec_parents($__id,$db);
@@ -482,7 +476,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   
   
   if(!isset($__valeurs['T0.chi_id_source'])){
-   recharger_la_page('zz_sources1.php');
+   recharger_la_page('zz_sources_l1.php');
   }
  }
 }
@@ -499,7 +493,7 @@ print($o1);$o1='';
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities(var_export( $_SESSION , true )) . '</pre>' ; exit(0);
 
-$o1.='<h1>gestion de source (dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].')'.boutonRetourALaListe().'</h1>';
+$o1.='<h1>gestion de source (dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].')'.bouton_retour_a_la_liste('zz_sources_l1.php').'</h1>';
 
 
 
@@ -512,7 +506,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
   /*
-  http://localhost/functToArray/fta/fta_www/zz_sources_action1.php?__id=2&__action=__suppression
+  http://localhost/functToArray/fta/fta_www/zz_sources_a1.php?__id=2&__action=__suppression
   */
  $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;
@@ -567,7 +561,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
   $__parametres_pour_la_modale=array(
-   '__url' => 'zz_dossiers_choix1.php',
+   '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_source',
    '__champs_texte_a_rapatrier' => array(
     'T0.chp_nom_dossier' => array(
@@ -675,7 +669,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.CRLF;
   
   $__parametres_pour_la_modale=array(
-   '__url' => 'zz_dossiers_choix1.php',
+   '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_source',
    '__champs_texte_a_rapatrier' => array(
     'T0.chp_nom_dossier' => array(
@@ -719,8 +713,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <a href="javascript:parentheses(&quot;chp_rev_source&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
-  $o1.='   <a href="javascript:formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
-  $o1.='   <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a class="yysucces" href="javascript:aller_a_la_position(&quot;chp_rev_source&quot;)">aller à la position</a>'.CRLF;
   
   $o1.='  </div></div>'.CRLF;
@@ -764,7 +758,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
       }else if(strpos($__valeurs['T0.chp_nom_source'],'.php')!==false){
        
 
-       $o1.='   <a class="yyinfo" href="javascript:pour_zz_source_convertir_rev_en_php(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.CRLF;
+       $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php_et_sauvegarde_rev(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.CRLF;
        $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
        $o1.='   <a class="yysucces" href="javascript:aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
        

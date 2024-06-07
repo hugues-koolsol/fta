@@ -6,7 +6,7 @@ require_once('../fta_inc/db/acces_bdd_revs1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php'); 
 }
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);

@@ -7,16 +7,10 @@ require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible avant d\'accéder aux dossiers'  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php'); 
 }
 
 $js_a_executer_apres_chargement=array();
-/*
-  ========================================================================================
-*/
-function boutonRetourALaListe(){
-  return '&nbsp;<a href="zz_dossiers1.php" style="font-size:1rem;">retour à la liste</a>';
-}
 /*
   ========================================================================================
 */
@@ -233,14 +227,14 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    }else{
     ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'] );
-    recharger_la_page('zz_dossiers1.php');
+    recharger_la_page('zz_dossiers_l1.php');
    }
   }
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
   
   if($_SESSION[APP_KEY][NAV][BNF]['verification'][0]!=$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']){
 //   ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'] );
-//   recharger_la_page('zz_dossiers1.php');   
+//   recharger_la_page('zz_dossiers_l1.php');   
   }
   
   $sql='
@@ -320,7 +314,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      if($nombre_de_sources>0){
 
-         ajouterMessage('erreur' ,  __LINE__ .' : ce dossier contient encore des sources rattachés <a class="yyinfo" href="zz_sources1.php?chi_id_dossier='.$__valeurs['T0.chi_id_dossier'].'">voir les sources du dossier '.$__valeurs['T0.chp_nom_dossier'].'</a>' , BNF );
+         ajouterMessage('erreur' ,  __LINE__ .' : ce dossier contient encore des sources rattachés <a class="yyinfo" href="zz_sources_l1.php?chi_id_dossier='.$__valeurs['T0.chi_id_dossier'].'">voir les sources du dossier '.$__valeurs['T0.chp_nom_dossier'].'</a>' , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
      }else{
@@ -334,7 +328,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          }else{
           
             ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-            recharger_la_page('zz_dossiers1.php');
+            recharger_la_page('zz_dossiers_l1.php');
 
          }
      }
@@ -401,7 +395,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   unset($_SESSION[APP_KEY][NAV][BNF]);
  }
  ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11)  );
- recharger_la_page('zz_dossiers1.php');
+ recharger_la_page('zz_dossiers_l1.php');
 
 
 }
@@ -419,11 +413,11 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id===0 || $__id==='0' ){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
-  recharger_la_page('zz_dossiers1.php');
+  recharger_la_page('zz_dossiers_l1.php');
  }else{
   $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
   if($__valeurs['T0.chp_nom_dossier']==='/'){
-    recharger_la_page('zz_dossiers1.php');
+    recharger_la_page('zz_dossiers_l1.php');
   }
   
  }
@@ -432,7 +426,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id==='0'){
-  recharger_la_page('zz_dossiers1.php');
+  recharger_la_page('zz_dossiers_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
   $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
@@ -452,7 +446,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
               */
 
             }else{
-                recharger_la_page('zz_dossiers1.php');
+                recharger_la_page('zz_dossiers_l1.php');
             }
    
    
@@ -460,7 +454,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   
   
   if(!isset($__valeurs['T0.chi_id_dossier'])){
-   recharger_la_page('zz_dossiers1.php');
+   recharger_la_page('zz_dossiers_l1.php');
   }else{
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
@@ -477,7 +471,7 @@ $o1='';
 $o1=html_header1(array('title'=>'dossiers' , 'description'=>'dossiers'));
 print($o1);$o1='';
 
-$o1.='<h1>gestion de dossier '.boutonRetourALaListe().'</h1>';
+$o1.='<h1>gestion de dossier '.bouton_retour_a_la_liste('zz_dossiers_l1.php').'</h1>';
 
 
 
@@ -490,7 +484,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
   /*
-  http://localhost/functToArray/fta/fta_www/zz_dossiers_action1.php?__id=2&__action=__suppression
+  http://localhost/functToArray/fta/fta_www/zz_dossiers_a1.php?__id=2&__action=__suppression
   */
  $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;
@@ -717,7 +711,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                                
                                if($v1['en_base']>0){
                                   $o1.=' , présent dans la base ';
-                                  $o1.=' <a class="yyinfo" href="zz_sources_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a>';
+                                  $o1.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a>';
                                }else{
                                   $o1.=' absent de la base ';
                                   
@@ -758,7 +752,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                             if(is_dir($nom_absolu_du_dossier)){
                                $o1.=' présent sur disque ';
                                if($v1['en_base']>0){
-                                  $o1.=' , présent dans la base <a class="yysucces" href="zz_dossiers_action1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a>';
+                                  $o1.=' , présent dans la base <a class="yysucces" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v1['en_base'].'">editer</a>';
                                }else{
                                   $o1.=' absent de la base ';
                                }
@@ -851,7 +845,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
            $o1.='<div class="yyavertissement">';
            $o1.='ce répertoire n\'existe pas sur le disque';
            $o1.='<button id="__creer_le_repertoire_sur_le_disque" name="__creer_le_repertoire_sur_le_disque" >Créer le répertoire</button>';
-           $o1.='<a class="yydanger" href="zz_dossiers_action1.php?__action=__suppression&amp;__id='.$__id.'" title="supprimer de la Bdd">supprimer de la base</a>';
+           $o1.='<a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$__id.'" title="supprimer de la Bdd">supprimer de la base</a>';
            $o1.='</div>';
   
          }

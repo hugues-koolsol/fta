@@ -1106,7 +1106,7 @@ function traite_le_tableau_de_la_base_sqlite(par){
   
   if( '___produire_le_rev' === par['contexte'] ){
     dogid(par['zone_rev']).value='sql(transaction(\n'+t+'\n\n),commit())';
-    formatter_le_source_rev(par['zone_rev']);
+    __gi1.formatter_le_source_rev(par['zone_rev']);
   }else{
    console.error('TODO')
    debugger;

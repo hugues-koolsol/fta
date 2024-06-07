@@ -155,7 +155,7 @@ if(count($data0)===0){
  $lst='';
  $lst.='<p class="yyinfo">'.CRLF;
  $lst.='aucun enregistrement trouvé avec les critères indiqués'.CRLF;
- $lst.='<a class="yysucces" href="zz_cibles_action1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
+ $lst.='<a class="yysucces" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
  $lst.='</p>'.CRLF;
  $o1.=''.$lst.''.CRLF;  
  
@@ -179,7 +179,7 @@ if(count($data0)===0){
   $lsttbl.='<td data-label="" style="text-align:left!important;">';
   $lsttbl.='<div class="yyflex1">';
   
-  $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_cibles_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';//✎ #9998
+  $lsttbl.=' <a class="yyinfo" href="zz_cibles_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';//✎ #9998
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v0 , true ) . '</pre>' ; exit(0);
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
@@ -192,7 +192,7 @@ if(count($data0)===0){
                  ){
                      $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
                  }else{
-                     $lsttbl.=' <a class="yydanger yytxtSiz1" href="zz_cibles_action1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
+                     $lsttbl.=' <a class="yydanger" href="zz_cibles_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
                  }
                  
                  
@@ -202,9 +202,9 @@ if(count($data0)===0){
         
   if(isset( $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ) && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===$v0['T0.chi_id_cible']){
    $lsttbl.='<span class=" yybtn yyunset"  title="selectionner cette cible">⇒</span>';
-   $lsttbl.=' <a class="yysucces yytxtSiz1" href="zz_dossiers1.php" title="aller aux dossiers">📁</a>';
+   $lsttbl.=' <a class="yysucces" href="zz_dossiers_l1.php" title="aller aux dossiers">📁</a>';
   }else{
-   $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_cibles1.php?__action=__selectionner_cette_cible&amp;__id='.$v0['T0.chi_id_cible'].'" title="selectionner cette cible">⇒</a>';
+   $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__selectionner_cette_cible&amp;__id='.$v0['T0.chi_id_cible'].'" title="selectionner cette cible">⇒</a>';
    $lsttbl.='<span class=" yybtn yyunset"  title="aller aux dossiers">⇒</span>';
   }
   
@@ -220,7 +220,7 @@ if(count($data0)===0){
   
   if(!is_dir($dossier)){
    $listeDesEtats.='Le dossier n\'existe pas ';
-//   $lsttbl.=' <a class="yyinfo yytxtSiz1" href="zz_cibles1.php?__action=__creation_dossier&amp;__id='.$v0['T0.chi_id_cible'].'" title="créer le dossier">📁</a>';
+//   $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__creation_dossier&amp;__id='.$v0['T0.chi_id_cible'].'" title="créer le dossier">📁</a>';
   }else{
    $listeDesEtats.='Le dossier existe ';
    if(le_dossier_est_vide($dossier)){
@@ -255,7 +255,7 @@ if(count($data0)===0){
 
  $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
  
- $o1.='<a class="yyinfo" href="zz_cibles_action1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
+ $o1.='<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
  
 // $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
 }

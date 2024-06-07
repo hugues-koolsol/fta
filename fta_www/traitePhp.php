@@ -12,7 +12,7 @@ print($o1);$o1='';
             <ul>
                 <li><a href="javascript:chargerSourceDeTestPhp()">source de test</a>&nbsp;</li>
                 <li><a href="javascript:transformPhpEnRev()"  class="yysucces">convertir</a>&nbsp;</li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >afficher/masquer les messages</a>&nbsp;</li>
+                <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages">🙈</a>&nbsp;</li>
                 
             </ul>
         </div>
@@ -25,13 +25,13 @@ print($o1);$o1='';
   <textarea class="txtar1" id="txtar1" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
   <div>
-   <a href="javascript:formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
-   <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
+   <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
+   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
    <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar2&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
   </div>
   <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div>
-   <a class="yyinfo" href="javascript:convertir_rev_en_php('txtar2','txtar3')">R2P↧</a>
+   <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php('txtar2','txtar3')">R2P↧</a>
    <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar3&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
   </div>
   <textarea class="txtar1" id="txtar3" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
@@ -52,12 +52,11 @@ $par=array(
     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">
-setTimeout(
- function(){
+window.addEventListener(\'load\',function(){
   chargerLeDernierSourcePhp();
   transformPhpEnRev();
- },500
-)
+ }
+);
 </script>';
 $o1.=html_footer1($par);
 print($o1);$o1='';

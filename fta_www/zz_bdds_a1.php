@@ -5,18 +5,14 @@ session_start();
 require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
 require_once('../fta_inc/phplib/sqlite.php');
 
+$__page_liste_de_reference='zz_bdds_l1.php';
+
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible '  );
-   recharger_la_page('zz_cibles1.php'); 
+   recharger_la_page('zz_cibles_l1.php');
 }
 $js_a_executer_apres_chargement=array();
-/*
-  =====================================================================================================================
-*/
-function boutonRetourALaListe(){
-  return '&nbsp;<a href="zz_bdds1.php" style="font-size:1rem;">retour à la liste</a>';
-}
 /*
   =====================================================================================================================
 */
@@ -372,7 +368,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    }else{
     ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] );
-    recharger_la_page('zz_bdds1.php');
+    recharger_la_page($__page_liste_de_reference);
    }
   }
   
@@ -447,7 +443,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }else{
    
      ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-     recharger_la_page('zz_bdds1.php');
+     recharger_la_page($__page_liste_de_reference);
 
   }
 
@@ -538,7 +534,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   unset($_SESSION[APP_KEY][NAV][BNF]);
  }
  ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11)  );
- recharger_la_page('zz_bdds1.php');
+ recharger_la_page($__page_liste_de_reference);
 
 
 }
@@ -557,7 +553,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id===0 || $__id==='0' ){
   ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer cette base'  );
-  recharger_la_page('zz_bdds1.php');
+  recharger_la_page($__page_liste_de_reference);
 
  }else{
 
@@ -570,14 +566,14 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id==='0'){
-  recharger_la_page('zz_bdds1.php');
+  recharger_la_page($__page_liste_de_reference);
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
   $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents($__id,$db);
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
   if(!isset($__valeurs['T0.chi_id_basedd'])){
-   recharger_la_page('zz_bdds1.php');
+   recharger_la_page($__page_liste_de_reference);
   }else{
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
@@ -595,7 +591,7 @@ $o1='';
 $o1=html_header1(array('title'=>'bases de données' , 'description'=>'bases de données'));
 print($o1);$o1='';
 
-$o1.='<h1>gestion de base de donnée ( dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].') '.boutonRetourALaListe().'</h1>';
+$o1.='<h1>gestion de base de donnée ( dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].') '.bouton_retour_a_la_liste($__page_liste_de_reference).'</h1>';
 
 
 
@@ -649,7 +645,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
 
   $__parametres_pour_la_modale=array(
-   '__url' => 'zz_dossiers_choix1.php',
+   '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_basedd',
    '__champs_texte_a_rapatrier' => array(
     'T0.chp_nom_dossier' => array(
@@ -769,7 +765,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
   $__parametres_pour_la_modale=array(
-   '__url' => 'zz_dossiers_choix1.php',
+   '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_basedd',
    '__champs_texte_a_rapatrier' => array(
     'T0.chp_nom_dossier' => array(
@@ -862,8 +858,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <a href="javascript:parentheses(&quot;chp_rev_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
-  $o1.='   <a href="javascript:formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
-  $o1.='   <a href="javascript:ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 

@@ -67,6 +67,15 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
     return(false);
 
 }
+
+
+/*
+  =====================================================================================================================
+*/
+function bouton_retour_a_la_liste($url){
+  return '<a id="__retour_a_la_liste" href="'.$url.'" title="retour à la liste">&nbsp;⬱&nbsp;</a>';
+}
+
 /*===================================================================================================================*/
 
 function recharger_la_page($a){
@@ -421,7 +430,7 @@ function recupereLesMessagesDeSession($f){
 
     if(($les_messages_a_afficher !== '')){
 
-        $les_messages_a_afficher='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">masquer les messages</a>'.$les_messages_a_afficher;
+        $les_messages_a_afficher='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">🙈</a>'.$les_messages_a_afficher;
 
     }
 
@@ -627,17 +636,17 @@ function html_header1($parametres){
             $o1.='          <li><a class="yytbfixe '.(('traitePhp.php' === BNF)?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
             $o1.='          <li><a class="yytbfixe '.(('traiteSql.php' === BNF)?'yymenusel1':'').'" href="traiteSql.php?idMenu='.($idMenu++).'">SQL</a></li>'.CRLF;
             $o1.='          <li><a class="yytbfixe '.(('index_source.php' === BNF)?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('zz_cibles1.php' === BNF)?'yymenusel1':'').'" href="zz_cibles1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
+            $o1.='          <li><a class="yytbfixe '.(('zz_cibles_l1.php' === BNF)?'yymenusel1':'').'" href="zz_cibles_l1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
 
             if((isset($_SESSION[APP_KEY]['cible_courante']))){
 
-                $o1.='          <li><a class="yytbfixe '.(('zz_dossiers1.php' === BNF)?'yymenusel1':'').'" href="zz_dossiers1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_sources1.php' === BNF)?'yymenusel1':'').'" href="zz_sources1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_bdds1.php' === BNF)?'yymenusel1':'').'" href="zz_bdds1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_rev1.php' === BNF)?'yymenusel1':'').'" href="zz_revs1.php?idMenu='.($idMenu++).'">revs</a></li>'.CRLF;
+                $o1.='          <li><a class="yytbfixe '.(('zz_dossiers_l1.php' === BNF)?'yymenusel1':'').'" href="zz_dossiers_l1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
+                $o1.='          <li><a class="yytbfixe '.(('zz_sources_l1.php' === BNF)?'yymenusel1':'').'" href="zz_sources_l1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
+                $o1.='          <li><a class="yytbfixe '.(('zz_bdds_l1.php' === BNF)?'yymenusel1':'').'" href="zz_bdds_l1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
+                $o1.='          <li><a class="yytbfixe '.(('zz_rev_l1.php' === BNF)?'yymenusel1':'').'" href="zz_revs_l1.php?idMenu='.($idMenu++).'">revs</a></li>'.CRLF;
 
             }
-            $o1.='          <li><a class="yytbfixe '.(('zz_taches1.php' === BNF)?'yymenusel1':'').'" href="zz_taches1.php?idMenu='.($idMenu++).'">tâches</a></li>'.CRLF;
+            $o1.='          <li><a class="yytbfixe '.(('zz_taches_l1.php' === BNF)?'yymenusel1':'').'" href="zz_taches_l1.php?idMenu='.($idMenu++).'">tâches</a></li>'.CRLF;
 
 
         }
@@ -667,7 +676,7 @@ function html_header1($parametres){
     if($les_messages!==''){
       $o1.=' <div id="zone_global_messages" style="visibility:visible;">'.$les_messages.'</div>'.CRLF;
     }else{
-      $o1.=' <div id="zone_global_messages" style="">'.$les_messages.'</div>'.CRLF;
+      $o1.=' <div id="zone_global_messages" style="visibility:hidden;">'.$les_messages.'</div>'.CRLF;
     }
     return($o1);
 
@@ -720,10 +729,13 @@ function html_footer1($parametres=array()){
     $o1.='</main>'.CRLF;
     $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><iframe id="iframe_modale_1" src=""></iframe></dialog>'.CRLF;
     $o1.='<div id="bas_de_page">'.CRLF;
-    $o1.='<a href="javascript:vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
-    if(!(strpos(BNF,'_action')!==false)){
+    $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
+    if(!(strpos(BNF,'_a')!==false)){
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;">A±</a>'.CRLF;
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_bouton\')" style="opacity:0.5;">b±</a>'.CRLF;
+    }
+    if((strpos(BNF,'_l')!==false)){
+        $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }
     $o1.='</div>'.CRLF;
     $o1.='  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;

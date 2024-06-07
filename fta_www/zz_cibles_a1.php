@@ -8,10 +8,6 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
 /*
   ========================================================================================
 */
-function boutonRetourALaListe(){
-  return '&nbsp;<a href="zz_cibles1.php" style="font-size:1rem;">retour à la liste</a>';
-}
-
 
  /*debutspécifiquefta*/
  if(isset($_POST['__copier_les_fichiers_de_base_dans_ftb'])){
@@ -53,15 +49,15 @@ function boutonRetourALaListe(){
       'fta_www/traiteJs.php' => array(),
       'fta_www/traitePhp.php' => array(),
       'fta_www/za_ajax.php' => array(),
-      'fta_www/zz_bdds1.php' => array(),
-      'fta_www/zz_bdds_action1.php' => array(),
-      'fta_www/zz_cibles1.php' => array(),
-      'fta_www/zz_cibles_action1.php' => array(),
-      'fta_www/zz_dossiers1.php' => array(),
-      'fta_www/zz_dossiers_action1.php' => array(),
-      'fta_www/zz_dossiers_choix1.php' => array(),
-      'fta_www/zz_sources1.php' => array(),
-      'fta_www/zz_sources_action1.php' => array(),
+      'fta_www/zz_bdds_l1.php' => array(),
+      'fta_www/zz_bdds_a1.php' => array(),
+      'fta_www/zz_cibles_l1.php' => array(),
+      'fta_www/zz_cibles_a1.php' => array(),
+      'fta_www/zz_dossiers_l1.php' => array(),
+      'fta_www/zz_dossiers_a1.php' => array(),
+      'fta_www/zz_dossiers_c1.php' => array(),
+      'fta_www/zz_sources_l1.php' => array(),
+      'fta_www/zz_sources_a1.php' => array(),
       'fta_www/phpliteadmin.config.php' => array('chp_type_source' => 'bibliotheque'),
       'fta_www/phpliteadmin.php' => array('chp_type_source' => 'bibliotheque'),      
       
@@ -137,7 +133,7 @@ function boutonRetourALaListe(){
        }
 
        $contenu=preg_replace('/\\/\\*debut'.'spécifiquefta\\*\\/(.*?)\\/\\*fin'.'spécifiquefta\\*\\//us','/* spécifique fta */', $contenu);
-       if($k1==='fta_www/zz_cibles_action1.php'){
+       if($k1==='fta_www/zz_cibles_a1.php'){
 //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
        }
 
@@ -345,7 +341,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    }else{
     ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'] );
-    recharger_la_page('zz_cibles1.php');
+    recharger_la_page('zz_cibles_l1.php');
    }
   }
   
@@ -406,7 +402,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   */
 
   /*
-  http://localhost/functToArray/fta/fta_www/zz_cibles_action1.php?__id=2&__action=__suppression
+  http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=2&__action=__suppression
   */
   $__id= isset($_POST['__id1'])?(is_numeric($_POST['__id1'])?$_POST['__id1']:0):0;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
@@ -423,7 +419,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   if($__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta'){
     ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer "fta"');
-    recharger_la_page('zz_cibles1.php');
+    recharger_la_page('zz_cibles_l1.php');
   }
   
   $db->querySingle('PRAGMA foreign_keys=ON');
@@ -484,7 +480,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    
      $db->querySingle('COMMIT');
      ajouterMessage('succes' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-     recharger_la_page('zz_cibles1.php');
+     recharger_la_page('zz_cibles_l1.php');
 
   }
 
@@ -645,7 +641,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   unset($_SESSION[APP_KEY][NAV][BNF]);
  }
  ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11)  );
- recharger_la_page('zz_cibles1.php');
+ recharger_la_page('zz_cibles_l1.php');
 
 
 }
@@ -666,7 +662,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
         if(APP_KEY === 'fta'){
             ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer la cible 1');
-            recharger_la_page('zz_cibles1.php');
+            recharger_la_page('zz_cibles_l1.php');
         }else{
          /*
           on peut y aller à priori
@@ -677,20 +673,20 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
  }else{
   /*
-  http://localhost/functToArray/fta/fta_www/zz_cibles_action1.php?__id=1&__action=__suppression
+  http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=1&__action=__suppression
   */
   $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
   
 
   if($__valeurs['T0.chi_id_cible']===1){
    ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer la cible 1'  );
-   recharger_la_page('zz_cibles1.php');
+   recharger_la_page('zz_cibles_l1.php');
   }
   if($__valeurs['T0.chp_dossier_cible']!=='fta'){
    $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
   }else{
    ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer fta"'  );
-   recharger_la_page('zz_cibles1.php');
+   recharger_la_page('zz_cibles_l1.php');
   }
   
   
@@ -700,14 +696,14 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id==='0'){
-  recharger_la_page('zz_cibles1.php');
+  recharger_la_page('zz_cibles_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
   $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
   
   
   if(!isset($__valeurs['T0.chi_id_cible'])){
-   recharger_la_page('zz_cibles1.php');
+   recharger_la_page('zz_cibles_l1.php');
   }else{
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
@@ -724,7 +720,7 @@ $o1='';
 $o1=html_header1(array('title'=>'Cibles' , 'description'=>'Cibles'));
 print($o1);$o1='';
 
-$o1.='<h1>gestion de cible '.boutonRetourALaListe().'</h1>';
+$o1.='<h1>gestion de cible '.bouton_retour_a_la_liste('zz_cibles_l1.php').'</h1>';
 
 
 
@@ -737,7 +733,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
   /*
-  http://localhost/functToArray/fta/fta_www/zz_cibles_action1.php?__id=2&__action=__suppression
+  http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=2&__action=__suppression
   */
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;
  $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;

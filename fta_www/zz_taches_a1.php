@@ -10,12 +10,6 @@ $js_a_executer_apres_chargement=array();
 /*
   ========================================================================================
 */
-function boutonRetourALaListe(){
-  return '&nbsp;<a href="zz_taches1.php" style="font-size:1rem;">retour à la liste</a>';
-}
-/*
-  ========================================================================================
-*/
 //========================================================================================================================
 function erreur_dans_champs_saisis_taches(){
  
@@ -77,14 +71,14 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    }else{
     ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'] );
-    recharger_la_page('zz_taches1.php');
+    recharger_la_page('zz_taches_l1.php');
    }
   }
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
   
   if($_SESSION[APP_KEY][NAV][BNF]['verification'][0]!=$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']){
 //   ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'] );
-//   recharger_la_page('zz_taches1.php');   
+//   recharger_la_page('zz_taches_l1.php');   
   }
   
   $sql='
@@ -116,10 +110,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    error_reporting(E_ALL);
    if($db->changes()===1){
     
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
-    ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
-
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);
+    
+    if(isset($_POST['__enregistrer_les_modifications_et_retour'])){
+        ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) );
+        recharger_la_page('zz_taches_l1.php');
+    }else{
+        ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
+        recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
+    }
+    
     
    }else{
     
@@ -154,7 +154,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      }else{
       
         ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-        recharger_la_page('zz_taches1.php');
+        recharger_la_page('zz_taches_l1.php');
 
      }
 
@@ -222,7 +222,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   unset($_SESSION[APP_KEY][NAV][BNF]);
  }
  ajouterMessage('info' , __LINE__ .' cas à étudier ' . substr($GLOBALS['__date'],11)  );
- recharger_la_page('zz_taches1.php');
+ recharger_la_page('zz_taches_l1.php');
 
 
 }
@@ -240,7 +240,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
  if($__id===0 || $__id==='0' ){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
-  recharger_la_page('zz_taches1.php');
+  recharger_la_page('zz_taches_l1.php');
  }else{
   $__valeurs=recupere_une_donnees_des_taches($__id,$db);
   
@@ -250,7 +250,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
  $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id==='0'){
-  recharger_la_page('zz_taches1.php');
+  recharger_la_page('zz_taches_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
   $__valeurs=recupere_une_donnees_des_taches($__id,$db);
@@ -260,7 +260,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   
   
   if(!isset($__valeurs['T0.chi_id_tache'])){
-   recharger_la_page('zz_taches1.php');
+   recharger_la_page('zz_taches_l1.php');
   }else{
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
   }
@@ -277,7 +277,7 @@ $o1='';
 $o1=html_header1(array('title'=>'taches' , 'description'=>'taches'));
 print($o1);$o1='';
 
-$o1.='<h1>gestion de tache '.boutonRetourALaListe().'</h1>';
+$o1.='<h1>gestion de tache '.bouton_retour_a_la_liste('zz_taches_l1.php').'</h1>';
 
 
 
@@ -393,7 +393,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
   $o1.='<div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.CRLF;
+  $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications" class="">enregistrer les modifications</button>'.CRLF;
+  $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications_et_retour" class="">enregistrer les modifications et retour</button>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.='</div>'.CRLF;
 

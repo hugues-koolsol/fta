@@ -11,7 +11,7 @@ var global_editeur_timeout=null;
 var global_modale1=null;
 var global_modale1_iframe=null;
 
-var global_editeur_largeur_des_ascenseurs=-1; 
+
 var global_indice_erreur_originale_traitee=-1;
 var global_programme_en_arriere_plan=null;
 
@@ -175,41 +175,6 @@ function lancer_un_travail_en_arriere_plan(parametre){
      
     }
     
-}
-
-/*
-  =====================================================================================================================
-  convertir un textarea source rev et mettre le résultat dans un textarea php
-  =====================================================================================================================
-*/
-function convertir_rev_en_php(nom_zone_source_rev , nom_zone_genere_php){
-
- clearMessages('zone_global_messages');
- var a=dogid(nom_zone_source_rev);
- var startMicro = performance.now();
- var tableau1 = iterateCharacters2(a.value);
- global_messages.data.tableau=tableau1;
- var endMicro = performance.now();
- console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
- var startMicro = performance.now();
- var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
- 
- if(matriceFonction.status===true){
-  
-  var objPhp=parsePhp0(matriceFonction.value,0,0);
-  
-  if(objPhp.status===true){
-   
-   dogid(nom_zone_genere_php).value=objPhp.value;
-   return({status:true,value:matriceFonction.value});
-   
-  }
-  
- }else{
-  
- }
- displayMessages('zone_global_messages');
- return({status:true});
 }
 
 /*
@@ -428,38 +393,6 @@ function parentheses(nomDeLaTextAreaContenantLeSource){
 /*
   =====================================================================================================================
 */
-function ajouter_un_commentaire_vide_et_reformater(nom_de_la_textarea){
- var a=dogid(nom_de_la_textarea);
- a.focus();
- if(a.selectionStart===a.selectionEnd){
-  var nouveau_source=a.value.substr(0,a.selectionStart)+'#()'+a.value.substr(a.selectionStart);
-  a.value=nouveau_source;
-  formatter_le_source_rev(nom_de_la_textarea);
- }
-}
-/*
-  =====================================================================================================================
-*/
-function formatter_le_source_rev(nom_de_la_textarea){
- 
- var a=dogid(nom_de_la_textarea);
- 
- var tableau1 = iterateCharacters2(a.value);
- var matriceFonction = functionToArray2(tableau1.out,true,false,'');
- 
- if(matriceFonction.status===true){
-  var obj2=arrayToFunct1(matriceFonction.value,true,false);
-  if(obj2.status===true){
-   a.value=obj2.value;
-  }
- }else{
-  displayMessages('zone_global_messages' , nom_de_la_textarea)
- }
- 
-}
-/*
-  =====================================================================================================================
-*/
 function createSelection(field,start,end){
     if(field.createTextRange){
         var selRange = field.createTextRange();
@@ -657,7 +590,7 @@ function initialiserEditeurPourUneTextArea(nomDeLaTextArea){
         /*
         dans chrome, si on click sur une zone sélectionnée,
         la valeur de selectionStart n'est pas mise à jour
-        mais en exécutant ce petit hack, ça fonctionne
+        mais en exécutant ce petit hack, ça fonctionne...parfois
         */
         setTimeout(initialisationEditeur,16);
     }
@@ -688,7 +621,7 @@ function analyseKeyUp(e){
     var i=0;
     var j=0;
     var tabtext=[];
-    if(e.keyCode == 13){
+    if(e.keyCode == 13){ /* retour chariot */
         var zoneSource = document.getElementById(global_editeur_nomDeLaTextArea);
         global_editeur_derniere_valeur_selecStart=zoneSource.selectionStart;
         global_editeur_derniere_valeur_selectEnd=zoneSource.selectionEnd;
@@ -742,12 +675,12 @@ function analyseKeyUp(e){
         }
         zoneSource.scrollTo({left:0});
         window.scrollTo({left:0});
-    }else if((e.keyCode == 86) && (e.ctrlKey == true)){
+    }else if((e.keyCode == 86) && (e.ctrlKey == true)){ /* ctrl v */
         var zoneSource = document.getElementById(global_editeur_nomDeLaTextArea);
         global_editeur_timeout=setTimeout(function(){
             zoneSource.scrollTop=global_editeur_scrolltop;
         },1);
-    }else if(e.keyCode == 36){
+    }else if(e.keyCode == 36){ /* home */
         var zoneSource = document.getElementById(global_editeur_nomDeLaTextArea);
         zoneSource.scrollTo({left:0});
         window.scrollTo({left:0});
@@ -757,313 +690,6 @@ function analyseKeyUp(e){
     return false;
 }
 
-/*
- 
-  ===========================================
-  ===========================================
-  ===========================================
-  fonction qui produit un tableau html de  la
-  liste des caractères du source du programme
-  ===========================================
-  ===========================================
-  ===========================================
-*/
-function ConstruitHtmlTableauCaracteres(t2,texteSource,objTableau){
-    var numeroLigne=0;
-    var debut=0;
-    var i=0;
-    var j=0;
-    var l01=0;
-    var tmps='';
-    var out = [];
-    t2.setAttribute('class','tableau2');
-    if(objTableau === null){
-        /*On construit le tableau à partir du texte source*/
-        var outo={};
-        outo=iterateCharacters2(texteSource);
-        out=outo.out;
-    }else{
-        out=objTableau.out;
-    }
-    /*
-      première case du tableau = numéro de ligne
-    */
-    var tr1={};
-    var td1={};
-    tr1=document.createElement('tr');
-    td1=document.createElement('td');
-    td1.innerHTML=numeroLigne;
-    tr1.appendChild(td1);
-    /*boucle principale*/
-    l01=out.length;
-    for(i=0;i < l01;i++){
-        var td1={};
-        td1=document.createElement('td');
-        td1.innerHTML=out[i][0].replace('\n','\\n');
-        tmps=out[i][0].codePointAt(0);
-        td1.title=concat('&amp;#',tmps,'; (',out[i][1],')');
-        tr1.appendChild(td1);
-        /*
-          ============================================
-          Si on a un retour chariot, on écrit les 
-          cases contenant les positions des caractères
-          ============================================
-        */
-        if(out[i][0] == '\n'){
-            t2.appendChild(tr1);
-            /*
-              
-              
-              =================================================
-              indice dans tableau = première ligne des chiffres
-              =================================================
-            */
-            var tr1={};
-            var td1={};
-            tr1=document.createElement('tr');
-            td1=document.createElement('td');
-            td1.setAttribute('class','td2');
-            td1.innerHTML='&nbsp;';
-            tr1.appendChild(td1);
-            for(j=debut;j < i;j++){
-                var td1={};
-                td1=document.createElement('td');
-                if(out[j][1] == 1){
-                    td1.setAttribute('class','td2');
-                }else{
-                    td1.setAttribute('class','td4');
-                }
-                td1.innerHTML=j;
-                tr1.appendChild(td1);
-            }
-            /*
-              
-              =====================
-              position du backslash
-              =====================
-            */
-            var td1={};
-            td1=document.createElement('td');
-            td1.setAttribute('class','td2');
-            td1.innerHTML=j;
-            tr1.appendChild(td1);
-            t2.appendChild(tr1);
-            /*
-              
-              ========================================================
-              position dans la chaine = deuxième ligne des chiffres
-              car certains caractères utf8 sont codées sur 2 positions
-              ========================================================
-            */
-            var tr1={};
-            var td1={};
-            tr1=document.createElement('tr');
-            td1=document.createElement('td');
-            td1.setAttribute('class','td2');
-            td1.innerHTML='&nbsp;';
-            tr1.appendChild(td1);
-            for(j=debut;j < i;j++){
-                var td1={};
-                td1=document.createElement('td');
-                if(out[j][1] == 1){
-                    td1.setAttribute('class','td2');
-                }else{
-                    td1.setAttribute('class','td4');
-                }
-                td1.innerHTML=out[j][2];
-                tr1.appendChild(td1);
-            }
-            /*
-              
-              =====================
-              position du backslash
-              =====================
-            */
-            var td1={};
-            td1=document.createElement('td');
-            td1.setAttribute('class','td2');
-            td1.innerHTML=out[j][2];
-            tr1.appendChild(td1);
-            t2.appendChild(tr1);
-            /*
-              
-              
-              ======================================
-              fin des lignes contenant les positions
-              ======================================
-            */
-            debut=(i+1);
-            numeroLigne=(numeroLigne+1);
-            var tr1={};
-            var td1={};
-            tr1=document.createElement('tr');
-            td1=document.createElement('td');
-            td1.innerHTML=numeroLigne;
-            tr1.appendChild(td1);
-            t2.appendChild(tr1);
-        }
-    }
-    /*
-      ============================================
-      FIN Si on a un retour chariot, on écrit les 
-      cases contenant les positions des caractères
-      ============================================
-    */
-    /*dernière ligne de faire boucle*/
-    /*
-      dernière ligne des positions des caractères
-    */
-    t2.appendChild(tr1);
-    /*
-      
-      
-      =================================================
-      indice dans tableau = première ligne des chiffres
-      =================================================
-    */
-    var tr1={};
-    var td1={};
-    tr1=document.createElement('tr');
-    td1=document.createElement('td');
-    td1.setAttribute('class','td2');
-    td1.innerHTML='&nbsp;';
-    tr1.appendChild(td1);
-    for(j=debut;j < i;j++){
-        var td1={};
-        td1=document.createElement('td');
-        if(out[j][1] == 1){
-            td1.setAttribute('class','td2');
-        }else{
-            td1.setAttribute('class','td4');
-        }
-        td1.innerHTML=j;
-        tr1.appendChild(td1);
-    }
-    /*finchoix suite du source*/
-    t2.appendChild(tr1);
-    /*
-      =====================
-      pas de position du backslash
-      =====================
-    */
-    /*
-      =====================================================
-      position dans la chaine = deuxième ligne des chiffres
-      =====================================================
-    */
-    var tr1={};
-    var td1={};
-    tr1=document.createElement('tr');
-    td1=document.createElement('td');
-    td1.setAttribute('class','td2');
-    td1.innerHTML='&nbsp;';
-    tr1.appendChild(td1);
-    for(j=debut;j < i;j++){
-        var td1={};
-        td1=document.createElement('td');
-        if(out[j][1] == 1){
-            td1.setAttribute('class','td2');
-        }else{
-            td1.setAttribute('class','td4');
-        }
-        td1.innerHTML=out[j][2];
-        tr1.appendChild(td1);
-    }
-    /*finchoix suite du source*/
-    /*et enfin, on ajoute la dernière ligne*/
-    t2.appendChild(tr1);
-}
-/*
-  ==========================================
-  ==========================================
-  ==========================================
-  fonction qui produit un tableau html de la
-  forme matricielle du programme
-  ==========================================
-  ==========================================
-  ==========================================
-*/
-function ConstruitHtmlMatrice(t1,matriceFonction){
-    /**/
-    var i=0;
-    var j=0;
-    var l01=0;
-    var temp='';
-    var tr1={};
-    var td1={};
-    var r1= new RegExp(' ','g');
-    var r2= new RegExp('\n','g');
-    var r3= new RegExp('&','g');
-    var r4= new RegExp('<','g');
-    var r5= new RegExp('>','g');
-    var r6= new RegExp("\\\\'",'g');
-    var r7= new RegExp('\r','g');
-    var largeurTable1EnPx='1000';
-    var largeurColonne1EnPx='400';
-    t1.className='yytableauMatrice1';
-    tr1=document.createElement('tr');
-    /*
-      =================
-      entête du tableau
-      =================
-    */
-    l01=global_enteteTableau.length;
-    for(i=0;i < l01;i++){
-        var td1={};
-        td1=document.createElement('th');
-        td1.innerHTML=concat(i,global_enteteTableau[i][0]);
-        /**/
-        td1.setAttribute('title',concat(global_enteteTableau[i][1],'(',i,')'));
-        tr1.appendChild(td1);
-    }
-    t1.appendChild(tr1);
-    /*
-      
-      
-      ===================
-      éléments du tableau
-      ===================
-    */
-    l01=matriceFonction.value.length;
-    for(i=0;i < l01;i++){
-        var tr1={};
-        tr1=document.createElement('tr');
-        for(j=0;j < matriceFonction.value[i].length;j++){
-            var td1={};
-            td1=document.createElement('td');
-            if((j == 1) || (j == 13)){
-                /*Pour la valeur ou les commentaires*/
-                temp=String(matriceFonction.value[i][j]);
-                temp=temp.replace(r1,'░');
-                temp=temp.replace(r2,'¶');
-                temp=temp.replace(r3,'&amp;');
-                temp=temp.replace(r4,'&lt;');
-                temp=temp.replace(r5,'&gt;');
-                temp=temp.replace(r7,'r');
-                if(matriceFonction.value[i][4] === 3){
-                    temp=temp.replace(r6,"'");
-                }
-                td1.innerHTML=temp;
-                td1.style.whiteSpace='pre-wrap';
-                td1.style.verticalAlign='baseline';
-                td1.style.maxWidth=largeurColonne1EnPx+'px';
-                td1.style.overflowWrap='break-word';
-            }else if(j == 4){
-                td1.innerHTML=matriceFonction.value[i][j];
-                if(matriceFonction.value[i][j] === 1){
-                }else if(matriceFonction.value[i][j] === 2){
-                    td1.style.background='lightgrey';
-                }
-            }else{
-                td1.innerHTML=String(matriceFonction.value[i][j]);
-            }
-            temp=concat(global_enteteTableau[j][1],'(',j,')');
-            td1.setAttribute('title',temp);
-            tr1.appendChild(td1);
-        }
-        t1.appendChild(tr1);
-    }
-}
 /*
   =====================================================================================================================
   =====================================================================================================================
@@ -1159,7 +785,39 @@ function reactiverLesBoutons(){
         elem.remove();
     }catch(e){
     }
+    
+    var lstb1=document.getElementsByClassName("yyunset_temporaire");
+    for(i=0;i < lstb1.length;i++){
+     lstb1[i].classList.remove('yyunset_temporaire');
+    }
+    
 }
+
+
+
+/*
+  =====================================================================================================================
+  quand on clique sur un lien javascript, on affiche la boite 1.5 secondes plus tard
+  =====================================================================================================================
+*/
+function clickLinkJs1(e){
+    console.log('un click')
+    try{
+        e.target.classList.add("yyunset_temporaire");
+    }catch(e1){
+    }
+    setTimeout(
+     function(){
+      var lstb1=document.getElementsByClassName("yyunset_temporaire");
+      for(var i=0;i < lstb1.length;i++){
+       lstb1[i].classList.remove('yyunset_temporaire');
+      }
+     },300
+    );
+      
+}
+
+
 /*
   =====================================================================================================================
   quand on clique sur un lien, on affiche la boite 1.5 secondes plus tard
@@ -1167,7 +825,7 @@ function reactiverLesBoutons(){
 */
 function clickLink1(e){
     try{
-        e.target.classList.add("yyunset");
+        e.target.classList.add("yyunset_temporaire");
     }catch(e1){
     }
     globale_timeout_reference_timer_serveur_lent=setTimeout(affichageBoiteServeurLent,globale_timeout_serveur_lent);
@@ -1277,7 +935,6 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
 
 /*
   =====================================================================================================================
-*/
 function agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
  try{
   if(document.getElementById(nom_de_la_textarea)){
@@ -1294,6 +951,8 @@ function agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
   }
  }catch(e){}
 }
+*/
+
 /*
   =====================================================================================================================
 */
@@ -1440,37 +1099,6 @@ function allerAlaLigne(i,nomTextAreaSource){
     selectionnerLigneDeTextArea(document.getElementById(nomTextAreaSource),i);
 }
 
-//=====================================================================================================================
-function mouseWheelOnMenu(event){
- event.preventDefault();
- var elem=event.target;
- var continuer=true;
- while(continuer){
-  if(elem.nodeName==='DIV'){
-   if(elem.className.indexOf('menuScroller')>=0){
-    continuer=false;
-    break;
-   }
-  }else if(elem.nodeName==='BODY'){
-   continuer=false;
-   elem=null;
-   break;
-  }
-  elem=elem.parentNode
- }
- if(elem!==null){
-  var scrollDelta=20;
-  if(event.deltaY>0){
-   var current=parseInt(elem.scrollLeft,10);
-   elem.scrollTo(current+scrollDelta,0);
-  }else{
-   var current=parseInt(elem.scrollLeft,10);
-   elem.scrollTo(current-scrollDelta,0);
-  }
- }
-
- return false; 
-}
 /*
   =====================================================================================================================
 */
@@ -1517,207 +1145,9 @@ function copyTextToClipboard(text) {
 
 
 */
-/*
-  =====================================================================================================================
-*/
 
-function deplace_la_zone_de_message(){
- var i=0;
- var haut=0;
- var bod = document.getElementsByTagName('body')[0];
- var paddingTopBody=0;
- 
- var bodyComputed=getComputedStyle(bod);
-// console.log('bodyComputed=',bodyComputed);
- for( var elem in bodyComputed){
-  if('paddingTop'===elem){
-//   console.log( elem , bodyComputed[elem]);
-   paddingTopBody=parseInt(bodyComputed[elem],10);
-//   console.log(paddingTopBody)
-  }
- }
 
- var contenuPrincipal=dogid('contenuPrincipal');
- var lesDivs=contenuPrincipal.getElementsByTagName('div');
- for(i=0;i < lesDivs.length;i++){
-  if(lesDivs[i].className==='menuScroller'){
-   var menuUtilisateurCalcule=getComputedStyle(lesDivs[i]);
-   var hauteurMenuUtilisateur=parseInt(menuUtilisateurCalcule['height'],10);
-   
-   lesDivs[i].style.top=paddingTopBody+'px';
-   lesDivs[i].style.position='fixed';
-   lesDivs[i].style.width='90vw';
-   lesDivs[i].style.marginLeft='5vw';
-   lesDivs[i].style.backgroundImage='linear-gradient(to bottom, #B0BEC5, #607D8B)';
 
-   lesDivs[i].addEventListener('wheel',mouseWheelOnMenu, false);
-   
-   paddingTopBody=paddingTopBody+hauteurMenuUtilisateur;
-   
-   
-   
-   
-   
-  }
- }
-
- dogid('zone_global_messages').style.top=(paddingTopBody+2)+'px';
- bod.style.paddingTop=(paddingTopBody)+'px';
-
- /*
-   ajustement de la position gauche des menus du haut, 
-   c'est utile quand il y a beaucoup de menus
-   en haut et qu'on est sur un petit appareil
- */ 
- var hrefActuel= window.location.href;
- if(hrefActuel.indexOf('#')>=1){
-  hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('#'))
- }
- if(hrefActuel.lastIndexOf('/')>=1 && hrefActuel.substr(hrefActuel.lastIndexOf('/')+1)!==''){
-  hrefActuel=hrefActuel.substr(hrefActuel.lastIndexOf('/')+1);
-  if(hrefActuel.indexOf('?')>=0){
-   hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('?'));
-  }
-  var lienActuel=null;
-  var menuPrincipal=dogid('menuPrincipal');
-  if(menuPrincipal){
-   
-   var listeMenu=menuPrincipal.getElementsByTagName('a');
-   for(i=0;i<listeMenu.length;i++){
-    if(listeMenu[i].href && listeMenu[i].href.indexOf(hrefActuel)>=0){
-     lienActuel=listeMenu[i];
-     break;
-    }
-   }
-   if(lienActuel!==null){
-    for(i=0;i<listeMenu.length;i++){
-     if(listeMenu[i]===lienActuel ){
-      listeMenu[i].classList.add('yymenusel1')
-     }else{
-      listeMenu[i].classList.remove('yymenusel1')
-     }
-    }
-    var positionDuLien=lienActuel.getBoundingClientRect();
-    var boiteDesLiens=menuPrincipal.getBoundingClientRect();
-    var positionDroiteDuLienDansLaBoite=parseInt( positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
-    var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
-    if(positionDroiteDuLienDansLaBoite>largeurBoiteLiens){
-     var calcul=parseInt((boiteDesLiens.width-positionDuLien.width-60),10);
-     if(parseInt(positionDuLien.x,10)>calcul){
-      var nouveauScroll=positionDuLien.x-(boiteDesLiens.width-positionDuLien.width-60);
-      menuPrincipal.scrollLeft=nouveauScroll;
-     }
-    }
-   }   
-   menuPrincipal.addEventListener('wheel',mouseWheelOnMenu, false);
-  }
- }
- 
- 
- 
- 
- 
-}
-/*
-===================================================================================
-*/
-function calculLaLargeurDesAscenseurs() { //setup global_editeur_largeur_des_ascenseurs
-    var body = document.getElementsByTagName('body')[0];
-    var div = document.createElement("div");
-    div.style.width = '100px';
-    div.style.height = '100px';
-    div.style.overflow = 'auto';
-    div.style.opacity = 0.01;
-    body.appendChild(div);
-    var bag = document.createElement("div");
-    var att1 = 'width:101px;height:101px;overflow:auto;';
-    bag.style.width = '101px';
-    bag.style.height = '101px';
-    bag.style.overflow = 'auto';
-    div.appendChild(bag);
-    div.scrollTop = 100;
-    global_editeur_largeur_des_ascenseurs = div.scrollTop - 1;
-    div.removeChild(bag);
-    body.removeChild(div);
-}
-
-/*
-===================================================================================
-*/
-function ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens(){
-    calculLaLargeurDesAscenseurs();
-    /*
-      equivalent de window.onload = function() {
-      fixMenu1();
-    */
-    var i=0;
-    var bod = document.getElementsByTagName('body')[0];
-    var lstb1 = bod.getElementsByTagName('button');
-    for(i=0;i < lstb1.length;i++){
-        if( !(lstb1[i].onclick)){
-            if((lstb1[i].className) && (lstb1[i].className.indexOf('noHide') >= 0)){
-            }else{
-                lstb1[i].addEventListener("click",clickButton1,false);
-            }
-        }
-    }
-    var lstb1 = bod.getElementsByTagName('input');
-    for(i=0;i < lstb1.length;i++){
-        if( !(lstb1[i].onclick)){
-            if((lstb1[i].className) && (lstb1[i].className.indexOf('noHide') >= 0)){
-            }else{
-                if(lstb1[i].type === 'submit'){
-                    lstb1[i].addEventListener("click",clickButton1,false);
-                }
-            }
-        }
-    }
-    var lsta1 = bod.getElementsByTagName('a');
-    for(i=0;i < lsta1.length;i++){
-        if((lsta1[i].href) && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
-            if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
-            }else{
-                lsta1[i].addEventListener("click",clickLink1,false);
-            }
-        }
-    }
-  
-/*
-  getPageSize();
-*/
-  
-  
-}
-
-/*
-===================================================================================
-*/
-function vers_le_haut_de_la_page(destination, duree) {
- 
-  Math.easeInOutQuad=function(t,b,c,d){
-    t /= d/2;
-    if(t<1){ 
-     return c/2*t*t+b
-    };
-    t--;
-    return -c/2*(t*(t-2)-1)+b;
-  };
- 
-  var element=document.scrollingElement;
-  var positionDeDepart=(element && element.scrollTop)||window.pageYOffset,
-      change=destination-positionDeDepart,
-      increment=20;
-  var tempsCourant=0;
-  var animerLeDecalage=function(){
-      tempsCourant+=increment;
-      var val=Math.easeInOutQuad(tempsCourant, positionDeDepart, change, duree);
-      window.scrollTo(0,val);
-      if(tempsCourant < duree) {
-       window.setTimeout(animerLeDecalage, increment);
-      }
-  };
-  animerLeDecalage();
-}
 
 /*
 ===================================================================================
@@ -1810,8 +1240,7 @@ var __module_html1=null;
 window.addEventListener('load', function () {
 
 // console.log("interface js")
- ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens();
- deplace_la_zone_de_message();
+// ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens();
  global_modale1=document.getElementById('modale1');
  global_modale1_iframe=document.getElementById('iframe_modale_1');
  global_modale1.addEventListener('click',function(e){
@@ -1826,6 +1255,8 @@ window.addEventListener('load', function () {
  import('./module_interface1.js').then(
   function(Module){
   __gi1=new Module.interface1('__gi1');
+  __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
+  __gi1.deplace_la_zone_de_message();
  });
  var liste_des_scripts=document.getElementsByTagName('script');
  for(var i=0;i<liste_des_scripts.length;i++){

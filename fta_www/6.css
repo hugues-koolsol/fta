@@ -43,10 +43,6 @@ textarea{
  overflow:scroll;
 }
 
-tr:hover {
-    box-shadow: inset 0px 0px 4px #444;
-}
-
 a,button{
  display: inline-flex;
  justify-content: center;
@@ -212,13 +208,24 @@ button[disabled]{
   background-color: #cccccc;
   color: #666666;
 }
-.yytxtSiz1{font-size:1.5rem;}.yytxtSiz2{font-size:2.5rem;line-height:0.75em;}.yyflex1{display:flex;}.yyright1{float:right;}
+.yyflex1{display:flex;}
 .yyminHeight1{min-height:36px;}
-.yytableResult1{border-radius:5px;border:1px #DAE2E5 outset;margin:0 auto;min-width:70%;border-collapse: collapse;}
+.yytableResult1{
+  border-radius:5px;
+  border:1px #DAE2E5 outset;
+  margin:0 auto;
+  min-width:70%;
+/*  border-collapse: collapse; */
+  border-spacing: 1px 0px;
+}
+tr:hover {
+ box-shadow: inset 0px 0px 4px #444;
+}
+
 .yytableResult1 a{border:1px #DAE2E5 outset;color:#263238;}
 .yytableResult1 td:last-child {border-radius: 4px;}
 .button_chercher{flex-grow:1;}
-.yyunset{
+.yyunset,.yyunset_temporaire{
   opacity:0.5;
   cursor:default;
  }
@@ -234,6 +241,9 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
 .yyavertissement{color:#000000!important;background:linear-gradient(to bottom, #FFA500, #E28F00)!important;}
 .yydanger       {color:#ECEFF1!important;background:linear-gradient(to bottom, #FF0000, #E50000)!important;}
 .yyerreur       {color:#FFFF33!important;background:linear-gradient(to bottom, #FD3131, #D32A2A)!important;}
+.yyrose         {color:#FFFF33!important;background:linear-gradient(to bottom, #E909A4, #c7008A)!important;}
+.yycyan         {color:#0000FF!important;background:linear-gradient(to bottom, #04E1EB, #00C0C9)!important;}
+
 .yybadge {border:1px outset;padding:3px;border-radius:6px;vertical-align:-webkit-baseline-middle;vertical-align:-moz-baseline-middle;vertical-align:baseline-middle;white-space:nowrap;display:inline-block;min-width:3em;text-align:center;}
 .yybadge0{background-color:#D32F2F;color:#ECEFF1;}
 .yybadge1{background-color:#26A69A;color:#ECEFF1;}
