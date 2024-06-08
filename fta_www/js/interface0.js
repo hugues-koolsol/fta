@@ -935,28 +935,9 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
 
 /*
   =====================================================================================================================
-function agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
- try{
-  if(document.getElementById(nom_de_la_textarea)){
-   if(document.getElementById(nom_de_la_textarea).rows<=10){
-    document.getElementById(nom_de_la_textarea).rows=100;
-    document.getElementById(nom_de_la_textarea).style.height='100em';
-    document.getElementById(nom_de_la_textarea).focus();
-   }else{
-    document.getElementById(nom_de_la_textarea).rows=5;
-    document.getElementById(nom_de_la_textarea).style.height='5em';
-    document.getElementById(nom_de_la_textarea).focus();
-    
-   }
-  }
- }catch(e){}
-}
-*/
-
-/*
-  =====================================================================================================================
 */
 function selectionnerUnePlage(debut,fin,nomDeZoneSource){
+    masquerLesMessage('zone_global_messages');
     var zoneSource = dogid(nomDeZoneSource);
     zoneSource.select();
     zoneSource.selectionStart=debut;
@@ -1249,7 +1230,6 @@ window.addEventListener('load', function () {
    global_modale1.close();
   }
  })
- fonctionDeLaPageAppeleeQuandToutEstCharge();
  setTimeout(function(){recuperer_les_travaux_en_arriere_plan_de_la_session();},1000);
 
  import('./module_interface1.js').then(
@@ -1257,6 +1237,7 @@ window.addEventListener('load', function () {
   __gi1=new Module.interface1('__gi1');
   __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
   __gi1.deplace_la_zone_de_message();
+  fonctionDeLaPageAppeleeQuandToutEstCharge();
  });
  var liste_des_scripts=document.getElementsByTagName('script');
  for(var i=0;i<liste_des_scripts.length;i++){

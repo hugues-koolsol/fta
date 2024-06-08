@@ -165,11 +165,106 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
 
 }
 
-function traitement_apres_ajax_pour_conversion_fichier_js(par){
- 
-
+/*
+  =====================================================================================================================
+*/
+function convertir_js_en_rev(chp_genere_source , chp_rev_source , type='script'){
+   clearMessages('zone_global_messages');
+   var a = document.getElementById(chp_genere_source);
+   
+   
+  var obj1=recupere_ast_de_source_js_en_synchrone(a.value , type);
+  if(obj1.status===true){
+       tabComment=obj1.commentaires;
+       var objRev = TransformAstEnRev(obj1.value.body,0);
+       if(objRev.status == true){
+         dogid(chp_rev_source).value=objRev.value;
+       }else{
+         displayMessages('zone_global_messages',chp_genere_source);
+       }
+  }else{
+   displayMessages('zone_global_messages',chp_genere_source);
+   rangeErreurSelectionne=false;
+  }
+   
+  return;   
+/*   
+   var startMicro=performance.now();
    try{
        
+       var ret = esprima.parseScript(a.value,{range:true,comment:true});
+       tabComment=ret.comments;
+       var objRev = TransformAstEnRev(ret.body,0);
+       var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
+       if(objRev.status == true){
+         dogid(chp_rev_source).value=objRev.value;
+       }else{
+         displayMessages('zone_global_messages',chp_genere_source);
+       }
+
+   }catch(e){
+       console.log('erreur esprima',e);
+       if(e.lineNumber){
+        astjs_logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne '+e.lineNumber,line:e.lineNumber});
+       }
+       ret=false;
+   }
+   
+   
+   
+   displayMessages('zone_global_messages',chp_genere_source);
+   rangeErreurSelectionne=false;
+*/   
+}
+
+
+function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
+  var type='script';
+  if(type_source==='module_js'){
+   type='module';
+  }
+  
+  var obj1=recupere_ast_de_source_js_en_synchrone(par.contenu_du_fichier , type );
+  if(obj1.status===true){
+//       console.log('obj1=' , obj1 );
+       tabComment=obj1.commentaires;
+       
+       var objRev = TransformAstEnRev(obj1.value.body,0);
+       if(objRev.status == true){
+        
+        var tableau1 = iterateCharacters2(objRev.value);
+        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+        if(matriceFonction.status===true){
+            console.log(matriceFonction);
+            
+            var objJs=parseJavascript0(matriceFonction.value,1,0);
+            
+            if(objJs.status===true){           
+//              console.log(objJs.value);
+              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement , matriceFonction.value);
+             
+            }
+            
+            
+        }
+        
+       }else{
+        logerreur({status:false,message:'erreur 0195 traitement_apres_ajax_pour_conversion_fichier_js'});
+       }
+       
+       
+       
+  }else{
+        logerreur({status:false,message:'erreur 0201 traitement_apres_ajax_pour_conversion_fichier_js'});
+  }
+  return
+  
+  /*
+  ancienne version avec esprima
+
+  try{
+       
+  debugger
        var ret = esprima.parseScript(par.contenu_du_fichier,{range:true,comment:true});
        tabComment=ret.comments;
        var objRev = TransformAstEnRev(ret.body,0);
@@ -203,7 +298,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par){
        ret=false;
    }
    
- 
+*/ 
  
  
 }
@@ -219,7 +314,7 @@ function traitement_apres_ajax_pour_conversion_fichier_php(par){
         on a obtenu le format rev du php,
         on peut le convertir en php
         */
-        console.log(objRev.value)
+//        console.log(objRev.value)
         
         var tableau1 = iterateCharacters2('php('+objRev.value+')');
         var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
@@ -262,11 +357,13 @@ function convertir_un_source_sur_disque(id_source){
     console.log('jsonRet=',jsonRet);
 //    dogid('chp_genere_source').value=jsonRet.value;
     var nom_source=jsonRet.db['T0.chp_nom_source'];
+    var type_source=jsonRet.db['T0.chp_type_source'];
     if(nom_source.substr(nom_source.length-4)==='.php'){
-
      var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_apres_ajax_pour_conversion_fichier_php); // ,{'comment':true}
     }else if(nom_source.substr(nom_source.length-3)==='.js'){
-     traitement_apres_ajax_pour_conversion_fichier_js(jsonRet);
+     
+     traitement_apres_ajax_pour_conversion_fichier_js(jsonRet, type_source);
+     
     }else if(nom_source.substr(nom_source.length-5)==='.html' || nom_source.substr(nom_source.length-4)==='.htm'){
      traitement_apres_ajax_pour_conversion_fichier_html(jsonRet);
     }else if(nom_source.substr(nom_source.length-4)==='.sql' ){
@@ -386,38 +483,6 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible
    displayMessages('zone_global_messages' , chp_rev_source);
    
    
-}
-/*
-  =====================================================================================================================
-*/
-function convertir_js_en_rev(chp_genere_source , chp_rev_source){
-   clearMessages('zone_global_messages');
-   var a = document.getElementById(chp_genere_source);
-   var startMicro=performance.now();
-   try{
-       
-       var ret = esprima.parseScript(a.value,{range:true,comment:true});
-       tabComment=ret.comments;
-       var objRev = TransformAstEnRev(ret.body,0);
-       var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
-       if(objRev.status == true){
-         dogid(chp_rev_source).value=objRev.value;
-       }else{
-         displayMessages('zone_global_messages',chp_genere_source);
-       }
-
-   }catch(e){
-       console.log('erreur esprima',e);
-       if(e.lineNumber){
-        astjs_logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne '+e.lineNumber,line:e.lineNumber});
-       }
-       ret=false;
-   }
-   
-   
-   
-   displayMessages('zone_global_messages',chp_genere_source);
-   rangeErreurSelectionne=false;
 }
 /*
   =====================================================================================================================

@@ -19,8 +19,8 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/aa_include.php' => array(
          'remplacer' => array( 
            array( 
-             'a_remplacer_chaine' => 'define("APP_KEY","fta");' ,
-             'par'                => 'define("APP_KEY","ftb");'
+             'a_remplacer_chaine' => 'define(\'APP_KEY\',\'fta\');' ,
+             'par'                => 'define(\'APP_KEY\',\'ftb\');'
            ),
            array( 
              'a_remplacer_chaine' => 'define("PREFIXE_REPERTOIRES","fta");' ,
@@ -32,22 +32,36 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_inc/.htaccess' => array(),
       'fta_inc/ajax/core/bdd.php' => array(),
       'fta_inc/ajax/core/file.php' => array(),
+      'fta_inc/ajax/js/ast.php' => array(),      
       'fta_inc/ajax/php/ast.php' => array(),
+      
       'fta_inc/db/acces_bdd_bases_de_donnees1.php' => array(),
       'fta_inc/db/acces_bdd_cibles1.php' => array(),
       'fta_inc/db/acces_bdd_dossiers1.php' => array(),
       'fta_inc/db/acces_bdd_sources1.php' => array(),
+      'fta_inc/db/acces_bdd_revs1.php' => array(),
+      'fta_inc/db/acces_bdd_taches1.php' => array(),
+      
       'fta_inc/phplib/mesBibliotheques.bat'=>array(),
-      'fta_inc/phplib/sqlite.php'=>array(),      
-      'fta_inc/rev/test_factorielle.rev'=>array(),      
+      'fta_inc/phplib/sqlite.php'=>array(),
+      
+      'fta_inc/jslib/convertir_un_module.js'=>array(),      
+      'fta_inc/jslib/convertir_un_script.js'=>array(),      
+      'fta_inc/jslib/mes_bibliotheques.bat'=>array(),      
+
+      'fta_inc/rev/test_factorielle.rev'=>array(),
+      
       'fta_www/.htaccess' => array(),
       'fta_www/6.css' => array(),
       'fta_www/aa_login.php' => array(),
       'fta_www/index.php' => array(),
       'fta_www/index_source.php' => array(),
+      
       'fta_www/traiteHtml.php' => array(),
       'fta_www/traiteJs.php' => array(),
       'fta_www/traitePhp.php' => array(),
+      'fta_www/traiteSql.php' => array(),
+      
       'fta_www/za_ajax.php' => array(),
       'fta_www/zz_bdds_l1.php' => array(),
       'fta_www/zz_bdds_a1.php' => array(),
@@ -58,12 +72,16 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/zz_dossiers_c1.php' => array(),
       'fta_www/zz_sources_l1.php' => array(),
       'fta_www/zz_sources_a1.php' => array(),
+      'fta_www/zz_revs_l1.php' => array(),
+      'fta_www/zz_taches_a1.php' => array(),
+      'fta_www/zz_taches_l1.php' => array(),
+      
       'fta_www/phpliteadmin.config.php' => array('chp_type_source' => 'bibliotheque'),
       'fta_www/phpliteadmin.php' => array('chp_type_source' => 'bibliotheque'),      
       
       'fta_www/js/compile1.js' => array(),
       'fta_www/js/convertit-html-en-rev1.js' => array(),
-      'fta_www/js/convertit-html-en-rev1.js' => array(),
+      'fta_www/js/convertit-js-en-rev1.js' => array(),
       'fta_www/js/convertion_sql_en_rev.js' => array(),
       'fta_www/js/convertit-php-en-rev0.js' => array(),
       'fta_www/js/core6.js' => array(),
@@ -76,10 +94,12 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/js/pour_zz_source1.js' => array(),
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
-      'fta_www/js/module_interface1.js' => array(),
-      'fta_www/js/module_html.js' => array(),
-      /*https://github.com/jquery/esprima*/
-      'fta_www/js/jslib/esprima.js' => array('chp_type_source' => 'bibliotheque'),
+      'fta_www/js/module_interface1.js' => array('chp_type_source' => 'module_js'),
+      'fta_www/js/module_html.js' => array('chp_type_source' => 'module_js'),
+      'fta_www/js/module_travail_en_arriere_plan0.js' => array(),
+      'fta_www/js/index_source_script-v0.js' => array(),
+
+
       /*https://github.com/codeschool/sqlite-parser*/
       'fta_www/js/jslib/sqlite_parser_from_demo.js' => array('chp_type_source' => 'bibliotheque'),
       
@@ -877,7 +897,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( basename(dirname(dirname(__FILE__))) , true ) . '</pre>' ; exit(0);
   
   /*debutspécifiquefta*/
-  if(APP_KEY==='fta' && basename(dirname(dirname(__FILE__)))==='fta' ){
+  if(APP_KEY==='fta' && basename(dirname(__FILE__,2))==='fta' && $__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta' ){
     $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
     $o1.='   <button name="__copier_les_fichiers_de_base_dans_ftb" class="">copier les fichiers de base dans ftb</button>'.CRLF;
     $o1.='</form>'.CRLF;

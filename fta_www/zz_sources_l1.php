@@ -245,7 +245,7 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.=' <a class="yyinfo yytbnormal" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
     $lsttbl.=' <a class="yydanger yytbnormal" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✕</a>';
-    if( $v0['T0.chp_type_source']==='normal' && ( substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' || substr($v0['T0.chp_nom_source'],-4)==='.sql' ) ){
+    if( ( $v0['T0.chp_type_source']==='normal' || $v0['T0.chp_type_source']==='module_js' ) && ( substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' || substr($v0['T0.chp_nom_source'],-4)==='.sql' ) ){
      $lsttbl.=' <a class="yyavertissement yytbnormal" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
     }else{
      $lsttbl.='<a  class="yytbnormal yyunset"  title="convertir un source">😊</a>';
@@ -279,7 +279,11 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lstt
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array( 
- 'js_a_inclure' => array( 'js/pour_zz_source1.js', 'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js',  'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 'js/jslib/esprima.js'  , 'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js' ), 
+ 'js_a_inclure' => array( 
+  'js/pour_zz_source1.js', 
+  'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js',  'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 
+
+  'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js' ), 
  'module_a_inclure' => array('js/module_html.js'),
  'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.=html_footer1($par);

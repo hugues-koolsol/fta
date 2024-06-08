@@ -393,7 +393,7 @@ function php_traite_Expr_FuncCall(element,niveau){
   var source=lesArgumentsCourts.substr(1,lesArgumentsCourts.length-2);
   var source=source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
   
-  var obj = TransformHtmlEnRev(source,0);
+  var obj = __module_html1.TransformHtmlEnRev(source,0);
   if(obj.status == true){
    t+='html('+obj.value+')';
   }else{
@@ -2031,7 +2031,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      var obj=isHTML(stmts[i].value);
 //     console.log('obj=',obj , stmts[i].value );
      if(obj.status===true){
-      var obj1=TransformHtmlEnRev(stmts[i].value);
+      var obj1=__module_html1.TransformHtmlEnRev(stmts[i].value,0);
       if(obj1.status===true){
         StmtsHtmlPrecedentEstEcho=false;
         t+='\n'+esp0+'html('+obj1.value+')';
@@ -2069,7 +2069,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
        
        */
        
-       var obj1=mapDOM(stmts[i].value);
+       var obj1=__module_html1.mapDOM(stmts[i].value);
        if(obj1 && obj1.type==='HTML'){
         if( obj1.content && obj1.content.length>=0){
          for(var j=0;j<obj1.content.length;j++){
@@ -2089,11 +2089,11 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
               }
               
               
-              if(obj1.content[j].content[k].type==='SCRIPT'){
+              if(obj1.content[j].content[k].type.toLowerCase()==='script'){
 //                console.log('source=',obj1.content[j].content[k].content[0]);
                 if(obj1.content[j].content[k].content){
 
-                 var objScr=transformJsEnRev(obj1.content[j].content[k].content[0]);
+                 var objScr=convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
                  if(objScr.status===true){
                   if(objScr.value===''){
                    t+='\n'+esp0+'html(script('+lesProprietes+'))';
@@ -2114,7 +2114,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                 }
               }else{
                
-               var obj=traiteAstDeHtml(obj1.content[j].content[k],0,true,'');
+               var obj=__module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'');
                if(obj.status===true){
                 //t=obj.value;
                 console.log(obj.value)

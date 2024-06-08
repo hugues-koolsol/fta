@@ -47,7 +47,10 @@ $js_a_executer_apres_chargement=array(
     )
 );
 $par=array(
-    'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js','js/jslib/esprima.js','js/convertit-php-en-rev0.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js','js/php.js'),
+    'js_a_inclure'=>array('js/html.js','js/compile1.js','js/javascript.js',
+
+     'js/convertit-php-en-rev0.js','js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js','js/html.js','js/php.js'
+    ),
     'module_a_inclure' => array('js/module_interface1.js','js/module_html.js'),
     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );

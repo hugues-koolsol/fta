@@ -127,7 +127,7 @@ function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
    
    
    var chaineJsEquivalente='var a='+jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
-   var obj=transformSourceJavascriptEnRev(chaineJsEquivalente);
+   var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
    if(obj.status===true){
     t+=''+obj.value+'';
    }else{
@@ -137,7 +137,7 @@ function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
    
   }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
 
-   var obj=transformSourceJavascriptEnRev(jsonDeHtml.content[0]);
+   var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[0]);
    if(obj.status===true){
     t+=''+obj.value+'';
    }else{
@@ -210,7 +210,7 @@ function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
 //    debugger
     t+=contenu;
   }else if(typeParent==='script'){
-   var obj=transformSourceJavascriptEnRev(jsonDeHtml);
+   var obj=convertit_source_javascript_en_rev(jsonDeHtml);
    if(obj.status===true){
     t+=''+obj.value+'';
    }else{

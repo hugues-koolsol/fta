@@ -871,7 +871,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format rev</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="15" >'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -895,7 +895,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format sql</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="15" >'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -907,7 +907,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format php</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="15" >'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
