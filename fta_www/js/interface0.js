@@ -8,9 +8,10 @@ var global_editeur_debut_texte_tab=[];
 var global_editeur_scrolltop=0;
 var global_editeur_nomDeLaTextArea='';
 var global_editeur_timeout=null;
+
 var global_modale1=null;
 var global_modale1_iframe=null;
-
+var global_modale1_contenu=null;
 
 var global_indice_erreur_originale_traitee=-1;
 var global_programme_en_arriere_plan=null;
@@ -1160,13 +1161,16 @@ function executerCesActionsPourLaPageLocale(par){
 ===================================================================================
 */
 function afficherModale1(parametres){
-// console.log('parametres='+parametres)
+ console.log('parametres='+parametres)
  var jsn1=JSON.parse(parametres);
- var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'] , '__nom_champ_dans_parent' :jsn1['__nom_champ_dans_parent'] }
-// console.log('jsn1=' , jsn1 );
 
- global_modale1_iframe.src=jsn1['__url']+'?__parametres_choix='+encodeURIComponent(JSON.stringify(paramatresModale));
- global_modale1.showModal();
+ if(jsn1.__fonction==='recupérer_un_element_parent_en_bdd'){
+  var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'] , '__nom_champ_dans_parent' :jsn1['__nom_champ_dans_parent'] }
+ // console.log('jsn1=' , jsn1 );
+
+  global_modale1_iframe.src=jsn1['__url']+'?__parametres_choix='+encodeURIComponent(JSON.stringify(paramatresModale));
+  global_modale1.showModal();
+ }
 }
 /*
 ===================================================================================
@@ -1223,6 +1227,7 @@ window.addEventListener('load', function () {
 // console.log("interface js")
 // ajouteDeQuoiFaireDisparaitreLesBoutonsEtLesLiens();
  global_modale1=document.getElementById('modale1');
+ global_modale1_contenu=document.getElementById('__contenu_modale');
  global_modale1_iframe=document.getElementById('iframe_modale_1');
  global_modale1.addEventListener('click',function(e){
   var dim=global_modale1.getBoundingClientRect();

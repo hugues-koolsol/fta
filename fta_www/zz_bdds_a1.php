@@ -645,6 +645,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
 
   $__parametres_pour_la_modale=array(
+   '__fonction' => 'recupérer_un_element_parent_en_bdd' ,
    '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_basedd',
    '__champs_texte_a_rapatrier' => array(
@@ -765,6 +766,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
   $__parametres_pour_la_modale=array(
+   '__fonction' => 'recupérer_un_element_parent_en_bdd' ,
    '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_basedd',
    '__champs_texte_a_rapatrier' => array(

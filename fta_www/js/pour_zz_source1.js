@@ -187,34 +187,6 @@ function convertir_js_en_rev(chp_genere_source , chp_rev_source , type='script')
    rangeErreurSelectionne=false;
   }
    
-  return;   
-/*   
-   var startMicro=performance.now();
-   try{
-       
-       var ret = esprima.parseScript(a.value,{range:true,comment:true});
-       tabComment=ret.comments;
-       var objRev = TransformAstEnRev(ret.body,0);
-       var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
-       if(objRev.status == true){
-         dogid(chp_rev_source).value=objRev.value;
-       }else{
-         displayMessages('zone_global_messages',chp_genere_source);
-       }
-
-   }catch(e){
-       console.log('erreur esprima',e);
-       if(e.lineNumber){
-        astjs_logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne '+e.lineNumber,line:e.lineNumber});
-       }
-       ret=false;
-   }
-   
-   
-   
-   displayMessages('zone_global_messages',chp_genere_source);
-   rangeErreurSelectionne=false;
-*/   
 }
 
 
@@ -258,48 +230,6 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
         logerreur({status:false,message:'erreur 0201 traitement_apres_ajax_pour_conversion_fichier_js'});
   }
   return
-  
-  /*
-  ancienne version avec esprima
-
-  try{
-       
-  debugger
-       var ret = esprima.parseScript(par.contenu_du_fichier,{range:true,comment:true});
-       tabComment=ret.comments;
-       var objRev = TransformAstEnRev(ret.body,0);
-       if(objRev.status == true){
-        
-        var tableau1 = iterateCharacters2(objRev.value);
-        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
-        if(matriceFonction.status===true){
-            console.log(matriceFonction);
-            
-            var objJs=parseJavascript0(matriceFonction.value,1,0);
-            
-            if(objJs.status===true){           
-//              console.log(objJs.value);
-              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement , matriceFonction.value);
-             
-            }
-            
-            
-        }
-        
-       }else{
-       }
-
-   }catch(e){
-       console.log('erreur esprima',e);
-       if(e.lineNumber){
-        logerreur({status:false,message:'il y a une erreur dans le javascript d\'origine en ligne'});
-        displayMessages('zone_global_messages');        
-       }
-       ret=false;
-   }
-   
-*/ 
- 
  
 }
 

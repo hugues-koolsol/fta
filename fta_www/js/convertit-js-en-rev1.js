@@ -2667,29 +2667,6 @@ var tabComment=[];
 /*
 =====================================================================================================================
 */
-/*
-function transformJsEnRev(texteJs){ // remplacé par convertit_source_javascript_en_rev
- 
-    try{
-  debugger
-        var ret = esprima.parseScript(texteJs,{range:true,comment:true});
-        var obj = TransformAstEnRev(ret.body,0);
-        if(obj.status == true){
-         return {status:true,value:obj.value}
-        }else{
-         return {status:false,message:'erreur de conversion de js en rev dans convertit-js-en-rev 2227'}
-        }
-
-    }catch(e){
-        return {status:false,message:'erreur de conversion de js en rev dans convertit-js-en-rev 2232, probablement une erreur dans le javascript'}
-    }
- 
- 
-}
-*/
-/*
-=====================================================================================================================
-*/
 function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
  console.log('donnees_en_entree=',donnees_en_entree);
  var texte_source_ast=donnees_en_entree.value.value;

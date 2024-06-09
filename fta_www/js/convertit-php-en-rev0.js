@@ -977,6 +977,20 @@ function php_traite_Stmt_Expression(element,niveau,dansFor){
        }
       }
      }
+    }else if(rv.substr(i,1)=='\'' && rv.substr(0,1)==='\''){
+     if(i>=2 && rv.substr(i-1,1)=='\\'){
+      nouvelle_chaine='\\\''+nouvelle_chaine;
+      i--;
+     }else{
+       return( astphp_logerreur({'status':false,'message':'0983 il doit y avoir un backslash avant un apostrophe ',element:element}));
+     }
+    }else if(rv.substr(i,1)=='"' && rv.substr(0,1)==='"'){
+     if(i>=2 && rv.substr(i-1,1)=='\\'){
+      nouvelle_chaine='\\"'+nouvelle_chaine;
+      i--;
+     }else{
+       return( astphp_logerreur({'status':false,'message':'0994 il doit y avoir un backslash avant un guillemet ',element:element}));
+     }
     }else{
      nouvelle_chaine=rv.substr(i,1)+nouvelle_chaine;
     }
@@ -1470,7 +1484,14 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
  var gauche='';
  var objGauche=php_traite_Stmt_Expression(element.left,niveau,false);
  if(objGauche.status===true){
-  gauche=objGauche.value;
+  if(
+       ( element.left.nodeType==="Expr_BinaryOp_BooleanOr" && element.nodeType==="Expr_BinaryOp_BooleanAnd" )
+  ){
+   
+   gauche='('+objGauche.value+')';
+  }else{
+   gauche=objGauche.value;
+  }
  }else{
   gauche='#(php_traite_Expr_BinaryOp_General ERREUR 0858)';
  }
@@ -1478,7 +1499,14 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
  var droite='';
  var objdroite=php_traite_Stmt_Expression(element.right,niveau,false);
  if(objdroite.status===true){
-  droite=objdroite.value;
+
+  if(
+       ( element.right.nodeType==="Expr_BinaryOp_BooleanOr" && element.nodeType==="Expr_BinaryOp_BooleanAnd" )
+  ){
+   droite='('+objdroite.value+')';
+  }else{
+   droite=objdroite.value;
+  }
  }else{
   droite='#(php_traite_Expr_BinaryOp_General ERREUR 0867)';
  }
@@ -1677,9 +1705,8 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
  }
 
  if(unElseIfOuUnElse){
-  
   t+='\n'+esp0+esp1+'sinonsi('
-  t+='\n'+esp0+esp1+esp1+'condition(('+conditionIf+'))';
+  t+='\n'+esp0+esp1+esp1+'condition('+conditionIf+')';
   t+='\n'+esp0+esp1+esp1+'alors(\n'
   t+=instructionsDansIf
   t+='\n'+esp0+esp1+esp1+')';
@@ -1688,7 +1715,7 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
  }else{
   t+='\n'+esp0+'choix('
   t+='\n'+esp0+esp1+'si('
-  t+='\n'+esp0+esp1+esp1+'condition(('+conditionIf+'))';
+  t+='\n'+esp0+esp1+esp1+'condition('+conditionIf+')';
   t+='\n'+esp0+esp1+esp1+'alors(\n'
   t+=instructionsDansIf
   t+='\n'+esp0+esp1+esp1+')';

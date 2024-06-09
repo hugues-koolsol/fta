@@ -127,6 +127,7 @@ a,button{
  border: 5px #607D8B solid;
  border-radius: 9px;
  box-shadow: #000 0px 0px 5px;    
+ background:linear-gradient(to bottom, #ECEFF1 0%, #DBDEE0 100%);
 }
 #iframe_modale_1{
  width:100%;

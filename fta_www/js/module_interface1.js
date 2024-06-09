@@ -22,6 +22,95 @@ class interface1{
     get largeur_des_ascenseurs(){
         return this.#largeur_des_ascenseurs;
     }
+    
+    /*
+      =============================================================================================================
+      
+      function definir_le_nombre_de_lignes_a_afficher_pour_une_liste
+    */
+    definir_le_nombre_de_lignes_a_afficher_pour_une_liste(nom_de_la_page,nombre_de_lignes){
+//        alert(nom_de_la_page+' ' +nombre_de_lignes);
+     
+        var r = new XMLHttpRequest();
+        r.open("POST",'za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',true);
+        r.timeout=6000;
+        r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+        r.onreadystatechange = function () {
+         if(r.readyState != 4 || r.status != 200){
+             if(r.status==404){
+              console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
+             }else if(r.status==500){
+                 /*
+                   normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+                   au niveau du php za_ajax mais sait-on jamais
+                 */
+                 if(global_messages['e500logged']==false){
+                     try{
+                      console.log('r=',r);
+                     }catch(e){
+                     }
+                 }
+             }
+             return;
+         }
+         try{
+             var jsonRet=JSON.parse(r.responseText);
+             if(jsonRet.status=='OK'){
+                 return;
+             }else{
+                 console.log('loupé');
+                 return;
+             }
+         }catch(e){
+             console.log('r=',r);
+             return;
+         }
+        };
+        r.onerror=function(e){
+            console.error('e=',e); /* whatever(); */
+            return;
+        }
+        
+        r.ontimeout=function(e){
+            console.error('e=',e);
+            return;
+        }
+        var ajax_param={
+            call:{
+             'lib'                       : 'php'   ,
+             'file'                      : 'session'  ,
+             'funct'                     : 'definir_le_nombre_de_lignes_a_afficher_pour_une_liste' ,
+            },
+            nom_de_la_page : nom_de_la_page,
+            nombre_de_lignes : nombre_de_lignes,
+        }
+        try{
+            r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+        }catch(e){
+            console.error('e=',e); /* whatever(); */
+            return {status:false};  
+        }
+     
+        return({'status':true});    
+     
+    }
+    /*
+      =============================================================================================================
+      
+      function fixer_les_parametres_pour_une_liste
+    */
+    fixer_les_parametres_pour_une_liste(nom_de_la_page){
+      global_modale1_iframe.style.visibility='none';
+      var t=''
+      t+='<h1>fixer les paramètres</h1>';
+      for(var i=10;i<=50;i+=10){
+       t+='<a href="javascript:'+this.#nom_de_la_variable+'.definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&quot;'+nom_de_la_page+'&quot;,'+i+')">afficher '+i+' lignes</a>';
+      }
+      global_modale1_contenu.innerHTML=t;
+      global_modale1.showModal();
+     
+     
+    }
     /*
       =============================================================================================================
     */

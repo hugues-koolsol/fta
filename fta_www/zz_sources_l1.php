@@ -29,7 +29,7 @@ function obtenir_entete_de_la_page(){
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
 $o1='';
-$__nbMax=20;
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__nbEnregs=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
@@ -245,7 +245,17 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.=' <a class="yyinfo yytbnormal" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
     $lsttbl.=' <a class="yydanger yytbnormal" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✕</a>';
-    if( ( $v0['T0.chp_type_source']==='normal' || $v0['T0.chp_type_source']==='module_js' ) && ( substr($v0['T0.chp_nom_source'],-4)==='.php' || substr($v0['T0.chp_nom_source'],-3)==='.js' || substr($v0['T0.chp_nom_source'],-5)==='.html' || substr($v0['T0.chp_nom_source'],-4)==='.htm' || substr($v0['T0.chp_nom_source'],-4)==='.sql' ) ){
+    
+    if( 
+         ( $v0['T0.chp_type_source']==='normal' || $v0['T0.chp_type_source']==='module_js' ) 
+      && ( 
+              substr($v0['T0.chp_nom_source'],-4)==='.php' 
+           || substr($v0['T0.chp_nom_source'],-3)==='.js' 
+           || substr($v0['T0.chp_nom_source'],-5)==='.html' 
+           || substr($v0['T0.chp_nom_source'],-4)==='.htm' 
+           || substr($v0['T0.chp_nom_source'],-4)==='.sql' 
+         ) 
+    ){
      $lsttbl.=' <a class="yyavertissement yytbnormal" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
     }else{
      $lsttbl.='<a  class="yytbnormal yyunset"  title="convertir un source">😊</a>';

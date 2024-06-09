@@ -319,7 +319,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             tabchoix.push(Array(j,tab[j][1],i));
                         }else if(tab[j][1] == 'faire'){
                             tabchoix.push(Array(j,tab[j][1],i));
-                        }else if(tab[j][1] == '#'){
+                        }else if(tab[j][1] == '#' && tab[j][2]==='f' ){
                             tabchoix.push(Array(j,tab[j][1],i));
                         }else{
                             return(logerreur({status:false,value:t,id:i,tab:tab,message:'la syntaxe de boucleSurObjet est boucleSurObjet(pourChaque(dans(a , b)),faire())'}));
@@ -435,7 +435,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             tabchoix.push(Array(j,tab[j][1],i));
                         }else if(tab[j][1] == 'faire'){
                             tabchoix.push(Array(j,tab[j][1],i));
-                        }else if(tab[j][1] == '#'){
+                        }else if(tab[j][1] == '#' && tab[j][2] == 'f' ){
                             tabchoix.push(Array(j,tab[j][1],i));
                         }else{
                             return(logerreur({status:false,value:t,id:id,tab:tab,message:'la syntaxe de boucle est boucle(condition(),initialisation(),increment(),faire())'}));
@@ -496,7 +496,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             tabchoix.push(Array(j,tab[j][1],i));
                         }else if(tab[j][1] == 'faire'){
                             tabchoix.push(Array(j,tab[j][1],i));
-                        }else if(tab[j][1] == '#'){
+                        }else if(tab[j][1] == '#' && tab[j][2] == 'f' ){
                             tabchoix.push(Array(j,tab[j][1],i));
                         }else{
                             return(logerreur({status:false,value:t,id:id,tab:tab,message:'la syntaxe de boucle est boucle(condition(),initialisation(),increment(),faire())'}));
@@ -578,13 +578,15 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
                     if(tab[j][3] == (tab[i][3]+1)){
                         if((tab[j][1] == 'faire') && (tab[j][2] == 'f')){
-                            niveau=niveau+1;
-                            obj=js_tabTojavascript1(tab,(j+1),dansFonction,false,niveau);
-                            niveau=niveau-1;
-                            if(obj.status == true){
-                                contenu+=obj.value;
-                            }else{
-                                return(logerreur({status:false,value:t,id:i,tab:tab,message:'problème sur le contenu du "essayer" '}));
+                            if(tab[j][8]>0){
+                              niveau=niveau+1;
+                              obj=js_tabTojavascript1(tab,(j+1),dansFonction,false,niveau);
+                              niveau=niveau-1;
+                              if(obj.status == true){
+                                  contenu+=obj.value;
+                              }else{
+                                  return(logerreur({status:false,value:t,id:i,tab:tab,message:'problème sur le contenu du "essayer" '}));
+                              }
                             }
                         }else if((tab[j][1] == 'sierreur') && (tab[j][2] == 'f')){
                             if(tab[j][8] == 2){
@@ -668,7 +670,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                     break;
                                 }
                             }
-                        }else if(tab[j][1] == '#'){
+                        }else if(tab[j][1] == '#' && tab[j][2] == 'f' ){
                             tabchoix.push(Array(j,tab[j][1],0,tab[j]));
                         }else{
                             return(logerreur({status:false,value:t,id:id,tab:tab,message:'la syntaxe de choix est choix(si(condition(),alors()),sinonsi(condition(),alors()),sinon(alors()))'}));
@@ -679,7 +681,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
                     if((tab[i][0] == tab[tab[j][7]][7]) || (tab[i][0] == tab[j][7])){
                         if(((tab[j][1] == 'si') || (tab[j][1] == 'condition') || (tab[j][1] == 'alors') || (tab[j][1] == 'sinonsi') || (tab[j][1] == 'sinon') || (tab[j][1] == '#')) && (tab[j][2] == 'f')){
-                            if(tab[j][1] == '#'){
+                            if(tab[j][1] == '#' && tab[j][2] == 'f' ){
                             }else{
                                 tabTemp.push(tab[j]);
                             }
@@ -730,7 +732,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             if(tab[k][1] == 'condition'){
                                 debutCondition=k;
                                 break;
-                            }else if((tab[k][1] == '#') && (tab[k][3] == (tab[i][3]+2))){
+                            }else if((tab[k][1] == '#' && tab[k][2] == 'f' ) && (tab[k][3] == (tab[i][3]+2))){
                                 tabComment.push(tab[k][13]);
                             }
                         }
@@ -785,7 +787,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             if(tab[k][1] == 'condition'){
                                 debutCondition=k;
                                 break;
-                            }else if(tab[k][1] == '#'){
+                            }else if(tab[k][1] == '#' && tab[k][2] == 'f' ){
                                 tabComment.push(tab[k][13]);
                             }
                         }
@@ -868,7 +870,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 }
 
             }else if(((tab[i][1] == 'affecte') || (tab[i][1] == 'dans') || (tab[i][1] == 'affectop')) && (tab[i][2] == 'f')){
-             
+
                 var tabAffecte={};
                 var signe='=';
                 var numeroPar=0;
@@ -2077,7 +2079,7 @@ function TraiteOperations1(tab,id,niveau){
             break;
         }
         if(tab[i][7] == parentId){
-            if(tab[i][1] == '#'){
+            if(tab[i][1] === '#' && tab[i][2] == 'f'){
             }else if((tab[i][1] == '') && (tab[i][2] == 'f')){
                 var objOperation = TraiteOperations1(tab,(i+1));
                 if(objOperation.status == true){

@@ -507,7 +507,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
        t+=espacesn(true,niveau);
        t+='while('+obj.value+'){';
       }else{
-       return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
+       return php_logerr({status:false,value:t,id:i,tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
       }
       
       
@@ -630,6 +630,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
        break;
       }
      }
+     
      obj=php_condition0(tab,debutCondition,niveau);
      if(obj.status===true){
       t+=obj.value;
@@ -1473,7 +1474,20 @@ function php_traiteElement(tab , ind , niveau,options={}){
         t='('+objCondition.value+'?'+objSiVrai.value+':'+objSiFaux.value+')';
 
  }else{
-  return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php.js 1237 cas non prévu dans php_traiteElement "'+tab[ind][1]+'"'});
+  /*
+   dernier espoir !!!
+  */
+
+  var obj1=php_tabToPhp1(tab,ind,true,true,niveau); // tab,id,dansFonction,dansInitialisation,niveau)php_traiteElement(tab,ind+1,niveau,{});
+  if(obj1.status===true){
+   t+=obj1.value;
+  }else{
+    return php_logerr({status:false,value:t,id:id,tab:tab,message:'php_traiteElement dans castint 1436'});
+  }
+  
+  
+  
+  
  } 
  
  
@@ -2104,7 +2118,7 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){ // id = position
 
 }
 //=====================================================================================================================
-function php_condition1(tab,id,niveau){
+function php_condition1_old(tab,id,niveau){
 // console.log('php_condition1' , id , tab);
  // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
  var i=0;
@@ -2155,16 +2169,17 @@ function php_condition1(tab,id,niveau){
     }
     t+=obj.value;
     btrouve=false;
+    var cumul='';
     for(j=i+2;j<max;j++){
      if(tab[j][3]==tab[i+1][3]){
       obj=php_condition1(tab,j,niveau);
       if(obj.status==false){
        return php_logerr({status:false,value:t,id:id,tab:tab,message:'erreur dans une sous condition'});
       }
-      t+=obj.value;
-      
+      cumul+=obj.value;
      }
     }
+    t+=cumul;
     if( tab[i][1]=='' || tab[i][1]=='non' ){
      t+=')';
     }
@@ -2326,6 +2341,172 @@ function php_condition1(tab,id,niveau){
 // console.log('\n===================\nt=',t,'\n===================\n'); 
  return {value:t,status:true};
 }
+
+
+//=====================================================================================================================
+function php_condition1(tab,id,niveau){
+ var t='';
+ var i=0;
+ var j=0;
+ var premiereCondition=true;
+ var newTab=[];
+ var obj={};
+ var l01=tab.length;
+ var cumul='';
+ var id_parent=tab[id][7];
+ 
+ 
+ for(i=id;i<l01;i++){
+     if(tab[i][7]===id_parent){
+         
+         if(tab[i][2]==='f'){
+          
+             if(tab[i][1]==='condition'){
+                 var obj=php_condition1(tab,i+1,niveau);
+                 if(obj.status===true){
+                     t+=obj.value;
+                 return({status:true,value:t})
+                 }else{
+                     return php_logerr({status:false,value:t,id:i,tab:tab,message:'2351 erreur dans une condition'});
+                 }
+             }else if(tab[i][1]==='non'){
+              
+                 t+='!';
+                 var obj=php_condition1(tab,i+1,niveau);
+                 if(obj.status===true){
+                     t+=obj.value;
+                 }else{
+                     return php_logerr({status:false,value:t,id:i,tab:tab,message:'2351 erreur dans une condition'});
+                 }
+              
+             }else if(tab[i][1]==''){
+              
+                 var obj=php_condition1(tab,i+1,niveau);
+                 if(obj.status===true){
+                     t+='('+obj.value+')';
+                 }else{
+                     return php_logerr({status:false,value:t,id:i,tab:tab,message:'2359 erreur dans une condition'});
+                 }
+
+             }else if(tab[i][1]==='et' || tab[i][1]==='ou'){
+              
+                 cumul='';
+                 
+                 for(j=i+1;j<l01 && tab[j][3]>tab[i][3] ; j++ ){
+                  
+                     if(tab[j][7] === i){
+                         if(tab[j][2]==='f'){
+                          
+                             var obj=php_condition1(tab,j,niveau);
+                             if(obj.status===true){
+                               if(tab[i][1]==='et'){
+                                   cumul+=' && ';
+                               }else{
+                                   cumul+=' || ';
+                               }
+                               cumul+=obj.value;
+                              
+                             }else{
+                                return php_logerr({status:false,value:t,id:i,tab:tab,message:'2372 erreur dans une condition'});
+                             }
+                          
+                          
+                         }else{
+                            if(tab[i][1]==='et'){
+                               cumul+=' && ';
+                            }else{
+                               cumul+=' || ';
+                            }
+                            cumul+=ma_cst_pour_php(tab[j]);
+                         }
+                     }
+                        
+                  
+                 }
+
+                 if(cumul!==''){
+                     t+=cumul;
+                 }else{
+                     return php_logerr({status:false,value:t,id:i,tab:tab,message:'2372 erreur dans une condition'});
+                 }
+              
+              
+             }else if(tab[i][1]=='egal' || tab[i][1]=='egalstricte' || tab[i][1]=='diff' || tab[i][1]=='diffstricte' || tab[i][1]=='sup' || tab[i][1]=='inf'|| tab[i][1]=='supeg' || tab[i][1]=='infeg' ){
+              
+                 var nombre_d_operandes=0;
+                 var operateur='';
+                 cumul='';
+                 
+                 
+                 if(tab[i][1]=='egal'){                operateur=' == ';
+                 }else if(tab[i][1]=='egalstricte'){   operateur=' === ';
+                 }else if(tab[i][1]=='diffstricte'){   operateur=' !== ';
+                 }else if(tab[i][1]=='diff'){          operateur=' != ';
+                 }else if(tab[i][1]=='sup'){           operateur=' > ';
+                 }else if(tab[i][1]=='inf'){           operateur=' < ';
+                 }else if(tab[i][1]=='supeg'){         operateur=' >= ';
+                 }else if(tab[i][1]=='infeg'){         operateur=' <= ';
+                 }else{
+                     return php_logerr({status:false,value:t,id:i,tab:tab,message:'2408 erreur dans une condition opérateur inconnu "'+tab[i][1]+'"'});
+                 }
+
+                 for(j=i+1;j<l01 && tab[j][3]>tab[i][3] ; j++ ){
+                  
+                     if(tab[j][7] === i){
+                        if(tab[j][2]==='f'){
+                           if(tab[j][1]==='#'){
+                           }else{
+                               var obj=php_traiteElement(tab,j,niveau);
+                               if(obj.status===true){
+                                 nombre_d_operandes++
+                                 cumul+=operateur;
+                                 cumul+=obj.value;
+                                
+                               }else{
+                                  return php_logerr({status:false,value:t,id:i,tab:tab,message:'2372 erreur dans une condition'});
+                               }
+                           }
+                      
+                      
+                        }else{
+                            nombre_d_operandes++;
+                            cumul+=operateur;
+                            cumul+=ma_cst_pour_php(tab[j]);
+                        }
+                     }
+                 }
+                 if(nombre_d_operandes===2){
+                   if(cumul!==''){
+                    t+=cumul.substr(operateur.length);
+                   }else{
+                      return php_logerr({status:false,value:t,id:i,tab:tab,message:'2372 erreur dans une condition'});
+                   }
+                  
+                 }else{
+                     return php_logerr({status:false,value:t,id:i,tab:tab,message:'2456 erreur dans une condition il doit y avoir 2 opérandes dans une comparaison'});
+                 }
+             }else{
+                 var obj1=php_traiteElement(tab , i , niveau,{});
+                 if(obj1.status===true){
+                   t+=obj1.value;
+                 }else{
+                   return php_logerr({status:false,value:t,id:id,tab:tab,message:'erreur 1858'});
+                 }
+             }
+
+
+
+         }else{
+             t+=ma_cst_pour_php(tab[i]);
+         }
+      
+     }
+ }
+ return {value:t,status:true};
+ 
+}
+ 
+ 
 //=====================================================================================================================
 function php_condition0(tab,id,niveau){
 // console.log('php_condition0');
@@ -2337,16 +2518,39 @@ function php_condition0(tab,id,niveau){
  var obj={};
  var l01=tab.length;
  
- for(i=id+1;i<l01 && tab[i][3]>tab[id][3];i++){
+ obj=php_condition1(tab,id,niveau);
+ 
+ if(obj.status==true){
   
+     t+=obj.value;
+     
+ }else{
+  
+     return php_logerr({status:false,value:t,id:id,tab:tab,message:'1835 erreur dans une condition racine'});
+     
+ }
+ 
+/* 
+ for(i=id+1;i<l01 && tab[i][3]>tab[id][3];i++){
+   if(tab[i][7]===id){
+    if(tab[i][2]==='f' ){
+      t+=obj.value;
+      break;
+    }else{
+     return php_logerr({status:false,value:t,tab:tab,id:id,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
+    }
+   }
+ }
+*/ 
+/*  
    if(tab[i][1]=='' || tab[i][1]=='non'){
     
     if(premiereCondition){
-     obj=php_condition1(tab,i,niveau);
-     if(obj.status==false){
-      return php_logerr({status:false,value:t,id:id,tab:tab,message:'1835 erreur dans une condition racine'});
+     if(tab[i][1]=='non'){
+      t+='!'+obj.value+'';
+     }else{
+      t+='('+obj.value+')';
      }
-     t+=obj.value;
      premiereCondition=false;
      var reprise=i+1;
      var max=i+1;
@@ -2356,7 +2560,6 @@ function php_condition0(tab,id,niveau){
      i=reprise;
      
     }else{
-     return php_logerr({status:false,value:t,tab:tab,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou() sauf la première qui est "()"'});
     }
     
    }else if(tab[i][1]=='et' || tab[i][1]=='ou' ){
@@ -2368,7 +2571,7 @@ function php_condition0(tab,id,niveau){
      if(obj.status==false){
       return php_logerr({status:false,value:t,id:id,tab:tab,message:'1857 erreur dans une condition racine'});
      }
-     t+=obj.value;
+     t+=''+obj.value+'';
      var reprise=i+1;
      var max=i+1;
      for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -2403,6 +2606,6 @@ function php_condition0(tab,id,niveau){
     return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans une condition il ne peut y avoir que des fonctions et() ou bien ou()'});
    }
  }
- 
+*/ 
  return {status:true,value:t};
 }

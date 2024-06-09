@@ -561,6 +561,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
   $__parametres_pour_la_modale=array(
+   '__fonction' => 'recupérer_un_element_parent_en_bdd' ,
    '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_source',
    '__champs_texte_a_rapatrier' => array(
@@ -669,6 +670,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.CRLF;
   
   $__parametres_pour_la_modale=array(
+   '__fonction' => 'recupérer_un_element_parent_en_bdd' ,
    '__url' => 'zz_dossiers_c1.php',
    '__nom_champ_dans_parent' => 'chx_dossier_id_source',
    '__champs_texte_a_rapatrier' => array(

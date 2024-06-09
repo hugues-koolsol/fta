@@ -16,6 +16,20 @@ session_start();
 
 function supprimerLesValeursDeSession(){
 
+    /*
+    Sauvegarde des paramètres de navigation de l'utilisateur , 
+    */
+    if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
+     
+       $sql0='
+        UPDATE tbl_utilisateurs 
+        SET chp_parametres_utilisateur = \''.sq0(json_encode($_SESSION[APP_KEY]['__parametres_utilisateurs'])).'\'
+        WHERE chi_id_utilisateur='.sq0($_SESSION[APP_KEY]['sess_id_utilisateur']).'
+       ';
+       $db=new SQLite3('../fta_inc/db/sqlite/system.db');           
+       $db->querySingle($sql0);
+     
+    }
     unset($_SESSION[APP_KEY]);
 
 }
@@ -45,7 +59,7 @@ if((isset($_POST) && count($_POST) > 0)){
 
         $db=new SQLite3('../fta_inc/db/sqlite/system.db');
         $req='
-         SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur  
+         SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur  , chp_parametres_utilisateur
          FROM tbl_utilisateurs 
          WHERE chp_nom_de_connexion_utilisateur=\''.sq0($_POST['nom_de_connexion']).'\'
          LIMIT 1 OFFSET 0
@@ -73,7 +87,7 @@ if((isset($_POST) && count($_POST) > 0)){
         }
 
 
-        if((count($data) === 2 && password_verify($_POST['mot_de_passe'],$data['chp_mot_de_passe_utilisateur']))){
+        if((count($data) === 3 && password_verify($_POST['mot_de_passe'],$data['chp_mot_de_passe_utilisateur']))){
 
             /*  =============================*/
             /*  ... soit nom_de_connexion et mot_de_passe sont bons*/
@@ -84,6 +98,7 @@ if((isset($_POST) && count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*(10)+20));
             $_SESSION[APP_KEY]['__filtres']=array();
             $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
+            $_SESSION[APP_KEY]['__parametres_utilisateurs']=$data['chp_parametres_utilisateur']!==''?json_decode($data['chp_parametres_utilisateur'],true):array();
             
             ajouterMessage('info',__LINE__.' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
@@ -98,6 +113,7 @@ if((isset($_POST) && count($_POST) > 0)){
 
 
     }else if((isset($_POST['logout']))){
+
 
         supprimerLesValeursDeSession();
 

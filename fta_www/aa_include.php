@@ -727,14 +727,12 @@ function html_footer1($parametres=array()){
 
     $o1='';
     $o1.='</main>'.CRLF;
-    $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><iframe id="iframe_modale_1" src=""></iframe></dialog>'.CRLF;
+    $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><div id="__contenu_modale"><iframe id="iframe_modale_1" src=""></iframe></div></dialog>'.CRLF;
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
-    if(!(strpos(BNF,'_a')!==false)){
+    if(preg_match('/.*_l[0-9]+\\.php/',BNF)){
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;">A±</a>'.CRLF;
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_bouton\')" style="opacity:0.5;">b±</a>'.CRLF;
-    }
-    if((strpos(BNF,'_l')!==false)){
         $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }
     $o1.='</div>'.CRLF;
