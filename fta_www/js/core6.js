@@ -395,7 +395,8 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
               On supprime les espaces inutiles en début de ligne.
             */
             t='';
-            min=99999;
+            /* minimim d'espaces au début de chaque ligne */
+            min=120;
             for(i=1;i < l01;i++){
                 ligne=tab[i];
                 for(j=0;j < ligne.length;j++){
@@ -406,7 +407,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                     temps=ligne.substr(j,1);
                     if(temps != ' '){
                         if(j < min){
-                            /*on réajuste le minimum*/
+                            /*on réajuste le minimum d'espaces au début de chaque ligne */
                             min=j;
                         }
                         /* et on passe à la ligne suivante*/

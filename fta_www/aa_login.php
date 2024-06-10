@@ -16,20 +16,6 @@ session_start();
 
 function supprimerLesValeursDeSession(){
 
-    /*
-    Sauvegarde des paramètres de navigation de l'utilisateur , 
-    */
-    if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
-     
-       $sql0='
-        UPDATE tbl_utilisateurs 
-        SET chp_parametres_utilisateur = \''.sq0(json_encode($_SESSION[APP_KEY]['__parametres_utilisateurs'])).'\'
-        WHERE chi_id_utilisateur='.sq0($_SESSION[APP_KEY]['sess_id_utilisateur']).'
-       ';
-       $db=new SQLite3('../fta_inc/db/sqlite/system.db');           
-       $db->querySingle($sql0);
-     
-    }
     unset($_SESSION[APP_KEY]);
 
 }

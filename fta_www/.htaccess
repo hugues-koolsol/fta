@@ -151,8 +151,9 @@ AddType text/vtt                            vtt
 
 # -----------------------------------------   source dareboost debut 
 # 2018-03-14 ajoute a la fin base-uri 
+# 2024-06-10 ajouté data: pour img-src car le svg en ligne ne s'affichait pas
 <IfModule mod_headers.c>
- Header set Content-Security-Policy "default-src 'self' ; base-uri 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; script-src 'self' 'unsafe-inline' ; frame-src 'self' ; img-src 'self' 'unsafe-inline' ;"
+ Header set Content-Security-Policy "default-src 'self' ; base-uri 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; script-src 'self' 'unsafe-inline' ; frame-src 'self' ; img-src 'self' data: 'unsafe-inline';"
 </IfModule>  
 
 # si on active la ligne suivante, la publicite tizen ne fonctionne plus

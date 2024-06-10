@@ -31,7 +31,7 @@ $o1.='<h1>Liste des revs de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_
   =====================================================================================================================
 */
 
-$__nbMax=40;
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 
 
@@ -257,23 +257,23 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 }
 
 
-$o1.='<div class="yylistForm1">';
 //$o1.='<form class="yylistForm1">';
 //$o1.=' <a class="yyinfo" href="zz_revs_action1.php?__action=__creation">Créer un nouveau rev</a>'.CRLF;
 
-$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
 
 if(($__nbEnregs > 0)){
 
+    $o1.='<div class="yylistForm1">';
+    $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
     $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
+    $o1.='</div>';
 
 }else{
 
-    $o1.='pas d\'enregistrements'.CRLF;
+    $o1.='<div class="yylistForm1 yyavertissement">Aucun enregistrement trouvé</div>'.CRLF;
 }
 
 //$o1.='</form>';
-$o1.='</div>';
 
  
 
@@ -297,8 +297,9 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='<tr>';
  $__lsttbl.='<td data-label="" style="text-align:left!important;">';
  $__lsttbl.='<div class="yyflex1">';
+/*
  $__lsttbl.=' <a class="yyinfo yytbnormal" href="zz_revs_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_rev'].'" title="modifier">✎</a>';//✎ #9998
- 
+*/ 
  $__lsttbl.='</div>';
  
  $__lsttbl.='</td>';
@@ -369,7 +370,7 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__ls
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['travaux_en_arriere_plan'] , true ) . '</pre>' ; exit(0);
 
 //$o1.='<pre>' . var_export( $tableau_pour_webworker001 , true).'</pre>';
-if(count($tableau_pour_webworker001)>=1 && $__nbEnregs<= $__nbMax ){
+if(count($tableau_pour_webworker001)>=1 && (($__nbEnregs <= $__nbMax || $chp_nom_source !== ''))){
  $liste_des_id_des_sources=array();
  foreach($tableau_pour_webworker001 as $k1=>$v1){
   $chaine_a_remplacer=$k1;

@@ -54,6 +54,7 @@ class interface1{
              return;
          }
          try{
+
              var jsonRet=JSON.parse(r.responseText);
              if(jsonRet.status=='OK'){
                  return;

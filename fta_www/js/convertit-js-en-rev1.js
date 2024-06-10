@@ -1109,11 +1109,12 @@ function traiteCallExpression1(element,niveau,parent,opt){
         }
     }
     var laPropriete='';
+    var prefixe='';
     if(element.callee){
         if(element.callee.property){
             
             if(element.callee.property.type === 'Identifier' || element.callee.property.type === 'PrivateIdentifier'){
-                var prefixe='';
+                prefixe='';
                 if(element.callee.property.type === 'PrivateIdentifier'){
                   prefixe='#';
                 }
@@ -1201,11 +1202,16 @@ function traiteCallExpression1(element,niveau,parent,opt){
                 }else{
                     return(astjs_logerreur({status:false,message:'erreur dans traiteCallExpression1 485 ',element:element}));
                 }
+                prefixe='';
+                if(element.callee.property.type === 'PrivateIdentifier'){
+                  prefixe='#';
+                }
+                
                 if((element.callee.object.object) && (element.callee.object.property) && (element.callee.object.object.type === 'Identifier') && (element.callee.object.property.type === 'Identifier')){
                     if(contenu===''){
-                        t='appelf(element('+obj1.value+'),nomf('+element.callee.property.name+')'+lesArguments+')';
+                        t='appelf(element('+obj1.value+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+')';
                     }else{
-                        t='appelf(element('+obj1.value+'),nomf('+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
+                        t='appelf(element('+obj1.value+'),nomf('+prefixe+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
                     }
                 }else{
                     /*
@@ -1221,10 +1227,14 @@ function traiteCallExpression1(element,niveau,parent,opt){
             }else if(element.callee.object.type === 'Identifier'){
             }else if(element.callee.object.type === 'Literal'){
             }else if(element.callee.object.type === 'ThisExpression'){
+                prefixe='';
+                if(element.callee.property.type === 'PrivateIdentifier'){
+                  prefixe='#';
+                }
                 if(contenu===''){
-                    t='appelf(element(this),nomf('+element.callee.property.name+')'+lesArguments+')';
+                    t='appelf(element(this),nomf('+prefixe+element.callee.property.name+')'+lesArguments+')';
                 }else{
-                    t='appelf(element(this),nomf('+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
+                    t='appelf(element(this),nomf('+prefixe+element.callee.property.name+')'+lesArguments+',contenu('+contenu+'))';
                 }
             }else if(element.callee.object.type === 'ImportExpression'){
                 if(element.callee.object.source){

@@ -190,6 +190,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     */
                     return(logerreur({status:false,value:t,id:id,tab:tab,message:'on ne peut pas déclarer une fonction dans une fonction'}));
                 }else{
+
                     dansFonction=true;
                     positionDeclarationFonction=-1;
                     for(j=(i+1);(j < l01) && (tab[j][3] > tab[i][3]);j=j+1){
@@ -255,9 +256,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             }
                         }
                         if(nomFonction != ''){
+                            if('méthode' === tab[i][1] && !(tab[i-1][1]==='#' && tab[i-1][2]==='f')){
+                             /*
+                              j'impose l'écriture d'un commentaire minimal devant une méthode
+                             */
+                             t+=espcLigne;
+                             t+='/* function '+nomFonction+' */';
+                            }
                             t+=espcLigne;
                             if( 'méthode' === tab[i][1]){
-                                t+=typeFonction+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
+
+
+                                t+=typeFonction+modeFonction+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
                             }else{
                                 t+='function '+nomFonction+'('+((argumentsFonction == '')?'':argumentsFonction.substr(1))+'){';
                                 }
@@ -2028,7 +2038,12 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
             if(nomFonction==='Array'){
                 t+='[';
             }else{
-                t+='(';
+                if(nomFonction==='super'  && argumentsFonction===''){
+                    /* pas de parenthèses pour la fonction super */
+                    t+='';
+                }else{
+                    t+='(';
+                }
             }
         }
         t+=((argumentsFonction !== '')?argumentsFonction.substr(1):'');
@@ -2039,7 +2054,12 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
             if(nomFonction==='Array'){
                 t+=']';
             }else{
-                t+=')';
+                if(nomFonction==='super' && argumentsFonction===''){
+                    /* pas de parenthèses pour la fonction super */
+                    t+='';
+                }else{
+                    t+=')';
+                }
             }
         }
         if(nomFonction == 'function'){
@@ -2118,7 +2138,16 @@ function TraiteOperations1(tab,id,niveau){
                                  if(tab[id][1]==='moins' && tab[id][8] === 1){
                                   t+='-'+tab[i][1];
                                  }else{
-                                  t+=tab[i][1];
+                                  if(tab[i][2]==='c'){
+                                      if( tab[tab[i][7]][1]==='plus' || tab[tab[i][7]][1]==='moins'){
+                                        t+='('+tab[i][1];
+                                      }else{
+                                        t+=tab[i][1];
+                                      }
+                                  }else{
+                                    console.error('à vérifier')
+                                    debugger
+                                  }
                                  }
                                 }
                             }
@@ -2246,7 +2275,14 @@ function TraiteOperations1(tab,id,niveau){
                                     */
                                     t+='('+tab[i][1]+')';
                                 }else{
-                                    t+=tab[i][1];
+                                    /*
+                                     si c'est le dernier enfant 
+                                    */
+                                    if( (tab[tab[i][7]][1]==='plus' || tab[tab[i][7]][1]==='moins' ) && (tab[tab[i][7]][8] === tab[i][9] )){
+                                      t+=tab[i][1]+')';
+                                    }else{
+                                      t+=tab[i][1];
+                                    }
                                 }
                             }
                             if((tab[parentId][1] == 'mult') || (tab[parentId][1] == 'divi')  ){

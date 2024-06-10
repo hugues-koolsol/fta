@@ -70,6 +70,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 // echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();
  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']          =$_POST['chp_nom_basedd']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']  =$_POST['chp_commentaire_basedd'] ?? '';
+ $_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']  =$_POST['chp_rev_travail_basedd'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']          =$_POST['chp_rev_basedd']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']          =$_POST['chp_php_basedd']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']       =$_POST['chp_genere_basedd']      ?? '';
@@ -376,6 +377,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
        UPDATE `tbl_bases_de_donnees` SET 
           `chp_nom_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
         , `chp_commentaire_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
+        , `chp_rev_travail_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
         , `chp_rev_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
         , `chp_php_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
         , `chp_genere_basedd`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
@@ -462,7 +464,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     }
     
     $sql='
-     INSERT INTO `tbl_bases_de_donnees` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd ) VALUES
+     INSERT INTO `tbl_bases_de_donnees` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd , chp_rev_travail_basedd ) VALUES
        (
           \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
@@ -471,6 +473,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
+        
         
        )
     ' ;
@@ -724,6 +728,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']=$__id;
   $__valeurs['T0.chp_nom_basedd']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']         ??$__valeurs['T0.chp_nom_basedd'];
   $__valeurs['T0.chp_commentaire_basedd']  =$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] ??$__valeurs['T0.chp_commentaire_basedd'];
+  $__valeurs['T0.chp_rev_travail_basedd']  =$_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd'] ??$__valeurs['T0.chp_rev_travail_basedd'];
   $__valeurs['T0.chp_rev_basedd']          =$_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']         ??$__valeurs['T0.chp_rev_basedd'];
   $__valeurs['T0.chp_php_basedd']          =$_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']         ??$__valeurs['T0.chp_php_basedd'];
   $__valeurs['T0.chp_genere_basedd']       =$_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']      ??$__valeurs['T0.chp_genere_basedd'];
@@ -854,18 +859,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
    
 
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">outils sur rev</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a href="javascript:parentheses(&quot;chp_rev_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
-  $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
-  $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
-
-
 
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1">'.CRLF;
@@ -873,6 +866,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format rev</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <a href="javascript:parentheses(&quot;chp_rev_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
   $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
@@ -925,6 +922,22 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <textarea  name="chp_commentaire_basedd" id="chp_commentaire_basedd"  rows="5" >'.htmlentities($__valeurs['T0.chp_commentaire_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
+
+
+  $o1.=' <div class="yyfdiv1">'.CRLF;
+  $o1.='  <div class="yyflab1">'.CRLF;
+  $o1.='   <div style="word-break:break-word;">rev de travail</div>'.CRLF;
+  $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
+  $o1.='  </div>'.CRLF;
+  $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <a href="javascript:parentheses(&quot;chp_rev_travail_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_travail_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
+  $o1.='   <textarea  name="chp_rev_travail_basedd" id="chp_rev_travail_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_travail_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='  </div></div>'.CRLF;
+  $o1.=' </div>'.CRLF;
+
 
 
 

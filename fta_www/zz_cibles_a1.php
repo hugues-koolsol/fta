@@ -34,6 +34,8 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_inc/ajax/core/file.php' => array(),
       'fta_inc/ajax/js/ast.php' => array(),      
       'fta_inc/ajax/php/ast.php' => array(),
+      'fta_inc/ajax/php/session.php' => array(),
+      'fta_inc/ajax/php/travail_en_arriere_plan1.php' => array(),
       
       'fta_inc/db/acces_bdd_bases_de_donnees1.php' => array(),
       'fta_inc/db/acces_bdd_cibles1.php' => array(),

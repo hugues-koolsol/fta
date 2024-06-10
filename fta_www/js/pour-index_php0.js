@@ -225,7 +225,7 @@ function chargerLeDernierSourceRev(){
   var lines = fta_indexhtml_dernier_fichier_charge.split(/\r|\r\n|\n/);
   var count = lines.length;
   dogid('txtar1').setAttribute('rows',count+1);
-  
+//  sessionStorage.setItem("clé", "valeur_fenetre2");
   
  }
 }

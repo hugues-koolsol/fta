@@ -365,18 +365,32 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 //  $nom_fichier_disque=
   $db->querySingle('PRAGMA foreign_keys=ON');
-  $sql='DELETE FROM tbl_sources WHERE `chi_id_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'\' ' ;
+  $sql='DELETE FROM tbl_revs WHERE `chx_source_rev` = '.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).' ' ;
+//  echo __FILE__ . ' ' . __LINE__ . ' $sql = <pre>' .  $sql  . '</pre>' ; exit(0);
   if(false === $db->exec($sql)){
 
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
   }else{
-   
-     ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
-     recharger_la_page('zz_sources_l1.php?chp_nom_dossier='.rawurlencode($__valeurs['T1.chp_nom_dossier']));
 
+     $sql='DELETE FROM tbl_sources WHERE `chi_id_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'\' ' ;
+     if(false === $db->exec($sql)){
+
+         ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+
+     }else{
+      
+        ajouterMessage('info' ,  '384 l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
+        recharger_la_page('zz_sources_l1.php'); // ?chp_nom_dossier='.rawurlencode($__valeurs['T1.chp_nom_dossier'])
+
+     }
+   
   }
+  
+  
+  
 
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__creation'){
   

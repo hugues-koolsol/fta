@@ -1534,11 +1534,11 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
   
  }else if(element.nodeType==='Expr_BinaryOp_BooleanOr'){
   
-  t+=''+gauche+' , ou( '+droite+')';
+  t+='('+gauche+' , ou( '+droite+'))';
   
  }else if(element.nodeType==='Expr_BinaryOp_BooleanAnd'){
   
-  t+=''+gauche+' , et('+droite+')';
+  t+='('+gauche+' , et('+droite+'))';
 
  }else if(element.nodeType==='Expr_BinaryOp_Greater'){
   
@@ -1598,7 +1598,7 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
 //         console.log('nouveauTableau=',nouveauTableau);
          var obj = a2F1(nouveauTableau,0,true,1,false);
          if(obj.status === true){
-             console.log('apres simplification obj.value=',obj.value);
+//             console.log('apres simplification obj.value=',obj.value);
              t=obj.value;
          }
      }
@@ -1611,16 +1611,61 @@ function php_traite_Expr_BinaryOp_General(element , niveau ){
 
 //=====================================================================================================================
 function php_traiteCondition1(element,niveau){
- var t='';
- 
- var obj=php_traite_Stmt_Expression(element,niveau,false);
- if(obj.status===true){
-  t+=obj.value;
- }else{
-  t='#(condition ERREUR 0800)';
- }
- 
- return {'status':true,'value':t};
+    var t='';
+    
+    var obj=php_traite_Stmt_Expression(element,niveau,false);
+    if(obj.status===true){
+     
+      /* 
+        il y a souvent un niveau de parenthèses en trop ici 
+        On parcourt la matrice pour voir si 
+        - la première entrée est une fonction vide
+        - tous les autres niveaux sont >=1
+      */   
+      var matrice=functionToArray(obj.value,true,true,'');
+      if(matrice.status==true && matrice.value.length>=2){
+          if(matrice.value[1][1]==='' ){
+              var l01=matrice.value.length;
+              var tout_est_superieur=true;
+              for(var j=2;j<l01;j++){
+                  if(matrice.value[j][3]<1){
+                      tout_est_superieur=false;
+                      break;
+                  }
+              }
+              if(tout_est_superieur===true){
+                  var nouveauTableau=baisserNiveauEtSupprimer(matrice.value,1,0);
+                  var obj1 = a2F1(nouveauTableau,0,true,1,false);
+                  if(obj1.status === true){
+
+                      t+=obj1.value;
+
+                  }else{
+                      astphp_logerreur({'status':false,'message':'16164334  dans php_traiteCondition1',element:element});
+                  }
+               
+              }else{
+                  t+=obj.value;
+              }
+              
+          }else{
+                 t+=obj.value;
+          }
+       
+      }else{
+       
+          astphp_logerreur({'status':false,'message':'1656  dans php_traiteCondition1',element:element});
+       
+      }
+     
+     
+    }else{
+
+        astphp_logerreur({'status':false,'message':'1665  dans php_traiteCondition1',element:element});
+
+    }
+    
+    return {'status':true,'value':t};
  
 }
  
@@ -1679,8 +1724,11 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
  var conditionIf='';
  var instructionsDansElseOuElseifIf='';
  if(element.cond){
+
   var obj=php_traiteCondition1(element.cond,niveau);
   if(obj.status===true){
+   
+   
    conditionIf=obj.value;
   }else{
    conditionIf='#(TODO ERREUR dans php_traite_Stmt_If 0818)';

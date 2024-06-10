@@ -178,13 +178,13 @@ function traite_un_remplacement(id_tache , arg){
                         }
                         
                         if(objSource.status===true){
-                            console.log('pour html id_source='+ id_source + ' ' + le_source.nom_source + '=' + objSource.value);
+//                            console.log('pour html id_source='+ id_source + ' ' + le_source.nom_source + '=' + objSource.value);
                             
                             
                             // on reconstitue le source rev
                             var obj=arrayToFunct1(tab,true,false);
                             if(obj.status===true){
-                                console.log(obj.value);
+//                                console.log(obj.value);
                                 arg[id_source].tab=[];
                                 var params={
                                  'arg'        : arg              ,
