@@ -1,4 +1,31 @@
 <?php
+
+
+function recuperer_zone_travail_pour_les_bases(&$data){
+ 
+  $db = new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
+  $sql=' select chi_id_basedd , chp_rev_travail_basedd FROM tbl_bases_de_donnees WHERE 	chi_id_basedd IN ('.$data['input']['les_id_des_bases'].')';
+  $stmt = $db->prepare($sql);
+  $data0=array();
+  if($stmt!==false){
+    $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+    while($arr=$result->fetchArray(SQLITE3_NUM)){
+     array_push($data0, array(
+      'T0.chi_id_basedd'          => $arr[0],
+      'T0.chp_rev_travail_basedd' => $arr[1],
+     ));
+    }
+    $data['status']='OK';
+    $data['valeurs']=$data0;
+    $stmt->close(); 
+  }else{
+    $data['messages'][]=basename(__FILE__). ' ' . __LINE__ . ' Erreur select '.$db->lastErrorMsg();
+  }
+  
+  
+ 
+}
+
 //==========================================================================================================
 function sauvegarder_format_rev_en_dbb(&$data){
 

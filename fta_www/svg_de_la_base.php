@@ -3,27 +3,25 @@ define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();
 
-if(!isset($_GET['__id_de_la_base'])){
-  ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner une base '  );
+if(!isset($_GET['__id_des_bases'])){
+  ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner au moins une base '  );
   recharger_la_page('zz_bdds_l1.php');
 }
 
-require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
+
+
 $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
-$__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents($_GET['__id_de_la_base'],$db);
-if(!isset($__valeurs['T0.chi_id_basedd'])){
-  ajouterMessage('erreur' ,  __LINE__ .' : base introuvable '  );
+$sql0='select count(*) from tbl_bases_de_donnees where chi_id_basedd in ('.$_GET['__id_des_bases'] . ')'; 
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
+$__nbEnregs=$db->querySingle($sql0);
+if($__nbEnregs===false){
+  ajouterMessage('erreur' ,  __LINE__ .' : pas de base trouvée '  );
   recharger_la_page('zz_bdds_l1.php');
 }
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
-
-$donnees_travail=$__valeurs['T0.chp_rev_travail_basedd'];
-
-// echo __FILE__ . ' ' . __LINE__ . ' $donnees_travail = <pre>' . var_export( $donnees_travail , true ) . '</pre>' ; exit(0);
 
 $o1='';
-$o1=html_header1(array('title'=>'svg de la base' , 'description'=>'svg de la base'));
+$o1=html_header1(array('title'=>'svg de base(s)' , 'description'=>'svg de base(s)'));
 print($o1);$o1='';
 ?>
 
@@ -41,7 +39,7 @@ print($o1);$o1='';
   </div>
   
 <?php
-$o1.='<textarea id="donnees_travail" style="display:block;">'.$donnees_travail.'</textarea>';
+$o1.='<input type="text" id="donnees_travail" value="'.enti1($_GET['__id_des_bases']).'" />';
 
 $js_a_executer_apres_chargement=array(
     array(

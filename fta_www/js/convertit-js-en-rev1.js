@@ -297,6 +297,17 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
            t+=','+element.value.raw;
           }else if(element.value.type==='Identifier'){
            t+=','+element.value.name;
+          }else if(
+               element.value.type==='ObjectExpression' 
+            || element.value.type==='BinaryExpression' 
+            || element.value.type==='MemberExpression' 
+          ){
+            var obj1 = traiteUneComposante(element.value,niveau,false,false); // traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucle )
+            if(obj1.status === true){
+                t+=','+obj1.value+'';
+            }else{
+                return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0305',element:element}));
+            }
           }else{
             debugger
             return(astjs_logerreur({status:false,'message':'erreur dans traiteUneComposante 0295 '+element.value.type,element:element}));
@@ -1393,13 +1404,15 @@ function traiteArrayExpression1(element,niveau){
                 return(astjs_logerreur({status:false,message:'erreur dans traiteArrayExpression1 1103 ',element:element}));
             }
          
-        }else if(element.elements[i].type === "BinaryExpression"){
+        }else if(element.elements[i].type === "BinaryExpression" || element.elements[i].type === "UnaryExpression"){
             var obj1 = traiteUneComposante(element.elements[i] , niveau , true , false );
             if(obj1.status === true){
                 lesPar+=',p('+obj1.value+')';
             }else{
                 return(astjs_logerreur({status:false,message:'erreur dans traiteArrayExpression1 1111',element:element}));
             }
+            
+            
             
         }else{
             return(astjs_logerreur({status:false,'message':'erreur dans traiteArrayExpression1 1388 "'+element.elements[i].type+'"',element:element.elements[i]}));

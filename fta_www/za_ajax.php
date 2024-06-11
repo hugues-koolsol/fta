@@ -72,7 +72,7 @@ function mylog($error){
 //================================================================================================
 require_once('aa_include.php');
 /*
-if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
+if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.'========================'.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ .CRLF.'$_POST='.var_export($_POST,true).CRLF.'$_FILES='.var_export($_FILES,true)."\r\n"); fclose($fd);}
 */
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
  $ret=array('status' => 'KO','messages' => array() ); // messages must be in array
