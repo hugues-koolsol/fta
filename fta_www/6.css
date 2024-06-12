@@ -17,18 +17,26 @@ h4,h5,h6{margin:3px;text-align:left;}
 pre{overflow:scroll;word-break: break-all;margin:0 0 0 0;}
 
 #contenuPrincipal{margin-left:8px;margin-right:8px;width:auto;margin:0 auto;}
-select{border:var(--yyvtrb) inset #DAE2E5;padding:4px;border-radius:3px;background-color:#ECEFF1;color:#263238}
-input{border:var(--yyvtrb) inset #DAE2E5;padding:5px;border-radius:4px;font-family:verdana;background-color:#ECEFF1;color:#263238;}
+select{border:var(--yyvtrb) inset #DAE2E5;padding:var(--yyvtrp);border-radius:3px;background-color:#ECEFF1;color:#263238}
+input{
+  border:var(--yyvtrb) inset #DAE2E5;
+  padding:5px;
+  border-radius:4px;
+  font-family:verdana;
+  background-color:#ECEFF1;
+  color:#263238;
+  font-size:var(--yyvtrt);
+ }
 input:focus,textarea:focus,select:focus,button:focus{box-shadow:inset 0px 0px 7px;outline:none;}
 input[type="radio"]{zoom:1.3;vertical-align:bottom;cursor:pointer;} 
 input[type="checkbox"]{zoom:1.5;vertical-align:sub;cursor:pointer;}
-input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:6px;border;0;}
+input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:var(--yyvtrp);border;0;}
 b{font-weight:bold;}
 div{min-height:var(--yyvhmc);line-height:var(--yyvhmc);}
 /* table{border-collapse:collapse;border-spacing:1px 6px;} */
 textarea{
  width:90%;
- padding:5px;
+ padding:var(--yyvtrp);
  border-radius:4px;
  border:0px inset white; /* var(--yyvtrb) inset #DAE2E5; */
  box-shadow: #000 inset -5px -5px 14px;
@@ -61,9 +69,12 @@ a,button{
  user-select:none;
  inline-size: max-content;
  /* pour les boutons, il faut préciser la taille de la police !!! */
- font-size:var(--yyvtrt); 
+ font-size:var(--yyvtrt);
+ cursor:pointer;
 }
-
+a:hover,button:hover{
+    box-shadow: 0px 0px var(--yyvtrb) red;
+}
 .yynavbar{
  display:flex;
  position:fixed;
@@ -94,7 +105,10 @@ a,button{
 .yytbnormal{font-size:1.1rem;}
 .txtar1{}
 
-
+#div_svg1{
+ touch-action: none;
+ border: var(--yyvtrb) solid red;
+}
 
 #boite_de_connexion{
  max-width: 300px;
@@ -104,7 +118,7 @@ a,button{
  flex-wrap: nowrap;
  align-content: center;
  justify-content: center;
- border:1px red solid;
+ border:var(--yyvtrb) red solid;
  border-radius:3px;
  padding:3px;
 }
@@ -124,7 +138,7 @@ a,button{
 #modale1{
  min-width:80vw;
  min-height:80vh;
- border: 5px #607D8B solid;
+ border: var(--yyvtrb) #607D8B solid;
  border-radius: 9px;
  box-shadow: #000 0px 0px 5px;    
  background:linear-gradient(to bottom, #ECEFF1 0%, #DBDEE0 100%);
@@ -188,14 +202,14 @@ dialog::backdrop{
 .menuScroller ul{display:flex;list-style:none;padding:0;margin:0;}
 .yynavbar li{margin-left:4px;margin-right:4px;}
 .menuScroller select{max-width: 10em;color:#FFFFFF;background:#607D8B; background-image: linear-gradient(to bottom, #B0BEC5, #607D8B);font-size:1.05rem;
- border: 1px #90A4AE solid;
+ border: var(--yyvtrb) #90A4AE solid;
  max-height : 28px;
  margin-right : 8px;
 }
 .menuScroller select option{font-size:1.1rem;padding:8px 2px;}
-.yymenusel1{ border:1px #DAE2E5 inset;background:#455A64!important;}
-form{border:1px #DAE2E5 outset;}
-.yythinBorder{border:1px #DAE2E5 outset;}
+.yymenusel1{ border:var(--yyvtrb) #DAE2E5 inset;background:#455A64!important;}
+form{border:var(--yyvtrb) #DAE2E5 outset;}
+.yythinBorder{border:var(--yyvtrb) #DAE2E5 outset;}
 .yyformDelete{text-align:center;padding:8px;margin:8px;line-height: 2em;}
 .yyfilterForm{display:flex;flex-wrap:wrap;justify-content:space-evenly;} .yyfilterForm div{display:flex;flex-direction:column;flex-wrap:wrap;margin-right:5px;}.yyfilterForm label{padding:3px;}
 .yylistForm1{display:flex;flex-wrap:wrap;justify-content:space-evenly;align-items: baseline;}
@@ -205,7 +219,7 @@ button{line-height:24px;}
 button:enabled:active{background:red!important;}
 button:disabled,
 button[disabled]{
-  border: 1px solid #999999;
+  border: var(--yyvtrb) solid #999999;
   background-color: #cccccc;
   color: #666666;
 }
@@ -213,7 +227,7 @@ button[disabled]{
 .yyminHeight1{min-height:36px;}
 .yytableResult1{
   border-radius:5px;
-  border:1px #DAE2E5 outset;
+  border:var(--yyvtrb) #DAE2E5 outset;
   margin:0 auto;
   min-width:70%;
 /*  border-collapse: collapse; */
@@ -223,7 +237,7 @@ tr:hover {
  box-shadow: inset 0px 0px 4px #444;
 }
 
-.yytableResult1 a{border:1px #DAE2E5 outset;color:#263238;}
+.yytableResult1 a{border:var(--yyvtrb) #DAE2E5 outset;color:#263238;}
 .yytableResult1 td:last-child {border-radius: 4px;}
 .button_chercher{flex-grow:1;}
 .yyunset,.yyunset_temporaire{
@@ -245,7 +259,7 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
 .yyrose         {color:#FFFF33!important;background:linear-gradient(to bottom, #E909A4, #c7008A)!important;}
 .yycyan         {color:#0000FF!important;background:linear-gradient(to bottom, #04E1EB, #00C0C9)!important;}
 
-.yybadge {border:1px outset;padding:3px;border-radius:6px;vertical-align:-webkit-baseline-middle;vertical-align:-moz-baseline-middle;vertical-align:baseline-middle;white-space:nowrap;display:inline-block;min-width:3em;text-align:center;}
+.yybadge {border:var(--yyvtrb) outset;padding:3px;border-radius:6px;vertical-align:-webkit-baseline-middle;vertical-align:-moz-baseline-middle;vertical-align:baseline-middle;white-space:nowrap;display:inline-block;min-width:3em;text-align:center;}
 .yybadge0{background-color:#D32F2F;color:#ECEFF1;}
 .yybadge1{background-color:#26A69A;color:#ECEFF1;}
 .yybadge2{background-color:#FFFF00;color:#0000FF;}
@@ -265,7 +279,7 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
  .yyflab1{flex-grow: 1;flex-shrink: 1;flex-basis: 100%;max-width: 100%;border-bottom-style: none;margin-top: 8px;border-right: 1px #DAE2E5 solid;min-height:30px;}
 }
 .yyflab1 div{margin: auto;font-weight:bold;}
-.yyfinp1{border: 1px #DAE2E5 solid;flex-grow: 1;flex-shrink: 0;flex-basis: 200px;padding: 3px;flex-direction: column;}
+.yyfinp1{border: var(--yyvtrb) #DAE2E5 solid;flex-grow: 1;flex-shrink: 0;flex-basis: 200px;padding: 3px;flex-direction: column;}
 .yyfinp1 div{margin: auto 2px;}
 
 #bas_de_page {
@@ -282,14 +296,14 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
 
 /*======================================= tree =============================*/
 .class_treediv1{
- border:1px #DAE2E5 outset;
+ border:var(--yyvtrb) #DAE2E5 outset;
  height:40px;
  overflow:hidden;
  display : flex; 
  flex-direction: row;
  justify-content: space-between; 
 }
-.class_treeIntervalldiv2{border:1px #DAE2E5 solid;}
+.class_treeIntervalldiv2{border:var(--yyvtrb) #DAE2E5 solid;}
 .class_treeTextContentdiv3{text-align:left;flex-grow:1;}
 .class_treedivFolder1{border:0px lime solid;}
 .class_treeFold1,.class_treeDelet1{
@@ -298,7 +312,7 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
  height:30px;
  width:30px;
  min-width:30px;
- border:1px #DAE2E5 outset;
+ border:var(--yyvtrb) #DAE2E5 outset;
  text-align: center;
  text-decoration: none;
  font-size: 2rem;
@@ -310,7 +324,7 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
  font-family:monospace;
 }
 .class_treeHandle1{
- border:1px #DAE2E5 outset;
+ border:var(--yyvtrb) #DAE2E5 outset;
  display:inline-block;
  float:right;
  height:30px;

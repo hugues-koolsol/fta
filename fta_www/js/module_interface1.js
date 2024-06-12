@@ -820,13 +820,37 @@ class interface1{
                                 }else{
                                     t[d[0].trim()]='18px';
                                 }
-                            }else if(('dimension_du_bouton' === type_d_element) && (d[0].trim() === '--yyvtrp')){
+                            }else if(('dimension_du_padding' === type_d_element) && (d[0].trim() === '--yyvtrp')){
                                 if(d[1].trim().indexOf('2') >= 0){
                                     t[d[0].trim()]='4px';
                                 }else if(d[1].trim().indexOf('4') >= 0){
                                     t[d[0].trim()]='6px';
                                 }else{
                                     t[d[0].trim()]='2px';
+                                }
+                            }else if(('dimension_du_border' === type_d_element) && (d[0].trim() === '--yyvtrb')){
+                                if(d[1].trim().indexOf('1') >= 0){
+                                    t[d[0].trim()]='2px';
+                                }else if(d[1].trim().indexOf('2') >= 0){
+                                    t[d[0].trim()]='3px';
+                                }else if(d[1].trim().indexOf('3') >= 0){
+                                    t[d[0].trim()]='4px';
+                                }else if(d[1].trim().indexOf('4') >= 0){
+                                    t[d[0].trim()]='5px';
+                                }else{
+                                    t[d[0].trim()]='1px';
+                                }
+                            }else if(('dimension_du_margin' === type_d_element) && (d[0].trim() === '--yyvtrm')){
+                                if(d[1].trim().indexOf('1') >= 0){
+                                    t[d[0].trim()]='2px';
+                                }else if(d[1].trim().indexOf('2') >= 0){
+                                    t[d[0].trim()]='3px';
+                                }else if(d[1].trim().indexOf('3') >= 0){
+                                    t[d[0].trim()]='4px';
+                                }else if(d[1].trim().indexOf('4') >= 0){
+                                    t[d[0].trim()]='5px';
+                                }else{
+                                    t[d[0].trim()]='1px';
                                 }
                             }else{
                                 t[d[0].trim()]=d[1].trim();

@@ -37,8 +37,8 @@ class module_svg_bdd{
     this.#div_svg.style.maxWidth='90vw';
     this.#div_svg.style.width='90vw';
     
-    this.#div_svg.style.maxHeight='80vh';
-    this.#div_svg.style.height='80vh';
+    this.#div_svg.style.maxHeight='70vh';
+    this.#div_svg.style.height='70vh';
     
     var e=this.#div_svg.getElementsByTagName('svg');
 //    console.log('e=',e);
@@ -52,8 +52,8 @@ class module_svg_bdd{
     
 //    console.log('taillereelle=' , taillereelle );
     
-    var hauteur_de_la_div=parseInt(taillereelle.height,10);
-    var largeur_de_la_div=parseInt(taillereelle.width,10);
+    var hauteur_de_la_div=taillereelle.height;
+    var largeur_de_la_div=taillereelle.width;
     
     this.#div_svg.style.height=hauteur_de_la_div+'px';
     this.#div_svg.style.width=largeur_de_la_div+'px';
@@ -62,8 +62,8 @@ class module_svg_bdd{
      le viewbox du svg est la taille de la div -2*bordure
     */
 
-    this.#hauteur_du_svg=parseInt(hauteur_de_la_div-2*this.#taille_bordure,10);
-    this.#largeur_du_svg=parseInt(largeur_de_la_div-2*this.#taille_bordure,10);
+    this.#hauteur_du_svg=hauteur_de_la_div-2*this.#taille_bordure;
+    this.#largeur_du_svg=largeur_de_la_div-2*this.#taille_bordure;
     
 
     this.#svg_dessin.setAttribute('viewBox','0 0 '+this.#largeur_du_svg+' '+this.#hauteur_du_svg);
@@ -73,11 +73,41 @@ class module_svg_bdd{
     this.#_dssvg.viewBoxInit=[0,0,this.#largeur_du_svg,this.#hauteur_du_svg];
     
     this.#div_svg.addEventListener('wheel', this.zoom_avec_roulette.bind(this) ,{capture:false,passive:true} );  
+    
+/*    
+    refZnDessin.addEventListenerBase( 'mousedown', this.mouseDownZoneDessin.bind(this) , {capture:false,passive:true} );
+    refZnDessin.addEventListenerBase('mousemove', this.mouseMoveZoneDessin.bind(this)  , {capture:false,passive:true} );
+    window.addEventListenerBase('mouseup'  , mouseUpFenetre   , {capture:false,passive:true} );
+*/    
+    
     this.#charger_les_bases_initiales_en_asynchrone();
 
     
     
 //    alert(1);
+   }
+/*   
+   mouseMoveZoneDessin(e){
+    e.stopPropagation();
+  //  e.preventDefault();
+    this.#moveZoneDessin(e);
+   }
+*/   
+   
+   /*
+    ========================================================================================================
+   */
+   #mouseDownZoneDessin(e){
+//    this.#actionDownZoneDessin(e.touches[0]);
+   }
+   
+   /*
+    ========================================================================================================
+   */
+   #actionDownZoneDessin(e){
+//     ecran_appuye=true;
+//     modificationViewB=false;
+
    }
    
    /*
@@ -89,7 +119,7 @@ class module_svg_bdd{
 /*
 
 this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:-1,id_parent:-2,indice:indice_courant,indice_parent:-1 , proprietes:{transform:'translate(10,10)'}};
-this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indice:indice_courant,indice_parent:0  , proprietes:{x:1,y:1,width:120,height:120,style;"stroke:yellow;stroke-opacity:1;stroke-width:1;fill:red;"}};
+this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indice:indice_courant,indice_parent:0  , proprietes:{x:1,y:1,width:120,height:120,style;"stroke:yellow;stroke-width:'+CSS_TAILLE_REFERENCE_BORDER+';fill:red;"}};
 
 */     
     
@@ -122,8 +152,11 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
                   str+=' '+j+'="'+tab[i].proprietes[j]+'"';
                   
               }
-              
-              str+=' />';
+              if(tab[i].hasOwnProperty('contenu')){
+                  str+='>'+tab[i].contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</'+tab[i].type+'>';
+              }else{
+                  str+=' />';
+              }
            
           }
       }
@@ -146,6 +179,25 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
        this.#svg_dessin.innerHTML=str;
     
    }
+   
+   #ajuster_largeur_de_boite(largeur_de_la_boite,texte){
+
+                                     
+      var a=document.createElementNS("http://www.w3.org/2000/svg",'text');
+      a.innerHTML=texte;
+      a.setAttribute('x',10);
+      a.setAttribute('y',20);
+      this.#svg_dessin.appendChild(a);
+      var b=a.getBBox();
+      if(largeur_de_la_boite<(b.width+2)){
+       largeur_de_la_boite=b.width+2;
+      }
+      a.remove();
+      return(largeur_de_la_boite);
+   }
+  
+   
+   
    /*
    ========================================================================================================
    function charger_les_bases
@@ -207,20 +259,44 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
                    }
                 }
 
+/*
+    $o1.=' var CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
+
+*/
+                const hauteur_de_boite=CSS_TAILLE_REFERENCE_TEXTE+2*CSS_TAILLE_REFERENCE_BORDER;
                 var indice_courant=0;
                 var tableau_des_elements=[];
                 var numero_table=0;
-                var position_xy_table=[10,10];
+                var decallage_droite_table=10;
+                var position_xy_table=[decallage_droite_table,10];
                 var position_xy_champ=[10,10];
                 var indice_table_en_cours=0;
+                var nombre_de_boites_dans_la_table=0;
+                var largeur_de_la_boite=1;
+                var nom_de_la_table='';
+                var nom_du_champ='';
+                var nom_de_l_index='';
+                var liste_de_indices_des_elements_a_ajuster_en_largeur=[];
+                var indice_cadre_base=0;
+                var max_x=0;
+                var max_y=0;
+                var position_haut_de_la_table=0;
+                var position_max_bas=0;
+                var hauteur_de_la_table=0;
+                
+                var position_gauche_de_la_table=0;
+                var position_max_droite=0;
+                var largeur_de_la_table=0;
                 
                 for(var i in this.#arbre){
                     console.log('i=',i);
-                    this.#arbre[i].toto='tata';
                     var tab=this.#arbre[i]['matrice'];
 //                    console.log('tab=',tab);
                     this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:-1,id_parent:-2, proprietes:{transform:'translate(0,0)','data-id':'conteneur_base_'+i}};
-                    this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1, proprietes:{x:0,y:0,width:120,height:120,style:"stroke:red;stroke-opacity:1;stroke-width:1;fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_base_'+i}};
+                    this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1, proprietes:{x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:'+CSS_TAILLE_REFERENCE_BORDER+';fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_base_'+i}};
+                    indice_cadre_base=indice_courant-1;
                     //cadre_svg='<rect id="cadre_bdd_'+i+'" data-type="cadre_bdd" x="0" , y="0" width="10" height="10"></rect>';
                     var l01=tab.length;
                     for(var j=0;j<l01;j++){
@@ -232,11 +308,19 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
                             */
                             if(tab[j][1]==='position_x_y_sur_svg' ){
 
-                                this.#arbre[i].arbre_svg[0].proprietes.transform='translate('+tab[j+1][1]+')';
+                                var tt=tab[j+1][1].split(',')
+                                tt[0]=parseInt(tt[0]);
+                                tt[1]=parseInt(tt[1]);
+                                if(CSS_TAILLE_REFERENCE_BORDER%2!==0){
+                                    /* si la taille de la bordure est impaire */
+                                    tt[0]+=0.5;
+                                    tt[1]+=0.5;
+                                }
+                                this.#arbre[i].arbre_svg[0].proprietes.transform='translate('+tt[0]+','+tt[1]+')';
 
                             }else if(tab[j][1]==='hauteur_sur_svg' ){
                              
-                                this.#arbre[i].arbre_svg[1].proprietes.height=tab[j+1][1];
+                                this.#arbre[i].arbre_svg[1].proprietes.height=tab[j+1][1]; // indice_cadre_base
 
                             }else if(tab[j][1]==='largeur_sur_svg' ){
                              
@@ -244,7 +328,7 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
                                 
                             }else{
                                 try{
-//                                    debugger
+                                    /* c'est un champ meta autres que ceux destines aux dimensions */
                                     if(tab[j][9]===1){
                                       this.#arbre[i].arbre_svg[1].proprietes[tab[j][1]]=tab[j+1][1];
                                     }
@@ -276,42 +360,147 @@ add_index(n('tbl_cibles') , unique() , index_name('idx_dossier_cible') , fields(
 */                         
                          
                             if('create_table'===tab[j][1]){
+                                if(indice_table_en_cours>0){
+                                    if(nombre_de_boites_dans_la_table>0){
+                                        
+                                         /* ajuster la taille de la boite définie précédemment */
+                                        
+                                        hauteur_de_la_table=(hauteur_de_boite+CSS_TAILLE_REFERENCE_BORDER)*nombre_de_boites_dans_la_table+CSS_TAILLE_REFERENCE_BORDER;
+                                        this.#arbre[i].arbre_svg[indice_table_en_cours].proprietes.height=hauteur_de_la_table;
+                                        for(var k=0;k<liste_de_indices_des_elements_a_ajuster_en_largeur.length;k++){
+                                            if(k===0){
+                                                /* le premier élément est la boite contenant tous les champs */
+                                                largeur_de_la_table=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_BORDER;
+                                                this.#arbre[i].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.width=largeur_de_la_table;
+                                                
+                                                if( position_max_droite<position_gauche_de_la_table+largeur_de_la_table){
+                                                    position_max_droite=position_gauche_de_la_table+largeur_de_la_table;
+                                                }
+                                                
+                                                
+                                            }else{
+                                                this.#arbre[i].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.width=largeur_de_la_boite;
+                                            }
+                                        }
+                                        
+                                        if( position_max_bas<position_haut_de_la_table+hauteur_de_la_table){
+                                            position_max_bas=position_haut_de_la_table+hauteur_de_la_table;
+                                        }
+                                        
+                                        
+                                        /* pour la table suivante */
+                                        liste_de_indices_des_elements_a_ajuster_en_largeur=[];
+                                        position_xy_table[0]+=largeur_de_la_boite+4*CSS_TAILLE_REFERENCE_BORDER+CSS_TAILLE_REFERENCE_MARGIN;
+                                        position_xy_table[1]+=30;
+                                        
+                                        
+                                    }
+                                }
                                 numero_table++;
                                 tableau_des_elements=[{type:'create_table',id:numero_table}];
                                 position_xy_champ=[0,0];
+                                nombre_de_boites_dans_la_table=0;
+                                largeur_de_la_boite=1;
 
                             }else if('add_index'===tab[j][1]){
+                                
                                 tableau_des_elements=[];
+                                tableau_des_elements.push({type:'index'});
                             }else if('fields'===tab[j][1]){
 
                                 tableau_des_elements.push({type:'fields'});
                               
                               
                             }else if('n'===tab[j][1]){
+                             
+                             /*
+                              si on est dans un champ n()
+                             */
+                             
                              if(tableau_des_elements.length>0 && tableau_des_elements[tableau_des_elements.length-1].type==='create_table'){
 
-                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:indice_courant ,id_parent:-1               , proprietes:{transform:'translate('+(position_xy_table[0])+','+(position_xy_table[1])+')','data-id':'conteneur_table_'+tableau_des_elements[tableau_des_elements.length-1].id}};
+                                 /*
+                                  si c'est un nom de table
+                                 */
+                             
+                                 
+                                 this.#arbre[i].arbre_svg[indice_courant++]={
+                                     type:'g'   ,id:indice_courant ,id_parent:-1 , 
+                                     proprietes:{
+                                      transform:'translate('+(position_xy_table[0])+','+(position_xy_table[1])+')',
+                                      'data-id':'conteneur_table_'+tableau_des_elements[tableau_des_elements.length-1].id}
+                                 };
+                                 position_gauche_de_la_table = position_xy_table[0];
+                                 position_haut_de_la_table   = position_xy_table[1];
+                                 
+                                 
+                                 
+                                 
+                                 
                                  indice_table_en_cours=indice_courant;
-                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1 , proprietes:{x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-opacity:1;stroke-width:1;fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_table_'+tableau_des_elements[tableau_des_elements.length-1].id}};
-                                 position_xy_table[0]+=30;
-                                 position_xy_table[1]+=30;
+                                 liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_table_en_cours);
+                                 nom_de_la_table=tab[j+1][1];
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1 , proprietes:{x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_table_'+tableau_des_elements[tableau_des_elements.length-1].id}};
 
                              }else if(tableau_des_elements.length>0 && tableau_des_elements[tableau_des_elements.length-1].type==='fields'){
+                              
+                                 /*
+                                  si c'est un nom de champ
+                                 */
+                             
                                  if(position_xy_champ[1]===0){
-                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , proprietes:{transform:'translate('+position_xy_champ[0]+','+position_xy_champ[1]+')','data-id':'conteneur_champ_'+j}};
-                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1      , proprietes:{x:1,y:1,width:18,height:6,style:"stroke:hotpink;stroke-opacity:1;stroke-width:1;fill:pink;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j}};
-                                     position_xy_champ[0]+=0;
-                                     position_xy_champ[1]+=7;
-                                 }
+                                     /*
+                                      le nom de la table en première position
+                                     */
+                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , proprietes:{transform:'translate('+position_xy_champ[0]+','+position_xy_champ[1]+')','data-id':'conteneur_nom_table_'+j}};
 
+                                     if( position_max_bas<position_haut_de_la_table+position_xy_champ[1]){
+                                         position_max_bas=position_haut_de_la_table+position_xy_champ[1];
+                                         console.log('sur nom de table '+nom_de_la_table+' position_max_bas=',position_max_bas);
+                                     }
+                                     
+                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1      , proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:CSS_TAILLE_REFERENCE_BORDER,width:18,height:hauteur_de_boite,style:"stroke:red;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:red;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j}};
+                                     liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
+                                     
+                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'text',id:indice_courant ,id_parent:indice_courant-2     , contenu:nom_de_la_table ,proprietes:{x:2*CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.2*CSS_TAILLE_REFERENCE_TEXTE,style:"fill:navy;" , 'data-id':'texte_table_'+j}};
+                                     largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_la_table);
+                                     
+                                     position_xy_champ[0]+=0;
+                                     position_xy_champ[1]+=hauteur_de_boite+CSS_TAILLE_REFERENCE_BORDER;
+                                     nombre_de_boites_dans_la_table++;
+                                 }
+                                 nom_du_champ=tab[j+1][1];
+                                 largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_du_champ);
 
                                  this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , proprietes:{transform:'translate('+position_xy_champ[0]+','+position_xy_champ[1]+')','data-id':'conteneur_champ_'+j}};
-                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1      , proprietes:{x:1,y:1,width:18,height:6,style:"stroke:green;stroke-opacity:1;stroke-width:1;fill:pink;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j}};
+                                 
+                                 
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1      , proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:CSS_TAILLE_REFERENCE_BORDER,width:18,height:hauteur_de_boite,style:"stroke:yellow;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:pink;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j}};
+                                 liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'text',id:indice_courant ,id_parent:indice_courant-2     , contenu:nom_du_champ ,proprietes:{x:2*CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.2*CSS_TAILLE_REFERENCE_TEXTE,style:"fill:navy;" , 'data-id':'texte_table_'+j}};
+                                 
                                  position_xy_champ[0]+=0;
-                                 position_xy_champ[1]+=7;
-                              
+                                 position_xy_champ[1]+=hauteur_de_boite+CSS_TAILLE_REFERENCE_BORDER;
+                                 nombre_de_boites_dans_la_table++;
                               
                              }
+                            }else if('index_name'===tab[j][1]){
+                              if(tableau_des_elements.length>0 && tableau_des_elements[tableau_des_elements.length-1].type==='index'){
+                                 nom_de_l_index=tab[j+1][1];
+                                 largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_l_index);
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , proprietes:{transform:'translate('+position_xy_champ[0]+','+position_xy_champ[1]+')','data-id':'conteneur_champ_'+j}};
+                                 
+                                 
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1      , proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:CSS_TAILLE_REFERENCE_BORDER,width:18,height:hauteur_de_boite,style:"stroke:green;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:green;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j}};
+                                 liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'text',id:indice_courant ,id_parent:indice_courant-2     , contenu:nom_de_l_index ,proprietes:{x:2*CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.2*CSS_TAILLE_REFERENCE_TEXTE,style:"fill:green;" , 'data-id':'texte_table_'+j}};
+
+                                 position_xy_champ[0]+=0;
+                                 position_xy_champ[1]+=hauteur_de_boite+CSS_TAILLE_REFERENCE_BORDER;
+                                 nombre_de_boites_dans_la_table++;
+                              
+                              }
+                              
                              
                             }
                             /*
@@ -319,6 +508,50 @@ add_index(n('tbl_cibles') , unique() , index_name('idx_dossier_cible') , fields(
                             */
                         }
                     }
+                    
+                    if(indice_table_en_cours>0){
+                     if(nombre_de_boites_dans_la_table>0){
+                       /* ajuster la taille de la boite */
+                      
+                      hauteur_de_la_table=(hauteur_de_boite+CSS_TAILLE_REFERENCE_BORDER)*nombre_de_boites_dans_la_table+CSS_TAILLE_REFERENCE_BORDER;
+                      this.#arbre[i].arbre_svg[indice_table_en_cours].proprietes.height=hauteur_de_la_table;
+                      this.#arbre[i].arbre_svg[indice_table_en_cours].proprietes.width=largeur_de_la_boite;
+
+                      for(var k=0;k<liste_de_indices_des_elements_a_ajuster_en_largeur.length;k++){
+                          if(k===0){
+                              //this.#arbre[i].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.width=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_BORDER;
+                              
+                              largeur_de_la_table=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_BORDER;
+                              this.#arbre[i].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.width=largeur_de_la_table;
+                              
+                              if( position_max_droite<position_gauche_de_la_table+largeur_de_la_table){
+                                  position_max_droite=position_gauche_de_la_table+largeur_de_la_table;
+                              }
+                              
+                              
+                              
+                          }else{
+                              this.#arbre[i].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.width=largeur_de_la_boite;
+                          }
+                      }
+                      liste_de_indices_des_elements_a_ajuster_en_largeur=[];
+                      
+                      
+                      if( position_max_bas<position_haut_de_la_table+hauteur_de_la_table){
+                          position_max_bas=position_haut_de_la_table+hauteur_de_la_table;
+                      }
+                      
+
+                     }
+                    }
+                    
+                    /* en dernier lieu on ajuste la hauteur de la boite contenant le shema de la base */
+                    console.log('position_max_bas=',position_max_bas);
+                    this.#arbre[i].arbre_svg[indice_cadre_base].proprietes.height=position_max_bas+2*CSS_TAILLE_REFERENCE_MARGIN; // 
+                    this.#arbre[i].arbre_svg[indice_cadre_base].proprietes.width=position_max_droite+2*CSS_TAILLE_REFERENCE_MARGIN; // 
+                    
+
+                    
                 }
                 console.log('this.#arbre=',this.#arbre)
                 

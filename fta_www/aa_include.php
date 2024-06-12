@@ -610,6 +610,10 @@ function html_header1($parametres){
     $o1.='<script type="text/javascript">'.CRLF;
     $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
     $o1.=' var NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN='.(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])?count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']):0).';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
     
     $o1.='</script>    '.CRLF;
     $o1.='    '.CRLF;
@@ -731,8 +735,11 @@ function html_footer1($parametres=array()){
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
     if(preg_match('/.*_l[0-9]+\\.php/',BNF)){
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;">A±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_bouton\')" style="opacity:0.5;">b±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;"   title="taille texte">A±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="opacity:0.5;" title="taille espace">p±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style="opacity:0.5;"  title="taille bordure">b±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style="opacity:0.5;"  title="taille marge">m±</a>'.CRLF;
+        
         $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }
     $o1.='</div>'.CRLF;
