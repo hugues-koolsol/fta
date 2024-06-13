@@ -22,6 +22,10 @@ class module_svg_bdd{
    
    #arbre={}; // chaque entrée de arbre est une bdd
    
+   #souris_element_a_deplacer='';
+   #souris_init_objet={x:0,y:0,elem_bouge:null,param_bouge:{}};
+   
+   
    /*
    function constructor
    */
@@ -72,7 +76,12 @@ class module_svg_bdd{
     
     this.#_dssvg.viewBoxInit=[0,0,this.#largeur_du_svg,this.#hauteur_du_svg];
     
-    this.#div_svg.addEventListener('wheel', this.zoom_avec_roulette.bind(this) ,{capture:false,passive:true} );  
+    this.#div_svg.addEventListener('wheel', this.zoom_avec_roulette.bind(this) ,{capture:false,passive:true} );
+    
+    
+    window.addEventListener( 'mousedown' , this.#sourie_bas.bind(this)  , false );
+    window.addEventListener( 'mouseup'   , this.#sourie_haut.bind(this) , false );
+    window.addEventListener( 'mousemove' , this.#sourie_bouge.bind(this) , false );
     
 /*    
     refZnDessin.addEventListenerBase( 'mousedown', this.mouseDownZoneDessin.bind(this) , {capture:false,passive:true} );
@@ -86,28 +95,118 @@ class module_svg_bdd{
     
 //    alert(1);
    }
-/*   
-   mouseMoveZoneDessin(e){
-    e.stopPropagation();
-  //  e.preventDefault();
-    this.#moveZoneDessin(e);
+   
+   #sourie_bouge(e){
+    if(this.#souris_element_a_deplacer==='svg'){
+     
+     
+     var calculx=(this.#souris_init_objet.x-e.screenX)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
+     var calculy=(this.#souris_init_objet.y-e.screenY)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
+     
+     this.#souris_init_objet.elem_bouge.setAttribute('viewBox',calculx+','+calculy+','+this.#souris_init_objet.elem_bouge.viewBox.baseVal.width+','+this.#souris_init_objet.elem_bouge.viewBox.baseVal.height);
+     return;
+     
+    }else if(this.#souris_element_a_deplacer==='base_de_donnee'){
+     var calculx=(e.screenX-this.#souris_init_objet.x)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
+     var calculy=(e.screenY-this.#souris_init_objet.y)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
+     this.#souris_init_objet.elem_bouge.setAttribute( 'transform' , 'translate('+calculx+','+calculy+')');
+     return;
+    }else if(this.#souris_element_a_deplacer==='table'){
+     e.preventDefault(); /* permer de ne pas sélectionner les textes */
+     var calculx=(e.screenX-this.#souris_init_objet.x)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
+     var calculy=(e.screenY-this.#souris_init_objet.y)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
+     this.#souris_init_objet.elem_bouge.setAttribute( 'transform' , 'translate('+calculx+','+calculy+')');
+     return;
+    }
    }
-*/   
    
    /*
-    ========================================================================================================
+   ========================================================================================================================================
    */
-   #mouseDownZoneDessin(e){
-//    this.#actionDownZoneDessin(e.touches[0]);
+   #sourie_haut(e){
+    this.#souris_element_a_deplacer='';
+    this.#souris_init_objet.elem_bouge=null;
+    this.#souris_init_objet.param_bouge={};
+    this.#div_svg.style.userSelect='';
    }
    
    /*
-    ========================================================================================================
+   ========================================================================================================================================
+   
    */
-   #actionDownZoneDessin(e){
-//     ecran_appuye=true;
-//     modificationViewB=false;
+   #sourie_bas(e){
+    
+       this.#souris_init_objet.x=e.screenX;
+       this.#souris_init_objet.y=e.screenY;
+       this.#souris_element_a_deplacer='';
+       
+       var tar=e.target;
+       if(tar.tagName.toLowerCase()==='svg'){
+        
+         /* si on bouge toute la zone svg, il faut modifier le viewbox */
+         
+        this.#souris_init_objet.elem_bouge=tar;
+        this.#souris_init_objet.param_bouge={x:tar.viewBox.baseVal.x , y:tar.viewBox.baseVal.y };
 
+        this.#souris_element_a_deplacer='svg';
+
+        this.#div_svg.style.userSelect='none';
+        
+       }else{
+        
+           /* sinon, on recherche l'élément parent de type g pour modifier le translate si c'est une table ou une base */
+           if(tar.getAttribute('data-type')){
+            
+               if(tar.getAttribute('data-type')==='base_de_donnee'){
+
+                   var valeur_translate=tar.parentNode.getAttribute('transform').replace(/translate\(/g,'').replace(/\)/g,'').split(',');
+                   this.#souris_init_objet.elem_bouge=tar.parentNode;
+                   this.#souris_init_objet.param_bouge={x:parseFloat(valeur_translate[0]) , y:parseFloat(valeur_translate[1]) };
+                   this.#souris_element_a_deplacer=tar.getAttribute('data-type');
+                   this.#div_svg.style.userSelect='none';
+                 
+               }
+            
+           }else{
+            
+               /* on remonte jusqu'à un datatype 'table' */
+               
+               if(tar.tagName.toLowerCase()==='tspan'){
+                
+                   var par=tar.parentNode;
+                   var continuer=true;
+       //            debugger
+                   while(continuer){
+                       if(par.tagName.toLowerCase()==='g'){
+                           if(par.getAttribute('data-id')){
+                               if(par.getAttribute('data-id').substr(0,16)=='conteneur_table_'){
+                                
+                                   var valeur_translate=par.getAttribute('transform').replace(/translate\(/g,'').replace(/\)/g,'').split(',');
+                                   this.#souris_init_objet.elem_bouge=par;
+                                   this.#souris_init_objet.param_bouge={x:parseFloat(valeur_translate[0]) , y:parseFloat(valeur_translate[1]) };
+                                   this.#souris_element_a_deplacer='table';
+                                   this.#div_svg.style.userSelect='none';
+                                   continuer=false;
+                                   
+                               }else{
+                                   par=par.parentNode;
+                               }
+                           }else{
+                               par=par.parentNode;
+                           }
+                       }else if(par.tagName.toLowerCase()==='svg'){
+                           continuer=false;
+                       }else{
+                           par=par.parentNode;
+                       }
+                    
+                   }
+                
+                
+                
+               }
+           }
+       }
    }
    
    /*
@@ -153,7 +252,8 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
                   
               }
               if(tab[i].hasOwnProperty('contenu')){
-                  str+='>'+tab[i].contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</'+tab[i].type+'>';
+//                  str+='>'+tab[i].contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</'+tab[i].type+'>';
+                  str+='>'+tab[i].contenu+'</'+tab[i].type+'>';
               }else{
                   str+=' />';
               }
@@ -295,7 +395,7 @@ this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1,indic
                     var tab=this.#arbre[i]['matrice'];
 //                    console.log('tab=',tab);
                     this.#arbre[i].arbre_svg[indice_courant++]={type:'g'   ,id:-1,id_parent:-2, proprietes:{transform:'translate(0,0)','data-id':'conteneur_base_'+i}};
-                    this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1, proprietes:{x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:'+CSS_TAILLE_REFERENCE_BORDER+';fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_base_'+i}};
+                    this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:0 ,id_parent:-1, proprietes:{'data-type':'base_de_donnee',x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:'+CSS_TAILLE_REFERENCE_BORDER+';fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_base_'+i}};
                     indice_cadre_base=indice_courant-1;
                     //cadre_svg='<rect id="cadre_bdd_'+i+'" data-type="cadre_bdd" x="0" , y="0" width="10" height="10"></rect>';
                     var l01=tab.length;
@@ -440,7 +540,7 @@ add_index(n('tbl_cibles') , unique() , index_name('idx_dossier_cible') , fields(
                                  indice_table_en_cours=indice_courant;
                                  liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_table_en_cours);
                                  nom_de_la_table=tab[j+1][1];
-                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1 , proprietes:{x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_table_'+tableau_des_elements[tableau_des_elements.length-1].id}};
+                                 this.#arbre[i].arbre_svg[indice_courant++]={type:'rect','data-type':'table',id:indice_courant ,id_parent:indice_courant-1 , proprietes:{x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_table_'+tableau_des_elements[tableau_des_elements.length-1].id}};
 
                              }else if(tableau_des_elements.length>0 && tableau_des_elements[tableau_des_elements.length-1].type==='fields'){
                               
@@ -456,14 +556,14 @@ add_index(n('tbl_cibles') , unique() , index_name('idx_dossier_cible') , fields(
 
                                      if( position_max_bas<position_haut_de_la_table+position_xy_champ[1]){
                                          position_max_bas=position_haut_de_la_table+position_xy_champ[1];
-                                         console.log('sur nom de table '+nom_de_la_table+' position_max_bas=',position_max_bas);
+//                                         console.log('sur nom de table '+nom_de_la_table+' position_max_bas=',position_max_bas);
                                      }
                                      
                                      this.#arbre[i].arbre_svg[indice_courant++]={type:'rect',id:indice_courant ,id_parent:indice_courant-1      , proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:CSS_TAILLE_REFERENCE_BORDER,width:18,height:hauteur_de_boite,style:"stroke:red;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:red;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j}};
                                      liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
                                      
-                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'text',id:indice_courant ,id_parent:indice_courant-2     , contenu:nom_de_la_table ,proprietes:{x:2*CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.2*CSS_TAILLE_REFERENCE_TEXTE,style:"fill:navy;" , 'data-id':'texte_table_'+j}};
-                                     largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_la_table);
+                                     this.#arbre[i].arbre_svg[indice_courant++]={type:'text',id:indice_courant ,id_parent:indice_courant-2     , contenu:'<tspan style="cursor:move;">🟥</tspan>'+nom_de_la_table ,proprietes:{x:2*CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.2*CSS_TAILLE_REFERENCE_TEXTE,style:"fill:navy;" , 'data-id':'texte_table_'+j}};
+                                     largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_la_table+'🟥'); // ↔ 🟥
                                      
                                      position_xy_champ[0]+=0;
                                      position_xy_champ[1]+=hauteur_de_boite+CSS_TAILLE_REFERENCE_BORDER;
@@ -546,14 +646,14 @@ add_index(n('tbl_cibles') , unique() , index_name('idx_dossier_cible') , fields(
                     }
                     
                     /* en dernier lieu on ajuste la hauteur de la boite contenant le shema de la base */
-                    console.log('position_max_bas=',position_max_bas);
+//                    console.log('position_max_bas=',position_max_bas);
                     this.#arbre[i].arbre_svg[indice_cadre_base].proprietes.height=position_max_bas+2*CSS_TAILLE_REFERENCE_MARGIN; // 
                     this.#arbre[i].arbre_svg[indice_cadre_base].proprietes.width=position_max_droite+2*CSS_TAILLE_REFERENCE_MARGIN; // 
                     
 
                     
                 }
-                console.log('this.#arbre=',this.#arbre)
+//                console.log('this.#arbre=',this.#arbre)
                 
                 this.#dessiner_le_svg();
                 logerreur({status : true , message : '0140 les bases ont bien été chargées' });
