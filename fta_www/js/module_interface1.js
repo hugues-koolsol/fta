@@ -97,7 +97,7 @@ class interface1{
     }
     /*
       =============================================================================================================
-      
+      affichage de la modale permettant de fixer_les_parametres_pour_une_liste
       function fixer_les_parametres_pour_une_liste
     */
     fixer_les_parametres_pour_une_liste(nom_de_la_page){
@@ -237,18 +237,27 @@ class interface1{
     */
     agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
         try{
-            if(document.getElementById(nom_de_la_textarea)){
-                if(document.getElementById(nom_de_la_textarea).rows <= 10){
-                    document.getElementById(nom_de_la_textarea).rows=100;
-                    document.getElementById(nom_de_la_textarea).style.height='100em';
-                    document.getElementById(nom_de_la_textarea).focus();
+            var a=document.getElementById(nom_de_la_textarea);
+            if(a){
+                if(a.rows <= 10){
+                    var b=a.getBoundingClientRect();
+                    a.rows=100;
+                    a.style.height='100em';
+                    /*
+                    on met la zone en haut
+                    */
+                    var d=parseInt((b.top-80+window.pageYOffset),10);
+                    window.scrollTo(0,d); 
+                    a.focus();
+                    
                 }else{
-                    document.getElementById(nom_de_la_textarea).rows=5;
-                    document.getElementById(nom_de_la_textarea).style.height='5em';
-                    document.getElementById(nom_de_la_textarea).focus();
+                    a.rows=5;
+                    a.style.height='5em';
+                    a.focus();
                 }
             }
         }catch(e){
+         console.log('e=',e);
         }
     }
     /*

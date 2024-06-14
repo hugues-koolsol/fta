@@ -870,7 +870,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
-  $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -894,7 +894,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format sql</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -906,7 +906,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format php</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="15" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -934,7 +934,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_travail_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
-  $o1.='   <textarea  name="chp_rev_travail_basedd" id="chp_rev_travail_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_travail_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_rev_travail_basedd" id="chp_rev_travail_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_travail_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
