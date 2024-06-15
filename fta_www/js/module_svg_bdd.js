@@ -24,6 +24,9 @@ class module_svg_bdd{
     
     #souris_element_a_deplacer='';
     #souris_init_objet={x:0,y:0,elem_bouge:null,param_bouge:{}};
+    #svg_tableaux_des_references_amont_aval={};
+    #svg_souris_delta_x=0;
+    #svg_souris_delta_y=0;
    
    
     /*
@@ -111,9 +114,37 @@ class module_svg_bdd{
         }else if(this.#souris_element_a_deplacer==='table'){
          
          e.preventDefault(); /* permer de ne pas sélectionner les textes */
-         var calculx=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
-         var calculy=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
+         this.#svg_souris_delta_x=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)/this.#_dssvg.zoom1;
+         this.#svg_souris_delta_y=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)/this.#_dssvg.zoom1;
+         var calculx=this.#svg_souris_delta_x+this.#souris_init_objet.param_bouge.x;
+         var calculy=this.#svg_souris_delta_y+this.#souris_init_objet.param_bouge.y;
          this.#souris_init_objet.elem_bouge.setAttribute( 'transform' , 'translate('+calculx+','+calculy+')');
+
+         /* 
+           déplacement des liens de la table en cours de mouvement 
+         */
+         for(var i=0;i<this.#svg_tableaux_des_references_amont_aval[this.#souris_init_objet.reference_de_le_base].length;i++){
+             var elem=this.#svg_tableaux_des_references_amont_aval[this.#souris_init_objet.reference_de_le_base][i];
+             if(elem.id_table_fille===this.#souris_init_objet.id_a_deplacer){
+
+                 var ref_elem=document.getElementById(elem.id_du_path);
+                 var nouveau_chemin=' M '+(elem.p1[0]+this.#svg_souris_delta_x   )+' '+(elem.p1[1]+this.#svg_souris_delta_y);
+                 nouveau_chemin   +=' C '+(elem.p1[0]+this.#svg_souris_delta_x-30)+' '+(elem.p1[1]+this.#svg_souris_delta_y);
+                 nouveau_chemin   +=' '+(elem.p2[0]+30)+' '+(elem.p2[1]);
+                 nouveau_chemin   +=' '+(elem.p2[0])+' '+(elem.p2[1]);
+                 
+                 ref_elem.setAttribute('d' , nouveau_chemin );
+             }
+             if(elem.id_table_mere===this.#souris_init_objet.id_a_deplacer){
+                 var ref_elem=document.getElementById(elem.id_du_path);
+                 var nouveau_chemin='M '+(elem.p1[0])+' '+(elem.p1[1]);
+                 nouveau_chemin+=' C '+(elem.p1[0]-30)+' '+(elem.p1[1]);
+                 nouveau_chemin+=' '+(elem.p2[0]+this.#svg_souris_delta_x+30)+' '+(elem.p2[1]+this.#svg_souris_delta_y);
+                 nouveau_chemin+=' '+(elem.p2[0]+this.#svg_souris_delta_x   )+' '+(elem.p2[1]+this.#svg_souris_delta_y);
+                 ref_elem.setAttribute('d' , nouveau_chemin );
+             }
+         }
+         
          return;
         }
     }
@@ -123,6 +154,25 @@ class module_svg_bdd{
     function sourie_haut
     */
     #sourie_haut(e){
+        if(this.#souris_element_a_deplacer==='table'){
+            for(var i=0;i<this.#svg_tableaux_des_references_amont_aval[this.#souris_init_objet.reference_de_le_base].length;i++){
+             
+                var elem=this.#svg_tableaux_des_references_amont_aval[this.#souris_init_objet.reference_de_le_base][i];
+                if(elem.id_table_fille===this.#souris_init_objet.id_a_deplacer){
+                   var ref_elem=document.getElementById(elem.id_du_path);
+                   
+                   this.#svg_tableaux_des_references_amont_aval[this.#souris_init_objet.reference_de_le_base][i].p1=[elem.p1[0]+this.#svg_souris_delta_x , elem.p1[1]+this.#svg_souris_delta_y ];
+                 
+                 
+                }
+                if(elem.id_table_mere===this.#souris_init_objet.id_a_deplacer){
+                   this.#svg_tableaux_des_references_amont_aval[this.#souris_init_objet.reference_de_le_base][i].p2=[elem.p2[0]+this.#svg_souris_delta_x , elem.p2[1]+this.#svg_souris_delta_y ];
+                }
+            }
+
+        }
+     
+     
         this.#souris_element_a_deplacer='';
         this.#souris_init_objet.elem_bouge=null;
         this.#souris_init_objet.param_bouge={};
@@ -135,7 +185,7 @@ class module_svg_bdd{
    */
    #sourie_bas(e){
     
-       console.log(e);
+//       console.log('sourie_bas e=',e);
        this.#souris_init_objet.x=e[this.#propriete_pour_deplacement_x];
        this.#souris_init_objet.y=e[this.#propriete_pour_deplacement_y];
        this.#souris_element_a_deplacer='';
@@ -169,40 +219,20 @@ class module_svg_bdd{
             
            }else{
             
-               /* on remonte jusqu'à un datatype 'table' */
                
-               if(tar.tagName.toLowerCase()==='tspan'){
-                
-                   var par=tar.parentNode;
-                   var continuer=true;
-       //            debugger
-                   while(continuer){
-                       if(par.tagName.toLowerCase()==='g'){
-                           if(par.getAttribute('data-id')){
-                               if(par.getAttribute('data-id').substr(0,16)=='conteneur_table_'){
-                                
-                                   var valeur_translate=par.getAttribute('transform').replace(/translate\(/g,'').replace(/\)/g,'').split(',');
-                                   this.#souris_init_objet.elem_bouge=par;
-                                   this.#souris_init_objet.param_bouge={x:parseFloat(valeur_translate[0]) , y:parseFloat(valeur_translate[1]) };
-//                                   console.log('this.#souris_init_objet=' , JSON.stringify( this.#souris_init_objet ) );
-                                   this.#souris_element_a_deplacer='table';
-                                   this.#div_svg.style.userSelect='none';
-                                   continuer=false;
-                                   return;
-                                   
-                               }else{
-                                   par=par.parentNode;
-                               }
-                           }else{
-                               par=par.parentNode;
-                           }
-                       }else if(par.tagName.toLowerCase()==='svg'){
-                           continuer=false;
-                       }else{
-                           par=par.parentNode;
-                       }
-                    
-                   }
+
+               if(tar.tagName.toLowerCase()==='tspan' && tar.getAttribute('id_a_deplacer') ){
+
+                   var par=document.getElementById(tar.getAttribute('id_a_deplacer'));
+                   var valeur_translate=par.getAttribute('transform').replace(/translate\(/g,'').replace(/\)/g,'').split(',');
+                   this.#souris_init_objet.id_a_deplacer=parseInt(tar.getAttribute('id_a_deplacer'),10);
+                   this.#souris_init_objet.elem_bouge=par;
+                   this.#souris_init_objet.param_bouge={x:parseFloat(valeur_translate[0]) , y:parseFloat(valeur_translate[1]) };
+                   this.#souris_init_objet.reference_de_le_base=tar.getAttribute('reference_de_le_base');
+
+                   this.#souris_element_a_deplacer='table';
+                   this.#div_svg.style.userSelect='none';
+                   return
                }
            }
        }
@@ -229,7 +259,8 @@ class module_svg_bdd{
       
       if(tab[i].id_parent===id_parent){
       
-          if(tab[i].type==='g'){
+          var le_typa=tab[i].type;
+          if(le_typa==='g'){
            
               str+='<g';
               
@@ -240,12 +271,12 @@ class module_svg_bdd{
               }
               
               str+='>';
-              str+=this.#recursuf_arbre_svg(tab,tab[i].id,i+1);
+              str+=this.#recursuf_arbre_svg(tab,i,i+1);
               str+='</g>';
            
           }else{
            
-              str+='<'+tab[i].type;
+              str+='<'+le_typa;
               
               for(var j in tab[i].proprietes){
                   if(typeof tab[i].proprietes[j] === 'string'){
@@ -256,7 +287,7 @@ class module_svg_bdd{
                   
               }
               if(tab[i].hasOwnProperty('contenu')){
-                  str+='>'+tab[i].contenu+'</'+tab[i].type+'>';
+                  str+='>'+tab[i].contenu+'</'+le_typa+'>';
               }else{
                   str+=' />';
               }
@@ -276,8 +307,8 @@ class module_svg_bdd{
        var str='';
        for(var i in this.#arbre){
         
-           var tab=this.#arbre[i].arbre_svg;
-           str+=this.#recursuf_arbre_svg(tab,-2,0);
+           var tab=JSON.parse(JSON.stringify(this.#arbre[i].arbre_svg));
+           str+=this.#recursuf_arbre_svg(tab,-1,0);
        }
        this.#svg_dessin.innerHTML=str;
     
@@ -327,7 +358,7 @@ class module_svg_bdd{
        //        body: JSON.stringify({ajax_param:donnees}), // le type utilisé pour le corps doit correspondre à l'en-tête "Content-Type"
                body: 'ajax_param='+encodeURIComponent(JSON.stringify(donnees))
            });
-           return response.json(); // transforme la réponse JSON reçue en objet JavaScript natif
+           return response.json(); // convertit la réponse JSON reçue en objet JavaScript natif
        }
        
        var ajax_param={
@@ -345,15 +376,12 @@ class module_svg_bdd{
                if(donnees.status==='OK'){
                    var nouvel_arbre={};
                    for(var i in donnees.valeurs){
-//                      console.log(donnees.valeurs[i]['T0.chi_id_basedd']);
-                      
                       
                       this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]={
                         'chp_rev_travail_basedd':donnees.valeurs[i]['T0.chp_rev_travail_basedd'],
                         'arbre_svg':[] // {type:'racine_svg',id:-2,id_parent:-2,donnees:{}}
                       };
-   //                   console.log('this.#arbre=',this.#arbre);
-   //                   return;
+
                       var obj1=functionToArray(donnees.valeurs[i]['T0.chp_rev_travail_basedd'],true,false,'');
                       if(obj1.status===true){
                           this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]['matrice']=obj1.value;
@@ -366,12 +394,6 @@ class module_svg_bdd{
                       }
                    }
 
-   /*
-       $o1.=' var CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
-       $o1.=' var CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
-       $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
-
-   */
 //                   console.log( CSS_TAILLE_REFERENCE_TEXTE , CSS_TAILLE_REFERENCE_PADDING , CSS_TAILLE_REFERENCE_BORDER );
                    const hauteur_de_boite=CSS_TAILLE_REFERENCE_TEXTE+2*CSS_TAILLE_REFERENCE_PADDING+2*CSS_TAILLE_REFERENCE_BORDER;
                    const hauteur_de_boite_affichage=hauteur_de_boite+1*CSS_TAILLE_REFERENCE_BORDER;
@@ -380,7 +402,7 @@ class module_svg_bdd{
                    var numero_table=0;
                    var decallage_droite_table=10;
                    var position_xy_table=[decallage_droite_table,10];
-                   var indice_table_en_cours=0;
+                   var id_svg_conteneur_table=0;
                    var id_tab_table_en_cours=0;
                    var largeur_de_la_boite=1;
                    var nom_de_la_table='';
@@ -400,25 +422,51 @@ class module_svg_bdd{
                    var position_max_droite=0;
                    var largeur_de_la_table=0;
                    var tableau_des_references_croisees=[];
-                   var id_table_en_cours=0;
+                   var id_svg_base_en_cours=0;
+                   var id_svg_table_en_cours=0;
+                   var id_svg_champ_en_cours=0;
                    /* 
                      =============================
                      debut de pour chaque base 
                      =============================
                    */                
+                   
                    for(var id_de_la_base in this.#arbre){
                     
 //                       console.log('indice de la base id_de_la_base=',id_de_la_base);
                        
-                       
-                       
+                       this.#svg_tableaux_des_references_amont_aval[id_de_la_base]=[];
+
+                       id_svg_base_en_cours=indice_courant;
                        var tab=this.#arbre[id_de_la_base]['matrice'];
 //                       console.log('tab=',tab);
-                       this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={type:'g'   ,id:-1,id_parent:-2, proprietes:{transform:'translate(0,0)','data-id':'conteneur_base_'+id_de_la_base}};
-                       this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
-                           type:'rect',id:0 ,id_parent:-1, 
-                           proprietes:{'data-type':'base_de_donnee',x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_base_'+id_de_la_base}
+                       this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                           type:'g'   ,
+                           id:id_svg_base_en_cours,
+                           id_parent:-1, 
+                           proprietes:{
+                               type_element : 'conteneur_de_base',
+                               id:indice_courant,
+                               id_svg_base_en_cours : id_svg_base_en_cours,
+                               transform:'translate(0,0)',
+                               decallage_x:0,
+                               decallage_y:0,
+                               'data-id':'conteneur_base_'+id_de_la_base
+                           }
                        };
+                       indice_courant++;
+                       this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                           type:'rect',
+                           id:indice_courant ,
+                           id_parent:id_svg_base_en_cours, 
+                           proprietes:{
+                            type_element : 'rectangle_de_base',
+                            id:indice_courant,
+                            id_svg_base_en_cours : id_svg_base_en_cours,
+                            'data-type':'base_de_donnee',x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:0.2;" , 'data-id':'cadre_base_'+id_de_la_base}
+                       };
+                       indice_courant++;
+
                        indice_cadre_base=indice_courant-1;
                        tableau_des_references_croisees=[];
 
@@ -444,7 +492,11 @@ class module_svg_bdd{
                                        tt[0]+=0.5;
                                        tt[1]+=0.5;
                                    }
+                                   this.#arbre[id_de_la_base].arbre_svg[0].proprietes.decallage_x=tt[0];
+                                   this.#arbre[id_de_la_base].arbre_svg[0].proprietes.decallage_y=tt[1];
                                    this.#arbre[id_de_la_base].arbre_svg[0].proprietes.transform='translate('+tt[0]+','+tt[1]+')';
+                                   this.#arbre[id_de_la_base].arbre_svg[0].proprietes.decallage_x=tt[0];
+                                   this.#arbre[id_de_la_base].arbre_svg[0].proprietes.decallage_y=tt[1];
 
                                }else if(tab[j_dans_tab][1]==='hauteur_sur_svg' ){
                                 
@@ -490,55 +542,116 @@ class module_svg_bdd{
                                     
                                        if('n'===tab[i][1]){
                                         
-                                           /*
-                                            conteneur de la table
-                                           */
-                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
-                                               type:'g'   ,id:indice_courant ,id_parent:-1 , 
-                                               proprietes:{
-                                                transform:'translate('+(position_xy_table[0])+','+(position_xy_table[1])+')',
-                                                'data-id':'conteneur_table_'+numero_table}
-                                           };
-                                           position_gauche_de_la_table = position_xy_table[0];
-                                           position_haut_de_la_table   = position_xy_table[1];
                                         
-                                        
-                                           indice_table_en_cours=indice_courant;
-                                           liste_de_indices_des_elements_a_ajuster_en_largeur=[indice_table_en_cours];
                                            nom_de_la_table=tab[i+1][1];
+                                           id_svg_table_en_cours=indice_courant;
+                                           
+                                           var meta_de_la_table={
+                                             '__meta_nom_long_de_la_table' : '',
+                                             '__meta_nom_court_de_la_table' : '',
+                                             '__meta_nom_bref_de_la_table' : '',
+                                             '__meta_position_x_y_sur_svg' : '',
+                                           };
+                                           var position_de_la_table=[0,0];
+                                        
+                                           /*
+                                             ======================
+                                             recherche des meta
+                                             ======================
+                                           */
+                                           for(var j=id_tab_table_en_cours+1;j<l01 && tab[j][3]>tab[id_tab_table_en_cours][3];j++){ // i
+                                            
+                                               if(tab[j][7]===id_tab_table_en_cours && 'meta'===tab[j][1] ){
+                                                
+                                                   for(var l=j+1;l<l01 && tab[l][3]>tab[j][3] ;l++){
+                                                    
+                                                       if(tab[l][7]===j && tab[l][1]=='' && tab[l][8]===2){
+                                                       
+                                                           /* fonction sans nom dans les meta*/
+//                                                           console.log(' meta table' , tab[l+1][1] , tab[l+2][1] );
+                                                           meta_de_la_table['__meta_'+tab[l+1][1]]=tab[l+2][1];
+                                                        
+                                                       }
+                                                   }                                    
+                                               }
+                                           }
                                            
                                            /*
-                                            rectangle de la table
+                                             ======================
+                                             si les meta ne sont pas définis, on les complète
+                                             ======================
                                            */
-                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
-                                            type:'rect','data-type':'table',id:indice_courant ,id_parent:indice_courant-1 , 
-                                            proprietes:{x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:1;" , 'data-id':'cadre_table_'+numero_table}
+                                           if(meta_de_la_table['__meta_nom_long_de_la_table']===''){
+                                            meta_de_la_table['__meta_nom_long_de_la_table']=nom_de_la_table;
+                                           }
+                                           
+                                           if(meta_de_la_table['__meta_nom_court_de_la_table']===''){
+                                            meta_de_la_table['__meta_nom_court_de_la_table']=nom_de_la_table;
+                                           }
+                                           if(meta_de_la_table['__meta_nom_bref_de_la_table']===''){
+                                            meta_de_la_table['__meta_nom_bref_de_la_table']=nom_de_la_table;
+                                           }
+                                           
+                                           if(meta_de_la_table['__meta_position_x_y_sur_svg']===''){
+                                               meta_de_la_table['__meta_position_x_y_sur_svg']=position_xy_table[0]+','+position_xy_table[1];
+                                               position_de_la_table=meta_de_la_table['__meta_position_x_y_sur_svg'].split(',');
+                                           }else{
+                                               position_de_la_table=meta_de_la_table['__meta_position_x_y_sur_svg'].split(',');
+                                               position_xy_table[0]=parseFloat(position_de_la_table[0]);
+                                               position_xy_table[1]=parseFloat(position_de_la_table[1]);
+                                           }
+                                           
+                                        
+                                           /*
+                                             conteneur de la table
+                                           */
+                                           
+                                           id_svg_conteneur_table=indice_courant;
+                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                                               type:'g'   ,id:indice_courant ,id_parent:id_svg_base_en_cours , 
+                                               proprietes:{
+                                                   id:indice_courant,
+                                                   type_element : 'conteneur_de_table',
+                                                   id_svg_base_en_cours : id_svg_base_en_cours,
+                                                   id_svg_table_en_cours : id_svg_table_en_cours,
+                                                   nom_de_la_table       : nom_de_la_table ,
+                                                   decallage_x           : position_de_la_table[0],
+                                                   decallage_y           : position_de_la_table[1],
+                                                   transform:'translate('+(position_de_la_table[0])+','+(position_de_la_table[1])+')',
+                                                   'data-id':'conteneur_table_'+id_svg_table_en_cours,
+                                               }
                                            };
-                                           id_table_en_cours=indice_courant-1;
+                                           indice_courant++;
+                                           
+                                           position_gauche_de_la_table = parseFloat(position_de_la_table[0]);
+                                           position_haut_de_la_table   = parseFloat(position_de_la_table[1]);
+                                        
+                                        
+                                           liste_de_indices_des_elements_a_ajuster_en_largeur=[indice_courant];
+                                           
+                                           /*
+                                             rectangle de la table
+                                           */
+                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                                            type:'rect','data-type':'table',id:indice_courant ,id_parent:id_svg_conteneur_table , 
+                                            proprietes:{
+                                             id                     : indice_courant,
+                                             type_element           : 'rectangle_de_table',
+                                             id_svg_base_en_cours   : id_svg_base_en_cours,
+                                             id_svg_table_en_cours  : id_svg_table_en_cours,
+                                             nom_de_la_table        : nom_de_la_table ,
+                                             x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:1;" , 'data-id':'cadre_table_'+numero_table,
+                                             'meta_de_la_table'     : JSON.stringify(meta_de_la_table),
+                                             id_svg_conteneur_table : id_svg_conteneur_table ,
+                                            }
+                                           };
+                                           indice_courant++;
                                            numero_table++;
                                        }
                                    }
                                }
-                               /*
-                                 ======================
-                                 ajout des meta
-                                 ======================
-                               */
-                               for(var i=id_tab_table_en_cours+1;i<l01 && tab[i][3]>tab[id_tab_table_en_cours][3];i++){
-                                
-                                   if(tab[i][7]===id_tab_table_en_cours && 'meta'===tab[i][1] ){
-                                    
-                                       for(var l=i+1;l<l01 && tab[l][3]>tab[i][3] ;l++){
-                                        
-                                           if(tab[l][7]===i && tab[l][1]=='' && tab[l][8]===2){
-                                           
-                                               /* fonction sans nom dans les meta*/
-                                               this.#arbre[id_de_la_base].arbre_svg[indice_table_en_cours].proprietes['__meta_'+tab[l+1][1]]=tab[l+2][1];
-                                            
-                                           }
-                                       }                                    
-                                   }
-                               }
+                               
+                               
 //                               console.log('hauteur_de_boite=' , hauteur_de_boite );
                                /*
                                  ================
@@ -546,7 +659,7 @@ class module_svg_bdd{
                                  ================
                                */
                                     
-                               /* on met les champs de la table indice_table_en_cours */
+                               /* on met les champs de la table  */
                                var numero_de_boite=0;
                                
                                for(var k=id_tab_table_en_cours+1;k<l01 && tab[k][3]>tab[id_tab_table_en_cours][3];k++){
@@ -564,7 +677,7 @@ class module_svg_bdd{
                                                            if(tab[m][1]==='n'){
 
                                                                /*
-                                                               on recherche le nom du champ pour créer le conteneur et le cadre
+                                                                 on recherche le nom du champ pour créer le conteneur et le cadre
                                                                */
                                                                
                                                                if(numero_de_boite===0){
@@ -572,24 +685,44 @@ class module_svg_bdd{
                                                                     si c'est le premier champ, on crée un cadre qui contient le nom de la table
                                                                     conteneur du nom de la table
                                                                    */
-                                                                   this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
-                                                                       type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , 
-                                                                       proprietes:{transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+CSS_TAILLE_REFERENCE_BORDER+')','data-id':'conteneur_nom_table_'+j_dans_tab}
+                                                                   id_svg_champ_en_cours=indice_courant;
+                                                                   this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                                                                       type:'g'   ,id:indice_courant ,id_parent:id_svg_conteneur_table , 
+                                                                       proprietes:{
+                                                                           id:indice_courant,
+                                                                           type_element : 'conteneur_de_nom_de_table',
+                                                                           id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                           id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                           id_svg_champ_en_cours : id_svg_champ_en_cours,
+                                                                           nom_de_la_table       : nom_de_la_table ,
+                                                                           decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
+                                                                           decallage_y           : CSS_TAILLE_REFERENCE_BORDER,
+                                                                           transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+CSS_TAILLE_REFERENCE_BORDER+')' ,
+                                                                       }
                                                                    };
+                                                                   indice_courant++;
 
                                                                    /*
                                                                      rectangle du nom de la table
                                                                      
                                                                    */
-                                                                   this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
+                                                                   this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
                                                                        type:'rect',id:indice_courant ,id_parent:indice_courant-1      , 
                                                                        proprietes:{
+                                                                           id:indice_courant,
+                                                                           type_element : 'rectangle_de_nom_de_table',
+                                                                           id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                           id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                           id_svg_champ_en_cours : id_svg_champ_en_cours,
+                                                                           nom_de_la_table       : nom_de_la_table ,
                                                                            x:0,
                                                                            y:0,
                                                                            width:18,
-                                                                           height:hauteur_de_boite,style:"stroke:white;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:red;fill-opacity:1;" , 'data-id':'cadre_champ_'+j_dans_tab
+                                                                           height:hauteur_de_boite,
+                                                                           style:"stroke:white;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:red;fill-opacity:1;" 
                                                                        }
                                                                    };
+                                                                   indice_courant++;
                                                                    liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
                                                                    hauteur_de_la_table+=hauteur_de_boite_affichage;
                                                                    
@@ -597,11 +730,22 @@ class module_svg_bdd{
                                                                     /*
                                                                       texte du nom de la table
                                                                     */
-                                                                   this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
+                                                                   this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
                                                                        type:'text',id:indice_courant ,id_parent:indice_courant-2     , 
-                                                                       contenu:'<tspan style="cursor:move;">🟥</tspan>'+nom_de_la_table ,
-                                                                       proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:white;" , 'data-id':'texte_table_'+j_dans_tab}
+                                                                       contenu:'<tspan style="cursor:move;" id_a_deplacer="'+id_svg_table_en_cours+'" reference_de_le_base="'+id_de_la_base+'">🟥</tspan>'+nom_de_la_table ,
+                                                                       proprietes:{
+                                                                           id:indice_courant,
+                                                                           type_element : 'texte_de_nom_de_table',
+                                                                           id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                           id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                           id_svg_champ_en_cours : id_svg_champ_en_cours,
+                                                                           nom_de_la_table       : nom_de_la_table ,
+                                                                           x:CSS_TAILLE_REFERENCE_BORDER,
+                                                                           y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,
+                                                                           style:"fill:white;" , 
+                                                                       }
                                                                    };
+                                                                   indice_courant++;
                                                                    largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_la_table+'🟥'); // ↔ 🟥
                                                                    
                                                                    numero_de_boite++;
@@ -609,29 +753,95 @@ class module_svg_bdd{
 
                                                                }
                                                                
+                                                               nom_du_champ=tab[m+1][1];
+
+                                                               var meta_du_champ={
+                                                                 '__meta_nom_long_du_champ' : '',
+                                                                 '__meta_nom_court_du_champ' : '',
+                                                                 '__meta_nom_bref_du_champ' : '',
+                                                               };
+                                                               
+                                                               /*
+                                                                 on va chercher les meta de ce champ
+                                                               */
+                                                               for(var o=l+1;o<l01 && tab[o][3]>tab[l][3];o++){
+                                                                   if(tab[o][7]===l){
+                                                                    
+                                                                       if(tab[o][1]==='meta'){ // m
+                                                                           
+                                                                           for(var n=o+1;n<l01 && tab[n][3]>tab[o][3];n++){
+                                                                               if(tab[n][7]===o){
+                                                                                    
+                                                                                   if(tab[n][1]==='' && tab[n][2] ==='f' && tab[n][8] === 2){
+//                                                                                      console.log('meta du champ' , tab[n+1][1] + ' ' + tab[n+2][1]);
+                                                                                      meta_du_champ['__meta_'+tab[n+1][1]]=tab[n+2][1];
+                                                                                      
+                                                                                    
+                                                                                   }
+                                                                               }
+                                                                           }
+                                                                       }
+                                                                   }
+                                                               }
+                                                               if(meta_du_champ['__meta_nom_long_du_champ']===''){
+                                                                meta_du_champ['__meta_nom_long_du_champ']=nom_du_champ;
+                                                               }
+                                                               if(meta_du_champ['__meta_nom_court_du_champ']===''){
+                                                                meta_du_champ['__meta_nom_court_du_champ']=nom_du_champ;
+                                                               }
+                                                               if(meta_du_champ['__meta_nom_bref_du_champ']===''){
+                                                                meta_du_champ['__meta_nom_bref_du_champ']=nom_du_champ;
+                                                               }
+                                                               
+                                                               
+                                                               
                                                                /*
                                                                  création de la boite du champ
                                                                */
                                                                
-                                                               nom_du_champ=tab[m+1][1];
                                                                largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_du_champ);
                                                                
+                                                               id_svg_champ_en_cours=indice_courant;
                                                                /*
                                                                  conteneur du nom du champ
                                                                */
-                                                               this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
-                                                                   type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , 
-                                                                   proprietes:{transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')','data-id':'conteneur_champ_'+j_dans_tab}
+                                                               this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                                                                   type:'g'   ,id:indice_courant ,id_parent:id_svg_conteneur_table , 
+                                                                   proprietes:{
+                                                                       id:indice_courant,
+                                                                       type_element          : 'conteneur_de_champ'  ,
+                                                                       id_svg_base_en_cours  : id_svg_base_en_cours  ,
+                                                                       id_svg_table_en_cours : id_svg_table_en_cours ,
+                                                                       id_svg_champ_en_cours : id_svg_champ_en_cours ,
+                                                                       nom_de_la_table       : nom_de_la_table       ,
+                                                                       nom_du_champ          : nom_du_champ          ,
+                                                                       decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
+                                                                       decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER),
+                                                                       transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')',
+                                                                       'data-id':'conteneur_champ_'+j_dans_tab
+                                                                   }
                                                                };
+                                                               indice_courant++;
                                                                
                                                                
                                                                /*
                                                                  rectangle du nom du champ
                                                                */
-                                                               this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
+                                                               this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
                                                                    type:'rect',id:indice_courant ,id_parent:indice_courant-1      , 
-                                                                   proprietes:{x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:gold;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:pink;fill-opacity:0.2;" , 'data-id':'cadre_champ_'+j_dans_tab}
+                                                                   proprietes:{
+                                                                       id:indice_courant,
+                                                                       type_element : 'rectangle_de_champ',
+                                                                       id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                       id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                       id_svg_champ_en_cours : id_svg_champ_en_cours,
+                                                                       nom_de_la_table       : nom_de_la_table ,
+                                                                       nom_du_champ          : nom_du_champ          ,
+                                                                       x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:gold;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:pink;fill-opacity:0.2;" , 
+                                                                       'meta_du_champ' : JSON.stringify(meta_du_champ),
+                                                                   }
                                                                };
+                                                               indice_courant++;
                                                                indice_du_champ=indice_courant-1;
                                                                this.#arbre[id_de_la_base].arbre_svg[indice_du_champ].proprietes['__id_svg_champ']=indice_du_champ;
                                                                
@@ -642,45 +852,44 @@ class module_svg_bdd{
                                                                /*
                                                                  texte du nom du champ
                                                                */
-                                                               this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
+                                                               this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
                                                                    type:'text',id:indice_courant ,id_parent:indice_courant-2     , 
                                                                    contenu:nom_du_champ ,
-                                                                   proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:navy;" , 'data-id':'texte_table_'+j_dans_tab}
+                                                                   proprietes:{
+                                                                       id:indice_courant,
+                                                                       type_element : 'texte_de_champ',
+                                                                       id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                       id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                       id_svg_champ_en_cours : id_svg_champ_en_cours,
+                                                                       nom_de_la_table       : nom_de_la_table ,
+                                                                       nom_du_champ          : nom_du_champ          ,
+                                                                       x:CSS_TAILLE_REFERENCE_BORDER,
+                                                                       y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:navy;" , 
+                                                                   }
                                                                };
-                                                               
+                                                               indice_courant++;
                                                                
                                                                numero_de_boite++;
                                                            }
                                                        }
                                                    }
                                                    /*
-                                                   on va chercher les meta de ce champ et des références croisées
+                                                     on va chercher les références croisées de ce champ
                                                    */
-                                                   for(var m=l+1;m<l01 && tab[m][3]>tab[l][3];m++){
-                                                       if(tab[m][7]===l){
+                                                   for(var o=l+1;o<l01 && tab[o][3]>tab[l][3];o++){
+                                                       if(tab[o][7]===l){
                                                         
-                                                           if(tab[m][1]==='meta'){
-                                                               
-                                                               for(var n=m+1;n<l01 && tab[n][3]>tab[m][3];n++){
-                                                                   if(tab[n][7]===m){
-                                                                        
-                                                                       if(tab[n][1]==='' && tab[n][2] ==='f' && tab[n][8] === 2){
-//                                                                          console.log(tab[n+1][1] + ' ' + tab[n+2][1])
-                                                                          this.#arbre[id_de_la_base].arbre_svg[indice_du_champ].proprietes['__meta_'+tab[n+1][1]]=tab[n+2][1];
-                                                                          
-                                                                        
-                                                                       }
-                                                                   }
-                                                               }
-                                                           }
-                                                           if('references'===tab[m][1] && tab[m][8]===2 ){
+                                                           if('references'===tab[o][1] && tab[o][8]===2 ){
                                                             tableau_des_references_croisees.push({
-                                                             'id_table_fille'     : id_table_en_cours     ,
-                                                             'nom_table_fille'    : nom_de_la_table       ,
-                                                             'id_du_champ_fils'   : indice_du_champ       ,
-                                                             'nom_du_champ_fils'  : nom_du_champ          ,
-                                                             'nom_table_mère'     : tab[m+1][1]           ,
-                                                             'nom_du_champ_père'  : tab[m+2][1]           ,
+                                                             id:indice_courant,
+                                                             id_svg_base_en_cours : id_svg_base_en_cours,
+                                                             id_fable_fille : id_svg_table_en_cours,
+                                                             id_svg_champ_en_cours : id_svg_champ_en_cours,
+                                                             'nom_table_fille'    : nom_de_la_table         ,
+                                                             'id_du_champ_fils'   : indice_du_champ         ,
+                                                             'nom_du_champ_fils'  : nom_du_champ            ,
+                                                             'nom_table_mère'     : tab[o+1][1]             ,
+                                                             'nom_du_champ_père'  : tab[o+2][1]             ,
                                                             });
                                                            }
                                                        }
@@ -710,8 +919,31 @@ class module_svg_bdd{
                                                     
                                                        if('index_name'===tab[k][1]){
                                                         
-//                                                           console.log('nom_de_la_table=',nom_de_la_table,'index',tab[k+1][1]);
-                                                           nom_de_l_index=tab[k+1][1];
+                                                          nom_de_l_index=tab[k+1][1];
+                                                          id_svg_champ_en_cours=indice_courant;
+                                                          var champs_de_l_index='';
+
+                                                          for(var l=i+1;l<l01 && tab[l][3]> tab[i][3];l++){
+                                                              if(tab[l][7]===i){
+                                                                  if('fields'===tab[l][1]){
+                                                                   var obj1=a2F1(tab,l,false,l+1,false);
+                                                                   if(obj1.status===true){
+//                                                                       console.log('obj1=',obj1);
+                                                                       champs_de_l_index=obj1.value;
+                                                                   }else{
+                                                                       logerreur({status : true , message : '0849 problème sur l\index "'+nom_de_l_index+'"' });
+                                                                       displayMessages('zone_global_messages');
+                                                                   }
+                                                                    
+                                                                  }
+                                                              }
+                                                          }
+                                                                   
+                                                        
+                                                           
+                                                        
+//                                                          console.log('nom_de_la_table=',nom_de_la_table,'index',tab[k+1][1]);
+
                                                           
                                                            /*
                                                              création de la boite de l'index
@@ -723,30 +955,52 @@ class module_svg_bdd{
                                                            /*
                                                              conteneur du nom de l'index
                                                            */
-                                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
-                                                            type:'g'   ,id:indice_courant ,id_parent:indice_table_en_cours , 
-                                                            proprietes:{transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')'}
+                                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                                                            type:'g'   ,id:indice_courant ,id_parent:id_svg_conteneur_table , 
+                                                            proprietes:{
+                                                                id:indice_courant,
+                                                                type_element : 'conteneur_d_index',
+                                                                id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                nom_de_la_table       : nom_de_la_table ,
+                                                                decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
+                                                                decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER),
+                                                                transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')'}
                                                            };
+                                                           indice_courant++;
                                                            
-                                                           
-                                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
+                                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
                                                                type:'rect',id:indice_courant ,id_parent:indice_courant-1      , 
-                                                               proprietes:{x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:green;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:green;fill-opacity:0.2;" }
+                                                               proprietes:{
+                                                                   id:indice_courant,
+                                                                   type_element : 'rectangle_d_index',
+                                                                   id_svg_base_en_cours : id_svg_base_en_cours,
+                                                                   id_svg_table_en_cours : id_svg_table_en_cours,
+                                                                   nom_de_la_table       : nom_de_la_table ,
+                                                                   champs_de_l_index : champs_de_l_index,
+                                                                   x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:green;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:green;fill-opacity:0.2;" 
+                                                               }
                                                            };
+                                                           indice_courant++;
                                                            liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
-                                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant++]={
+                                                           this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
                                                                type:'text',id:indice_courant ,id_parent:indice_courant-2     , contenu:nom_de_l_index ,
-                                                               proprietes:{x:CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:green;" }};
+                                                               proprietes:{
+                                                                   id:indice_courant                             ,
+                                                                   type_element : 'texte_d_index',
+                                                                   id_svg_base_en_cours : id_svg_base_en_cours   ,
+                                                                   id_svg_table_en_cours : id_svg_table_en_cours ,
+                                                                   nom_de_la_table       : nom_de_la_table ,
+                                                                   x:CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:green;" 
+                                                               }
+                                                           };
+                                                           indice_courant++;
                                                            
 
                                                            liste_de_indices_des_elements_a_ajuster_en_largeur.push(indice_courant-1);
                                                            hauteur_de_la_table+=hauteur_de_boite_affichage;
                                                            
-                                                           
-                                                          
                                                            numero_de_boite++;
-                                                          
-                                                          
                                                           
                                                        }
                                                    }
@@ -757,14 +1011,14 @@ class module_svg_bdd{
                                }
 
                                /*
-                               ajustement de la taille de la base
+                                 ajustement de la taille des tables
                                */
                                position_xy_table[0]+=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_MARGIN+4*CSS_TAILLE_REFERENCE_BORDER;
                                position_xy_table[1]+=20;
                                
                                for(var k=0;k<liste_de_indices_des_elements_a_ajuster_en_largeur.length;k++){
                                    /*
-                                    le premier indice est le conteneur de la table
+                                     le premier indice est le conteneur de la table
                                    */
                                    if(k===0){
                                        
@@ -788,11 +1042,6 @@ class module_svg_bdd{
                                    }
                                }
                                
-                               
-
-
-                               
-                               
                                /* 
                                  fin de boucle sur j_dans_tab
                                */    
@@ -804,13 +1053,138 @@ class module_svg_bdd{
                            this.#arbre[id_de_la_base].arbre_svg[indice_cadre_base].proprietes.width=position_max_droite+2*CSS_TAILLE_REFERENCE_MARGIN; // 
                            
                        }
+                       /*
+                       */
+                       var offset_base=[];
+                       var offset_table_mere=[];
+                       var offset_champ_pere=[];
+                       var largeur_table_mere=0;
+                       var offset_table_fille=[];
+                       var offset_champ_fils=[];
+                       this.#svg_tableaux_des_references_amont_aval[id_de_la_base]=[];
+                       var id_table_mere=0;
+                       console.log('tableau_des_references_croisees=',tableau_des_references_croisees);
+                       for( var i=0;i<tableau_des_references_croisees.length;i++){
+                           id_table_mere=0;
+
+                           for( var j=0;j<this.#arbre[id_de_la_base].arbre_svg.length;j++){
+                            
+                            
+                            
+                               if(
+                                   this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_de_la_table===tableau_des_references_croisees[i].nom_table_mère
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.type_element==='conteneur_de_table'
+                                
+                               ){
+                                   offset_table_mere=[
+                                     parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_x),
+                                     parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_y)
+                                   ];
+                                   id_table_mere=this.#arbre[id_de_la_base].arbre_svg[j].proprietes.id_svg_table_en_cours;
+                                   if(i===0){
+                                       console.log('offset_table_mere',offset_table_mere);
+                                   }
+                               }
+
+                               if(
+                                   this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_de_la_table===tableau_des_references_croisees[i].nom_table_mère
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.type_element==='rectangle_de_table'
+                                
+                               ){
+                                   largeur_table_mere=parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.width);
+                                   
+                                   if(i===0){
+                                       console.log('largeur_table_mere',largeur_table_mere);
+                                   }
+                               }
+
+                               if(
+                                   this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_de_la_table===tableau_des_references_croisees[i].nom_table_mère
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_du_champ===tableau_des_references_croisees[i].nom_du_champ_père
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.type_element==='conteneur_de_champ'
+                               ){
+                                   offset_champ_pere=[
+                                       parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_x),
+                                       parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_y)
+                                   ]
+                                       ; //translate(20,10)
+                                   if(i===0){
+                                       console.log('offset_champ_pere' , offset_champ_pere);
+                                   }
+                               }
+
+                               if(
+                                   this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_de_la_table===tableau_des_references_croisees[i].nom_table_fille
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.type_element==='conteneur_de_table'
+                                
+                               ){
+                                   offset_table_fille=[
+                                       parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_x),
+                                       parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_y)
+                                   ]
+                                   if(i===0){
+//                                       id_table_fille=this.#arbre[id_de_la_base].arbre_svg[j].proprietes.id_svg_table_en_cours
+
+                                       console.log('offset_table_fille' ,offset_table_fille);
+                                   }
+                               }
+
+                               if(
+                                   this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_de_la_table===tableau_des_references_croisees[i].nom_table_fille
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.nom_du_champ===tableau_des_references_croisees[i].nom_du_champ_fils
+                                && this.#arbre[id_de_la_base].arbre_svg[j].proprietes.type_element==='conteneur_de_champ'
+                               ){
+                                   offset_champ_fils=[
+                                       parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_x),
+                                       parseFloat(this.#arbre[id_de_la_base].arbre_svg[j].proprietes.decallage_y)
+                                   ]
+                                       ; //translate(20,10)
+                                   if(i===0){
+                                       console.log('offset_champ_fils' , offset_champ_fils);
+                                   }
+                               }
+                           }
+
+                           this.#svg_tableaux_des_references_amont_aval[id_de_la_base].push({
+                               id_table_mere  : id_table_mere   ,
+                               id_table_fille : tableau_des_references_croisees[i].id_fable_fille  ,
+                               id_du_path     : indice_courant,
+                               p1             : [(offset_table_fille[0]+offset_champ_fils[0])                    , (offset_table_fille[1]+offset_champ_fils[1]+2*CSS_TAILLE_REFERENCE_BORDER) ],
+                               p2             : [(offset_table_mere[0] +offset_champ_pere[0]+largeur_table_mere) , (offset_table_mere[1] +offset_champ_pere[1]+2*CSS_TAILLE_REFERENCE_BORDER) ],
+                               reference_de_le_base : id_de_la_base,
+                           });
+                           
+                           var d='M '+(offset_table_fille[0]+offset_champ_fils[0])+' '+(offset_table_fille[1]+offset_champ_fils[1]+2*CSS_TAILLE_REFERENCE_BORDER)
+                           d+=' C '+(offset_table_fille[0]+offset_champ_fils[0]-30)+' '+(offset_table_fille[1]+offset_champ_fils[1]+2*CSS_TAILLE_REFERENCE_BORDER)
+                           d+=  ' '+(offset_table_mere[0]+offset_champ_pere[0]+30+largeur_table_mere)+' '+(offset_table_mere[1]+offset_champ_pere[1]+2*CSS_TAILLE_REFERENCE_BORDER)
+                           d+=  ' '+(offset_table_mere[0]+offset_champ_pere[0]+largeur_table_mere)+' '+(offset_table_mere[1]+offset_champ_pere[1]+2*CSS_TAILLE_REFERENCE_BORDER)
+
+                           this.#arbre[id_de_la_base].arbre_svg[indice_courant]={
+                               type:'path',id:indice_courant ,id_parent:id_svg_base_en_cours , 
+                               proprietes:{
+                                   id                   : indice_courant ,
+                                   d                    : d ,
+                                   type_element         : 'reference_croisée'  ,
+                                   id_svg_base_en_cours : id_svg_base_en_cours ,
+                                   style                : 'stroke:aqua;stroke-width:'+(CSS_TAILLE_REFERENCE_BORDER*3)+';fill:transparent;stroke-linejoin:round;stroke-linecap:round;',
+                               }
+                           };
+                           indice_courant++;
+                               
+                               
+                               /*
+                               <path data-idarbre1="1" d=" M -63 -9 C 53 -6 132 71 176 31 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform=""></path>
+                               */
+                           
+                           
+                       }
                    }
                    /*
                      =============================
                      fin de pour chaque base
                      =============================
                    */
-                   console.log('tableau_des_references_croisees=',tableau_des_references_croisees);
+                   console.log(this.#svg_tableaux_des_references_amont_aval);
 
 
 
