@@ -773,7 +773,7 @@ function reactiverLesBoutons(){
     }
     var lsta1 = refBody.getElementsByTagName('a');
     for(i=0;i < lsta1.length;i++){
-        if((lsta1[i].href) && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
+        if((lsta1[i].href) && typeof lsta1[i].href==='string' && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
             if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
             }else{
                 lsta1[i].addEventListener("click",clickLink1,false);
