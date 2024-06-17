@@ -1,10 +1,29 @@
 <?php
 
+/*
+  ==========================================================================================================
+*/  
+function envoyer_le_rev_de_le_base_en_post(&$data){
 
+    $db = new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
+    $sql0=' UPDATE tbl_bases_de_donnees set `chp_rev_travail_basedd` = \''.sq0($data['input']['source_rev_de_la_base']).'\' WHERE 	chi_id_basedd = '.sq0($data['input']['id_bdd_de_la_base']).'';
+    /*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql0='.$sql0.CRLF.CRLF); fclose($fd);}
+    */
+    if(false === $db->exec($sql0)){
+        $data['messages'][]=basename(__FILE__). ' ' . __LINE__ . ' Erreur sur la sauvegarde de la base';      
+    }else{
+        $data['status']='OK';
+    }
+}
+
+/*
+  ==========================================================================================================
+*/  
 function recuperer_zone_travail_pour_les_bases(&$data){
  
   $db = new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
-  $sql=' select chi_id_basedd , chp_rev_travail_basedd FROM tbl_bases_de_donnees WHERE 	chi_id_basedd IN ('.$data['input']['les_id_des_bases'].')';
+  $sql=' select chi_id_basedd , chp_rev_travail_basedd , chp_nom_basedd FROM tbl_bases_de_donnees WHERE 	chi_id_basedd IN ('.sq0($data['input']['les_id_des_bases']).')';
   $stmt = $db->prepare($sql);
   $data0=array();
   if($stmt!==false){
@@ -13,6 +32,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
      array_push($data0, array(
       'T0.chi_id_basedd'          => $arr[0],
       'T0.chp_rev_travail_basedd' => $arr[1],
+      'T0.chp_nom_basedd'         => $arr[2],
      ));
     }
     $data['status']='OK';
@@ -26,7 +46,9 @@ function recuperer_zone_travail_pour_les_bases(&$data){
  
 }
 
-//==========================================================================================================
+/*
+  ==========================================================================================================
+*/  
 function sauvegarder_format_rev_en_dbb(&$data){
 
 /*
@@ -45,7 +67,7 @@ if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ 
        AND `chx_source_rev`         = '.addslashes1($data['input']['parametres_sauvegarde']['chx_source_rev']).' 
     ';
     
-    if(false === $db->exec($sql0)){ // 
+    if(false === $db->exec($sql0)){
      
         $data['messages'][]=basename(__FILE__). ' ' . __LINE__ . ' Erreur sur la suppression';
       

@@ -920,6 +920,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 }
                 var objInstructionGauche = js_traiteInstruction1(tab,niveau,tabAffecte['par0'][0]);
                 if(objInstructionGauche.status === true){
+                    
                     var objInstructionDroite = js_traiteInstruction1(tab,niveau,tabAffecte['par1'][0]);
                     if(objInstructionDroite.status === true){
                         /* on écrit l'affectation ici */
@@ -984,6 +985,16 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                         return(logerreur({status:false,value:t,id:i,tab:tab,message:'dans obj de "declare" ou "dans" il y a un problème'}));
                                     }
                                 }
+                            }else if(tabdeclare[1][1] == 'await'){
+                                t+='var '+tabdeclare[0][1]+'= await ';
+                                obj=js_traiteAppelFonction(tab,tabdeclare[1][0]+1,false,niveau,false); // tab,i,dansConditionOuDansFonction,niveau,recursif
+                                if(obj.status == true){
+                                    t+=obj.value+''+terminateur+'';
+
+                                }else{
+                                    return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur dans une déclaration'}));
+                                }
+                             
                             }else if(tabdeclare[1][1] == 'appelf'){
                                 obj=js_traiteAppelFonction(tab,tabdeclare[1][0],true,niveau,false);
                                 if(obj.status == true){
@@ -1664,7 +1675,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                             }else{
                                 return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'}));
                             }
-                        }else if(tab[j+2][1] == 'plus' || tab[j+2][1] == 'concat' ){
+                        }else if(tab[j+2][1] == 'plus' || tab[j+2][1] == 'moins' || tab[j+2][1] == 'concat' ){
                             var objOperation = TraiteOperations1(tab,(j+2),0);
                             if(objOperation.status == true){
                                 textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objOperation.value;
@@ -1984,7 +1995,7 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                         }else if(tab[j+1][1] == '@'){
                             argumentsFonction+=',';
                             argumentsFonction+=tab[j+1][13];
-                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'moins') || (tab[j+1][1] == 'concat')){
+                        }else if((tab[j+1][1] == 'mult') || (tab[j+1][1] == 'plus') || (tab[j+1][1] == 'divi') || (tab[j+1][1] == 'moins') || (tab[j+1][1] == 'concat')){
                             var objOperation = TraiteOperations1(tab,(j+1),niveau);
                             if(objOperation.status == true){
                                 argumentsFonction+=',';
@@ -2157,7 +2168,11 @@ function TraiteOperations1(tab,id,niveau){
                         }else if((tab[i][1] == 'mult') || (tab[i][1] == 'plus') || (tab[i][1] == 'concat') || (tab[i][1] == 'moins') || (tab[i][1] == 'mult') || (tab[i][1] == 'divi')  || (tab[i][1] == 'modulo') || (tab[i][1] == 'etBin') || (tab[i][1] == 'decalDroite' )){
                             var objOperation = TraiteOperations1(tab,i);
                             if(objOperation.status == true){
-                                t+=''+objOperation.value+'';
+                                if((tab[i][1] == 'moins')){
+                                 t+='-('+objOperation.value+')';
+                                }else{
+                                 t+=''+objOperation.value+'';
+                                }
                             }else{
                                 return(logerreur({status:false,message:' erreur sur TraiteOperations1 1324'}));
                             }

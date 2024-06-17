@@ -25,6 +25,7 @@ point d'entrée = TransformAstEnRev
         'ArrayExpression'       === element.type
      || 'AssignmentExpression'  === element.type
      || "AssignmentPattern"     === element.type
+     || 'AwaitExpression'       === element.type
      || 'BinaryExpression'      === element.type
      || 'CallExpression'        === element.type
      || 'ConditionalExpression' === element.type
@@ -74,6 +75,58 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
         
     }else if('Identifier' === element.type){
         t+=element.name;
+        
+    }else if('AwaitExpression' === element.type){
+        if("CallExpression" === element.argument.type){
+            var objass = traiteUneComposante(element.argument,niveau,false,false);
+            if(objass.status === true){
+
+                t+='await('+objass.value+')';
+            }else{
+                return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0084 pour '+element.argument.type,element:element}));
+            }
+        }else{
+            return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0087 pour '+element.type,element:element}));
+        }
+
+    }else if('ArrowFunctionExpression' === element.type){
+        if(element.async===false && element.expression===false && element.generator===false){
+         var lesArguments='';
+         if(element.params && element.params.length>0){
+            
+
+          for(var i=0;i<element.params.length;i++){
+              var objarg = traiteUneComposante(element.params[i],niveau,false,false);
+              if(objarg.status === true){
+                  lesArguments+=',p('+objarg.value+')';
+              }
+          }
+          if(lesArguments.length>0){
+             lesArguments=lesArguments.substr(1);
+          }
+          var contenu='';
+          if(element.body && element.body.type==='BlockStatement'){
+              if(element.body.body && element.body.body.length>0){
+                  niveau+=2;
+                  var obj = TransformAstEnRev(element.body.body,niveau);
+                  niveau-=2;
+                  if(obj.status === true){
+                     contenu+=obj.value;
+                  }else{
+                     return(astjs_logerreur({status:false,'message':'erreur 0116 pour '+element.type,element:element}));
+                  }
+              }
+           }
+          }else{
+            return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0111 pour '+element.type,element:element}));
+          }
+          t='appelf(nomf(function) '+lesArguments+',contenu('+contenu+'))';
+        }else{
+            debugger;
+            return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0095 pour '+element.type,element:element}));
+        }
+
+    
     }else if('MemberExpression' === element.type){
         var obj1 = traiteMemberExpression1(element,niveau,element,'');
         if(obj1.status === true){
@@ -109,7 +162,15 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
         
         var obj1=traiteUneComposante(element.argument , niveau, parentEstCrochet , dansSiOuBoucle );
         if(obj1.status===true){
-          t+=nomDuTestUnary+'('+obj1.value+')'
+          if((nomDuTestUnary==='moins' || nomDuTestUnary==='plus') && isNumeric(obj1.value)){
+           if(nomDuTestUnary==='moins'){
+               t+='-'+obj1.value;
+           }else{
+               t+='+'+obj1.value;
+           }
+          }else{
+           t+=nomDuTestUnary+'('+obj1.value+')'
+          }
         }else{
             return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0076',element:element}));
         }
@@ -138,7 +199,7 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
         if(obj1.status === true){
             t+='new('+obj1.value+')';
         }else{
-            return(astjs_logerreur({status:false,'message':'erreur pour traiteUneComposante 0087 '+element.type,element:element}));
+            return(astjs_logerreur({status:false,'message':'erreur pour traiteUneComposante 0154 '+element.type,element:element}));
         }
     }else if('ArrayExpression' === element.type){
         var obj1 = traiteArrayExpression1(element,niveau);
@@ -301,6 +362,7 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
                element.value.type==='ObjectExpression' 
             || element.value.type==='BinaryExpression' 
             || element.value.type==='MemberExpression' 
+            || element.value.type==='ArrayExpression' 
           ){
             var obj1 = traiteUneComposante(element.value,niveau,false,false); // traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucle )
             if(obj1.status === true){
@@ -1465,6 +1527,8 @@ function traiteObjectExpression1(element,niveau){
           || 'LogicalExpression'     === val.value.type
           || 'MemberExpression'      === val.value.type
           || 'ObjectExpression'      === val.value.type
+          || 'UnaryExpression'       === val.value.type
+          
        ){
            var obj1 = traiteUneComposante(val.value , niveau , false   , false   );//    [[ parentEstCrochet , dansSiOuBoucle
            if(obj1.status === true){
@@ -2174,7 +2238,12 @@ function traiteDeclaration1(element,niveau){
                 }else{
                     return(astjs_logerreur({status:false,message:'erreur dans traiteUneComposante 0147 ',element:element}));
                 }
-            }else if('UpdateExpression' === element.declarations[decl].init.type || "ThisExpression" === element.declarations[decl].init.type || "AssignmentExpression" === element.declarations[decl].init.type){
+            }else if(
+                 'UpdateExpression' === element.declarations[decl].init.type 
+              || "ThisExpression" === element.declarations[decl].init.type 
+              || "AssignmentExpression" === element.declarations[decl].init.type
+              || "AwaitExpression" === element.declarations[decl].init.type
+            ){
                 var obj1 = traiteUneComposante(element.declarations[decl] , niveau , false , false );
                 if(obj1.status === true){
                     t+=debutDeclaration+obj1.value+')';
