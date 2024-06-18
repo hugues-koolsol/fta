@@ -400,28 +400,29 @@ class module_svg_bdd{
                     
                     var donnees_rev_meta_de_la_base=lst[i].getAttribute('donnees_rev_meta_de_la_base');
                     
-                    
-                    var obj_matrice_meta_de_la_base=functionToArray(donnees_rev_meta_de_la_base , true, false , '');
-                    if(obj_matrice_meta_de_la_base.status===true){
-                        console.log('obj_matrice_meta_de_la_base=' , obj_matrice_meta_de_la_base.value );
+                    if(donnees_rev_meta_de_la_base && donnees_rev_meta_de_la_base !==''){
+                        var obj_matrice_meta_de_la_base=functionToArray(donnees_rev_meta_de_la_base , true, false , '');
+                        if(obj_matrice_meta_de_la_base.status===true){
+                            console.log('obj_matrice_meta_de_la_base=' , obj_matrice_meta_de_la_base.value );
 
-                        for(k=1;k<obj_matrice_meta_de_la_base.value.length;k++){
-                            if(obj_matrice_meta_de_la_base.value[k][7] === 0 ){
-                                if(obj_matrice_meta_de_la_base.value[k][2]==='f' && obj_matrice_meta_de_la_base.value[k][1]==='' && obj_matrice_meta_de_la_base.value[k][8]===2){
-                                    for(var l=k+1 ; k<obj_matrice_meta_de_la_base.value.length;k++){
-                                       if(this.#liste_des_meta_base.includes(obj_matrice_meta_de_la_base.value[k][1])){
-                                          t+='\n   ('+obj_matrice_meta_de_la_base.value[k][1]+' , '+maConstante(obj_matrice_meta_de_la_base.value[k+1])+'),';
-                                       }
+                            for(k=1;k<obj_matrice_meta_de_la_base.value.length;k++){
+                                if(obj_matrice_meta_de_la_base.value[k][7] === 0 ){
+                                    if(obj_matrice_meta_de_la_base.value[k][2]==='f' && obj_matrice_meta_de_la_base.value[k][1]==='' && obj_matrice_meta_de_la_base.value[k][8]===2){
+                                        for(var l=k+1 ; k<obj_matrice_meta_de_la_base.value.length;k++){
+                                           if(this.#liste_des_meta_base.includes(obj_matrice_meta_de_la_base.value[k][1])){
+                                              t+='\n   ('+obj_matrice_meta_de_la_base.value[k][1]+' , '+maConstante(obj_matrice_meta_de_la_base.value[k+1])+'),';
+                                           }
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                     
-                    }else{
-                        logerreur({status : false , message:'0370 il y a eu un problème lors de la récupération des meta de la base'});
-                        displayMessages('zone_global_messages');
-                        return;
+                         
+                        }else{
+                            logerreur({status : false , message:'0370 il y a eu un problème lors de la récupération des meta de la base'});
+                            displayMessages('zone_global_messages');
+                            return;
+                        }
                     }
 
                     
@@ -447,31 +448,34 @@ class module_svg_bdd{
                     t+='\n meta(';
                     var nom_de_la_table=lst[i].getAttribute('nom_de_la_table');
                     
+                    var texte_des_meta_table='';      
                     var meta_rev_de_la_table=lst[i].getAttribute('meta_rev_de_la_table');
+                    if(donnees_rev_meta_de_la_base && meta_rev_de_la_table!=='' ){
+                        var obj_matrice_meta_de_la_table=functionToArray(meta_rev_de_la_table , true, false , '');
+                        
+                            if(obj_matrice_meta_de_la_table.status===true){
+                                console.log('obj_matrice_meta_de_la_table=' , obj_matrice_meta_de_la_table.value );
 
-                    var texte_des_meta_table='';                    
-                    var obj_matrice_meta_de_la_table=functionToArray(meta_rev_de_la_table , true, false , '');
-                    if(obj_matrice_meta_de_la_table!==''){
-                        if(obj_matrice_meta_de_la_table.status===true){
-                            console.log('obj_matrice_meta_de_la_table=' , obj_matrice_meta_de_la_table.value );
-
-                            for(k=1;k<obj_matrice_meta_de_la_table.value.length;k++){
-                                if(obj_matrice_meta_de_la_table.value[k][7] === 0 ){
-                                    if(obj_matrice_meta_de_la_table.value[k][2]==='f' && obj_matrice_meta_de_la_table.value[k][1]==='' && obj_matrice_meta_de_la_table.value[k][8]===2){
-                                        for(var l=k+1 ; k<obj_matrice_meta_de_la_table.value.length;k++){
-                                           if(this.#liste_des_meta_table.includes(obj_matrice_meta_de_la_table.value[k][1])){
-                                              texte_des_meta_table+='\n   ('+obj_matrice_meta_de_la_table.value[k][1]+' , '+maConstante(obj_matrice_meta_de_la_table.value[k+1])+'),';
-                                           }
+                                for(k=1;k<obj_matrice_meta_de_la_table.value.length;k++){
+                                    if(obj_matrice_meta_de_la_table.value[k][7] === 0 ){
+                                        if(obj_matrice_meta_de_la_table.value[k][2]==='f' && obj_matrice_meta_de_la_table.value[k][1]==='' && obj_matrice_meta_de_la_table.value[k][8]===2){
+                                            for(var l=k+1 ; k<obj_matrice_meta_de_la_table.value.length;k++){
+                                               if(this.#liste_des_meta_table.includes(obj_matrice_meta_de_la_table.value[k][1])){
+                                                  texte_des_meta_table+='\n   ('+obj_matrice_meta_de_la_table.value[k][1]+' , '+maConstante(obj_matrice_meta_de_la_table.value[k+1])+'),';
+                                               }
+                                            }
                                         }
                                     }
                                 }
+                            }else{
+                                logerreur({status : false , message:'0370 il y a eu un problème lors de la récupération des meta de la base'});
+                                displayMessages('zone_global_messages');
+                                return;
                             }
-                        }else{
-                            logerreur({status : false , message:'0370 il y a eu un problème lors de la récupération des meta de la base'});
-                            displayMessages('zone_global_messages');
-                            return;
-                        }
+                        
                     }
+                     
+
                     for(var j=0;j<this.#liste_des_meta_table.length;j++){
                         if(texte_des_meta_table.indexOf(this.#liste_des_meta_table[j])<0){
                             texte_des_meta_table+='\n   ('+this.#liste_des_meta_table[j]+' , \'à faire '+nom_de_la_table.replace(/\\/,'\\\\').replace(/\'/,'\\\'')+'\'),';
@@ -656,10 +660,16 @@ class module_svg_bdd{
             async function envoyer_le_rev_de_le_base_en_post(url = "", donnees ) {
                 // Les options par défaut sont indiquées par *
                 var response = await fetch(url, {
-                    method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    mode: "cors",   // no-cors, *cors, same-origin
-                    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                    credentials: "same-origin", // include, *same-origin, omit
+                    /* *GET, POST, PUT, DELETE, etc. */
+                    method: "POST", 
+                    /* no-cors, *cors, same-origin */
+                    
+                    mode: "cors",   
+                    /* default, no-cache, reload, force-cache, only-if-cached */
+                    cache: "no-cache", 
+                    /* include, *same-origin, omit */
+                    credentials: "same-origin", 
+                    /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
                     headers: {
             //          "Content-Type": "application/json",
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -1165,7 +1175,7 @@ class module_svg_bdd{
                                                                        nom_du_champ          : nom_du_champ          ,
                                                                        decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
                                                                        decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER),
-                                                                       transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')',
+                                                                       transform:'translate('+(CSS_TAILLE_REFERENCE_BORDER)+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')',
                                                                        'data-id':'conteneur_champ_'+j_dans_tab       ,
                                                                    }
                                                                };

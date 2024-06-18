@@ -94,21 +94,22 @@ class traitements_sur_html{
          type='javascriptDansHtml'
         }
        }else{
-        if("#comment"===type){
-         t+='\n'+esp0+'#(';
-        }else{
-         t+='\n'+esp0+type+'(';
-        }
+           if("#comment"===type){
+               t+='\n'+esp0+'#(';
+           }else{
+               t+='\n'+esp0+type+'(';
+           }
        }
       }
       
       if(jsonDeHtml.attributes){
-       for(var i in jsonDeHtml.attributes){
-        if(attributs!==''){
-         attributs+=','
-        }
-        attributs+='('+i+',\''+jsonDeHtml.attributes[i].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
-       }
+          for(var attr in jsonDeHtml.attributes){
+              if(attributs!==''){
+               attributs+=','
+              }
+
+              attributs+='('+attr+',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
+          }
       }
       
       /*
@@ -197,7 +198,7 @@ class traitements_sur_html{
       
      }else{
       if(typeParent==='#comment'){
-       debugger
+
         if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
          contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
          t+=contenu;
@@ -253,6 +254,7 @@ class traitements_sur_html{
       le rev retourné inclut toujours une balise html et/ou body et/ou head
       Si ces balises ne contiennent pas d'éléments, on les retire 
       */
+
       var tableau1 = iterateCharacters2(t);
       var matriceFonction = functionToArray2(tableau1.out,false,true,'');
       if(matriceFonction.status===true){
@@ -397,6 +399,7 @@ class traitements_sur_html{
                 if(element.attributes.length){
                     object['attributes']={};
                     for(i=0;i < element.attributes.length;i=i+1){
+
                         if(element.attributes[i].nodeName==='"'){
                          /*
                            =========================================
@@ -412,6 +415,7 @@ class traitements_sur_html{
                 }
             }
         }
+
         treeHTML(element,treeObject);
         return treeObject;
     }
@@ -608,7 +612,7 @@ class traitements_sur_html{
         var elementsJson={};
 
         try{
-         
+
          elementsJson=this.mapDOM(texteHtml,false);
     //     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
          

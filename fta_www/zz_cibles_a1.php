@@ -77,7 +77,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/zz_revs_l1.php' => array(),
       'fta_www/zz_taches_a1.php' => array(),
       'fta_www/zz_taches_l1.php' => array(),
-      
+      'fta_www/svg_de_la_base.php' => array(),
       'fta_www/phpliteadmin.config.php' => array('chp_type_source' => 'bibliotheque'),
       'fta_www/phpliteadmin.php' => array('chp_type_source' => 'bibliotheque'),      
       
@@ -94,10 +94,13 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/js/pour-index_php0.js' => array(),
       'fta_www/js/pour_zz_bdds_action1.js' => array(),
       'fta_www/js/pour_zz_source1.js' => array(),
+      'fta_www/js/pour_svg.js' => array(),
+      
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
       'fta_www/js/module_interface1.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_html.js' => array('chp_type_source' => 'module_js'),
+      'fta_www/js/module_svg_bdd.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_travail_en_arriere_plan0.js' => array(),
       'fta_www/js/index_source_script-v0.js' => array(),
 
@@ -202,6 +205,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    }else{
      /* la base n'existe pas, on continue */
    }
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu_fichier_structure , true ) . '</pre>' ; exit(0);
    
    $base_ftb = new SQLite3($chemin_base_systeme);
    if(false === $base_ftb->exec($contenu_fichier_structure)){

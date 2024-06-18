@@ -120,7 +120,7 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
           }else{
             return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0111 pour '+element.type,element:element}));
           }
-          t='appelf(nomf(function) '+lesArguments+',contenu('+contenu+'))';
+          t='appelf(flechee() , nomf(function) '+lesArguments+',contenu('+contenu+'))';
         }else{
             debugger;
             return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0095 pour '+element.type,element:element}));
@@ -522,15 +522,15 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
      
              
        if(
-       
+            false && (
             ( element.right.type == 'Literal'               && element.left.type === 'CallExpression' )
          || ( element.right.type == 'ConditionalExpression' && element.left.type === 'CallExpression' )
          || ( element.right.type == 'Literal'               && element.left.type === 'Identifier' )
          || ( element.right.type == 'Identifier'            && element.left.type === 'Identifier' )
-         
-      ){
+         )
+       ){
        
-        t+=''+gauche.value+element.operator+droite.value+'';
+           t+=''+gauche.value+element.operator+droite.value+'';
         
       }else{
        
@@ -545,7 +545,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
 
 
 
-    if( t.substr(0,14) === 'concat(concat(' || t.substr(0,12) === 'concat(plus('  || t.substr(0,12) === 'plus(concat('  ){
+    if( t.substr(0,14) === 'concat(concat(' ){ // || t.substr(0,12) === 'concat(plus('  || t.substr(0,12) === 'plus(concat('
         var o = functionToArray(t,true,false,'');
         if(o.status === true){
             console.log('%c simplifier les concat concat','background:pink;',t,o.value);
@@ -571,29 +571,6 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
             if(obj.status === true){
                 console.log('apres simplification obj.value=',obj.value);
                 t=obj.value;
-            }
-        }
-    }
-    if(t.substr(0,6) === 'moins('){
-        var o = functionToArray(t,true,false,'');
-        if(o.status === true){
-            console.log('%c réduire les moins(a,b)','background:pink;',t,o.value);
-            var i=0;
-            var bCont=true;
-            var cumu='';
-            var i=2;
-            for(i=2;(i < o.value.length) && (bCont === true);i=i+1){
-                if((o.value[i][2] === 'c') && (o.value[i][4] === 0)){
-                    cumu+='-'+o.value[i][1];
-                }else{
-                    bCont=false;
-                    break;
-                }
-            }
-            if(bCont === true){
-                cumu=cumu.substr(1);
-                console.log('%c réduire les moins(a,b)','background:pink;',t,o.value,'cumu=',cumu);
-                t=cumu;
             }
         }
     }
@@ -1351,7 +1328,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
                  lesArguments=lesArguments.substr(1);
                 }
                 t+='defTab('+lesArguments+')';
-//                t+='tableau(nomt('+element.callee.name+')'+lesArguments+')';
+
             }else{
                 if(contenu===''){
                     t+='appelf(nomf('+element.callee.name+')'+lesArguments+laPropriete+')';
@@ -2393,6 +2370,9 @@ function TransformAstEnRev(les_elements,niveau){
                 t+='\n'+esp0+'fonction(';
                 t+='\n'+esp0+esp1+'definition(';
                 t+='\n'+esp0+esp1+esp1+'nom('+element.id.name+')';
+                if(element.async && element.async===true){
+                    t+='\n'+esp0+esp1+esp1+'asynchrone()';
+                }
                 if((element.params) && (element.params.length > 0)){
                     t+=',';
                     var j=0;
