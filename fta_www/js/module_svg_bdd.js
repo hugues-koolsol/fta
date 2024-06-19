@@ -3,13 +3,27 @@ voir getSvgTree afficheArbre0 looptree
 */
 class module_svg_bdd{
  
+    /*
+      permet d'utiliser le nom de la variable dans des href="nom_de_la_variable.methode()"  
+    */
     #nom_de_la_variable='';
+    /*
+      référence de l'élément html "div" contenant le svg
+    */
     #div_svg=null;
+    /*
+      référence de l'élément html "svg"
+    */
     #svg_dessin=null;
+    /*
+    taille de la bordure des boites
+    */
     #taille_bordure=0;
     #id_text_area_contenant_les_id_des_bases='';
-    
-    #globalDernierePositionSouris={sx:null,sy:null};
+    /*
+    sert pour le zoom
+    */
+
     #_dssvg={zoom1:1,viewBoxInit:[],parametres:{rayonReference:16}};
     #rayonPoint=this.#_dssvg.parametres.rayonReference/this.#_dssvg.zoom1;
 
@@ -32,7 +46,7 @@ class module_svg_bdd{
     ====================================================================================================================
     function constructor
     */
-    constructor(nom_de_la_variable , nom_de_la_div_contenant_le_svg, taille_bordure , id_text_area_contenant_les_id_des_bases,id_bases_init){
+    constructor(nom_de_la_variable , nom_de_la_div_contenant_le_svg, taille_bordure , id_text_area_contenant_les_id_des_bases){
      
         clearMessages('zone_global_messages');
         
@@ -77,7 +91,7 @@ class module_svg_bdd{
         
         this.#_dssvg.viewBoxInit=[0,0,this.#largeur_du_svg,this.#hauteur_du_svg];
         
-        this.#div_svg.addEventListener('wheel', this.zoom_avec_roulette.bind(this) ,{capture:false,passive:true} );
+        this.#div_svg.addEventListener('wheel', this.zoom_avec_roulette.bind(this) ,false );
         
         
         window.addEventListener( 'mousedown' , this.#souris_bas.bind(this)   , false );
@@ -89,23 +103,25 @@ class module_svg_bdd{
     }
     #propriete_pour_deplacement_x='pageX';
     #propriete_pour_deplacement_y='pageY';
+
     /*
     ====================================================================================================================
     function souris_bouge
     */
     #souris_bouge(e){
+     
         if(this.#souris_element_a_deplacer==='svg'){
          
-            var calculx=(this.#souris_init_objet.x-e[this.#propriete_pour_deplacement_x])/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
-            var calculy=(this.#souris_init_objet.y-e[this.#propriete_pour_deplacement_y])/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
+            var calculx=(this.#souris_init_objet.x-e[this.#propriete_pour_deplacement_x])*this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
+            var calculy=(this.#souris_init_objet.y-e[this.#propriete_pour_deplacement_y])*this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
             
             this.#souris_init_objet.elem_bouge.setAttribute('viewBox',calculx+','+calculy+','+this.#souris_init_objet.elem_bouge.viewBox.baseVal.width+','+this.#souris_init_objet.elem_bouge.viewBox.baseVal.height);
             return;
          
         }else if(this.#souris_element_a_deplacer==='rectangle_de_base'){
          
-            var calculx=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
-            var calculy=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)/this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
+            var calculx=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)*this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
+            var calculy=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)*this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.y;
             this.#souris_init_objet.elem_bouge.setAttribute( 'transform' , 'translate('+calculx+','+calculy+')');
             this.#souris_init_objet.elem_bouge.setAttribute( 'decallage_x' , calculx );
             this.#souris_init_objet.elem_bouge.setAttribute( 'decallage_y' , calculy );
@@ -115,8 +131,8 @@ class module_svg_bdd{
         }else if(this.#souris_element_a_deplacer==='table'){
          
             e.preventDefault(); /* permer de ne pas sélectionner les textes */
-            this.#svg_souris_delta_x=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)/this.#_dssvg.zoom1;
-            this.#svg_souris_delta_y=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)/this.#_dssvg.zoom1;
+            this.#svg_souris_delta_x=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)*this.#_dssvg.zoom1;
+            this.#svg_souris_delta_y=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)*this.#_dssvg.zoom1;
             var calculx=this.#svg_souris_delta_x+this.#souris_init_objet.param_bouge.x;
             var calculy=this.#svg_souris_delta_y+this.#souris_init_objet.param_bouge.y;
             this.#souris_init_objet.elem_bouge.setAttribute( 'transform'  , 'translate('+calculx+','+calculy+')');
@@ -151,7 +167,6 @@ class module_svg_bdd{
             return;
         }
     }
-   
     /*
     ====================================================================================================================
     function souris_haut
@@ -349,7 +364,7 @@ class module_svg_bdd{
         this.#svg_dessin.appendChild(a);
         var b=a.getBBox();
         if(largeur_de_la_boite<(b.width+2)){
-         largeur_de_la_boite=parseInt(b.width,10)+2*CSS_TAILLE_REFERENCE_BORDER;
+         largeur_de_la_boite=parseInt(b.width,10)+2*this.#taille_bordure;
         }
         a.remove();
         return(largeur_de_la_boite);
@@ -654,7 +669,7 @@ class module_svg_bdd{
                  
                 }
             }
-            console.log('t=',t);
+//            console.log('t=',t);
             
 
             async function envoyer_le_rev_de_le_base_en_post(url = "", donnees ) {
@@ -764,9 +779,9 @@ class module_svg_bdd{
                    }
                    
 
-//                   console.log( CSS_TAILLE_REFERENCE_TEXTE , CSS_TAILLE_REFERENCE_PADDING , CSS_TAILLE_REFERENCE_BORDER );
-                   const hauteur_de_boite=CSS_TAILLE_REFERENCE_TEXTE+2*CSS_TAILLE_REFERENCE_PADDING+2*CSS_TAILLE_REFERENCE_BORDER;
-                   const hauteur_de_boite_affichage=hauteur_de_boite+1*CSS_TAILLE_REFERENCE_BORDER;
+//                   console.log( CSS_TAILLE_REFERENCE_TEXTE , CSS_TAILLE_REFERENCE_PADDING , this.#taille_bordure );
+                   const hauteur_de_boite=CSS_TAILLE_REFERENCE_TEXTE+2*CSS_TAILLE_REFERENCE_PADDING+2*this.#taille_bordure;
+                   const hauteur_de_boite_affichage=hauteur_de_boite+1*this.#taille_bordure;
                    var indice_courant=0;
                    var tableau_des_elements=[];
                    var numero_table=0;
@@ -780,7 +795,6 @@ class module_svg_bdd{
                    var id_tab_champ_en_cours=0;
                    var nom_de_l_index='';
                    var liste_de_indices_des_elements_a_ajuster_en_largeur=[];
-                   var indice_cadre_base=0;
                    var max_x=0;
                    var max_y=0;
                    var position_min_haut=999999;
@@ -810,9 +824,10 @@ class module_svg_bdd{
                        largeur_de_la_boite=1;
                        this.#svg_tableaux_des_references_amont_aval[id_bdd_de_la_base]=[];
 
-                       id_svg_base_en_cours=indice_courant;
                        var tab=this.#arbre[id_bdd_de_la_base]['matrice'];
 //                       console.log('tab=',tab);
+
+                       id_svg_base_en_cours=indice_courant;
                        this.#arbre[id_bdd_de_la_base].arbre_svg[indice_courant]={
                            type:'g'   ,
                            id:id_svg_base_en_cours,
@@ -838,21 +853,33 @@ class module_svg_bdd{
                                chi_id_basedd : id_bdd_de_la_base ,
                                id:indice_courant,
                                id_svg_base_en_cours : id_svg_base_en_cours,
-                               x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:0.2;" 
+                               x:0,y:0,width:120,height:120,style:"stroke:red;stroke-width:"+this.#taille_bordure+";fill:yellow;fill-opacity:0.2;" 
                            }
                        };
                        indice_courant++;
-                       indice_cadre_base=indice_courant-1;
+                       var id_conteneur_texte_base=indice_courant;
+                       this.#arbre[id_bdd_de_la_base].arbre_svg[indice_courant]={
+                           type:'g'   ,
+                           id:indice_courant,
+                           id_parent:id_svg_base_en_cours, 
+                           proprietes:{
+                               type_element : 'conteneur_du_texte_de_la_base',
+                               id:indice_courant,
+                               id_svg_base_en_cours : id_svg_base_en_cours,
+                               transform:'translate(0,0)',
+                           }
+                       };
+                       indice_courant++;
                        
                        this.#arbre[id_bdd_de_la_base].arbre_svg[indice_courant]={
-                           type:'text',id:indice_courant ,id_parent:id_svg_base_en_cours     , 
+                           type:'text',id:indice_courant ,id_parent:indice_courant-1     , 
                            contenu:'('+id_bdd_de_la_base + ') ' + this.#arbre[id_bdd_de_la_base]['chp_nom_basedd'] + ' <a style="fill:green;" href="javascript:'+this.#nom_de_la_variable+'.sauvegarder_la_base(&quot;'+id_bdd_de_la_base+'&quot;)">sauvegarder</a>',
                            proprietes:{
                                id:indice_courant,
                                type_element : 'texte_id_bdd_de_la_base',
                                id_svg_base_en_cours : id_svg_base_en_cours,
-                               x:CSS_TAILLE_REFERENCE_BORDER,
-                               y:CSS_TAILLE_REFERENCE_BORDER+CSS_TAILLE_REFERENCE_TEXTE,
+                               x:this.#taille_bordure,
+                               y:this.#taille_bordure+CSS_TAILLE_REFERENCE_TEXTE,
                                style:"fill:blue;" , 
                            }
                        };
@@ -875,7 +902,7 @@ class module_svg_bdd{
 
                               var obj1=a2F1(tab,j_dans_tab,false,j_dans_tab+1,false);
                               if(obj1.status===true){
-                                  console.log('obj1.value=',obj1.value);
+//                                  console.log('obj1.value=',obj1.value);
                                   var donnees_rev_meta_de_la_base=obj1.value;
                               }else{
                                   logerreur({status : true , message : '0760 problème sur les données de la base "'+this.#arbre[id_bdd_de_la_base]['chp_nom_basedd']+'"' });
@@ -896,7 +923,7 @@ class module_svg_bdd{
                                    var tt=tab[j_dans_tab+1][1].split(',')
                                    tt[0]=parseInt(tt[0]);
                                    tt[1]=parseInt(tt[1]);
-                                   if(CSS_TAILLE_REFERENCE_BORDER%2!==0){
+                                   if(this.#taille_bordure%2!==0){
                                        /* si la taille de la bordure est impaire */
                                        tt[0]+=0.5;
                                        tt[1]+=0.5;
@@ -907,9 +934,10 @@ class module_svg_bdd{
                                    this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_base_en_cours].proprietes.decallage_x=tt[0];
                                    this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_base_en_cours].proprietes.decallage_y=tt[1];
 
+
                                }else if(tab[j_dans_tab][1]==='hauteur_sur_svg' ){
                                 
-                                   this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_rectangle_base_en_cours].proprietes.height=tab[j_dans_tab+1][1]; // indice_cadre_base
+                                   this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_rectangle_base_en_cours].proprietes.height=tab[j_dans_tab+1][1];
 
                                }else if(tab[j_dans_tab][1]==='largeur_sur_svg' ){
                                 
@@ -1034,7 +1062,7 @@ class module_svg_bdd{
                                              id_svg_base_en_cours   : id_svg_base_en_cours,
                                              id_svg_table_en_cours  : id_svg_table_en_cours,
                                              nom_de_la_table        : nom_de_la_table ,
-                                             x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:yellow;fill-opacity:1;" , 'data-id':'cadre_table_'+numero_table,
+                                             x:0,y:0,width:20,height:50,style:"stroke:blue;stroke-width:"+this.#taille_bordure+";fill:yellow;fill-opacity:1;" , 'data-id':'cadre_table_'+numero_table,
                                              'meta_de_la_table'     : JSON.stringify(meta_de_la_table),
                                              id_svg_conteneur_table : id_svg_conteneur_table ,
                                              meta_rev_de_la_table   : meta_rev_de_la_table,
@@ -1092,9 +1120,9 @@ class module_svg_bdd{
                                                                            id_svg_table_en_cours : id_svg_table_en_cours,
                                                                            id_svg_champ_en_cours : id_svg_champ_en_cours,
                                                                            nom_de_la_table       : nom_de_la_table ,
-                                                                           decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
-                                                                           decallage_y           : CSS_TAILLE_REFERENCE_BORDER,
-                                                                           transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+CSS_TAILLE_REFERENCE_BORDER+')' ,
+                                                                           decallage_x           : this.#taille_bordure,
+                                                                           decallage_y           : this.#taille_bordure,
+                                                                           transform:'translate('+this.#taille_bordure+','+this.#taille_bordure+')' ,
                                                                        }
                                                                    };
                                                                    indice_courant++;
@@ -1116,7 +1144,7 @@ class module_svg_bdd{
                                                                            y:0,
                                                                            width:18,
                                                                            height:hauteur_de_boite,
-                                                                           style:"stroke:white;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:red;fill-opacity:1;" 
+                                                                           style:"stroke:white;stroke-width:"+this.#taille_bordure+";fill:red;fill-opacity:1;" 
                                                                        }
                                                                    };
                                                                    indice_courant++;
@@ -1137,9 +1165,9 @@ class module_svg_bdd{
                                                                            id_svg_table_en_cours : id_svg_table_en_cours,
                                                                            id_svg_champ_en_cours : id_svg_champ_en_cours,
                                                                            nom_de_la_table       : nom_de_la_table ,
-                                                                           x:CSS_TAILLE_REFERENCE_BORDER,
-                                                                           y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,
-                                                                           style:"fill:white;" , 
+                                                                           x:this.#taille_bordure,
+                                                                           y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-this.#taille_bordure,
+                                                                           style:"fill:white;cursor:context-menu;" , 
                                                                        }
                                                                    };
                                                                    indice_courant++;
@@ -1173,9 +1201,9 @@ class module_svg_bdd{
                                                                        id_svg_champ_en_cours : id_svg_champ_en_cours ,
                                                                        nom_de_la_table       : nom_de_la_table       ,
                                                                        nom_du_champ          : nom_du_champ          ,
-                                                                       decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
-                                                                       decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER),
-                                                                       transform:'translate('+(CSS_TAILLE_REFERENCE_BORDER)+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')',
+                                                                       decallage_x           : this.#taille_bordure,
+                                                                       decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+this.#taille_bordure),
+                                                                       transform:'translate('+(this.#taille_bordure)+','+((hauteur_de_boite_affichage)*(numero_de_boite)+this.#taille_bordure)+')',
                                                                        'data-id':'conteneur_champ_'+j_dans_tab       ,
                                                                    }
                                                                };
@@ -1204,7 +1232,7 @@ class module_svg_bdd{
                                                                        id_svg_champ_en_cours : id_svg_champ_en_cours,
                                                                        nom_de_la_table       : nom_de_la_table ,
                                                                        nom_du_champ          : nom_du_champ          ,
-                                                                       x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:gold;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:pink;fill-opacity:0.2;" , 
+                                                                       x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:gold;stroke-width:"+this.#taille_bordure+";fill:pink;fill-opacity:0.2;" , 
                                                                        donnees_rev_du_champ  : donnees_rev_du_champ  ,
                                                                        
                                                                    }
@@ -1231,8 +1259,8 @@ class module_svg_bdd{
                                                                        id_svg_champ_en_cours : id_svg_champ_en_cours,
                                                                        nom_de_la_table       : nom_de_la_table ,
                                                                        nom_du_champ          : nom_du_champ          ,
-                                                                       x:CSS_TAILLE_REFERENCE_BORDER,
-                                                                       y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:navy;" , 
+                                                                       x:this.#taille_bordure,
+                                                                       y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-this.#taille_bordure,style:"fill:navy;" , 
                                                                    }
                                                                };
                                                                indice_courant++;
@@ -1314,9 +1342,9 @@ class module_svg_bdd{
                                                                 id_svg_base_en_cours : id_svg_base_en_cours,
                                                                 id_svg_table_en_cours : id_svg_table_en_cours,
                                                                 nom_de_la_table       : nom_de_la_table ,
-                                                                decallage_x           : CSS_TAILLE_REFERENCE_BORDER,
-                                                                decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER),
-                                                                transform:'translate('+CSS_TAILLE_REFERENCE_BORDER+','+((hauteur_de_boite_affichage)*(numero_de_boite)+CSS_TAILLE_REFERENCE_BORDER)+')'}
+                                                                decallage_x           : this.#taille_bordure,
+                                                                decallage_y           : ((hauteur_de_boite_affichage)*(numero_de_boite)+this.#taille_bordure),
+                                                                transform:'translate('+this.#taille_bordure+','+((hauteur_de_boite_affichage)*(numero_de_boite)+this.#taille_bordure)+')'}
                                                            };
                                                            indice_courant++;
                                                            
@@ -1327,7 +1355,7 @@ class module_svg_bdd{
                                                           var obj1=a2F1(tab,i,false,i+1,false);
                                                           if(obj1.status===true){
                                                            
-                                                              console.log('obj1.value=',obj1.value);
+//                                                              console.log('obj1.value=',obj1.value);
                                                               donnees_rev_de_l_index=obj1.value;
 
                                                           }else{
@@ -1349,7 +1377,7 @@ class module_svg_bdd{
                                                                    nom_de_la_table       : nom_de_la_table ,
                                                                    nom_de_l_index    : nom_de_l_index ,
                                                                    donnees_rev_de_l_index : donnees_rev_de_l_index,
-                                                                   x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:green;stroke-width:"+CSS_TAILLE_REFERENCE_BORDER+";fill:green;fill-opacity:0.2;" 
+                                                                   x:0,y:0,width:18,height:hauteur_de_boite,style:"stroke:green;stroke-width:"+this.#taille_bordure+";fill:green;fill-opacity:0.2;" 
                                                                }
                                                            };
                                                            indice_courant++;
@@ -1362,7 +1390,7 @@ class module_svg_bdd{
                                                                    id_svg_base_en_cours : id_svg_base_en_cours   ,
                                                                    id_svg_table_en_cours : id_svg_table_en_cours ,
                                                                    nom_de_la_table       : nom_de_la_table ,
-                                                                   x:CSS_TAILLE_REFERENCE_BORDER,y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-CSS_TAILLE_REFERENCE_BORDER,style:"fill:green;" 
+                                                                   x:this.#taille_bordure,y:hauteur_de_boite-0.3*CSS_TAILLE_REFERENCE_TEXTE-this.#taille_bordure,style:"fill:green;" 
                                                                }
                                                            };
                                                            indice_courant++;
@@ -1384,7 +1412,7 @@ class module_svg_bdd{
                                /*
                                  ajustement de la taille des tables
                                */
-                               position_xy_table[0]+=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_MARGIN+4*CSS_TAILLE_REFERENCE_BORDER;
+                               position_xy_table[0]+=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_MARGIN+4*this.#taille_bordure;
                                position_xy_table[1]+=20;
                                
                                for(var k=0;k<liste_de_indices_des_elements_a_ajuster_en_largeur.length;k++){
@@ -1393,20 +1421,20 @@ class module_svg_bdd{
                                    */
                                    if(k===0){
                                        
-                                       largeur_de_la_table=largeur_de_la_boite+2*CSS_TAILLE_REFERENCE_BORDER;
+                                       largeur_de_la_table=largeur_de_la_boite+2*this.#taille_bordure;
                                        this.#arbre[id_bdd_de_la_base].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.width=largeur_de_la_table;
-                                       this.#arbre[id_bdd_de_la_base].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.height=hauteur_de_la_table+CSS_TAILLE_REFERENCE_BORDER;
+                                       this.#arbre[id_bdd_de_la_base].arbre_svg[liste_de_indices_des_elements_a_ajuster_en_largeur[k]].proprietes.height=hauteur_de_la_table+this.#taille_bordure;
                                        
-                                       if(position_min_gauche>position_gauche_de_la_table-2*CSS_TAILLE_REFERENCE_BORDER){
-                                        position_min_gauche=position_gauche_de_la_table-2*CSS_TAILLE_REFERENCE_BORDER;
+                                       if(position_min_gauche>position_gauche_de_la_table-2*this.#taille_bordure){
+                                        position_min_gauche=position_gauche_de_la_table-2*this.#taille_bordure;
                                        }
-                                       if(position_min_haut>position_haut_de_la_table-2*CSS_TAILLE_REFERENCE_BORDER){
-                                        position_min_haut=position_haut_de_la_table-2*CSS_TAILLE_REFERENCE_BORDER;
+                                       if(position_min_haut>position_haut_de_la_table-2*this.#taille_bordure){
+                                        position_min_haut=position_haut_de_la_table-2*this.#taille_bordure;
                                        }
                                        
                                        
-                                       if( position_max_bas<position_haut_de_la_table+hauteur_de_la_table+CSS_TAILLE_REFERENCE_BORDER){
-                                           position_max_bas=position_haut_de_la_table+hauteur_de_la_table+CSS_TAILLE_REFERENCE_BORDER;
+                                       if( position_max_bas<position_haut_de_la_table+hauteur_de_la_table+this.#taille_bordure){
+                                           position_max_bas=position_haut_de_la_table+hauteur_de_la_table+this.#taille_bordure;
                                        }
                                        
                                        if( position_max_droite<position_gauche_de_la_table+largeur_de_la_table){
@@ -1428,10 +1456,12 @@ class module_svg_bdd{
                              finalement on ajuste la largeur de la boite contenant la base
                            */
                            
-                           this.#arbre[id_bdd_de_la_base].arbre_svg[indice_cadre_base].proprietes.x=position_min_gauche;
-                           this.#arbre[id_bdd_de_la_base].arbre_svg[indice_cadre_base].proprietes.y=position_min_haut;
-                           this.#arbre[id_bdd_de_la_base].arbre_svg[indice_cadre_base].proprietes.height=position_max_bas+2*CSS_TAILLE_REFERENCE_MARGIN-position_min_haut; // 
-                           this.#arbre[id_bdd_de_la_base].arbre_svg[indice_cadre_base].proprietes.width=position_max_droite+2*CSS_TAILLE_REFERENCE_MARGIN-position_min_gauche; // 
+                           this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_rectangle_base_en_cours].proprietes.x=position_min_gauche;
+                           this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_rectangle_base_en_cours].proprietes.y=position_min_haut;
+                           this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_rectangle_base_en_cours].proprietes.height=position_max_bas+2*CSS_TAILLE_REFERENCE_MARGIN-position_min_haut; // 
+                           this.#arbre[id_bdd_de_la_base].arbre_svg[id_svg_rectangle_base_en_cours].proprietes.width=position_max_droite+2*CSS_TAILLE_REFERENCE_MARGIN-position_min_gauche; // 
+                           this.#arbre[id_bdd_de_la_base].arbre_svg[id_conteneur_texte_base].proprietes.transform='translate('+position_min_gauche+','+position_min_haut+')';
+
                            
                        }
                        /*
@@ -1444,7 +1474,7 @@ class module_svg_bdd{
                        var offset_champ_fils=[];
                        this.#svg_tableaux_des_references_amont_aval[id_bdd_de_la_base]=[];
                        var id_table_mere=0;
-                       console.log('tableau_des_references_croisees=',tableau_des_references_croisees);
+//                       console.log('tableau_des_references_croisees=',tableau_des_references_croisees);
                        for( var i=0;i<tableau_des_references_croisees.length;i++){
                            id_table_mere=0;
 
@@ -1463,7 +1493,7 @@ class module_svg_bdd{
                                        ];
                                        id_table_mere=this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.id_svg_table_en_cours;
                                        if(i===0){
-                                           console.log('offset_table_mere',offset_table_mere);
+//                                           console.log('offset_table_mere',offset_table_mere);
                                        }
                                    }
                                }catch(e){
@@ -1477,9 +1507,6 @@ class module_svg_bdd{
                                ){
                                    largeur_table_mere=parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.width);
                                    
-                                   if(i===0){
-                                       console.log('largeur_table_mere',largeur_table_mere);
-                                   }
                                }
 
                                if(
@@ -1490,11 +1517,7 @@ class module_svg_bdd{
                                    offset_champ_pere=[
                                        parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.decallage_x),
                                        parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.decallage_y)
-                                   ]
-                                       ; //translate(20,10)
-                                   if(i===0){
-                                       console.log('offset_champ_pere' , offset_champ_pere);
-                                   }
+                                   ];
                                }
 
                                if(
@@ -1505,12 +1528,7 @@ class module_svg_bdd{
                                    offset_table_fille=[
                                        parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.decallage_x),
                                        parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.decallage_y)
-                                   ]
-                                   if(i===0){
-//                                       id_table_fille=this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.id_svg_table_en_cours
-
-                                       console.log('offset_table_fille' ,offset_table_fille);
-                                   }
+                                   ];
                                }
 
                                if(
@@ -1521,11 +1539,7 @@ class module_svg_bdd{
                                    offset_champ_fils=[
                                        parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.decallage_x),
                                        parseFloat(this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg].proprietes.decallage_y)
-                                   ]
-                                       ; //translate(20,10)
-                                   if(i===0){
-                                       console.log('offset_champ_fils' , offset_champ_fils);
-                                   }
+                                   ];
                                }
                            }
                            var p1=[(offset_table_fille[0]+offset_champ_fils[0])                    , offset_table_fille[1]+offset_champ_fils[1]+parseInt(hauteur_de_boite/2,10) ];
@@ -1548,7 +1562,7 @@ class module_svg_bdd{
                                    d                    : d ,
                                    type_element         : 'reference_croisée'  ,
                                    id_svg_base_en_cours : id_svg_base_en_cours ,
-                                   style                : 'stroke:aqua;stroke-width:'+(CSS_TAILLE_REFERENCE_BORDER*3)+';fill:transparent;stroke-linejoin:round;stroke-linecap:round;',
+                                   style                : 'stroke:aqua;stroke-width:'+(this.#taille_bordure*3)+';fill:transparent;stroke-linejoin:round;stroke-linecap:round;',
                                }
                            };
                            indice_courant++;
@@ -1566,9 +1580,6 @@ class module_svg_bdd{
                      fin de pour chaque base
                      =============================
                    */
-                   console.log(this.#svg_tableaux_des_references_amont_aval);
-
-
 
    //                console.log('this.#arbre=',this.#arbre)
                    
@@ -1605,56 +1616,61 @@ class module_svg_bdd{
    ========================================================================================================
    */
    zoom_avec_roulette(e){
-    if(e.deltaY<0){
-     this.zoomPlusMoins(2);
-    }else{
-     this.zoomPlusMoins(0.5);
-    }
+//       console.log(e);
+       if(e.ctrlKey===true){
+         /*
+         le controle zoom du navigateur ne doit pas zoomer le svg
+         */
+         return;
+       }
+       /*
+         pour éviter de faire un défilement de page 
+       */
+       e.preventDefault();
+       if(e.deltaY>0){
+           this.zoomPlusMoins(2);
+       }else{
+           this.zoomPlusMoins(0.5);
+       }
    }
    
- /*
- ========================================================================================================
- function zoomPlusMoins
- */
- zoomPlusMoins(n){
-  
-  var vb=this.#svg_dessin.getAttribute('viewBox');
-  if(vb!=null){
-  
-   var viewboxTab=this.#svg_dessin.getAttribute('viewBox').trim().replace(/ /g,',').replace(/,,/g,',').replace(/,,/g,',').replace(/,,/g,',').split(',').map(Number);
-
-   if(this.#_dssvg.zoom1==256 && n==2){
-    // rien
-   }else if(this.#_dssvg.zoom1==0.03125 && n==0.5){ // 0.03125 // 0.0625
-    // rien
-   }else{
-    this.#_dssvg.zoom1=this.#_dssvg.zoom1*n;
-    if(this.#globalDernierePositionSouris.sx===null){
-     this.#_dssvg.viewBoxInit=[viewboxTab[0]/n,viewboxTab[1]/n,viewboxTab[2]/n,viewboxTab[3]/n];
-    }else{
-     // le centre est en this.#globalDernierePositionSouris.sx mais il faudra modifier pour que le dernier click reste au même endroit
-     var w=viewboxTab[2]/n;
-     var h=viewboxTab[3]/n;
-     var x=this.#globalDernierePositionSouris.sx-w/2;
-     var y=this.#globalDernierePositionSouris.sy-w/2;
+   
+    /*
+    ========================================================================================================
+    function zoomPlusMoins
+    */
+    zoomPlusMoins(n){
+     
+     var vb=this.#svg_dessin.getAttribute('viewBox');
+     if(vb!=null){
+     
+      if(this.#_dssvg.zoom1==256 && n==2){
+       // rien
+      }else if(this.#_dssvg.zoom1==0.03125 && n==0.5){ // 0.03125 // 0.0625
+       // rien
+      }else{
+          this.#_dssvg.zoom1=this.#_dssvg.zoom1*n;
+          if(n===2){
+              this.#_dssvg.viewBoxInit[2]*=2;
+              this.#_dssvg.viewBoxInit[3]*=2;
+          }else{
+              this.#_dssvg.viewBoxInit[2]/=2;
+              this.#_dssvg.viewBoxInit[3]/=2;
+          }
+          this.setAttributeViewBox();  
+          this.#rayonPoint=this.#_dssvg.parametres.rayonReference/this.#_dssvg.zoom1;
+          this.#strkWiTexteSousPoignees=this.#rayonPoint/20;
+          this.#fontSiTexteSousPoignees=this.#rayonPoint;
+      }
+     }
     }
-    this.setAttributeViewBox();  
-    this.#rayonPoint=this.#_dssvg.parametres.rayonReference/this.#_dssvg.zoom1;
-    this.#strkWiTexteSousPoignees=this.#rayonPoint/20;
-    this.#fontSiTexteSousPoignees=this.#rayonPoint;
-    this.resize1();
-//    afficheArbre0({prendreTout:false});
-   }
-//   divlag1.innerHTML='Z='+this.#_dssvg.zoom1;
-  }
- }
    
    
  //========================================================================================================
  setAttributeViewBox(){
   this.#svg_dessin.setAttribute('viewBox',this.#_dssvg.viewBoxInit.join(' '));
   if(this.#_dssvg.zoom1<1){
-   this.#div_svg.style.background='url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cpath d="M 0 0 l 100 100 l 0 -100 l -100 100 Z" fill="yellow" fill-opacity=".04"/%3E%3C/svg%3E\')';
+   this.#div_svg.style.background='url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cpath d="M 0 0 l 100 100 l 0 -100 l -100 100 Z" fill="pink" fill-opacity=".1"/%3E%3C/svg%3E\')';
    this.#div_svg.style.backgroundSize=(100*this.#_dssvg.zoom1)+'px';
    this.#div_svg.style.backgroundPositionX=(-(this.#_dssvg.viewBoxInit[0]*this.#_dssvg.zoom1))+'px';
    this.#div_svg.style.backgroundPositionY=(-(this.#_dssvg.viewBoxInit[1]*this.#_dssvg.zoom1))+'px';
@@ -1671,72 +1687,6 @@ class module_svg_bdd{
   }
  }
    
- /*
- ========================================================================================================
- function resize1(){
- */
- resize1(){
-//  getSizes();
-
-/*  
-  divtpe.style.top=(margns.t)+'px';
-  divtpe.style.left=(wi_of_the_menulft+margns.l)+'px';
-  divtpe.style.border=wi_of_the_brds1+'px red solid';
-  divtpe.style.width=(xscreen-wi_of_the_menulft-margns.l-margns.r)+'px';
-  divtpe.style.height=he_of_the_menutpe+'px';
-
-  divlft.style.top=(margns.t)+'px';
-  divlft.style.left=(margns.l)+'px';
-  divlft.style.border=wi_of_the_brds1+'px red solid';
-  divlft.style.width=(wi_of_the_menulft)+'px';
-  divlft.style.height=(yscreen-margns.t-margns.b)+'px';
-*/  
-/*
-  this.#div_svg.style.top=(margns.t+he_of_the_menutpe+decal.t)+'px';
-  this.#div_svg.style.left=(margns.l+wi_of_the_menulft+decal.l)+'px';
-  this.#div_svg.style.border=wi_of_the_brds2+'px red solid';
-  this.#div_svg.style.width=(xscreen-margns.l-wi_of_the_menulft-decal.l-margns.r)+'px';
-  this.#div_svg.style.height=(yscreen-margns.t-he_of_the_menutpe-decal.t-margns.b)+'px';
-  decalageX=margns.l+wi_of_the_menulft+decal.l+wi_of_the_brds2;
-  decalageY=margns.t+he_of_the_menutpe+decal.t+wi_of_the_brds2;
-  refZnDessin.style.top=0; //(margns.t+he_of_the_menutpe+decal.t+wi_of_the_brds2)+'px';
-  refZnDessin.style.left=0; //(margns.l+wi_of_the_menulft+decal.l+wi_of_the_brds2)+'px';
-  
-  var largeurDessin=(xscreen-margns.l-wi_of_the_menulft-decal.l-margns.r-2*wi_of_the_brds2);
-  refZnDessin.style.width=largeurDessin+'px';
-  var hauteurDessin=(yscreen-margns.t-he_of_the_menutpe-decal.t-margns.b-2*wi_of_the_brds2);
-  refZnDessin.style.height=hauteurDessin+'px';
-*/  
-  
-  if(false && this.#_dssvg.viewBoxInit===null){
-   this.#_dssvg.viewBoxInit=[-2,-2,this.#largeur_du_svg/this.#_dssvg.zoom1,this.#hauteur_du_svg/this.#_dssvg.zoom1];
-  }else{
-   this.#_dssvg.viewBoxInit=[this.#_dssvg.viewBoxInit[0],this.#_dssvg.viewBoxInit[1],this.#largeur_du_svg/this.#_dssvg.zoom1,this.#hauteur_du_svg/this.#_dssvg.zoom1];
-  }
-//  refZnDessin.setAttribute('viewBox',_dssvg.viewBoxInit.join(' '));
-  this.setAttributeViewBox();  
-
-/*
-  divlag1.style.top=(margns.t+he_of_the_menutpe)+'px';
-  divlag1.style.left=(margns.l+wi_of_the_menulft+decal.l)+'px';
-  divlag1.style.border=wi_of_the_brds2+'px pink solid';
-  divlag1.style.width=(xscreen-margns.l-wi_of_the_menulft-decal.l-margns.r)+'px';
-  divlag1.style.height=(decal.t)+'px';
-  
-//  divlag2.style.top=(margns.t+he_of_the_menutpe+decal.t+yscreen-margns.t-he_of_the_menutpe-decal.t-margns.b)+'px';
-  divlag2.style.bottom=0;
-  divlag2.style.minHeight=(margns.b)+'px';
-  divlag2.style.left='0px';
-  divlag2.style.width=(xscreen-margns.l-margns.r)+'px';
-  divlag2.style.height='fit-content';
-  
-  if(popUpIsDisplayed1!==''){
-   resizePopup({from:popUpIsDisplayed1});
-  }
-*/  
-
-  
- } 
    
    
 }

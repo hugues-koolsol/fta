@@ -238,7 +238,7 @@ else if($chp_nom_dossier!=''){         $autofocus='chp_nom_dossier';         }
 $o1.='<form method="get" class="yyfilterForm">'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.($autofocus=='chi_id_dossier'?'autofocus="autofocus"':'').' />'.CRLF;
+$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.($autofocus=='chi_id_dossier'?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 
 $o1.='   <div>'.CRLF;

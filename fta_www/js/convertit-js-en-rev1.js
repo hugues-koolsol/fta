@@ -543,9 +543,11 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     }
 
 
+    if(t.substr(0,12) === 'plus(concat('){
+     t='concat('+t.substr(5);
+    }
 
-
-    if( t.substr(0,14) === 'concat(concat(' ){ // || t.substr(0,12) === 'concat(plus('  || t.substr(0,12) === 'plus(concat('
+    if( t.substr(0,14) === 'concat(concat(' ){ // || t.substr(0,12) === 'concat(plus('  
         var o = functionToArray(t,true,false,'');
         if(o.status === true){
             console.log('%c simplifier les concat concat','background:pink;',t,o.value);
@@ -1451,8 +1453,6 @@ function traiteArrayExpression1(element,niveau){
                 return(astjs_logerreur({status:false,message:'erreur dans traiteArrayExpression1 1111',element:element}));
             }
             
-            
-            
         }else{
             return(astjs_logerreur({status:false,'message':'erreur dans traiteArrayExpression1 1388 "'+element.elements[i].type+'"',element:element.elements[i]}));
         }
@@ -1474,6 +1474,10 @@ function traiteObjectExpression1(element,niveau){
         if(t !== ''){
             t+=',';
         }
+        
+        positionDebutBloc=element.properties[i].range[0];
+
+        t+=ajouteCommentaireAvant(element,niveau);
         var val=element.properties[i];
         if(val.key.type === 'Identifier'){
             t+='('+val.key.name+',';

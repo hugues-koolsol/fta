@@ -1673,43 +1673,76 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     var j=0;
     var obj={};
     var textObj='';
+    var precedent_est_commentaire=false;
+    var a_des_commentaires=false;
+    
+    for(j=(id+1);(j < tab.length) && (tab[j][3] > tab[id][3]) && a_des_commentaires===false ;j=j+1){
+        if(tab[j][3] == (tab[id][3]+1)){
+            if((tab[j][1] === '#') && (tab[j][2] === 'f')){
+             a_des_commentaires=true;
+             break;
+            }
+        }
+    }
+    
+    
+    
     for(j=(id+1);(j < tab.length) && (tab[j][3] > tab[id][3]);j=j+1){
         if(tab[j][3] == (tab[id][3]+1)){
-            if((tab[j][1] == '') && (tab[j][2] == 'f')){
+            if((tab[j][1] === '#') && (tab[j][2] === 'f')){
+                if(textObj===''){
+                 textObj+=',';
+                }else{
+                }
+                textObj+=espacesn(true,niveau+1);
+                var commt = traiteCommentaire2(tab[j][13],niveau+1,j);
+                textObj+='/*'+commt+'*/';
+                textObj+=espacesn(true,niveau+1);
+                precedent_est_commentaire=true;
+             
+            }else if((tab[j][1] === '') && (tab[j][2] === 'f')){
                 if(tab[j][8] == 2){
                     if(tab[j+2][2] === 'f'){
+                        if(precedent_est_commentaire){
+                         precedent_est_commentaire=false;
+                        }else{
+                         textObj+=',';
+                         if(a_des_commentaires){
+                          textObj+=espacesn(true,niveau+1);
+                         }
+                        }
                         if(tab[j+2][1] == 'obj'){
                             obj=js_traiteDefinitionObjet(tab,(j+2),true);
                             if(obj.status == true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+obj.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+obj.value;
                             }else{
                                 return(logerreur({status:false,value:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'}));
                             }
                         }else if(tab[j+2][1] == 'plus' || tab[j+2][1] == 'moins' || tab[j+2][1] == 'concat' ){
                             var objOperation = TraiteOperations1(tab,(j+2),0);
                             if(objOperation.status == true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objOperation.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+objOperation.value;
                             }else{
                                 return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur js_traiteDefinitionObjet 1496 sur des opérations '}));
                             }
                         }else if(tab[j+2][1] == 'appelf'){
                             var objfnt1 = js_traiteAppelFonction(tab,(j+2),true,0,true);
                             if(objfnt1.status === true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objfnt1.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+objfnt1.value;
                             }else{
                                 logerreur({status:false,value:t,id:j,tab:tab,'message':'1069 erreur sur appel de fonction nom "'+tab[j][1]+'"'});
                             }
                         }else if(tab[j+2][1] == 'tableau'){
                             var objTableau = js_traiteTableau1(tab,(j+2),true,0,false);
                             if(objTableau.status == true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objTableau.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+objTableau.value;
                             }else{
                                 return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1392 sur js_traiteDefinitionObjet '}));
                             }
                         }else if(tab[j+2][1] == 'defTab'){
                             var objTableau = js_traiteDefinitionTableau(tab,j+1,0,{}); //js_tabTojavascript1(tab,tabdeclare[1][0],true,true,niveau)
                             if(objTableau.status == true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objTableau.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+objTableau.value;
                             }else{
                                 return(logerreur({status:false,value:t,id:tabdeclare[0][0],tab:tab,message:'erreur sur declaration 0803'}));
                             }
@@ -1719,7 +1752,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                             obj=js_condition0(tab,j+2,niveau);
                             
                             if(obj.status === true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+obj.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+obj.value;
                             }else{
                                 return(logerreur({status:false,value:t,id:i,tab:tab,'message':'erreur dans js_traiteDefinitionObjet, 1438 '}));
                             }
@@ -1728,7 +1761,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
 
                             var objtestLi = js_traiteInstruction1(tab,niveau,j+2);
                             if(objtestLi.status == true){
-                                textObj+=','+'\''+(tab[j+1][1])+'\''+':'+objtestLi.value;
+                                textObj+='\''+(tab[j+1][1])+'\''+':'+objtestLi.value;
                             }else{
                                 return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur js_traiteDefinitionObjet 1476'}));
                             }
@@ -1737,7 +1770,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                             return(logerreur({status:false,value:t,id:id,tab:tab,'message':'dans js_traiteDefinitionObjet, 1492 "'+(tab[j+2][1])+'"'}));
                         }
                     }else{
-                        textObj+=','+maConstante(tab[j+1])+':'+maConstante(tab[j+2]);
+                        textObj+=maConstante(tab[j+1])+':'+maConstante(tab[j+2]);
                     }
                 }
             }
@@ -1747,6 +1780,10 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     if(textObj != ''){
         t+=textObj.substr(1);
     }
+    if(a_des_commentaires){
+     t+=espacesn(true,niveau);
+    }
+    
     t+='}';
     return({status:true,value:t});
 }
@@ -2164,8 +2201,20 @@ function TraiteOperations1(tab,id,niveau){
     moins(117)
     */
     if(tab[id][8]===1){
-     t=recupere_operateur(tab[id][1])+tab[id+1][1]
-     return({value:t,status:true});
+     var operateur=recupere_operateur(tab[id][1]);
+     if(tab[id+1][2]==='c'){
+      t=operateur+tab[id+1][1]
+      return({value:t,status:true});
+     }else{
+      var obj=TraiteOperations1(tab , id+1 , niveau);
+      if(obj.status===true){
+       t=operateur+obj.value;
+       return({value:t,status:true});
+      }else{
+       return(logerreur({status:false,message:' erreur sur TraiteOperations1 2175'}));
+      }
+      
+     }
     }
      
     /*

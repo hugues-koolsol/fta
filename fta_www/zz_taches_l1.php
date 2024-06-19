@@ -63,16 +63,47 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
   }   
   recharger_la_page(BNF);
 }
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
+// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
+
+ if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
+
+  $db=new SQLite3('../fta_inc/db/sqlite/system.db');
+  $sql0='UPDATE tbl_taches SET chp_priorite_tache=99 WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$db->querySingle($sql0);
+  if( $ret===false ){
+
+    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() );
+   
+  }else{
+   
+    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
+    
+  }   
+
+
+ }
+
+ recharger_la_page(BNF);
+ 
+}
+
+
+
 /*
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
 */
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
 $o1='';
-$__nbMax=20;
 $__debut=0;
 $__nbEnregs=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
@@ -246,7 +277,8 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.=' <a class="yyinfo" href="zz_taches_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_tache'].'" title="modifier">✎</a>';
     
     $lsttbl.=' <a class="yydanger" href="zz_taches_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_tache'].'" title="supprimer">x</a>';
-    
+    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_99&amp;__id='.$v0['T0.chi_id_tache'].'" title="mettre cette priorité à 99">99</a>';
+
     $lsttbl.='</div>';
     $lsttbl.='</td>';
     $lsttbl.='<td style="text-align:center;">';
