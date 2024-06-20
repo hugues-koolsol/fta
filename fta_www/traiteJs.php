@@ -52,6 +52,7 @@ $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   chargerLeDernierSourceJs();
 //  transformJsDeTextAreaEnRev();
+
  }
 )
 </script>';

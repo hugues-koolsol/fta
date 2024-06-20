@@ -1146,7 +1146,10 @@ function traiteCallExpression1(element,niveau,parent,opt){
             }else{
                 var obj1=traiteUneComposante(element.arguments[i] , niveau, false , false ); //parentEstCrochet , dansSiOuBoucle );
                 if(obj1.status===true){
-                  lesArguments+='p('+obj1.value+')';
+
+                   positionDebutBloc=element.arguments[i].range[0];
+                   var le_commentaire=ajouteCommentaireAvant(element.arguments[i],niveau);
+                   lesArguments+='p('+le_commentaire+''+obj1.value+')';
                 }else{
                     return(astjs_logerreur({status:false,message:'erreur dans traiteCallExpression1 0722',element:element}));
                 }
@@ -1871,7 +1874,13 @@ function traiteAssignmentExpress1(element,niveau,opt){
         }else if((element.right) && (element.right.type === 'UnaryExpression')){
             var nomDuTestUnary = recupNomOperateur(element.right.operator);
             var nomDuTest = recupNomOperateur(element.operator);
-            if((element.right) && (element.right.type === 'UnaryExpression') && (element.right.argument.type === 'Identifier') && (element.right.operator === '-') || (element.right.operator === '+') ){
+            if(
+                 (element.right) 
+              && (typeof element.right.argument.name!=='undefined' ) 
+              && (element.right.type === 'UnaryExpression') 
+              && (element.right.argument.type === 'Identifier') 
+              && ( (element.right.operator === '-') || (element.right.operator === '+')) 
+            ){
                 t+=valeurLeft+element.right.operator+element.right.argument.name+')';
             }else if((element.right) && (element.right.type === 'Literal') && (element.right.argument.type === 'Identifier')){
                 t+=valeurLeft+nomDuTest+'('+nomDuTestUnary+'('+element.right.argument.name+')'+','+element.right.raw+'))';
@@ -1879,6 +1888,14 @@ function traiteAssignmentExpress1(element,niveau,opt){
                 t+=valeurLeft+element.right.operator+''+element.right.argument.raw+')';
             }else if(((element.right.operator === '-') || (element.right.operator === '+')) && (element.right.argument.type === 'Identifiel')){
                 t+=valeurLeft+element.right.operator+''+element.right.argument.name+')';
+            }else if((element.right.operator === '+' || element.right.operator === '-' ) && (element.right.argument.type === 'CallExpression')){
+             
+                var obj1 = traiteCallExpression1(element.right.argument,niveau,element.right,{'sansLF':true});
+                if(obj1.status === true){
+                    t+=valeurLeft+nomDuTestUnary+'('+obj1.value+'))';
+                }else{
+                    return(astjs_logerreur({status:false,'message':'erreur pour traiteAssignmentExpress1 780 '+element.type,element:element}));
+                }
             }else if((element.right.operator === '!') && (element.right.argument.type === 'CallExpression')){
                 var obj1 = traiteCallExpression1(element.right.argument,niveau,element.right,{'sansLF':true});
                 if(obj1.status === true){
@@ -2306,7 +2323,7 @@ function ajouteCommentaireAvant(element,niveau){
         if(tabComment[i].type === 'Block'){
 
             if(tabComment[i].hasOwnProperty('range')){
-                if(tabComment[i].range[1] < positionDebutBloc){
+                if(tabComment[i].range[1] <= positionDebutBloc){
                     /*
                       Attention, ici on remonte le tableau de caractères
                       donc on ajoute le précédent après en changeant les parenthèses en []
@@ -2665,8 +2682,16 @@ function recupere_ast_de_source_js_en_synchrone(texteSource,type_de_source){
  ===========================================
  ===========================================
  */
- r.open("POST",'za_ajax.php?recupererAstDeJs',false); 
- r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+ try{
+     r.open("POST",'za_ajax.php?recupererAstDeJs',false); 
+ }catch(e){
+     console.log('e=',e);
+ }
+ try{
+   r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+ }catch(e){
+  console.log('e=',e);
+ }
  r.onerror=function(e){
      console.error('e=',e);
      return{status:false};
