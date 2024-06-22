@@ -189,6 +189,9 @@ function convertir_js_en_rev(chp_genere_source , chp_rev_source , type='script')
    
 }
 
+/*
+  =====================================================================================================================
+*/
 
 function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
   var type='script';
@@ -215,19 +218,27 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
 //              console.log(objJs.value);
               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement , matriceFonction.value);
              
+            }else{
+               logerreur({status:false,message:'erreur 0223 traitement_apres_ajax_pour_conversion_fichier_js'});
+               displayMessages('zone_global_messages');
             }
             
             
+        }else{
+           logerreur({status:false,message:'erreur 0223 traitement_apres_ajax_pour_conversion_fichier_js'});
+           displayMessages('zone_global_messages');
         }
         
        }else{
         logerreur({status:false,message:'erreur 0195 traitement_apres_ajax_pour_conversion_fichier_js'});
+        displayMessages('zone_global_messages');
        }
        
        
        
   }else{
         logerreur({status:false,message:'erreur 0201 traitement_apres_ajax_pour_conversion_fichier_js'});
+        displayMessages('zone_global_messages');
   }
   return
  

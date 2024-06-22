@@ -8,7 +8,7 @@ function recupere_une_donnees_des_taches($id,$db){
  $sql='
   SELECT `chi_id_tache` , `chp_texte_tache` , `chp_priorite_tache` 
   FROM `tbl_taches` T0
-  WHERE `T0`.`chi_id_tache`=\''.addslashes1($id).'\'
+  WHERE `T0`.`chi_id_tache`=\''.sq0($id).'\'
  ';
 
 

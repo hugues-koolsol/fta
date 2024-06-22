@@ -1239,10 +1239,12 @@ window.addEventListener('load', function () {
 
  import('./module_interface1.js').then(
   function(Module){
+   
   __gi1=new Module.interface1('__gi1');
   __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
   __gi1.deplace_la_zone_de_message();
   fonctionDeLaPageAppeleeQuandToutEstCharge();
+  
  });
  var liste_des_scripts=document.getElementsByTagName('script');
  for(var i=0;i<liste_des_scripts.length;i++){

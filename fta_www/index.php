@@ -13,7 +13,9 @@ print($o1);$o1='';
         <div class="menuScroller">
             <ul>
                 <li><a href="javascript:chargerSourceDeTest()">charger le source de test</a></li>
-                <li><a href="javascript:transformLeRev()" class="yysucces">traiter</a></li>
+                <li><a href="javascript:transformLeRev(false)" class="yysucces">traiter sans cst dans racine</a></li>
+                <li><a href="javascript:transformLeRev(true)" class="yysucces">traiter avec cst dans racine</a></li>
+                <li><a href="javascript:__gi1.aller_au_caractere_de_la_textarea(&quot;txtar1&quot;)" class="yysucces">aller au caractère</a></li>
                 <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages" >🙈</a></li>
             </ul>
         </div>

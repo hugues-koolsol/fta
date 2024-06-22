@@ -254,8 +254,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     , `chx_dossier_id_source`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) .'\'
     , `chx_cible_id_source`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source'])   .'\'
     , `chp_commentaire_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']).'\'
-    , `chp_rev_source`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])        .'\'
-    , `chp_genere_source`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])     .'\'
+    , `chp_rev_source`         = \''.sq1($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'])        .'\'  
+    , `chp_genere_source`      = \''.sq1($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'])     .'\'
     
     
     WHERE 

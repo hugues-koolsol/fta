@@ -111,7 +111,7 @@ $o1.='</form>'.CRLF;
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
 $champs0='`chi_id_rev`          , `chp_provenance_rev` , T0.chx_source_rev , T1.chp_nom_source , T0.chp_valeur_rev ,
-          chp_type_rev          , T0.chp_niveau_rev
+          chp_type_rev          , T0.chp_niveau_rev    , T0.chp_pos_premier_rev
 ';
 $sql0='SELECT '.$champs0;
 $from0='
@@ -221,6 +221,7 @@ if($stmt!==false){
     'T0.chp_valeur_rev'      => $arr[4],
     'T0.chp_type_rev'        => $arr[5],
     'T0.chp_niveau_rev'      => $arr[6],
+    'T0.chp_pos_premier_rev' => $arr[7],
    ));
   }
   $stmt->close(); 
@@ -288,6 +289,7 @@ $__lsttbl.='<th>id source</th>';
 $__lsttbl.='<th>valeur(1)</th>';
 $__lsttbl.='<th>type(2)</th>';
 $__lsttbl.='<th>niveau(3)</th>';
+$__lsttbl.='<th>pos(5)</th>';
 
 
 $__lsttbl.='</tr></thead><tbody>';
@@ -357,6 +359,13 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='</td>';
  
  
+ $__lsttbl.='<td style="text-align:right;">'; 
+ $__lsttbl.=$v0['T0.chp_pos_premier_rev'].'';
+ $__lsttbl.='</td>';
+ 
+ 
+ 
+
  
  $__lsttbl.='</tr>';
 }
@@ -416,6 +425,7 @@ $js_a_executer_apres_chargement=array(
      'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
+/*
 //$o1.='<script type="module" src="js/module_rectangle_et_carre.js"></script>';
 $o1.='<script type="module">
     import { Rectangle , Carre } from "./js/module_rectangle_et_carre.js";
@@ -425,7 +435,7 @@ $o1.='<script type="module">
     window.Cercle = Cercle;
 </script>
 ';
-
+*/
 
 print($o1); $o1='';
 

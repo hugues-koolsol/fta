@@ -91,7 +91,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
 /*=====================================================================================================================*/
 
 
-function transformLeRev(){
+function transformLeRev(autoriser_constante_dans_la_racine=false){
   //"àà"
   clearMessages('zone_global_messages');
   console.log('\n=========================\ndébut de transforme')
@@ -106,8 +106,7 @@ function transformLeRev(){
   var count = lines.length;
   a.setAttribute('rows',count+1);
   
-  
-  
+ 
   var beginMicro=performance.now();
   var startMicro=performance.now();
   var tableau1=iterateCharacters2(a.value);
@@ -116,7 +115,7 @@ function transformLeRev(){
 //  console.log(a.value.substr(4,1),a.value.length)
   
   var startMicro=performance.now();
-  var matriceFonction1=functionToArray2(tableau1.out,true,false,'');
+  var matriceFonction1=functionToArray2(tableau1.out,true,autoriser_constante_dans_la_racine,'');
   var endMicro=performance.now();  
   console.log('analyse syntaxique endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');
 
@@ -145,7 +144,7 @@ function transformLeRev(){
      
      
      var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
-     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,'');
+     var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      
      if(compacteOriginal.status==true && compacteReecrit.status===true){

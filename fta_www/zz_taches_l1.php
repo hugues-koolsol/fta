@@ -167,7 +167,7 @@ $where0='
 if(($chi_id_tache != '' && is_numeric($chi_id_tache))){
 
     $where0.='
-  AND `T0`.`chi_id_tache` = \''.addslashes1($chi_id_tache).'\'
+  AND `T0`.`chi_id_tache` = \''.sq0($chi_id_tache).'\'
  ';
 
 }
@@ -176,7 +176,7 @@ if(($chi_id_tache != '' && is_numeric($chi_id_tache))){
 if(($chp_texte_tache != '')){
 
     $where0.='
-  AND `T0`.`chp_texte_tache` LIKE \'%'.addslashes1($chp_texte_tache).'%\'
+  AND `T0`.`chp_texte_tache` LIKE \'%'.sq0($chp_texte_tache).'%\'
  ';
 
 }
@@ -186,7 +186,7 @@ if(($chp_texte_tache != '')){
 if(($chp_priorite_tache != '')){
 
     $where0.='
-  AND `T0`.`chp_priorite_tache` LIKE \'%'.addslashes1($chp_priorite_tache).'%\'
+  AND `T0`.`chp_priorite_tache` LIKE \'%'.sq0($chp_priorite_tache).'%\'
  ';
 
 }
@@ -198,7 +198,7 @@ $order0='
  ORDER BY `T0`.`chp_priorite_tache` ASC
 ';
 $sql0.=$order0;
-$plage0=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();

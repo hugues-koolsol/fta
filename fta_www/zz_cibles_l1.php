@@ -105,30 +105,30 @@ $sql='
 
 if($chi_id_cible!='' && is_numeric($chi_id_cible)){
  $sql.='
-  AND `T0`.`chi_id_cible` = \''.addslashes1($chi_id_cible).'\'
+  AND `T0`.`chi_id_cible` = \''.sq0($chi_id_cible).'\'
  '; 
 }
 
 if($chp_nom_cible!='' ){
  $sql.='
-  AND `T0`.`chp_nom_cible` LIKE \'%'.addslashes1($chp_nom_cible).'%\'
+  AND `T0`.`chp_nom_cible` LIKE \'%'.sq0($chp_nom_cible).'%\'
  '; 
 }
 
 if($chp_dossier_cible!='' ){
  $sql.='
-  AND `T0`.`chp_dossier_cible` LIKE \'%'.addslashes1($chp_dossier_cible).'%\'
+  AND `T0`.`chp_dossier_cible` LIKE \'%'.sq0($chp_dossier_cible).'%\'
  '; 
 }
 
 
 if($chp_commentaire_cible!='' ){
  $sql.='
-  AND `T0`.`chp_commentaire_cible` LIKE \'%'.addslashes1($chp_commentaire_cible).'%\'
+  AND `T0`.`chp_commentaire_cible` LIKE \'%'.sq0($chp_commentaire_cible).'%\'
  '; 
 }
 
-$sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 
 
 $data0=array();

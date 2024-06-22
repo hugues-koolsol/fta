@@ -563,7 +563,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
          
         }
     }
-    if((t.substr(0,10) === 'plus(plus(') || (t.substr(0,12) === 'moins(moins(')){
+    if((t.substr(0,10) === 'plus(plus(') || (t.substr(0,12) === 'moins(moins(') || (t.substr(0,10) === 'mult(mult(')){
         var o = functionToArray(t,true,false,'');
         if(o.status === true){
             console.log('%c simplifier les plus plus','background:pink;',t,o.value);
@@ -2476,31 +2476,18 @@ function TransformAstEnRev(les_elements,niveau){
                 }else if((element.argument) && (element.argument.type == 'CallExpression')){
                     var obj1 = traiteCallExpression1(element.argument,niveau,element,{'sansLF':true});
                     if(obj1.status === true){
-                        t+='\n'+esp0+'revenir('+obj1.value+')';
+                        t+='\n'+esp0+'retourner('+obj1.value+')';
                     }else{
                         return(astjs_logerreur({status:false,message:'erreur TransformAstEnRev 1221 ',element:element}));
                     }
                 }else if((element.argument) && (element.argument.type == 'ObjectExpression')){
                     var obj1 = traiteObjectExpression1(element.argument,niveau);
                     if(obj1.status === true){
-                        t+='\n'+esp0+'revenir('+obj1.value+')';
+                        t+='\n'+esp0+'retourner('+obj1.value+')';
                     }else{
                         return(astjs_logerreur({status:false,message:'erreur dans TransformAstEnRev 1963',element:element}));
                     }
                     
-/*                    
-                }else if((element.argument) && (element.argument.type == 'Identifier')){
-                    t+='\n'+esp0+'revenir('+element.argument.name+')';
-                }else if((element.argument) && (element.argument.type == 'Literal')){
-                    t+='\n'+esp0+'revenir('+element.argument.raw+')';
-                }else if((element.argument) && (element.argument.type == 'BinaryExpression')){
-                    var obj1 = traiteBinaryExpress1(element.argument,niveau,false,false);
-                    if(obj1.status === true){
-                        t+='\n'+esp0+'revenir('+obj1.value+')';
-                    }else{
-                        return(astjs_logerreur({'status':false,'message':'erreur dans TransformAstEnRev 1970 ',element:element}));
-                    }
-*/                    
                 }else if(
                           (element.argument) && 
                           (
@@ -2518,7 +2505,7 @@ function TransformAstEnRev(les_elements,niveau){
                         ){
                     var obj1 = traiteUneComposante(element.argument , niveau , false , false );
                     if(obj1.status === true){
-                        t+='\n'+esp0+'revenir('+obj1.value+')';
+                        t+='\n'+esp0+'retourner('+obj1.value+')';
                     }else{
                         return(astjs_logerreur({'status':false,'message':'erreur dans TransformAstEnRev 1978 ',element:element}));
                     }

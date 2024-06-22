@@ -79,17 +79,17 @@ $sql='
 
 if($chi_id_dossier!='' && is_numeric($chi_id_dossier)){
  $sql.='
-  AND `T0`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
+  AND `T0`.`chi_id_dossier` = \''.sq0($chi_id_dossier).'\'
  '; 
 }
 
 if($chp_nom_dossier!='' ){
  $sql.='
-  AND `T0`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
+  AND `T0`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'
  '; 
 }
 
-$sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
 

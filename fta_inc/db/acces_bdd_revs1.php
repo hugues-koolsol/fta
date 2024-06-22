@@ -13,7 +13,7 @@ function recupere_une_donnees_des_revs($id,$db){
 ,   `chp_pos_ouver_parenthese_rev`             ,   `chp_pos_fermer_parenthese_rev`            ,   `chp_commentaire_rev`                      
   
   FROM `tbl_dossiers` T0
-  WHERE `T0`.`chi_id_dossier`=\''.addslashes1($id).'\'
+  WHERE `T0`.`chi_id_dossier`=\''.sq0($id).'\'
  ';
 
 

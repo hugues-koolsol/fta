@@ -57,7 +57,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
           on ne copie pas les sous dossiers de fta backup et de fta_temp
           */
       }else{
-          $les_valeurs_sql.='INSERT OR IGNORE INTO tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.addslashes1($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
+          $les_valeurs_sql.='INSERT OR IGNORE INTO tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.sq0($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
       }
      }
    }
@@ -107,7 +107,7 @@ if(isset($_GET['__action']) && '__integration_des_dossiers_existants'===$_GET['_
    $nomDossier=substr( $v1['chemin'] , strlen($dossier_racine ) );
    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomDossier , true ) . '</pre>' ; 
    
-   $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
+   $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.sq0($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
 
 
    if( false === $db->exec($sql) ){
@@ -264,7 +264,7 @@ if($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===APP_KEY){
     */
     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
     $nomDossier='/';
-    $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.addslashes1($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
+    $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.sq0($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
 
     if((false === $db->exec($sql))){
 
@@ -291,7 +291,7 @@ $where0='
 if(($chp_nom_dossier != '')){
 
     $where0.='
-  AND `T0`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
+  AND `T0`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'
  ';
 
 }
@@ -300,7 +300,7 @@ if(($chp_nom_dossier != '')){
 if(($chi_id_dossier != '')){
 
     $where0.='
-  AND `T0`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
+  AND `T0`.`chi_id_dossier` = \''.sq0($chi_id_dossier).'\'
  ';
 
 }
@@ -310,7 +310,7 @@ $order0='
  ORDER BY `T0`.`chp_nom_dossier` ASC
 ';
 $sql0.=$order0;
-$plage0=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
 
 

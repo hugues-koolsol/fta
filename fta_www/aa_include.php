@@ -264,13 +264,6 @@ function enti1($s){
 
 function sq0($s){
 
-    return(addslashes1($s));
-
-}
-/*========================================================================================================================*/
-
-function addslashes1($s){
-
     $s=SQLite3::escapeString($s);
     $ua=array(
         'à' => 'à',
@@ -292,6 +285,15 @@ function addslashes1($s){
         'Ü' => 'Ü');
     return(strtr($s,$ua));
 
+}
+/*
+  =====================================================================================================================
+  pour les programmes sources, il ne faut pas transformer les caractères "bizarres" 
+  pour pouvoir intégrer la fonction sq0 çi dessus
+*/
+
+function sq1($s){
+    return(SQLite3::escapeString($s));
 }
 /*
   
@@ -734,7 +736,7 @@ function html_footer1($parametres=array()){
     $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><div id="__contenu_modale"><iframe id="iframe_modale_1" src=""></iframe></div></dialog>'.CRLF;
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
-    if(preg_match('/.*_l[0-9]+\\.php/',BNF)){
+    if(!preg_match('/.*_a[0-9]+\\.php/',BNF)){
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;"   title="taille texte">A±</a>'.CRLF;
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="opacity:0.5;" title="taille espace">p±</a>'.CRLF;
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style="opacity:0.5;"  title="taille bordure">b±</a>'.CRLF;

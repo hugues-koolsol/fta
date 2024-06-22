@@ -77,20 +77,20 @@ $sql='
 
 if($chi_id_basedd!='' && is_numeric($chi_id_basedd)){
  $sql.='
-  AND `T0`.`chi_id_basedd` = \''.addslashes1($chi_id_basedd).'\'
+  AND `T0`.`chi_id_basedd` = \''.sq0($chi_id_basedd).'\'
  '; 
 }
 
 if($chp_nom_basedd!='' ){
  $sql.='
-  AND `T0`.`chp_nom_basedd` LIKE \'%'.addslashes1($chp_nom_basedd).'%\'
+  AND `T0`.`chp_nom_basedd` LIKE \'%'.sq0($chp_nom_basedd).'%\'
  '; 
 }
 
 
 
 
-$sql.=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 
 // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql  . '</pre>' ; exit(0);
 

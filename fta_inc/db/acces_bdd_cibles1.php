@@ -8,7 +8,7 @@ function recupere_une_donnees_des_cibles($id,$db){
  $sql='
   SELECT `chi_id_cible` , `chp_nom_cible` , `chp_dossier_cible` , `chp_commentaire_cible`
   FROM `tbl_cibles` T0
-  WHERE `T0`.`chi_id_cible`=\''.addslashes1($id).'\'
+  WHERE `T0`.`chi_id_cible`=\''.sq0($id).'\'
  ';
 
 

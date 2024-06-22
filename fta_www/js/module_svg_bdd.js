@@ -98,11 +98,41 @@ class module_svg_bdd{
         window.addEventListener( 'mouseup'   , this.#souris_haut.bind(this)  , false );
         window.addEventListener( 'mousemove' , this.#souris_bouge.bind(this) , false );
         
+        this.#svg_dessin.addEventListener( 'touchstart' , this.#doigt_bas.bind(this)   , false );
+        window.addEventListener( 'touchend'  , this.#doigt_haut.bind(this)  , false );
+        window.addEventListener( 'touchmove' , this.#doigt_bouge.bind(this) , false );
+        
         this.#charger_les_bases_initiales_en_asynchrone();
      
     }
     #propriete_pour_deplacement_x='pageX';
     #propriete_pour_deplacement_y='pageY';
+
+
+   /*
+   ====================================================================================================================
+   function doigt_bouge
+   */
+   #doigt_bouge(e){
+    this.#souris_bouge(e.touches[0])
+   }
+
+   /*
+   ====================================================================================================================
+   function doigt_haut
+   */
+   #doigt_haut(e){
+    this.#souris_haut(e.touches[0])
+   }
+
+   /*
+   ====================================================================================================================
+   function doigt_bas
+   */
+   #doigt_bas(e){
+    console.log(e);
+    this.#souris_bas(e.touches[0])
+   }
 
     /*
     ====================================================================================================================
@@ -110,6 +140,11 @@ class module_svg_bdd{
     */
     #souris_bouge(e){
      
+        try{
+         /* permer de ne pas sélectionner les textes , ne fonctionne pas sur les mobiles */
+         e.preventDefault(); 
+        }catch(er){
+        }
         if(this.#souris_element_a_deplacer==='svg'){
          
             var calculx=(this.#souris_init_objet.x-e[this.#propriete_pour_deplacement_x])*this.#_dssvg.zoom1+this.#souris_init_objet.param_bouge.x;
@@ -130,7 +165,6 @@ class module_svg_bdd{
          
         }else if(this.#souris_element_a_deplacer==='table'){
          
-            e.preventDefault(); /* permer de ne pas sélectionner les textes */
             this.#svg_souris_delta_x=(e[this.#propriete_pour_deplacement_x]-this.#souris_init_objet.x)*this.#_dssvg.zoom1;
             this.#svg_souris_delta_y=(e[this.#propriete_pour_deplacement_y]-this.#souris_init_objet.y)*this.#_dssvg.zoom1;
             var calculx=this.#svg_souris_delta_x+this.#souris_init_objet.param_bouge.x;
@@ -766,6 +800,12 @@ class module_svg_bdd{
                         'chp_nom_basedd' : donnees.valeurs[i]['T0.chp_nom_basedd']
                       };
 
+                      if(donnees.valeurs[i]['T0.chp_rev_travail_basedd']==='' || donnees.valeurs[i]['T0.chp_rev_travail_basedd']===null){
+                          logerreur({status : false , message:'0803 le champ chp_rev_travail_basedd est [vide module_svg[charger_les_bases_en_asynchrone]]'});
+                          displayMessages('zone_global_messages');
+                          return;
+                       
+                      }
                       var obj1=functionToArray(donnees.valeurs[i]['T0.chp_rev_travail_basedd'],true,false,'');
                       if(obj1.status===true){
                           this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]['matrice']=obj1.value;
@@ -1612,6 +1652,18 @@ class module_svg_bdd{
     
    }
    
+   /*
+   ========================================================================================================
+   */
+   zoomMoins(){
+      this.zoomPlusMoins(2);
+   }
+   /*
+   ========================================================================================================
+   */
+   zoomPlus(){
+      this.zoomPlusMoins(0.5);
+   }
    /*
    ========================================================================================================
    */

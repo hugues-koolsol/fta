@@ -27,7 +27,8 @@ print($o1);$o1='';
 
         <div class="menuScroller">
             <ul>
-                <li><a href="javascript:alert('todo')"  class="yysucces">todo</a>&nbsp;</li>
+                <li><a href="javascript:__svg1.zoomPlus()"  class="yysucces">Z+</a>&nbsp;</li>
+                <li><a href="javascript:__svg1.zoomMoins()"  class="yysucces">Z-</a>&nbsp;</li>
             </ul>
         </div>
   <h1>Svg de la base</h1>
@@ -95,7 +96,7 @@ print($o1);$o1='';
   
   <div id="div_svg1" style="background: url(&quot;data:image/svg+xml,%3Csvg xmlns=\&quot;http://www.w3.org/2000/svg\&quot; viewBox=\&quot;0 0 10 10\&quot;%3E%3Cpath d=\&quot;M 0 0 l 10 10 l 0 -10 l -10 10 Z\&quot; fill=\&quot;black\&quot; fill-opacity=\&quot;.04\&quot;/%3E%3C/svg%3E&quot;) 208px 261px / 20px;">
    <svg id="refZnDessin" transform="rotate(0 0 0)" viewBox="0 0 200 200" style="border: 0; position: relative; background: transparent; top: 0px; left: 0px; width: 200px; height: 200px;">
-    <text id="message_dans_le_svg" x="10" y="20" style="font-size:16;stroke:black;stroke-width:0.1;fill:black;font-family:Verdana;">Veuillez patienter s'il vous plaît !</text>
+    <text id="message_dans_le_svg" x="10" y="20" style="font-size:16px;stroke:black;stroke-width:0.1;fill:black;font-family:Verdana;">Veuillez patienter s'il vous plaît !</text>
    </svg>  
   </div>
 

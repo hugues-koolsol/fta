@@ -113,7 +113,7 @@ $where0='
 if(($chi_id_source != '' && is_numeric($chi_id_source))){
 
     $where0.='
-  AND `T0`.`chi_id_source` = \''.addslashes1($chi_id_source).'\'
+  AND `T0`.`chi_id_source` = \''.sq0($chi_id_source).'\'
  ';
 
 }
@@ -122,7 +122,7 @@ if(($chi_id_source != '' && is_numeric($chi_id_source))){
 if(($chp_nom_source != '')){
 
     $where0.='
-  AND `T0`.`chp_nom_source` LIKE \'%'.addslashes1($chp_nom_source).'%\'
+  AND `T0`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\'
  ';
 
 }
@@ -131,7 +131,7 @@ if(($chp_nom_source != '')){
 if(($chp_type_source != '')){
 
     $where0.='
-  AND `T0`.`chp_type_source` LIKE \'%'.addslashes1($chp_type_source).'%\'
+  AND `T0`.`chp_type_source` LIKE \'%'.sq0($chp_type_source).'%\'
  ';
 
 }
@@ -139,7 +139,7 @@ if(($chp_type_source != '')){
 if(($chp_nom_dossier != '')){
 
     $where0.='
-  AND `T1`.`chp_nom_dossier` LIKE \'%'.addslashes1($chp_nom_dossier).'%\'
+  AND `T1`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'
  ';
 
 }
@@ -148,7 +148,7 @@ if(($chp_nom_dossier != '')){
 if(($chi_id_dossier != '')){
 
     $where0.='
-  AND `T1`.`chi_id_dossier` = \''.addslashes1($chi_id_dossier).'\'
+  AND `T1`.`chi_id_dossier` = \''.sq0($chi_id_dossier).'\'
  ';
 
 }
@@ -158,7 +158,7 @@ $order0='
  ORDER BY `T0`.`chp_nom_source` ASC
 ';
 $sql0.=$order0;
-$plage0=' LIMIT '.addslashes1($__nbMax).' OFFSET '.addslashes1($__debut).';';
+$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq01($__debut).';';
 $sql0.=$plage0;
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();

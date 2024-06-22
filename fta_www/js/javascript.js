@@ -82,11 +82,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         t+=espcLigne;
                         t+=tab[i][1]+''+terminateur+'';
                     }else{
-                        return(logerreur({status:false,value:t,id:id,tab:tab,'message':'erreur dans un '+tab[i][1]+' qui doit être sous le format '+tab[i][1]+'() strictement'}));
+                        return(logerreur({status:false,value:t,id:i,tab:tab,'message':'erreur dans un '+tab[i][1]+' qui doit être sous le format '+tab[i][1]+'() strictement'}));
                     }
                 }
                 
             }else if((tab[i][1] == 'revenir') && (tab[i][2] == 'f')){
+                if(tab[i][8] == 0){
+                    t+=espcLigne;
+                    t+='return'+terminateur+'';
+                }else{
+                    return(logerreur({status:false,value:t,id:i,tab:tab,message:' revenir ne doit pas avoir de paramètre'}));
+                }
+
+            }else if((tab[i][1] == 'retourner') && (tab[i][2] == 'f')){
              
                 if(tab[i][8] == 0){
                     try{

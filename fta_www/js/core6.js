@@ -242,9 +242,10 @@ function nbre_caracteres2(lettre,chaine){
 */
 function reIndicerLeTableau(tab){
     var l01=tab.length;
-    var k=0;
-    var j=0;
     var i=0;
+    var j=0;
+    var k=0;
+    var l=0;
     var niveau=0;
     /*
       =================================================================================================================
@@ -289,7 +290,6 @@ function reIndicerLeTableau(tab){
       profondeur
       =================================================================================================================
     */
-    var l=0;
     for(i=l01-1;i > 0;i--){
         if(tab[i][2] == 'c'){
             tab[i][10]=0;
@@ -814,7 +814,7 @@ function iterateCharacters2(str){
         */
         if( !((codeCaractere === 8203) || (codeCaractere === 11))){
             /*
-              0xD800 =55296
+              0xD800 = 55296 = 1101 1000 0000 0000  , 0xF800 = 63488 = 1111 1000 0000 0000
             */
             temp=codeCaractere&0xF800;
             if(temp === 55296){
@@ -881,21 +881,48 @@ function formaterErreurRev(obj){
     autoriserCstDansRacine:autoriserCstDansRacine
  }
  */
-    var messageAjoute='';
-    /*
-     su il y a eu une 
-    */
-    if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true ){
-      return {'status':obj.status,'value':T,'id':obj.ind,'message':message};
-    }
-    var chaineTableau='['+obj.chaineTableau+']';
-    var T = JSON.parse(chaineTableau);
     var t='';
     var i=0;
+    var j=0;
     var finGrasFait=false;
     var presDe='';
     var line=0;
+ 
+    var message_ajoute='';
+    if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true ){
+      /*
+       si il y a un problème avec le JSON.parse:
+
+      SyntaxError: Bad control character in string literal in JSON at position 113 (line 1 column 114)
+      at JSON.parse (<anonymous>)
+      at functionToArray2 (core6.js:1939:13)
+      at transformLeRev (pour-index_php0.js:118:24)
+      at <anonymous>:1:1      
+      */
+      if(obj.ejson.message.indexOf('at position ')>=0){
+       var position=obj.ejson.message.substr(obj.ejson.message.indexOf('at position ')+12);
+       if(obj.ejson.message.indexOf(' ')>=0){
+        position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
+        for(i=position;i>=0  && message_ajoute==='' ;i--){
+         if(obj.chaineTableau.substr(i,1)==='['){
+          for(var j=i;j<obj.chaineTableau.length && message_ajoute==='';j++){
+           if(obj.chaineTableau.substr(j,1)===']'){
+             message_ajoute='près de `' + obj.chaineTableau.substr(i , j-i+1)+'`';
+             break;
+           }
+          }
+         }
+        }
+       }
+      }
+     
+     
+      return {'status':obj.status,'value':T,'id':obj.ind,'message':obj.message + ' ' + message_ajoute };
+    }
     
+    var chaineTableau='['+obj.chaineTableau+']';
+    var T = JSON.parse(chaineTableau);
+
     if(obj.hasOwnProperty('tableauEntree')){
         if(obj.hasOwnProperty('ind')){
             if(obj.ind>50){
@@ -926,8 +953,8 @@ function formaterErreurRev(obj){
                 }
                 
             }
-            messageAjoute+='position caractère='+obj.ind+'';
-            messageAjoute+='<br />près de ----'+presDe+'----<br />';
+            message_ajoute+='position caractère='+obj.ind+'';
+            message_ajoute+='<br />près de ----'+presDe+'----<br />';
             line=0;
             for(i=obj.ind;i>=0;i--){
                 if(obj.tableauEntree[i][0]==='\n'){
@@ -937,7 +964,7 @@ function formaterErreurRev(obj){
         }
     }
     
-    var message=obj.message+messageAjoute;
+    var message=obj.message+message_ajoute;
     var temp={'status':obj.status,'value':T,'id':obj.ind,'message':message,'line':line};
     return temp;
 }
@@ -1160,8 +1187,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c == '"'){
                 if(autoriserCstDansRacine !== true){
                     if(i == l01-1){
-                        temp={'status':false,'id':i,'value':T,'message':'1148 la racine ne peut pas contenir des constantes'};
-                        return(logerreur(temp));
+                        /* à faire, noter un cas d'erreur */
+                        console.error('core functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;')
+                        return(logerreur({'status':false,'id':i,'value':T,'message':'1148 la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 if((i+1) < l01){
@@ -1169,13 +1197,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
                         dernier=i-1;
                     }else{
-                        if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
-                        }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
-                        }
-                        temp={'status':false,'value':T,'id':i,'message':'0 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
-                        return(logerreur(temp));
+                        /* cas d'erreur = f(""") */
+
+                        return logerreur(formaterErreurRev({status:false,ind:i,message:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+
                     }
                 }else{
                     if( !(autoriserCstDansRacine === true)){
@@ -1191,13 +1216,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 dansCstDouble=false;
                 if(autoriserCstDansRacine !== true){
                     if(niveau == 0){
-                        if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
-                        }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
-                        }
-                        temp={'status':false,'id':i,'value':T,'message':'1186 la racine ne peut pas contenir des constantes près de '+presDe};
-                        return(logerreur(temp));
+                        /* cas d'erreur = "" */
+
+                        return logerreur(formaterErreurRev({status:false,ind:i,message:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+
                     }
                 }
                 constanteQuotee=3;
@@ -1219,8 +1241,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c == '\\'){
                 if(i == l01-1){
-                    temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction en i='+i};
-                    return(logerreur(temp));
+                    return(logerreur({'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une constante en i='+i}));
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
@@ -1235,14 +1256,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     i++;
                 }else{
                     return logerreur(formaterErreurRev({status:false,ind:i,message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-                 
-                    if(i > 100){
-                        var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
-                    }else{
-                        var presDe = reconstruitChaine(tableauEntree,0,(i+10));
-                    }
-                    temp={'status':false,'value':T,'id':i,'message':'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u pres de '+presDe};
-                    return(logerreur(temp));
                 }
             }else{
                 if(texte == ''){
@@ -1298,7 +1311,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=4;
                 if(autoriserCstDansRacine !== true){
                     if(niveau == 0){
-                        temp={'status':false,'id':i,'value':T,'message':'1267 la racine ne peut pas contenir des constantes'};
+                        temp={'status':false,'id':i,'value':T,'message':'1305 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1391,7 +1404,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=2;
                 if(autoriserCstDansRacine !== true){
                     if(niveau == 0){
-                        temp={'status':false,'id':i,'value':T,'message':'1267 la racine ne peut pas contenir des constantes'};
+                        temp={'status':false,'id':i,'value':T,'message':'1398 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1943,8 +1956,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     try{
      T=JSON.parse(chaineTableau);
     }catch(ejson){
-      console.log('ejson=',ejson);
-      return logerreur(formaterErreurRev({'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+
+      return logerreur(formaterErreurRev({ejson:ejson,'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
      
     }
     

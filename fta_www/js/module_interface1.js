@@ -23,6 +23,26 @@ class interface1{
         return this.#largeur_des_ascenseurs;
     }
     
+    
+    /*
+      =============================================================================================================
+      
+      function aller_au_caractere_de_la_textarea
+    */
+    aller_au_caractere_de_la_textarea(id_textarea){
+        var valeur = prompt('aller au caractère n° :');
+        if(valeur!==null){
+        
+             var elem=document.getElementById(id_textarea);
+             elem.focus();
+             elem.selectionStart=parseInt(valeur,10);
+             elem.selectionEnd=parseInt(valeur,10)+1;
+
+        }
+
+     
+    }
+    
     /*
       =============================================================================================================
       
