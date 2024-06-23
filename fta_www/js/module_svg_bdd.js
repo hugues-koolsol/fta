@@ -108,7 +108,7 @@ class module_svg_bdd{
     #propriete_pour_deplacement_x='pageX';
     #propriete_pour_deplacement_y='pageY';
 
-
+    #debut_de_click=0;
    /*
    ====================================================================================================================
    function doigt_bouge
@@ -203,6 +203,24 @@ class module_svg_bdd{
     }
     /*
     ====================================================================================================================
+    function changer_ne_nom_de_table
+    */
+    changer_ne_nom_de_table( nom_champ_nouveau_nom , nom_champ_ancien_nom , champ_id_element_svg ){
+     var nouveau_nom=document.getElementById(nom_champ_nouveau_nom);
+     var ancien_nom=document.getElementById(nom_champ_ancien_nom);
+     if(nouveau_nom!==ancien_nom){
+      var id_zone_element_svg=document.getElementById(champ_id_element_svg).value;
+      var element_svg=document.getElementById(id_zone_element_svg);
+      for(var j=0;j<element_svg.childNodes.length;j++){
+       if(element_svg.childNodes[j].nodeName.toLowerCase()==='#text'){
+        element_svg.childNodes[j].data=nouveau_nom.value;
+        break;
+       }
+      }
+     }
+    }
+    /*
+    ====================================================================================================================
     function souris_haut
     */
     #souris_haut(e){
@@ -223,6 +241,37 @@ class module_svg_bdd{
                 }
             }
 
+        }else{
+         
+         var ecart_de_temps=new Date(Date.now()).getTime()-this.#debut_de_click;
+         console.log('ecart_de_temps=' , ecart_de_temps );
+         if(ecart_de_temps>300 && ecart_de_temps<1500){
+          console.log('ici e=',e.target.nodeName + ' ' +e.target.getAttribute('type_element'));
+          if(e.target.nodeName.toLowerCase()==='text'){
+           if(e.target.getAttribute('type_element')==="texte_de_nom_de_table"){
+            console.log('ici' , e.target.childNodes );
+            var nom_de_table='';
+            var id_element='';
+            for(var j=0;j<e.target.childNodes.length;j++){
+
+             if(e.target.childNodes[j].nodeName.toLowerCase()==='#text'){
+
+              nom_de_table=e.target.childNodes[j].data;
+              id_element=e.target.id;
+              break;
+             }
+            }
+            var t='';
+            t+='<input id="nouveau_nom" type="text" value="'+nom_de_table+'" />';
+            t+='<input id="ancien_nom" type="hidden" value="'+nom_de_table+'" />';
+            t+='<input id="id_element_svg" type="hidden" value="'+id_element+'" />';
+            t+='<a href="javascript:__svg1.changer_ne_nom_de_table(&quot;nouveau_nom&quot;,&quot;ancien_nom&quot;,&quot;id_element_svg&quot;)">enregistrer</a>';
+            document.getElementById('__contenu_modale').innerHTML=t;
+            global_modale1.showModal();
+            
+           }
+          }
+         }
         }
      
      
@@ -242,7 +291,8 @@ class module_svg_bdd{
        this.#souris_init_objet.x=e[this.#propriete_pour_deplacement_x];
        this.#souris_init_objet.y=e[this.#propriete_pour_deplacement_y];
        this.#souris_element_a_deplacer='';
-       
+       this.#debut_de_click=new Date(Date.now()).getTime();
+//       console.log('this.#debut_de_click=' , this.#debut_de_click );
        var tar=e.target;
        if(tar.tagName.toLowerCase()==='svg'){
         
@@ -1624,8 +1674,6 @@ class module_svg_bdd{
    //                console.log('this.#arbre=',this.#arbre)
                    
                    this.#dessiner_le_svg();
-                   logerreur({status : true , message : '0140 les bases ont bien été chargées' });
-                   displayMessages('zone_global_messages');
 
                }else{
                    logerreur({status : false  , message:'0132' });

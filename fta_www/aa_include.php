@@ -68,6 +68,77 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
 }
 
+/*
+=====================================================================
+quand un champ de recherche contient des id, ils sont séparés par des virgules 
+par exemple, 1,2,3  , le where doit être sous la forme WHERE id in ( 1 , 2 , 3 )
+*/
+function construction_where_sql_sur_id($nom_du_champ,$critere){
+
+    $champ_where='';
+    if(strpos($critere,',')!==false){
+        $tableau_liste_des_valeurs=explode(',',$critere);
+        $chaine_recherche='';
+        foreach($tableau_liste_des_valeurs as $k1=>$v1){
+            if(is_numeric($v1)){
+                $chaine_recherche.=','.$v1;
+            }
+        }
+        if($chaine_recherche!==''){
+            $chaine_recherche=substr($chaine_recherche,1);
+            $champ_where.='AND '.sq0($nom_du_champ).' in ('.sq0($chaine_recherche).')';
+        }    
+     
+    }else{
+        $champ_where.='AND '.sq0($nom_du_champ).' = '.sq0($critere).'';
+    }
+
+    return $champ_where;
+}
+
+
+/*
+  =====================================================================================================================
+*/
+function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $consUrlRedir , $boutons_avant=''){
+   $o1='';
+
+   $__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
+
+   if(($__debut+$__nbMax < $__nbEnregs)){
+
+       $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
+
+   }
+
+   $__bouton_enregs_prec=' <a class="yyunset">&laquo;</a>';
+
+   if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
+
+       $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
+
+   }
+
+   if(($__nbEnregs > 0)){
+
+       $o1.='<form class="yylistForm1">';
+       $o1.=$boutons_avant;
+       $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
+       $o1.='page '.number_format((($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )</div>'.CRLF;
+       $o1.='</form>';
+
+   }else{
+
+       $o1.='<form class="yylistForm1 yyavertissement">';
+       $o1.=$boutons_avant;
+       $o1.='Aucun enregistrement trouvé</form>'.CRLF;
+   }
+
+ 
+ 
+ return $o1; 
+}
+
 
 /*
   =====================================================================================================================

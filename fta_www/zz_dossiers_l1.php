@@ -393,7 +393,7 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='<div class="yyflex1">';
  if($v0['T0.chp_nom_dossier']!=='/'){
   $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';//✎ #9998
-  $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+  $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">🗑</a>';
  }else{
   
         $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$db);
@@ -409,13 +409,9 @@ foreach($data0 as $k0=>$v0){
            /*✎ #9998*/
            $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
         }else{
-        
-        
-        
 
-
-          $__lsttbl.='<span class=" yybtn yyunset" title="modifier">✎</span>';
-          $__lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
+          $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
+          $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
         }
   
   

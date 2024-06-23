@@ -77,6 +77,7 @@ class interface1{
 
              var jsonRet=JSON.parse(r.responseText);
              if(jsonRet.status=='OK'){
+                 window.location.reload(true);
                  return;
              }else{
                  console.log('loupé');
@@ -886,13 +887,15 @@ class interface1{
                             }
                         }
                     }
-                    var date= new Date();
-                    var dateString = date.toGMTString();
+                    /* cookie avec une date d'expiration de 30 jours */
+                    var date_expiration_cookie= new Date(Date.now() + 86400000*30);
+                    date_expiration_cookie=date_expiration_cookie.toUTCString();
                     /*
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = APP_KEY+'_biscuit'+'='+encodeURIComponent(JSON.stringify(t));
+                    
+                    var cookieString = APP_KEY+'_biscuit'+'='+encodeURIComponent(JSON.stringify(t))+'; path=/; secure; expires='+date_expiration_cookie+'; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;

@@ -34,6 +34,10 @@ print($o1);$o1='';
   <h1>Svg de la base</h1>
   
 <!--
+
+                <li>&nbsp;<a href="javascript:__svg1.nouvelle_base()"  class="yyinfo">nouvelle 🍥</a>&nbsp;</li> */
+
+
   <div style="display:none">
   
   etude sur les tailles des boites avec des bordures de 1 px

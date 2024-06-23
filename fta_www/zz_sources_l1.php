@@ -110,46 +110,36 @@ $where0='
  WHERE  "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
 ';
 
-if(($chi_id_source != '' && is_numeric($chi_id_source))){
+if(($chi_id_source != '' )){
 
-    $where0.='
-  AND `T0`.`chi_id_source` = \''.sq0($chi_id_source).'\'
- ';
+    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_source`' , $chi_id_source );
 
 }
 
 
 if(($chp_nom_source != '')){
 
-    $where0.='
-  AND `T0`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\'
- ';
+    $where0.=CRLF.'AND `T0`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\'';
 
 }
 
 
 if(($chp_type_source != '')){
 
-    $where0.='
-  AND `T0`.`chp_type_source` LIKE \'%'.sq0($chp_type_source).'%\'
- ';
+    $where0.=CRLF.'AND `T0`.`chp_type_source` LIKE \'%'.sq0($chp_type_source).'%\'';
 
 }
 
 if(($chp_nom_dossier != '')){
 
-    $where0.='
-  AND `T1`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'
- ';
+    $where0.=CRLF.'AND `T1`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'';
 
 }
 
 
 if(($chi_id_dossier != '')){
 
-    $where0.='
-  AND `T1`.`chi_id_dossier` = \''.sq0($chi_id_dossier).'\'
- ';
+    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_dossier`' , $chi_id_dossier );
 
 }
 
@@ -158,7 +148,7 @@ $order0='
  ORDER BY `T0`.`chp_nom_source` ASC
 ';
 $sql0.=$order0;
-$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq01($__debut).';';
+$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();
@@ -197,38 +187,18 @@ if(($stmt0 !== false)){
 }
 
 $consUrlRedir=''.'&amp;chi_id_source='.rawurlencode($chi_id_source).'&amp;chp_nom_source='.rawurlencode($chp_nom_source).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
-$__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
+$consUrlRedir='';
+$consUrlRedir.=$chi_id_source          !==''?'&amp;chi_id_source='.rawurlencode($chi_id_source):'';
+$consUrlRedir.=$chp_nom_source         !==''?'&amp;chp_nom_source='.rawurlencode($chp_nom_source):'';
+$consUrlRedir.=$chp_nom_dossier        !==''?'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier):'';
 
-if(($__debut+$__nbMax < $__nbEnregs)){
 
-    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
 
-}
 
-$__bouton_enregs_prec=' <a class="yyunset">&laquo;</a>';
 
-if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
+$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , '<a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>' );
 
-    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
 
-}
-
-$o1.='<div>';
-$o1.='<form class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>'.CRLF;
-$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
-
-if(($__nbEnregs > 0)){
-
-    $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
-
-}else{
-
-    $o1.='pas d\'enregistrements'.CRLF;
-}
-
-$o1.='</form>';
-$o1.='</div>';
 $lsttbl='';
 $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';
@@ -242,9 +212,9 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
-    $lsttbl.=' <a class="yyinfo yytbnormal" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
+    $lsttbl.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
     
-    $lsttbl.=' <a class="yydanger yytbnormal" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">✕</a>';
+    $lsttbl.=' <a class="yydanger" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">🗑</a>';
     
     if( 
          ( $v0['T0.chp_type_source']==='normal' || $v0['T0.chp_type_source']==='module_js' ) 
@@ -256,9 +226,9 @@ foreach($data0 as $k0 => $v0){
            || substr($v0['T0.chp_nom_source'],-4)==='.sql' 
          ) 
     ){
-     $lsttbl.=' <a class="yyavertissement yytbnormal" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+     $lsttbl.=' <a class="yyavertissement" href="javascript:convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
     }else{
-     $lsttbl.='<a  class="yytbnormal yyunset"  title="convertir un source">😊</a>';
+     $lsttbl.='<a  class=" yyunset"  title="convertir un source">😊</a>';
     }
     
     $lsttbl.='</div>';

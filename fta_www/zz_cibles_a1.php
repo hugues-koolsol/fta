@@ -267,6 +267,27 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    }
    
    
+   /* on ajoute le contenu du champ chp_rev_travail_basedd dans la base ftb pour le dessin de la base */
+   
+   $base_fta = new SQLite3('../fta_inc/db/sqlite/system.db');
+   $sql0='select chp_rev_travail_basedd from tbl_bases_de_donnees WHERE chi_id_basedd=1';
+   $stmt = $base_fta->prepare($sql0);
+   if($stmt!==false){
+     $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+     while($arr=$result->fetchArray(SQLITE3_NUM)){
+      $chp_rev_travail_basedd=$arr[0];
+     }
+     $stmt->close(); 
+     $slq_maj_ftb='UPDATE tbl_bases_de_donnees SET chp_rev_travail_basedd = \''.sq0($chp_rev_travail_basedd).'\'  WHERE chi_id_basedd=1';
+
+     if(false === $base_ftb->exec($slq_maj_ftb)){
+      echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+     }
+   }
+   
+
+   
+   
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
 

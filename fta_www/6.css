@@ -103,8 +103,6 @@ a:hover,button:hover{
 
  /* taille bouton grand pour menu haut home/quitter ) */
 .yytbgrand{font-size:1.5rem;min-height:var(--yyvhgb);min-width:var(--yyvhgb);}
- /* taille bouton normal pour des icones */
-.yytbnormal{font-size:1.1rem;}
 .txtar1{}
 
 #div_svg1{
@@ -218,7 +216,7 @@ form{border:var(--yyvtrb) #DAE2E5 outset;}
 /*
 button{line-height:24px;}
 */
-button:enabled:active{background:red!important;}
+button:enabled:active,a:active{background:red!important;}
 button:disabled,
 button[disabled]{
   border: var(--yyvtrb) solid #999999;

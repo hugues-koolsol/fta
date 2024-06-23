@@ -69,50 +69,69 @@ $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
-$sql='
- SELECT `chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd 
- FROM `tbl_bases_de_donnees` `T0`
- WHERE "T0"."chx_cible_id_basedd" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].' 
-';
+$champs0=CRLF.'`chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd ';
+$sql0='SELECT '.$champs0;
+$from0=CRLF.'FROM `tbl_bases_de_donnees` `T0`';
+$sql0.=$from0;
 
-if($chi_id_basedd!='' && is_numeric($chi_id_basedd)){
- $sql.='
-  AND `T0`.`chi_id_basedd` = \''.sq0($chi_id_basedd).'\'
- '; 
+$where0=CRLF.'WHERE  "T0"."chx_cible_id_basedd" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
+
+if(($chi_id_basedd != '')){
+
+    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_basedd`' , $chi_id_basedd );
+
 }
-
 if($chp_nom_basedd!='' ){
- $sql.='
-  AND `T0`.`chp_nom_basedd` LIKE \'%'.sq0($chp_nom_basedd).'%\'
- '; 
+
+    $where0.=CRLF.'AND `T0`.`chp_nom_basedd` LIKE \'%'.sq0($chp_nom_basedd).'%\'';
+ 
 }
 
 
+$sql0.=$where0;
+$order0='';
+$sql0.=$order0;
 
+$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
+$sql0.=$plage0;
 
-$sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
-
-// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql  . '</pre>' ; exit(0);
 
 $data0=array();
 
-
-$stmt = $db->prepare($sql);
+//echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' .  $sql0  . '</pre>' ; exit(0);
+$stmt = $db->prepare($sql0);
 if($stmt!==false){
-  $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-  while($arr=$result->fetchArray(SQLITE3_NUM))
-  {
-   array_push($data0, array(
-    'T0.chi_id_basedd'          => $arr[0],
-    'T0.chp_nom_basedd'         => $arr[1],
-    'T0.chp_commentaire_basedd' => $arr[2],
-   ));
-  }
-  $stmt->close(); 
+    $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+    while($arr=$result->fetchArray(SQLITE3_NUM)){
+       array_push($data0, array(
+        'T0.chi_id_basedd'          => $arr[0],
+        'T0.chp_nom_basedd'         => $arr[1],
+        'T0.chp_commentaire_basedd' => $arr[2],
+       ));
+    }
+    $stmt->close(); 
+    $__nbEnregs=count($data0);
+
+    if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
+
+        $sql1='SELECT COUNT(*) '.$from0.$where0;
+        $__nbEnregs=$db->querySingle($sql1);
+
+    }
+
 }else{
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
+$chi_id_basedd          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_basedd'          , BNF);
+$chp_nom_basedd         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_basedd'         , BNF);
+
+$consUrlRedir='';
+$consUrlRedir.=$chi_id_basedd   !==''?'&amp;chi_id_basedd='.rawurlencode($chi_id_basedd):'';
+$consUrlRedir.=$chp_nom_basedd  !==''?'&amp;chp_nom_basedd='.rawurlencode($chp_nom_basedd):'';
+
+
+$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , '<a class="yyinfo" href="zz_bdds_a1.php?__action=__creation">Créer une base</a> <a class="yysucces" href="svg_de_la_base.php?__id_des_bases=0">Créer une 🍥</a>' );
  
 
 $lsttbl='';
@@ -155,7 +174,7 @@ foreach($data0 as $k0=>$v0){
 
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
 
-$o1.='<a class="yyinfo" href="zz_bdds_a1.php?__action=__creation">Créer une nouvelle base</a>'.CRLF;
+$o1.=''.CRLF;
 
 // $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
 

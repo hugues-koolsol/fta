@@ -128,42 +128,13 @@ $where0='
 
 if(($chp_provenance_rev != '')){
 
-    $where0.='
-  AND `T0`.`chp_provenance_rev` LIKE \'%'.sq0($chp_provenance_rev).'%\'
- ';
+    $where0.=CRLF.'AND `T0`.`chp_provenance_rev` LIKE \'%'.sq0($chp_provenance_rev).'%\'';
 
 }
-/*
-quand un champ de recherche contenant des id ceux ci sont séparés par des virgules 
-par exemple, 1,2,3  , le where doit être sous la forme WHERE id in ( 1 , 2 , 3 )
-*/
-function construction_where_sql_sur_id($nom_du_champ,$critere){
-
-    $champ_where='';
-    if(strpos($critere,',')!==false){
-        $tableau_liste_des_valeurs=explode(',',$critere);
-        $chaine_recherche='';
-        foreach($tableau_liste_des_valeurs as $k1=>$v1){
-            if(is_numeric($v1)){
-                $chaine_recherche.=','.$v1;
-            }
-        }
-        if($chaine_recherche!==''){
-            $chaine_recherche=substr($chaine_recherche,1);
-            $champ_where.=CRLF.'AND '.$nom_du_champ.' in ('.sq0($chaine_recherche).')'.CRLF;
-        }    
-     
-    }else{
-        $champ_where.=CRLF.'AND '.$nom_du_champ.' = (\''.sq0($critere).'\')'.CRLF;
-    }
-
-    return $champ_where;
-}
-
 
 if(($chx_source_rev != '')){
 
-    $where0.=construction_where_sql_sur_id('`T0`.`chx_source_rev`' , $chx_source_rev );
+    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chx_source_rev`' , $chx_source_rev );
     $__nbMax=2*$__nbMax;
 
 
@@ -172,19 +143,19 @@ if(($chx_source_rev != '')){
 
 if(($chp_nom_source != '')){
 
-    $where0.=CRLF.'AND `T1`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\''.CRLF;
+    $where0.=CRLF.'AND `T1`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\'';
 
 }
 
 if(($chp_nom_source2 != '')){
 
-    $where0.=CRLF.'AND `T1`.`chp_nom_source` NOT LIKE \'%'.sq0($chp_nom_source2).'%\''.CRLF;
+    $where0.=CRLF.'AND `T1`.`chp_nom_source` NOT LIKE \'%'.sq0($chp_nom_source2).'%\'';
 
 }
 
 if(($chp_valeur_rev != '')){
 
-    $where0.=CRLF.'AND `T0`.`chp_valeur_rev` LIKE \'%'.sq0($chp_valeur_rev).'%\''.CRLF;
+    $where0.=CRLF.'AND `T0`.`chp_valeur_rev` LIKE \'%'.sq0($chp_valeur_rev).'%\'';
 
 }
 
@@ -240,41 +211,16 @@ if($stmt!==false){
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
-$consUrlRedir=''.'&amp;chi_id_rev='.rawurlencode($chi_id_rev).'&amp;chp_provenance_rev='.rawurlencode($chp_provenance_rev).'&amp;chx_source_rev='.rawurlencode($chx_source_rev).'&amp;chp_nom_source='.rawurlencode($chp_nom_source).'&amp;chp_valeur_rev='.rawurlencode($chp_valeur_rev).''; 
-$__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
-
-if(($__debut+$__nbMax < $__nbEnregs)){
-
-    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
-
-}
-
-$__bouton_enregs_prec=' <a class="yyunset">&laquo;</a>';
-
-if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
-
-    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
-
-}
+$consUrlRedir='';
+$consUrlRedir.=$chi_id_rev        !==''?'&amp;chi_id_rev='.rawurlencode($chi_id_rev):'';
+$consUrlRedir.=$chp_provenance_rev!==''?'&amp;chp_provenance_rev='.rawurlencode($chp_provenance_rev):'';
+$consUrlRedir.=$chx_source_rev    !==''?'&amp;chx_source_rev='.rawurlencode($chx_source_rev):'';
+$consUrlRedir.=$chp_nom_source    !==''?'&amp;chp_nom_source='.rawurlencode($chp_nom_source):'';
+$consUrlRedir.=$chp_valeur_rev    !==''?'&amp;chp_valeur_rev='.rawurlencode($chp_valeur_rev):''; 
 
 
-//$o1.='<form class="yylistForm1">';
-//$o1.=' <a class="yyinfo" href="zz_revs_action1.php?__action=__creation">Créer un nouveau rev</a>'.CRLF;
+$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , '' );
 
-
-if(($__nbEnregs > 0)){
-
-    $o1.='<div class="yylistForm1">';
-    $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
-    $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
-    $o1.='</div>';
-
-}else{
-
-    $o1.='<div class="yylistForm1 yyavertissement">Aucun enregistrement trouvé</div>'.CRLF;
-}
-
-//$o1.='</form>';
 
  
 
@@ -299,9 +245,6 @@ foreach($data0 as $k0=>$v0){
  $__lsttbl.='<tr>';
  $__lsttbl.='<td data-label="" style="text-align:left!important;">';
  $__lsttbl.='<div class="yyflex1">';
-/*
- $__lsttbl.=' <a class="yyinfo yytbnormal" href="zz_revs_action1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_rev'].'" title="modifier">✎</a>';//✎ #9998
-*/ 
  $__lsttbl.='</div>';
  
  $__lsttbl.='</td>';

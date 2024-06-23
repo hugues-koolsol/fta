@@ -47,7 +47,7 @@ $o1.='<h1>Liste des systèmes cibles</h1>';
   =====================================================================================================================
 */
 
-$__nbMax=20;
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 
 $__xpage               = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'               , BNF);
@@ -97,48 +97,48 @@ $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
-$sql='
- SELECT `chi_id_cible` , `chp_nom_cible` , chp_dossier_cible ,  `chp_commentaire_cible`
- FROM `tbl_cibles` `T0`
- WHERE "T0"."chi_id_cible">= \'0\' 
+$champs0='`chi_id_cible` , `chp_nom_cible` , chp_dossier_cible ,  `chp_commentaire_cible`';
+$sql0='SELECT '.$champs0;
+$from0='FROM `tbl_cibles` `T0`';
+$sql0.=$from0;
+
+$where0='
+  WHERE "T0"."chi_id_cible">= 0 
 ';
 
-if($chi_id_cible!='' && is_numeric($chi_id_cible)){
- $sql.='
-  AND `T0`.`chi_id_cible` = \''.sq0($chi_id_cible).'\'
- '; 
+
+if(($chi_id_cible != '')){
+    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_cible`' , $chi_id_cible );
 }
 
+
+
 if($chp_nom_cible!='' ){
- $sql.='
-  AND `T0`.`chp_nom_cible` LIKE \'%'.sq0($chp_nom_cible).'%\'
- '; 
+    $where0.=CRLF.'AND `T0`.`chp_nom_cible` LIKE \'%'.sq0($chp_nom_cible).'%\'';
 }
 
 if($chp_dossier_cible!='' ){
- $sql.='
-  AND `T0`.`chp_dossier_cible` LIKE \'%'.sq0($chp_dossier_cible).'%\'
- '; 
+    $where0.=CRLF.'AND `T0`.`chp_dossier_cible` LIKE \'%'.sq0($chp_dossier_cible).'%\'';
 }
-
 
 if($chp_commentaire_cible!='' ){
- $sql.='
-  AND `T0`.`chp_commentaire_cible` LIKE \'%'.sq0($chp_commentaire_cible).'%\'
- '; 
+    $where0.=CRLF.'AND `T0`.`chp_commentaire_cible` LIKE \'%'.sq0($chp_commentaire_cible).'%\'';
 }
 
-$sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
+$sql0.=$where0;
+$order0='';
+$sql0.=$order0;
+$plage0=CRLF.'LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
+$sql0.=$plage0;
 
-
+$__nbEnregs=0;
 $data0=array();
 
-
-$stmt = $db->prepare($sql);
+//echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' .  $sql0  . '</pre>' ; exit(0);
+$stmt = $db->prepare($sql0);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-  while($arr=$result->fetchArray(SQLITE3_NUM))
-  {
+  while($arr=$result->fetchArray(SQLITE3_NUM)){
    array_push($data0, array(
     'T0.chi_id_cible'          => $arr[0],
     'T0.chp_nom_cible'         => $arr[1],
@@ -147,118 +147,127 @@ if($stmt!==false){
    ));
   }
   $stmt->close(); 
+  $__nbEnregs=count($data0);
+  if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
+      $sql1='SELECT COUNT(*) '.$from0.$where0;
+      $__nbEnregs=$db->querySingle($sql1);
+  }
+  
 }else{
  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
-if(count($data0)===0){
- $lst='';
- $lst.='<p class="yyinfo">'.CRLF;
- $lst.='aucun enregistrement trouvé avec les critères indiqués'.CRLF;
- $lst.='<a class="yysucces" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
- $lst.='</p>'.CRLF;
- $o1.=''.$lst.''.CRLF;  
+$consUrlRedir='';
+$consUrlRedir.=$chi_id_cible          !==''?'&amp;chi_id_cible='.rawurlencode($chi_id_cible):'';
+$consUrlRedir.=$chp_nom_cible         !==''?'&amp;chp_nom_cible='.rawurlencode($chp_nom_cible):'';
+$consUrlRedir.=$chp_dossier_cible     !==''?'&amp;chp_dossier_cible='.rawurlencode($chp_dossier_cible):'';
+$consUrlRedir.=$chp_commentaire_cible !==''?'&amp;chp_nom_source='.rawurlencode($chp_commentaire_cible):'';
+
+
+
+$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , '<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>' );
+
+
+
+
+
+$lsttbl='';
+$lsttbl.='<thead><tr>';
+$lsttbl.='<th>action</th>';
+$lsttbl.='<th>etat</th>';
+$lsttbl.='<th>id</th>';
+$lsttbl.='<th>nom</th>';
+$lsttbl.='<th>dossier</th>';
+$lsttbl.='<th>commentaire</th>';
+$lsttbl.='</tr></thead><tbody>';
+foreach($data0 as $k0=>$v0){
+ 
+ $dossier='../../'.$v0['T0.chp_dossier_cible'];
  
  
-}else{
- $lsttbl='';
- $lsttbl.='<thead><tr>';
- $lsttbl.='<th>action</th>';
- $lsttbl.='<th>etat</th>';
- $lsttbl.='<th>id</th>';
- $lsttbl.='<th>nom</th>';
- $lsttbl.='<th>dossier</th>';
- $lsttbl.='<th>commentaire</th>';
- $lsttbl.='</tr></thead><tbody>';
- foreach($data0 as $k0=>$v0){
-  
-  $dossier='../../'.$v0['T0.chp_dossier_cible'];
-  
-  
-  $lsttbl.='<tr>';
-  $lsttbl.='<td data-label="" style="text-align:left!important;">';
-  $lsttbl.='<div class="yyflex1">';
-  
-  $lsttbl.=' <a class="yyinfo" href="zz_cibles_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';//✎ #9998
-  
+ $lsttbl.='<tr>';
+ $lsttbl.='<td data-label="" style="text-align:left!important;">';
+ $lsttbl.='<div class="yyflex1">';
+ 
+ $lsttbl.=' <a class="yyinfo" href="zz_cibles_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';//✎ #9998
+ 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v0 , true ) . '</pre>' ; exit(0);
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 
-        if(isset($_SESSION[APP_KEY]['cible_courante'])){
-                 /* si on est sur fta ou bien que le cible est "1" ou bien qu'on est en train de travailler sur la cible courante, alors on ne peut pas supprimer la cible */
-                 if(   ( $v0['T0.chp_nom_cible']==='fta' && $v0['T0.chp_dossier_cible'] ==='fta' ) 
-                    || ( $v0['T0.chi_id_cible']=== 1 )
-                    ||  $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']=== $v0['T0.chi_id_cible'] 
-                 ){
-                     $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
-                 }else{
-                     $lsttbl.=' <a class="yydanger" href="zz_cibles_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">✘</a>';
-                 }
-                 
-                 
-        }else{
-                 $lsttbl.='<span class=" yybtn yyunset" title="supprimer">✘</span>';
-        }
-        
-  if(isset( $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ) && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===$v0['T0.chi_id_cible']){
-   $lsttbl.='<span class=" yybtn yyunset"  title="selectionner cette cible">⇒</span>';
-   $lsttbl.=' <a class="yysucces" href="zz_dossiers_l1.php" title="aller aux dossiers">📁</a>';
-  }else{
-   $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__selectionner_cette_cible&amp;__id='.$v0['T0.chi_id_cible'].'" title="selectionner cette cible">⇒</a>';
-   $lsttbl.='<span class=" yybtn yyunset"  title="aller aux dossiers">⇒</span>';
-  }
-  
-  
-  
-  $lsttbl.='</div>';
-  
-  $lsttbl.='</td>';
-
-  $lsttbl.='<td data-label="etat" style="text-align:center;">';
-  
-  $listeDesEtats='';
-  
-  if(!is_dir($dossier)){
-   $listeDesEtats.='Le dossier n\'existe pas ';
-//   $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__creation_dossier&amp;__id='.$v0['T0.chi_id_cible'].'" title="créer le dossier">📁</a>';
-  }else{
-   $listeDesEtats.='Le dossier existe ';
-   if(le_dossier_est_vide($dossier)){
-    $listeDesEtats.='<br />Le dossier est vide';
-   }else{
-    $listeDesEtats.='<br />Le dossier contient des éléments';
-   }
-  }
-  $lsttbl.=$listeDesEtats.'</td>';
-
-
-
-  
-  $lsttbl.='<td data-label="id" style="text-align:center;">';
-  $lsttbl.=''.$v0['T0.chi_id_cible'].'';
-  $lsttbl.='</td>';
-  
-  $lsttbl.='<td data-label="id" style="text-align:left;">';
-  $lsttbl.=''.$v0['T0.chp_nom_cible'].'';
-  $lsttbl.='</td>';
-  
-  $lsttbl.='<td data-label="id" style="text-align:left;">';
-  $lsttbl.=''.$v0['T0.chp_dossier_cible'].'';
-  $lsttbl.='</td>';
-  
-  $lsttbl.='<td data-label="id" style="text-align:left;">';
-  $lsttbl.=''.$v0['T0.chp_commentaire_cible'].'';
-  $lsttbl.='</td>';
-  
-  $lsttbl.='<tr>';
+       if(isset($_SESSION[APP_KEY]['cible_courante'])){
+                /* si on est sur fta ou bien que le cible est "1" ou bien qu'on est en train de travailler sur la cible courante, alors on ne peut pas supprimer la cible */
+                if(   ( $v0['T0.chp_nom_cible']==='fta' && $v0['T0.chp_dossier_cible'] ==='fta' ) 
+                   || ( $v0['T0.chi_id_cible']=== 1 )
+                   ||  $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']=== $v0['T0.chi_id_cible'] 
+                ){
+                    $lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
+                }else{
+                    $lsttbl.=' <a class="yydanger" href="zz_cibles_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_cible'].'" title="supprimer">🗑</a>';
+                }
+                
+                
+       }else{
+                $lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
+       }
+       
+ if(isset( $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ) && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===$v0['T0.chi_id_cible']){
+  $lsttbl.='<a class="yyunset"  title="selectionner cette cible">⇒</a>';
+  $lsttbl.=' <a class="yysucces" href="zz_dossiers_l1.php" title="aller aux dossiers">📁</a>';
+ }else{
+  $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__selectionner_cette_cible&amp;__id='.$v0['T0.chi_id_cible'].'" title="selectionner cette cible">⇒</a>';
+  $lsttbl.='<a class="yyunset"  title="aller aux dossiers">📁</a>';
  }
+ 
+ 
+ 
+ $lsttbl.='</div>';
+ 
+ $lsttbl.='</td>';
 
- $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
+ $lsttbl.='<td data-label="etat" style="text-align:center;">';
  
- $o1.='<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>'.CRLF;
+ $listeDesEtats='';
  
-// $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;
+ if(!is_dir($dossier)){
+  $listeDesEtats.='Le dossier n\'existe pas ';
+//   $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__creation_dossier&amp;__id='.$v0['T0.chi_id_cible'].'" title="créer le dossier">📁</a>';
+ }else{
+  $listeDesEtats.='Le dossier existe ';
+  if(le_dossier_est_vide($dossier)){
+   $listeDesEtats.='<br />Le dossier est vide';
+  }else{
+   $listeDesEtats.='<br />Le dossier contient des éléments';
+  }
+ }
+ $lsttbl.=$listeDesEtats.'</td>';
+
+
+
+ 
+ $lsttbl.='<td data-label="id" style="text-align:center;">';
+ $lsttbl.=''.$v0['T0.chi_id_cible'].'';
+ $lsttbl.='</td>';
+ 
+ $lsttbl.='<td data-label="id" style="text-align:left;">';
+ $lsttbl.=''.$v0['T0.chp_nom_cible'].'';
+ $lsttbl.='</td>';
+ 
+ $lsttbl.='<td data-label="id" style="text-align:left;">';
+ $lsttbl.=''.$v0['T0.chp_dossier_cible'].'';
+ $lsttbl.='</td>';
+ 
+ $lsttbl.='<td data-label="id" style="text-align:left;">';
+ $lsttbl.=''.$v0['T0.chp_commentaire_cible'].'';
+ $lsttbl.='</td>';
+ 
+ $lsttbl.='<tr>';
 }
+
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
+
+
+
+
 
 
 /*
