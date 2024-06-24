@@ -41,9 +41,16 @@ function erreur_dans_champs_saisis_basesdd(){
   $uneErreur=true;
   
  }
+ if($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='sqlite'){
+  if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']==='' || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']===false ){
+   ajouterMessage('erreur' ,  __LINE__ .' : le dossier doit être indiqué pour une base sqlite' , BNF );
+   $uneErreur=true;
+  }
+ }
 
- if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']==='' || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']===false ){
-  ajouterMessage('erreur' ,  __LINE__ .' : le dossier doit être indiqué ' , BNF );
+
+ if(!($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='sqlite' || $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='mysql'|| $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='' )){
+  ajouterMessage('erreur' ,  __LINE__ .' : le fournisseur de la bss doit être "sqlite" ou "mysql" ou bien ne doit pas être renseigné ' , BNF );
   $uneErreur=true;
  }
 
@@ -70,6 +77,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 // echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();
  $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']          =$_POST['chp_nom_basedd']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']  =$_POST['chp_commentaire_basedd'] ?? '';
+ $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']  =$_POST['chp_fournisseur_basedd'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']  =$_POST['chp_rev_travail_basedd'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']          =$_POST['chp_rev_basedd']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']          =$_POST['chp_php_basedd']         ?? '';
@@ -378,6 +386,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         , `chp_genere_basedd`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
         , `chx_dossier_id_basedd`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
         , `chx_cible_id_basedd`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
+        , `chp_fournisseur_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) .'\'
+        
         WHERE 
           `chi_id_basedd`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']).'\'
       ';
@@ -459,7 +469,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     }
     
     $sql='
-     INSERT INTO `tbl_bases_de_donnees` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd , chp_rev_travail_basedd ) VALUES
+     INSERT INTO `tbl_bases_de_donnees` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd , chp_rev_travail_basedd , chp_fournisseur_basedd ) VALUES
        (
           \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
@@ -469,8 +479,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
-        
-        
+        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) .'\'
        )
     ' ;
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
@@ -632,15 +641,27 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_basedd).'" name="chp_nom_basedd" id="chp_nom_basedd" maxlength="3" style="max-width:3em;" />'.CRLF;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_basedd).'" name="chp_nom_basedd" id="chp_nom_basedd" maxlength="64" style="max-width:16em;" />'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
+  
+  
+  $chp_fournisseur_basedd =isset($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']:'';
+  $o1.=' <div class="yyfdiv1">'.CRLF;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">fournisseur</div></div>'.CRLF;
+  $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_fournisseur_basedd).'" name="chp_fournisseur_basedd" id="chp_fournisseur_basedd" maxlength="64" style="max-width:16em;" />'.CRLF;
+  $o1.='   laisser videe ou biet mettre soit sqlite, soit mysql'.CRLF;
+  $o1.='  </div></div>'.CRLF;
+  $o1.=' </div>'.CRLF;
+
+  
 
   $chx_dossier_id_basedd =isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] )?$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']:'';
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" value="'.encrypter($chx_dossier_id_basedd).'" name="chx_dossier_id_basedd" id="chx_dossier_id_basedd" style="max-width:9em;" />'.CRLF;
+  $o1.='   <input type="hidden" value="'.encrypter($chx_dossier_id_basedd).'" name="chx_dossier_id_basedd" id="chx_dossier_id_basedd" style="max-width:9em;" />'.CRLF;
 
 
   $__parametres_pour_la_modale=array(
@@ -651,7 +672,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
     'T0.chp_nom_dossier' => array(
      '__libelle_avant' => 'rattaché à "<b style="color:red;">' , 
      '__libelle_apres' => '</b>"' ,
-     '__libelle_si_vide' => 'source non rattaché à un dossier'
+     '__libelle_si_vide' => 'base non rattaché à un dossier'
     )
    )
   );
@@ -670,7 +691,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   if($chx_dossier_id_basedd==='' || $chx_dossier_id_basedd===false || $chx_dossier_id_basedd===NULL){
    
-   $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.CRLF;
+   $o1.='<span id="T0.chp_nom_dossier">base non rattaché à un dossier</span> '.CRLF;
 
   }else{
    require_once('../fta_inc/db/acces_bdd_dossiers1.php');
@@ -686,6 +707,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
+
 
 
 
@@ -728,6 +750,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $__valeurs['T0.chp_php_basedd']          =$_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']         ??$__valeurs['T0.chp_php_basedd'];
   $__valeurs['T0.chp_genere_basedd']       =$_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']      ??$__valeurs['T0.chp_genere_basedd'];
   $__valeurs['T0.chx_dossier_id_basedd']   =$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']  ??$__valeurs['T0.chx_dossier_id_basedd'] ;
+  $__valeurs['T0.chp_fournisseur_basedd']  =$_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] ??$__valeurs['T0.chp_fournisseur_basedd'] ;
+  
    
   
   $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
@@ -740,29 +764,30 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">id</div>'.CRLF;
+  $o1.='   <div style="word-break:break-word;">id , nom et fournisseur</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <span>'.$__id.'</span>'.CRLF;
+  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_basedd']).'" name="chp_nom_basedd" id="chp_nom_basedd" maxlength="64" style="width:100%;max-width:16em;" />'.CRLF;
+  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_fournisseur_basedd']).'" name="chp_fournisseur_basedd" id="chp_fournisseur_basedd" maxlength="64" style="width:100%;max-width:16em;" />'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
   
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">nom</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_basedd']).'" name="chp_nom_basedd" id="chp_nom_basedd" maxlength="32" style="width:100%;max-width:32em;" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
    
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1">'.CRLF;
   $o1.='   <div style="word-break:break-word;">dossier</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <span>'.$__id.'</span>'.CRLF;
-  $o1.='   <input  type="text" value="'.encrypter($__valeurs['T0.chx_dossier_id_basedd']).'" name="chx_dossier_id_basedd" id="chx_dossier_id_basedd" style="max-width:3em;"/>'.CRLF;
+
+  if($__valeurs['T0.chx_dossier_id_basedd']==='' || $__valeurs['T0.chx_dossier_id_basedd']===false || $__valeurs['T0.chx_dossier_id_basedd']===NULL){
+   
+   $o1.='<span id="T0.chp_nom_dossier">base non rattaché à un dossier</span> '.CRLF;
+  }else{
+   $o1.='<span id="T0.chp_nom_dossier">rattachée à "<b style="color:red;">'.$__valeurs['T1.chp_nom_dossier'].'</b>" </span>'.CRLF;
+  }
+  
+  $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_basedd']).'" name="chx_dossier_id_basedd" id="chx_dossier_id_basedd" style="max-width:3em;"/>'.CRLF;
   
   
   $__parametres_pour_la_modale=array(
@@ -771,9 +796,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    '__nom_champ_dans_parent' => 'chx_dossier_id_basedd',
    '__champs_texte_a_rapatrier' => array(
     'T0.chp_nom_dossier' => array(
-     '__libelle_avant' => 'rattaché à "<b style="color:red;">' , 
+     '__libelle_avant' => 'rattachée à "<b style="color:red;">' , 
      '__libelle_apres' => '</b>"' ,
-     '__libelle_si_vide' => 'source non rattaché à un dossier'
+     '__libelle_si_vide' => 'base non rattachée à un dossier'
     )
    )
   );
@@ -792,11 +817,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   if($__valeurs['T0.chx_dossier_id_basedd']==='' || $__valeurs['T0.chx_dossier_id_basedd']===false || $__valeurs['T0.chx_dossier_id_basedd']===NULL){
    
-   $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.CRLF;
 
   }else{
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
-   $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T1.chp_nom_dossier'].'</b>" </span>'.CRLF;
    
    
    $o1.='<br />';
@@ -866,7 +889,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
   $o1.='   <br />'.CRLF;
-  $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_rev_basedd" id="chp_rev_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -892,7 +915,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_genere_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
   $o1.='   <br />'.CRLF;
-  $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -906,24 +929,11 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_php_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
   $o1.='   <br />'.CRLF;
-  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
 
-
-
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">commentaire</div>'.CRLF;
-  $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_commentaire_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
-  $o1.='   <br />'.CRLF;
-  $o1.='   <textarea  name="chp_commentaire_basedd" id="chp_commentaire_basedd"  rows="5" >'.htmlentities($__valeurs['T0.chp_commentaire_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
 
 
   $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -937,7 +947,20 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_travail_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
   $o1.='   <br />'.CRLF;
-  $o1.='   <textarea  name="chp_rev_travail_basedd" id="chp_rev_travail_basedd"  rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_travail_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_rev_travail_basedd" id="chp_rev_travail_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_rev_travail_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='  </div></div>'.CRLF;
+  $o1.=' </div>'.CRLF;
+
+
+  $o1.=' <div class="yyfdiv1">'.CRLF;
+  $o1.='  <div class="yyflab1">'.CRLF;
+  $o1.='   <div style="word-break:break-word;">commentaire</div>'.CRLF;
+  $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
+  $o1.='  </div>'.CRLF;
+  $o1.='  <div class="yyfinp1"><div>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_commentaire_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
+  $o1.='   <br />'.CRLF;
+  $o1.='   <textarea  name="chp_commentaire_basedd" id="chp_commentaire_basedd"  rows="5" >'.htmlentities($__valeurs['T0.chp_commentaire_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 

@@ -7,7 +7,10 @@ process.argv.forEach(function (val, index, array) {
    fichier_a_parser=val;
   }
   if(index===3){
-   fichier_en_sortie=val;
+   fichier_ast=val;
+  }
+  if(index===4){
+   fichier_commentaire=val;
   }
 });
 
@@ -19,13 +22,21 @@ try {
   console.error(err);
 }
 
+let tableau_des_commentaires=[];
 let acorn = require("acorn");
-let ast=acorn.parse(contenu_du_fichier, {ecmaVersion: 'latest' , sourceType:'module'});
+let ast=acorn.parse(contenu_du_fichier, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tableau_des_commentaires});
 
 
-const content = JSON.stringify(ast);
+const contenu_ast = JSON.stringify(ast);
 try {
-  fs.writeFileSync(fichier_en_sortie, content);
+  fs.writeFileSync(fichier_ast, contenu_ast);
+} catch (err) {
+  console.error(err);
+}
+
+const contenu_commentaire=JSON.stringify(tableau_des_commentaires);
+try {
+  fs.writeFileSync(fichier_commentaire, contenu_commentaire);
 } catch (err) {
   console.error(err);
 }

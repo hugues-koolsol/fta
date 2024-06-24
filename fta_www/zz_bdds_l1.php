@@ -148,7 +148,12 @@ foreach($data0 as $k0=>$v0){
  
  $lsttbl.='<div class="yyflex1">';
  $lsttbl.=' <a class="yyinfo" href="zz_bdds_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_basedd'].'" title="modifier">✎</a>';//✎ #9998
- $lsttbl.=' <a class="yyinfo" href="svg_de_la_base.php?__id_des_bases='.$v0['T0.chi_id_basedd'].'" title="svg">🍥</a>';//✎ #9998
+ $lsttbl.=' <a class="yyinfo"  href="svg_de_la_base.php?__id_des_bases='.$v0['T0.chi_id_basedd'].'" title="svg">🍥</a>';//✎ #9998
+ if('fta'===APP_KEY && $v0['T0.chi_id_basedd']==1){
+  $lsttbl.=' <a class="yyunset"  title="supprimer">🗑</a>';//✎ #9998
+ }else{
+  $lsttbl.=' <a class="yydanger" href="zz_bdds_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_basedd'].'" title="supprimer">🗑</a>';//✎ #9998
+ }
  $lsttbl.='</div>';
  
  $lsttbl.='</td>';

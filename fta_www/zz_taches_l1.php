@@ -156,7 +156,7 @@ $champs0='
 ';
 $sql0='SELECT '.$champs0;
 $from0='
- FROM `tbl_taches` `T0`
+ FROM sys1.tbl_taches `T0`
  
 ';
 $sql0.=$from0;
@@ -203,6 +203,16 @@ $sql0.=$plage0;
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();
 $db=new SQLite3('../fta_inc/db/sqlite/system.db');
+$a=realpath("..\\fta_inc\\db\\sqlite\\system.db");
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $a , true ) . '</pre>' ; exit(0);
+
+
+$sqlattach='attach database "'.$a.'" as sys1;';
+//$sqlattach='attach database "system.db" as "sys1";';
+$db->querySingle($sqlattach);
+
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+
 $stmt0=$db->prepare($sql0);
 
 if(($stmt0 !== false)){

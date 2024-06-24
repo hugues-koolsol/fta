@@ -1073,6 +1073,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =========================================================================
       Les performances sur chrome sont très mauvaises en utilisant des push
       c'est pourquoi on construit cette variable texte : "chaineTableau" 
+      qui sera traitée avec un JSON.parse() plus bas.
       Sur un tableau de 25000 éléments, on multiplie la vitesse d'exécution 
       par un facteur compris entre 30 et 60
       =========================================================================

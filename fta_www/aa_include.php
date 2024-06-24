@@ -735,7 +735,7 @@ function html_header1($parametres){
         if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
 
             $o1.='    <div class="">'.CRLF;
-            $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">✕</a>'.CRLF;
+            $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">🔑</a>'.CRLF;
             $o1.='    </div>'.CRLF;
 
         }else if((BNF !== 'aa_login.php')){

@@ -5,7 +5,7 @@
 function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom_du_fichier_dump,$structure_tableau_de_la_base){
  
 // echo __FILE__ . ' ' . __LINE__ . ' $structure = <pre>' . var_export( $structure , true ) . '</pre>' ; exit(0);
- $nombre_de_values_par_insert=5; 
+ $nombre_de_values_par_insert=100; 
  
  if($fd=fopen($nom_du_fichier_dump,'w')){
  }else{

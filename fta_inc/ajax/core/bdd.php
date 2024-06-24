@@ -62,9 +62,9 @@ if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ 
     
     $sql0='
      DELETE FROM `tbl_revs` 
-     WHERE `chx_cible_rev`          = '.addslashes1($data['input']['parametres_sauvegarde']['id_cible']).' 
-       AND `chp_provenance_rev`     = \''.addslashes1($data['input']['parametres_sauvegarde']['chp_provenance_rev']).'\' 
-       AND `chx_source_rev`         = '.addslashes1($data['input']['parametres_sauvegarde']['chx_source_rev']).' 
+     WHERE `chx_cible_rev`          = '.sq0($data['input']['parametres_sauvegarde']['id_cible']).' 
+       AND `chp_provenance_rev`     = \''.sq0($data['input']['parametres_sauvegarde']['chp_provenance_rev']).'\' 
+       AND `chx_source_rev`         = '.sq0($data['input']['parametres_sauvegarde']['chx_source_rev']).' 
     ';
     
     if(false === $db->exec($sql0)){
