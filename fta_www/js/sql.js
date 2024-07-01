@@ -554,7 +554,7 @@ function tabToSql0( tab ,id ,  niveau , options){
      list='';
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==tab[i][0]){
-       if(( tab[j][1]=='n' || tab[j][1]=='nom_table' )  && tab[j][8]==1){
+       if(( tab[j][1]=='nom_de_la_table' )  && tab[j][8]==1){
         nam=tab[j+1][1];
        }
        if(( tab[j][1]=='fields' || tab[j][1]=='champs' ) && tab[j][8]>=1){
@@ -611,7 +611,7 @@ function tabToSql0( tab ,id ,  niveau , options){
      def='';
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==tab[i][0]){
-       if((tab[j][1]=='n' || tab[j][1]=='on_table' || 'sur_table' === tab[j][1] ) && tab[j][8]==1){
+       if((tab[j][1]=='nom_de_la_table' || tab[j][1]=='on_table' || 'sur_table' === tab[j][1] ) && tab[j][8]==1){
         nam=tab[j+1][1];
        }
        if(tab[j][1]=='index_name' && tab[j][8]==1){
@@ -642,7 +642,7 @@ function tabToSql0( tab ,id ,  niveau , options){
      def='';
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==tab[i][0]){
-       if(tab[j][1]=='n' && tab[j][8]==1){
+       if(tab[j][1]=='nom_du_champ' && tab[j][8]==1){
         nam=tab[j+1][1];
        }
        if(tab[j][1]=='old_name' && tab[j][8]==1){
@@ -683,7 +683,7 @@ function tabToSql0( tab ,id ,  niveau , options){
      list='';
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==tab[i][0]){
-       if(tab[j][1]=='n' && tab[j][8]==1){
+       if(tab[j][1]=='nom_de_la_table' && tab[j][8]==1){
         nam=tab[j+1][1];
        }
        if(tab[j][1]=='fields' && tab[j][8]>=1){
@@ -763,7 +763,7 @@ function tabToSql0( tab ,id ,  niveau , options){
     for(j=i+1;j<tab.length;j++){
      if(tab[j][3]>tab[i][3]){
       if(tab[j][3]==tab[i][3]+1){
-       if(tab[j][1]=='n' && tab[j][8]==1 && tab[j+1][2]=='c'){
+       if(tab[j][1]=='nom_du_champ' && tab[j][8]==1 && tab[j+1][2]=='c'){
         if(options.longueur_maximum_des_champs<tab[j+1][1].length+1){
          options.longueur_maximum_des_champs=tab[j+1][1].length+1;
          options.nom_du_champ_max=tab[j+1][1];
@@ -867,7 +867,7 @@ function tabToSql0( tab ,id ,  niveau , options){
         charset=' DEFAULT CHARSET='+tab[j+1][1]+'';
        }else if(tab[j][1]=='collate' && tab[j][8]==1){
         collate=' COLLATE='+tab[j+1][1]+'';
-       }else if((tab[j][1]=='n' || tab[j][1]=='table_name'  || tab[j][1]=='nom_table' ) && tab[j][8]==1 && tab[j+1][2]=='c'){
+       }else if((tab[j][1]=='nom_de_la_table' ) && tab[j][8]==1 && tab[j+1][2]=='c'){
         t+=' '+tab[j+1][1]+'';
         nom_table_en_cours=tab[j+1][1];
         j++;
@@ -935,7 +935,7 @@ function tabToSql0( tab ,id ,  niveau , options){
         t+=' IF EXISTS';
        }else if(tab[j][1]=='ifnotexists' && tab[j][8]==0){
         t+=' IF NOT EXISTS';
-       }else if(tab[j][1]=='n' && tab[j][8]==1 && tab[j+1][2]=='c'){
+       }else if(tab[j][1]=='nom_de_la_table' && tab[j][8]==1 && tab[j+1][2]=='c'){
         t+=' '+tab[j+1][1]+'';
         j++;
        }else{
@@ -959,7 +959,7 @@ function tabToSql0( tab ,id ,  niveau , options){
         t+=' IF NOT EXISTS';
        }else if(tab[j][1]=='ifexists' && tab[j][8]==0){
         t+=' IF EXISTS';
-       }else if(tab[j][1]=='n' && tab[j][8]==1 && tab[j+1][2]=='c'){
+       }else if(tab[j][1]=='nom_de_la_base' && tab[j][8]==1 && tab[j+1][2]=='c'){
         t+=' '+tab[j+1][1]+'';
         j++;
        }else if(tab[j][1]=='charset' && tab[j][8]==1 && tab[j+1][2]=='c'){
@@ -1077,12 +1077,12 @@ function traite_le_tableau_de_la_base_sqlite(par){
    ====== les indexes ===
    ======================
   */
-  //             add_index(n('`fta1`.`tbl_source`') , unique() , index_name(idx_fullname) , fields(fld_path_source , fld_name_source)),
+  //             add_index(nom_de_la_table('`fta1`.`tbl_source`') , unique() , index_name(idx_fullname) , fields(fld_path_source , fld_name_source)),
   for(var nom_index in par['donnees'][nom_table]['liste_des_indexes']){
    var pc=par['donnees'][nom_table]['liste_des_indexes'][nom_index]
    t+=','
    t+='\n'+'add_index(';
-   t+='\n'+'   n(\''+nom_table+'\'),';
+   t+='\n'+'   nom_de_la_table(\''+nom_table+'\'),';
    if(pc['unique']===1){
     t+='\n'+'   unique(),';
    }

@@ -527,20 +527,20 @@ function chargerFichierRev(nomFichierSource){
 /*
 =====================================================================================================================
 */
-function createSelection(field, start, end) {
- if( field.createTextRange ) {
-  var selRange = field.createTextRange();
+function createSelection(ref_element, start, end) {
+ if( ref_element.createTextRange ) {
+  var selRange = ref_element.createTextRange();
   selRange.collapse(true);
   selRange.moveStart('character', start);
   selRange.moveEnd('character', end-start);
   selRange.select();
- }else if( field.setSelectionRange ) {
-  field.setSelectionRange(start, end);
- }else if( field.selectionStart ) {
-  field.selectionStart = start;
-  field.selectionEnd = end;
+ }else if( ref_element.setSelectionRange ) {
+  ref_element.setSelectionRange(start, end);
+ }else if( ref_element.selectionStart ) {
+  ref_element.selectionStart = start;
+  ref_element.selectionEnd = end;
  }
- field.focus();
+ ref_element.focus();
 } 
 
 /*

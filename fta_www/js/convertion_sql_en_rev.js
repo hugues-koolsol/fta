@@ -775,7 +775,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
              t+='\n'+esp0+esp1+esp1+'field(';
              if(element.definition[i].definition){
                  if( element.definition[i].type==='definition' &&  element.definition[i].variant==="column" ){
-                     t+='n(`'+element.definition[i].name+'`)';  
+                     t+='nom_du_champ(`'+element.definition[i].name+'`)';  
                  }else{
                      return(logerreur({status:false,message:'0062 pas définition de champ trouvé dans create_table field : '+JSON.stringify(json_partiel(element.definition[i]))}));
                  }
