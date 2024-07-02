@@ -446,7 +446,7 @@ class module_svg_bdd{
                 type_final='type(INTEGER('+longueur_du_champ+')),references(\''+table_mère.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',\''+champ_père.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
             }
             
-        }else if( type_du_champ=='che' || type_du_champ=='chu' || type_du_champ=='chm'){
+        }else if( type_du_champ=='che' || type_du_champ=='chu' ){
             if(longueur_du_champ===''){
                 type_final='type(INTEGER)'
             }else{
@@ -454,7 +454,7 @@ class module_svg_bdd{
             }
         }else if(type_du_champ=='chn'){
             type_final='type(FLOAT)'
-        }else if(type_du_champ=='cht'){
+        }else if(type_du_champ=='cht' || type_du_champ=='chm'){
             type_final='type(TEXT)'
         }else if(type_du_champ=='chp'){
             if(longueur_du_champ===''){
@@ -695,7 +695,7 @@ class module_svg_bdd{
         t+='<option value="che" '+(type_du_champ==='che'?' selected':'')+'>entier (che) integer[n]</option>';
         t+='<option value="chn" '+(type_du_champ==='chn'?' selected':'')+'>numérique (chn) float</option>';
         t+='<option value="chu" '+(type_du_champ==='chu'?' selected':'')+'>choix unique (chu) integer(n)</option>';
-        t+='<option value="chm" '+(type_du_champ==='chm'?' selected':'')+'>choix multiple (chm) integer(n)</option>';
+        t+='<option value="chm" '+(type_du_champ==='chm'?' selected':'')+'>choix multiple (chm) text</option>';
         t+='<option value="cht" '+(type_du_champ==='cht'?' selected':'')+'>texte (cht) text</option>';
         t+='<option value="chp" '+(type_du_champ==='chp'?' selected':'')+'>phrase (chp) varchar(n)</option>';
         t+='<option value="cho" '+(type_du_champ==='cho'?' selected':'')+'>mot (cho) character(n)</option>';
@@ -772,7 +772,7 @@ class module_svg_bdd{
         t+='<option value="che">entier (che) integer[n]</option>';
         t+='<option value="chn">numérique (chn) float</option>';
         t+='<option value="chu">choix unique (chu) integer(n)</option>';
-        t+='<option value="chm">choix multiple (chm) integer(n)</option>';
+        t+='<option value="chm">choix multiple (chm) text</option>';
         t+='<option value="cht">texte (cht) text</option>';
         t+='<option value="chp">phrase (chp) varchar(n)</option>';
         t+='<option value="cho">mot (cho) character(n)</option>';

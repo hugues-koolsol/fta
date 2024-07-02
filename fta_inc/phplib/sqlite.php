@@ -198,7 +198,8 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
 function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_auto_increment){
  
 
- 
+    
+
     $t='';
     
     $auto_increment=false;
@@ -371,6 +372,96 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
 
     return array('status'=>true,'value'=>$tableau);
 }
+
+/*
+  ========================================================================================
+*/
+function obtenir_la_structure_de_la_base_sqlite_v2($chemin_base){
+ 
+   $tableauDesTables=array();
+   $db1 = new SQLite3($chemin_base);
+   $tableau_des_tables=array();
+   $sql='SELECT tbl_name FROM sqlite_master WHERE  name NOT LIKE \'sqlite_%\' AND type == \'table\'';
+   $listeDesTables=array();
+   $stmt = $db1->prepare($sql);
+
+   if($stmt!==false){
+    
+     $t='';
+     $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+     
+     while($arr=$result->fetchArray(SQLITE3_NUM)){
+
+         $tableau_des_tables[]=$arr[0];
+      
+     }
+     
+     $stmt->close(); 
+
+     foreach( $tableau_des_tables as $k1 => $v1){
+      
+         $obj=obtenir_tableau_sqlite_de_la_table($v1 , $db1 , true);
+
+         if($obj['status']===true){
+          
+          $tableauDesTables[$v1]['structure']=$obj['value'];
+//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $obj['value']['liste_des_indexes'] , true ) . '</pre>' ; exit(0);
+          
+          
+          
+          $sql='select sql from sqlite_master where name = \''.$v1.'\'';
+          $stmt = $db1->prepare($sql); 
+          
+          if($stmt!==false){
+              
+              $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+              while($arr=$result->fetchArray(SQLITE3_NUM)){
+               $tableauDesTables[$v1]['create_table']=$arr[0];
+              }
+              $stmt->close(); 
+          }
+          $tableauDesTables[$v1]['create_index']=array();
+          if(isset($obj['value']['liste_des_indexes']) && count($obj['value']['liste_des_indexes'])>0){
+//              echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $obj['value']['liste_des_indexes'] , true ) . '</pre>' ; exit(0);
+              foreach( $obj['value']['liste_des_indexes'] as $k2 => $v2){
+
+                  $sql='select sql from sqlite_master where name = \''.$k2.'\'';
+                  $stmt = $db1->prepare($sql); 
+                  
+                  if($stmt!==false){
+                      
+                      $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+                      while($arr=$result->fetchArray(SQLITE3_NUM)){
+                       $tableauDesTables[$v1]['create_index'][$k2]=$arr[0];
+                      }
+                      $stmt->close(); 
+                  }
+              }
+          }
+          
+          
+          
+         }else{
+
+           ajouterMessage('erreur' , ' erreur sur la table "'.$v1.'"' , BNF  );
+           
+         }
+     }
+     
+     
+     
+   }else{
+    
+       ajouterMessage('erreur' , __LINE__ .' erreur sql ' , BNF );
+    
+   }
+ 
+    return array('status'=>true,'value'=>$tableauDesTables);
+ 
+}
+
+
+
 
 /*
   ========================================================================================
