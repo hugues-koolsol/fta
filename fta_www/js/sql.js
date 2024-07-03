@@ -194,6 +194,7 @@ function tabToSql0( tab ,id ,  niveau , options){
  var liste_des_valeurs='';
  var obj=null;
  var premiere_jointure_croisee=true;
+ var meta='';
  
  
  for(i=id+1;i<tab.length;i++){
@@ -605,13 +606,15 @@ function tabToSql0( tab ,id ,  niveau , options){
       t+='INSERT INTO '+nam+' ('+list.substr(0,list.length-1)+') VALUES '+liste_des_valeurs.substr(liste_des_valeurs,liste_des_valeurs.length-1)+' ;';
      }
    }else if(tab[i][1]=='add_index' || 'ajouter_index' === tab[i][1]){
+     
      nam='';
      list='';
      uniq=' INDEX ';
      def='';
+     meta='';
      for(j=i+1;j<tab.length;j++){
       if(tab[j][7]==tab[i][0]){
-       if((tab[j][1]=='nom_de_la_table' || tab[j][1]=='on_table' || 'sur_table' === tab[j][1] ) && tab[j][8]==1){
+       if((tab[j][1]=='nom_de_la_table_pour_l_index' || tab[j][1]=='on_table' || 'sur_table' === tab[j][1] ) && tab[j][8]==1){
         nam=tab[j+1][1];
        }
        if(tab[j][1]=='index_name' && tab[j][8]==1){
@@ -627,6 +630,19 @@ function tabToSql0( tab ,id ,  niveau , options){
          }
         }
        }
+       
+       if(tab[j][1]==='meta' && tab[j][2]==='f' && tab[j][8]>0  ){
+           var obj=a2F1(tab,j,false,j+1,false); // a2F1(arr,parentId,retourLigne,debut,coloration)
+           if(obj.status===true){
+               meta=espacesn(true,niveau+2);
+               meta+='/* meta('+obj.value+') */';
+               meta+=espacesn(true,niveau+2);
+
+           }else{
+               return logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'});
+           }
+       }
+       
       }
      }
      if(nam!='' && list!='' && def!=''){
@@ -634,7 +650,7 @@ function tabToSql0( tab ,id ,  niveau , options){
       t+='/* ==========DEBUT DEFINITION=========== */';
       t+=espacesn(true,niveau);
 //      t+='ALTER TABLE '+nam+' ADD'+uniq+' '+def+' ('+list.substr(0,list.length-1)+');'; // mySql / liteSql
-      t+='CREATE '+uniq+' '+def+' ON `'+nam+'`('+list.substr(0,list.length-1)+') ;'; // mySql / liteSql
+      t+='CREATE '+uniq+' '+def+' ON `'+nam+'` '+meta+' ('+list.substr(0,list.length-1)+') ;'; // mySql / liteSql
      }
    }else if(tab[i][1]=='change_field'){
      nam='';
@@ -826,9 +842,17 @@ function tabToSql0( tab ,id ,  niveau , options){
          logerreur({status:false,id:i,message:'0271 sql.js erreur dans un field'});
          t+=' /* todo sql.js repere 0334 '+tab[j][1] + ' */';
         }
-       }else if(tab[j][1]=='typologie' && tab[j][8]==2){
-         t+=espacesn(true,niveau);
-         t+='/* typologie('+variables_pour_tableau_tables.nom_du_champ+','+tab[j+2][1]+') */';
+        
+       }else if(tab[j][1]==='meta' && tab[j][8]>0  ){
+           var obj=a2F1(tab,j,false,j+1,false); // a2F1(arr,parentId,retourLigne,debut,coloration)
+           if(obj.status===true){
+               t+=espacesn(true,niveau+2);
+               t+='/* meta('+obj.value+') */';
+               t+=espacesn(true,niveau+2);
+
+           }else{
+               return logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'});
+           }
         
        }else{
         logerreur({status:false,id:i,message:'0275 sql.js erreur dans un field pour '+tab[j][1]});
@@ -921,8 +945,15 @@ function tabToSql0( tab ,id ,  niveau , options){
          }
         }
         nom_table_en_cours='';
-       }else if(tab[j][1].substr(0,5)=='meta_' && tab[j][8]>0  ){
-        t+=CRLF+' /*'+tab[j][1]+'*/ ';
+       }else if(tab[j][1]==='meta' && tab[j][8]>0  ){
+           var obj=a2F1(tab,j,false,j+1,false); // a2F1(arr,parentId,retourLigne,debut,coloration)
+           if(obj.status===true){
+               t+=espacesn(true,niveau+1);
+               t+='/* meta('+obj.value+') */';
+               t+=espacesn(true,niveau+1);
+           }else{
+               return logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'});
+           }
        }else{
         t+=' todo sql.js repere 0350 '+tab[j][1];
        }
@@ -1015,9 +1046,6 @@ function tabToSql0( tab ,id ,  niveau , options){
       t+='*/';
     }
 
-   }else if(tab[i][1].substr(0,5)=='meta_' ){
-    t+=CRLF+' /*'+tab[i][1]+'*/ '+CRLF + '    ';
-    
    }else{
     t+=espacesn(true,niveau);
     t+='-- todo repere 0524 fonction sql non prevue  "'+tab[i][1]+'"';
@@ -1145,20 +1173,20 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                      tab_meta[i].matrice=obj.value;
                      
                      for(j=1;j<tab_meta[i].matrice.length;j++){
-                      if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][1]==='table' && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
+                      if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][9]===1 && tab_meta[i].matrice[j][1]==='table' && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
                        tab_meta[i].type_element='table';
                        tab_meta[i].nom_element=tab_meta[i].matrice[j+1][1];
                        tab_meta[i].statut=true;
                        break;
 
                       }
-                      if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][1]==='champ' && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
+                      if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][9]===1 && tab_meta[i].matrice[j][1]==='champ' && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
                        tab_meta[i].type_element='champ';
                        tab_meta[i].nom_element=tab_meta[i].matrice[j+1][1];
                        tab_meta[i].statut=true;
                        break;
                       }
-                      if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][1]==='index' && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
+                      if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][9]===1 && tab_meta[i].matrice[j][1]==='index' && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
                        tab_meta[i].type_element='index';
                        tab_meta[i].nom_element=tab_meta[i].matrice[j+1][1];
                        tab_meta[i].statut=true;
@@ -1170,49 +1198,148 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
          
         }
         
-        if(nom_table==='tbl_cibles'){
-            console.log('tab_meta=' , tab_meta );
-
-        }
+        /*
+          utf8mb4_unicode_ci OK
+          utf8mb4_general_ci ne pas utiliser 
+        */
         meta_ecrit=false;
+        t+='\n'+'#(\n  =================================================================================';
+        t+='\n'+'  table '+nom_table+'';
+        t+='\n'+'=================================================================================\n)';
         t+='\n'+'create_table(';
+        
+        var liste_meta_table={
+             table                 : nom_table,
+             nom_long_de_la_table  : 'à faire '+nom_table+'',
+             nom_court_de_la_table : 'à faire '+nom_table+'',
+             nom_bref_de_la_table  : 'à faire '+nom_table+'',
+             position_x_y_sur_svg  : '0,0',
+             engine                : '' , // InnoDB , MyISAM , BLACKHOLE
+             default_charset       : '' , // 
+             collate               : '' , 
+        };
+        var texte_meta_champ='';
+        /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
         for( i=0;i<tab_meta.length;i++){
             if(tab_meta[i].statut===true && tab_meta[i].type_element==='table' ){
-                t+='\n'+' '+tab_meta[i].txt_meta;
-                meta_ecrit=true;
+                for( var elt_meta in liste_meta_table){
+                    for(j=1;j<tab_meta[i].matrice.length;j++){
+                        if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][9]===1 && tab_meta[i].matrice[j][1]===liste_meta_table[elt_meta] && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
+                            try{
+                                liste_meta_table[elt_meta]=tab_meta[i].matrice[j+1][1];
+                            }catch(e){
+                              debugger
+                            }
+                        }
+                    }
+                }
             }
         }
-        if(meta_ecrit===false){
-            t+='\n'+' meta((table , '+nom_table+')),';
+        t+='\n'+' meta(';
+        for( var elt_meta in liste_meta_table){
+            if(liste_meta_table[elt_meta]!==''){
+                t+='\n'+'  ('+elt_meta+' , \''+liste_meta_table[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'),';
+            }
         }
+        t+='\n'+' ),';
+
         t+='\n'+' nom_de_la_table(\''+nom_table+'\'),';
-        
-        
         t+='\n'+' fields(#(),';
         
         for(nom_champ in par['donnees'][nom_table]['structure']['liste_des_champs']){
 
-
-
-
-           cle_etrangere=false;
            var pc=par['donnees'][nom_table]['structure']['liste_des_champs'][nom_champ]
-           t+='\n'+'  field(';
+           cle_etrangere=false;
+           if(pc['cle_etrangere'] && pc['cle_etrangere']['from'] && pc['cle_etrangere']['from']===nom_champ){
+             cle_etrangere=true;
+           }
+           var type_champ=pc['type'].toUpperCase()
+           if(type_champ.indexOf('(')>=0){
+               type_champ=type_champ.substr(0,type_champ.indexOf('('));
+           }
            
            
-           meta_ecrit=false;
+           
+           /*
+           <select id="type_du_champ">
+           <option value="">choisissez un type</option>
+           <option value="chi">index entier (chi) integer[n]</option>
+           <option value="chx">référence croisée (chx) integer[n]</option>
+           <option value="che">entier (che) integer[n]</option>
 
-           for( i=0;i<tab_meta.length;i++){
-               if(tab_meta[i].statut===true && tab_meta[i].type_element==='table' ){
-                   t+='\n'+' '+tab_meta[i].txt_meta;
-                   meta_ecrit=true;
+           <option value="chn">numérique (chn) float</option>
+
+           <option value="chu">choix unique (chu) integer(n)</option>
+
+           <option value="chm">choix multiple (chm) text</option>
+           <option value="cht">texte (cht) text</option>
+           <option value="chp">phrase (chp) varchar(n)</option>
+           <option value="cho">mot (cho) character(n)</option>
+           <option value="chd">date heure (chd) text(23) YYYY-MM-DD HH:MM:SS.SSS</option>
+           <option value="cha">date character(10)</option>
+           <option value="chh">heure character(8)</option>
+           <option value="chb">blob (chb) blob</option></select>
+           */
+           var typologie='ch?';
+           
+           var types_entiers=['INT','INTEGER','TINYINT','SMALLINT','MEDIUMINT','BIGINT','UNSIGNED BIG INT','INT2','INT8'];
+           var types_caracteres=['CHARACTER','CHAR','VARCHAR','VARYING CHARACTER','NCHAR','NATIVE CHARACTER','NVARCHAR','TEXT','CLOB','STRING'];
+           
+           if( types_entiers.includes(type_champ) ){
+               // chi, chx che
+               if(pc['pk']===1){
+                   typologie='chi';
+               }else{
+                   if(cle_etrangere===true){
+                       typologie='chx';
+                   }else{
+                       typologie='che';
+                   }
                }
            }
-           if(meta_ecrit===false){
-               t+='\n'+' meta((champ , '+nom_champ+')),';
+           if(typologie==='ch?'){
+               
+               if( types_caracteres.includes(type_champ) ){
+                   // chi, chx che
+                   if(type_champ==='CHARACTER' || type_champ==='CHAR'){
+                       typologie='cho';
+                   }else if(type_champ==='VARCHAR' || type_champ==='VARYING CHARACTER' || type_champ==='NCHAR' || type_champ==='NATIVE CHARACTER' || type_champ==='NVARCHAR'){
+                       typologie='chp';
+                   }else if(type_champ==='TEXT' || type_champ==='CLOB'  || type_champ==='STRING' ){
+                       typologie='cht';
+                   }
+               }
            }
            
            
+           var liste_meta_champ={
+                champ                 : nom_champ,
+                nom_long_du_champ  : 'à faire '+nom_champ+'',
+                nom_court_du_champ : 'à faire '+nom_champ+'',
+                nom_bref_du_champ  : 'à faire '+nom_champ+'',
+                typologie          : typologie,
+                default_charset    : '' ,
+                collate            : '' , 
+           };
+           var texte_meta_champ='';
+           /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
+           for( i=0;i<tab_meta.length;i++){
+               if(tab_meta[i].statut===true && tab_meta[i].type_element==='champ' && tab_meta[i].nom_element===nom_champ ){
+                   for( var elt_meta in liste_meta_champ){
+                       for(j=1;j<tab_meta[i].matrice.length;j++){
+                           if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][9]===1 && tab_meta[i].matrice[j][1]===liste_meta_champ[elt_meta] && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
+                               try{
+                                   liste_meta_champ[elt_meta]=tab_meta[i].matrice[j+1][1];
+                               }catch(e){
+                                 debugger
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+           
+           t+='\n'+'  field(';
            t+='\n'+'   nom_du_champ('+nom_champ+')';
            
            if(pc['type'].indexOf('(')>=0 && pc['type'].lastIndexOf(')')>=pc['type'].indexOf('(')){
@@ -1238,56 +1365,18 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
              t+='\n'+'   default('+pc['dflt_value']+')';
             
            }
-           if(pc['cle_etrangere'] && pc['cle_etrangere']['from'] && pc['cle_etrangere']['from']===nom_champ){
+           if(cle_etrangere===true){
              t+='\n'+'   references(\''+pc['cle_etrangere']['table']+'\' , \''+pc['cle_etrangere']['to']+'\' )';
-             cle_etrangere=true;
            }
-           
-      /*
-      <select id="type_du_champ">
-      <option value="">choisissez un type</option>
-      <option value="chi">index entier (chi) integer[n]</option>
-      <option value="chx">référence croisée (chx) integer[n]</option>
-      <option value="che">entier (che) integer[n]</option>
-
-      <option value="chn">numérique (chn) float</option>
-
-      <option value="chu">choix unique (chu) integer(n)</option>
-
-      <option value="chm">choix multiple (chm) text</option>
-      <option value="cht">texte (cht) text</option>
-      <option value="chp">phrase (chp) varchar(n)</option>
-      <option value="cho">mot (cho) character(n)</option>
-      <option value="chd">date heure (chd) text(23) YYYY-MM-DD HH:MM:SS.SSS</option>
-      <option value="cha">date character(10)</option>
-      <option value="chh">heure character(8)</option>
-      <option value="chb">blob (chb) blob</option></select>
-      */     
-           
-           var types_entiers=['INT','INTEGER','TINYINT','SMALLINT','MEDIUMINT','BIGINT','UNSIGNED BIG INT','INT2','INT8'];
-           var types_caracteres=['CHARACTER','VARCHAR','VARYING CHARACTER','NCHAR','NATIVE CHARACTER','NVARCHAR','TEXT','CLOB'];
-           
-           if( types_entiers.includes(pc['type'].toUpperCase()) ){
-               // chi, chx che
-               if(pc['pk']===1){
-                   t+='\n'+'   typologie(chi)';
-               }else{
-                   if(cle_etrangere===true){
-                       t+='\n'+'   typologie(chx)';
-                   }else{
-                       t+='\n'+'   typologie(che)';
-                   }
+           t+='\n'+'   meta(';
+           for( var elt_meta in liste_meta_champ){
+               if(liste_meta_table[elt_meta]!==''){
+                   t+='\n'+'    ('+elt_meta+' , \''+liste_meta_champ[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'),';
                }
            }
+           t+='\n'+'   )';
            
-      /*
-      '
-      */     
-           
-           
-           //REFERENCES tbl_dossiers(chi_id_dossier)
-           
-           t+='\n'+'  ),';
+           t+='\n'+'  ),'; // fin du champ
           
          }
         
@@ -1301,9 +1390,52 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
          ======================
         */
         //             add_index(nom_de_la_table('`fta1`.`tbl_source`') , unique() , index_name(idx_fullname) , fields(fld_path_source , fld_name_source)),
-        for(var nom_index in par['donnees'][nom_table]['liste_des_indexes']){
-         var pc=par['donnees'][nom_table]['liste_des_indexes'][nom_index]
+        for(var nom_index in par['donnees'][nom_table]['structure']['liste_des_indexes']){
+         var pc=par['donnees'][nom_table]['structure']['liste_des_indexes'][nom_index]
          t+=','
+         t+='\n'+'#(==============================)';
+         
+         
+         /*
+           meta((index chp_dossier_cible) , (message , 'un environnement de travail est déjà créé pour ce dossier cible'))
+         */
+         
+         
+           var liste_meta_index={
+                index                 : nom_index,
+                message               : 'à faire '+nom_index+'',
+           };
+/*           
+           if(nom_table==='tbl_cibles'){
+               console.log('tab_meta=' , tab_meta );
+
+
+           }
+*/           
+           var texte_meta_index='';
+           /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
+           for( i=0;i<tab_meta.length;i++){
+               if(tab_meta[i].statut===true && tab_meta[i].type_element==='index' && tab_meta[i].nom_element===nom_index ){
+                   for( var elt_meta in liste_meta_index){
+                       for(j=1;j<tab_meta[i].matrice.length;j++){
+                           if(tab_meta[i].matrice[j][3]===2 && tab_meta[i].matrice[j][9]===1 && tab_meta[i].matrice[j][1]===liste_meta_index[elt_meta] && tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8]===2 ){
+                               try{
+                                   if(elt_meta==='index'){
+                                       liste_meta_index[elt_meta]=nom_index;
+                                   }else{
+                                       liste_meta_index[elt_meta]=tab_meta[i].matrice[j+1][1];
+                                   }
+                               }catch(e){
+                                 debugger
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+         
+         
+         
          t+='\n'+'add_index(';
          t+='\n'+'   nom_de_la_table_pour_l_index(\''+nom_table+'\'),';
          if(pc['unique']===1){
@@ -1318,6 +1450,15 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
          if(lc!==''){
           t+='\n'+'   fields('+lc.substr(1)+')';
          }
+
+         t+='\n'+'   meta(';
+         for( var elt_meta in liste_meta_index){
+             if(liste_meta_table[elt_meta]!==''){
+                 t+='\n'+'    ('+elt_meta+' , \''+liste_meta_index[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'),';
+             }
+         }
+         t+='\n'+'   )';
+
          t+='\n'+')'
         }
         
@@ -1327,7 +1468,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
        t=t.substr(1);
        if(par['zone_rev']){
         
-        if( '___produire_le_rev' === par['contexte'] ){
+        if( '___produire_le_rev_v2' === par['contexte'] ){
           dogid(par['zone_rev']).value='sql(transaction(\n'+t+'\n\n),commit())';
           __gi1.formatter_le_source_rev(par['zone_rev']);
         }else{
