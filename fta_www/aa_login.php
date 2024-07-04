@@ -75,9 +75,11 @@ if((isset($_POST) && count($_POST) > 0)){
 
         if((count($data) === 3 && password_verify($_POST['mot_de_passe'],$data['chp_mot_de_passe_utilisateur']))){
 
-            /*  =============================*/
-            /*  ... soit nom_de_connexion et mot_de_passe sont bons*/
-            /*  et on met les données en session*/
+            /*  =============================
+              ... soit nom_de_connexion et mot_de_passe sont bons
+              et on met les données en session
+              
+            */
             $_SESSION[APP_KEY]['sess_id_utilisateur']=$data['chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$data['chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']=base64_encode(openssl_random_pseudo_bytes(16));
@@ -177,6 +179,8 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY][
     <form id="boite_de_connexion" method="post" onsubmit="return checkSubmit1()" style="margin-top:50px;">
         <div>
             Veuillez indiquer votre nom de connexion et votre mot de passe
+            <br />Essayez admin/admin, si vous ne l'avez pas deviné. 
+            <br />c'est encore un environnement de test !
         </div>
         <hr />
         <label for="nom_de_connexion">

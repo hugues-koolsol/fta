@@ -63,15 +63,23 @@ $o1.='   </div>'.CRLF;
 
 $o1.='</form>'.CRLF;
 
+$chemin_base='../fta_inc/db/sqlite/system.db';
+$a=realpath($chemin_base);
+$db = new SQLite3($a);
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
+
+
+$sqlattach='attach database "'.$a.'" as sys1;';
+$ret=$db->exec($sqlattach);
+//echo __FILE__ . ' ' . __LINE__ . ' $ret = <pre>' . var_export( $ret , true ) . '</pre>' ; exit(0);
 
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
 $champs0=CRLF.'`chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd ';
 $sql0='SELECT '.$champs0;
-$from0=CRLF.'FROM `tbl_bases_de_donnees` `T0`';
+$from0=CRLF.'FROM sys1.`tbl_bases_de_donnees` `T0`';
 $sql0.=$from0;
 
 $where0=CRLF.'WHERE  "T0"."chx_cible_id_basedd" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
