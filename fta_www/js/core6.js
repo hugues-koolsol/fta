@@ -309,6 +309,33 @@ function reIndicerLeTableau(tab){
 }
 /*
   =====================================================================================================================
+  fonction qui supprime un élément et ses enfants dans la matrice
+  =====================================================================================================================
+*/
+function supprimer_un_element_de_la_matrice(tab,id,niveau){
+    var i = 0;
+    if(tab[id][2]==='c' || ( tab[id][2]==='f' && tab[id][8]===0 ) ){
+        /* si c'est une constante ou une fonction vide  on l'efface directement */
+        tab.splice(id,1);
+    }else{
+        /* sinon, on efface recursivement tous ses enfants avant de l'effacer */
+        for(i=(id+1);i < tab.length;i++){
+            if(tab[i][7]===id){
+                supprimer_un_element_de_la_matrice(tab,i,niveau+1);
+            }
+        }
+        tab.splice(id,1);
+    }
+    if(niveau === 0){
+        /*
+          à la fin on recalcul les indices
+        */
+        tab=reIndicerLeTableau(tab);
+        return tab;
+    }
+}
+/*
+  =====================================================================================================================
   fonction qui supprime un élément dans la matrice et descend les enfants de cet élément d'un niveau
   =====================================================================================================================
 */
