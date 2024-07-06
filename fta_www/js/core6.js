@@ -195,6 +195,16 @@ function arrayToFunctNoComment(matrice){
 /*
   =====================================================================================================================
 */
+function rev_texte_vers_matrice(texte_rev){
+    var tableau1 = iterateCharacters2(texte_rev);
+    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    global_messages.data.matrice=matriceFonction;
+    global_messages.data.tableau=tableau1;
+    return matriceFonction;
+}
+/*
+  =====================================================================================================================
+*/
 function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante){
     var tableau1 = iterateCharacters2(src);
     var matriceFonction = functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
@@ -312,24 +322,39 @@ function reIndicerLeTableau(tab){
   fonction qui supprime un élément et ses enfants dans la matrice
   =====================================================================================================================
 */
-function supprimer_un_element_de_la_matrice(tab,id,niveau){
+function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
     var i = 0;
+    if(niveau===0){
+     var a_supprimer=[];
+    }
+    
     if(tab[id][2]==='c' || ( tab[id][2]==='f' && tab[id][8]===0 ) ){
-        /* si c'est une constante ou une fonction vide  on l'efface directement */
-        tab.splice(id,1);
+        /* 
+          si c'est une constante ou une fonction vide  on l'efface directement
+          son parent à un élément en moins
+        */
+        a_supprimer.push(id);
+        
     }else{
         /* sinon, on efface recursivement tous ses enfants avant de l'effacer */
-        for(i=(id+1);i < tab.length;i++){
+        for(i=1;i < tab.length;i++){
+            var i_avant=i;
             if(tab[i][7]===id){
-                supprimer_un_element_de_la_matrice(tab,i,niveau+1);
+                supprimer_un_element_de_la_matrice(tab,tab[i][0],niveau+1,a_supprimer);
             }
         }
-        tab.splice(id,1);
+        a_supprimer.push(id);
     }
     if(niveau === 0){
         /*
-          à la fin on recalcul les indices
+          à la fin on efface effectivement les lignes en partant du bas 
+          et on recalcul les indices
         */
+        a_supprimer.sort((a, b) => b - a);        
+        for(i=0;i<a_supprimer.length;i++){
+         tab.splice(a_supprimer[i],1);
+        }
+        
         tab=reIndicerLeTableau(tab);
         return tab;
     }
