@@ -107,6 +107,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
 
       /*https://github.com/codeschool/sqlite-parser*/
       'fta_www/js/jslib/sqlite_parser_from_demo.js' => array('chp_type_source' => 'bibliotheque'),
+      'fta_www/js/jslib/Sortable.js' => array('chp_type_source' => 'bibliotheque'),
       
    );
    $indice_du_dossier=2; /* le dossier 1 est celui de la racine */

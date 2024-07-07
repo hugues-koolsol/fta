@@ -2088,6 +2088,7 @@ function traiteExpression1(element,niveau){
            || 'Literal' === element.expression.type
            || 'UnaryExpression' === element.expression.type
            || 'SequenceExpression' === element.expression.type
+           || 'NewExpression' === element.expression.type
         ){
             var obj1 = traiteUneComposante(element.expression , niveau , false , false );
             if(obj1.status === true){

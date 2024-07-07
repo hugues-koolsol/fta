@@ -350,7 +350,7 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
           à la fin on efface effectivement les lignes en partant du bas 
           et on recalcul les indices
         */
-        a_supprimer.sort((a, b) => b - a);        
+        a_supprimer.sort(function(a, b){return (b - a);});        
         for(i=0;i<a_supprimer.length;i++){
          tab.splice(a_supprimer[i],1);
         }

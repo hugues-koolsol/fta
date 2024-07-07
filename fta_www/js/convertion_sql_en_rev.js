@@ -86,13 +86,13 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
          t+='tous_les_champs()';
      }else if(element.variant==='table'){
          if(element.alias){
-             t+='nom_table('+element.name+','+element.alias+')';
+             t+='nom_de_la_table('+element.name+','+element.alias+')';
          }else{
-             t+='nom_table('+element.name+')';
+             t+='nom_de_la_table('+element.name+')';
          }
      }else if(element.variant==='expression'){
          if(element.format && element.format==='table'){
-             t+='nom_table('+element.name+')';
+             t+='nom_de_la_table('+element.name+')';
              if(element.columns){
               
                  t+=',champs(';
@@ -762,7 +762,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
      t+='\n'+esp0+'créer_table(';
      if(element.name){
          if(element.name.type==="identifier"){
-             t+='\n'+esp0+esp1+'nom_table('+element.name.name+')';
+             t+='\n'+esp0+esp1+'nom_de_la_table('+element.name.name+')';
          }else{
             return(logerreur({status:false,message:'0034 conversion_de_ast_vers_sql : '+JSON.stringify(json_partiel(element))}));
          }
