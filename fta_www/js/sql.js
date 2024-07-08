@@ -750,8 +750,7 @@ function tabToSql0(tab,id,niveau,options){
                         break;
                     }
                 }
-                t+=meta_du_champ+texte_du_champ
-                debugger // texte_du_champ , meta_du_champ
+                t+=(meta_du_champ + texte_du_champ);
                 if(options.dans_definition_de_champ === true){
                     options.tableau_tables_champs[(options.tableau_tables_champs.length - 1)].champs.push(variables_pour_tableau_tables);
                 }
@@ -1057,19 +1056,43 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
         t+=('\n' + '  table ' + nom_de_la_table + '');
         t+=('\n' + '=================================================================================\n)');
         t+=('\n' + 'create_table(');
-        var liste_meta_table={table:nom_de_la_table,'nom_long_de_la_table':('à faire ' + nom_de_la_table + ''),'nom_court_de_la_table':('à faire ' + nom_de_la_table + ''),'nom_bref_de_la_table':('à faire ' + nom_de_la_table + ''),position_x_y_sur_svg:'0,0',engine:'',default_charset:'',collate:''};
+        var liste_meta_table={
+            table:nom_de_la_table,
+            'nom_long_de_la_table':('à faire ' + nom_de_la_table + ''),
+            'nom_court_de_la_table':('à faire ' + nom_de_la_table + ''),
+            'nom_bref_de_la_table':('à faire ' + nom_de_la_table + ''),
+            'transform_table_sur_svg':'',
+            engine:'',
+            default_charset:'',
+            collate:''
+        };
         var texte_meta_champ='';
         /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
         for(i=0;i < tab_meta.length;i++){
             if((tab_meta[i].statut === true) && (tab_meta[i].type_element === 'table')){
                 var elt_meta={};
                 for(elt_meta in liste_meta_table){
-                    for(j=1;j < tab_meta[i].matrice.length;j++){
-                        if((tab_meta[i].matrice[j][3] === 2) && (tab_meta[i].matrice[j][9] === 1) && (tab_meta[i].matrice[j][1] === liste_meta_table[elt_meta]) && (tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8] === 2)){
-                            try{
-                                liste_meta_table[elt_meta]=tab_meta[i].matrice[(j + 1)][1];
-                            }catch(e){
-                                debugger;
+                    if(elt_meta==='transform_table_sur_svg'){
+                        for(j=1;j < tab_meta[i].matrice.length;j++){
+                            if(tab_meta[i].matrice[j][1]==='transform_table_sur_svg'){
+                                var obj = a2F1(tab_meta[i].matrice,j+1,false,(j + 2),false);                                
+                                if(obj.status===true){
+                                  liste_meta_table[elt_meta]='transform('+obj.value+')';
+                                  break;
+                                }else{
+                                  debugger
+                                }
+
+                            }
+                        }
+                    }else{
+                        for(j=1;j < tab_meta[i].matrice.length;j++){
+                            if((tab_meta[i].matrice[j][3] === 2) && (tab_meta[i].matrice[j][9] === 1) && (tab_meta[i].matrice[j][1] === liste_meta_table[elt_meta]) && (tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8] === 2)){
+                                try{
+                                    liste_meta_table[elt_meta]=tab_meta[i].matrice[(j + 1)][1];
+                                }catch(e){
+                                    debugger;
+                                }
                             }
                         }
                     }
@@ -1079,11 +1102,21 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
         t+=('\n' + ' meta(');
         var elt_meta={};
         for(elt_meta in liste_meta_table){
-            if(liste_meta_table[elt_meta] !== ''){
-                t+=('\n' + '  (' + elt_meta + ' , \'' + liste_meta_table[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
+            if(elt_meta==='transform_table_sur_svg'){
+             if(liste_meta_table[elt_meta] !== ''){
+                    t+=('\n' + '  (' + elt_meta + ' , ' + liste_meta_table[elt_meta] + '),');
+             }else{
+                    t+=('\n' + '  (' + elt_meta + ' , transform(translate(0,0))),');
+             }
+             
+            }else{
+                if(liste_meta_table[elt_meta] !== ''){
+                    t+=('\n' + '  (' + elt_meta + ' , \'' + liste_meta_table[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
+                }
             }
         }
-        t+=('\n' + ' ),');
+        
+        t+=('\n' + ' ),'); 
         t+=('\n' + ' nom_de_la_table(\'' + nom_de_la_table + '\'),');
         t+=('\n' + ' fields(#(),');
         for(nom_champ in par['donnees'][nom_de_la_table]['structure']['liste_des_champs']){
@@ -1293,7 +1326,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
     t=t.substr(1);
     if(par['zone_rev']){
         if('___produire_le_rev_v2' === par['contexte']){
-            dogid(par['zone_rev']).value=('sql(transaction(\n' + t + '\n\n),commit())');
+            dogid(par['zone_rev']).value=t;
             __gi1.formatter_le_source_rev(par['zone_rev']);
         }else{
             console.error('TODO');
