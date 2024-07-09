@@ -11,7 +11,20 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 
+if(isset($_GET['supprimer_tout']) && $_GET['supprimer_tout']==='1'){
 
+   $db = new SQLite3('../fta_inc/db/sqlite/system.db');
+   $ret0=$db->exec('DELETE FROM tbl_revs');
+
+   if($ret0 !== true){
+    ajouterMessage('erreur' , __LINE__ .' problème ' , BNF );
+    
+   }else{
+    ajouterMessage('info' , __LINE__ . ' tout a été supprimé' , BNF );
+   }
+   
+   recharger_la_page(BNF); 
+}
 
 
 
@@ -218,8 +231,11 @@ $consUrlRedir.=$chx_source_rev    !==''?'&amp;chx_source_rev='.rawurlencode($chx
 $consUrlRedir.=$chp_nom_source    !==''?'&amp;chp_nom_source='.rawurlencode($chp_nom_source):'';
 $consUrlRedir.=$chp_valeur_rev    !==''?'&amp;chp_valeur_rev='.rawurlencode($chp_valeur_rev):''; 
 
-
-$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , '' );
+$boutons_avant='';
+if(APP_KEY==='fta'){
+ $boutons_avant='<a class="yydanger" href="'.BNF.'?supprimer_tout=1">supprimer tout</a>';
+}
+$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , $boutons_avant );
 
 
  

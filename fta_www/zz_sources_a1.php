@@ -889,7 +889,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; 
    
    $js_a_executer_apres_chargement[]=array(
-     'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_source'  )
+     'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite_v2' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_source'  )
    
    );
    unset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']);

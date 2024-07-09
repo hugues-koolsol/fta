@@ -664,7 +664,7 @@ function tabToSql0(tab,id,niveau,options){
                   `fld_name_css` varchar[32] COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '{"showDeleteField":true}',
                   
                 */
-                var variables_pour_tableau_tables={'nom_du_champ':'','autoincrement':false,'is_not_null':false,'defaut':{'est_defini':false,'valeur':null},'cle_primaire':false,'reference':{'est_defini':false,'table':'','champ':''},'type':{'nom':false,'longueur':false}};
+                var variables_pour_tableau_tables={'nom_du_champ':'','autoincrement':false,'non_nulle':false,'defaut':{'est_defini':false,'valeur':null},'cle_primaire':false,'reference':{'est_defini':false,'table':'','champ':''},'type':{'nom':false,'longueur':false}};
                 var texte_du_champ='';
                 var meta_du_champ='';
                 for(j=(i + 1);j < tab.length;j++){
@@ -696,9 +696,9 @@ function tabToSql0(tab,id,niveau,options){
                                 variables_pour_tableau_tables.autoincrement=true;
                             }else if((tab[j][1] == 'unsigned') && (tab[j][8] == 0)){
                                 texte_du_champ+=' UNSIGNED';
-                            }else if(((tab[j][1] == 'notnull') || (tab[j][1] == 'not_null')) && (tab[j][8] == 0)){
+                            }else if(((tab[j][1] == 'notnull') || (tab[j][1] == 'non_nulle')) && (tab[j][8] == 0)){
                                 texte_du_champ+=' NOT NULL';
-                                variables_pour_tableau_tables.is_not_null=true;
+                                variables_pour_tableau_tables.non_nulle=true;
                             }else if((tab[j][1] == 'default') && (tab[j][8] == 1)){
                                 texte_du_champ+=' DEFAULT ';
                                 if((false) && (tab[(j + 1)][1] === 'NULL')){
@@ -1231,7 +1231,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                 }
             }
             if(pc['notnull'] === 1){
-                t+=('\n' + '   not_null()');
+                t+=('\n' + '   non_nulle()');
             }
             if(pc['dflt_value']){
                 t+=('\n' + '   default(' + pc['dflt_value'] + ')');
@@ -1327,148 +1327,6 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
     if(par['zone_rev']){
         if('___produire_le_rev_v2' === par['contexte']){
             dogid(par['zone_rev']).value=t;
-            __gi1.formatter_le_source_rev(par['zone_rev']);
-        }else{
-            console.error('TODO');
-            debugger;
-        }
-    }
-    return({status:true,value:t});
-}
-/*
-  
-  =====================================================================================================================
-*/
-function traite_le_tableau_de_la_base_sqlite(par){
-    var t='\n';
-    var cle_etrangere=false;
-    var nom_de_la_table={};
-    for(nom_de_la_table in par['donnees']){
-        t+=('\n' + 'create_table(');
-        t+=('\n' + ' nom_de_la_table(\'' + nom_de_la_table + '\'),');
-        t+=('\n' + ' fields(#(),');
-        var nom_champ={};
-        for(nom_champ in par['donnees'][nom_de_la_table]['liste_des_champs']){
-            cle_etrangere=false;
-            var pc = par['donnees'][nom_de_la_table]['liste_des_champs'][nom_champ];
-            t+=('\n' + '  field(');
-            t+=('\n' + '   nom_du_champ(' + nom_champ + ')');
-            if((pc['type'].indexOf('(') >= 0) && (pc['type'].lastIndexOf(')') >= pc['type'].indexOf('('))){
-                t+=('\n' + '   type(' + pc['type'].substr(0,pc['type'].indexOf('(')) + ' , ' + pc['type'].substr((pc['type'].indexOf('(') + 1),(pc['type'].lastIndexOf(')') - pc['type'].indexOf('(') - 1)) + ')');
-            }else{
-                t+=('\n' + '   type(' + pc['type'] + ')');
-            }
-            if((pc['type'].toUpperCase() === 'INTEGER') && (pc['pk'] === 1) && (pc['auto_increment'] === true)){
-                t+=('\n' + '   primary_key()');
-                t+=('\n' + '   auto_increment()');
-            }else{
-                if(pc['pk'] === 1){
-                    t+=('\n' + '   primary_key()');
-                }
-            }
-            if(pc['notnull'] === 1){
-                t+=('\n' + '   not_null()');
-            }
-            if(pc['dflt_value']){
-                t+=('\n' + '   default(' + pc['dflt_value'] + ')');
-            }
-            if((pc['cle_etrangere']) && (pc['cle_etrangere']['from']) && (pc['cle_etrangere']['from'] === nom_champ)){
-                t+=('\n' + '   references(\'' + pc['cle_etrangere']['table'] + '\' , \'' + pc['cle_etrangere']['to'] + '\' )');
-                cle_etrangere=true;
-            }
-            /*
-              
-              <select id="type_du_champ">
-              <option value="">choisissez un type</option>
-              <option value="chi">index entier (chi) integer[n]</option>
-              <option value="chx">référence croisée (chx) integer[n]</option>
-              <option value="che">entier (che) integer[n]</option>
-              
-              <option value="chn">numérique (chn) float</option>
-              
-              <option value="chu">choix unique (chu) integer(n)</option>
-              
-              <option value="chm">choix multiple (chm) text</option>
-              <option value="cht">texte (cht) text</option>
-              <option value="chp">phrase (chp) varchar(n)</option>
-              <option value="cho">mot (cho) character(n)</option>
-              <option value="chd">date heure (chd) text(23) YYYY-MM-DD HH:MM:SS.SSS</option>
-              <option value="cha">date character(10)</option>
-              <option value="chh">heure character(8)</option>
-              <option value="chb">blob (chb) blob</option></select>
-            */
-            var types_entiers = [
-                'INT',
-                'INTEGER',
-                'TINYINT',
-                'SMALLINT',
-                'MEDIUMINT',
-                'BIGINT',
-                'UNSIGNED BIG INT',
-                'INT2',
-                'INT8'
-            ];
-            var types_caracteres = [
-                'CHARACTER',
-                'VARCHAR',
-                'VARYING CHARACTER',
-                'NCHAR',
-                'NATIVE CHARACTER',
-                'NVARCHAR',
-                'TEXT',
-                'CLOB'
-            ];
-            if(types_entiers.includes(pc['type'].toUpperCase())){
-                if(pc['pk'] === 1){
-                    t+=('\n' + '   typologie(' + nom_champ + ',chi)');
-                }else{
-                    if(cle_etrangere === true){
-                        t+=('\n' + '   typologie(' + nom_champ + ',chx)');
-                    }else{
-                        t+=('\n' + '   typologie(' + nom_champ + ',che)');
-                    }
-                }
-            }
-            /*
-              
-              '
-            */
-            t+=('\n' + '  ),');
-        }
-        t+=('\n' + ' )');
-        t+=('\n' + ')');
-        t+='\n';
-        /*
-          
-          ======================
-          ====== les indexes ===
-          ======================
-        */
-        var nom_index={};
-        for(nom_index in par['donnees'][nom_de_la_table]['liste_des_indexes']){
-            var pc = par['donnees'][nom_de_la_table]['liste_des_indexes'][nom_index];
-            t+=',';
-            t+=('\n' + 'add_index(');
-            t+=('\n' + '   nom_de_la_table_pour_l_index(\'' + nom_de_la_table + '\'),');
-            if(pc['unique'] === 1){
-                t+=('\n' + '   unique(),');
-            }
-            t+=('\n' + '   index_name(\'' + nom_index + '\'),');
-            var lc='';
-            var champ_de_l_index={};
-            for(champ_de_l_index in pc['champs']){
-                lc+=(',' + '\'' + champ_de_l_index + '\'');
-            }
-            if(lc !== ''){
-                t+=('\n' + '   fields(' + lc.substr(1) + ')');
-            }
-            t+=('\n' + ')');
-        }
-    }
-    t=t.substr(1);
-    if(par['zone_rev']){
-        if('___produire_le_rev' === par['contexte']){
-            dogid(par['zone_rev']).value=('sql(transaction(\n' + t + '\n\n),commit())');
             __gi1.formatter_le_source_rev(par['zone_rev']);
         }else{
             console.error('TODO');

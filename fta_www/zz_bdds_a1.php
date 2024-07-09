@@ -358,43 +358,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
       
   
- }else if( isset($_POST['___produire_le_rev']) ){
-  
-     
-     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
-     
-     $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
-      
-   //   $o1.='&nbsp <span>Ce '.$chemin_fichier.'</span>';  
-
-     if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
-
-         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
-         if($ret['status']===true){
-
-          /* 
-            on vérifiera plus bas que cette variable de session existe pour produire le rev
-          */
-//          echo __FILE__ . ' ' . __LINE__ . ' $ret[value] = <pre>' . var_export( $ret['value'] , true ) . '</pre>' ; exit(0);
-          $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$ret['value'];
-          $_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables']='___produire_le_rev';
-
-          
-         }else{
-          
-           ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
-          
-         }
-       
-     }else{
-
-             ajouterMessage('erreur' , __LINE__ .' fichier de la base de donnée sqlite introuvable ' , BNF );
-
-     }
-
-    
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
 
  /*
@@ -867,7 +830,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
    if(is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
     
     $o1.='&nbsp <button name="___produire_le_rev_v2" >produire le rev V2</button>';    
-    $o1.='&nbsp <button name="___produire_le_rev" >produire le rev</button>';    
     $o1.='&nbsp <button name="___produire_le_dump_des_donnees" >produire le dump des données</button>';    
     
     $o1.='  <br />'.CRLF;
@@ -1026,12 +988,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
    
 
-      if($_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables']==='___produire_le_rev'){
-          $js_a_executer_apres_chargement[]=array(
-            'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_basedd' , 'contexte' => $_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables'] )
-          );
-          unset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']);
-      }else if($_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables']==='___produire_le_rev_v2'){
+      if($_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables']==='___produire_le_rev_v2'){
           $js_a_executer_apres_chargement[]=array(
             'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite_v2' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_basedd' , 'contexte' => $_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables'] )
           );

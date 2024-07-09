@@ -1147,7 +1147,6 @@ function executerCesActionsPourLaPageLocale(par){
      switch (par[i].nomDeLaFonctionAappeler) {
          case 'neRienFaire'                            : neRienFaire(par[i].parametre);                            break;
          case 'initialiserEditeurPourUneTextArea'      : initialiserEditeurPourUneTextArea(par[i].parametre);      break;
-         case 'traite_le_tableau_de_la_base_sqlite'    : traite_le_tableau_de_la_base_sqlite(par[i].parametre);    break;
          case 'traite_le_tableau_de_la_base_sqlite_v2' : traite_le_tableau_de_la_base_sqlite_v2(par[i].parametre); break;
          case 'comparer_deux_tableaux_de_bases_sqlite' : comparer_deux_tableaux_de_bases_sqlite(par[i].parametre); break;
          default: console.log('fonction non prévue dans interface0.js: '+par[i].nomDeLaFonctionAappeler); break;
