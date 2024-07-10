@@ -5,7 +5,9 @@ define('PREFIXE_REPERTOIRES','fta');
 define('RACINE_DU_PROJET',realpath(dirname(__FILE__,2)));
 define('INCLUDE_PATH',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_inc');
 define('BACKUP_PATH',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_backup');
-
+define('LIEN_BDD','LIEN_BDD');
+define('BDD','BDD');
+$GLOBALS[BDD]=array();
 define('NAV','NAV');
 define('CRLF',"\r\n");
 define('OK','OK');
@@ -17,6 +19,75 @@ define('TAILLE_MAXI_SOURCE',512000);
 define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_et_"suffisament"_longue'));
 define('ENCRYPTION_METHODE','aes-256-cbc');
 $GLOBALS['__date']=date('Y-m-d H:i:s');
+
+
+/*===================================================================================================================*/
+function initialiser_les_services($initialiser_session,$initialiser_bdd){
+  if($initialiser_bdd===true){
+      /*
+        il peut y avoir plusieurs bases sqlite rattachées à une seule connexion
+        On ouvre donc une connexion "neutre" et on rattache les bases
+      */
+      
+      require_once('../fta_inc/db/__liste_des_acces_bdd.php');
+      /*
+      'fournisseur'
+      */
+      $sqlite_trouve=false;
+      foreach($GLOBALS[BDD] as $k1=>$v1){
+          if($v1['fournisseur']==='sqlite' && $sqlite_trouve===false){
+              $db0 = new SQLite3('');
+              $sqlite_trouve=true;
+          }
+      }
+      
+      $ret=$db0->exec('PRAGMA encoding = "UTF-8";PRAGMA foreign_keys=1;');
+      if($ret===false){
+          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+      }
+      
+
+      foreach($GLOBALS[BDD] as $k1=>$v1){
+          define('BDD_'.$v1['id'],$v1['id']);
+          $GLOBALS[BDD][$k1][LIEN_BDD]=$db0;
+          /*
+            l'initialisation permet de déclencher par exemple
+            attach database "C:\\...chemin...\\fta_inc\db\\sqlite\\system.db" as "system.db"
+          */
+          $sql0=$v1['initialisation'];
+          $ret0=$db0->exec($sql0);
+      }
+       /*#       
+       // mon test pour les clé étrangère
+       // remarque : on ne peut pas supprimer une table si une autre table y fait référence en clé étrangère
+       $les_tests=array(
+        'DROP table IF EXISTS "system.db"."tbl_b" ' ,
+        'DROP table IF EXISTS "system.db"."tbl_a" ' ,
+
+        'create table "system.db"."tbl_a"(id integer primary key )' ,
+        'create table "system.db"."tbl_b"(id integer references tbl_a(id) )' ,
+        'insert into "system.db"."tbl_a" VALUES(1)' ,
+        'insert into "system.db"."tbl_b" VALUES(1)' ,
+        'delete from "system.db"."tbl_a" where id=1', // ceci fait planter le test
+
+        'DROP table IF EXISTS "system.db"."tbl_b" ' ,
+        'DROP table IF EXISTS "system.db"."tbl_a" ' ,
+       );
+       foreach( $les_tests as $k1=>$v1){
+         $ret=$db0->exec($v1);
+         if($ret===false){
+          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; 
+         }
+       }
+       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+      */
+      
+  }
+  if($initialiser_session===true){
+      session_start();
+  }
+}
+
 /*===================================================================================================================*/
 
 function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_copie=false){
@@ -457,7 +528,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 */
 
 function recupereLesMessagesDeSession($f){
-
+    $numero_de_message=0;
     $les_messages_a_afficher='';
     $tableauTypeMessage=array(
         'normal',
@@ -474,7 +545,12 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$f][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$f][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                    if($numero_de_message===0){
+                        $les_messages_a_afficher.='<div class="yy'.$v1.'" style="padding-left:30px;">'.$verr.'</div>'.CRLF;
+                        $numero_de_message++;
+                    }else{
+                        $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                    }
                 }
 
             }
@@ -490,7 +566,12 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                    if($numero_de_message===0){
+                        $les_messages_a_afficher.='<div class="yy'.$v1.'" style="padding-left:30px;">'.$verr.'</div>'.CRLF;
+                        $numero_de_message++;
+                    }else{
+                        $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                    }
                 }
 
             }
@@ -503,7 +584,7 @@ function recupereLesMessagesDeSession($f){
 
     if(($les_messages_a_afficher !== '')){
 
-        $les_messages_a_afficher='<a class="yyavertissement" style="float:inline-end" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">🙈</a>'.$les_messages_a_afficher;
+        $les_messages_a_afficher='<a class="yyavertissement" style="position: fixed;" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">🙈</a>'.$les_messages_a_afficher;
 
     }
 
@@ -700,7 +781,10 @@ function html_header1($parametres){
     if(( !(isset($parametres['pas_de_menu'])))){
 
         $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
-        $o1.='    <div><a href="./" id="buttonhome" class="yytbgrand '.(('index.php' === BNF)?'yymenusel1':'').'" style="">&#127968;</a></div>'.CRLF;
+        $o1.='    <div>'.CRLF;
+        $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.(('index.php' === BNF)?'yymenusel1':'').'" style="">&#127968;</a>'.CRLF;
+        $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" href="javascript:afficherOuMasquerLesMessages()">🙈</a>'.CRLF;
+        $o1.='    </div>'.CRLF;
         $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
         $o1.='      <div>'.CRLF;
         $o1.='        <ul>'.CRLF;
@@ -740,9 +824,10 @@ function html_header1($parametres){
 
         }else if((BNF !== 'aa_login.php')){
 
-            $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yysucces">🔑</a></div>'.CRLF;
+            $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>'.CRLF;
 
         }
+        
 
         $o1.='  </nav>'.CRLF;
 

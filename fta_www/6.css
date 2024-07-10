@@ -7,6 +7,7 @@ body{margin:0;border:0;padding:0;overflow-y:scroll;
  color:#263238;
  padding-top:var(--yyvhmd);
  padding-bottom:var(--yyvhmb); /* espace pour bas de page */
+ max-width:1200px;
 }
 *{scrollbar-width:thin;}
 *{scrollbar-color: #B0BEC5 #607D8B;}
@@ -88,6 +89,8 @@ a:hover,button:hover{
  box-shadow: 0px 2px 5px #B0BEC5;
  justify-content:space-around;
  height:var(--yyvhmd);
+ max-width:1200px;
+
 }
 
 
@@ -98,6 +101,7 @@ a:hover,button:hover{
   overflow-x:scroll;
   overflow-y:hidden;
   height:var(--yyvhmd);
+  max-width:1200px;
 }
 
 
@@ -126,14 +130,14 @@ a:hover,button:hover{
 #zone_global_messages{
  position:fixed;
  top:45px; /* à priori sous le menu ( voir padding top du body ci dessous )  mais pourra être déplacé si l'utilisateur cré un menu fixe en haut */
- width:96vw;
- margin-left:2vw;
+ width:100vw;
  max-height:200px;
  background-image:linear-gradient(to bottom, #B0BEC5, #607D8B);
  max-height: 200px;
  overflow-y: scroll;
  box-shadow: 0px 2px 5px #B0BEC5;
  visibility:hidden;
+ max-width:1200px;
 }
 #modale1{
  min-width:80vw;

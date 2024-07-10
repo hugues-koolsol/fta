@@ -79,7 +79,7 @@ $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
 $champs0=CRLF.'`chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd ';
 $sql0='SELECT '.$champs0;
-$from0=CRLF.'FROM sys1.`tbl_bases_de_donnees` `T0`';
+$from0=CRLF.'FROM sys1.`tbl_bdds` `T0`';
 $sql0.=$from0;
 
 $where0=CRLF.'WHERE  "T0"."chx_cible_id_basedd" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];

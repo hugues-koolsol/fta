@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 require_once('../fta_inc/db/acces_bdd_taches1.php');
 
 
@@ -34,7 +34,6 @@ function erreur_dans_champs_saisis_taches(){
   ========================================================================================
 */
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 /*
   ====================================================================================================================
@@ -82,7 +81,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   UPDATE `tbl_taches` SET 
+   UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_taches` SET 
       `chp_texte_tache`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'])        .'\'
     , `chp_priorite_tache`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'])        .'\'
       
@@ -93,22 +92,22 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //  echo $sql;
 
   error_reporting(0);
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
     error_reporting(E_ALL);
-    if($db->lastErrorCode()===19){
+    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']); 
     }else{
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']); 
     }
    
   }else{
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
    error_reporting(E_ALL);
-   if($db->changes()===1){
+   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
     
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);
     
@@ -123,7 +122,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     
    }else{
     
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
     
    }
@@ -142,13 +141,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   if($__id!==false){
    
-     $__valeurs=recupere_une_donnees_des_taches($__id,$db);
+     $__valeurs=recupere_une_donnees_des_taches($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 
-     $db->querySingle('PRAGMA foreign_keys=ON');
-     $sql='DELETE FROM tbl_taches WHERE `chi_id_tache` = \''.sq0($__id).'\' ' ;
-     if(false === $db->exec($sql)){
 
-         ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+     $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches WHERE `chi_id_tache` = \''.sq0($__id).'\' ' ;
+     if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+
+         ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
      }else{
@@ -182,7 +181,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   INSERT INTO `tbl_taches` (`chp_texte_tache` , chp_priorite_tache , chx_utilisateur_tache  ) VALUES
+   INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_taches` (`chp_texte_tache` , chp_priorite_tache , chx_utilisateur_tache  ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'])        .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'])     .'\'
@@ -191,15 +190,15 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){ // 
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
    
-      ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__creation'); 
     
   }else{
    
-    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$db->lastInsertRowID().') a bien été créé' , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$db->lastInsertRowID()); 
+    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
+    recharger_la_page(BNF.'?__action=__modification&__id='.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID()); 
    
   }
  
@@ -242,7 +241,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
   recharger_la_page('zz_taches_l1.php');
  }else{
-  $__valeurs=recupere_une_donnees_des_taches($__id,$db);
+  $__valeurs=recupere_une_donnees_des_taches($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
  }
 }  
@@ -253,7 +252,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   recharger_la_page('zz_taches_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_taches($__id,$db);
+  $__valeurs=recupere_une_donnees_des_taches($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
   // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   

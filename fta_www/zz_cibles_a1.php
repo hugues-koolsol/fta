@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 require_once('../fta_inc/db/acces_bdd_cibles1.php');
 
 
@@ -37,6 +37,8 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_inc/ajax/php/session.php' => array(),
       'fta_inc/ajax/php/travail_en_arriere_plan1.php' => array(),
       
+
+      'fta_inc/db/__liste_des_acces_bdd.php' => array(),
       'fta_inc/db/acces_bdd_bases_de_donnees1.php' => array(),
       'fta_inc/db/acces_bdd_cibles1.php' => array(),
       'fta_inc/db/acces_bdd_dossiers1.php' => array(),
@@ -217,7 +219,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    $contenu_initialisation="
     INSERT INTO `tbl_cibles`( `chi_id_cible`, `chp_nom_cible`, `chp_commentaire_cible`, `chp_dossier_cible`) VALUES ('1','fta','la racine','ftb');
     INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_dossier`) VALUES ('1','/','1');
-    INSERT INTO `tbl_bases_de_donnees`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_basedd`, `chp_commentaire_basedd`, `chx_dossier_id_basedd`, `chp_genere_basedd`, `chx_cible_id_basedd`, `chp_php_basedd`) VALUES ('1','system.db','','initialisation','2','','1','');
+    INSERT INTO `tbl_bdds`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_basedd`, `chp_commentaire_basedd`, `chx_dossier_id_basedd`, `chp_genere_basedd`, `chx_cible_id_basedd`, `chp_php_basedd`) VALUES ('1','system.db','','initialisation','2','','1','');
     INSERT INTO `tbl_utilisateurs`( `chi_id_utilisateur`, `chp_nom_de_connexion_utilisateur`, `chp_mot_de_passe_utilisateur`, `chp_commentaire_utilisateur`) VALUES ('1','admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK','mdp = admin');
    ";
 
@@ -271,7 +273,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    /* on ajoute le contenu du champ chp_rev_travail_basedd dans la base ftb pour le dessin de la base */
    
    $base_fta = new SQLite3('../fta_inc/db/sqlite/system.db');
-   $sql0='select chp_rev_travail_basedd from tbl_bases_de_donnees WHERE chi_id_basedd=1';
+   $sql0='select chp_rev_travail_basedd from `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE chi_id_basedd=1';
    $stmt = $base_fta->prepare($sql0);
    if($stmt!==false){
      $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
@@ -279,7 +281,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       $chp_rev_travail_basedd=$arr[0];
      }
      $stmt->close(); 
-     $slq_maj_ftb='UPDATE tbl_bases_de_donnees SET chp_rev_travail_basedd = \''.sq0($chp_rev_travail_basedd).'\'  WHERE chi_id_basedd=1';
+     $slq_maj_ftb='UPDATE tbl_bdds SET chp_rev_travail_basedd = \''.sq0($chp_rev_travail_basedd).'\'  WHERE chi_id_basedd=1';
 
      if(false === $base_ftb->exec($slq_maj_ftb)){
       echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
@@ -354,7 +356,7 @@ function erreur_dans_champs_saisis_cibles(){
   ========================================================================================
 */
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
 
 /*
   ====================================================================================================================
@@ -395,14 +397,14 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']==='1'){
       $sql='
-       UPDATE `tbl_cibles` SET 
+       UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` SET 
           `chp_commentaire_cible` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
         WHERE 
           `chi_id_cible`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
       ';
   }else{
       $sql='
-       UPDATE `tbl_cibles` SET 
+       UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` SET 
           `chp_nom_cible`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])        .'\'
         , `chp_dossier_cible`     = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])    .'\'
         , `chp_commentaire_cible` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
@@ -413,29 +415,29 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
   error_reporting(0);
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
     error_reporting(E_ALL);
-    if($db->lastErrorCode()===19){
+    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
     }else{
-     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
+     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
     }
    
   }else{
    error_reporting(E_ALL);
-   if($db->changes()===1){
+   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
     
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
     ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
     
    }else{
     
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
     
    }
@@ -456,7 +458,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
   if($__id!==0){
-      $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+      $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   }else{
       ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
@@ -470,63 +472,61 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     recharger_la_page('zz_cibles_l1.php');
   }
   
-  $db->querySingle('PRAGMA foreign_keys=ON');
+  
+  $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('BEGIN TRANSACTION');
   
   
-  $db->querySingle('BEGIN TRANSACTION');
-  
-  
-  $sql='DELETE FROM tbl_revs WHERE `chx_cible_rev` = '.sq0($__id).' ';
+  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs WHERE `chx_cible_rev` = '.sq0($__id).' ';
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
-   $db->querySingle('ROLLBACK');
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
    recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }else{
    ajouterMessage('info' ,  __LINE__ .' : la suppression des rev a fonctionné' , BNF );
   }
 
-  $sql='DELETE FROM tbl_sources WHERE `chx_cible_id_source` = '.sq0($__id).' ';
+  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_sources WHERE `chx_cible_id_source` = '.sq0($__id).' ';
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
-   $db->querySingle('ROLLBACK');
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
    recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }else{
    ajouterMessage('info' ,  __LINE__ .' : la suppression des sources a fonctionné' , BNF );
   }
 
-  $sql='DELETE FROM tbl_bases_de_donnees WHERE `chx_cible_id_basedd` = '.sq0($__id).' ';
+  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE `chx_cible_id_basedd` = '.sq0($__id).' ';
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
-   $db->querySingle('ROLLBACK');
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
    recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }else{
    ajouterMessage('info' ,  __LINE__ .' : la suppression des bases_de_données a fonctionné' , BNF );
   }
 
-  $sql='DELETE FROM tbl_dossiers WHERE `chx_cible_dossier` = '.sq0($__id).' ';
+  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers WHERE `chx_cible_dossier` = '.sq0($__id).' ';
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
-   $db->querySingle('ROLLBACK');
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
    recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }else{
    ajouterMessage('info' ,  __LINE__ .' : la suppression des dossiers a fonctionné' , BNF );
   }
 
   
-  $sql='DELETE FROM tbl_cibles WHERE `chi_id_cible` = \''.sq0($__id).'\' ' ;
-  if(false === $db->exec($sql)){
+  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_cibles WHERE `chi_id_cible` = \''.sq0($__id).'\' ' ;
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 
-      ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
-      $db->querySingle('ROLLBACK');
+      ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+      $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
   }else{
    
-     $db->querySingle('COMMIT');
+     $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('COMMIT');
      ajouterMessage('succes' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
      recharger_la_page('zz_cibles_l1.php');
 
@@ -552,7 +552,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   INSERT INTO `tbl_cibles` (`chp_nom_cible` , `chp_dossier_cible`, `chp_commentaire_cible` ) VALUES
+   INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` (`chp_nom_cible` , `chp_dossier_cible`, `chp_commentaire_cible` ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])         .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])     .'\'
@@ -560,22 +560,22 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){ // 
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
    
-      ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__creation'); 
     
   }else{
    
     
    
-    $__nouvel_id=$db->lastInsertRowID();
+    $__nouvel_id=$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID();
     
     /* insertion du dossier racine */    
-    $sql=' INSERT INTO `tbl_dossiers` (`chp_nom_dossier` , `chx_cible_dossier` ) VALUES   (  \'/\' ,   '.sq0($__nouvel_id)     .'  ) ' ;
-    if(false === $db->exec($sql)){ // 
+    $sql=' INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` (`chp_nom_dossier` , `chx_cible_dossier` ) VALUES   (  \'/\' ,   '.sq0($__nouvel_id)     .'  ) ' ;
+    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
      
-        ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+        ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
         recharger_la_page(BNF.'?__action=__creation'); 
         
       
@@ -607,7 +607,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     unset($_SESSION[APP_KEY][NAV][BNF]);
    }
    if($__id!==0){
-       $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+       $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
        $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
        if(mkdir($__dossier)){
            ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été créé avec succès !'  , BNF );
@@ -639,7 +639,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
    $__id=$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
    if($__id!==0 && $__id!=='1'  && $__id!==1 ){
-       $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+       $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
        $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
        if(is_dir($__dossier)){
           if(le_dossier_est_vide($__dossier)){
@@ -723,7 +723,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   /*
   http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=1&__action=__suppression
   */
-  $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+  $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
 
   if($__valeurs['T0.chi_id_cible']===1){
@@ -747,7 +747,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   recharger_la_page('zz_cibles_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
+  $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
   
   if(!isset($__valeurs['T0.chi_id_cible'])){

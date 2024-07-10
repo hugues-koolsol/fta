@@ -19,7 +19,7 @@ function ordonner_les_champs_de_table(&$data){
       'file' => 'bdd',
       'funct' => 'ordonner_les_champs_de_table',
       ),
-      'nom_de_la_table' => 'tbl_bases_de_donnees',
+      'nom_de_la_table' => 'tbl_bdds',
       'ordre_original' => 'chi_id_basedd,chp_nom_basedd,chp_rev_basedd,chp_commentaire_basedd,chx_dossier_id_basedd,chp_genere_basedd,chx_cible_id_basedd,chp_php_basedd,chp_rev_travail_basedd,chp_fournisseur_basedd',
       'ordre_modifie' => 'chi_id_basedd,chx_cible_id_basedd,chp_nom_basedd,chp_rev_basedd,chp_commentaire_basedd,chx_dossier_id_basedd,chp_genere_basedd,chp_php_basedd,chp_rev_travail_basedd,chp_fournisseur_basedd',
       'id_bdd_de_la_base' => '1',
@@ -159,7 +159,7 @@ function ordonner_les_champs_de_table(&$data){
 function envoyer_le_rev_de_le_base_en_post(&$data){
 
     $db=new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
-    $sql0=' UPDATE tbl_bases_de_donnees set `chp_rev_travail_basedd` = \''.sq0($data['input']['source_rev_de_la_base']).'\' WHERE 	chi_id_basedd = '.sq0($data['input']['id_bdd_de_la_base']).'';
+    $sql0=' UPDATE tbl_bdds set `chp_rev_travail_basedd` = \''.sq0($data['input']['source_rev_de_la_base']).'\' WHERE 	chi_id_basedd = '.sq0($data['input']['id_bdd_de_la_base']).'';
     /*
       
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql0='.$sql0.CRLF.CRLF); fclose($fd);}
@@ -184,7 +184,7 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
 function recuperer_zone_travail_pour_les_bases(&$data){
 
     $db=new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
-    $sql=' select chi_id_basedd , chp_rev_travail_basedd , chp_nom_basedd FROM tbl_bases_de_donnees WHERE 	chi_id_basedd IN ('.sq0($data['input']['les_id_des_bases']).')';
+    $sql=' select chi_id_basedd , chp_rev_travail_basedd , chp_nom_basedd FROM tbl_bdds WHERE 	chi_id_basedd IN ('.sq0($data['input']['les_id_des_bases']).')';
     $stmt=$db->prepare($sql);
     $data0=array();
 

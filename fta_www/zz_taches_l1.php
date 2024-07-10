@@ -1,7 +1,8 @@
 <?php
 define("BNF",basename(__FILE__));
 require_once('aa_include.php');
-session_start();
+initialiser_les_services(true,true); // sess,bdd
+
 
 
 /*
@@ -21,16 +22,15 @@ function obtenir_entete_de_la_page(){
 */
 if(isset($_POST['__soustraire_1_aux_priorites'])){
  
-  $db=new SQLite3('../fta_inc/db/sqlite/system.db');
   
-  $sql0='UPDATE tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$db->querySingle($sql0);
-  $sql1='UPDATE tbl_taches SET chp_priorite_tache=chp_priorite_tache-1 WHERE chp_priorite_tache<50 AND  chp_priorite_tache>1 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$db->querySingle($sql1);
+  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+  $sql1='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache-1 WHERE chp_priorite_tache<50 AND  chp_priorite_tache>1 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
   
   if( $ret===false ){
 
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
    
   }else{
    
@@ -45,16 +45,15 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
 */
 if(isset($_POST['__ajouter_1_aux_priorites'])){
  
-  $db=new SQLite3('../fta_inc/db/sqlite/system.db');
   
-  $sql0='UPDATE tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$db->querySingle($sql0);
-  $sql1='UPDATE tbl_taches SET chp_priorite_tache=chp_priorite_tache+1 WHERE chp_priorite_tache<50 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$db->querySingle($sql1);
+  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+  $sql1='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache+1 WHERE chp_priorite_tache<50 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
   
   if( $ret===false ){
 
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
    
   }else{
    
@@ -72,12 +71,11 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
 
  if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
-  $db=new SQLite3('../fta_inc/db/sqlite/system.db');
-  $sql0='UPDATE tbl_taches SET chp_priorite_tache=99 WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$db->querySingle($sql0);
+  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=99 WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
   if( $ret===false ){
 
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
    
   }else{
    
@@ -156,7 +154,7 @@ $champs0='
 ';
 $sql0='SELECT '.$champs0;
 $from0='
- FROM sys1.tbl_taches `T0`
+ FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches `T0`
  
 ';
 $sql0.=$from0;
@@ -202,18 +200,11 @@ $plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();
-$db=new SQLite3('../fta_inc/db/sqlite/system.db');
-$a=realpath("..\\fta_inc\\db\\sqlite\\system.db");
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $a , true ) . '</pre>' ; exit(0);
 
-
-$sqlattach='attach database "'.$a.'" as sys1;';
-//$sqlattach='attach database "system.db" as "sys1";';
-$db->querySingle($sqlattach);
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
 
-$stmt0=$db->prepare($sql0);
+$stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
 
 if(($stmt0 !== false)){
 
@@ -232,14 +223,14 @@ if(($stmt0 !== false)){
     if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$db->querySingle($sql1);
+        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
 
     }
 
 
 }else{
 
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
     exit(0);
 }
 
@@ -296,7 +287,7 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='</td>';
     
     $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.=''.mb_substr($v0['T0.chp_texte_tache'],0,100).'';
+    $lsttbl.=''.enti1(mb_substr($v0['T0.chp_texte_tache'],0,100)).'';
     $lsttbl.='</td>';
     
     $lsttbl.='<td style="text-align:left;">';

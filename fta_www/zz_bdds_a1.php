@@ -377,7 +377,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
       $sql='
-       UPDATE `tbl_bases_de_donnees` SET 
+       UPDATE `tbl_bdds` SET 
           `chp_nom_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
         , `chp_commentaire_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
         , `chp_rev_travail_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
@@ -441,7 +441,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
 
   $db->querySingle('PRAGMA foreign_keys=ON');  
-  $sql='DELETE FROM tbl_bases_de_donnees WHERE `chi_id_basedd` = \''.sq0($__id).'\' ' ;
+  $sql='DELETE FROM tbl_bdds WHERE `chi_id_basedd` = \''.sq0($__id).'\' ' ;
   if(false === $db->exec($sql)){
 
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
@@ -469,7 +469,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     }
     
     $sql='
-     INSERT INTO `tbl_bases_de_donnees` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd , chp_rev_travail_basedd , chp_fournisseur_basedd ) VALUES
+     INSERT INTO `tbl_bdds` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd , chp_rev_travail_basedd , chp_fournisseur_basedd ) VALUES
        (
           \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'

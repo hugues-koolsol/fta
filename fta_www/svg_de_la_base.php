@@ -12,7 +12,7 @@ if(!isset($_GET['__id_des_bases'])){
 
 $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
-$sql0='select count(*) from tbl_bases_de_donnees where chi_id_basedd in ('.$_GET['__id_des_bases'] . ')'; 
+$sql0='select count(*) from tbl_bdds where chi_id_basedd in ('.$_GET['__id_des_bases'] . ')'; 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
 $__nbEnregs=$db->querySingle($sql0);
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__nbEnregs , true ) . '</pre>' ; exit(0);

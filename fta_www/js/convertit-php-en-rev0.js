@@ -1927,7 +1927,7 @@ function ajouteCommentairesAvant(element,niveau){
  var esp1 = ' '.repeat(NBESPACESREV);
  if(element.attributes.comments){
   for(var j=0;j<element.attributes.comments.length;j++){
-   if(element.attributes.comments[j].nodeType==="Comment"){
+   if( "Comment" === element.attributes.comments[j].nodeType || "Comment_Doc" === element.attributes.comments[j].nodeType ){
     
     var txtComment=element.attributes.comments[j].text.substr(2);
     

@@ -397,7 +397,7 @@ class module_svg_bdd{
         }
         max_id++;
         var indice_courant=max_id;
-        var rev = ('n(\'' + nom_du_champ + '\'),type(' + type.toUpperCase() + ')' + ((primaire)?',primary_key(),':'') + + ((non_nulle)?',non_nulle(),':'') + ',meta(typologie(' + typologie + '))');
+        var rev = ('n(\'' + nom_du_champ + '\'),type(' + type.toUpperCase() + ')' + ((primaire)?',primary_key(),':'') + ((non_nulle)?',non_nulle(),':'') + ',meta(typologie(' + typologie + '))');
         var a = this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,this.#id_bdd_de_la_base_en_cours,rev);
         global_modale1.close();
         this.#dessiner_le_svg();
@@ -787,9 +787,10 @@ class module_svg_bdd{
                                             }
                                         }
                                     }else if(obj_matrice_de_l_index.value[k][1] === 'meta'){
+                                        
                                         for(l=(k + 1);l < obj_matrice_de_l_index.value.length;l++){
                                             if((obj_matrice_de_l_index.value[l][3] === (obj_matrice_de_l_index.value[k][3] + 1)) && (obj_matrice_de_l_index.value[l][8] === 2)){
-                                                if(liste_meta_index[obj_matrice_de_l_index.value[(l + 1)][1]]){
+                                                if(liste_meta_index.hasOwnProperty(obj_matrice_de_l_index.value[(l + 1)][1])){
                                                     liste_meta_index[obj_matrice_de_l_index.value[(l + 1)][1]]=obj_matrice_de_l_index.value[(l + 2)][1];
                                                 }
                                             }
@@ -822,7 +823,7 @@ class module_svg_bdd{
             }
         }
         t+='<br />';
-        t+=('<a href="javascript:' + this.#nom_de_la_variable + '.modifier_un_index_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">modifier</a>');
+        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_un_index_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">modifier</a>');
         t+='<hr />';
         t+='<h2>supprimer l\'index</h2>';
         t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_index_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">supprimer</a>');
@@ -884,9 +885,9 @@ class module_svg_bdd{
                             if(obj_matrice_du_champ.value[k][7] === 0){
                                 if(obj_matrice_du_champ.value[k][2] === 'f'){
                                     if(obj_matrice_du_champ.value[k][1] === 'type'){
-                                        if(obj_matrice_du_champ.value[k][8] === 1){
+                                        if(obj_matrice_du_champ.value[k][10] === 1){
                                             type_du_champ=obj_matrice_du_champ.value[(k + 1)][1];
-                                        }else if(obj_matrice_du_champ.value[k][8] === 2){
+                                        }else if(obj_matrice_du_champ.value[k][10] === 2){
                                             type_du_champ=(obj_matrice_du_champ.value[(k + 1)][1] + '(' + obj_matrice_du_champ.value[(k + 2)][1] + ')');
                                         }
                                     }else if(obj_matrice_du_champ.value[k][1] === 'references'){
@@ -1124,7 +1125,7 @@ class module_svg_bdd{
         }
         /*
           
-          CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bases_de_donnees` 
+          CREATE  UNIQUE INDEX  idx_nom_basedd ON `tbl_bdds` 
           -- meta((index,'idx_nom_basedd'),(message,'à faire idx_nom_basedd'))  
           ( `chp_nom_basedd` , `chx_cible_id_basedd` ) ;
           console.log('tab_des_index_sql=' , tab_des_index_sql );
@@ -1232,9 +1233,9 @@ class module_svg_bdd{
     /*
       
       ====================================================================================================================
-      function modale_modifier_la_table
+      function modale_gerer_la_table
     */
-    #modale_modifier_la_table(element_g_conteneur_de_nom_de_table){
+    #modale_gerer_la_table(element_g_conteneur_de_nom_de_table){
         var nom_de_la_table='';
         var id_svg_du_texte=0;
         var element_g_conteneur_de_table=element_g_conteneur_de_nom_de_table.parentNode;
@@ -1263,7 +1264,7 @@ class module_svg_bdd{
         if(id_svg_du_texte === 0){
             return;
         }
-        var t='<h1>modification de la table</h1>';
+        var t='<h1>gestion de la table</h1>';
         t+='<hr />';
         t+='<h2>changer le nom</h2>';
         t+=('<input id="nouveau_nom" type="text" value="' + nom_de_la_table + '" />');
@@ -1316,13 +1317,13 @@ class module_svg_bdd{
         t+='<select id="typologie">';
         t+='<option value="">choisissez une typologie</option>';
         t+='<option value="chi">index entier (chi) integer[n]</option>';
+        t+='<option value="chp">phrase (chp) varchar(n)</option>';
         t+='<option value="chx">référence croisée (chx) integer[n]</option>';
         t+='<option value="che">entier (che) integer[n]</option>';
         t+='<option value="chn">numérique (chn) float</option>';
         t+='<option value="chu">choix unique (chu) integer(n)</option>';
         t+='<option value="chm">choix multiple (chm) text</option>';
         t+='<option value="cht">texte (cht) text</option>';
-        t+='<option value="chp">phrase (chp) varchar(n)</option>';
         t+='<option value="cho">mot (cho) character(n)</option>';
         t+='<option value="chd">date heure (chd) text(23) YYYY-MM-DD HH:MM:SS.SSS</option>';
         t+='<option value="cha">date character(10)</option>';
@@ -1355,6 +1356,11 @@ class module_svg_bdd{
         t+='<br />message des l\'index : <input id="message_de_l_index" type="text" value="" />';
         t+='<br />unique  : <input type="checkbox" id="unique" />';
         t+='<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_l_index_dans_modale(&quot;' + nom_de_la_table + '&quot;,' + element_g_conteneur_de_nom_de_table.getAttribute('id_svg_conteneur_table') + ')">ajouter</a>'
+        /*
+        
+        */
+        t+='<hr />';
+        t+='<h2>générer les accès</h2>';
         /*
         
         */
@@ -1823,7 +1829,7 @@ class module_svg_bdd{
         var ecart_de_temps = ( new Date(Date.now()).getTime() - this.#debut_de_click);
         if(this.#souris_element_a_deplacer === 'base'){
             if(ecart_de_temps > 200){
-                console.log('ecart_de_temps=',ecart_de_temps,this.#souris_init_objet.x_final,this.#souris_init_objet.x);
+//                console.log('ecart_de_temps=',ecart_de_temps,this.#souris_init_objet.x_final,this.#souris_init_objet.x);
                 if((ecart_de_temps < 1500) && (this.#souris_init_objet.x_final === this.#souris_init_objet.x) && (this.#souris_init_objet.y_final === this.#souris_init_objet.y)){
                     this.#modale_modifier_la_base(e.target.parentNode);
                 }else{
@@ -1858,7 +1864,7 @@ class module_svg_bdd{
             if((ecart_de_temps > 200) && (ecart_de_temps < 1500)){
                 if(e.target.nodeName.toLowerCase() === 'text'){
                     if(e.target.getAttribute('type_element') === "texte_de_nom_de_table"){
-                        this.#modale_modifier_la_table(e.target.parentNode);
+                        this.#modale_gerer_la_table(e.target.parentNode);
                     }else if(e.target.getAttribute('type_element') === "texte_de_champ"){
                         this.#modale_modifier_le_champ(e.target.parentNode);
                     }else if(e.target.getAttribute('type_element') === "texte_d_index"){
@@ -1866,7 +1872,7 @@ class module_svg_bdd{
                     }
                 }else if(e.target.nodeName.toLowerCase() === 'rect'){
                     if(e.target.getAttribute('type_element') === "rectangle_de_nom_de_table"){
-                        this.#modale_modifier_la_table(e.target.parentNode);
+                        this.#modale_gerer_la_table(e.target.parentNode);
                     }else if(e.target.getAttribute('type_element') === "rectangle_de_champ"){
                         this.#modale_modifier_le_champ(e.target.parentNode);
                     }else if(e.target.getAttribute('type_element') === "rectangle_d_index"){
@@ -2848,7 +2854,7 @@ class module_svg_bdd{
                 this.#dessiner_le_svg();
                 /*
                   
-                  this.#modale_modifier_la_table(document.getElementById(78));
+                  this.#modale_gerer_la_table(document.getElementById(78));
                 */
             }else{
                 logerreur({status:false,message:'0132'});

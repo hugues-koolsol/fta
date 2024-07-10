@@ -870,23 +870,39 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     var affichagesPresents=false;
     var zon = document.getElementById(nomZone);
     var zone_message_est_vide=true
+    var numero_message=0;
     if(zon.innerHTML!==''){
      zone_message_est_vide=false;
     }
     var numLignePrecedente=-1;
     var nombre_de_boutons_affiches=0;
     while(global_messages.errors.length>0){
-        zon.innerHTML+='<div class="yyerreur">'+global_messages.errors[i]+'</div>';
+        if(zone_message_est_vide && numero_message===0){
+            zon.innerHTML+='<div class="yyerreur" style="padding-left:31px;">'+global_messages.errors[i]+'</div>';
+            numero_message++;
+        }else{
+            zon.innerHTML+='<div class="yyerreur">'+global_messages.errors[i]+'</div>';
+        }
         global_messages.errors.splice(0,1);
         affichagesPresents=true;
     }
     while(global_messages.warnings.length>0){
-        zon.innerHTML+='<div class="yyavertissement">'+global_messages.warnings[i]+'</div>';
+        if(zone_message_est_vide && numero_message===0){
+            zon.innerHTML+='<div class="yyavertissement" style="padding-left:31px;">'+global_messages.warnings[i]+'</div>';
+            numero_message++;
+        }else{
+            zon.innerHTML+='<div class="yyavertissement">'+global_messages.warnings[i]+'</div>';
+        }
         global_messages.warnings.splice(0,1);
         affichagesPresents=true;
     }
     while(global_messages.infos.length>0){
-        zon.innerHTML+='<div class="yysucces">'+global_messages.infos[i]+'</div>';
+        if(zone_message_est_vide && numero_message===0){
+            zon.innerHTML+='<div class="yysucces" style="padding-left:31px;">'+global_messages.infos[i]+'</div>';
+            numero_message++;
+        }else{
+            zon.innerHTML+='<div class="yysucces">'+global_messages.infos[i]+'</div>';
+        }
         global_messages.infos.splice(0,1);
         affichagesPresents=true;
     }
@@ -926,7 +942,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         affichagesPresents=true;
     }
     if(affichagesPresents && zone_message_est_vide){
-        var ttt='<a class="yyavertissement" style="float:inline-end;position:fixed;right:20px;" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)" title="masquer les messages">🙈</a>';
+        var ttt='<a class="yyavertissement" style="position:fixed;" href="javascript:masquerLesMessage(&quot;'+nomZone+'&quot;)" title="masquer les messages">🙈</a>';
         zon.innerHTML=ttt+zon.innerHTML;
     }
     if(zon.innerHTML!==''){

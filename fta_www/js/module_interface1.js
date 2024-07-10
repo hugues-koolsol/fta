@@ -760,8 +760,8 @@ class interface1{
                 var hauteurMenuUtilisateur = parseInt(menuUtilisateurCalcule['height'],10);
                 lesDivs[i].style.top=paddingTopBody+'px';
                 lesDivs[i].style.position='fixed';
-                lesDivs[i].style.width='90vw';
-                lesDivs[i].style.marginLeft='5vw';
+                lesDivs[i].style.width='100vw';
+//                lesDivs[i].style.marginLeft='5vw';
                 lesDivs[i].style.backgroundImage='linear-gradient(to bottom, #B0BEC5, #607D8B)';
                 lesDivs[i].addEventListener('wheel',this.mouseWheelOnMenu,false);
                 paddingTopBody+=hauteurMenuUtilisateur;

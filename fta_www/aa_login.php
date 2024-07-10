@@ -179,8 +179,6 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY][
     <form id="boite_de_connexion" method="post" onsubmit="return checkSubmit1()" style="margin-top:50px;">
         <div>
             Veuillez indiquer votre nom de connexion et votre mot de passe
-            <br />Essayez admin/admin, si vous ne l'avez pas deviné. 
-            <br />c'est encore un environnement de test !
         </div>
         <hr />
         <label for="nom_de_connexion">
@@ -191,7 +189,12 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY][
             mot de passe
         </label>
         <input type="password" name="mot_de_passe" id="mot_de_passe" value="" />
-        <button type="submit">cliquez ici pour vous connecter</button>
+        <button class="yyinfo" type="submit">cliquez ici pour vous connecter</button>
+        <div>
+            <br />Essayez admin/admin, si vous ne l'avez pas deviné. 
+            <br />c'est encore un environnement de test !
+        </div>
+        
     </form>
 
 <script type="text/javascript">

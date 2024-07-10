@@ -1,8 +1,12 @@
 <?php
+// __liste_des_acces_bdd.php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
-require_once('../fta_inc/db/acces_bdd_cibles1.php');
+initialiser_les_services(true,true); // sess,bdd
+
+
+
+
 
 
 /*
@@ -14,16 +18,17 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible'===$_GET['__action'])
  }
  $__id=isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id!==0){
-      $db = new SQLite3('../fta_inc/db/sqlite/system.db');
-      $__valeurs=recupere_une_donnees_des_cibles($__id,$db);
-      $db->close();
+//      $db = new SQLite3('../fta_inc/db/sqlite/system.db');
+      require_once('../fta_inc/db/acces_bdd_cibles1.php');
+      $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+      $GLOBALS[BDD][BDD_1][LIEN_BDD]->close();
       if(isset($__valeurs['T0.chi_id_cible'])){
           $_SESSION[APP_KEY]['cible_courante']=array(
             'chi_id_cible'          => $__valeurs['T0.chi_id_cible'],
             'chp_nom_cible'         => $__valeurs['T0.chp_nom_cible'],
             'chp_dossier_cible'     => $__valeurs['T0.chp_dossier_cible'],
           );
-          ajouterMessage('info' ,  __LINE__ .' : une nouvelle cible a été sélectionnée ' , BNF );
+          ajouterMessage('info' ,  __LINE__ .' : une nouvelle cible a été sélectionnée '.date('H:i:s') , BNF );
       }
       
  }
@@ -93,25 +98,22 @@ $o1.='   </div>'.CRLF;
 $o1.=' </form>'.CRLF;
 
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
 $champs0='`chi_id_cible` , `chp_nom_cible` , chp_dossier_cible ,  `chp_commentaire_cible`';
 $sql0='SELECT '.$champs0;
-$from0='FROM `tbl_cibles` `T0`';
+$from0=' FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` `T0`';
 $sql0.=$from0;
 
 $where0='
   WHERE "T0"."chi_id_cible">= 0 
 ';
 
-
 if(($chi_id_cible != '')){
     $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_cible`' , $chi_id_cible );
 }
-
-
 
 if($chp_nom_cible!='' ){
     $where0.=CRLF.'AND `T0`.`chp_nom_cible` LIKE \'%'.sq0($chp_nom_cible).'%\'';
@@ -134,10 +136,12 @@ $sql0.=$plage0;
 $__nbEnregs=0;
 $data0=array();
 
-//echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' .  $sql0  . '</pre>' ; exit(0);
-$stmt = $db->prepare($sql0);
-if($stmt!==false){
-  $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+
+
+$stmt0 = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+
+if($stmt0!==false){
+  $result = $stmt0->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
   while($arr=$result->fetchArray(SQLITE3_NUM)){
    array_push($data0, array(
     'T0.chi_id_cible'          => $arr[0],
@@ -146,15 +150,15 @@ if($stmt!==false){
     'T0.chp_commentaire_cible' => $arr[3],
    ));
   }
-  $stmt->close(); 
+  $stmt0->close(); 
   $__nbEnregs=count($data0);
   if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
       $sql1='SELECT COUNT(*) '.$from0.$where0;
-      $__nbEnregs=$db->querySingle($sql1);
+      $__nbEnregs=$GLOBALS['bdd'][1][LIEN_BDD]->querySingle($sql1);
   }
   
 }else{
- echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS['bdd'][1]['lien']->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
 $consUrlRedir='';
