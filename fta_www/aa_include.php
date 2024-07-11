@@ -57,31 +57,6 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
           $sql0=$v1['initialisation'];
           $ret0=$db0->exec($sql0);
       }
-       /*#       
-       // mon test pour les clé étrangère
-       // remarque : on ne peut pas supprimer une table si une autre table y fait référence en clé étrangère
-       $les_tests=array(
-        'DROP table IF EXISTS "system.db"."tbl_b" ' ,
-        'DROP table IF EXISTS "system.db"."tbl_a" ' ,
-
-        'create table "system.db"."tbl_a"(id integer primary key )' ,
-        'create table "system.db"."tbl_b"(id integer references tbl_a(id) )' ,
-        'insert into "system.db"."tbl_a" VALUES(1)' ,
-        'insert into "system.db"."tbl_b" VALUES(1)' ,
-        'delete from "system.db"."tbl_a" where id=1', // ceci fait planter le test
-
-        'DROP table IF EXISTS "system.db"."tbl_b" ' ,
-        'DROP table IF EXISTS "system.db"."tbl_a" ' ,
-       );
-       foreach( $les_tests as $k1=>$v1){
-         $ret=$db0->exec($v1);
-         if($ret===false){
-          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; 
-         }
-       }
-       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-      */
-      
   }
   if($initialiser_session===true){
       session_start();
@@ -741,7 +716,7 @@ function html_header1($parametres){
     $le_biscuit['--yyvhgb']=$css_hauteur_grands_boutons.'px';
     $le_biscuit['--yyvhmc']=$css_hauteur_mini_conteneur.'px';
 
-    
+
     
     $texte_base_css=CRLF;
     $texte_base_css.='<style type="text/css">:root{'.CRLF;
@@ -781,7 +756,7 @@ function html_header1($parametres){
     if(( !(isset($parametres['pas_de_menu'])))){
 
         $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
-        $o1.='    <div>'.CRLF;
+        $o1.='    <div style="min-width:'.($css_hauteur_grands_boutons*2+4*$css_taille_reference_margin).'px;">'.CRLF;
         $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.(('index.php' === BNF)?'yymenusel1':'').'" style="">&#127968;</a>'.CRLF;
         $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" href="javascript:afficherOuMasquerLesMessages()">🙈</a>'.CRLF;
         $o1.='    </div>'.CRLF;

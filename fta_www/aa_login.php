@@ -6,12 +6,13 @@
 */
 define("BNF",basename(__FILE__));
 /*
-  ================================================================
-  Puis l'inclusion des fonctions communes
-  ================================================================
+  ==================================================================================
+  Puis l'inclusion des fonctions communes et initialisation des session et de la bdd
+  ==================================================================================
 */
 require_once('aa_include.php');
-session_start();
+initialiser_les_services(true,true);
+
 /*===================================================================================================================*/
 
 function supprimerLesValeursDeSession(){
@@ -43,14 +44,14 @@ if((isset($_POST) && count($_POST) > 0)){
 
     if((isset($_POST['nom_de_connexion']) && isset($_POST['mot_de_passe']))){
 
-        $db=new SQLite3('../fta_inc/db/sqlite/system.db');
+        
         $req='
          SELECT chi_id_utilisateur, chp_mot_de_passe_utilisateur  , chp_parametres_utilisateur
-         FROM tbl_utilisateurs 
+         FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_utilisateurs 
          WHERE chp_nom_de_connexion_utilisateur=\''.sq0($_POST['nom_de_connexion']).'\'
          LIMIT 1 OFFSET 0
         ';
-        $stmt=$db->prepare($req);
+        $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($req);
 
         if(($stmt !== false)){
 
@@ -67,7 +68,7 @@ if((isset($_POST) && count($_POST) > 0)){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' '.$db->lastErrorMsg(),BNF);
+            ajouterMessage('erreur',__LINE__.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),BNF);
             supprimerLesValeursDeSession();
             recharger_la_page(BNF);
         }

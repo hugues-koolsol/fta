@@ -1,7 +1,8 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
+
 require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
@@ -59,8 +60,8 @@ $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez s
 $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 
-$o1.='   <input type="text" value="'.enti1($_SESSION[APP_KEY][BNF]['__parametres_choix']['__nom_champ_dans_parent']).'"    name="__nom_champ_dans_parent"    id="__nom_champ_dans_parent" >'.CRLF;
-$o1.='   <input type="text" value="'.enti1(json_encode($_SESSION[APP_KEY][BNF]['__parametres_choix']['__champs_texte_a_rapatrier'])).'" name="__champs_texte_a_rapatrier" id="__champs_texte_a_rapatrier" >'.CRLF;
+$o1.='   <input type="hidden" value="'.enti1($_SESSION[APP_KEY][BNF]['__parametres_choix']['__nom_champ_dans_parent']).'"    name="__nom_champ_dans_parent"    id="__nom_champ_dans_parent" >'.CRLF;
+$o1.='   <input type="hidden" value="'.enti1(json_encode($_SESSION[APP_KEY][BNF]['__parametres_choix']['__champs_texte_a_rapatrier'])).'" name="__champs_texte_a_rapatrier" id="__champs_texte_a_rapatrier" >'.CRLF;
 
 
 $o1.='</form>'.CRLF;
@@ -73,7 +74,7 @@ $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
 $sql='
  SELECT `chi_id_dossier` , `chp_nom_dossier` 
- FROM `tbl_dossiers` `T0`
+ FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` `T0`
  WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
 ';
 
@@ -96,8 +97,8 @@ $sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $data0=array();
 
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
-$stmt = $db->prepare($sql);
+
+$stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
   while($arr=$result->fetchArray(SQLITE3_NUM))
@@ -109,7 +110,7 @@ if($stmt!==false){
   }
   $stmt->close(); 
 }else{
- echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
  

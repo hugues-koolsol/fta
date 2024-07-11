@@ -344,45 +344,6 @@ function convertir_un_source_sur_disque(id_source){
 }
 
 
-/*
-  =====================================================================================================================
-*/
-function aller_a_la_position(nom_textarea){
- var resultat = window.prompt('aller à la position', 1);
- if(resultat && isNumeric(resultat)){
-  var a=dogid(nom_textarea);
-  a.rows="100";
-  a.focus();
-  a.selectionStart=0;
-  a.selectionEnd=resultat;
- }  
-}
-/*
-  =====================================================================================================================
-*/
-function aller_a_la_ligne(nom_textarea){
- var resultat = window.prompt('aller à la ligne n°?', 1);
- if(resultat && isNumeric(resultat)){
-  var a=dogid(nom_textarea);
-  var lignes=a.value.split('\n');
-  if(lignes.length>=resultat){
-   lignes.splice(resultat, lignes.length-resultat);
-   var position=0;
-   console.log(lignes.length);
-   
-   for(var i=lignes.length-1;i>=0;i--){
-    
-    position+=lignes[i].length+1;
-   
-   }
-   a.focus();
-   a.selectionStart=0;
-   a.selectionEnd=position;
-   
-  }
- }
-}
-
 
 /*
   =====================================================================================================================

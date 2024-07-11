@@ -1,7 +1,7 @@
 <?php
 define("BNF",basename(__FILE__));
 require_once('aa_include.php');
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 require_once('../fta_inc/db/acces_bdd_sources1.php');
 
 if(( !(isset($_SESSION[APP_KEY]['cible_courante'])))){
@@ -101,8 +101,8 @@ $champs0='
 ';
 $sql0='SELECT '.$champs0;
 $from0='
- FROM `tbl_sources` `T0`
-  LEFT JOIN tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_source  
+ FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` `T0`
+  LEFT JOIN `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_source  
  
 ';
 $sql0.=$from0;
@@ -152,8 +152,8 @@ $plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
 $data0=array();
-$db=new SQLite3('../fta_inc/db/sqlite/system.db');
-$stmt0=$db->prepare($sql0);
+
+$stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
 
 if(($stmt0 !== false)){
 
@@ -175,14 +175,14 @@ if(($stmt0 !== false)){
     if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$db->querySingle($sql1);
+        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
 
     }
 
 
 }else{
 
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
     exit(0);
 }
 

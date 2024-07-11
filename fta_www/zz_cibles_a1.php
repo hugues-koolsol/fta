@@ -112,13 +112,15 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/js/jslib/Sortable.js' => array('chp_type_source' => 'bibliotheque'),
       
    );
+
+   $dossier_racine='../../ftb';
    $indice_du_dossier=2; /* le dossier 1 est celui de la racine */
    $tableau_des_dossiers=array();
    foreach( $tab as $k1 => $v1){
-     $dossier_cible='../../ftb/'.substr($k1,0,strrpos($k1,'/'));
+     $dossier_cible=$dossier_racine.'/'.substr($k1,0,strrpos($k1,'/'));
      if(!isset($tableau_des_dossiers[$dossier_cible])){
-      $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
-      $indice_du_dossier++;
+        $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
+        $indice_du_dossier++;
      }
      $tab[$k1]['dossier']=$tableau_des_dossiers[$dossier_cible];
     
@@ -167,7 +169,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
 
 
        
-       $dossier_cible='../../ftb/'.substr($k1,0,strrpos($k1,'/'));
+       $dossier_cible=$dossier_racine.'/'.substr($k1,0,strrpos($k1,'/'));
 //       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $dossier_cible , true ) . '</pre>' ; exit(0);
        if(is_dir($dossier_cible)){
        }else{
@@ -197,9 +199,14 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
     echo __FILE__ . ' ' . __LINE__ . ' fichier structure introuvable = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
    }
 
+/*
+======================
+          'fta_inc/db/__liste_des_acces_bdd.php' => array(),
+*/
    
    /* on supprime la base systeme ftb */
-   $chemin_base_systeme='../../ftb/fta_inc/db/sqlite/system.db';
+   $chemin_base_systeme=realpath($dossier_racine.'/fta_inc/db/sqlite/system.db');
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
    if(is_file($chemin_base_systeme)){
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
     if(!unlink($chemin_base_systeme)){
@@ -208,24 +215,25 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    }else{
      /* la base n'existe pas, on continue */
    }
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu_fichier_structure , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' $chemin_base_systeme='.$chemin_base_systeme.' = $contenu_fichier_structure=<pre>' . var_export( $contenu_fichier_structure , true ) . '</pre>' ; exit(0);
    
    $base_ftb = new SQLite3($chemin_base_systeme);
    if(false === $base_ftb->exec($contenu_fichier_structure)){
     echo __FILE__ . ' ' . __LINE__ . ' erreur de création de la structure base system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
    }
-   
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);   
    // donnees.system.db.sql   
    $contenu_initialisation="
     INSERT INTO `tbl_cibles`( `chi_id_cible`, `chp_nom_cible`, `chp_commentaire_cible`, `chp_dossier_cible`) VALUES ('1','fta','la racine','ftb');
     INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_dossier`) VALUES ('1','/','1');
-    INSERT INTO `tbl_bdds`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_basedd`, `chp_commentaire_basedd`, `chx_dossier_id_basedd`, `chp_genere_basedd`, `chx_cible_id_basedd`, `chp_php_basedd`) VALUES ('1','system.db','','initialisation','2','','1','');
+    INSERT INTO `tbl_bdds`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_basedd`, `chp_commentaire_basedd`, `chx_dossier_id_basedd`, `chp_genere_basedd`, `chx_cible_id_basedd`) VALUES ('1','system.db','','initialisation','2','','1');
     INSERT INTO `tbl_utilisateurs`( `chi_id_utilisateur`, `chp_nom_de_connexion_utilisateur`, `chp_mot_de_passe_utilisateur`, `chp_commentaire_utilisateur`) VALUES ('1','admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK','mdp = admin');
    ";
 
    if(false === $base_ftb->exec($contenu_initialisation)){
     echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
    }
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
 
    $contenu_table_dossiers ='';
    foreach( $tableau_des_dossiers as $k1 => $v1 ){
@@ -271,10 +279,10 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    
    
    /* on ajoute le contenu du champ chp_rev_travail_basedd dans la base ftb pour le dessin de la base */
-   
-   $base_fta = new SQLite3('../fta_inc/db/sqlite/system.db');
+
    $sql0='select chp_rev_travail_basedd from `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE chi_id_basedd=1';
-   $stmt = $base_fta->prepare($sql0);
+//   echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
+   $stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
    if($stmt!==false){
      $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
      while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -287,8 +295,38 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
      }
    }
+   $chemin_fichier_acces_pour_bdd=realpath($dossier_racine.'/fta_inc/db/__liste_des_acces_bdd.php');
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_fichier_acces_pour_bdd , true ) . '</pre>' ; exit(0);
+   /*
+   */
+   $contenu_fichier_acces_pour_bdd='';
+   $contenu_fichier_acces_pour_bdd.='<'.'?php'.CRLF;
+   $contenu_fichier_acces_pour_bdd.='$GLOBALS[BDD][1]=array('.CRLF;
+   $contenu_fichier_acces_pour_bdd.=' \'id\'             => 1,'.CRLF;
+   $contenu_fichier_acces_pour_bdd.=' \'nom_bdd\'        => \'system.db\','.CRLF;
+   $contenu_fichier_acces_pour_bdd.=' \'fournisseur\'    => \'sqlite\','.CRLF;
+   $contenu_fichier_acces_pour_bdd.=' \'initialisation\' => \'attach database "'.str_replace('\\','\\\\',$chemin_base_systeme).'" as "system.db"\','.CRLF;
+   $contenu_fichier_acces_pour_bdd.=' \'lien\' => null,'.CRLF;
+   $contenu_fichier_acces_pour_bdd.=');'.CRLF;
    
+//   echo __FILE__ . ' ' . __LINE__ . ' $contenu_fichier_acces_pour_bdd = <pre>' . enti1($contenu_fichier_acces_pour_bdd)  . '</pre>' ; exit(0);
+   if($fd=fopen($chemin_fichier_acces_pour_bdd,'w')){
+       if(fwrite($fd,$contenu_fichier_acces_pour_bdd)){
+           fclose($fd);
+       }else{
+           echo __FILE__ . ' ' . __LINE__ . ' erreur ecriture $contenu_fichier_acces_pour_bdd' ; exit(0);
+       }
+   }else{
+       echo __FILE__ . ' ' . __LINE__ . ' erreur ouverture $contenu_fichier_acces_pour_bdd' ; exit(0);
+   }
+ 
+ 
+/*
 
+$chemin_base_systeme
+<?php
+
+*/
    
    
    

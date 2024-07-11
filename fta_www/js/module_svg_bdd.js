@@ -811,7 +811,7 @@ class module_svg_bdd{
         t+=('<a href="javascript:' + this.#nom_de_la_variable + '.changer_le_nom_d_index_de_modale(' + id_element_svg + ',' + id_svg_conteneur_table + ','+id_svg_rectangle_de_l_index+','+id_svg_conteneur_d_index+')">modifier</a>');
         t+='<hr />';
         t+='<h2>changer les champs</h2>';
-        t+=('<br />liste des champ  : <input id="liste_des_champ_de_l_index" value="' + liste_des_champ_de_l_index + '" />');
+        t+=('<br />liste des champ  : <input id="liste_des_champ_de_l_index" style="width:95%;" value="' + liste_des_champ_de_l_index + '" />');
         t+=('<br />unique  : <input type="checkbox" id="unique" ' + ((unique === true)?'checked':'') + ' />');
         t+='<br /><b>meta</b>';
         var cle={};
@@ -1015,35 +1015,14 @@ class module_svg_bdd{
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
     }
+    
     /*
-      
       ====================================================================================================================
-      function ordonner_les_champs
+      function modifier_une_table_en_bdd
     */
-    ordonner_les_champs(nom_de_la_table){
-        var liste_ordre_original = [];
-        var liste_ordre_modifie = [];
-        var txt_ordre_original='';
-        var txt_ordre_modifie='';
-        var lst = document.getElementById('ordre_original').getElementsByTagName('div');
-        var i=0;
-        for(i=0;i < lst.length;i++){
-            txt_ordre_original+=(',' + lst[i].innerHTML);
-        }
-        var lst = document.getElementById('ordre_modifie').getElementsByTagName('div');
-        var i=0;
-        for(i=0;i < lst.length;i++){
-            txt_ordre_modifie+=(',' + lst[i].innerHTML);
-            liste_ordre_modifie.push(lst[i].innerHTML);
-        }
-        if(txt_ordre_modifie === txt_ordre_original){
-            return;
-        }
-        if(txt_ordre_modifie === ''){
-            return;
-        }
-        txt_ordre_modifie=txt_ordre_modifie.substr(1);
-        txt_ordre_original=txt_ordre_original.substr(1);
+    #modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie){
+     
+
         var lst = document.getElementsByTagName('g');
         var racine_du_svg=null;
         var i=0;
@@ -1165,7 +1144,65 @@ class module_svg_bdd{
             /* en cas de timeout */
             debugger;
             console.error(err);
-        });
+        });     
+     
+    }
+    
+    /*
+      ====================================================================================================================
+      function supprimer_un_champ_de_la_table
+    */
+    supprimer_un_champ_de_la_table(nom_de_la_table,nom_du_champ){
+
+        var liste_ordre_modifie = [];        
+        var txt_ordre_modifie='';
+        var lst = document.getElementById('ordre_original').getElementsByTagName('div');
+        var i=0;
+        var lst = document.getElementById('ordre_modifie').getElementsByTagName('div');
+        for(i=0;i < lst.length;i++){
+            if(lst[i].innerHTML!==nom_du_champ){
+                txt_ordre_modifie+=(',' + lst[i].innerHTML);
+                liste_ordre_modifie.push(lst[i].innerHTML);
+            }
+        }
+        if(txt_ordre_modifie === ''){
+            return;
+        }
+        txt_ordre_modifie=txt_ordre_modifie.substr(1);
+        
+        
+        this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_modifie,txt_ordre_modifie,liste_ordre_modifie);
+    }
+    /*
+      ====================================================================================================================
+      function ordonner_les_champs
+    */
+    ordonner_les_champs(nom_de_la_table){
+        var liste_ordre_modifie = [];
+        var txt_ordre_original='';
+        var txt_ordre_modifie='';
+        var lst = document.getElementById('ordre_original').getElementsByTagName('div');
+        var i=0;
+        for(i=0;i < lst.length;i++){
+            txt_ordre_original+=(',' + lst[i].innerHTML);
+        }
+        var lst = document.getElementById('ordre_modifie').getElementsByTagName('div');
+        for(i=0;i < lst.length;i++){
+            txt_ordre_modifie+=(',' + lst[i].innerHTML);
+            liste_ordre_modifie.push(lst[i].innerHTML);
+        }
+        if(txt_ordre_modifie === txt_ordre_original){
+            return;
+        }
+        if(txt_ordre_modifie === ''){
+            return;
+        }
+        txt_ordre_modifie=txt_ordre_modifie.substr(1);
+        txt_ordre_original=txt_ordre_original.substr(1);
+        
+        this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie);
+        
+
     }
     /*
       ===================================================================================================================
@@ -1365,7 +1402,7 @@ class module_svg_bdd{
         
         */
         t+='<hr />';
-        t+='<h2>ordonner les champs</h2>';
+        t+='<h2>ordonner les champs dans la bdd</h2>';
         t+='<table><tr><th>original</th><th>modifié(d&amp;d)</th><th>action</th></tr>';
         t+='<tr><td>';
         t+='<div id="ordre_original">';
@@ -1383,8 +1420,24 @@ class module_svg_bdd{
         /*
         
         */
+        t+='<h2>supprimer un champ dans la bdd</h2>';
+        t+='<table><tr><th>original</th><th>action</th></tr>';
+        t+='<tr><td>';
+        t+='<div id="champ">';
+        for(i=0;i < liste_des_champs.length;i++){
+            t+=('<div style="padding:' + CSS_TAILLE_REFERENCE_PADDING + 'px;">' + liste_des_champs[i] + '</div>');
+        }
+        t+='</div></td><td>';
+        t+='<div id="action_supprimer_dans_bdd" >';
+        for(i=0;i < liste_des_champs.length;i++){
+            t+=('<div style="padding:' + CSS_TAILLE_REFERENCE_PADDING + 'px;"><a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_champ_de_la_table(&quot;' + nom_de_la_table + '&quot;,&quot;' + liste_des_champs[i] + '&quot;)">supprimer</a></div>');
+        }
+        t+='</div></td></tr></table>';
+        /*
+        
+        */
         t+='<hr />';
-        t+='<h2>Supprimer</h2>';
+        t+='<h2>Supprimer sur ce graphique</h2>';
         t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_la_table_de_modale(&quot;' + element_g_conteneur_de_nom_de_table.getAttribute('id_svg_conteneur_table') + '&quot;,&quot;' + nom_de_la_table + '&quot;)">supprimer</a>');
         
         document.getElementById('__contenu_modale').innerHTML=t;

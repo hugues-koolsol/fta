@@ -1,20 +1,16 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 
 if(!isset($_GET['__id_des_bases'])){
   ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner au moins une base '  );
   recharger_la_page('zz_bdds_l1.php');
 }
 
-
-
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
-
-$sql0='select count(*) from tbl_bdds where chi_id_basedd in ('.$_GET['__id_des_bases'] . ')'; 
+$sql0='SELECT COUNT(*) FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE chi_id_basedd IN ('.$_GET['__id_des_bases'] . ')'; 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
-$__nbEnregs=$db->querySingle($sql0);
+$__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__nbEnregs , true ) . '</pre>' ; exit(0);
 if($__nbEnregs===false || $__nbEnregs===0){
   ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner une base '  );

@@ -27,13 +27,11 @@ if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
  
  $listeDesDossiersactuels=array();
  
- $db = new SQLite3('../fta_inc/db/sqlite/system.db');
-
  /*
   sélection des dossiers actuels
  */
- $sql='SELECT chp_nom_dossier FROM tbl_dossiers WHERE chx_cible_dossier=\''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\'';
- $stmt = $db->prepare($sql);
+ $sql='SELECT chp_nom_dossier FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers WHERE chx_cible_dossier=\''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\'';
+ $stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql);
  if($stmt!==false){
    $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
    while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -57,14 +55,14 @@ if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
           on ne copie pas les sous dossiers de fta backup et de fta_temp
           */
       }else{
-          $les_valeurs_sql.='INSERT OR IGNORE INTO tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.sq0($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
+          $les_valeurs_sql.='INSERT OR IGNORE INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers( chp_nom_dossier , chx_cible_dossier ) VALUES (\''.sq0($nom_du_dossier_a_creer).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\');'.CRLF;
       }
      }
    }
    
    
  }else{
-  ajouterMessage('erreur' ,  __LINE__ .' : erreur de récupération des dossiers actuels ' . $db->lastErrorMsg() . ' ' . $db->lastErrorCode()  , BNF  );
+  ajouterMessage('erreur' ,  __LINE__ .' : erreur de récupération des dossiers actuels ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() . ' ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()  , BNF  );
  }
  
  
@@ -75,12 +73,12 @@ if(isset($_GET['__action']) && '__recuperer_dossiers'===$_GET['__action']){
  
  if($les_valeurs_sql!==''){
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $les_valeurs_sql  . '</pre>' ; exit(0);
-     $resultat=$db->exec($les_valeurs_sql);
+     $resultat=$GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($les_valeurs_sql);
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $resultat , true ) . '</pre>' ; exit(0);
      if( true === $resultat){
          ajouterMessage('succes' ,  __LINE__ .' : les dossiers ont été importés' , BNF  );
      }else{
-         ajouterMessage('erreur' ,  __LINE__ .' : erreur d\'importation des dossiers ' . $db->lastErrorMsg() . ' ' . $db->lastErrorCode()  , BNF  );
+         ajouterMessage('erreur' ,  __LINE__ .' : erreur d\'importation des dossiers ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() . ' ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()  , BNF  );
      }
 
     }else{
@@ -99,7 +97,6 @@ if(isset($_GET['__action']) && '__integration_des_dossiers_existants'===$_GET['_
  
  $arr=listerLesDossiers($dossier_racine);
  if(count($arr)>0){
-  $db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[1] , true ) . '</pre>' ; exit(0);
   foreach( $arr[1] as $k1 => $v1){
@@ -107,11 +104,11 @@ if(isset($_GET['__action']) && '__integration_des_dossiers_existants'===$_GET['_
    $nomDossier=substr( $v1['chemin'] , strlen($dossier_racine ) );
    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomDossier , true ) . '</pre>' ; 
    
-   $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.sq0($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
+   $sql='INSERT OR IGNORE INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.sq0($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
 
 
-   if( false === $db->exec($sql) ){
-       echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+   if( false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql) ){
+       echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
    }
 
    
@@ -255,7 +252,7 @@ $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
 
 if($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===APP_KEY){
     /*
@@ -264,22 +261,20 @@ if($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===APP_KEY){
     */
     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
     $nomDossier='/';
-    $sql='INSERT OR IGNORE INTO tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.sq0($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
+    $sql='INSERT OR IGNORE INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers (chp_nom_dossier,chx_cible_dossier	) VALUES ( \''.sq0($nomDossier).'\' , \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' ) ';
 
-    if((false === $db->exec($sql))){
+    if((false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql))){
 
-        echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($db->lastErrorMsg(),true).'</pre>' ;
+        echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
 
     }
 }
 
-
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
-$champs0='`chi_id_dossier`          , `chp_nom_dossier` 
-';
+$champs0=' `chi_id_dossier`          , `chp_nom_dossier` ';
 $sql0='SELECT '.$champs0;
 $from0='
- FROM `tbl_dossiers` `T0`
+ FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` `T0`
  
 ';
 $sql0.=$from0;
@@ -317,7 +312,7 @@ $sql0.=$plage0;
 $data0=array();
 
 
-$stmt = $db->prepare($sql0);
+$stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
   while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -333,13 +328,13 @@ if($stmt!==false){
     if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$db->querySingle($sql1);
+        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
 
     }
   
   
 }else{
- echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
 $consUrlRedir=''.'&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
@@ -396,7 +391,7 @@ foreach($data0 as $k0=>$v0){
   $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">🗑</a>';
  }else{
   
-        $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$db);
+        $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
         
         if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
          

@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 require_once('../fta_inc/db/acces_bdd_revs1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
@@ -13,8 +13,7 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
 if(isset($_GET['supprimer_tout']) && $_GET['supprimer_tout']==='1'){
 
-   $db = new SQLite3('../fta_inc/db/sqlite/system.db');
-   $ret0=$db->exec('DELETE FROM tbl_revs');
+   $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->exec('DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs');
 
    if($ret0 !== true){
     ajouterMessage('erreur' , __LINE__ .' problème ' , BNF );
@@ -128,8 +127,8 @@ $champs0='`chi_id_rev`          , `chp_provenance_rev` , T0.chx_source_rev , T1.
 ';
 $sql0='SELECT '.$champs0;
 $from0='
- FROM `tbl_revs` `T0`
- LEFT JOIN tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
+ FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_revs` `T0`
+ LEFT JOIN `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
  
 ';
 $sql0.=$from0;
@@ -192,8 +191,8 @@ $sql0.=$plage0;
 $__nbEnregs=0;
 $data0=array();
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
-$stmt = $db->prepare($sql0);
+
+$stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
 if($stmt!==false){
   $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
   while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -215,13 +214,13 @@ if($stmt!==false){
     if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$db->querySingle($sql1);
+        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
 
     }
   
   
 }else{
- echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
 $consUrlRedir='';

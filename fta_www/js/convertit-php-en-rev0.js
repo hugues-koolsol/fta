@@ -576,29 +576,14 @@ function php_traite_Expr_MethodCall(element , niveau){
  
  
  if(element.var){
-  if(element.var.nodeType=="Expr_New"){
-   
-   var obj=php_traite_Expr_New(element.var , niveau);
-   if(obj.status===true){
-    lelement+=',element('+obj.value+')';
-   }else{
-    lelement+='#(todo dans php_traite_Expr_MethodCall 0360 pas de expr )';
-   }
-   
-  }else if(element.var.nodeType=="Expr_Variable"){
-   
-   lelement+='element($'+element.var.name+'),';
-   
+  var obj=php_traite_Stmt_Expression(element.var,niveau,false,element);
+  if(obj.status===true){
+   lelement+=',element('+obj.value+')';
   }else{
-
-   lelement+='element(#(php_traite_Expr_MethodCall 0316)),';
-
+   return( astphp_logerreur({'status':false,'message':'0583  erreur php_traite_Expr_MethodCall ',element:element}));
   }
-
  }else{
-
-  lelement+='element(#(php_traite_Expr_MethodCall 0319)),';
-
+  return( astphp_logerreur({'status':false,'message':'0587  erreur php_traite_Expr_MethodCall ',element:element}));
  }  
 
 

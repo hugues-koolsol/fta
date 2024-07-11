@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
@@ -25,19 +25,17 @@ $o1.='<h1>Liste des bases de données</h1>';
 /*
   =====================================================================================================================
 */
-
 $__nbMax=20;
 $__debut=0;
 
-
-$__xpage               = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'                 , BNF);
-$chi_id_basedd          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_basedd'          , BNF);
-$chp_nom_basedd         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_basedd'         , BNF);
+$__xpage        = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'        , BNF);
+$chi_id_basedd  = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_basedd'  , BNF);
+$chp_nom_basedd = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_basedd' , BNF);
 
 
 $autofocus='chi_id_basedd';
-     if($chi_id_basedd!=''){          $autofocus='chi_id_basedd';          } 
-else if($chp_nom_basedd!=''){         $autofocus='chp_nom_basedd';         }
+     if($chi_id_basedd!=''){  $autofocus='chi_id_basedd';  } 
+else if($chp_nom_basedd!=''){ $autofocus='chp_nom_basedd'; }
 
 
 
@@ -63,23 +61,11 @@ $o1.='   </div>'.CRLF;
 
 $o1.='</form>'.CRLF;
 
-$chemin_base='../fta_inc/db/sqlite/system.db';
-$a=realpath($chemin_base);
-$db = new SQLite3($a);
-
-
-
-
-$sqlattach='attach database "'.$a.'" as sys1;';
-$ret=$db->exec($sqlattach);
-//echo __FILE__ . ' ' . __LINE__ . ' $ret = <pre>' . var_export( $ret , true ) . '</pre>' ; exit(0);
-
-
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 
 $champs0=CRLF.'`chi_id_basedd`          , `chp_nom_basedd` ,  chp_commentaire_basedd ';
 $sql0='SELECT '.$champs0;
-$from0=CRLF.'FROM sys1.`tbl_bdds` `T0`';
+$from0=CRLF.'FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_bdds` `T0`';
 $sql0.=$from0;
 
 $where0=CRLF.'WHERE  "T0"."chx_cible_id_basedd" = '.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
@@ -107,7 +93,7 @@ $sql0.=$plage0;
 $data0=array();
 
 //echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' .  $sql0  . '</pre>' ; exit(0);
-$stmt = $db->prepare($sql0);
+$stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
 if($stmt!==false){
     $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
     while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -123,12 +109,12 @@ if($stmt!==false){
     if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
         $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$db->querySingle($sql1);
+        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
 
     }
 
 }else{
- echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+ echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
 }
 
 $chi_id_basedd          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_basedd'          , BNF);

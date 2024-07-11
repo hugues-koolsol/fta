@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true);
 require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
 require_once('../fta_inc/phplib/sqlite.php');
 
@@ -61,7 +61,7 @@ function erreur_dans_champs_saisis_basesdd(){
   ========================================================================================
 */
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
 
 /*
   ====================================================================================================================
@@ -80,7 +80,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']  =$_POST['chp_fournisseur_basedd'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']  =$_POST['chp_rev_travail_basedd'] ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']          =$_POST['chp_rev_basedd']         ?? '';
- $_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']          =$_POST['chp_php_basedd']         ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']       =$_POST['chp_genere_basedd']      ?? '';
  $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']           =isset($_POST['chi_id_basedd'])?decrypter($_POST['chi_id_basedd']) : '';
  $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']   =isset($_POST['chx_dossier_id_basedd'])?decrypter($_POST['chx_dossier_id_basedd']) : '';
@@ -96,7 +95,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    ====================================================================================================================
  */
 
-     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'],$db);
+     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 
      if($__valeurs['T2.chp_dossier_cible']!==null && $__valeurs['T1.chp_nom_dossier']!==null ){
       
@@ -183,13 +182,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
           
 //          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']  . '</pre>' ; exit(0);
           
-          $dbtemp = new SQLite3($base_temporaire);
+          $temp_db = new SQLite3($base_temporaire);
           if(is_file($base_temporaire)){
            
            
-           $res0= $dbtemp->exec($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
+           $res0= $temp_db->exec($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
            if($res0===true){
-             $dbtemp->close();
+             $temp_db->close();
              require_once('../fta_inc/phplib/sqlite.php');
              $ret=obtenir_la_structure_de_la_base_sqlite($base_temporaire, true);
              if($ret['status']===true){
@@ -230,7 +229,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  }else if( isset($_POST['___produire_le_dump_des_donnees'])){
   
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , true ) . '</pre>' ; exit(0);
-     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
+     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      
      $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
@@ -281,7 +280,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   
 
-     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
+     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      
      $chemin_bdd='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
@@ -322,7 +321,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   
  }else if( isset($_POST['___produire_le_rev_v2']) ){
-     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $db );
+     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      
      $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
@@ -382,7 +381,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         , `chp_commentaire_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
         , `chp_rev_travail_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
         , `chp_rev_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
-        , `chp_php_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
         , `chp_genere_basedd`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
         , `chx_dossier_id_basedd`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
         , `chx_cible_id_basedd`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
@@ -394,29 +392,28 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
   error_reporting(0);
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
     error_reporting(E_ALL);
-    if($db->lastErrorCode()===19){
+    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
     }else{
-     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
+     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
     }
    
   }else{
    error_reporting(E_ALL);
-   if($db->changes()===1){
+   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
     
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
     ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
     
    }else{
     
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
     
    }
@@ -434,17 +431,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
   if($__id!==0){
-      $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$db);
+      $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   }else{
       ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }
 
-  $db->querySingle('PRAGMA foreign_keys=ON');  
   $sql='DELETE FROM tbl_bdds WHERE `chi_id_basedd` = \''.sq0($__id).'\' ' ;
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 
-      ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
   }else{
@@ -469,7 +465,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     }
     
     $sql='
-     INSERT INTO `tbl_bdds` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_php_basedd , chp_rev_travail_basedd , chp_fournisseur_basedd ) VALUES
+     INSERT INTO `tbl_bdds` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_rev_travail_basedd , chp_fournisseur_basedd ) VALUES
        (
           \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
@@ -477,21 +473,20 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd'])         .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
         , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) .'\'
        )
     ' ;
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-    if(false === $db->exec($sql)){ // 
+    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
      
-        ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+        ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
         recharger_la_page(BNF.'?__action=__creation'); 
       
     }else{
      
-      ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$db->lastInsertRowID().') a bien été créé' , BNF );
-      recharger_la_page(BNF.'?__action=__modification&__id='.$db->lastInsertRowID()); 
+      ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
+      recharger_la_page(BNF.'?__action=__modification&__id='.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID()); 
      
     }
    
@@ -516,7 +511,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     unset($_SESSION[APP_KEY][NAV][BNF]);
    }
    if($__id!==0 && $__id!=='1'  && $__id!==1 ){
-       $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$db);
+       $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
     
    }else{
        ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
@@ -565,7 +560,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
  }else{
 
-  $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$db);
+  $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 
  }
 }  
@@ -577,7 +572,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   recharger_la_page($__page_liste_de_reference);
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents($__id,$db);
+  $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
   if(!isset($__valeurs['T0.chi_id_basedd'])){
@@ -695,7 +690,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
   }else{
    require_once('../fta_inc/db/acces_bdd_dossiers1.php');
-   $__valeurs=recupere_une_donnees_des_dossiers($chx_dossier_id_basedd,$db);
+   $__valeurs=recupere_une_donnees_des_dossiers($chx_dossier_id_basedd,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
    $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T0.chp_nom_dossier'].'</b>" </span>'.CRLF;
@@ -747,7 +742,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $__valeurs['T0.chp_commentaire_basedd']  =$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] ??$__valeurs['T0.chp_commentaire_basedd'];
   $__valeurs['T0.chp_rev_travail_basedd']  =$_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd'] ??$__valeurs['T0.chp_rev_travail_basedd'];
   $__valeurs['T0.chp_rev_basedd']          =$_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']         ??$__valeurs['T0.chp_rev_basedd'];
-  $__valeurs['T0.chp_php_basedd']          =$_SESSION[APP_KEY][NAV][BNF]['chp_php_basedd']         ??$__valeurs['T0.chp_php_basedd'];
   $__valeurs['T0.chp_genere_basedd']       =$_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']      ??$__valeurs['T0.chp_genere_basedd'];
   $__valeurs['T0.chx_dossier_id_basedd']   =$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']  ??$__valeurs['T0.chx_dossier_id_basedd'] ;
   $__valeurs['T0.chp_fournisseur_basedd']  =$_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] ??$__valeurs['T0.chp_fournisseur_basedd'] ;
@@ -900,7 +894,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="word-break:break-word;">outils</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a class="yyinfo" href="javascript:bdd_convertir_rev_en_sql(\'chp_rev_basedd\',\'chp_genere_basedd\' ,  \'chp_php_basedd\' , ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2S&#8615;</a>'.CRLF;
+  $o1.='   <a class="yyinfo" href="javascript:bdd_convertir_rev_en_sql(\'chp_rev_basedd\',\'chp_genere_basedd\' , ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2S&#8615;</a>'.CRLF;
   $o1.='   <button id="__ecrire_sur_disque" name="__ecrire_sur_disque" class="yyinfo">ecrire le structure.'.enti1($__valeurs['T0.chp_nom_basedd']).'.sql sur le disque</button>'.CRLF;
   $o1.='   '.CRLF;
   $o1.='  </div></div>'.CRLF;
@@ -916,20 +910,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_genere_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
   $o1.='   <br />'.CRLF;
   $o1.='   <textarea  name="chp_genere_basedd" id="chp_genere_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_genere_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
-
-
-
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">php</div>'.CRLF;
-  $o1.='   <div style="font-weight: normal;">format php</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_php_basedd&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
-  $o1.='   <br />'.CRLF;
-  $o1.='   <textarea  name="chp_php_basedd" id="chp_php_basedd"  rows="5" autocorrect="off" autocapitalize="off" spellcheck="false">'.htmlentities($__valeurs['T0.chp_php_basedd'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 

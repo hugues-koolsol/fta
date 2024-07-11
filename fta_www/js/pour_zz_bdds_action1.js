@@ -102,7 +102,7 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
  
 }
 
-function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_php , id_bdd  , id_cible ){
+function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , id_cible ){
  
  clearMessages('zone_global_messages');
  var a=dogid(nom_zone_source);
@@ -117,125 +117,9 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , nom_zone_p
  if(matriceFonction.status===true){
 
   var objSql=tabToSql1(matriceFonction.value,0,0);
-  
-  
   if(objSql.status===true){
-   
-
    var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
    dogid(nom_zone_genere).value=contenu;
-   
-   if(nom_zone_php && nom_zone_php!==''){
-    
-     var tabPhp=objSql.value.split('/* ==========DEBUT DEFINITION=========== */');
-  //   console.log('tabPhp=',tabPhp);
-
-     var lePhp='\$db = new SQLite3(\'temporaire_pour_test.db\');'+CRLF;
-     lePhp+='\$uneErreur=false;'+CRLF;
-     lePhp+='if((false === $db->exec(\'BEGIN TRANSACTION\'))){'+CRLF;
-     lePhp+='    echo __FILE__.\' \'.__LINE__.\' __LINE__ = <pre>\'.var_export($db->lastErrorMsg(),true).\'</pre>\' ;'+CRLF;
-     lePhp+='    $uneErreur=true;'+CRLF;
-     lePhp+='}'+CRLF;
-     
-     
-     for(var i=0;i<tabPhp.length;i++){
-      var leSql=tabPhp[i];
-      leSql=leSql.replace(/\r\n\r\n/g,'\r\n');
-      if(leSql!=='' && leSql!=='\r\n'){
-//       console.log('leSql="'+leSql+'"')
-  //     php+=
-
-         lePhp+='$chaineSql=\''+leSql.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\';'+CRLF;
-         lePhp+='if((false === $db->exec($chaineSql))){'+CRLF;
-         lePhp+='    echo __FILE__.\' \'.__LINE__.\' __LINE__ = <pre>\'.var_export($db->lastErrorMsg(),true).\'</pre> <pre>\'.var_export($chaineSql,true).\'</pre> \' ;'+CRLF;
-         lePhp+='    $uneErreur=true;'+CRLF;
-         lePhp+='}'+CRLF;
-
-       
-      }
-     }
-     lePhp+='if(    $uneErreur===true){'+CRLF;
-     lePhp+=' if((false === $db->exec(\'ROLLBACK\'))){'+CRLF;
-     lePhp+='     echo __FILE__.\' \'.__LINE__.\' __LINE__ = <pre>\'.var_export($db->lastErrorMsg(),true).\'</pre>\' ;'+CRLF;
-     lePhp+='     $uneErreur=true;'+CRLF;
-     lePhp+=' }'+CRLF;
-     lePhp+='}else{'+CRLF;
-     lePhp+=' if((false === $db->exec(\'COMMIT\'))){'+CRLF;
-     lePhp+='     echo __FILE__.\' \'.__LINE__.\' __LINE__ = <pre>\'.var_export($db->lastErrorMsg(),true).\'</pre>\' ;'+CRLF;
-     lePhp+=' }else{'+CRLF;
-     lePhp+='     echo __FILE__.\' \'.__LINE__.\' __LINE__ = <pre>Bon travail</pre>\' ;'+CRLF;
-     lePhp+=' }'+CRLF;
-     lePhp+='}'+CRLF;
-     lePhp+='/*============================================*/'+CRLF;
-     lePhp+='/*============================================*/'+CRLF;
-     lePhp+='/*============================================*/'+CRLF;
-     
-     console.log('objSql=',objSql); // longueur_maximum_des_champs, tableau_tables_champs
-     for( var i in objSql.tableau_tables_champs){
-         var la_table=objSql.tableau_tables_champs[i];
-         var liste_des_champs='';
-         var sql_insert='';
-         var php_select='';
-         
-//         console.log('la_table=',la_table);
-         
-         for( var j=0; j < la_table.champs.length ; j++ ){
-             if( j>0 && j%5===0 ){
-              liste_des_champs+=CRLF;
-             }
-             var le_champ=la_table.champs[j];
-             liste_des_champs+=',   `'+le_champ.nom_du_champ+'`        '+(' '.repeat(objSql.longueur_maximum_des_champs-le_champ.nom_du_champ.length));
-             php_select+=CRLF+'     \'T0.'+le_champ.nom_du_champ+'\''+(' '.repeat(objSql.longueur_maximum_des_champs-le_champ.nom_du_champ.length))+'=> $arr['+j+'],'
-             
-             
-         }
-         
-         liste_des_champs=' '+liste_des_champs.substr(1);
-         
-         var nom_du_tableau='';
-//         console.log(liste_des_champs)
-         var liste_des_tableaux_a_inserer='';
-         for( var j=0; j < la_table.champs.length ; j++ ){
-             if( j>0 && j%5===0 ){
-              
-              liste_des_tableaux_a_inserer+=CRLF;
-             }
-             nom_du_tableau='$tab['+j+']';
-             liste_des_tableaux_a_inserer+=',\\\'\'.sq0('+nom_du_tableau+').\'\\\''+(' '.repeat(objSql.longueur_maximum_des_champs-nom_du_tableau.length));
-         }
-         liste_des_tableaux_a_inserer=' '+liste_des_tableaux_a_inserer.substr(1);
-         
-         sql_insert+='$sql=\'INSERT INTO `'+la_table.nom_de_la_table+'`('+CRLF+liste_des_champs+CRLF+') VALUES ('+CRLF+liste_des_tableaux_a_inserer+CRLF+')\';';
-         
-         lePhp+=CRLF+'/* ====== */'+CRLF+sql_insert+CRLF;
-         
-         lePhp+=CRLF+CRLF+'/* ============ */'+CRLF+'    $data0=array('+CRLF+php_select+CRLF+'    );'+CRLF+CRLF;
-         
-         
-         
-/*
-
-    $data0=array(
-     'T0.chi_id_dossier'           => $arr[0],
-     'T0.chp_nom_dossier'          => $arr[1],
-     'T0.chx_cible_dossier'        => $arr[2],
-    );
-
-
-*/         
-         
-         
-//         console.log('sql_insert='+sql_insert);
-
-      
-     }
-     
-     dogid(nom_zone_php).value=lePhp;
-    
-
-   }
-   
-   
   }
   displayMessages('zone_global_messages');
   

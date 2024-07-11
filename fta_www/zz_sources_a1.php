@@ -1,7 +1,8 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
+
 require_once('../fta_inc/db/acces_bdd_sources1.php');
 require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
@@ -47,7 +48,6 @@ function erreur_dans_champs_saisis_sources(){
   ========================================================================================
 */
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
 
 /*
   ====================================================================================================================
@@ -83,7 +83,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    
    if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta' && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']!=='fta'){
     
-    $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$db);
+    $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
     
     
     $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
@@ -141,7 +141,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    ====================================================================================================================
  */
 //     echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();
-     $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$db);
+     $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      if($__valeurs['T2.chp_dossier_cible']!==null && $__valeurs['T1.chp_nom_dossier']!==null ){
       $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
@@ -210,7 +210,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $le_fichier_est_renomme=false;
-  $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$db);
+  $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
   $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
   
@@ -218,7 +218,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===''){
   }else{
-      $nouveau_dossier=recupere_une_donnees_des_dossiers_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'],$db);
+      $nouveau_dossier=recupere_une_donnees_des_dossiers_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 //      echo __FILE__ . ' ' . __LINE__ . ' $nouveau_dossier = <pre>' . var_export( $nouveau_dossier , true ) . '</pre>' ; exit(0);
       
       
@@ -248,7 +248,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
   
   $sql='
-   UPDATE `tbl_sources` SET 
+   UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` SET 
       `chp_nom_source`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])        .'\'
     , `chp_type_source`        = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source'])        .'\'
     , `chx_dossier_id_source`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) .'\'
@@ -265,9 +265,9 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
 
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->exec($sql) , true ) . '</pre>' ; exit(0);
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql) , true ) . '</pre>' ; exit(0);
   error_reporting(0);
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
     if($le_fichier_est_renomme){
      /*
        si on a précédemment renommé le fichier sur disque,
@@ -279,21 +279,21 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     }
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
     error_reporting(E_ALL);
-    if($db->lastErrorCode()===19){
+    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']); 
     }else{
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']); 
     }
    
   }else{
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
    error_reporting(E_ALL);
-   if($db->changes()===1){
+   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
     
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
     ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
@@ -310,7 +310,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      }
     }
     
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
     
    }
@@ -331,7 +331,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
   if($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']!==false){
-      $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$db);
+      $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
       
             if(APP_KEY !== 'fta' && $__valeurs['T2.chp_dossier_cible']==='fta' ){
             /*
@@ -364,20 +364,20 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);
 //  $nom_fichier_disque=
-  $db->querySingle('PRAGMA foreign_keys=ON');
-  $sql='DELETE FROM tbl_revs WHERE `chx_source_rev` = '.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).' ' ;
+  $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('PRAGMA foreign_keys=ON');
+  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs WHERE `chx_source_rev` = '.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).' ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' $sql = <pre>' .  $sql  . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 
-      ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
   }else{
 
-     $sql='DELETE FROM tbl_sources WHERE `chi_id_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'\' ' ;
-     if(false === $db->exec($sql)){
+     $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_sources WHERE `chi_id_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'\' ' ;
+     if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 
-         ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+         ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
      }else{
@@ -407,7 +407,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
   
   $sql='
-   INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source , chp_type_source  ) VALUES
+   INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source , chp_type_source  ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'])         .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])  .'\'
@@ -420,16 +420,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
   $val_erreur=error_reporting(0);
-  if(false === $db->exec($sql)){ // 
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
 //      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0); 
-      ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__creation'); 
     
   }else{
    
 //      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0); 
-    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$db->lastInsertRowID().') a bien été créé' , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$db->lastInsertRowID()); 
+    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
+    recharger_la_page(BNF.'?__action=__modification&__id='.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID()); 
    
   }
   error_reporting($val_erreur);
@@ -473,7 +473,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
   recharger_la_page('zz_sources_l1.php');
  }else{
-  $__valeurs=recupere_une_donnees_des_sources($__id,$db);
+  $__valeurs=recupere_une_donnees_des_sources($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
  }
 }  
@@ -484,7 +484,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   recharger_la_page('zz_sources_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_sources_avec_parents($__id,$db);
+  $__valeurs=recupere_une_donnees_des_sources_avec_parents($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
   
   

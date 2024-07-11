@@ -18,7 +18,7 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible'===$_GET['__action'])
  }
  $__id=isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
  if($__id!==0){
-//      $db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
       require_once('../fta_inc/db/acces_bdd_cibles1.php');
       $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
       $GLOBALS[BDD][BDD_1][LIEN_BDD]->close();

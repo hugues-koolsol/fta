@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,true); // sess,bdd
 require_once('../fta_inc/db/acces_bdd_dossiers1.php');
 
 
@@ -44,7 +44,7 @@ function erreur_dans_champs_saisis_dossiers(){
   ========================================================================================
 */
 
-$db = new SQLite3('../fta_inc/db/sqlite/system.db');
+
 
 /*
   ====================================================================================================================
@@ -106,7 +106,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   INSERT INTO `tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
+   INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source ) VALUES
      (
         \''.sq0($nom_complet_source)                                 .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'])      .'\'
@@ -117,7 +117,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($sql) , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){ // 
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
    
       ajouterMessage('erreur' , __LINE__ .' : le fichier n\'a pas été créé en base' , BNF );
     
@@ -238,7 +238,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   UPDATE `tbl_dossiers` SET 
+   UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` SET 
       `chp_nom_dossier`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'])        .'\'
     , `chx_cible_dossier`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])   .'\'
     
@@ -250,33 +250,33 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
 
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->exec($sql) , true ) . '</pre>' ; exit(0);
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql) , true ) . '</pre>' ; exit(0);
   error_reporting(0);
-  if(false === $db->exec($sql)){
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
     error_reporting(E_ALL);
-    if($db->lastErrorCode()===19){
+    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
     }else{
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $db->lastErrorMsg() , BNF );
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
     }
    
   }else{
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
    error_reporting(E_ALL);
-   if($db->changes()===1){
+   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
     
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->changes() , true ) . '</pre>' ; exit(0);
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
     ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
     
    }else{
     
-    ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
     
    }
@@ -295,7 +295,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   if($__id!==false){
    
-     $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
+     $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 
      if($__valeurs['T0.chp_nom_dossier']=='/'){
       
@@ -310,7 +310,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       
          
      }
-     $nombre_de_sources=recupere_le_nombre_de_sources_de_dossier($__id,$db);
+     $nombre_de_sources=recupere_le_nombre_de_sources_de_dossier($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
 
      if($nombre_de_sources>0){
 
@@ -318,11 +318,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
      }else{
-         $db->querySingle('PRAGMA foreign_keys=ON');
-         $sql='DELETE FROM tbl_dossiers WHERE `chi_id_dossier` = \''.sq0($__id).'\' ' ;
-         if(false === $db->exec($sql)){
+         $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('PRAGMA foreign_keys=ON');
+         $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers WHERE `chi_id_dossier` = \''.sq0($__id).'\' ' ;
+         if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
 
-             ajouterMessage('erreur' ,  __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+             ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
              recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
 
          }else{
@@ -357,22 +357,22 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   
   $sql='
-   INSERT INTO `tbl_dossiers` (`chp_nom_dossier`  , chx_cible_dossier  ) VALUES
+   INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` (`chp_nom_dossier`  , chx_cible_dossier  ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'])        .'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier'])    .'\'
      )
   ' ;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $db->exec($sql)){ // 
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
    
-      ajouterMessage('erreur' , __LINE__ .' : ' . $db->lastErrorMsg() , BNF );
+      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__creation'); 
     
   }else{
    
-    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$db->lastInsertRowID().') a bien été créé' , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$db->lastInsertRowID()); 
+    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
+    recharger_la_page(BNF.'?__action=__modification&__id='.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID()); 
    
   }
  
@@ -415,7 +415,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   ajouterMessage('erreur' , __LINE__ .' il y a eu un problème '  );
   recharger_la_page('zz_dossiers_l1.php');
  }else{
-  $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
+  $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   if($__valeurs['T0.chp_nom_dossier']==='/'){
     recharger_la_page('zz_dossiers_l1.php');
   }
@@ -429,7 +429,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
   recharger_la_page('zz_dossiers_l1.php');
  }else{
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$db);
+  $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
   
   // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
@@ -647,7 +647,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                         $liste_des_fichiers=substr($liste_des_fichiers,1);
                         $sql='
                          SELECT `chp_nom_source`  , chi_id_source
-                         FROM `tbl_sources` `T0`
+                         FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` `T0`
                          WHERE "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
                          AND `chp_nom_source` IN ('.$liste_des_fichiers.')
                          AND `chx_dossier_id_source` = '.$__id.'
@@ -655,7 +655,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
              //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
              //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
                         
-                        $stmt = $db->prepare($sql);
+                        $stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql);
                         if($stmt!==false){
                             $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
                             while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -663,7 +663,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                             }
                             $stmt->close(); 
                         }else{
-                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
                         }
                     }
                        
@@ -671,14 +671,14 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                         $liste_des_dossiers=substr($liste_des_dossiers,1);
                         $sql='
                          SELECT `chp_nom_dossier`  , chi_id_dossier
-                         FROM `tbl_dossiers` `T0`
+                         FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` `T0`
                          WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
                          AND `chp_nom_dossier` IN ('.$liste_des_dossiers.')
                         ';
 //                        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $sql  . '</pre>' ; exit(0);
                         //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tabl , true ) . '</pre>' ; exit(0);
                         
-                        $stmt = $db->prepare($sql);
+                        $stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql);
                         if($stmt!==false){
                             $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
                             while($arr=$result->fetchArray(SQLITE3_NUM)){
@@ -692,7 +692,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                             }
                             $stmt->close(); 
                         }else{
-                         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $db->lastErrorMsg() , true ) . '</pre>' ; exit(0);
+                         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
                         }
                     }
                        
