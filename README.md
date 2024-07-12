@@ -1,6 +1,12 @@
 Un programme en cours de développement pour transformer des fonctions imbriquées en tableau
 de façon à écrire des traitements et des données avec une syntaxe commune.
 
+Les deux types d'éléments de base sont les constantes et les fonctions. 
+Ces dernières peuvent contenir des constantes et/ou des fonctions.
+Ces dernières peuvent contenir des constantes et/ou des fonctions..
+Ces dernières peuvent contenir des constantes et/ou des fonctions... ;-)
+
+
 La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français :-).
 
 Un exemple de fichier produisant du html avec du javascript est là :
@@ -42,11 +48,12 @@ fonction(
       ),
       revenir(a)
    )
-)```
+)
+```
 
 Après une analyse de la syntaxe de ce source, on obtient une représentation sous forme tabulaire.
 
-Les colonnes des données sont : 
+Les colonnes des données sont  : 
 ```
 0id                           ,  1nom                          ,  2type        , 3niveau                            ,  4constante quotée                  , 
 5position du premier caractère,  6position du dernier caractère,  7id du parent, 8nombre d'éléments dans la fonction,  9numéro d'élément dans la fonction , 
