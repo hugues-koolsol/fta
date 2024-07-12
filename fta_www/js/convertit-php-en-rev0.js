@@ -84,7 +84,6 @@ function recupNomOperateur(s){ // recupNomOperateur
 
 //=====================================================================================================================
 function php_traite_Expr_Eval(element,niveau){
- console.log('%c entrée dans php_traite_Expr_Eval element=','background:yellow;',element);
  var t='';
  t+='appelf('
  t+='nomf(eval)'
@@ -101,7 +100,6 @@ function php_traite_Expr_Eval(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Expr_Include(element,niveau){
- console.log('%c entrée dans php_traite_Expr_Include element=','background:yellow;',element);
  var t='';
  t+='appelf('
  if(element.type===1){
@@ -126,7 +124,6 @@ function php_traite_Expr_Include(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Stmt_Switch(element,niveau){
- console.log('%c entrée dans php_traite_Stmt_Switch element=','background:yellow;',element);
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -208,7 +205,6 @@ function php_traite_Stmt_Switch(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Stmt_TryCatch(element,niveau){
- console.log('%c entrée dans php_traite_Stmt_TryCatch element=','background:yellow;',element);
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -284,7 +280,7 @@ function php_traite_Stmt_TryCatch(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Stmt_Use(element,niveau){
- console.log('%c entrée dans php_traite_Stmt_Use element=','background:yellow;',element);
+
  var t='';
 
  for(var i=0;i<element.uses.length;i++){
@@ -304,7 +300,7 @@ function php_traite_Stmt_Use(element,niveau){
 
 //=====================================================================================================================
 function php_traite_Expr_Isset(element,niveau){
- console.log('%c entrée dans php_traite_Expr_Isset element=','background:yellow;',element);
+
  var t='';
  var nomFonction='isset';
  var lesArguments='';
@@ -326,7 +322,7 @@ function php_traite_Expr_Isset(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Expr_Unset(element,niveau){
- console.log('%c entrée dans php_traite_Expr_Unset element=','background:yellow;',element);
+
  var t='';
  var nomFonction='unset';
  var lesArguments='';
@@ -348,7 +344,7 @@ function php_traite_Expr_Unset(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Expr_FuncCall(element,niveau){
- console.log('%c entrée dans php_traite_Expr_FuncCall element=','background:yellow;',element);
+
  var t='';
  var nomFonction='';
  
@@ -418,7 +414,7 @@ function php_traite_Expr_FuncCall(element,niveau){
 
 /*=====================================================================================================================*/
 function php_traite_printOuEcho(element,niveau,nomFonction){
- console.log('%c entrée dans php_traite_printOuEcho element=','background:yellow;',element);
+
  var t='';
  var lesArguments='';
  if(element.exprs){
@@ -456,7 +452,7 @@ function php_traite_echo(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Stmt_Function(element , niveau){
- console.log('%c entrée dans php_traite_Stmt_Function element=','background:yellow;',element.type,element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -527,7 +523,7 @@ function php_traite_Stmt_Function(element , niveau){
 =====================================================================================================================
 */
 function php_traite_Expr_New(element , niveau){
- console.log('%c entrée dans php_traite_Expr_New element=','background:yellow;',element.type,element);
+
  var t='';
 
  if(element.class){
@@ -567,7 +563,7 @@ function php_traite_Expr_New(element , niveau){
 //=====================================================================================================================
 */
 function php_traite_Expr_MethodCall(element , niveau){
- console.log('%c entrée dans php_traite_Stmt_Function element=','background:yellow;',element.type,element);
+
  var t='';
 
  var nomFonction='';
@@ -778,7 +774,7 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
 =====================================================================================================================
 */
 function php_traite_Expr_List(element,niveau){
- console.log('%c entrée dans php_traite_Stmt_Expression element=','background:yellow;',element.type,element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -816,7 +812,7 @@ function php_traite_Expr_List(element,niveau){
 }
 //=====================================================================================================================
 function php_traite_Expr_Array(element , niveau){
- console.log('%c entrée dans php_traite_Expr_Array 0843 element=','background:yellow;',element);
+
  var t='';
  
  var lesElements='';
@@ -874,7 +870,7 @@ function php_traite_Expr_Array(element , niveau){
 =====================================================================================================================
 */
 function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
- console.log('%c entrée dans php_traite_Stmt_Expression element=','background:yellow;',element.type,element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -986,6 +982,23 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
    
   }else{
    t+=element.attributes.rawValue;
+  }
+
+
+ /*===============================================*/
+
+ }else if("Stmt_Continue"===element.nodeType){
+
+  if(element.num===null){
+      t+='\n'+esp0+'continue()';
+  }else{
+      var obj=php_traite_Stmt_Expression( element.num , niveau,dansFor,element);
+      if(obj.status===true){
+          t+='\n'+esp0+'continue('+obj.value+')';
+      }else{
+          astphp_logerreur({'status':false,'message':'0999  dans php_traite_Stmt_Expression  ',element:element});
+      }
+   
   }
 
  /*===============================================*/
@@ -1393,10 +1406,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
 
  }else{
   
-  console.log('%c 0845 non traité','background:red;color:yellow;',element)
-  t+='#(todo dans php_traite_Stmt_Expression 1044 '+element.nodeType+')';
-  
-  
+   return(astphp_logerreur({'status':false,'message':'1392  dans php_traite_Stmt_Expression ',element:element}));
   
  }
  
@@ -1575,12 +1585,12 @@ function php_traite_Expr_BinaryOp_General(element , niveau , parent){
  if((t.substr(0,14) === 'concat(concat(')){
      var o = functionToArray2(t,false,true,'');
      if(o.status === true){
-//         console.log('%c simplifier les concat concat','background:yellow;',t,o.value);
+
          var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
-//         console.log('nouveauTableau=',nouveauTableau);
+
          var obj = a2F1(nouveauTableau,0,true,1,false);
          if(obj.status === true){
-//             console.log('apres simplification obj.value=',obj.value);
+
              t=obj.value;
          }
      }
@@ -1653,7 +1663,7 @@ function php_traiteCondition1(element,niveau,parent){
  
 //=====================================================================================================================
 function php_traite_Stmt_While(element,niveau,unElseIfOuUnElse){
- console.log('%c entrée dans php_traite_Stmt_While 0794 element=','background:yellow;',element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -1699,7 +1709,7 @@ function php_traite_Stmt_While(element,niveau,unElseIfOuUnElse){
  
 //=====================================================================================================================
 function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
- console.log('%c entrée dans php_traite_Stmt_If 0794 element=','background:yellow;',element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -1790,7 +1800,7 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
 }
 //=====================================================================================================================
 function php_traite_Stmt_For(element , niveau){
- console.log('%c entrée dans php_traite_Stmt_For 1486 element=','background:pink;',element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -1851,7 +1861,7 @@ function php_traite_Stmt_For(element , niveau){
 
 //=====================================================================================================================
 function php_traite_Stmt_Foreach(element , niveau){
- console.log('%c entrée dans php_traite_Stmt_Foreach 1232 element=','background:yellow;',element);
+
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -2130,7 +2140,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
        if(obj1 && obj1.type==='HTML'){
         if( obj1.content && obj1.content.length>=0){
          for(var j=0;j<obj1.content.length;j++){
-          console.log(obj1.content[j].type);
+
           if(obj1.content[j].type==='BODY' || obj1.content[j].type==='HEAD' ){
            if(obj1.content[j].content && obj1.content[j].content.length>0){
             for(var k=0;k<obj1.content[j].content.length;k++){
@@ -2174,7 +2184,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                var obj=__module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'');
                if(obj.status===true){
                 //t=obj.value;
-                console.log(obj.value)
+
                 t+='\n'+esp0+'html('+obj.value+')';
                }else{
                 t+='\n'+esp0+'#(erreur 1679 dans convertit-php-en-rev)';
@@ -2269,6 +2279,8 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      || "Expr_PreDec"    === stmts[i].nodeType
      || "Expr_PreInc"    === stmts[i].nodeType
      || "Expr_PostDec"   === stmts[i].nodeType
+     || "Stmt_Static"    === stmts[i].nodeType
+     || "Stmt_Continue"  === stmts[i].nodeType
      || 'Expr_BinaryOp_' === stmts[i].nodeType.substr(0,14)
     ){
      var obj=php_traite_Stmt_Expression(stmts[i],niveau,dansFor,stmts);
@@ -2289,28 +2301,9 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
       t+='\n'+esp0+'#(todo erreur dans TransformAstPhpEnRev 1356)';
      }
    
-   
-    /*===============================================*/
-
-    }else if("Stmt_Static"===stmts[i].nodeType){
-     
-     
-     if(stmts[i].vars && stmts[i].vars.length>0){
-      for( var j=0;j<stmts[i].vars.length;j++){
-       var obj=php_traite_Stmt_Expression(stmts[i].vars[j],niveau,dansFor,stmts[i].vars);
-       if(obj.status===true){
-        t+='\n'+esp0+obj.value;
-       }else{
-        astphp_logerreur({'status':false,'message':'2022  dans TransformAstPhpEnRev "'+stmts[i].nodeType+'"','element':stmts[i] });
-       }
-      }
-      
-     }
-
 
    }else{
-    console.log('%cAvant erreur :stmts[i]=' , 'background:red;' , stmts[i] );
-    t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev 0439 "'+stmts[i].nodeType+'")';
+
     return(astphp_logerreur({'status':false,'message':'0440  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] }));
     
    }

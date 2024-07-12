@@ -111,7 +111,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      if(obj1.status===true){
       t+=obj1.value;
      }else{
-      return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans php_tabToPhp1 0267'});
+      return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans php_tabToPhp1 0114'});
      }
      
      
@@ -128,6 +128,23 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
   }else if(tab[i][1]=='break' && tab[i][2]=='f' ){ 
     t+=espacesn(true,niveau);
     t+='break;'
+  
+  }else if(tab[i][1]=='continue' && tab[i][2]=='f' ){ 
+   if(tab[i][8]==0){
+    t+=espacesn(true,niveau);
+    t+='continue;'
+   }else if(tab[i][8]==1){
+    t+=espacesn(true,niveau);
+    t+='continue '+ma_cst_pour_php(tab[i+1])+';';
+    max=i+1;
+    for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
+     reprise=j;
+    }
+    i=reprise;
+   }else{
+     return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans php_tabToPhp1 0140'});
+   }
+  
   
   }else if(tab[i][1]=='sortir' && tab[i][2]=='f' ){ 
   
@@ -405,6 +422,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      
      obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,niveau);
      if(obj.status==true){
+      obj.value=obj.value.replace(/\r/g,'').replace(/\n/g,'');
       if(obj.value.substr(obj.value.length-1,1)==';'){
        increment+=obj.value.substr(0,obj.value.length-1);
       }else{

@@ -56,7 +56,6 @@ point d'entrée = TransformAstEnRev
 */
 
 function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucle ){
-    console.log('%c dans traiteUpdateExpress1 , element=','color:red;background:yellow;',element);
     var t='';
     var i=0;
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -464,7 +463,7 @@ function recupNomOperateur(s){
 */
 function traiteConditionalExpression1(element,niveau){
     var t='';
-    console.log('element=',element);
+
 
     var objtest1=traiteUneComposante(element.test , niveau , false , false );
     if(objtest1.status === true){
@@ -550,12 +549,11 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     if( t.substr(0,14) === 'concat(concat(' ){ // || t.substr(0,12) === 'concat(plus('  
         var o = functionToArray(t,true,false,'');
         if(o.status === true){
-            console.log('%c simplifier les concat concat','background:pink;',t,o.value);
             var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
-            console.log('nouveauTableau=',nouveauTableau);
+
             var obj = a2F1(nouveauTableau,0,false,1,false);
             if(obj.status === true){
-                console.log('apres simplification obj.value=',obj.value);
+
                 t=obj.value;
             }
         }else{
@@ -566,17 +564,15 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     if((t.substr(0,10) === 'plus(plus(') || (t.substr(0,12) === 'moins(moins(') || (t.substr(0,10) === 'mult(mult(')){
         var o = functionToArray(t,true,false,'');
         if(o.status === true){
-            console.log('%c simplifier les plus plus','background:pink;',t,o.value);
             var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
-            console.log('nouveauTableau=',nouveauTableau);
+
             var obj = a2F1(nouveauTableau,0,false,1,false);
             if(obj.status === true){
-                console.log('apres simplification obj.value=',obj.value);
+
                 t=obj.value;
             }
         }
     }
-    console.log('%c sortie de traiteBinaryExpress1 element=','color:red;background:yellow;font-weight:bold;',element,'t='+t);
     return({status:true,value:t});
 }
 function traiteLogicalExpression1(element,niveau,dansSiOuBoucle){
@@ -683,7 +679,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
                 */
                 var nouveauTableau = baisserNiveauEtSupprimer(o.value,2,0);
                 var obj = a2F1(nouveauTableau,0,false,1,false);
-                console.log('obj=',obj);
+
                 if(obj.status === true){
                     t=obj.value;
                 }
@@ -693,7 +689,6 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
     return({status:true,value:t});
 }
 function traiteForIn1(element,niveau){
-    console.log('%c dans traiteForIn1, element=','color:green;font-weight:bold;background:yellow;',element);
     t+=ajouteCommentaireAvant(element,niveau);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -765,7 +760,6 @@ function traiteSwitch1(element,niveau){
     var i=0;
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
-    console.log('%c dans traiteSwitch1, element=','color:green;font-weight:bold;background:yellow;',element);
     
     
     t+='\n'+esp0+'bascule('
@@ -812,7 +806,6 @@ function traiteWhile1(element,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
-    console.log('%c dans traiteWhile1, element=','color:green;font-weight:bold;background:yellow;',element);
     t+=ajouteCommentaireAvant(element,niveau);
 
     
@@ -860,7 +853,6 @@ function traiteFor1(element,niveau){
     var i=0;
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
-    console.log('%c dans traiteFor1, element=','color:green;font-weight:bold;background:yellow;',element);
     t+=ajouteCommentaireAvant(element,niveau);
     var pourInit='';
     if(element.init.type === 'VariableDeclaration'){
@@ -1060,9 +1052,6 @@ function traiteIf1(element,niveau,type){
      positionDebutBloc=element.range[1];
      t+=ajouteCommentaireAvant(element,(niveau+3));
     }
-    console.log(tabComment);
-
-
     
     t+='\n'+esp0+esp1+esp1+')';
     t+='\n'+esp0+esp1+')';
@@ -1080,7 +1069,6 @@ function traiteIf1(element,niveau,type){
     return({status:true,value:t});
 }
 function traiteCallExpression1(element,niveau,parent,opt){
-    console.log('%c dans traiteCallExpression1 element=','color:red;background:yellow;font-weight:bold;',element,'parent=',parent);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -1120,7 +1108,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
     }
     
     
-    console.log('element=',element);
+
     
     var lesArguments='';
     if((element.arguments) && (element.arguments.length > 0)){
@@ -1404,7 +1392,6 @@ function traiteFunctionExpression1(element,niveau){
     return({status:true,value:t});
 }
 function traiteArrayExpression1(element,niveau){
-    console.log('%c dans traiteArrayExpression1, element=','color:red;font-weight:bold;background:yellow;',element);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -1470,7 +1457,6 @@ function traiteArrayExpression1(element,niveau){
     return({status:true,value:t});
 }
 function traiteObjectExpression1(element,niveau){
-    console.log('%c dans traiteObjectExpression1, element=','color:red;font-weight:bold;background:yellow;',element);
     var t='';
     var i={};
     for(i in element.properties){
@@ -1556,7 +1542,6 @@ function recupProp(property){
 */
 function traiteMemberExpression1(element,niveau,parent){
     var t='';
-    console.log('%c dans traiteMemberExpression1 element=','color:red;background:yellow;font-weight:bold;',element,'\nparent=',parent);
     if(element.computed === false){
         var objTxt='';
         var propertyTxt='';
@@ -1755,7 +1740,6 @@ function traiteMemberExpression1(element,niveau,parent){
 
 /* =================================================================================== */
 function traiteUpdateExpress1(element,niveau,opt){
-    console.log('%c dans traiteUpdateExpress1 , element=','color:red;background:yellow;',element);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -1789,7 +1773,6 @@ function traiteUpdateExpress1(element,niveau,opt){
 =========================================================
 */
 function traiteAssignmentPattern(element,niveau,opt){
-    console.log('%c dans traiteAssignmentExpress1 element=','color:red;background:yellow;font-weight:bold;',element);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -1826,7 +1809,6 @@ function traiteAssignmentPattern(element,niveau,opt){
 
 
 function traiteAssignmentExpress1(element,niveau,opt){
-    console.log('%c dans traiteAssignmentExpress1 element=','color:red;background:yellow;font-weight:bold;',element);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -2057,7 +2039,6 @@ function traiteExpression1(element,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
-    console.log('%c dans traiteExpression1 element=','color:red;background:yellow;font-weight:bold;',element);
     if('ExpressionStatement' === element.type){
      
         if('ExpressionStatement' === element.expression.type){
@@ -2757,7 +2738,7 @@ var tabComment=[];
 =====================================================================================================================
 */
 function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
- console.log('donnees_en_entree=',donnees_en_entree);
+
  var texte_source_ast=donnees_en_entree.value.value;
  try{
      var ast_json=JSON.parse(texte_source_ast);

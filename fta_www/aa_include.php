@@ -136,7 +136,9 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
         }    
      
     }else{
-        $champ_where.='AND '.sq0($nom_du_champ).' = '.sq0($critere).'';
+        if(is_numeric($nom_du_champ)){
+            $champ_where.='AND '.sq0($nom_du_champ).' = '.sq0($critere).'';
+        }
     }
 
     return $champ_where;

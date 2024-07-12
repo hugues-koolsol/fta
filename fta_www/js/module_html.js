@@ -239,7 +239,8 @@ class traitements_sur_html{
         contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
        }
        if(contenu!=='' ){
-        contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+        //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+        contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
        }
        t+=contenu;
        if(contenu!=''){
