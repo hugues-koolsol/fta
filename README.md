@@ -2,12 +2,17 @@ Un programme en cours de développement pour transformer des fonctions imbriqué
 de façon à écrire des traitements et des données avec une syntaxe commune.
 
 Les deux types d'éléments de base sont les constantes et les fonctions. 
+
 Ces dernières peuvent contenir des constantes et/ou des fonctions.
+
 Ces dernières peuvent contenir des constantes et/ou des fonctions..
-Ces dernières peuvent contenir des constantes et/ou des fonctions... ;-)
+
+Ces dernières peuvent contenir des constantes et/ou des fonctions... 
+
+etc...
 
 
-La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français :-).
+La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français.
 
 Un exemple de fichier produisant du html avec du javascript est là :
 
@@ -18,7 +23,7 @@ Le résultat produit est là:
 https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html
 
 
-**Brève description** : un source est écrit sous ce format
+**Brève description** : un source est écrit sous ce format "rev" ( comme réversible )
 ```
 #(ceci est un arbre),
 a(b((c , '/') , d(e , f))),
@@ -218,6 +223,26 @@ ne l'est pas.
 - php ( peut contenir du html donc du javascript )
 
 - sql
+
+**5°) les programmes existants**  sont convertis.
+
+Le programme permet de convertir les sources javascript, php, html, sql dans le format "rev" pour pouvoir reprendre l'existant.
+
+A partir du format rev, le programme permet de produire un format tabulaire qui est inséré en base de donnée.
+
+A partir du format tabulaire on peut regénérer le source original
+
+
+
+Pour l'instant les bibliothèques externes qui sont utilisées ne sont pas encore converties en format "rev". 
+
+Ces bibliothèques permettent de convertir les sources jsmt/js/php/sql en "AST" ( abstract syntax tree ).
+
+Ces "AST" sont ensuites traités pour produire les "rev".
+
+
+
+Tous les autres programmes sont convertis au format "rev"
 
 
 
