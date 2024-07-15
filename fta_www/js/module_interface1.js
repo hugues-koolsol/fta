@@ -1,5 +1,6 @@
 
 /*
+  
   =====================================================================================================================
   classe permettant de gérer les éléments d'interface de cet ensemble de programmes
   =====================================================================================================================
@@ -7,179 +8,287 @@
 class interface1{
     #nom_de_la_variable='';
     /*
+      à priori, les ascenseurs "thin" font 11px de large
+    */
+    #largeur_des_ascenseurs=11;
+    
+    /*
+    */
+    #programme_en_arriere_plan=null;
+    
+    /*
+      ==============================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
     */
     constructor(nom_de_la_variable){
         this.#nom_de_la_variable=nom_de_la_variable;
     }
+    /* function nom_de_la_variable */
     get nom_de_la_variable(){
         return this.#nom_de_la_variable;
     }
-    /*
-      à priori, les ascenseurs "thin" font 11px de large
-    */
-    #largeur_des_ascenseurs=11;
+    /* function largeur_des_ascenseurs */
     get largeur_des_ascenseurs(){
         return this.#largeur_des_ascenseurs;
     }
     
+    
+    
     /*
       =====================================================================================================================
+      function supprimer_ce_commentaire_et_recompiler
+      =====================================================================================================================
+    */
+    supprimer_ce_commentaire_et_recompiler(id_source , id_rev){
+        console.log( id_source + ' ' + id_rev );
+        var param={
+                'nom_du_travail_en_arriere_plan' : 'supprimer_un_commentaire1',
+                'liste_des_taches' : [{'etat':'a_faire' , id_source:id_source, id_rev : id_rev }],
+        }
+        this.lancer_un_travail_en_arriere_plan(JSON.stringify(param));
+    }
+    /*
+      =====================================================================================================================
+      function lancer_un_travail_en_arriere_plan
+      =====================================================================================================================
+    */
+    lancer_un_travail_en_arriere_plan(parametre){
+        
+        if( !(window.Worker)){
+            return;
+        }
+        if(this.#programme_en_arriere_plan === null){
+            try{
+                this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
+            }catch(e){
+                console.log('e=',e);
+                return;
+            }
+        }
+        this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+            console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
+        };
+        var json_param = JSON.parse(parametre);
+        if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
+            var liste_des_id_des_sources='';
+            for(var ob in json_param.liste_des_taches){
+             liste_des_id_des_sources+=','+json_param.liste_des_taches[ob].id_source;
+            }
+            if(liste_des_id_des_sources!=''){
+                liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
+                var remplacer_par = prompt(('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :'));
+                if(remplacer_par !== null){
+                    json_param.remplacer_par=remplacer_par;
+                    console.log(json_param);
+                    console.log('on envoie le message');
+                    try{
+                        this.#programme_en_arriere_plan.postMessage({'type_de_message':'déclencher_un_travail','parametres':json_param});
+                    }catch(e){
+                        console.log('e=',e);
+                    }
+                    console.log('le message est envoyé sans erreur');
+                }
+            }
+            
+        }else if("supprimer_un_commentaire1" === json_param.nom_du_travail_en_arriere_plan){
+            this.#programme_en_arriere_plan.postMessage({'type_de_message':'déclencher_un_travail','parametres':json_param});
+        }else{
+            console.error('%c module_interface1 87 le travail "'+ json_param.nom_du_travail_en_arriere_plan+'" n\'est pas dans la liste ','background:yellow;')
+        }
+    }
+    
+    /*
+      
+      =============================================================================================================
+      function agrandir_la_text_area
+      =============================================================================================================
+    */
+    agrandir_la_text_area(nom_de_la_textarea){
+        var a = document.getElementById(nom_de_la_textarea);
+        if(a){
+            var t = a.value.split('\n');
+            if(t.length < 100){
+                console.log(t.length);
+                a.rows=t.length;
+            }else{
+                var b = a.getBoundingClientRect();
+                a.rows=100;
+                a.style.height='100em';
+                /*
+                  
+                  on met la zone en haut
+                */
+                var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
+                window.scrollTo(0,d);
+            }
+            a.focus();
+        }
+    }
+    /*
+      
+      =============================================================================================================
+      function remplacer_la_selection_par
+    */
+    remplacer_la_selection_par(nom_de_la_textarea){
+        var a = document.getElementById(nom_de_la_textarea);
+        var x=a.selectionStart;
+        var b = a.value.substr(a.selectionStart,(a.selectionEnd - a.selectionStart));
+        if(b === ''){
+            alert('veuillez sélectionner une chaine à remplacer');
+            return;
+        }
+        var remplacer_par = window.prompt('remplacer par','??');
+        if(remplacer_par){
+            var r1= new RegExp(b,'g');
+            var c = a.value.replace(r1,remplacer_par);
+            a.value=c;
+            this.agrandir_la_text_area(nom_de_la_textarea);
+            a.focus();
+            a.selectionStart=x;
+        }
+    }
+    /*
+      
+      =============================================================================================================
       function aller_a_la_position
     */
     aller_a_la_position(nom_textarea){
-     var resultat = window.prompt('aller à la position', 1);
-     if(resultat && isNumeric(resultat)){
-      var a=dogid(nom_textarea);
-      a.rows="100";
-      a.focus();
-      a.selectionStart=0;
-      a.selectionEnd=resultat;
-     }  
+        var resultat = window.prompt('aller à la position',1);
+        if((resultat) && (isNumeric(resultat))){
+            var a = dogid(nom_textarea);
+            a.rows="100";
+            a.focus();
+            a.selectionStart=0;
+            a.selectionEnd=resultat;
+        }
     }
     /*
-      =====================================================================================================================
+      
+      =============================================================================================================
       function aller_a_la_ligne
     */
     aller_a_la_ligne(nom_textarea){
-     var resultat = window.prompt('aller à la ligne n°?', 1);
-     if(resultat && isNumeric(resultat)){
-      var a=dogid(nom_textarea);
-      var lignes=a.value.split('\n');
-      if(lignes.length>=resultat){
-       lignes.splice(resultat, lignes.length-resultat);
-       var position=0;
-       console.log(lignes.length);
-       
-       for(var i=lignes.length-1;i>=0;i--){
-        
-        position+=lignes[i].length+1;
-       
-       }
-       a.focus();
-       a.selectionStart=0;
-       a.selectionEnd=position;
-       
-      }
-     }
+        var resultat = window.prompt('aller à la ligne n°?',1);
+        if((resultat) && (isNumeric(resultat))){
+            var a = dogid(nom_textarea);
+            var lignes = a.value.split('\n');
+            if(lignes.length >= resultat){
+                lignes.splice(resultat,(lignes.length - resultat));
+                var position=0;
+                console.log(lignes.length);
+                var i = (lignes.length - 1);
+                for(i=(lignes.length - 1);i >= 0;i--){
+                    position+=(lignes[i].length + 1);
+                }
+                a.focus();
+                a.selectionStart=0;
+                a.selectionEnd=position;
+            }
+        }
     }
-
-    
     /*
+      
       =============================================================================================================
       
       function aller_au_caractere_de_la_textarea
     */
     aller_au_caractere_de_la_textarea(id_textarea){
         var valeur = prompt('aller au caractère n° :');
-        if(valeur!==null){
-        
-             var elem=document.getElementById(id_textarea);
-             elem.focus();
-             elem.selectionStart=parseInt(valeur,10);
-             elem.selectionEnd=parseInt(valeur,10)+1;
-
+        if(valeur !== null){
+            var elem = document.getElementById(id_textarea);
+            elem.focus();
+            elem.selectionStart=parseInt(valeur,10);
+            elem.selectionEnd=(parseInt(valeur,10) + 1);
         }
-
-     
     }
-    
     /*
+      
       =============================================================================================================
       
       function definir_le_nombre_de_lignes_a_afficher_pour_une_liste
     */
     definir_le_nombre_de_lignes_a_afficher_pour_une_liste(nom_de_la_page,nombre_de_lignes){
-//        alert(nom_de_la_page+' ' +nombre_de_lignes);
-     
-        var r = new XMLHttpRequest();
+        var r= new XMLHttpRequest();
         r.open("POST",'za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',true);
         r.timeout=6000;
-        r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-        r.onreadystatechange = function () {
-         if(r.readyState != 4 || r.status != 200){
-             if(r.status==404){
-              console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-             }else if(r.status==500){
-                 /*
-                   normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                   au niveau du php za_ajax mais sait-on jamais
-                 */
-                 if(global_messages['e500logged']==false){
-                     try{
-                      console.log('r=',r);
-                     }catch(e){
-                     }
-                 }
-             }
-             return;
-         }
-         try{
-
-             var jsonRet=JSON.parse(r.responseText);
-             if(jsonRet.status=='OK'){
-                 window.location.reload(true);
-                 return;
-             }else{
-                 console.log('loupé');
-                 return;
-             }
-         }catch(e){
-             console.log('r=',r);
-             return;
-         }
+        r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+        r.onreadystatechange=function(){
+            if((r.readyState != 4) || (r.status != 200)){
+                if(r.status == 404){
+                    console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
+                }else if(r.status == 500){
+                    /*
+                      
+                      normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+                      au niveau du php za_ajax mais sait-on jamais
+                    */
+                    if(global_messages['e500logged'] == false){
+                        try{
+                            console.log('r=',r);
+                        }catch(e){
+                        }
+                    }
+                }
+                return;
+            }
+            try{
+                var jsonRet = JSON.parse(r.responseText);
+                if(jsonRet.status == 'OK'){
+                    window.location.reload(true);
+                    return;
+                }else{
+                    console.log('loupé');
+                    return;
+                }
+            }catch(e){
+                console.log('r=',r);
+                return;
+            }
         };
         r.onerror=function(e){
-            console.error('e=',e); /* whatever(); */
+            console.error('e=',e);
+            /* whatever(); */
             return;
-        }
-        
+        };
         r.ontimeout=function(e){
             console.error('e=',e);
             return;
-        }
-        var ajax_param={
-            call:{
-             'lib'                       : 'php'   ,
-             'file'                      : 'session'  ,
-             'funct'                     : 'definir_le_nombre_de_lignes_a_afficher_pour_une_liste' ,
-            },
-            nom_de_la_page : nom_de_la_page,
-            nombre_de_lignes : nombre_de_lignes,
-        }
+        };
+        var ajax_param={'call':{'lib':'php','file':'session','funct':'definir_le_nombre_de_lignes_a_afficher_pour_une_liste'},nom_de_la_page:nom_de_la_page,nombre_de_lignes:nombre_de_lignes};
         try{
-            r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
+            r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
         }catch(e){
-            console.error('e=',e); /* whatever(); */
-            return {status:false};  
+            console.error('e=',e);
+            /* whatever(); */
+            return({status:false});
         }
-     
-        return({'status':true});    
-     
+        return({'status':true});
     }
     /*
+      
       =============================================================================================================
       affichage de la modale permettant de fixer_les_parametres_pour_une_liste
       function fixer_les_parametres_pour_une_liste
     */
     fixer_les_parametres_pour_une_liste(nom_de_la_page){
-      global_modale1_iframe.style.visibility='none';
-      var t=''
-      t+='<h1>fixer les paramètres</h1>';
-      for(var i=10;i<=50;i+=10){
-       t+='<a href="javascript:'+this.#nom_de_la_variable+'.definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&quot;'+nom_de_la_page+'&quot;,'+i+')">afficher '+i+' lignes</a>';
-      }
-      global_modale1_contenu.innerHTML=t;
-      global_modale1.showModal();
-     
-     
+        global_modale1_iframe.style.visibility='none';
+        var t='';
+        t+='<h1>fixer les paramètres</h1>';
+        var i=10;
+        for(i=10;i <= 50;i+=10){
+            t+=('<a href="javascript:' + this.#nom_de_la_variable + '.definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&quot;' + nom_de_la_page + '&quot;,' + i + ')">afficher ' + i + ' lignes</a>');
+        }
+        global_modale1_contenu.innerHTML=t;
+        global_modale1.showModal();
     }
     /*
+      
       =============================================================================================================
     */
     ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens(){
         this.calcul_la_largeur_des_ascenseurs();
         /*
+          
           equivalent de window.onload = function() {
           fixMenu1();
         */
@@ -224,9 +333,11 @@ class interface1{
             }
         }
         /*
+          
           getPageSize();
         */
         /*
+          
           =====================================================================================================
           Mettre le bouton retour à la liste dans la barre des messages si elle est affichée
           =====================================================================================================
@@ -234,10 +345,12 @@ class interface1{
         var ref = document.getElementById('zone_global_messages');
         if(ref.style.visibility === 'visible'){
             /*
+              
               à priori, un message est affiché
             */
             try{
                 /*
+                  
                   si il y a un bouton __retour_a_la_liste, on l'ajoute à la zone message
                 */
                 if(document.getElementById('__retour_a_la_liste')){
@@ -253,6 +366,7 @@ class interface1{
         }
     }
     /*
+      
       =============================================================================================================
       quand on clique sur un lien javascript, on le réaffiche 300ms plus tard
       =============================================================================================================
@@ -271,6 +385,7 @@ class interface1{
         },300);
     }
     /*
+      
       =============================================================================================================
     */
     calcul_la_largeur_des_ascenseurs(){
@@ -288,30 +403,31 @@ class interface1{
         bag.style.overflow='auto';
         div.appendChild(bag);
         div.scrollTop=100;
-        this.#largeur_des_ascenseurs=div.scrollTop-1;
+        this.#largeur_des_ascenseurs=(div.scrollTop - 1);
         div.removeChild(bag);
         body.removeChild(div);
     }
     /*
+      
       =============================================================================================================
       ajuste la taille d'une textarea
       =============================================================================================================
     */
     agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
         try{
-            var a=document.getElementById(nom_de_la_textarea);
+            var a = document.getElementById(nom_de_la_textarea);
             if(a){
                 if(a.rows <= 10){
-                    var b=a.getBoundingClientRect();
+                    var b = a.getBoundingClientRect();
                     a.rows=100;
                     a.style.height='100em';
                     /*
-                    on met la zone en haut
+                      
+                      on met la zone en haut
                     */
-                    var d=parseInt((b.top-80+window.pageYOffset),10);
-                    window.scrollTo(0,d); 
+                    var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
+                    window.scrollTo(0,d);
                     a.focus();
-                    
                 }else{
                     a.rows=5;
                     a.style.height='5em';
@@ -319,10 +435,11 @@ class interface1{
                 }
             }
         }catch(e){
-         console.log('e=',e);
+            console.log('e=',e);
         }
     }
     /*
+      
       =============================================================================================================
       convertir le contenu d'une textearea rev et le mettre le résultat js dans une textarea
       =============================================================================================================
@@ -348,6 +465,7 @@ class interface1{
         displayMessages('zone_global_messages',chp_rev_source);
     }
     /*
+      
       =============================================================================================================
       convertir le contenu d'une textearea rev et le mettre le résultat php dans une textarea
       =============================================================================================================
@@ -359,7 +477,7 @@ class interface1{
         var tableau1 = iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
         var endMicro = performance.now();
-        console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
+        console.log('\n\n=============\nmise en tableau endMicro=',((parseInt((((endMicro - startMicro)) * 1000),10) / 1000) + ' ms'));
         var startMicro = performance.now();
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.status === true){
@@ -373,6 +491,7 @@ class interface1{
         displayMessages('zone_global_messages');
         return({status:true});
     }
+    /* function mouseWheelOnMenu */
     mouseWheelOnMenu(event){
         event.preventDefault();
         var elem=event.target;
@@ -394,58 +513,55 @@ class interface1{
             var scrollDelta=20;
             if(event.deltaY > 0){
                 var current = parseInt(elem.scrollLeft,10);
-                elem.scrollTo(current+scrollDelta,0);
+                elem.scrollTo((current + scrollDelta),0);
             }else{
                 var current = parseInt(elem.scrollLeft,10);
-                elem.scrollTo(current-scrollDelta,0);
+                elem.scrollTo((current - scrollDelta),0);
             }
         }
         return false;
     }
     /*
-      =====================================================================================================================
+      
+      =============================================================================================================
     */
     ajouter_un_commentaire_vide_et_reformater(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
+        var a = document.getElementById(nom_de_la_textarea);
         a.focus();
-        if(a.selectionStart===a.selectionEnd){
-            var nouveau_source=a.value.substr(0,a.selectionStart)+'#()'+a.value.substr(a.selectionStart);
+        if(a.selectionStart === a.selectionEnd){
+            var nouveau_source = (a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart));
             a.value=nouveau_source;
             this.formatter_le_source_rev(nom_de_la_textarea);
         }
     }
-    
     /*
-      =====================================================================================================================
+      
+      =============================================================================================================
     */
     formatter_le_source_rev(nom_de_la_textarea){
-     
-        var a=document.getElementById(nom_de_la_textarea);
-        
+        var a = document.getElementById(nom_de_la_textarea);
         var tableau1 = iterateCharacters2(a.value);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-        
-        if(matriceFonction.status===true){
-            var obj2=arrayToFunct1(matriceFonction.value,true,false);
-            if(obj2.status===true){
+        if(matriceFonction.status === true){
+            var obj2 = arrayToFunct1(matriceFonction.value,true,false);
+            if(obj2.status === true){
                 a.value=obj2.value;
             }
         }else{
-            displayMessages('zone_global_messages' , nom_de_la_textarea)
+            displayMessages('zone_global_messages',nom_de_la_textarea);
         }
-     
     }
-    
     /*
-     
-      ===========================================
-      ===========================================
-      ===========================================
+      
+      
+      =============================================================================================================
+      =============================================================================================================
+      =============================================================================================================
       fonction qui produit un tableau html de  la
       liste des caractères du source du programme
-      ===========================================
-      ===========================================
-      ===========================================
+      =============================================================================================================
+      =============================================================================================================
+      =============================================================================================================
     */
     construit_un_html_du_tableau_des_caracteres(t2,texteSource,objTableau){
         var numeroLigne=0;
@@ -465,6 +581,7 @@ class interface1{
             out=objTableau.out;
         }
         /*
+          
           première case du tableau = numéro de ligne
         */
         var tr1={};
@@ -483,19 +600,21 @@ class interface1{
             td1.title=concat('&amp;#',tmps,'; (',out[i][1],')');
             tr1.appendChild(td1);
             /*
-              ============================================
+              
+              =============================================================================================
               Si on a un retour chariot, on écrit les 
               cases contenant les positions des caractères
-              ============================================
+              =============================================================================================
             */
             if(out[i][0] == '\n'){
                 t2.appendChild(tr1);
                 /*
                   
                   
-                  =================================================
+                  
+                  =====================================================================================
                   indice dans tableau = première ligne des chiffres
-                  =================================================
+                  =====================================================================================
                 */
                 var tr1={};
                 var td1={};
@@ -517,9 +636,10 @@ class interface1{
                 }
                 /*
                   
-                  =====================
+                  
+                  =====================================================================================
                   position du backslash
-                  =====================
+                  =====================================================================================
                 */
                 var td1={};
                 td1=document.createElement('td');
@@ -529,10 +649,11 @@ class interface1{
                 t2.appendChild(tr1);
                 /*
                   
-                  ========================================================
+                  
+                  =====================================================================================
                   position dans la chaine = deuxième ligne des chiffres
                   car certains caractères utf8 sont codées sur 2 positions
-                  ========================================================
+                  =====================================================================================
                 */
                 var tr1={};
                 var td1={};
@@ -554,9 +675,10 @@ class interface1{
                 }
                 /*
                   
-                  =====================
+                  
+                  =====================================================================================
                   position du backslash
-                  =====================
+                  =====================================================================================
                 */
                 var td1={};
                 td1=document.createElement('td');
@@ -567,12 +689,13 @@ class interface1{
                 /*
                   
                   
-                  ======================================
+                  
+                  =====================================================================================
                   fin des lignes contenant les positions
-                  ======================================
+                  =====================================================================================
                 */
-                debut=(i+1);
-                numeroLigne=(numeroLigne+1);
+                debut=(i + 1);
+                numeroLigne=(numeroLigne + 1);
                 var tr1={};
                 var td1={};
                 tr1=document.createElement('tr');
@@ -583,22 +706,25 @@ class interface1{
             }
         }
         /*
-          ============================================
+          
+          =====================================================================================================
           FIN Si on a un retour chariot, on écrit les 
           cases contenant les positions des caractères
-          ============================================
+          =====================================================================================================
         */
         /*dernière ligne de faire boucle*/
         /*
+          
           dernière ligne des positions des caractères
         */
         t2.appendChild(tr1);
         /*
           
           
-          =================================================
+          
+          =====================================================================================================
           indice dans tableau = première ligne des chiffres
-          =================================================
+          =====================================================================================================
         */
         var tr1={};
         var td1={};
@@ -621,14 +747,16 @@ class interface1{
         /*finchoix suite du source*/
         t2.appendChild(tr1);
         /*
-          =====================
+          
+          =====================================================================================================
           pas de position du backslash
-          =====================
+          =====================================================================================================
         */
         /*
-          =====================================================
+          
+          =====================================================================================================
           position dans la chaine = deuxième ligne des chiffres
-          =====================================================
+          =====================================================================================================
         */
         var tr1={};
         var td1={};
@@ -652,18 +780,16 @@ class interface1{
         /*et enfin, on ajoute la dernière ligne*/
         t2.appendChild(tr1);
     }
-    
-    
-
     /*
-      ==========================================
-      ==========================================
-      ==========================================
+      
+      =============================================================================================================
+      =============================================================================================================
+      =============================================================================================================
       fonction qui produit un tableau html de la
       forme matricielle du programme
-      ==========================================
-      ==========================================
-      ==========================================
+      =============================================================================================================
+      =============================================================================================================
+      =============================================================================================================
     */
     construit_tableau_html_de_le_matrice_rev(t1,matriceFonction){
         /**/
@@ -685,9 +811,10 @@ class interface1{
         t1.className='yytableauMatrice1';
         tr1=document.createElement('tr');
         /*
-          =================
+          
+          =====================================================================================================
           entête du tableau
-          =================
+          =====================================================================================================
         */
         l01=global_enteteTableau.length;
         for(i=0;i < l01;i++){
@@ -702,9 +829,10 @@ class interface1{
         /*
           
           
-          ===================
+          
+          =====================================================================================================
           éléments du tableau
-          ===================
+          =====================================================================================================
         */
         l01=matriceFonction.value.length;
         for(i=0;i < l01;i++){
@@ -728,7 +856,7 @@ class interface1{
                     td1.innerHTML=temp;
                     td1.style.whiteSpace='pre-wrap';
                     td1.style.verticalAlign='baseline';
-                    td1.style.maxWidth=largeurColonne1EnPx+'px';
+                    td1.style.maxWidth=(largeurColonne1EnPx + 'px');
                     td1.style.overflowWrap='break-word';
                 }else if(j == 4){
                     td1.innerHTML=matriceFonction.value[i][j];
@@ -746,24 +874,23 @@ class interface1{
             t1.appendChild(tr1);
         }
     }
-    
-    
     /*
+      
       =============================================================================================================
     */
     vers_le_haut_de_la_page(destination,duree){
         Math.easeInOutQuad=function(t,b,c,d){
-            t/=d/(2);
+            t/=(d / 2);
             if(t < 1){
-                return(c/(2)*(t)*(t)+b);
+                return((((c / 2) * t * t) + b));
             }
             /*un point virgule est-il en trop ?*/
             t--;
-            return(-c/(2)*(t*((t-2))-1)+b);
+            return(((((-c) / 2) * (((t * ((t - 2))) - 1))) + b));
         };
         var element=document.scrollingElement;
         var positionDeDepart = ((element) && (element.scrollTop)) || (window.pageYOffset);
-        var change=destination-positionDeDepart;
+        var change = (destination - positionDeDepart);
         var increment=20;
         var tempsCourant=0;
         var animerLeDecalage = function(){
@@ -777,6 +904,7 @@ class interface1{
         animerLeDecalage();
     }
     /*
+      
       =============================================================================================================
       
       =============================================================================================================
@@ -799,18 +927,18 @@ class interface1{
             if(lesDivs[i].className === 'menuScroller'){
                 var menuUtilisateurCalcule = getComputedStyle(lesDivs[i]);
                 var hauteurMenuUtilisateur = parseInt(menuUtilisateurCalcule['height'],10);
-                lesDivs[i].style.top=paddingTopBody+'px';
+                lesDivs[i].style.top=(paddingTopBody + 'px');
                 lesDivs[i].style.position='fixed';
                 lesDivs[i].style.width='100vw';
-//                lesDivs[i].style.marginLeft='5vw';
                 lesDivs[i].style.backgroundImage='linear-gradient(to bottom, #B0BEC5, #607D8B)';
                 lesDivs[i].addEventListener('wheel',this.mouseWheelOnMenu,false);
                 paddingTopBody+=hauteurMenuUtilisateur;
             }
         }
-        dogid('zone_global_messages').style.top=paddingTopBody+2+'px';
-        bod.style.paddingTop=paddingTopBody+'px';
+        dogid('zone_global_messages').style.top=(((paddingTopBody + 2)) + 'px');
+        bod.style.paddingTop=(paddingTopBody + 'px');
         /*
+          
           ajustement de la position gauche des menus du haut, 
           c'est utile quand il y a beaucoup de menus
           en haut et qu'on est sur un petit appareil
@@ -819,8 +947,8 @@ class interface1{
         if(hrefActuel.indexOf('#') >= 1){
             hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('#'));
         }
-        if((hrefActuel.lastIndexOf('/') >= 1) && (hrefActuel.substr(hrefActuel.lastIndexOf('/')+1) !== '')){
-            hrefActuel=hrefActuel.substr(hrefActuel.lastIndexOf('/')+1);
+        if((hrefActuel.lastIndexOf('/') >= 1) && (hrefActuel.substr((hrefActuel.lastIndexOf('/') + 1)) !== '')){
+            hrefActuel=hrefActuel.substr((hrefActuel.lastIndexOf('/') + 1));
             if(hrefActuel.indexOf('?') >= 0){
                 hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('?'));
             }
@@ -844,12 +972,12 @@ class interface1{
                     }
                     var positionDuLien = lienActuel.getBoundingClientRect();
                     var boiteDesLiens = menuPrincipal.getBoundingClientRect();
-                    var positionDroiteDuLienDansLaBoite = parseInt(positionDuLien.left-boiteDesLiens.left+positionDuLien.width,10);
+                    var positionDroiteDuLienDansLaBoite = parseInt((((positionDuLien.left - boiteDesLiens.left)) + positionDuLien.width),10);
                     var largeurBoiteLiens = parseInt(boiteDesLiens.width,10);
                     if(positionDroiteDuLienDansLaBoite > largeurBoiteLiens){
-                        var calcul = parseInt(boiteDesLiens.width-positionDuLien.width-60,10);
+                        var calcul = parseInt((boiteDesLiens.width - positionDuLien.width - 60),10);
                         if(parseInt(positionDuLien.x,10) > calcul){
-                            var nouveauScroll=positionDuLien.x-boiteDesLiens.width-positionDuLien.width-60;
+                            var nouveauScroll = (positionDuLien.x - boiteDesLiens.width - positionDuLien.width - 60);
                             menuPrincipal.scrollLeft=nouveauScroll;
                         }
                     }
@@ -859,18 +987,20 @@ class interface1{
         }
     }
     /*
+      
       =============================================================================================================
       fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
       =============================================================================================================
     */
     fixer_les_dimentions(type_d_element){
         /*
+          
           =====================================================================================================
           la première feuille de style [0] contient les éléments :root
         */
         var ss=document.styleSheets[0];
-        var i=ss.cssRules.length-1;
-        for(i=ss.cssRules.length-1;i >= 0;i--){
+        var i = (ss.cssRules.length - 1);
+        for(i=(ss.cssRules.length - 1);i >= 0;i--){
             if((ss.cssRules[i]['selectorText']) && (ss.cssRules[i].selectorText.indexOf(':root') >= 0)){
                 var a = ss.cssRules[i].cssText.split('{');
                 try{
@@ -929,14 +1059,14 @@ class interface1{
                         }
                     }
                     /* cookie avec une date d'expiration de 30 jours */
-                    var date_expiration_cookie= new Date(Date.now() + 86400000*30);
+                    var date_expiration_cookie= new Date((Date.now() + (86400000 * 30)));
                     date_expiration_cookie=date_expiration_cookie.toUTCString();
                     /*
+                      
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    
-                    var cookieString = APP_KEY+'_biscuit'+'='+encodeURIComponent(JSON.stringify(t))+'; path=/; secure; expires='+date_expiration_cookie+'; samesite=strict';
+                    var cookieString = (CLE_APPLI + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict');
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;

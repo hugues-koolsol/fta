@@ -689,6 +689,43 @@ function php_traite_Expr_AssignOp_General(element , niveau , nodeType ){
 /*
 =====================================================================================================================
 */
+function php_traite_Expr_AssignRef(element,niveau){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ 
+ var gauche=''; 
+ var droite=''; 
+ if(element.var){
+  var obj=php_traite_Stmt_Expression( element.var , niveau,false,element);
+  if(obj.status===true){
+   gauche=obj.value;
+  }else{
+   gauche='#(todo erreur dans php_traite_Expr_Assign 0715 pas de expr '+element.var.nodeType+')';
+  }
+ }else{
+  gauche='#(todo dans php_traite_Expr_Assign 0718 pas de variable '+element.nodeType+')';
+ }
+
+ if(element.expr){
+  var obj=php_traite_Stmt_Expression( element.expr , niveau,false,element);
+  if(obj.status===true){
+   droite=obj.value;
+  }else{
+   return( astphp_logerreur({'status':false,'message':'0733  erreur dans une assignation ',element:element}));
+  }
+ }else{
+  droite='#(todo dans php_traite_Expr_Assign 0729 pas de expr '+element.nodeType+')';
+ }
+ t+='affecte_reference('+gauche+' , '+droite+')';
+  
+ 
+ 
+ return {'status':true,'value':t};
+}
+/*
+=====================================================================================================================
+*/
 function php_traite_Expr_Assign(element,niveau){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -929,7 +966,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
          nouvelle_chaine='\\\\'+nouvelle_chaine;
          i--;
        }else{
-        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  ||  rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='\'' || rv.substr(i+1,1)==='.' || rv.substr(i+1,1)==='-' ||rv.substr(i+1,1)==='d' || rv.substr(i+1,1)==='/'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  ){
+        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  ||  rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='\'' || rv.substr(i+1,1)==='.' || rv.substr(i+1,1)==='-' ||rv.substr(i+1,1)==='d' || rv.substr(i+1,1)==='/'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='$'  ){
          if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='t' || rv.substr(i+1,1)==='n' || ( rv.substr(i+1,1)==='\'' && rv.substr(0,1) ==="'" ) || ( rv.substr(i+1,1)==='"' && rv.substr(0,1) ==='"' ) ){
           nouvelle_chaine='\\'+nouvelle_chaine;
          }else{
@@ -1013,6 +1050,22 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
    astphp_logerreur({'status':false,'message':'0902  dans php_traite_Stmt_Expression  ',element:element});
   }
   
+ }else if("Stmt_Global"===element.nodeType){
+  var variables='';
+  for(var i in element.vars){
+   if(element.vars[i].nodeType==="Expr_Variable"){
+    variables+=','+element.vars[i].name;
+   }else{
+    return(astphp_logerreur({'status':false,'message':'1059  dans php_traite_Stmt_Expression  ',element:element}));
+    
+   }
+  }
+  if(variables!==''){
+   variables=variables.substr(1);
+   t+='globales('+variables+')'
+  }else{
+    return(astphp_logerreur({'status':false,'message':'1065  dans php_traite_Stmt_Expression  ',element:element}));
+  }
 
 
  }else if("Expr_UnaryPlus"===element.nodeType){
@@ -1074,6 +1127,16 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
  }else if("Expr_Assign"===element.nodeType){
 
   var obj=php_traite_Expr_Assign( element , niveau);
+  if(obj.status===true){
+   t+=obj.value;
+  }else{
+   return( astphp_logerreur({'status':false,'message':'erreur dans php_traite_Stmt_Expression 0512 ',element:element}));
+  }
+  
+ /*===============================================*/
+ }else if("Expr_AssignRef"===element.nodeType){
+
+  var obj=php_traite_Expr_AssignRef( element , niveau);
   if(obj.status===true){
    t+=obj.value;
   }else{
@@ -1370,6 +1433,35 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
    t+='#(todo erreur dans php_traite_Stmt_Expression 252)';
   }
 
+
+ /*===============================================*/
+
+ }else if("Expr_PropertyFetch"===element.nodeType){
+  // $params->fulltexts
+  var variable='';
+  if(element.var){
+      var obj=php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
+      if(obj.status===true){
+       variable=obj.value;
+      }else{
+       return(astphp_logerreur({'status':false,'message':'1447  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
+      }
+  }else{
+      return(astphp_logerreur({'status':false,'message':'1450  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
+  }
+  
+  var propriete='';
+  if(element.name){
+      if(element.name.nodeType==='Identifier'){
+       propriete=element.name.name;
+      }else{
+       return(astphp_logerreur({'status':false,'message':'1447  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
+      }
+  }else{
+      return(astphp_logerreur({'status':false,'message':'1454  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
+  }
+  t+='propriete('+variable+','+propriete+')'
+  
  /*===============================================*/
 
  }else if("StaticVar"===element.nodeType){
@@ -1381,11 +1473,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
    if(obj.status===true){
     variable+=obj.value;
    }else{
-    astphp_logerreur({'status':false,'message':'1200  dans php_traite_Stmt_Expression StaticVar ',element:element});
+    return(astphp_logerreur({'status':false,'message':'1465  dans php_traite_Stmt_Expression StaticVar ',element:element}));
    }
    
   }else{
-   astphp_logerreur({'status':false,'message':'1197  dans php_traite_Stmt_Expression pas de StaticVar ',element:element});
+   return(astphp_logerreur({'status':false,'message':'1197  dans php_traite_Stmt_Expression pas de StaticVar ',element:element}));
   }
 
   var valeurDef="";
@@ -1406,7 +1498,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
 
  }else{
   
-   return(astphp_logerreur({'status':false,'message':'1392  dans php_traite_Stmt_Expression ',element:element}));
+   return(astphp_logerreur({'status':false,'message':'1392  dans php_traite_Stmt_Expression "'+element.nodeType+'"',element:element}));
   
  }
  
@@ -1738,7 +1830,9 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
   if(obj.status===true){
    instructionsDansIf+=obj.value;
   }else{
-   instructionsDansIf+='#(ERREUR 0902 '+element.else.stmts[i].nodeType+' )';
+   return(astphp_logerreur({'status':false,'message':'1741  dans php_traite_Stmt_If',element:element}));
+
+//   instructionsDansIf+='#(ERREUR 0902 '+element.else.stmts[i].nodeType+' )';
   }
  }else{
   instructionsDansIf='#(PAS instructions dans if)';
@@ -1900,7 +1994,7 @@ function php_traite_Stmt_Foreach(element , niveau){
   if(obj.status===true){
    instructions=obj.value;
   }else{
-   cle='#(ERREUR 1271 dans php_traite_Stmt_Foreach)';
+   return( astphp_logerreur({'status':false,'message':'dans php_traite_Stmt_Foreach 1905 ',element:element}));
   }
  }
  t+='\n'+esp0+'boucleSurTableau(';
@@ -2019,7 +2113,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
     if(obj.status===true){
      t+='\n'+esp0+obj.value;
     }else{
-     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR 0822 "'+stmts[i].nodeType+'")';
+     return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev 2024 "'+stmts[i].nodeType+'" ',element:stmts[i]}));
     }
 
 
@@ -2210,7 +2304,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
     if(obj.status===true){
      t+='\n'+esp0+obj.value;
     }else{
-     t+='\n'+esp0+'#(TODO dans TransformAstPhpEnRev ERREUR 814 "'+stmts[i].nodeType+'")';
+     return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Switch 2215 ',element:element}));
     }
     
     /*===============================================*/
@@ -2221,7 +2315,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+='\n'+esp0+obj.value;
      }else{
-      t+='\n'+esp0+'#(todo erreur dans TransformAstPhpEnRev 1356)';
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Unset 2226 ',element:element}));
      }
    
     /*===============================================*/
@@ -2232,7 +2326,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+='\n'+esp0+obj.value;
      }else{
-      t+='\n'+esp0+'#(todo erreur dans TransformAstPhpEnRev 1356)';
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Foreach 2237 ',element:element}));
      }
    
     /*===============================================*/
@@ -2243,7 +2337,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+='\n'+esp0+obj.value;
      }else{
-      t+='\n'+esp0+'#(todo erreur dans TransformAstPhpEnRev 1356)';
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_For 2248 ',element:element}));
      }
 
    
@@ -2256,6 +2350,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+=obj.value;
      }else{
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Expr_AssignOp_ 2261 ',element:element}));
       t+='#(erreur TransformAstPhpEnRev 1950)';
      }
 
@@ -2281,6 +2376,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      || "Expr_PostDec"   === stmts[i].nodeType
      || "Stmt_Static"    === stmts[i].nodeType
      || "Stmt_Continue"  === stmts[i].nodeType
+     || "Stmt_Global"    === stmts[i].nodeType
      || 'Expr_BinaryOp_' === stmts[i].nodeType.substr(0,14)
     ){
      var obj=php_traite_Stmt_Expression(stmts[i],niveau,dansFor,stmts);
@@ -2617,7 +2713,7 @@ function isHTML(str) {
 
 //=====================================================================================================================
 function traitementApresRecuperationAst(ret){ // // {zone_php:'txtar1',zone_rev:'txtar2'}
- 
+ var une_erreur_catch=false;
 // console.log('ret=',ret);
  try{
   var startMicro=performance.now();
@@ -2644,13 +2740,18 @@ function traitementApresRecuperationAst(ret){ // // {zone_php:'txtar1',zone_rev:
   }
  }catch(e){
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
+  une_erreur_catch=true;
+  displayMessages('zone_global_messages' , 'txtar1' );
+  
  }
- if(ret.opt && ret.opt.zone_rev){
+ if(une_erreur_catch===false){
+     if(ret.opt && ret.opt.zone_rev){
 
-     displayMessages('zone_global_messages' , ret.opt.zone_rev );
- }else{
-     
-     displayMessages('zone_global_messages');
+         displayMessages('zone_global_messages' , ret.opt.zone_rev );
+     }else{
+         
+         displayMessages('zone_global_messages');
+     }
  }
  rangeErreurSelectionne=false;
  

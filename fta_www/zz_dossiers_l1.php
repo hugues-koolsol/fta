@@ -393,22 +393,27 @@ foreach($data0 as $k0=>$v0){
   
         $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
         
-        if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
+        
+        if(APP_KEY==='fta'){
          
-           /*
-           si c'est la racine d'un autre environnement, on peut le faire
-           */
-         
-         
-           $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
-           /*✎ #9998*/
-           $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+            if($__valeurs['T1.chp_dossier_cible']==='fta'){
+             
+                $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
+                $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
+                
+            }else{
+             
+                $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
+                $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+                
+            }
+            
         }else{
-
-          $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
-          $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
+         
+            $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
+            $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
+            
         }
-  
   
  }
  

@@ -1,4 +1,21 @@
 <?php
+
+/*
+  =====================================================================================================================
+  met en session un nombre de lignes à afficher par page
+*/
+function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data['input'],true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);} 
+  'nom_de_la_page' => 'zz_bdds_l1.php',
+  'nombre_de_lignes' => 50,
+*/
+
+  $_SESSION[APP_KEY]['__parametres_utilisateurs'][$data['input']['nom_de_la_page']]['nombre_de_lignes']=$data['input']['nombre_de_lignes'];
+  $data['status']='OK';
+
+}
+
 /*
   =====================================================================================================================
 */

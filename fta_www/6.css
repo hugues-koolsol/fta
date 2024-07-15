@@ -12,7 +12,7 @@ body{margin:0;border:0;padding:0;overflow-y:scroll;
 *{scrollbar-width:thin;}
 *{scrollbar-color: #B0BEC5 #607D8B;}
 @media print {a[href]:after {content: none !important;}@page {size: auto;margin-bottom: 0;}}
-h1{font-size:1.5rem;}
+h1{font-size:1.5rem;text-shadow: #ccc 1px 1px 1px;}
 h1,h2,h3{margin:3px;text-align:center;}
 h4,h5,h6{margin:3px;text-align:left;}
 pre{overflow:scroll;word-break: break-all;margin:0 0 0 0;}

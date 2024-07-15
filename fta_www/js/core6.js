@@ -1298,7 +1298,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 /**/
                 c1=tableauEntree[i+1][0];
-                if((c1 == '\\') || (c1 == '"') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '>' ) || (c1 == '<') || (c1 == '/')){
+                if((c1 == '\\') || (c1 == '"') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '>' ) || (c1 == '<') || (c1 == '/') || (c1 == '$')){
                     if(texte == ''){
                         premier=i;
                     }
