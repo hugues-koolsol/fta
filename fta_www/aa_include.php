@@ -9,6 +9,9 @@ define('LIEN_BDD','LIEN_BDD');
 define('BDD','BDD');
 $GLOBALS[BDD]=array();
 define('NAV','NAV');
+/*
+PHP_EOL = \r\n
+*/
 define('CRLF',"\r\n");
 define('OK','OK');
 define('MESSAGES','messages');
@@ -737,7 +740,6 @@ function html_header1($parametres){
     $o1.=$texte_base_css;
     
     $o1.='  <link rel="stylesheet" type="text/css" href="6.css" />'.CRLF;
-    
     $o1.='<script type="text/javascript">'.CRLF;
     $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
     $o1.=' var NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN='.(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])?count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']):0).';'.CRLF;

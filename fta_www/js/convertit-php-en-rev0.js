@@ -450,6 +450,77 @@ function php_traite_print(element,niveau){
 function php_traite_echo(element,niveau){
  return php_traite_printOuEcho(element , niveau , 'echo');
 }
+
+/*
+  ====================================================================================================================
+*/
+function php_traite_Stmt_ClassMethod(element , niveau){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+ var lesArguments='';
+ var contenu='';
+ 
+ t+='\n'+esp0+'méthode(';
+ t+='\n'+esp0+esp1+'#(),definition(#(),';
+ if(element.name && "Identifier" === element.name.nodeType){
+   t+='\n'+esp0+esp1+esp1+'nom('+element.name.name+')';
+ }else{
+  return( astphp_logerreur({'status':false,'message':'0464  erreur php_traite_Stmt_ClassMethod ',element:element}));
+ }
+ if(element.params && element.params.length>0){
+     for(var i=0;i<element.params.length;i++){
+         if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType ){
+             if(element.params[i].byRef && element.params[i].byRef===true){
+                 lesArguments+=',\n'+esp0+esp1+esp1+'adresseArgument($'+element.params[i].var.name+')';
+             }else{
+                 if(element.params[i].variadic && element.params[i].variadic===true){
+                     lesArguments+=',\n'+esp0+esp1+esp1+'argument(...$'+element.params[i].var.name;
+                 }else{
+                     lesArguments+=',\n'+esp0+esp1+esp1+'argument($'+element.params[i].var.name;
+                 }
+                 if(element.params[i].default){
+                     var obj=php_traite_Stmt_Expression( element.params[i].default , niveau,false,element);
+                     if(obj.status===true){
+                         lesArguments+=',defaut('+obj.value+')';
+                     }else{
+                         return( astphp_logerreur({'status':false,'message':'0487  erreur php_traite_Stmt_ClassMethod ',element:element}));
+                     }
+                 }
+                 lesArguments+=')';
+             }
+         }else{
+             return( astphp_logerreur({'status':false,'message':'0493  erreur php_traite_Stmt_ClassMethod ',element:element}));
+         }
+     }
+ }
+ t+=lesArguments;
+ if(element.flags===12){
+     t+='\n'+esp0+esp1+esp1+'privée(),';
+     t+='\n'+esp0+esp1+esp1+'statique(),';
+ }else if(element.flags===4){
+     t+='\n'+esp0+esp1+esp1+'privée(),';
+ }else if(element.flags===1){
+     t+='\n'+esp0+esp1+esp1+'publique(),';
+ }else{
+    return( astphp_logerreur({'status':false,'message':'0507  erreur php_traite_Stmt_ClassMethod ',element:element}));
+ }
+ t+='\n'+esp0+esp1+'),';
+ if(element.stmts && element.stmts.length>0){
+   var obj=TransformAstPhpEnRev( element.stmts , niveau+2 , false);
+   if(obj.status===true){
+       contenu+=obj.value;
+   }else{
+       return( astphp_logerreur({'status':false,'message':'0514  erreur php_traite_Stmt_ClassMethod ',element:element}));
+   }
+ }
+ t+='\n'+esp0+esp1+'contenu('+contenu+')';
+ t+='\n'+esp0+')';
+// debugger 
+ return {'status':true,'value':t};
+ 
+}
+
 //=====================================================================================================================
 function php_traite_Stmt_Function(element , niveau){
 
@@ -532,7 +603,7 @@ function php_traite_Expr_New(element , niveau){
   if(element.class.nodeType=="Name"){
    nomClasse=element.class.name;
   }else{
-   nomClasse+='#(php_traite_Expr_New 0487),';
+   nomClasse+='#(php_traite_Expr_New 0597),';
   }
   
   var lesArgumentsDeLaClass='';
@@ -925,6 +996,30 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
   t+='$'+element.name+'';
 
  /*===============================================*/
+ }else if("Stmt_Property"===element.nodeType){
+   if(element.props && element.props.length>0){
+       for(var i=0;i<element.props.length;i++){
+        
+           if("PropertyItem"===element.props[i].nodeType && element.props[i].name && element.props[i].name.nodeType==="VarLikeIdentifier"){
+             if(element.flags && element.flags===4){
+                 t+='variable_privée($'+element.props[i].name.name+')';
+             }else if(element.flags && element.flags===1){
+                 t+='variable_publique($'+element.props[i].name.name+')';
+             }else{
+                 return( astphp_logerreur({'status':false,'message':'1003 php_traite_Stmt_Expression Stmt_Property ',element:element}));
+             }
+//             t+='\n'+esp0+'variable_privée($'+element.props[i].name.name+')';
+           }else{
+               return( astphp_logerreur({'status':false,'message':'0934 php_traite_Stmt_Expression Stmt_Property ',element:element}));
+           }
+           
+       }
+    
+   }else{
+       return( astphp_logerreur({'status':false,'message':'0931 php_traite_Stmt_Expression Stmt_Property ',element:element}));
+   }
+
+ /*===============================================*/
 
  }else if("Scalar_String"===element.nodeType){
 
@@ -966,7 +1061,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
          nouvelle_chaine='\\\\'+nouvelle_chaine;
          i--;
        }else{
-        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  ||  rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='\'' || rv.substr(i+1,1)==='.' || rv.substr(i+1,1)==='-' ||rv.substr(i+1,1)==='d' || rv.substr(i+1,1)==='/'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='$'  ){
+        if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='n'  ||  rv.substr(i+1,1)==='t'  || rv.substr(i+1,1)==='\'' || rv.substr(i+1,1)==='.' || rv.substr(i+1,1)==='-' ||rv.substr(i+1,1)==='d' || rv.substr(i+1,1)==='/'  || rv.substr(i+1,1)==='x'  || rv.substr(i+1,1)==='o'  || rv.substr(i+1,1)==='b'  || rv.substr(i+1,1)==='"'  || rv.substr(i+1,1)==='$'   || rv.substr(i+1,1)==='w'  ){
          if(rv.substr(i+1,1)==='r' || rv.substr(i+1,1)==='t' || rv.substr(i+1,1)==='n' || ( rv.substr(i+1,1)==='\'' && rv.substr(0,1) ==="'" ) || ( rv.substr(i+1,1)==='"' && rv.substr(0,1) ==='"' ) ){
           nouvelle_chaine='\\'+nouvelle_chaine;
          }else{
@@ -975,7 +1070,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
 
 
         }else{
-         return( astphp_logerreur({'status':false,'message':'0958 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
+         return( astphp_logerreur({'status':false,'message':'0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas '+(rv.substr(i+1,1))+' ',element:element}));
         }
        }
       }else{
@@ -1024,6 +1119,21 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
 
  /*===============================================*/
 
+ }else if("Stmt_ClassMethod"===element.nodeType){
+    debugger
+  
+    var obj=php_traite_Stmt_ClassMethod( element , niveau);
+    if(obj.status===true){
+     t+='\n'+esp0+obj.value;
+    }else{
+          return(astphp_logerreur({'status':false,'message':'1051  dans php_traite_Stmt_Expression  ',element:element}));
+    }
+    
+    
+  
+
+ /*===============================================*/
+
  }else if("Stmt_Continue"===element.nodeType){
 
   if(element.num===null){
@@ -1033,7 +1143,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
       if(obj.status===true){
           t+='\n'+esp0+'continue('+obj.value+')';
       }else{
-          astphp_logerreur({'status':false,'message':'0999  dans php_traite_Stmt_Expression  ',element:element});
+          return(astphp_logerreur({'status':false,'message':'0999  dans php_traite_Stmt_Expression  ',element:element}));
       }
    
   }
@@ -1145,6 +1255,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
   
  
 
+  
  /*===============================================*/
 
  }else if("Expr_FuncCall"===element.nodeType){
@@ -1155,6 +1266,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
    }else{
     t+='#(todo erreur dans php_traite_Stmt_Expression 252)';
    }
+   
    
 
  /*===============================================*/
@@ -1393,6 +1505,21 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
 
  /*===============================================*/
 
+ }else if("Expr_Cast_Array"===element.nodeType){
+  
+  if(element.expr){
+   var obj=php_traite_Stmt_Expression( element.expr , niveau,dansFor,element);
+   if(obj.status===true){
+    t+='casttableau('+obj.value+')';
+   }else{
+    return(astphp_logerreur({'status':false,'message':'1403  dans php_traite_Stmt_Expression Expr_Cast_Array ',element:element}));
+   }
+  }else{
+    return(astphp_logerreur({'status':false,'message':'1406  dans php_traite_Stmt_Expression Expr_Cast_Array ',element:element}));
+  }
+
+ /*===============================================*/
+
  }else if("Expr_Cast_Double"===element.nodeType){
   
   if(element.expr){
@@ -1464,6 +1591,34 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
   
  /*===============================================*/
 
+ }else if("Scalar_InterpolatedString"===element.nodeType){
+
+     // echo "<link href='{$theme}' rel='stylesheet' type='text/css' />", PHP_EOL;
+
+
+     if(element.parts){
+         var chaine_concat='';
+         for(var i=0;i<element.parts.length;i++){
+          if("InterpolatedStringPart"===element.parts[i].nodeType){
+            chaine_concat+=',"'+element.parts[i].value+'"'
+          }else if("Expr_Variable"===element.parts[i].nodeType){
+            chaine_concat+=',$'+element.parts[i].name+''
+          }else{
+           return(astphp_logerreur({'status':false,'message':'1475  dans php_traite_Stmt_Expression Scalar_InterpolatedString ',element:element}));
+          }
+          
+         }
+         if(chaine_concat!==''){
+          chaine_concat=chaine_concat.substr(1);
+          t+='concat('+chaine_concat+')';
+         }else{
+             return(astphp_logerreur({'status':false,'message':'1484  dans php_traite_Stmt_Expression Scalar_InterpolatedString ',element:element}));
+         }
+     }else{
+       return(astphp_logerreur({'status':false,'message':'1472  dans php_traite_Stmt_Expression Scalar_InterpolatedString ',element:element}));
+     }
+     
+  
  }else if("StaticVar"===element.nodeType){
   
   
@@ -1892,7 +2047,44 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
  }
  return {'status':true,'value':t};
 }
-//=====================================================================================================================
+/*
+  =====================================================================================================================
+*/
+function php_traite_Stmt_Class(element , niveau){
+ var t='';
+ var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+ var esp1 = ' '.repeat(NBESPACESREV);
+
+ console.log('element=' , element);
+ if(element.name && element.name.nodeType==="Identifier"){
+   t+='\n'+esp0+'definition_de_classe(';
+   t+='\n'+esp0+esp1+'nom_classe('+element.name.name+')';
+   t+='\n'+esp0+esp1+'contenu('
+   if(element.stmts && element.stmts.length>0){
+       var obj=TransformAstPhpEnRev(element.stmts,niveau+2,false);
+       if(obj.status===true){
+        t+=obj.value;
+       }else{
+           return(astphp_logerreur({'status':false,'message':'1955  dans php_traite_Stmt_Class',element:element}));
+       }
+    
+   }
+   t+='\n'+esp0+esp1+')'
+   t+='\n'+esp0+')'
+  
+  
+  
+ }else{
+   return(astphp_logerreur({'status':false,'message':'1949  dans php_traite_Stmt_Class',element:element}));
+ }
+ 
+ 
+ return {'status':true,'value':t};
+
+}
+/*
+  =====================================================================================================================
+*/
 function php_traite_Stmt_For(element , niveau){
 
  var t='';
@@ -1905,13 +2097,26 @@ function php_traite_Stmt_For(element , niveau){
   if(obj1.status===true){
    initialisation+=obj1.value;
   }else{
-   astphp_logerreur({'status':false,'message':'1495  dans php_traite_Stmt_For erreur dans l\'initialisation',element:element});
+   return(astphp_logerreur({'status':false,'message':'1495  dans php_traite_Stmt_For erreur dans l\'initialisation',element:element}));
   }
  }
  /*
  todo attention, en php on peut mettre plusieurs conditions mais seule la dernière est valide
  */
  var condition=''; 
+ 
+ if(element.cond && element.cond.length==1){
+     var obj=php_traiteCondition1(element.cond[0],niveau,element);
+     if(obj.status===true){
+         condition+=obj.value;
+     }else{
+         return(astphp_logerreur({'status':false,'message':'1963 dans php_traite_Stmt_For ',element:element}));
+     }
+ }else{
+     return(astphp_logerreur({'status':false,'message':'1963 dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte',element:element}));
+ }
+ 
+/* 
  if(element.cond && element.cond.length==1){
   var obj1=TransformAstPhpEnRev(element.cond,niveau,true);  
   if(obj1.status===true){
@@ -1922,6 +2127,7 @@ function php_traite_Stmt_For(element , niveau){
  }else{
   astphp_logerreur({'status':false,'message':'1510  dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte',element:element});
  }
+*/ 
  var increment='';
  if(element.loop && element.loop.length>0){
   var obj1=TransformAstPhpEnRev(element.loop,niveau,true);  
@@ -2084,7 +2290,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      numeroLigneCourantStmtHtmlEndLine   = stmts[i].attributes.endLine;
 
      if( ( numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlStartLine || numeroLigneCourantStmtHtmlStartLine===numeroLignePrecedentStmtHtmlEndLine )&& StmtsHtmlPrecedentEstEcho===true){
-      console.log('optimiserIci t=',t);
+//      console.log('optimiserIci t=',t);
       /*
       t finit par appelf(nomf(echo),p($d)),"
       */
@@ -2304,7 +2510,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
     if(obj.status===true){
      t+='\n'+esp0+obj.value;
     }else{
-     return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Switch 2215 ',element:element}));
+     return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Switch 2215 ',element:stmts[i]}));
     }
     
     /*===============================================*/
@@ -2315,7 +2521,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+='\n'+esp0+obj.value;
      }else{
-      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Unset 2226 ',element:element}));
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Unset 2226 ',element:stmts[i]}));
      }
    
     /*===============================================*/
@@ -2326,7 +2532,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+='\n'+esp0+obj.value;
      }else{
-      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Foreach 2237 ',element:element}));
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Foreach 2237 ',element:stmts[i]}));
      }
    
     /*===============================================*/
@@ -2337,7 +2543,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+='\n'+esp0+obj.value;
      }else{
-      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_For 2248 ',element:element}));
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_For 2248 ',element:stmts[i]}));
      }
 
    
@@ -2350,7 +2556,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      if(obj.status===true){
       t+=obj.value;
      }else{
-      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Expr_AssignOp_ 2261 ',element:element}));
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Expr_AssignOp_ 2261 ',element:stmts[i]}));
       t+='#(erreur TransformAstPhpEnRev 1950)';
      }
 
@@ -2369,15 +2575,46 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
     /*===============================================*/
 
    
+    }else if("Stmt_Class"===stmts[i].nodeType){
+     
+     var obj=php_traite_Stmt_Class(stmts[i],niveau);
+     if(obj.status===true){
+      t+='\n'+esp0+obj.value;
+     }else{
+      return( astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Stmt_Class 2436 ',element:stmts[i]}));
+     }
+
+     
+     
+    /*===============================================*/
+
+   
+    }else if("Stmt_ClassMethod"===stmts[i].nodeType){
+    var obj=php_traite_Stmt_ClassMethod( stmts[i] , niveau);
+    if(obj.status===true){
+     t+='\n'+esp0+obj.value;
+    }else{
+          return(astphp_logerreur({'status':false,'message':'1051  dans php_traite_Stmt_Expression  ',element:element}));
+    }
+    
+     
+     
+   
+    /*===============================================*/
+
+   
     }else if(
-        "Expr_PostInc"   === stmts[i].nodeType
-     || "Expr_PreDec"    === stmts[i].nodeType
-     || "Expr_PreInc"    === stmts[i].nodeType
-     || "Expr_PostDec"   === stmts[i].nodeType
-     || "Stmt_Static"    === stmts[i].nodeType
-     || "Stmt_Continue"  === stmts[i].nodeType
-     || "Stmt_Global"    === stmts[i].nodeType
-     || 'Expr_BinaryOp_' === stmts[i].nodeType.substr(0,14)
+    
+        "Stmt_Continue"    === stmts[i].nodeType
+     || "Stmt_Global"      === stmts[i].nodeType
+     || "Expr_Isset"       === stmts[i].nodeType
+     || "Expr_PostDec"     === stmts[i].nodeType
+     || "Expr_PostInc"     === stmts[i].nodeType
+     || "Expr_PreDec"      === stmts[i].nodeType
+     || "Expr_PreInc"      === stmts[i].nodeType
+     || "Stmt_Property"    === stmts[i].nodeType
+     || "Stmt_Static"      === stmts[i].nodeType
+     || 'Expr_BinaryOp_'   === stmts[i].nodeType.substr(0,14)
     ){
      var obj=php_traite_Stmt_Expression(stmts[i],niveau,dansFor,stmts);
      if(obj.status===true){
@@ -2400,7 +2637,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
 
    }else{
 
-    return(astphp_logerreur({'status':false,'message':'0440  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] }));
+    return(astphp_logerreur({'status':false,'message':'2513  dans TransformAstPhpEnRev nodeType non prévu "'+stmts[i].nodeType+'"','element':stmts[i] }));
     
    }
   }
@@ -2739,6 +2976,7 @@ function traitementApresRecuperationAst(ret){ // // {zone_php:'txtar1',zone_rev:
    displayMessages('zone_global_messages', 'txtar1');
   }
  }catch(e){
+  console.error('e=',e);
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
   une_erreur_catch=true;
   displayMessages('zone_global_messages' , 'txtar1' );
