@@ -1066,7 +1066,7 @@ class interface1{
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = (CLE_APPLI + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict');
+                    var cookieString = (APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict');
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;

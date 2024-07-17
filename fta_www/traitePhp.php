@@ -1,4 +1,15 @@
 <?php
+/*
+$name='toto';
+$b="(?:[^\"]$name+|\"\")$name";
+// '(?:[^"]toto+|"")toto'
+echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $b , true ) . '</pre>' ; exit(0);
+*/
+/*
+$a='\$';
+$b='\\$';
+echo __FILE__ . ' ' . __LINE__ . ' $a = <pre>' . var_export( $a , true ) . '</pre>  $b = <pre>' . var_export( $b , true ) . '</pre>' ; exit(0);
+*/
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();

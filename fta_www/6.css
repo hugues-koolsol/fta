@@ -130,7 +130,7 @@ a:hover,button:hover{
 #zone_global_messages{
  position:fixed;
  top:45px; /* à priori sous le menu ( voir padding top du body ci dessous )  mais pourra être déplacé si l'utilisateur cré un menu fixe en haut */
- width:100vw;
+ width:99vw;
  max-height:200px;
  background-image:linear-gradient(to bottom, #B0BEC5, #607D8B);
  max-height: 200px;
