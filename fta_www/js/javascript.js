@@ -1274,7 +1274,7 @@ function js_traiteDefinitionTableau(tab,id,niveau,options={}){ // id = position 
  }
 
  for(j=id+1;j<l01 && tab[j][3]>tab[id][3];j++){
-  if(tab[j][3]==tab[id][3]+1){ // si on est au niveau +1
+  if(tab[j][7]===id){
    if(tab[j][1]=='p' && tab[j][2]=='f'){
     for(var k=j+1;k<l01 && tab[k][3]>tab[j][3];k++){
      if(tab[k][7]===j){
@@ -1285,10 +1285,7 @@ function js_traiteDefinitionTableau(tab,id,niveau,options={}){ // id = position 
        textObj+='/*'+commt+'*/';
       }else{
        
-       niveau+=2;
-       obje=js_traiteInstruction1(tab,niveau,k);
-
-       niveau-=2;
+       obje=js_traiteInstruction1(tab,niveau+2,k);
        if(obje.status==true){
         if(precedent_est_commentaire===true){
          precedent_est_commentaire=false;
@@ -1774,7 +1771,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                                 return(logerreur({status:false,value:t,id:j,tab:tab,message:'erreur 1392 sur js_traiteDefinitionObjet '}));
                             }
                         }else if(tab[j+2][1] == 'defTab'){
-                            var objTableau = js_traiteDefinitionTableau(tab,j+1,0,{}); //js_tabTojavascript1(tab,tabdeclare[1][0],true,true,niveau)
+                            var objTableau = js_traiteDefinitionTableau(tab,j+2,0,{}); //js_tabTojavascript1(tab,tabdeclare[1][0],true,true,niveau)
                             if(objTableau.status == true){
                                 textObj+='\''+(tab[j+1][1])+'\''+':'+objTableau.value;
                             }else{

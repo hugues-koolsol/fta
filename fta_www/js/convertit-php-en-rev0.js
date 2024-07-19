@@ -76,7 +76,7 @@ function recupNomOperateur(s){ // recupNomOperateur
  }else if(s==='&'){
   return 'etBin';
  }else{
-  return 'TODO recupNomOperateur pour "'+s+'"'
+  astphp_logerreur({'status':false,'message':'0079  erreur recupNomOperateur "'+s+'" ',element:element});
  }
 }
 
@@ -91,7 +91,7 @@ function php_traite_Expr_Eval(element,niveau){
  if(obj.status===true){
   t+=',p('+obj.value+')';
  }else{
-  t+='#(todo dans php_traite_Expr_Eval 0121 pas de expr )';
+  return(astphp_logerreur({'status':false,'message':'0094  erreur php_traite_Expr_Eval',element:element}));
  }
  t+=')';
  
@@ -115,7 +115,7 @@ function php_traite_Expr_Include(element,niveau){
  if(obj.status===true){
   t+=',p('+obj.value+')';
  }else{
-  t+='#(todo dans php_traite_Expr_FuncCall 0175 pas de expr )';
+  return(astphp_logerreur({'status':false,'message':'0118  erreur php_traite_Expr_Include',element:element}));
  }
  t+=')';
  
@@ -137,12 +137,12 @@ function php_traite_Stmt_Switch(element,niveau){
   if(obj.status===true){
    leTest=obj.value;
   }else{
-   t+='#(todo dans php_traite_Stmt_Switch 0126 )';
+   return(astphp_logerreur({'status':false,'message':'0140  erreur php_traite_Stmt_Switch',element:element}));
   }
 
  }else{
   
-  leTest='#(erreur php_traite_Stmt_Switch 0131 )';
+  return(astphp_logerreur({'status':false,'message':'0145  erreur php_traite_Stmt_Switch',element:element}));
   
  }
  
@@ -157,7 +157,7 @@ function php_traite_Stmt_Switch(element,niveau){
      if(obj.status===true){
       laCondition=obj.value;
      }else{
-      t+='#(todo dans php_traite_Stmt_Switch 0146 )';
+      return(astphp_logerreur({'status':false,'message':'0160  erreur php_traite_Stmt_Switch',element:element}));
      }
      
     }else{
@@ -172,17 +172,17 @@ function php_traite_Stmt_Switch(element,niveau){
       if(obj1.status===true){
        lesInstructions=obj1.value;
       }else{
-       lesInstructions='#(erreur php_traite_Stmt_Switch 222)';;
+        return(astphp_logerreur({'status':false,'message':'0175  erreur php_traite_Stmt_TryCatch',element:element}));
       }
      }
     }
     tabSw.push([laCondition,lesInstructions]);
    }
   }else{
-   tabSw.push('#(erreur php_traite_Stmt_Switch 0202)');
+   return(astphp_logerreur({'status':false,'message':'0182  erreur php_traite_Stmt_Switch',element:element}));
   }
  }else{
-   tabSw.push('#(erreur php_traite_Stmt_Switch 212)');
+   return(astphp_logerreur({'status':false,'message':'0185  erreur php_traite_Stmt_Switch',element:element}));
  }
  t+='\n'+esp0+'bascule('
  t+='\n'+esp0+esp1+'quand('+leTest+')';
@@ -217,7 +217,7 @@ function php_traite_Stmt_TryCatch(element,niveau){
   if(obj.status===true){
    contenu+=obj.value;
   }else{
-   contenu+='#(erreur php_traite_Stmt_Function 0288)'
+   return(astphp_logerreur({'status':false,'message':'0220  erreur php_traite_Stmt_TryCatch',element:element}));
   }
  }
 
@@ -239,14 +239,14 @@ function php_traite_Stmt_TryCatch(element,niveau){
      }
     }
    }else{
-    lesTypesErreurs='#(TODO php_traite_Stmt_TryCatch 0206)';
+    return(astphp_logerreur({'status':false,'message':'0242  erreur php_traite_Stmt_TryCatch',element:element}));
    }
    
    var leNomErreur='';
    if(element.catches[numc].var && element.catches[numc].var.nodeType==="Expr_Variable"){
     leNomErreur='$'+element.catches[numc].var.name;
    }else{
-    leNomErreur='#(TODO php_traite_Stmt_TryCatch 0211)';
+    return(astphp_logerreur({'status':false,'message':'0249  erreur php_traite_Stmt_TryCatch',element:element}));
    }
    
    if(element.catches[numc].stmts && element.catches[numc].stmts.length>0){
@@ -256,7 +256,7 @@ function php_traite_Stmt_TryCatch(element,niveau){
     if(obj.status===true){
      contenu+=obj.value;
     }else{
-     contenu+='#(erreur php_traite_Stmt_Function 0232)'
+     return(astphp_logerreur({'status':false,'message':'0259  erreur php_traite_Stmt_TryCatch',element:element}));
     }
    }
    t+='\n'+esp0+esp1+'sierreur(';
@@ -288,10 +288,10 @@ function php_traite_Stmt_Use(element,niveau){
    if(element.uses[i].name.nodeType === "Name"){
     t+='appelf(nomf(use),p(\''+element.uses[i].name.name.replace(/\\/g,'\\\\')+'\'))';
    }else{
-    t+='#(todo erreur dans php_traite_Stmt_Use 0232 pour ' + element.nodeType + ' )';
+     return(astphp_logerreur({'status':false,'message':'0259  erreur php_traite_Stmt_Use',element:element}));
    }
   }else{
-   t+='#(todo erreur dans php_traite_Stmt_Use 0235 pour ' + element.nodeType + ' )';
+     return(astphp_logerreur({'status':false,'message':'0294  erreur php_traite_Stmt_Use',element:element}));
   }
  }
  return {'status':true,'value':t};
@@ -311,7 +311,7 @@ function php_traite_Expr_Isset(element,niveau){
    if(obj.status===true){
     lesArguments+=',p('+obj.value+')';
    }else{
-    t+='#(todo dans php_traite_Expr_Isset 0358 )';
+     return(astphp_logerreur({'status':false,'message':'0314  erreur php_traite_Expr_Isset',element:element}));
    }
   }
  }
@@ -333,7 +333,7 @@ function php_traite_Expr_Unset(element,niveau){
    if(obj.status===true){
     lesArguments+=',p('+obj.value+')';
    }else{
-    t+='#(todo dans php_traite_Expr_Unset 0388 )';
+     return(astphp_logerreur({'status':false,'message':'0388  erreur php_traite_Expr_Isset',element:element}));
    }
   }
  }
@@ -356,15 +356,15 @@ function php_traite_Expr_FuncCall(element,niveau){
    if(obj.status===true){
     nomFonction=obj.value;
    }else{
-    nomFonction='#(todo php_traite_Expr_FuncCall 0389 )';
+    return(astphp_logerreur({'status':false,'message':'0359  erreur php_traite_Expr_FuncCall',element:element}));
    }   
   }else if("Identifier"===element.name.nodeType){   
    nomFonction=element.name.name;
   }else{
-   t+='#(todo dans php_traite_Expr_FuncCall 0163 pas de name)';
+   return(astphp_logerreur({'status':false,'message':'0364  erreur php_traite_Expr_FuncCall',element:element}));
   }
  }else{
-   t+='#(todo dans php_traite_Expr_FuncCall 0357 pas de name)';
+   return(astphp_logerreur({'status':false,'message':'0367  erreur php_traite_Expr_FuncCall',element:element}));
  }
  
  var lesArgumentsCourts='';
@@ -2163,7 +2163,7 @@ function php_traite_Stmt_Class(element , niveau){
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
 
- console.log('element=' , element);
+// console.log('element=' , element);
  if(element.name && element.name.nodeType==="Identifier"){
    t+='\n'+esp0+'definition_de_classe(';
    t+='\n'+esp0+esp1+'nom_classe('+element.name.name+')';
@@ -2578,7 +2578,9 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
  //                 console.log('un script OK ="'+ objScr.value + '"' )
                   
                  }else{
- //                 console.log('un script KO')
+                    console.log('un script KO : ' + obj1.content[j].content[k].content[0] )
+                    t+='appelf(nomf(echo),p(\'<script type="text/javascript">\'))';
+                    t+='appelf(nomf(echo),p(\''+obj1.content[j].content[k].content[0].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'))';
                  }
 
 

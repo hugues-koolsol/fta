@@ -1435,7 +1435,7 @@ function traiteArrayExpression1(element,niveau){
                 return(astjs_logerreur({status:false,message:'erreur dans traiteArrayExpression1 1103 ',element:element}));
             }
          
-        }else if(element.elements[i].type === "BinaryExpression" || element.elements[i].type === "UnaryExpression"){
+        }else if(element.elements[i].type === "BinaryExpression" || element.elements[i].type === "UnaryExpression" || element.elements[i].type === "ObjectExpression"){
             var obj1 = traiteUneComposante(element.elements[i] , niveau , true , false );
             if(obj1.status === true){
                 lesPar+=',p('+obj1.value+')';
@@ -2702,34 +2702,32 @@ function recupere_ast_de_source_js_en_synchrone(texteSource,type_de_source){
 /*
 =====================================================================================================================
 */
-function convertit_source_javascript_en_rev(sourceDuJavascript){ // ancien transformSourceJavascriptEnRev(
- var t='';
- 
- try{
-  
-  var obj1=recupere_ast_de_source_js_en_synchrone(sourceDuJavascript , 'script'); // hugues
-  if(obj1.status===true){
-//   console.log('obj1=' , obj1 );
-   tabComment=obj1.commentaires;
-   var obj=TransformAstEnRev(obj1.value.body,0);
-   if(obj.status==true){
-    t=obj.value;
-   }else{
-    return logerreur({status:false,message:'erreur convertit_source_javascript_en_rev 2733'});
-   }
-   
-   
-  }else{
-   return logerreur({status:false,message:'erreur convertit_source_javascript_en_rev 2611'});
-  }
-  return {status:true,value:t};
-  
- }catch(e){
-  console.log('erreur de conversion de source',e);
-  return logerreur({status:false,message:'erreurconvertit_source_javascript_en_rev e='+e.message });
- }
+function convertit_source_javascript_en_rev(sourceDuJavascript){
+    var t='';
+    try{
+     
+        var obj1=recupere_ast_de_source_js_en_synchrone(sourceDuJavascript , 'script');
+        if(obj1.status===true){
+      //      console.log('obj1=' , obj1 );
+            tabComment=obj1.commentaires;
+            var obj=TransformAstEnRev(obj1.value.body,0);
 
- return {status:true,value:t};
+            if(obj.status==true){
+             t=obj.value;
+            }else{
+             return logerreur({status:false,message:'erreur convertit_source_javascript_en_rev 2733'});
+            }
+        }else{
+            return logerreur({status:false,message:'erreur convertit_source_javascript_en_rev 2611'});
+        }
+        return {status:true,value:t};
+        
+    }catch(e){
+        console.log('erreur de conversion de source',e);
+        return logerreur({status:false,message:'erreurconvertit_source_javascript_en_rev e='+e.message });
+    }
+
+    return {status:true,value:t};
 }
 
 

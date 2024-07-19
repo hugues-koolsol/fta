@@ -696,7 +696,7 @@ function tabToSql0(tab,id,niveau,options){
                                 variables_pour_tableau_tables.autoincrement=true;
                             }else if((tab[j][1] == 'unsigned') && (tab[j][8] == 0)){
                                 texte_du_champ+=' UNSIGNED';
-                            }else if(((tab[j][1] == 'notnull') || (tab[j][1] == 'non_nulle')) && (tab[j][8] == 0)){
+                            }else if(((tab[j][1] == 'notnull') || (tab[j][1] == 'non_nulle') || (tab[j][1] == 'not_null')) && (tab[j][8] == 0)){
                                 texte_du_champ+=' NOT NULL';
                                 variables_pour_tableau_tables.non_nulle=true;
                             }else if((tab[j][1] == 'default') && (tab[j][8] == 1)){
