@@ -51,318 +51,401 @@ class traitements_sur_html{
 
     /* 
       =======================================================================================
-      Construit texte html à partir d'un AST html
+      function traiteAstDeHtml
+      
+      Construit texte html à partir d'un AST html qui ressemble à ça :
+      {"type":"BODY",
+        "content":[
+          {"type":"DIV","content":["a"],"attributes":{"class":"a"}},
+          {"type":"DIV","content":["b"],"attributes":{"class":"b"}},
+          "\n"
+         ]
+      }
+      
       l'option retirerHtmlHeadEtBody permet de retirer les html,body et head si ils ne sont 
       pas renseignés
       =======================================================================================  
     */
     traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
-     var t='';
-     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
-     var esp1 = ' '.repeat(NBESPACESREV);
-     var dernierEstTexte=false;
-     var attributs='';
-     var contenu='';
-     var obj={dernierEstTexte:false};
-     var type='';
-     var typeScriptNonTraite=false;
+        var t='';
+        var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+        var esp1 = ' '.repeat(NBESPACESREV);
+        var dernierEstTexte=false;
+        var attributs='';
+        var contenu='';
+        var obj={dernierEstTexte:false};
+        var type='';
+        var typeScriptNonTraite=false;
      
      
     // console.log('jsonDeHtml=',jsonDeHtml);
      if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
-      type=jsonDeHtml.type.toLowerCase();
-      if(jsonDeHtml.type!==''){
-       if(type==='script'){ // , text/javascript
-        if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
-          if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
-           t+='\n'+esp0+'ldPlusJsonDansHtml(';
-           type='ldPlusJsonDansHtml'
-          }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript'){
-           t+='\n'+esp0+'javascriptDansHtml(';
-           type='javascriptDansHtml'
-          }else{
-           typeScriptNonTraite=true;
-           type='script';
-           t+='\n'+esp0+'script(';
-           logerreur({status:false,'message':'html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
-          }
-        }else{
-         /*
-          sans aucun type renseigné, c'est un javascript
-         */
-         t+='\n'+esp0+'javascriptDansHtml(';
-         type='javascriptDansHtml'
-        }
-       }else{
-           if("#comment"===type){
-               t+='\n'+esp0+'#(';
+         type=jsonDeHtml.type.toLowerCase();
+         if(jsonDeHtml.type!==''){
+          if(type==='script'){ // , text/javascript
+           if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
+
+             if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
+              t+='\n'+esp0+'ldPlusJsonDansHtml(';
+              type='ldPlusJsonDansHtml'
+             }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && jsonDeHtml.hasOwnProperty('content')){
+              /*
+               si il y a du contenu ( content existe ), 
+              */
+              t+='\n'+esp0+'javascriptDansHtml(';
+              type='javascriptDansHtml'
+             }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
+              /*
+               c'est un tag script avec src=""
+              */
+
+              typeScriptNonTraite=false;
+              type='script';
+              t+='\n'+esp0+'script(';
+             }else{
+              typeScriptNonTraite=true;
+              type='script';
+              t+='\n'+esp0+'script(';
+              logerreur({status:false,'message':'html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
+             }
            }else{
-               t+='\n'+esp0+type+'(';
+            /*
+             sans aucun type renseigné, c'est un javascript
+            */
+            t+='\n'+esp0+'javascriptDansHtml(';
+            type='javascriptDansHtml'
            }
-       }
-      }
-      
-      if(jsonDeHtml.attributes){
-          for(var attr in jsonDeHtml.attributes){
-              if(attributs!==''){
-               attributs+=','
+          }else{
+              if("#comment"===type){
+                  t+='\n'+esp0+'#(';
+              }else{
+                  t+='\n'+esp0+type+'(';
               }
-
-              attributs+='('+attr+',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
           }
-      }
-      
-      /*
-       ajout des attributs
-      */
-      t+=attributs;
-      
-      if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length>0 ){
-       
-
-        contenu=jsonDeHtml.content[0];
-        contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
-        if(attributs!==''){
-         t+=',';
-        }
-        t+='@('+contenu+')';
-        t+=')';
-
-       
-       
-      }else if(type.toLowerCase()==='ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
-       
-       
-       
-       var chaineJsEquivalente='var a='+jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
-       var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
-       if(obj.status===true){
-        t+=''+obj.value+'';
-       }else{
-        t+='#(Erreur de conversion du javascript 0066 )';
-       }
-       t+='\n'+esp0+')';
-       
-      }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
-
-       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[0]);
-       if(obj.status===true){
-        t+=''+obj.value+'';
-       }else{
-        t+='#(Erreur de conversion du javascript 0066 )';
-       }
-       t+='\n'+esp0+')';
-      }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
-       var count=0;
-       for(var i=0;i<jsonDeHtml.content.length;i++){
-        
-        /*
-          =======================
-          entree dans le récursif
-          =======================
-        */
-        count++;
-        niveau++;
-        
-        obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
-        niveau--;
-        if(obj.status===true){
-         if((attributs!=='' || contenu!=='') && obj.value!==''){
-          contenu+=',';
          }
-         contenu+=obj.value;
-        }else{
-         return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
-        }
-       }
-       t+=contenu;
-       
-       
-       if(jsonDeHtml.type!==''){
-        if(obj && obj.dernierEstTexte){
-         t+=')';
-        }else{
-         if(contenu===''){
-          t+=')';
-         }else{
+         
+         if(jsonDeHtml.attributes){
+             for(var attr in jsonDeHtml.attributes){
+                 if(attributs!==''){
+                  attributs+=','
+                 }
+
+                 attributs+='('+attr+',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
+             }
+         }
+         
+         /*
+          ajout des attributs
+         */
+         t+=attributs;
+         
+         if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length>0 ){
+          
+
+           contenu=jsonDeHtml.content[0];
+           contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
+           if(attributs!==''){
+            t+=',';
+           }
+           t+='@('+contenu+')';
+           t+=')';
+
+          
+          
+         }else if(type.toLowerCase()==='ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
+          
+          
+          
+          var chaineJsEquivalente='var a='+jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
+          var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
+          if(obj.status===true){
+              t+=''+obj.value+'';
+          }else{
+              return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0142 '+jsonDeHtml.type}));
+          }
           t+='\n'+esp0+')';
+          
+         }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
+
+          if(jsonDeHtml.content[0].content){
+            var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[0].content);
+          }else{
+            var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[0]);
+          }
+          if(obj.status===true){
+              t+=''+obj.value+'';
+          }else{
+              return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0152 '+jsonDeHtml.type}));
+
+          }
+          t+='\n'+esp0+')';
+         }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
+          var count=0;
+          for(var i=0;i<jsonDeHtml.content.length;i++){
+              
+              /*
+                =======================
+                entree dans le récursif
+                =======================
+              */
+              count++;
+              niveau++;
+              
+              obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
+              niveau--;
+              if(obj.status===true){
+                  if((attributs!=='' || contenu!=='') && obj.value!==''){
+                   contenu+=',';
+                  }
+                  contenu+=obj.value;
+              }else{
+                  return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
+              }
+          }
+          t+=contenu;
+          
+          
+          if(jsonDeHtml.type!==''){
+           if(obj && obj.dernierEstTexte){
+            t+=')';
+           }else{
+            if(contenu===''){
+             t+=')';
+            }else{
+             t+='\n'+esp0+')';
+            }
+           }
+          }
+         }else{
+          if(jsonDeHtml.type!==''){
+           t+=')';
+          }
          }
-        }
-       }
-      }else{
-       if(jsonDeHtml.type!==''){
-        t+=')';
-       }
-      }
-      
+         
       
      }else{
-      if(typeParent==='#comment'){
+         if(typeParent==='#comment'){
 
-        if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
-         contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
-         t+=contenu;
-        }else{
-         if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
-          /*
-          c'est un commentaire vide
-          */
+             if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
+              contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
+              t+=contenu;
+             }else{
+              if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
+               /*
+               c'est un commentaire vide
+               */
+              }else{
+               contenu=jsonDeHtml;
+               t+=contenu;
+              }
+             }
+             dernierEstTexte=true;
+         }else if(typeParent==='@'){
+             contenu=jsonDeHtml;
+             // debugger
+             t+=contenu;
+         }else if(typeParent==='script'){
+             var obj=convertit_source_javascript_en_rev(jsonDeHtml);
+             if(obj.status===true){
+              t+=''+obj.value+'';
+             }else{
+              t+='#(Erreur de conversion du javascript 0113 )';
+             }
+
          }else{
-          contenu=jsonDeHtml;
-          t+=contenu;
+             try{
+              if(jsonDeHtml.hasOwnProperty('content')){
+               if(typeof jsonDeHtml.content === 'string'){
+                 contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+               }else{
+                debugger
+               }
+               
+              }else{
+                 contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+              }
+             }catch(e){
+              /*
+              dans le cas où le jsonDeHtml n'existe pas
+              */
+
+              contenu='';
+             }
+             if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
+              contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+             }
+             if(contenu!=='' ){
+              //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+              contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
+             }
+             t+=contenu;
+             if(contenu!=''){
+              dernierEstTexte=true;
+             }
          }
-        }
-        dernierEstTexte=true;
-      }else if(typeParent==='@'){
-        contenu=jsonDeHtml;
-    //    debugger
-        t+=contenu;
-      }else if(typeParent==='script'){
-       var obj=convertit_source_javascript_en_rev(jsonDeHtml);
-       if(obj.status===true){
-        t+=''+obj.value+'';
-       }else{
-        t+='#(Erreur de conversion du javascript 0113 )';
-       }
-
-      }else{
-       try{
-        contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
-       }catch(e){
-        /*
-        dans le cas où le jsonDeHtml n'existe pas
-        */
-
-        contenu='';
-       }
-       if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
-        contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-       }
-       if(contenu!=='' ){
-        //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
-        contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
-       }
-       t+=contenu;
-       if(contenu!=''){
-        dernierEstTexte=true;
-       }else{
-       }
-      }
      }
      
      if(retirerHtmlHeadEtBody && niveau===0){
-      /*
-      le rev retourné inclut toujours une balise html et/ou body et/ou head
-      Si ces balises ne contiennent pas d'éléments, on les retire 
-      */
-
-      var tableau1 = iterateCharacters2(t);
-      var matriceFonction = functionToArray2(tableau1.out,false,true,'');
-      if(matriceFonction.status===true){
-    //   console.log('matriceFonction.value=',JSON.stringify(matriceFonction.value).replace(/\],/g,'],\n'));
-       if(matriceFonction.value[1][1]==='html' && matriceFonction.value[1][8]<=2){
-        
-        /* 
-          l'élément html est en première position
-          si il n'a aucune propriété, on peut le supprimer
-        */
-        var aDesProps=false;
-        for(var i=0;i<matriceFonction.value.length && aDesProps===false;i++){
-         if(matriceFonction.value[i][7]===1){
-          if(matriceFonction.value[i][1]===''){
-           aDesProps=true;
-           break;
-          }
-         }
-        }
-        if(aDesProps===false){
-         var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.value,1,0);
-         
          /*
-          si le head n'a aucun enfant
+         le rev retourné inclut toujours une balise html et/ou body et/ou head
+         Si ces balises ne contiennent pas d'éléments, on les retire 
          */
-         if(nouveauTableau1.length>=2 && nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
-          
-          var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
 
-          
-          if(nouveauTableau2[1][1]==='body'){
-           var aDesProps=false;
-           for(var i=0;i<nouveauTableau2.length && aDesProps===false;i++){
-            if(nouveauTableau2[i][7]===1){
-             if(nouveauTableau2[i][1]===''){
-              aDesProps=true;
-              break;
-             }
-            }
-           }
-           if(aDesProps===false){
+         var tableau1 = iterateCharacters2(t);
+         var matriceFonction = functionToArray2(tableau1.out,false,true,'');
+         if(matriceFonction.status===true){
+            // console.log('matriceFonction.value=',JSON.stringify(matriceFonction.value).replace(/\],/g,'],\n'));
 
-            /*
-             si le body n'a aucune propriété
-            */
+            if(matriceFonction.value[1][1]==='html' && matriceFonction.value[1][8]<=2){
+                
+                /* 
+                  l'élément html est en première position
+                  si il n'a aucune propriété, on peut le supprimer
+                */
+                var aDesProps=false;
+                for(var i=0;i<matriceFonction.value.length && aDesProps===false;i++){
+                    if(matriceFonction.value[i][7]===1){
+                        if(matriceFonction.value[i][1]===''){
+                            aDesProps=true;
+                            break;
+                        }
+                    }
+                }
+                if(aDesProps===false){
+                    var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.value,1,0);
+                    /*
+                     si le head n'a aucun enfant
+                    */
+                    if(nouveauTableau1.length>=2 && nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
+                     
+                        var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
 
-            var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
+                        
+                        if(nouveauTableau2[1][1]==='body'){
+                            var aDesProps=false;
+                            for(var i=0;i<nouveauTableau2.length && aDesProps===false;i++){
+                                if(nouveauTableau2[i][7]===1){
+                                    if(nouveauTableau2[i][1]===''){
+                                        aDesProps=true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(aDesProps===false){
 
-            var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
-            var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
-            if(obj1.status===true){
-             t=obj1.value;
+                                /*
+                                 si le body n'a aucune propriété
+                                */
+
+                                var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
+
+                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
+                                if(nouveauJsonDeHtml.status===true){
+                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                                    if(obj1.status===true){
+                                     t=obj1.value;
+                                    }else{
+                                     return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0314 '}));
+                                    }
+                                }else{
+                                    return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0317 '}));
+                                }
+
+                            }else{
+                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                                if(nouveauJsonDeHtml.status===true){
+                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                                    if(obj.status===true){
+                                        t=obj.value;
+                                    }else{
+                                        return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+                                    }
+                                }else{
+                                    return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0317 '}));
+                                }
+                            }
+                        }else{
+                            var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                            if(nouveauJsonDeHtml===true){
+                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                                if(obj1.status===true){
+                                    t=obj1.value;
+                                }else{
+                                    return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0340 '}));
+                                }
+                            }else{
+                                return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0343 '}));
+                            }
+                        }
+                    }else{
+                           /*
+                             la balise head contient des éléments, 
+                           */
+                           /* si la balise body ne contient rien, */
+                           var body_est_vide=false;
+                           for(var i=nouveauTableau1.length-1;i>=0 && body_est_vide===false ; i--){
+                               if(nouveauTableau1[i][1].toLowerCase()==='body' && nouveauTableau1[i][2]==='f'  && nouveauTableau1[i][3]===0){
+                                   body_est_vide=true;
+                                   nouveauTableau1.splice(i,1);
+
+                                   t='';
+                                   for(var j=0;j<nouveauTableau1.length;j++){
+                                       if(nouveauTableau1[j][7]===1){
+                                           var obj=a2F1(nouveauTableau1,1,true,j,false);
+//                                           var obj=this.tabToHtml0(nouveauTableau1,j,false,false,false,true,0);
+                                           if(obj.status===true){
+                                               t+=','+obj.value+'\n';
+                                           }else{
+                                               return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+                                           }
+                                       }
+                                   }
+                                   if(t!==false){
+                                    t=t.substr(1);
+                                   }
+                                   
+                               }
+                           }
+                           if(body_est_vide===true){
+                           }else{
+                           
+                               /*on reconstruit le source à partir de matriceFonction.value
+                                 avec des retours de lignes et sans coloration
+                               */
+                               var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
+                               var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                               
+                               debugger ; // hugues
+                               if(obj1.status===true){
+                                t=obj1.value;
+                               }else{
+                                return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+                               }
+                           }
+                    }
+                }else{
+                      /*
+                        on ne change rien car il y a des propriétés dans la balise html
+                      */
+                }
+                 
             }else{
-             return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
+                 /*
+                   on ne change rien
+                 */
             }
-
-           }else{
-            var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
-            var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
-            if(obj.status===true){
-             t=obj.value;
-            }else{
-             return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
-            }
-           }
-          }else{
-           var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
-           var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
-           if(obj1.status===true){
-            t=obj1.value;
-           }else{
-            return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
-           }
-          }
-         }else{
-          /*
-            la balise head contient des éléments, on reconstruit le source à partir de matriceFonction.value
-            avec des retours de lignes et sans coloration
-          */
-          var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
-          var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml,0,false,'');
-          if(obj1.status===true){
-           t=obj1.value;
-          }else{
-           return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0217 '}));
-          }
-         }
         }else{
-        /*
-          on ne change rien car il y a des propriétés dans la balise html
-        */
-         
+                return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0168 '+jsonDeHtml.type}));
         }
-        
-       }else{
-        /*
-          on ne change rien
-        */
-       }
-      }else{
-       return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0168 '+jsonDeHtml.type}));
-      }
      }
+     /*
+     on retourne du html "pur"
+     */
      return({status:true,value:t,'dernierEstTexte':dernierEstTexte});
     }
     /*
       =======================================================================================
+      function mapDOM
       fonction trouvée sur le net ( désolé, j'ai perdu la référence )
       A partir d'un html, on reconstruit un équivalent "ast" ( abstract syntax tree )
       =======================================================================================
@@ -371,6 +454,11 @@ class traitements_sur_html{
         var treeObject={};
         if(typeof element === 'string'){
             var parser= new DOMParser();
+            /*
+              "application/xml"
+              "image/svg+xml"
+              "text/html"
+            */
             var docNode = parser.parseFromString(element,'text/html');
             element=docNode.firstChild;
         }
@@ -424,186 +512,413 @@ class traitements_sur_html{
 
     /* 
       =======================================================================================
-      construit un ast à partir d'une matrice rev 
+      function mapMatriceVersJsonDeHtml
+      construit un ast à partir d'une matrice rev de html
+      <div class="a">a</div><div class="b">b</div>
+      [
+       [0,""      ,"INIT" ,-1,0 ,0, 0,0,6,0,0, 0,0,""],
+       [1,"div"   ,"f"    ,0 ,0,33,35,0,2,1,2,36,0,""],
+       [2,""      ,"f"    ,1 ,0,33,35,1,2,1,1,37,0,""],
+       [3,"class" ,"c"    ,2 ,0,38,42,2,0,1,0,37,0,""],
+       [4,"a"     ,"c"    ,2 ,3,45,45,2,0,2,0,37,0,""],
+       [5,"a"     ,"c"    ,1 ,3,50,50,1,0,2,0,37,0,""],
+       [6,"div"   ,"f"    ,0 ,0,61,63,0,2,2,2,64,0,""],
+       [7,""      ,"f"    ,1 ,0,61,63,6,2,1,1,65,0,""],
+       [8,"class" ,"c"    ,2 ,0,66,70,7,0,1,0,65,0,""],
+       [9,"b"     ,"c"    ,2 ,3,73,73,7,0,2,0,65,0,""],
+       [10,"b"    ,"c"    ,1 ,3,78,78,6,0,2,0,65,0,""]
+      ]
+      {"type":"BODY",
+        "content":[
+          {"type":"DIV","content":["a"],"attributes":{"class":"a"}},
+          {"type":"DIV","content":["b"],"attributes":{"class":"b"}},
+          "\n"
+         ]
+      }
       =======================================================================================  
     */
     mapMatriceVersJsonDeHtml(matrice){
      
-    // console.log('matrice=',JSON.stringify(matrice).replace(/\],/g,'],\n'));
-     
-     
-     
-     /* 
-      =======================================================================================
-      On définit une fonction dans une fonction car elle sera appelée récursivement
-      =======================================================================================  
-     */
-     function reconstruit(tab,parentId){
-      var l01=tab.length;
-      var type       ='';
-      var attributes ={};
-      var content    =[];
-      /*
-      récupération des attributs
-      */
-      var leJson={};
-      
-      
-      
-      
-      if(tab[parentId][1].toLowerCase()==='ldplusjsondanshtml'){
+        // console.log('matrice=',JSON.stringify(matrice).replace(/\],/g,'],\n'));
 
-        var debut=parentId+1;
-        for( var j=parentId+1;j<l01;j++){
-         if(tab[j][7]===parentId){
-          if(tab[j][1]==='' && tab[j][2]==='f'){
-          }else{
-           debut=j;
-           break;
-          }
-         }
+
+
+        function reconstruit(tab,parentId){
+            var l01=tab.length;
+            var un_element={};
+            var contenu=[];
+            var attrib={};
+            var indice=0;
+            var i=0;
+            var j=0;
+            for(indice=parentId+1;indice<l01 && tab[indice][3]> tab[parentId][3];indice++){
+                if(tab[indice][7]===parentId){
+
+                    if(tab[indice][2]==='f' && tab[indice][1]!==''){
+
+                        attrib={};
+                        var a_des_attributs=false;
+                        
+                        // recherche des attributs éventuels
+                        
+                        for(var i=indice+1;i<l01;i++){
+                            if(tab[i][7]===indice && tab[i][1]==='' && tab[i][2]==='f'){
+                              if(tab[i][8]===1){
+                                  attrib[tab[i+1][1]]=null;     
+                                  a_des_attributs=true;
+                              }else if(tab[i][8]===2){
+                                  attrib[tab[i+1][1]]=tab[i+2][1];     
+                                  a_des_attributs=true;
+                              }else{
+                                  return {status:false , message:'0547 nombre incorrect pour les attributs'};
+                              }
+                           }
+                        }
+                        if(a_des_attributs===true){
+                            un_element['attributes']=JSON.parse(JSON.stringify(attrib));
+                        }
+
+                     
+                        un_element['type']=tab[indice][1];
+                        
+                         
+                            // si c'est une fonction non vide, on sait que c'est un tag
+                            
+                            // recherche des autres éléments
+                            var le_contenu=[];
+                            for(var i=indice+1;i<l01;i++){
+                                if(tab[i][7]===indice && tab[i][1]!=='' ){
+                                  if(tab[i][2]==='c'){
+                                   le_contenu.push({content:tab[i][1]})
+                                  }else{
+                                   
+                                   
+                                      attrib={};
+                                      var a_des_attributs=false;
+                                      
+                                      // recherche des attributs éventuels
+                                      
+                                      for(var j=i+1;j<l01 && tab[j][3]> tab[i][3];j++){
+                                          if(tab[j][7]===i && tab[j][1]==='' && tab[j][2]==='f'){
+                                            if(tab[j][8]===1){
+                                                attrib[tab[j+1][1]]=null;     
+                                                a_des_attributs=true;
+                                            }else if(tab[j][8]===2){
+                                                attrib[tab[j+1][1]]=tab[j+2][1];     
+                                                a_des_attributs=true;
+                                            }else{
+                                                return {status:false , message:'0547 nombre incorrect pour les attributs'};
+                                            }
+                                         }
+                                      }
+                                      
+                                      if(tab[tab[i][7]][1].toLowerCase()==='javascriptdanshtml'){
+
+                                          
+                                          var debut=indice+1;
+                                          for( var j=indice+1;j<l01;j++){
+                                           if(tab[j][7]===indice){
+                                            if(tab[j][1]==='' && tab[j][2]==='f'){
+                                            }else{
+                                             debut=j;
+                                             break;
+                                            }
+                                           }
+                                          }
+
+
+                                          var objContenuJs=parseJavascript0(tab,debut,0);
+
+                                          if(objContenuJs.status===true){
+                                              le_contenu.push(JSON.parse(JSON.stringify({type:'javascriptdanshtml',content:objContenuJs.value,attributes:attrib})));
+                                          }else{
+                                              return(asthtml_logerreur({status:false,message:'module_html erreur 0635 '}));
+                                          }
+                                          
+                                          
+                                      }else if(tab[parentId][1].toLowerCase()==='ldplusjsondanshtml'){
+
+                                          var debut=indice+1;
+                                          for( var j=indice+1;j<l01;j++){
+                                           if(tab[j][7]===indice){
+                                            if(tab[j][1]==='' && tab[j][2]==='f'){
+                                            }else{
+                                             debut=j;
+                                             break;
+                                            }
+                                           }
+                                          }
+
+                                          var objContenuJs=parseJavascript0(tab,debut,0);
+                                          if(objContenuJs.status===true){
+                                           var contenu=objContenuJs.value.substr(objContenuJs.value.indexOf('=')+1);
+                                           if(contenu.substr(contenu.length-1,1)===';'){
+                                            contenu=contenu.substr(0,contenu.length-1);
+                                           }
+                                           content.push(contenu);
+                                           le_contenu.push(JSON.parse(JSON.stringify({type:'ldplusjsondanshtml',content:contenu,attributes:attrib})));
+                                           
+                                           
+                                           
+                                          }else{
+                                           return(asthtml_logerreur({status:false,message:'module_html erreur 0660 '}));
+                                          }
+                                          
+                                          
+                                          
+                                          
+                                      }else{
+                                          var obj=reconstruit(tab,i);
+                                          if(obj.status===true){
+                                              if(a_des_attributs===true){
+                                                  le_contenu.push(JSON.parse(JSON.stringify({type:tab[i][1],content:obj.content,attributes:attrib})));
+                                                  attrib={};
+                                              }else{
+                                                  le_contenu.push(JSON.parse(JSON.stringify({type:tab[i][1],content:obj.content})));
+                                              }
+                                          }else{
+                                              return {status:false , message:'0563 '};
+                                          }
+                                      }
+                                  }
+                               }
+                            }
+                            if(le_contenu.length>0){
+                                un_element['content']=JSON.parse(JSON.stringify(le_contenu));
+                            }
+                            contenu.push(JSON.parse(JSON.stringify(un_element)))
+                            
+                            
+                        
+                    }else if(tab[indice][2]==='c'){
+                        un_element['content']=tab[indice][1];
+                        contenu.push(JSON.parse(JSON.stringify(un_element)))
+                    }
+                    
+                }
+            }
+
+            if(parentId!==0){
+              return {status:true,content:contenu};
+            }else{
+
+              return {status:true,content:{type:'',content:contenu}};
+            }
         }
 
-
-        var objContenuJs=parseJavascript0(tab,debut,0);
-        if(objContenuJs.status===true){
-         var contenu=objContenuJs.value.substr(objContenuJs.value.indexOf('=')+1);
-         if(contenu.substr(contenu.length-1,1)===';'){
-          contenu=contenu.substr(0,contenu.length-1);
-         }
-         content.push(contenu);
-        }else{
-         content.push('<!-- erreur html.js 0428 -->');
-        }
-        console.log('objContenuJs=',objContenuJs);
-
-
-      }else if(tab[parentId][1].toLowerCase()==='javascriptdanshtml'){
-
-
-        var debut=parentId+1;
-        for( var j=parentId+1;j<l01;j++){
-         if(tab[j][7]===parentId){
-          if(tab[j][1]==='' && tab[j][2]==='f'){
-          }else{
-           debut=j;
-           break;
-          }
-         }
-        }
-
-
-        var objContenuJs=parseJavascript0(tab,debut,0);
-
-        if(objContenuJs.status===true){
-         
-         
-         content.push(objContenuJs.value);
-        }else{
-         content.push('<!-- erreur html.js 377 -->');
-        }
-        console.log('objContenuJs=',objContenuJs);
-        
-      }else if(tab[parentId][1]==='@'){
-       
-    //   debugger
-       
-      }else if(tab[parentId][8]===0 && parentId>0){
-       
-       content.push('');
-       
-      }else{
-       for(var indice=parentId+1;indice<l01;indice++){
-        if(tab[indice][7]===parentId){
-         if(tab[indice][1]!==''){
-          if(tab[indice][2]==='f' ){
-           
-           if('@'===tab[indice][1]){
+        /* 
+         =======================================================================================
+         On définit une fonction dans une fonction car elle sera appelée récursivement
+         =======================================================================================  
+        */
+        function reconstruit2(tab,parentId){
+            var l01=tab.length;
+            var type       ='';
+            var attributes ={};
+            var content    =[];
+            /*
+            récupération des attributs
+            */
+            var leJson={};
             
-             content.push(tab[indice][13].replace(/\\\'/g,'\'').replace(/\\\\/g,'\\')); // transformation inverse
-             var max=l01-1;
-             for( var j=indice+1;j<l01;j++){
-              if(tab[j][3]<=tab[indice][3]){
-               max=j-1;
-               break;
+            
+            
+           
+           if(tab[parentId][1].toLowerCase()==='ldplusjsondanshtml'){
+
+             var debut=parentId+1;
+             for( var j=parentId+1;j<l01;j++){
+              if(tab[j][7]===parentId){
+               if(tab[j][1]==='' && tab[j][2]==='f'){
+               }else{
+                debut=j;
+                break;
+               }
               }
              }
-             indice=max;
 
 
-           }else if('ldplusjsondanshtml'===tab[indice][1].toLowerCase()){
+             var objContenuJs=parseJavascript0(tab,debut,0);
+             if(objContenuJs.status===true){
+              var contenu=objContenuJs.value.substr(objContenuJs.value.indexOf('=')+1);
+              if(contenu.substr(contenu.length-1,1)===';'){
+               contenu=contenu.substr(0,contenu.length-1);
+              }
+              content.push(contenu);
+             }else{
+              return(asthtml_logerreur({status:false,message:'module_html erreur 0477 '}));
+             }
 
-                content.push(reconstruit(tab,indice));
-                var max=l01-1;
-                for( var j=indice+1;j<l01;j++){
-                 if(tab[j][3]<=tab[indice][3]){
-                  max=j-1;
+
+           }else if(tab[parentId][1].toLowerCase()==='javascriptdanshtml'){
+
+
+               var debut=parentId+1;
+               for( var j=parentId+1;j<l01;j++){
+                if(tab[j][7]===parentId){
+                 if(tab[j][1]==='' && tab[j][2]==='f'){
+                 }else{
+                  debut=j;
                   break;
                  }
                 }
-                indice=max;
+               }
 
-           }else if('javascriptdanshtml'===tab[indice][1].toLowerCase()){
 
-                content.push(reconstruit(tab,indice));
-                var max=l01-1;
-                for( var j=indice+1;j<l01;j++){
-                 if(tab[j][3]<=tab[indice][3]){
-                  max=j-1;
-                  break;
-                 }
-                }
-                indice=max;
-    /*            
-    */            
+               var objContenuJs=parseJavascript0(tab,debut,0);
+
+               if(objContenuJs.status===true){
+                
+                
+                content.push(objContenuJs.value);
+               }else{
+                   return(asthtml_logerreur({status:false,message:'module_html erreur 0503 '}));
+               }
+               console.log('objContenuJs=',objContenuJs);
+             
+           }else if(tab[parentId][1]==='@'){
+            
+         //   debugger
+            
+           }else if(tab[parentId][8]===0 && parentId>0){
+            
+               content.push('');
+            
            }else{
-            content.push(reconstruit(tab,indice));
-           }
-          }else{
-           content.push(tab[indice][1]);
-          }
-         }
-        }
-       }
-      }
-      if(parentId===0){
-       type='';
-      }else{
-       if(tab[parentId][1]==='@'){
-        type='';
-       }else{
-        type=tab[parentId][1];
-       }
-      }
-      leJson['type']=type;
-      leJson['content']=content;
 
-      var aDesAttributs=false;
-      for(var indice=parentId+1;indice<l01;indice++){
-       if(tab[indice][7]===parentId){
-        if(tab[indice][1]==='' && tab[indice][2]==='f' &&  tab[indice][8]===2){
-          attributes[tab[indice+1][1]]=tab[indice+2][1];
-          aDesAttributs=true;
+               for(var indice=parentId+1;indice<l01;indice++){
+                   var element={type:'',attributes:null,content:null};
+                   if(tab[indice][7]===parentId){
+                       
+                       /*
+                       */
+                       
+                       if(tab[indice][1]!==''){
+                           if(tab[indice][2]==='f' ){
+                            
+                               if('@'===tab[indice][1]){
+                                
+                                    content.push(tab[indice][13].replace(/\\\'/g,'\'').replace(/\\\\/g,'\\')); // transformation inverse
+                                    var max=l01-1;
+                                    for( var j=indice+1;j<l01;j++){
+                                     if(tab[j][3]<=tab[indice][3]){
+                                      max=j-1;
+                                      break;
+                                     }
+                                    }
+                                    indice=max;
+
+
+                               }else if('ldplusjsondanshtml'===tab[indice][1].toLowerCase()){
+
+                                    var obj=reconstruit(tab,indice);
+                                    if(obj.status===true){
+                                      content.push(obj.value);
+                                    }else{
+                                      return(asthtml_logerreur({status:false,message:'module_html erreur 0541 '}));
+                                    }
+                               
+                                    var max=l01-1;
+                                    for( var j=indice+1;j<l01;j++){
+                                     if(tab[j][3]<=tab[indice][3]){
+                                      max=j-1;
+                                      break;
+                                     }
+                                    }
+                                    indice=max;
+
+                               }else if('javascriptdanshtml'===tab[indice][1].toLowerCase()){
+
+                                    var obj=reconstruit(tab,indice);
+                                    if(obj.status===true){
+                                      content.push(obj.value);
+                                    }else{
+                                      return(asthtml_logerreur({status:false,message:'module_html erreur 0559 '}));
+                                    }
+
+                                    var max=l01-1;
+                                    for( var j=indice+1;j<l01;j++){
+                                     if(tab[j][3]<=tab[indice][3]){
+                                      max=j-1;
+                                      break;
+                                     }
+                                    }
+                                    indice=max;
+                        /*            
+                        */            
+                               }else{
+                                   var obj=reconstruit(tab,indice);
+                                   if(obj.status===true){
+                                     content.push(obj.value);
+                                   }else{
+                                     return(asthtml_logerreur({status:false,message:'module_html erreur 0559 '}));
+                                   }
+                                   
+                                   var max=l01-1;
+                                   for( var j=indice+1;j<l01;j++){
+                                    if(tab[j][3]<=tab[indice][3]){
+                                     max=j-1;
+                                     break;
+                                    }
+                                   }
+                                   indice=max;
+                                   
+                               }
+                           }else{
+                               var obj=reconstruit(tab,indice);
+                               if(obj.status===true){
+                                 content.push(obj.value);
+                               }else{
+                                 return(asthtml_logerreur({status:false,message:'module_html erreur 0559 '}));
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+           if(parentId===0){
+            type='';
+           }else{
+            if(tab[parentId][1]==='@'){
+             type='';
+            }else{
+             type=tab[parentId][1];
+            }
+           }
+           leJson['type']=type;
+           leJson['content']=content;
+
+           var aDesAttributs=false;
+           for(var indice=parentId+1;indice<l01;indice++){
+            if(tab[indice][7]===parentId){
+             if(tab[indice][1]==='' && tab[indice][2]==='f' &&  tab[indice][8]===2){
+               attributes[tab[indice+1][1]]=tab[indice+2][1];
+               aDesAttributs=true;
+             }
+            }
+           }
+           if(aDesAttributs){
+            leJson['attributes']=attributes;
+           }
+           return({status:true,value:leJson});
         }
-       }
-      }
-      if(aDesAttributs){
-       leJson['attributes']=attributes;
-      }
-      return leJson;
-     }
-     /* 
-      =======================================================================================
-      L'appel récursif se fait ici
-      =======================================================================================
-     */
-     
-     var obj=reconstruit(matrice,0);
-     return obj;
+        /* 
+         =======================================================================================
+         L'appel récursif se fait ici
+         =======================================================================================
+        */
+        
+        var obj=reconstruit(matrice,0);
+        if(obj.status===true){
+            return {status:true,value:obj.content};
+        }else{
+            return(asthtml_logerreur({status:false,message:'module_html erreur 0606 '}));
+        }
      
     }
     /* 
-     ======================================================================================================================
+      ================================================================================================================
+      function TransformHtmlEnRev
     */
 
     TransformHtmlEnRev(texteHtml,niveau){
@@ -611,25 +926,104 @@ class traitements_sur_html{
         var esp0 = ' '.repeat(NBESPACESREV*(niveau));
         var esp1 = ' '.repeat(NBESPACESREV);
         var elementsJson={};
-
         try{
+            elementsJson=this.mapDOM(texteHtml,false);
+            /*
+            */
+            var supprimer_le_tag_html_et_head=true;
+            if(texteHtml.indexOf('<html')>=0){
+                supprimer_le_tag_html_et_head=false;
+            }
+            var obj=this.traiteAstDeHtml(elementsJson,0,supprimer_le_tag_html_et_head,'');
+            if(obj.status===true){
+                t=obj.value;
+            }else{
+                return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));
+            }
+            return({status:true,value:t});
 
-         elementsJson=this.mapDOM(texteHtml,false);
-    //     console.log('elementsJson=',JSON.stringify(elementsJson).replace(/\{/g,'{\n'))
-         
-         
-         var obj=this.traiteAstDeHtml(elementsJson,0,true,'');
-         if(obj.status===true){
-          t=obj.value;
-         }else{
-          t='<-- erreur 0103 -->';
-         }
-         return({status:true,value:t});
         }catch(e){
-         console.log('e=',e);
-         return(asthtml_logerreur({status:false,message:'erreur 0098 e='+e.message+'\ne.stack='+e.stack}));
+            console.log('e=',e);
+            return(asthtml_logerreur({status:false,message:'erreur 0098 e='+e.message+'\ne.stack='+e.stack}));
         }
     }
+    
+    /* 
+     ======================================================================================================================
+     function insere_javascript_dans_html
+    */
+    insere_javascript_dans_html(tab , ind , niveau){
+        var t='';
+        var j=0;
+        var l01=tab.length;
+
+        /*
+        dans ce cas, c'est un tag <script avec des propriétés 
+        */
+        var lesProprietes='';
+        var indiceDebutJs=-1;
+        for(j=ind+1;j<l01 && tab[j][3]>tab[ind][3];j++){
+            if(tab[j][7]===ind){
+                if(tab[j][2]==='f'){
+                    if(tab[j][1]==='' ){
+                        lesProprietes+=' '+tab[j+1][1]+'="'+tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
+                    }else{
+                        if(indiceDebutJs===-1){
+                            indiceDebutJs=j;
+                        }
+                    }
+                }else{
+                    if(indiceDebutJs===-1){
+                        indiceDebutJs=j;
+                    }
+                }
+            }
+        }
+        
+
+        if(indiceDebutJs===-1){
+           /*
+            c'est une balise <script src=""></script>
+           */
+
+            t+=CRLF;
+            t+='<script'+lesProprietes+'></script>'+CRLF;
+         
+        }else{
+
+            /*
+             c'est un script dans un html
+            */
+            
+            var ob=parseJavascript0(tab,indiceDebutJs,niveau+1);
+            
+            if(ob.status===true){
+                /*
+                 ===========================================================================================
+                 ecriture de la valeur dans le cas d'un tag javascriptdanshtml
+                 ===========================================================================================
+                */
+                t+=CRLF;
+                t+='<script'+lesProprietes+'>'+CRLF;
+                t+='//<![CDATA['+CRLF;
+                t+='//<source_javascript_rev>'+CRLF;
+                t+=ob.value+CRLF;
+                t+='//</source_javascript_rev>'+CRLF;
+                t+='//]]>'+CRLF
+                t+='</script>'+CRLF;
+             
+             
+            }else{
+                return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0700'});  
+            }
+         
+        }
+        return {status : true, value : t};
+     
+    }
+
+    
+    
     //=====================================================================================================================
     tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , niveau){
      var t='';
@@ -866,70 +1260,14 @@ class traitements_sur_html{
            
            
           }else if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
-           /*
-           dans ce cas, c'est un tag <script avec des propriétés 
-           */
-           var lesProprietes='';
-           var indiceDebutJs=-1;
-           for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-            if(tab[j][7]===i){
-             if(tab[j][2]==='f'){
-              if(tab[j][1]==='' ){
-               lesProprietes+=' '+tab[j+1][1]+'="'+tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
-              }else{
-               if(indiceDebutJs===-1){
-                indiceDebutJs=j;
-               }
-              }
-             }else{
-              if(indiceDebutJs===-1){
-               indiceDebutJs=j;
-              }
-             }
-            }
-           }
            
-
-           if(indiceDebutJs===-1){
-            /*
-             c'est une balise <script src=""></script>
-            */
-
-             t+=CRLF;
-             t+='<script'+lesProprietes+'></script>'+CRLF;
-            
+           
+           var obj=this.insere_javascript_dans_html(tab,i,niveau);
+           if(obj.status===true){
+               t+=obj.value;
            }else{
-
-            /*
-             c'est un script dans un html
-            */
-            
-            niveau++;
-            ob=parseJavascript0(tab,indiceDebutJs,niveau);
-            niveau--;
-            
-            if(ob.status===true){
-             /*
-              ===========================================================================================
-              ecriture de la valeur dans le cas d'un tag javascriptdanshtml
-              ===========================================================================================
-             */
-             t+=CRLF;
-             t+='<script'+lesProprietes+'>'+CRLF;
-             t+='//<![CDATA['+CRLF;
-             t+='//<source_javascript_rev>'+CRLF;
-             t+=ob.value+CRLF;
-             t+='//</source_javascript_rev>'+CRLF;
-             t+='//]]>'+CRLF
-             t+='</script>'+CRLF;
-             
-             
-            }else{
-             return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0653'});  
-            }
-            
+               return logerreur({status:false,message:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'});  
            }
-
            var max=l01-1;
            for(var j=i+1;j<l01;j++){
             if(tab[j][3]<=tab[i][3]){

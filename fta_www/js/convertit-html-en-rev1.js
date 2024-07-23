@@ -18,14 +18,14 @@ function asthtml_logerreur(o){
 */
 //var __ht1=null;
 var tabComment=[];
-function transformHtmlEnRev(){
+function transform_text_area_Html_en_rev(nom_de_la_textarea){
  
     console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     dogid('txtar3').value='';
 //    document.getElementById('resultat1').innerHTML='';
     clearMessages('zone_global_messages');
-    var a = document.getElementById('txtar1');
+    var a = document.getElementById(nom_de_la_textarea);
     localStorage.setItem('fta_traitehtml_dernier_fichier_charge',a.value);
     var lines = a.value.split(/\r\n|\r|\n/);
     var count=lines.length;

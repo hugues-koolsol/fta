@@ -49,7 +49,7 @@ function tabToHtml1(tab,id,noHead,niveau){
   pas renseignés
   =======================================================================================  
 */
-function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
+function old_traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
  var esp1 = ' '.repeat(NBESPACESREV);
@@ -357,7 +357,7 @@ function traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
   A partir d'un html, on reconstruit un équivalent "ast" ( abstract syntax tree )
   =======================================================================================
 */
-function mapDOM(element){
+function old_mapDOM(element){
     var treeObject={};
     if(typeof element === 'string'){
         var parser= new DOMParser();
@@ -594,7 +594,7 @@ function mapMatriceVersJsonDeHtml(matrice){
  ======================================================================================================================
 */
 
-function TransformHtmlEnRev(texteHtml,niveau){
+function old_T_ransformHtmlEnRev(texteHtml,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -618,7 +618,7 @@ function TransformHtmlEnRev(texteHtml,niveau){
     }
 }
 //=====================================================================================================================
-function tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , niveau){
+function tabToHtml0_old( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , niveau){
  var t='';
  var i=0;
  var j=0;

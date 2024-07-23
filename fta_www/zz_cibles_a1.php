@@ -80,8 +80,8 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/zz_taches_a1.php' => array(),
       'fta_www/zz_taches_l1.php' => array(),
       'fta_www/svg_de_la_base.php' => array(),
-      'fta_www/phpliteadmin.config.php' => array('chp_type_source' => 'bibliotheque'),
-      'fta_www/phpliteadmin.php' => array('chp_type_source' => 'bibliotheque'),      
+      'fta_www/phpliteadmin.config.php' => array(),
+      'fta_www/phpliteadmin.php' => array(),      
       
       'fta_www/js/compile1.js' => array(),
       'fta_www/js/convertit-html-en-rev1.js' => array(),

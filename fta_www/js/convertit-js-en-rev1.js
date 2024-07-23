@@ -2705,7 +2705,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource,type_de_source){
 function convertit_source_javascript_en_rev(sourceDuJavascript){
     var t='';
     try{
-     
+        
         var obj1=recupere_ast_de_source_js_en_synchrone(sourceDuJavascript , 'script');
         if(obj1.status===true){
       //      console.log('obj1=' , obj1 );

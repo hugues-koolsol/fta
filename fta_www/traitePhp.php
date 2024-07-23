@@ -1,4 +1,12 @@
 <?php
+//the function echo the help [?] links to the documentation
+function helpLink($name){
+
+    global $lang;
+    return("<a href='?help=1' onclick='openHelp(\"".$name."\"); return false;' class='helpq' title='".$lang['help'].": ".$name."' target='_blank'><span>[?]</span></a>");
+
+}
+
 /*
 $name='toto';
 $b="(?:[^\"]$name+|\"\")$name";
@@ -22,7 +30,7 @@ print($o1);$o1='';
         <div class="menuScroller">
             <ul>
                 <li><a href="javascript:chargerSourceDeTestPhp()">source de test</a>&nbsp;</li>
-                <li><a href="javascript:transformPhpEnRev()"  class="yysucces">convertir</a>&nbsp;</li>
+                <li><a href="javascript:transform_text_area_php_en_rev(&quot;txtar1&quot;)"  class="yysucces">convertir</a>&nbsp;</li>
                 <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages">🙈</a>&nbsp;</li>
                 
             </ul>
@@ -70,7 +78,7 @@ $par=array(
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   chargerLeDernierSourcePhp();
-  transformPhpEnRev();
+//  transformPhpEnRev();
  }
 );
 </script>';

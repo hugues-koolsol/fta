@@ -12,7 +12,7 @@ print($o1);$o1='';
             <ul>
                 
                 <li><a href="javascript:chargerSourceDeTestHtml()">source de test</a>&nbsp;</li>
-                <li><a href="javascript:transformHtmlEnRev()"  class="yysucces">convertir</a>&nbsp;</li>
+                <li><a href="javascript:transform_text_area_Html_en_rev(&quot;txtar1&quot;)"  class="yysucces">convertir</a>&nbsp;</li>
                 <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages">🙈</a>&nbsp;</li>
                 
             </ul>
@@ -47,15 +47,14 @@ $js_a_executer_apres_chargement=array(
 );
 $par=array(
     'js_a_inclure'=>array('js/compile1.js','js/javascript.js',
-
-     'js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js'), // ,'js/html.js'
-    'module_a_inclure' => array('js/module_html.js'),
+    'js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js'), // ,'js/html.js'
+    'module_a_inclure' => array( 'js/module_interface1.js' , 'js/module_html.js' ),
     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   chargerLeDernierSourceHTML();
-//  transformHtmlEnRev();
+//  transform_text_area_Html_en_rev("txtar1");
  }
 )
 </script>';

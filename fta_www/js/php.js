@@ -155,9 +155,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
        t+='exit;'
       }else if(tab[i][8]==1 && tab[i+1][2]=='c' ){
        t+=espacesn(true,niveau);
-       t+='exit(';
-       t+=(tab[i+1][4]===true?'\''+tab[i+1][1]+'\'' : (tab[i+1][1]=='vrai'?'true':(tab[i+1][1]=='faux'?'false':(tab[i+1][1])))+'');
-       t+=');'
+       t+='exit('+maConstante(tab[i+1])+');'
        i++;
       }else{
        var obj1=php_traiteElement(tab,i+1,niveau,{});
@@ -1143,7 +1141,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
       }
       if(les_globales!==''){
           les_globales=les_globales.substr(1);
-          t+=les_globales;
+          t+=les_globales+';';
       }else{
           return(php_logerr({status:false,value:t,id:i,tab:tab,message:'php dans php_tabToPhp1 1147'}));
       }
@@ -1167,6 +1165,21 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
      t+=espacesn(true,niveau)+'/*'+traiteCommentaire2(tab[i][13],niveau,i)+'*/';
     }
     
+  }else if(tab[i][1]=='méthode'  && tab[i][2]=='f'){
+    var obj=php_traiteElement(tab , i , niveau,{})
+    if(obj.status===true){
+     t+=espacesn(true,niveau);
+     t+=obj.value;
+    }else{
+     return(php_logerr({status:false,value:t,id:i,tab:tab,message:'php dans php_tabToPhp1 1230'}));
+    }
+    
+    reprise=i+1;
+    max=i+1;
+    for(j=max;j<l01 && tab[j][3]>tab[i][3];j++){
+     reprise=j;
+    }
+    i=reprise;
   }else{
   
 
@@ -2017,6 +2030,9 @@ function php_traiteOperation(tab,id,niveau){
                             var obj1=php_traiteElement(tab , i , niveau,{});
                             if(obj1.status===true){
                               t+=obj1.value;
+                              if((tab[parentId][1] === 'mult') || (tab[parentId][1] === 'divi')){
+                                  t+=')';
+                              }
                             }else{
                               return php_logerr({status:false,value:t,id:i,tab:tab,message:'erreur 1714 dans php_traiteOperation '});
                             }
@@ -2025,6 +2041,9 @@ function php_traiteOperation(tab,id,niveau){
                             var obj1=php_traiteTableau1(tab,i,niveau);
                             if(obj1.status==true){
                              t+=obj1.value;
+                             if((tab[parentId][1] === 'mult') || (tab[parentId][1] === 'divi')){
+                                 t+=')';
+                             }
                             }else{
                              return php_logerr({status:false,value:t,id:i,tab:tab,message:'erreur dans php_traiteOperation 1723'});
                             }

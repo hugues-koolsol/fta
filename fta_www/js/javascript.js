@@ -1230,13 +1230,29 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     if(objtestLi.status == true){
                         t+=''+objtestLi.value+'';
                     }else{
-                        return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur js_tabTojavascript1 1056'}));
+                        return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur js_tabTojavascript1 1233'}));
                     }
                 }
+                
             
+             /*
+            }else if( tab[i][1]==='' && tab[i][2]==='f' && tab[tab[i][7]][1].toLowerCase()==='javascriptdanshtml' ){
+                if(tab[i][9]===1){
+                    var obj=window.__module_html1.insere_javascript_dans_html(tab,i-1,0);
+                    if(obj.status == true){
+                        t+=''+obj.value+'';
+                    }else{
+                        return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur js_tabTojavascript1 1243'}));
+                    }
+                }else{
+                    debugger
+                }
+             */
+
+                
             }else{
-                t+=espcLigne;
-                logerreur({status:false,value:t,id:i,tab:tab,'message':'javascript.js traitement non prévu 1057 '+JSON.stringify(tab[i])});
+
+                return( logerreur({status:false,value:t,id:i,tab:tab,'message':'javascript.js traitement non prévu 1057 '+JSON.stringify(tab[i])}));
             }         
          
          
