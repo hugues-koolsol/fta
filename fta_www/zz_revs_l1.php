@@ -332,27 +332,27 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__ls
 
 if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source !== ''))){
 
-    $liste_des_id_des_sources=array();
+    $liste_des_taches=array();
     foreach($tableau_pour_webworker001 as $k1 => $v1){
         $chaine_a_remplacer=$k1;
         foreach($v1 as $k2 => $v2){
-            $liste_des_id_des_sources[]=array( 'id_source' => $k2, 'etat' => 'a_faire');
+            $liste_des_taches[]=array( 'id_source' => $k2, 'etat' => 'a_faire');
         }
 
         if($chaine_a_remplacer !== ''){
 
-            /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_id_des_sources=' . $liste_des_id_des_sources;*/
+            /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_taches=' . $liste_des_taches;*/
             $__parametres_pour_travail_en_arriere_plan=array(
                 'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
                 'chaine_a_remplacer' => $chaine_a_remplacer,
-                'liste_des_id_des_sources' => $liste_des_id_des_sources,
+                'liste_des_taches' => $liste_des_taches,
                 'critere_de_recherche' => $where0);
             $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
             $paramUrl=str_replace('\\','\\\\',$paramUrl);
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan</a>'.CRLF;
+            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan</a>'.CRLF;
 
         }
 

@@ -2505,7 +2505,13 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
      var estTraiteSansErreur=false;
      var obj=isHTML(stmts[i].value);
 //     console.log('obj=',obj , stmts[i].value );
-     if(obj.status===true){
+
+     /* recherche d'au moins un tag dans le texte */
+     var regex = /(<[a-zA-Z]+>)/g;
+     var found = stmts[i].value.match(regex);
+
+
+     if(obj.status===true && stmts[i].value.indexOf('<')>=0 && stmts[i].value.indexOf('<')>=0 && found && found.length>0 ){
          var obj1=__module_html1.TransformHtmlEnRev(stmts[i].value,0);
          if(obj1.status===true){
              StmtsHtmlPrecedentEstEcho=false;
@@ -2562,7 +2568,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
        
        var obj1=__module_html1.mapDOM(stmts[i].value);
        
-       if(obj1 && obj1.type==='HTML'){
+       if(obj1 && obj1.status===true && obj1.parfait===true && obj1.value.type.toLowerCase()==='html'){
            /* 
            si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
            */

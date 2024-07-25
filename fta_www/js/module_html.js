@@ -1,5 +1,3 @@
-
-
 /*
 var global_enteteTableau=[
  ['id','id'                                 ,''], // 00
@@ -82,46 +80,52 @@ class traitements_sur_html{
      if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
          type=jsonDeHtml.type.toLowerCase();
          if(jsonDeHtml.type!==''){
-          if(type==='script'){ // , text/javascript
-           if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
+             if(type==='script'){ // , text/javascript
+                 if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
 
-             if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
-              t+='\n'+esp0+'ldPlusJsonDansHtml(';
-              type='ldPlusJsonDansHtml'
-             }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && jsonDeHtml.hasOwnProperty('content')){
-              /*
-               si il y a du contenu ( content existe ), 
-              */
-              t+='\n'+esp0+'javascriptDansHtml(';
-              type='javascriptDansHtml'
-             }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
-              /*
-               c'est un tag script avec src=""
-              */
+                      if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
+                          t+='\n'+esp0+'ldPlusJsonDansHtml(';
+                          type='ldPlusJsonDansHtml'
+                      }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && jsonDeHtml.hasOwnProperty('content')){
+                          /*
+                           si il y a du contenu ( content existe ), 
+                          */
+                          t+='\n'+esp0+'javascriptDansHtml(';
+                          type='javascriptDansHtml'
+                      }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
+                          /*
+                           c'est un tag script avec src=""
+                          */
 
-              typeScriptNonTraite=false;
-              type='script';
-              t+='\n'+esp0+'script(';
+                          typeScriptNonTraite=false;
+                          type='script';
+                          t+='\n'+esp0+'script(';
+                      }else{
+                          typeScriptNonTraite=true;
+                          type='script';
+                          t+='\n'+esp0+'script(';
+                          logerreur({status:false,'message':'html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
+                      }
+                 }else{
+                  /*
+                   sans aucun type renseigné, c'est un javascript
+                  */
+                  t+='\n'+esp0+'javascriptDansHtml(';
+                  type='javascriptDansHtml'
+                 }
              }else{
-              typeScriptNonTraite=true;
-              type='script';
-              t+='\n'+esp0+'script(';
-              logerreur({status:false,'message':'html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
+                 if("#comment"===type){
+
+                     t+='\n'+esp0+'#(';
+                 }else{
+                     if(type.toLowerCase()==='#text'){
+                         t+='';
+                     }else{
+                         t+='\n'+esp0+type+'(';
+                     }
+                     
+                 }
              }
-           }else{
-            /*
-             sans aucun type renseigné, c'est un javascript
-            */
-            t+='\n'+esp0+'javascriptDansHtml(';
-            type='javascriptDansHtml'
-           }
-          }else{
-              if("#comment"===type){
-                  t+='\n'+esp0+'#(';
-              }else{
-                  t+='\n'+esp0+type+'(';
-              }
-          }
          }
          
          if(jsonDeHtml.attributes){
@@ -129,9 +133,12 @@ class traitements_sur_html{
                  if(attributs!==''){
                   attributs+=','
                  }
+                 for(var j in jsonDeHtml.attributes[attr]){
 
-                 attributs+='('+attr+',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
+                     attributs+='(\''+j.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',"'+jsonDeHtml.attributes[attr][j].replace(/"/g,'&quot;')+'")';
+                 }
              }
+
          }
          
          /*
@@ -153,91 +160,123 @@ class traitements_sur_html{
           
           
          }else if(type.toLowerCase()==='ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
-          
-          
-          
-          var chaineJsEquivalente='var a='+jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
-          var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
-          if(obj.status===true){
-              t+=''+obj.value+'';
-          }else{
-              return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0142 '+jsonDeHtml.type}));
-          }
-          t+='\n'+esp0+')';
-          
+
+             if(jsonDeHtml.content[0].content){
+                 var chaineJsEquivalente='var a='+jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
+             }else{
+                 var chaineJsEquivalente='var a='+jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
+             }
+             var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
+             if(obj.status===true){
+                 t+=''+obj.value+'';
+             }else{
+                 return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0142 '+jsonDeHtml.type}));
+             }
+             t+='\n'+esp0+')';
+             
          }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
 
-          if(jsonDeHtml.content[0].content){
-            var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[0].content);
-          }else{
-            var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[0]);
-          }
-          if(obj.status===true){
-              t+=''+obj.value+'';
-          }else{
-              return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0152 '+jsonDeHtml.type}));
+             if(Array.isArray(jsonDeHtml.content)){
+                 for(var i=0;i<jsonDeHtml.content.length;i++){
+                   if(jsonDeHtml.content[i].type==='#text'){
+                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].content);
+                       if(obj.status===true){
+                           contenu+=obj.value;
+                       }else{
+                           return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
+                       }
 
-          }
-          t+='\n'+esp0+')';
-         }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
-          var count=0;
-          for(var i=0;i<jsonDeHtml.content.length;i++){
-              
-              /*
-                =======================
-                entree dans le récursif
-                =======================
-              */
-              count++;
-              niveau++;
-              
-              obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau,retirerHtmlHeadEtBody,type);
-              niveau--;
-              if(obj.status===true){
-                  if((attributs!=='' || contenu!=='') && obj.value!==''){
-                   contenu+=',';
+                   }else if(jsonDeHtml.content[i].type==='#cdata-section'){
+                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].content);
+                       if(obj.status===true){
+                           contenu+=obj.value;
+                       }else{
+                           return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
+                       }
+                   }else{
+                       return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0190 '+jsonDeHtml.type}));
+                   }
+                 }
+             }else{
+                  var obj=convertit_source_javascript_en_rev(jsonDeHtml.content);
+                  if(obj.status===true){
+                      contenu+='<![CDATA['+obj.value+']]>';
+                  }else{
+                      return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0198 '+jsonDeHtml.type}));
                   }
-                  contenu+=obj.value;
-              }else{
-                  return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
-              }
-          }
-          t+=contenu;
-          
-          
-          if(jsonDeHtml.type!==''){
-           if(obj && obj.dernierEstTexte){
-            t+=')';
-           }else{
-            if(contenu===''){
-             t+=')';
-            }else{
-             t+='\n'+esp0+')';
-            }
-           }
-          }
+
+             }
+             t+='\n'+esp0+contenu+')';
+             
+         }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
+             if(Array.isArray(jsonDeHtml.content)){
+                 for(var i=0;i<jsonDeHtml.content.length;i++){
+                     /*
+                       =======================
+                       entree dans le récursif
+                       =======================
+                     */
+                     obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau+1,retirerHtmlHeadEtBody,type);
+                     if(obj.status===true){
+                         if((attributs!=='' || contenu!=='') && obj.value!==''){
+                          contenu+=',';
+                         }
+                         contenu+=obj.value;
+                     }else{
+                         return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
+                     }
+                 }
+             }else{
+                 contenu+=jsonDeHtml.content;
+             }
+             if(type.toLowerCase()==='#text'){
+                 contenu=contenu.replace(/\n/,' ').replace(/\r/,' ').trim();
+                 if(contenu!==''){
+                     t+='\''+contenu.replace(/\\/,'\\\\').replace(/\'/,'\\\'')+'\'';
+                 }
+             }else{
+                 t+=contenu;
+                 if(jsonDeHtml.type!==''){
+                     if(obj && obj.dernierEstTexte){
+                         t+=')';
+                     }else{
+                         if(contenu===''){
+                             t+=')';
+                         }else{
+                             if(jsonDeHtml.type.toLowerCase()==='#comment'){
+                                 t+=')';
+                             }else{
+                                 t+='\n'+esp0+')';
+                             }
+                         }
+                     }
+                 }
+             }
          }else{
-          if(jsonDeHtml.type!==''){
-           t+=')';
-          }
+             if(type.toLowerCase()==='#text'){
+             }else{
+                 if(jsonDeHtml.type!==''){
+                     t+=')';
+                 }
+             }
          }
-         
       
      }else{
+      
          if(typeParent==='#comment'){
 
              if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
-              contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
-              t+=contenu;
+                 contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
+                 t+=contenu;
              }else{
-              if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
-               /*
-               c'est un commentaire vide
-               */
-              }else{
-               contenu=jsonDeHtml;
-               t+=contenu;
-              }
+                 if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
+                     /*
+                     c'est un commentaire vide
+                     */
+                 }else{
+                     contenu=jsonDeHtml;
+                     t+=contenu;
+                 }
              }
              dernierEstTexte=true;
          }else if(typeParent==='@'){
@@ -247,40 +286,38 @@ class traitements_sur_html{
          }else if(typeParent==='script'){
              var obj=convertit_source_javascript_en_rev(jsonDeHtml);
              if(obj.status===true){
-              t+=''+obj.value+'';
+                 t+=''+obj.value+'';
              }else{
-              t+='#(Erreur de conversion du javascript 0113 )';
+                 t+='#(Erreur de conversion du javascript 0113 )';
              }
 
          }else{
              try{
-              if(jsonDeHtml.hasOwnProperty('content')){
-               if(typeof jsonDeHtml.content === 'string'){
-                 contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
-               }else{
-                debugger
-               }
-               
-              }else{
-                 contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
-              }
+                 if(jsonDeHtml.hasOwnProperty('content')){
+                     if(typeof jsonDeHtml.content === 'string'){
+                         contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                     }else{
+                         debugger
+                     }
+                 }else{
+                     contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                 }
              }catch(e){
-              /*
-              dans le cas où le jsonDeHtml n'existe pas
-              */
-
-              contenu='';
+                 /*
+                 dans le cas où le jsonDeHtml n'existe pas
+                 */
+                 contenu='';
              }
              if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
-              contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+                 contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
              }
              if(contenu!=='' ){
-              //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
-              contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
+                 //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                 contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
              }
              t+=contenu;
              if(contenu!=''){
-              dernierEstTexte=true;
+                 dernierEstTexte=true;
              }
          }
      }
@@ -415,7 +452,7 @@ class traitements_sur_html{
                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
                                
-                               debugger ; // hugues
+                               
                                if(obj1.status===true){
                                 t=obj1.value;
                                }else{
@@ -459,54 +496,110 @@ class traitements_sur_html{
               "image/svg+xml"
               "text/html"
             */
-            var docNode = parser.parseFromString(element,'text/html');
-            element=docNode.firstChild;
-        }
-        function treeHTML(element,object){
-            object['type']=element.nodeName;
-            var i=0;
-            var nodeList=element.childNodes;
-            if(nodeList !== null){
-                if(nodeList.length){
-                    object['content']=[];
-                    for(i=0;i < nodeList.length;i=i+1){
-                        if(nodeList[i].nodeType == 3){
-                            object['content'].push(nodeList[i].nodeValue);
+            var docNode = parser.parseFromString('<aaaaa>'+element+'</aaaaa>','application/xml');
+            var elementNoeud=docNode.firstChild; // element
+            if(docNode.getElementsByTagName('parsererror').length || element.indexOf('<')<0){
+                /*
+                  ce n'est pas un xml parfait
+                */
+
+                var docNode = parser.parseFromString(element,'text/html');
+                elementNoeud = docNode.firstChild;
+
+                
+                function treeHTML(element,object){
+                    object['type']=element.nodeName;
+                    var i=0;
+                    var nodeList=element.childNodes;
+                    if(nodeList !== null){
+                        if(nodeList.length){
+                            object['content']=[];
+                            for(i=0;i < nodeList.length;i=i+1){
+                                if(nodeList[i].nodeType == 3){
+                                    object['content'].push(nodeList[i].nodeValue);
+                                }else{
+                                    object['content'].push({});
+                                    treeHTML(nodeList[i],object["content"][object["content"].length -1]);
+                                }
+                            }
                         }else{
-                            object['content'].push({});
-                            treeHTML(nodeList[i],object["content"][object["content"].length -1]);
+                            if(element.nodeValue){
+                                object['content']=[];
+                                object['content'].push(element.nodeValue);
+                            }
                         }
                     }
-                }else{
-                    if(element.nodeValue){
-                        object['content']=[];
-                        object['content'].push(element.nodeValue);
-                    }
-                }
-            }
-            if(element.attributes != null){
-                if(element.attributes.length){
-                    object['attributes']={};
-                    for(i=0;i < element.attributes.length;i=i+1){
+                    if(element.attributes != null){
+                        if(element.attributes.length){
+                            object['attributes']={};
+                            for(i=0;i < element.attributes.length;i=i+1){
 
-                        if(element.attributes[i].nodeName==='"'){
-                         /*
-                           =========================================
-                           vraiment bizarre un attribut = '"'
-                           =========================================
-                         */
-                         console.log('element.attributes[i].nodeName=<'+element.attributes[i].nodeName+'>')
-                        }else{
-                         object['attributes'][element.attributes[i].nodeName]=element.attributes[i].nodeValue;
+                                if(element.attributes[i].nodeName==='"'){
+                                 /*
+                                   =========================================
+                                   vraiment bizarre un attribut = '"'
+                                   =========================================
+                                 */
+                                 console.log('element.attributes[i].nodeName=<'+element.attributes[i].nodeName+'>')
+                                }else{
+                                 object['attributes'][element.attributes[i].nodeName]=element.attributes[i].nodeValue;
+                                }
+                                 
+                            }
                         }
-                         
                     }
                 }
+
+                treeHTML(elementNoeud,treeObject);
+                return {status:true, value:treeObject,parfait:false};
+                
+                
+                
+            }else{
+                /*
+                  c'est un xml parfait, on retire la racine aaaaa et on le traite
+                */
+                elementNoeud = docNode.firstChild.childNodes;
+                
+                function treeXML(elements, objet , niveau){
+                    try{
+                        var les_contenus=[];
+                        for(var i=0;i<elements.length;i++){
+                            var le_noeud={}
+                            var les_attributs=[];
+                            le_noeud['type']=elements[i].nodeName;
+                            if(elements[i].attributes && elements[i].attributes.length>0){
+                                for(var j=0;j<elements[i].attributes.length;j++){
+                                    var l_attribut={};
+                                    l_attribut[elements[i].attributes[j].name]=elements[i].attributes[j].value;
+                                    les_attributs.push(l_attribut);
+                                }
+                                le_noeud['attributes']=les_attributs;
+                            }
+                            if(elements[i].childNodes && elements[i].childNodes.length>0){
+                                treeXML(elements[i].childNodes,le_noeud);
+                            }else{
+                                if(elements[i].data){
+                                    le_noeud.content=elements[i].data;
+                                }else{
+                                    le_noeud.content=null;
+                                }
+                            }
+                            les_contenus.push(le_noeud);
+                        }
+                        objet.content=JSON.parse(JSON.stringify(les_contenus))
+                    }catch(e){
+                        debugger;
+                    }
+                    
+                }
+                treeObject['type']='';
+                treeXML(elementNoeud,treeObject,0);
+                return {status:true, value:treeObject,parfait:true};
+                
             }
         }
-
-        treeHTML(element,treeObject);
-        return treeObject;
+        
     }
 
 
@@ -687,12 +780,14 @@ class traitements_sur_html{
                                 un_element['content']=JSON.parse(JSON.stringify(le_contenu));
                             }
                             contenu.push(JSON.parse(JSON.stringify(un_element)))
+                            un_element={}
                             
                             
                         
                     }else if(tab[indice][2]==='c'){
                         un_element['content']=tab[indice][1];
                         contenu.push(JSON.parse(JSON.stringify(un_element)))
+                        un_element={}
                     }
                     
                 }
@@ -778,7 +873,7 @@ class traitements_sur_html{
              
            }else if(tab[parentId][1]==='@'){
             
-         //   debugger
+             debugger
             
            }else if(tab[parentId][8]===0 && parentId>0){
             
@@ -928,17 +1023,28 @@ class traitements_sur_html{
         var elementsJson={};
         try{
             elementsJson=this.mapDOM(texteHtml,false);
-            /*
-            */
-            var supprimer_le_tag_html_et_head=true;
-            if(texteHtml.indexOf('<html')>=0){
-                supprimer_le_tag_html_et_head=false;
-            }
-            var obj=this.traiteAstDeHtml(elementsJson,0,supprimer_le_tag_html_et_head,'');
-            if(obj.status===true){
-                t=obj.value;
-            }else{
-                return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));
+            if(elementsJson.status===true){
+                if(elementsJson.parfait===true){
+                    supprimer_le_tag_html_et_head=false;
+                }else{
+                    /*
+                    */
+                    var supprimer_le_tag_html_et_head=true;
+                    if(texteHtml.indexOf('<html')>=0){
+                        supprimer_le_tag_html_et_head=false;
+                    }
+                    
+                }
+
+                var obj=this.traiteAstDeHtml(elementsJson.value,0,supprimer_le_tag_html_et_head,'');
+                if(obj.status===true){
+                    
+                    t=obj.value;
+                }else{
+                    return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));
+                }
+                
+                
             }
             return({status:true,value:t});
 
