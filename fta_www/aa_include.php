@@ -872,10 +872,10 @@ function html_footer1($parametres=array()){
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
     if(!preg_match('/.*_a[0-9]+\\.php/',BNF)){
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style="opacity:0.5;"   title="taille texte">A±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="opacity:0.5;" title="taille espace">p±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style="opacity:0.5;"  title="taille bordure">b±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style="opacity:0.5;"  title="taille marge">m±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m±</a>'.CRLF;
         
         $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }

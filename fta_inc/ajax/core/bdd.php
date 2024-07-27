@@ -1,63 +1,125 @@
 <?php
 
+function ajouter_en_bdd_le_champ(&$data){
+ 
+    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
+    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
+    $chemin_bdd=realpath($chemin_bdd);
+    if(!(is_file($chemin_bdd))){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ fichier de bdd non trouvé';
+        return;
+
+    }
+ 
+    $db1=new SQLite3($chemin_bdd);
+    $ret0=$db1->exec('BEGIN TRANSACTION;');
+
+    if($ret0 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ BEGIN transaction KO';
+        return;
+
+    }
+
+ 
+ 
+    $ret1=$db1->exec($data['input']['source_sql']);
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ création table temporaire impossible';
+        $ret0=$db1->exec('ROLLBACK;');
+        return;
+
+    }
+ 
+ 
+    $retfin=$db1->exec('COMMIT;');
+
+    if($retfin !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ COMMIT impossible';
+        $ret0=$db1->exec('ROLLBACK;');
+        return;
+
+    }
+
+    $data['status']='OK';
+ 
+ 
+}
+/*
+  ==========================================================================================================
+*/
+function creer_table_dans_base(&$data){
+ 
+    
+/*      
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data , true) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .CRLF.CRLF); fclose($fd);}
+*/
+
+    
+    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
+    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
+    $chemin_bdd=realpath($chemin_bdd);
+    if(!(is_file($chemin_bdd))){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base fichier de bdd non trouvé';
+        return;
+
+    }
+ 
+    $db1=new SQLite3($chemin_bdd);
+    $ret0=$db1->exec('BEGIN TRANSACTION;');
+
+    if($ret0 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base BEGIN transaction KO';
+        return;
+
+    }
+
+ 
+ 
+    $ret1=$db1->exec($data['input']['source_sql']);
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base création table temporaire impossible';
+        $ret0=$db1->exec('ROLLBACK;');
+        return;
+
+    }
+ 
+ 
+    $retfin=$db1->exec('COMMIT;');
+
+    if($retfin !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base COMMIT impossible';
+        $ret0=$db1->exec('ROLLBACK;');
+        return;
+
+    }
+
+    $data['status']='OK';
+ 
+ 
+}
+/*
+  ==========================================================================================================
+*/
 function ordonner_les_champs_de_table(&$data){
 
-    /*
-      
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data,true).CRLF.CRLF); fclose($fd);}
-      
-      $data=array (
-      'status' => 'KO',
-      'messages' => 
-      array (
-      ),
-      'input' => 
-      array (
-      'call' => 
-      array (
-      'lib' => 'core',
-      'file' => 'bdd',
-      'funct' => 'ordonner_les_champs_de_table',
-      ),
-      'nom_de_la_table' => 'tbl_bdds',
-      'ordre_original' => 'chi_id_basedd,chp_nom_basedd,chp_rev_basedd,chp_commentaire_basedd,chx_dossier_id_basedd,chp_genere_basedd,chx_cible_id_basedd,chp_php_basedd,chp_rev_travail_basedd,chp_fournisseur_basedd',
-      'ordre_modifie' => 'chi_id_basedd,chx_cible_id_basedd,chp_nom_basedd,chp_rev_basedd,chp_commentaire_basedd,chx_dossier_id_basedd,chp_genere_basedd,chp_php_basedd,chp_rev_travail_basedd,chp_fournisseur_basedd',
-      'id_bdd_de_la_base' => '1',
-      'chaine_create_table' => 'CREATE TABLE ....'
-      ),
-      )
-      CREATE TABLE copied AS SELECT * FROM mytable WHERE 0    
-      
-    */
     $db0=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
     $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$db0);
-    /*
-      
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$ret0='.var_export($ret0,true).CRLF.CRLF); fclose($fd);}
-      $ret0=array (
-      'T0.chi_id_basedd' => 1,
-      'T0.chp_nom_basedd' => 'system.db',
-      'T0.chp_rev_basedd' => '',
-      'T0.chp_commentaire_basedd' => 'initialisation',
-      'T0.chx_dossier_id_basedd' => 2,
-      'T1.chp_nom_dossier' => '/fta_inc/db/sqlite',
-      'T1.chx_cible_dossier' => 1,
-      'T0.chp_genere_basedd' => '',
-      'T0.chx_cible_id_basedd' => 1,
-      'T0.chp_php_basedd' => '',
-      'T2.chp_dossier_cible' => 'ftb',
-      ....
-      );
-      
-    */
     $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
-    /*
-      
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_bdd='.var_export($chemin_bdd,true).CRLF.CRLF); fclose($fd);}
-    */
-
     if(!(is_file($chemin_bdd))){
 
         $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table fichier de bdd non trouvé';
@@ -66,10 +128,6 @@ function ordonner_les_champs_de_table(&$data){
     }
 
     $db1=new SQLite3($chemin_bdd);
-    /*
-      
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$create_table='.$data['input']['chaine_create_table'].CRLF.CRLF); fclose($fd);}
-    */
     $ret0=$db1->exec('BEGIN TRANSACTION;');
 
     if($ret0 !== true){

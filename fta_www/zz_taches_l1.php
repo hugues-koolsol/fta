@@ -67,7 +67,6 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
   =====================================================================================================================
 */
 if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
-// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
 
  if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
@@ -89,6 +88,90 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
  recharger_la_page(BNF);
  
 }
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
+
+ if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
+
+  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=0 WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+  if( $ret===false ){
+
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+   
+  }else{
+   
+    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
+    
+  }   
+
+
+ }
+
+ recharger_la_page(BNF);
+ 
+}
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
+
+ if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
+
+  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache+1 
+  WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].' AND chp_priorite_tache<50';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+  if( $ret===false ){
+
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+   
+  }else{
+   
+    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
+    
+  }   
+
+
+ }
+
+ recharger_la_page(BNF);
+ 
+}
+
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
+
+ if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
+
+  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache-1 
+  WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].' AND chp_priorite_tache>=1';
+  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+  if( $ret===false ){
+
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+   
+  }else{
+   
+    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
+    
+  }   
+
+
+ }
+
+ recharger_la_page(BNF);
+ 
+}
+
+
+
 
 
 
@@ -162,12 +245,8 @@ $where0='
  WHERE  "T0"."chx_utilisateur_tache" = \''.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'\' 
 ';
 
-if(($chi_id_tache != '' && is_numeric($chi_id_tache))){
-
-    $where0.='
-  AND `T0`.`chi_id_tache` = \''.sq0($chi_id_tache).'\'
- ';
-
+if(($chi_id_tache != '' )){
+    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_tache`',$chi_id_tache);
 }
 
 
@@ -279,6 +358,9 @@ foreach($data0 as $k0 => $v0){
     
     $lsttbl.=' <a class="yydanger" href="zz_taches_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_tache'].'" title="supprimer">x</a>';
     $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_99&amp;__id='.$v0['T0.chi_id_tache'].'" title="mettre cette priorité à 99">99</a>';
+    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_0&amp;__id='.$v0['T0.chi_id_tache'].'" title="mettre cette priorité 0">00</a>';
+    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_plus_1&amp;__id='.$v0['T0.chi_id_tache'].'" title="ajouter 1 à cette priotité">+1</a>';
+    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_moins_1&amp;__id='.$v0['T0.chi_id_tache'].'" title="soustraire 1 à cette priotité">-1</a>';
 
     $lsttbl.='</div>';
     $lsttbl.='</td>';

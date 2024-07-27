@@ -650,7 +650,7 @@ function tabToSql0(tab,id,niveau,options){
                     t+=espacesn(true,niveau);
                     t+=('-- todo ligne 35 temp ' + tab[i][1]);
                 }
-            }else if((tab[i][1] == 'field') && (options.hasOwnProperty('dans_definition_de_champ')) && (options.dans_definition_de_champ == true)){
+            }else if((tab[i][1] == 'field') ){
                 /*
                   
                   field[
@@ -718,11 +718,20 @@ function tabToSql0(tab,id,niveau,options){
                                 variables_pour_tableau_tables.reference.table=+maConstante(tab[(j + 1)]);
                                 variables_pour_tableau_tables.reference.champ=+maConstante(tab[(j + 2)]);
                                 j+=2;
-                            }else if((tab[j][1] == 'type') && ((tab[j][8] == 1) || (tab[j][8] == 2)) && (tab[(j + 1)][2] == 'c')){
+                            }else if((tab[j][1] == 'type') && ((tab[j][8] == 1) || (tab[j][8] == 2)) ){
+                             
                                 if(tab[j][8] == 1){
-                                    texte_du_champ+=(' ' + tab[(j + 1)][1] + '');
-                                    variables_pour_tableau_tables.type.nom=tab[(j + 1)][1];
-                                    j++;
+                                    if(tab[(j + 1)][2] == 'c'){
+                                        texte_du_champ+=(' ' + tab[(j + 1)][1] + '');
+                                        variables_pour_tableau_tables.type.nom=tab[(j + 1)][1];
+                                        j++;
+                                    }else{
+                                        if(tab[(j + 2)][2] == 'c'){
+                                            texte_du_champ+=(' '+tab[(j + 1)][1]+'(' + tab[(j + 2)][1] + ')');
+                                        }else{
+                                            return(logerreur({status:false,value:t,id:i,message:'0732 sql.js erreur dans un type'}));
+                                        }
+                                    }
                                 }else if(tab[j][8] == 2){
                                     texte_du_champ+=(' ' + tab[(j + 1)][1] + '(' + tab[(j + 2)][1] + ')');
                                     variables_pour_tableau_tables.type.nom=tab[(j + 1)][1];
@@ -744,6 +753,7 @@ function tabToSql0(tab,id,niveau,options){
                             }else{
                                 logerreur({status:false,id:i,'message':('0275 sql.js erreur dans un field pour ' + tab[j][1])});
                                 texte_du_champ+=('/* todo sql.js repere 0338 ' + tab[j][1] + ' */');
+                                debugger
                             }
                         }
                     }else{
@@ -751,11 +761,9 @@ function tabToSql0(tab,id,niveau,options){
                     }
                 }
                 t+=(meta_du_champ + texte_du_champ);
-                if(options.dans_definition_de_champ === true){
+                if((options.hasOwnProperty('dans_definition_de_champ')) && (options.dans_definition_de_champ == true)){
                     options.tableau_tables_champs[(options.tableau_tables_champs.length - 1)].champs.push(variables_pour_tableau_tables);
                 }
-                t+=',';
-                t+=espacesn(true,niveau);
             }else if((tab[i][1] == 'create_table') || (tab[i][1] == 'créer_table')){
                 var engine='';
                 var auto_increment=0;
@@ -791,9 +799,12 @@ function tabToSql0(tab,id,niveau,options){
                                 t+=' ';
                                 options.dans_definition_de_champ=true;
                                 options.tableau_tables_champs.push({'nom_de_la_table':nom_table_en_cours,'champs':[]});
-                                niveau++;
-                                obj=tabToSql0(tab,j,niveau,options);
-                                niveau--;
+                                
+                                obj=tabToSql0(tab,j,niveau+1,options);
+                                t+=',';
+                                t+=espacesn(true,niveau);
+                                
+                                
                                 options.dans_definition_de_champ=false;
                                 if(obj.status === true){
                                     t+=espacesn(true,niveau);

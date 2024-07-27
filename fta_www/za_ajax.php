@@ -71,6 +71,7 @@ function mylog($error){
 }
 //================================================================================================
 require_once('aa_include.php');
+initialiser_les_services(false,true);
 /*
 if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.'========================'.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ .CRLF.'$_POST='.var_export($_POST,true).CRLF.'$_FILES='.var_export($_FILES,true)."\r\n"); fclose($fd);}
 */
