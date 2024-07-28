@@ -194,7 +194,7 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
 
    }else{
     for(var elem in jsonRet.messages){
-     astphp_logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
+     logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
     displayMessages('zone_global_messages');
 //    display_ajax_error_in_cons(jsonRet);

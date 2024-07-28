@@ -211,6 +211,7 @@ class module_svg_bdd{
                                 */
                                 var ancien_chemin = liste_des_paths[j].getAttribute('d');
                                 var tab_chemin = ancien_chemin.split(' ');
+                                
                                 tab_chemin[1]=parseInt(groupe_table.getAttribute('decallage_x'),10);
                                 tab_chemin[2]=parseInt((parseInt(groupe_table.getAttribute('decallage_y'),10) + position_haut + (this.#hauteur_de_boite_affichage / 2)),10);
                                 tab_chemin[4]=(parseInt(groupe_table.getAttribute('decallage_x'),10) - 30);
@@ -592,7 +593,7 @@ class module_svg_bdd{
                     var source_sql='ALTER TABLE '+nom_de_la_table+' ADD COLUMN '+ obj2.value+';';
 
                     var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-                    ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param).then(function(donnees){
+                    ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param).then((donnees) => {
                         if(donnees.status === 'OK'){
                             console.log('OK');
                         }else{
@@ -1107,6 +1108,7 @@ class module_svg_bdd{
 
         var lst = document.getElementsByTagName('g');
         var racine_du_svg=null;
+        var id_svg_conteneur_table=0;
         var i=0;
         for(i=0;i < lst.length;i++){
             if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (lst[i].getAttribute('id_bdd_de_la_base_en_cours') == this.#id_bdd_de_la_base_en_cours)){
@@ -1126,8 +1128,10 @@ class module_svg_bdd{
         var i=0;
         for(i=0;i < lst.length;i++){
             if((lst[i].getAttribute('type_element')) && (lst[i].getAttribute('type_element') == 'rectangle_de_table')){
+
                 var nom_de_la_table_extraction = lst[i].getAttribute('nom_de_la_table');
                 if(nom_de_la_table_extraction === nom_de_la_table){
+                    id_svg_conteneur_table=parseInt(lst[i].getAttribute('id_svg_conteneur_table'),10);
                     t0='\ncreate_table(';
                     t0+=('\n nom_de_la_table(\'' + nom_table_temporaire + '\'),');
                     t0+=('\nmeta(' + lst[i].getAttribute('meta_rev_de_la_table') + '\n),');
@@ -1158,6 +1162,7 @@ class module_svg_bdd{
             }
         }
         var nouveau_rev = (((t0 + nouveauTableau.join(','))) + '))');
+//        console.log( 'nouveau_rev=' , nouveau_rev );
         var chaine_create_table='';
         var obj1 = rev_texte_vers_matrice(nouveau_rev);
         if(obj1.status === true){
@@ -1217,19 +1222,111 @@ class module_svg_bdd{
             });
             return(response.json());
         }
-        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ordonner_les_champs_de_table'},nom_de_la_table:nom_de_la_table,ordre_original:txt_ordre_original,ordre_modifie:txt_ordre_modifie,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours,chaine_create_table:chaine_create_table,nom_table_temporaire:nom_table_temporaire,tab_des_index_sql:tab_des_index_sql};
-        ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param).then(function(donnees){
+        var ajax_param={
+            /* enveloppe d'appels */
+            'call':{'lib':'core','file':'bdd','funct':'ordonner_les_champs_de_table'},
+            /* paramètres */
+            nom_de_la_table        : nom_de_la_table,
+            ordre_original         : txt_ordre_original,
+            ordre_modifie          : txt_ordre_modifie,
+            id_bdd_de_la_base      : this.#id_bdd_de_la_base_en_cours,
+            chaine_create_table    : chaine_create_table,
+            nom_table_temporaire   : nom_table_temporaire,
+            tab_des_index_sql      : tab_des_index_sql,
+            nouveau_rev            : nouveau_rev,
+            id_svg_conteneur_table : id_svg_conteneur_table,
+        };
+        ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-             console.log('réordonner OK')
+             /*
+               il faut réordonner le svg
+                "nom_de_la_table":"tbl_tables",
+                "ordre_original":"chx_base_table,chp_nom_table,chp_nom_long_table,chp_nom_court_table,chp_nom_bref_table,chp_encodage_table,chp_classement_table",
+                "ordre_modifie" :"chx_base_table,chp_nom_table,chp_nom_long_table,chp_nom_court_table,chp_nom_bref_table,chp_classement_table,chp_encodage_table",
+                
+                
+                this.#id_svg_de_la_base_en_cours
+
+             */
+             //console.log( this.#arbre );
+             
+             var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg(donnees.input.id_bdd_de_la_base , donnees.input.nom_de_la_table , donnees.input.ordre_modifie , donnees.input.id_svg_conteneur_table , donnees.input.nouveau_rev);
+             if(obj.status===true){
+                console.log('réordonner OK')
+             }else{
+                console.log('réordonner KO')
+             }
+             
             }
         }).catch((err) => {
-            /* en cas de timeout */
+            /* en cas de timeout par esemple */
             debugger;
             console.error(err);
         });     
-     
     }
-    
+    /*
+      ====================================================================================================================
+      function reordonner_les_champs_de_la_table_dans_le_svg
+    */
+    #supprimer_recursivement_un_element_svg(id_parent , id_bdd_de_la_base , niveau){
+        /*
+         on supprime les éléments de la table
+        */
+        for(var i in this.#arbre[id_bdd_de_la_base].arbre_svg){
+            if(this.#arbre[id_bdd_de_la_base].arbre_svg[i] && this.#arbre[id_bdd_de_la_base].arbre_svg[i].id_parent===id_parent){
+                this.#supprimer_recursivement_un_element_svg(this.#arbre[id_bdd_de_la_base].arbre_svg[i].id , id_bdd_de_la_base , niveau+1);
+            }
+        }
+        this.#arbre[id_bdd_de_la_base].arbre_svg[id_parent]=null;
+        
+        /*
+          on supprime les liens
+          id_parent est l'id_svg_conteneur_table
+        */
+        if(niveau===0){
+
+            for(var i in this.#arbre[id_bdd_de_la_base].arbre_svg){
+                if(   this.#arbre[id_bdd_de_la_base].arbre_svg[i] 
+                   && this.#arbre[id_bdd_de_la_base].arbre_svg[i].proprietes
+                   && this.#arbre[id_bdd_de_la_base].arbre_svg[i].proprietes.id_svg_enfant_table
+                   && 
+                      (  
+                            this.#arbre[id_bdd_de_la_base].arbre_svg[i].proprietes.id_svg_enfant_table===id_parent
+                         || this.#arbre[id_bdd_de_la_base].arbre_svg[i].proprietes.id_svg_parent_table===id_parent
+                      )
+                ){
+                 this.#arbre[id_bdd_de_la_base].arbre_svg[i]=null;
+                }
+            }
+        }
+    }
+    /*
+      ====================================================================================================================
+      function reordonner_les_champs_de_la_table_dans_le_svg
+    */
+    #reordonner_les_champs_de_la_table_dans_le_svg(id_bdd_de_la_base , nom_de_la_table , ordre_modifie , id_svg_conteneur_table , nouveau_rev ){
+        /* 
+          supprimer récursivement tous les éléments de la table
+        */
+        this.#supprimer_recursivement_un_element_svg(id_svg_conteneur_table , id_bdd_de_la_base , 0 );
+        
+        var obj1 = rev_texte_vers_matrice(nouveau_rev);
+        if(obj1.status===true){
+         
+          // #ajouter_table_et_index_a_arbre(id_tab_table_en_cours,tab,indice_matr, indice_courant , id_bdd_de_la_base ){         
+         
+        }
+        debugger
+
+
+
+        global_modale1.close();
+        this.#dessiner_le_svg();
+        
+        
+        
+        return{status:true};
+    }
     /*
       ====================================================================================================================
       function supprimer_un_champ_de_la_table
@@ -1281,6 +1378,7 @@ class module_svg_bdd{
         }
         txt_ordre_modifie=txt_ordre_modifie.substr(1);
         txt_ordre_original=txt_ordre_original.substr(1);
+        
         
         this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie);
         
@@ -1539,6 +1637,18 @@ class module_svg_bdd{
       function svg_ajuster_la_largeur_de_la_base
     */
     #svg_ajuster_la_largeur_de_la_base(id_svg_de_la_base_en_cours){
+       
+       var id_bdd_de_la_base_en_cours=parseInt(document.getElementById(id_svg_de_la_base_en_cours).getAttribute('id_bdd_de_la_base_en_cours'),10);
+/*       
+       for( var i in this.#arbre[id_bdd_de_la_base_en_cours].arbre_svg){
+        var el=this.#arbre[id_bdd_de_la_base_en_cours].arbre_svg[i];
+        if(el.proprietes.type_element==="conteneur_de_table"){
+         this.#svg_ajuster_largeur_de_table(el.id);
+
+        }
+        
+       }
+*/     
         var indiceRectangle = (parseInt(id_svg_de_la_base_en_cours,10) + 1);
         var element_rectangle = document.getElementById(indiceRectangle);
         /*
@@ -1568,6 +1678,7 @@ class module_svg_bdd{
       function svg_ajuster_largeur_de_table
     */
     #svg_ajuster_largeur_de_table(indice_svg_table_en_cours){
+        
         var gparent = document.getElementById(indice_svg_table_en_cours);
         var lst = gparent.getElementsByTagName('rect');
         /* on masque tous les rectangles */
@@ -1609,6 +1720,7 @@ class module_svg_bdd{
                 if((lst[i].getAttribute('type_element') === 'reference_croisée') && (lst[i].getAttribute('id_svg_parent_table') == indice_svg_table_en_cours)){
                     var d = lst[i].getAttribute('d');
                     var ancien_chemin = lst[i].getAttribute('d');
+//                    debugger
                     var tab_chemin = ancien_chemin.split(' ');
                     tab_chemin[6]=(position_gauche_de_la_table + largeur + 30);
                     tab_chemin[8]=(position_gauche_de_la_table + largeur + (2 * this.#taille_bordure));
@@ -1791,7 +1903,7 @@ class module_svg_bdd{
                     return(response.json());
                 }
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'creer_table_dans_base'},source_sql:obj2.value,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-                creer_table_dans_base('za_ajax.php?creer_table_dans_base',ajax_param).then(function(donnees){
+                creer_table_dans_base('za_ajax.php?creer_table_dans_base',ajax_param).then((donnees) => {
                     if(donnees.status === 'OK'){
                         console.log('OK');
                     }else{
@@ -2337,6 +2449,7 @@ class module_svg_bdd{
           insertion du svg 
         */
         this.#svg_dessin.innerHTML=str;
+        
         var i={};
         for(i in this.#arbre){
             var tab = JSON.parse(JSON.stringify(this.#arbre[i].arbre_svg));
@@ -2464,7 +2577,7 @@ class module_svg_bdd{
             return(response.json());
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'envoyer_le_rev_de_le_base_en_post'},source_rev_de_la_base:t,id_bdd_de_la_base:id_bdd_de_la_base};
-        envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param).then(function(donnees){
+        envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
                 console.log('OK');
             }else{
@@ -2622,7 +2735,9 @@ class module_svg_bdd{
             if(non_nulle===false){
              couleur_du_lien='pink';
             }
-            
+            /*
+            le parent d'un lien appartient à la base et non pas à id_svg_champ_en_cours
+            */
             this.#arbre[id_bdd_de_la_base].arbre_svg[indice_courant]={type:'path',id:indice_courant,id_parent:this.#id_svg_de_la_base_en_cours,'proprietes':{
                     id:indice_courant,
                     d:d,
@@ -2714,6 +2829,189 @@ class module_svg_bdd{
         return {indice_courant:indice_courant};
     }
     
+    /*
+      ========================================================================================================
+      function ajouter_table_et_index_a_arbre
+    */
+    #ajouter_table_et_index_a_arbre(id_tab_table_en_cours,tab,indice_matr, indice_courant , id_bdd_de_la_base ){
+     
+        var l01=tab.length;
+        var id_svg_champ_en_cours=0;
+        var nom_de_la_table='';
+        var id_svg_conteneur_table=0;
+        var position_gauche_de_la_table=0;
+        var position_haut_de_la_table=0;
+        var largeur_de_la_boite=1;
+        var nom_du_champ='';
+        var indice_du_champ=0;
+        var nom_de_l_index='';
+        /*
+          =======================================================================
+          début rechercher le nom de la table pour créer le conteneur et la boite
+          =======================================================================
+        */
+        var i = (id_tab_table_en_cours + 1);
+        for(i=(id_tab_table_en_cours + 1);(i < l01) && (tab[i][3] > tab[id_tab_table_en_cours][3]);i++){
+            if(tab[i][7] === id_tab_table_en_cours){
+                if('nom_de_la_table' === tab[i][1]){
+                    nom_de_la_table=tab[(i + 1)][1];
+                    id_svg_conteneur_table=indice_courant;
+                    var position_de_la_table = [0,0];
+                    /*
+                      
+                      ======================
+                      recherche des meta
+                      ======================
+                    */
+                    var meta_de_la_table='';
+                    var tt = [0,0];
+                    for(l=(indice_matr + 1);(l < l01) && (tab[l][3] > tab[indice_matr][3]);l++){
+                        if((tab[l][1] === 'meta') && (tab[l][2] === 'f')){
+                            for(k=(l + 1);(k < l01) && (tab[k][3] > tab[l][3]);k++){
+                                if(tab[k][1] === 'transform_table_sur_svg'){
+                                    for(i=(k + 1);(i < l01) && (tab[i][3] >= tab[k][3]);i++){
+                                        if((tab[i][1] === 'transform') && (tab[i][2] === 'f')){
+                                            for(j=(i + 1);(j < l01) && (tab[j][3] > tab[i][3]);i++){
+                                                if((tab[j][1] === 'translate') && (tab[j][2] === 'f')){
+                                                    if(tab[j][8] === 2){
+                                                        tt[0]=parseInt(tab[(j + 1)][1]);
+                                                        if(isNaN(tt[0])){
+                                                            tt[0]=0;
+                                                        }
+                                                        tt[1]=parseInt(tab[(j + 2)][1]);
+                                                        if(isNaN(tt[1])){
+                                                            tt[1]=0;
+                                                        }
+                                                        tab[(j + 1)][1]=tt[0];
+                                                        tab[(j + 2)][1]=tt[1];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            var obj1 = a2F1(tab,l,false,(l + 1),false);
+                            if(obj1.status === true){
+                                meta_de_la_table=obj1.value;
+                            }else{
+                                debugger;
+                            }
+                            break;
+                        }
+                    }
+                    if(meta_de_la_table === ''){
+                        meta_de_la_table=('(table , \'' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
+                        meta_de_la_table+=('(nom_long_de_la_table , \'à faire ' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
+                        meta_de_la_table+=('(nom_court_de_la_table , \'à faire ' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
+                        meta_de_la_table+=('(nom_bref_de_la_table , \'à faire ' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
+                        meta_de_la_table+=(',(transform_table_sur_svg,translate(' + tt[0] + ',' + tt[1] + '))');
+                    }
+                    if(meta_de_la_table.indexOf('transform_table_sur_svg') < 0){
+                        meta_de_la_table+=('(transform_table_sur_svg,translate(' + tt[0] + ',' + tt[1] + '))');
+                    }
+                    var a = this.#ajouter_table_a_svg(nom_de_la_table,indice_courant,tt,meta_de_la_table);
+                    indice_courant+=2;
+                    id_svg_conteneur_table=a.id_svg_conteneur_table;
+                    position_gauche_de_la_table=parseFloat(tt[0]);
+                    position_haut_de_la_table=parseFloat(tt[1]);
+                    id_svg_champ_en_cours=indice_courant;
+                    var a = this.#ajouter_nom_de_table_au_svg(nom_de_la_table,indice_courant,id_svg_conteneur_table,largeur_de_la_boite);
+                    indice_courant+=3;
+                    largeur_de_la_boite=a.largeur_de_la_boite;
+                }
+            }
+        }
+        /*
+          
+          ================
+          ajout des champs
+          ================
+        */
+        /* on met les champs de la table  */
+        var k = (id_tab_table_en_cours + 1);
+        for(k=(id_tab_table_en_cours + 1);(k < l01) && (tab[k][3] > tab[id_tab_table_en_cours][3]);k++){
+            if((tab[k][7] === id_tab_table_en_cours) && (tab[k][1] === 'fields')){
+                var l = (k + 1);
+                for(l=(k + 1);(l < l01) && (tab[l][3] > tab[k][3]);l++){
+                    if(tab[l][7] === k){
+                        if(tab[l][1] == 'field'){
+                            var m = (l + 1);
+                            for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
+                                if(tab[m][7] === l){
+                                    if(tab[m][1] === 'nom_du_champ'){
+                                        /*
+                                          
+                                          on recherche le nom du champ pour créer le conteneur et le cadre
+                                        */
+                                        nom_du_champ=tab[(m + 1)][1];
+                                        var obj1 = a2F1(tab,l,false,(l + 1),false);
+                                        if(obj1.status === true){
+                                            var donnees_rev_du_champ=obj1.value;
+                                        }else{
+                                            logerreur({status:true,'message':('0849 problème sur les données du champ "' + nom_du_champ + '"')});
+                                            displayMessages('zone_global_messages');
+                                            return;
+                                        }
+                                        var a = this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,id_bdd_de_la_base,donnees_rev_du_champ);
+                                        id_svg_champ_en_cours=a.id_svg_champ_en_cours;
+                                        indice_du_champ=a.indice_du_champ;
+                                        indice_courant=a.indice_courant;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /*
+          
+          fin du create table
+          on a un nom de table : nom_de_la_table
+          on recherche les index qui pointent sur la table en cours
+        */
+        var i=1;
+        for(i=1;i < l01;i++){
+            if((tab[i][7] === 0) && (tab[i][1] === 'add_index')){
+                var j = (i + 1);
+                for(j=(i + 1);j < l01;j++){
+                    if((tab[j][7] === i) && (tab[j][1] === 'nom_de_la_table_pour_l_index') && (tab[(j + 1)][1] === nom_de_la_table)){
+                        var k = (i + 1);
+                        for(k=(i + 1);(k < l01) && (tab[k][3] > tab[i][3]);k++){
+                            if(tab[k][7] === i){
+                                if('index_name' === tab[k][1]){
+                                    nom_de_l_index=tab[(k + 1)][1];
+                                    id_svg_champ_en_cours=indice_courant;
+                                    /*
+                                      
+                                      création de la boite de l'index
+                                    */
+                                    largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_l_index);
+                                    /*
+                                      
+                                      conteneur du nom de l'index
+                                    */
+                                    var donnees_rev_de_l_index='';
+                                    var obj1 = a2F1(tab,i,false,(i + 1),false);
+                                    if(obj1.status === true){
+                                        donnees_rev_de_l_index=obj1.value;
+                                    }else{
+                                        logerreur({status:true,'message':('0849 problème sur les données de l\'index "' + nom_de_l_index + '"')});
+                                        displayMessages('zone_global_messages');
+                                    }
+                                    
+                                    var a =this.#ajouter_index_a_table(id_bdd_de_la_base,indice_courant,nom_de_l_index,id_svg_conteneur_table,nom_de_la_table,donnees_rev_de_l_index);
+                                    indice_courant=a.indice_courant;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return( {status:true , indice_courant:indice_courant , id_svg_conteneur_table:id_svg_conteneur_table});
+    }
     
     /*
       ========================================================================================================
@@ -2753,24 +3051,21 @@ class module_svg_bdd{
                 var position_xy_table = [decallage_droite_table,10];
                 var id_svg_conteneur_table=0;
                 var id_tab_table_en_cours=0;
-                var largeur_de_la_boite=1;
-                var nom_de_la_table='';
-                var nom_du_champ='';
                 var id_tab_champ_en_cours=0;
-                var nom_de_l_index='';
                 var max_x=0;
                 var max_y=0;
-                var position_min_haut=this.#position_min_gauche_de_reference;
-                var position_haut_de_la_table=0;
-                var position_min_gauche=this.#position_min_gauche_de_reference;
-                var position_max_bas=0;
-                var indice_du_champ=0;
-                var position_gauche_de_la_table=0;
+//                var position_min_haut=this.#position_min_gauche_de_reference;
+//                var position_min_gauche=this.#position_min_gauche_de_reference;
+//                var nom_de_l_index='';
+//                var indice_du_champ=0;
+//                var largeur_de_la_boite=1;
+//                var position_gauche_de_la_table=0;
+//                var position_haut_de_la_table=0;
+//                var nom_du_champ='';
                 var position_max_droite=0;
                 var largeur_de_la_table=0;
                 var tableau_des_references_croisees = [];
                 var id_svg_rectangle_base_en_cours=0;
-                var id_svg_champ_en_cours=0;
                 var i=0;
                 var j=0;
                 var k=0;
@@ -2785,7 +3080,7 @@ class module_svg_bdd{
                 var id_bdd_de_la_base={};
                 for(id_bdd_de_la_base in this.#arbre){
                     this.#id_bdd_de_la_base_en_cours=id_bdd_de_la_base;
-                    largeur_de_la_boite=1;
+//                    largeur_de_la_boite=1;
                     this.#svg_tableaux_des_references_amont_aval[id_bdd_de_la_base]=[];
                     var tab = this.#arbre[id_bdd_de_la_base]['matrice'];
                     this.#id_svg_de_la_base_en_cours=indice_courant;
@@ -2867,173 +3162,18 @@ class module_svg_bdd{
                     var indice_matr=1;
                     for(indice_matr=1;indice_matr < l01;indice_matr++){
                         if((tab[indice_matr][7] === 0) && (tab[indice_matr][1] === 'create_table')){
+                            
                             id_tab_table_en_cours=indice_matr;
-                            /*
-                              
-                              =======================================================================
-                              début rechercher le nom de la table pour créer le conteneur et la boite
-                              =======================================================================
-                            */
-                            var i = (id_tab_table_en_cours + 1);
-                            for(i=(id_tab_table_en_cours + 1);(i < l01) && (tab[i][3] > tab[id_tab_table_en_cours][3]);i++){
-                                if(tab[i][7] === id_tab_table_en_cours){
-                                    if('nom_de_la_table' === tab[i][1]){
-                                        nom_de_la_table=tab[(i + 1)][1];
-                                        id_svg_conteneur_table=indice_courant;
-                                        var position_de_la_table = [0,0];
-                                        /*
-                                          
-                                          ======================
-                                          recherche des meta
-                                          ======================
-                                        */
-                                        var meta_de_la_table='';
-                                        var tt = [0,0];
-                                        for(l=(indice_matr + 1);(l < l01) && (tab[l][3] > tab[indice_matr][3]);l++){
-                                            if((tab[l][1] === 'meta') && (tab[l][2] === 'f')){
-                                                for(k=(l + 1);(k < l01) && (tab[k][3] > tab[l][3]);k++){
-                                                    if(tab[k][1] === 'transform_table_sur_svg'){
-                                                        for(i=(k + 1);(i < l01) && (tab[i][3] >= tab[k][3]);i++){
-                                                            if((tab[i][1] === 'transform') && (tab[i][2] === 'f')){
-                                                                for(j=(i + 1);(j < l01) && (tab[j][3] > tab[i][3]);i++){
-                                                                    if((tab[j][1] === 'translate') && (tab[j][2] === 'f')){
-                                                                        if(tab[j][8] === 2){
-                                                                            tt[0]=parseInt(tab[(j + 1)][1]);
-                                                                            if(isNaN(tt[0])){
-                                                                                tt[0]=0;
-                                                                            }
-                                                                            tt[1]=parseInt(tab[(j + 2)][1]);
-                                                                            if(isNaN(tt[1])){
-                                                                                tt[1]=0;
-                                                                            }
-                                                                            tab[(j + 1)][1]=tt[0];
-                                                                            tab[(j + 2)][1]=tt[1];
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                var obj1 = a2F1(tab,l,false,(l + 1),false);
-                                                if(obj1.status === true){
-                                                    meta_de_la_table=obj1.value;
-                                                }else{
-                                                    debugger;
-                                                }
-                                                break;
-                                            }
-                                        }
-                                        if(meta_de_la_table === ''){
-                                            meta_de_la_table=('(table , \'' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
-                                            meta_de_la_table+=('(nom_long_de_la_table , \'à faire ' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
-                                            meta_de_la_table+=('(nom_court_de_la_table , \'à faire ' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
-                                            meta_de_la_table+=('(nom_bref_de_la_table , \'à faire ' + nom_de_la_table.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),');
-                                            meta_de_la_table+=(',(transform_table_sur_svg,translate(' + tt[0] + ',' + tt[1] + '))');
-                                        }
-                                        if(meta_de_la_table.indexOf('transform_table_sur_svg') < 0){
-                                            meta_de_la_table+=('(transform_table_sur_svg,translate(' + tt[0] + ',' + tt[1] + '))');
-                                        }
-                                        var a = this.#ajouter_table_a_svg(nom_de_la_table,indice_courant,tt,meta_de_la_table);
-                                        indice_courant+=2;
-                                        id_svg_conteneur_table=a.id_svg_conteneur_table;
-                                        position_gauche_de_la_table=parseFloat(tt[0]);
-                                        position_haut_de_la_table=parseFloat(tt[1]);
-                                        id_svg_champ_en_cours=indice_courant;
-                                        var a = this.#ajouter_nom_de_table_au_svg(nom_de_la_table,indice_courant,id_svg_conteneur_table,largeur_de_la_boite);
-                                        indice_courant+=3;
-                                        largeur_de_la_boite=a.largeur_de_la_boite;
-                                    }
-                                }
+                            
+                            var obj=this.#ajouter_table_et_index_a_arbre(id_tab_table_en_cours,tab,indice_matr, indice_courant , id_bdd_de_la_base );
+                            if(obj.status===true){
+                                indice_courant        =obj.indice_courant;
+                                id_svg_conteneur_table=obj.id_svg_conteneur_table;
+                            }else{
+                                debugger;
                             }
-                            /*
-                              
-                              ================
-                              ajout des champs
-                              ================
-                            */
-                            /* on met les champs de la table  */
-                            var k = (id_tab_table_en_cours + 1);
-                            for(k=(id_tab_table_en_cours + 1);(k < l01) && (tab[k][3] > tab[id_tab_table_en_cours][3]);k++){
-                                if((tab[k][7] === id_tab_table_en_cours) && (tab[k][1] === 'fields')){
-                                    var l = (k + 1);
-                                    for(l=(k + 1);(l < l01) && (tab[l][3] > tab[k][3]);l++){
-                                        if(tab[l][7] === k){
-                                            if(tab[l][1] == 'field'){
-                                                var m = (l + 1);
-                                                for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
-                                                    if(tab[m][7] === l){
-                                                        if(tab[m][1] === 'nom_du_champ'){
-                                                            /*
-                                                              
-                                                              on recherche le nom du champ pour créer le conteneur et le cadre
-                                                            */
-                                                            nom_du_champ=tab[(m + 1)][1];
-                                                            var obj1 = a2F1(tab,l,false,(l + 1),false);
-                                                            if(obj1.status === true){
-                                                                var donnees_rev_du_champ=obj1.value;
-                                                            }else{
-                                                                logerreur({status:true,'message':('0849 problème sur les données du champ "' + nom_du_champ + '"')});
-                                                                displayMessages('zone_global_messages');
-                                                                return;
-                                                            }
-                                                            var a = this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,id_bdd_de_la_base,donnees_rev_du_champ);
-                                                            id_svg_champ_en_cours=a.id_svg_champ_en_cours;
-                                                            indice_du_champ=a.indice_du_champ;
-                                                            indice_courant=a.indice_courant;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            /*
-                              
-                              fin du create table
-                              on a un nom de table : nom_de_la_table
-                              on recherche les index qui pointent sur la table en cours
-                            */
-                            var i=1;
-                            for(i=1;i < l01;i++){
-                                if((tab[i][7] === 0) && (tab[i][1] === 'add_index')){
-                                    var j = (i + 1);
-                                    for(j=(i + 1);j < l01;j++){
-                                        if((tab[j][7] === i) && (tab[j][1] === 'nom_de_la_table_pour_l_index') && (tab[(j + 1)][1] === nom_de_la_table)){
-                                            var k = (i + 1);
-                                            for(k=(i + 1);(k < l01) && (tab[k][3] > tab[i][3]);k++){
-                                                if(tab[k][7] === i){
-                                                    if('index_name' === tab[k][1]){
-                                                        nom_de_l_index=tab[(k + 1)][1];
-                                                        id_svg_champ_en_cours=indice_courant;
-                                                        /*
-                                                          
-                                                          création de la boite de l'index
-                                                        */
-                                                        largeur_de_la_boite=this.#ajuster_largeur_de_boite(largeur_de_la_boite,nom_de_l_index);
-                                                        /*
-                                                          
-                                                          conteneur du nom de l'index
-                                                        */
-                                                        var donnees_rev_de_l_index='';
-                                                        var obj1 = a2F1(tab,i,false,(i + 1),false);
-                                                        if(obj1.status === true){
-                                                            donnees_rev_de_l_index=obj1.value;
-                                                        }else{
-                                                            logerreur({status:true,'message':('0849 problème sur les données de l\'index "' + nom_de_l_index + '"')});
-                                                            displayMessages('zone_global_messages');
-                                                        }
-                                                        
-                                                        var a =this.#ajouter_index_a_table(id_bdd_de_la_base,indice_courant,nom_de_l_index,id_svg_conteneur_table,nom_de_la_table,donnees_rev_de_l_index);
-                                                        indice_courant=a.indice_courant;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            
+
                         }
                     }
                     /*
