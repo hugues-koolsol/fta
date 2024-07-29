@@ -158,27 +158,33 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
         $dbtemp = new SQLite3($fichier_temporaire);
         if(is_file($fichier_temporaire)){
          
-         $res0= $dbtemp->exec($source);
-//         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-         
-         if($res0===true){
-          
-           $dbtemp->close();
-           $ret=obtenir_la_structure_de_la_base_sqlite($fichier_temporaire,true);
-           
-           if($ret['status']===true){
+            $res0= $dbtemp->exec($source);
+//            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $source  . '</pre>' ; exit(0);
             
-            $tableauDesTables=$ret['value'];
-            
-           }else{
+            /* 
+              à faire, si une création de table ne fonctionne pas alors on a une erreur
+              => il faut créer table par table
+            */
+//            if($res0===true){
+             
+                $dbtemp->close();
+                $ret=obtenir_la_structure_de_la_base_sqlite($fichier_temporaire,true);
+                
+                if($ret['status']===true){
+                 
+                    $tableauDesTables=$ret['value'];
+                 
+                }else{
 
-             return array('status' => false , 'message' => 'erreur sur la création des tables de la base' );
+                    /* ne pas créer une copie de sauvegarde d'un fichier temporaire */
+                    sauvegarder_et_supprimer_fichier($fichier_temporaire,true); 
+                    return array('status' => false , 'message' => 'erreur sur la création des tables de la base' );
 
-           }
+                }
 
-         }
-         /* ne pas créer une copie de sauvefarde d'un fichier temporaire */
-         sauvegarder_et_supprimer_fichier($nomFichierDecripte,true); 
+//            }
+            /* ne pas créer une copie de sauvegarde d'un fichier temporaire */
+            sauvegarder_et_supprimer_fichier($fichier_temporaire,true); 
          
      
         }else{
@@ -222,7 +228,8 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
 
     $liste_des_champs=array();
     $sql= 'PRAGMA table_info(\''.$nom_de_la_table.'\'  ) ';
-    $stmt = $db->prepare($sql); 
+    $stmt = $db->prepare($sql);
+    $liste_des_champs_non_null=array();
     if($stmt!==false){
         $a_des_champs_index='';
         $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
@@ -242,15 +249,28 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
                    $liste_des_champs[$arr[1]]['auto_increment']=true;
                 }
                 $a_des_champs_index=$arr[1];
+            }else{
+                if($arr[3]===1){
+                    /* 
+                    si on tente un insert, il faut renseigner les champs not_null
+                    */
+                    
+                    $liste_des_champs_non_null[]=$arr[1];
+                }
             }
+            
         }
         $stmt->close();
-        
+/*        
+        if($nom_de_la_table==='tbl_tables'){
+            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $liste_des_champs_non_null , true ) . '</pre>' ; exit(0);
+        }
+*/        
         if($essayer_auto_increment===true && $auto_increment=== false && $a_des_champs_index!=='' ){
             /*
-            si la base sqlite vient d'être crée, les tables sont vides et 
-            la table sqlite_sequence n'existe pas
-            Donc si cette table est vide, on essaie de créer un enregistrement temporaire
+              si la base sqlite vient d'être crée, les tables sont vides et 
+              la table sqlite_sequence qui référence les auto increment n'existe pas
+              Donc si cette table est vide, on essaie de créer un enregistrement temporaire
             */
             
             $sql1  ='SELECT COUNT(*) FROM '.$nom_de_la_table;
@@ -258,11 +278,25 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
             if($__nbEnregs===0){
                 /*
                   si le nombre d'enregistrements est supérieur à zéro 
-                  alors on aurait du trouver la caractéristique auto uncrement plus haut.
+                  alors on aurait du trouver la caractéristique auto increment plus haut.
                   Ici on a zéro enregistrement donc on fait le test
                 */
                 
-                $sql2  ='INSERT INTO `'.$nom_de_la_table . '`(`'.$a_des_champs_index.'`) VALUES (1)';
+                $db->querySingle('PRAGMA foreign_keys=OFF');
+                $sql2 ='INSERT INTO `'.$nom_de_la_table . '`(`'.$a_des_champs_index.'`';
+                foreach( $liste_des_champs_non_null as $k1 => $v1){
+                    $sql2.=' , `'.$v1.'`' ;
+                }
+                $sql2.=') VALUES (1';
+                foreach( $liste_des_champs_non_null as $k1 => $v1){
+                    $sql2.=' , "1"' ;
+                }
+                $sql2.=')';
+/*                
+                if($nom_de_la_table==='tbl_tables'){
+                    echo __FILE__ . ' ' . __LINE__ . ' $sql2 = <pre>' . var_export( $sql2 , true ) . '</pre>' ; exit(0);
+                }
+*/                
                 $essai_insert= $db->querySingle($sql2);
                 if($essai_insert!==false){
                  
@@ -278,12 +312,15 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
                         }
                         $stmt->close(); 
                     }
-                    error_reporting($niveau_erreur_php);
                     $db->querySingle('PRAGMA foreign_keys=ON');
                     $sql3  ='DELETE FROM `'.$nom_de_la_table . '` WHERE `'.$a_des_champs_index.'` = 1';
                     $essai_delete = $db->querySingle($sql3);
+                    error_reporting($niveau_erreur_php);
                  
+                }else{
+                    echo __FILE__ . ' ' . __LINE__ . ' $sql2 = <pre>' . var_export( $sql2 , true ) . '</pre>' ; exit(0);
                 }
+                $db->querySingle('PRAGMA foreign_keys=ON');
 
              
             }

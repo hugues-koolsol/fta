@@ -1,5 +1,77 @@
 <?php
 
+/*
+  ==========================================================================================================
+*/
+
+function supprimer_table_dans_base(&$data){
+ operation_sur_base($data , 'supprimer_table_dans_base');
+}
+
+/*
+  ==========================================================================================================
+*/
+function operation_sur_base(&$data, $nom_operation){
+ 
+    
+/*      
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data , true) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .CRLF.CRLF); fclose($fd);}
+*/
+
+    
+    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
+    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
+    $chemin_bdd=realpath($chemin_bdd);
+    if(!(is_file($chemin_bdd))){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' fichier de bdd non trouvé';
+        return;
+
+    }
+ 
+    $db1=new SQLite3($chemin_bdd);
+    $ret0=$db1->exec('BEGIN TRANSACTION;');
+
+    if($ret0 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' BEGIN transaction KO';
+        return;
+
+    }
+
+ 
+ 
+    $ret1=$db1->exec($data['input']['source_sql']);
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' création table temporaire impossible';
+        $ret0=$db1->exec('ROLLBACK;');
+        return;
+
+    }
+ 
+ 
+    $retfin=$db1->exec('COMMIT;');
+
+    if($retfin !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' COMMIT impossible';
+        $ret0=$db1->exec('ROLLBACK;');
+        return;
+
+    }
+
+    $data['status']='OK';
+ 
+ 
+}
+
+/*
+========================================================
+*/
 function ajouter_en_bdd_le_champ(&$data){
  
     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));

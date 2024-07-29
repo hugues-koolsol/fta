@@ -2067,6 +2067,7 @@ function traiteExpression1(element,niveau){
            || 'CallExpression' === element.expression.type
            || 'Identifier' === element.expression.type
            || 'Literal' === element.expression.type
+           || 'LogicalExpression' === element.expression.type
            || 'UnaryExpression' === element.expression.type
            || 'SequenceExpression' === element.expression.type
            || 'NewExpression' === element.expression.type

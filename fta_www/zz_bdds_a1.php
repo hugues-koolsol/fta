@@ -174,13 +174,10 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   }
   if($continuer===true){
    
-//      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);
       
       if($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']!==''){
        
           $base_temporaire=$chemin_base_temporaire.DIRECTORY_SEPARATOR.sha1(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).'.db';
-          
-//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' .  $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']  . '</pre>' ; exit(0);
           
           $temp_db = new SQLite3($base_temporaire);
           if(is_file($base_temporaire)){
@@ -203,7 +200,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
             
 
            }
-           /* ne pas créer une copie de sauvefarde d'un fichier temporaire */
+           /* ne pas créer une copie de sauvegarde d'un fichier temporaire */
            sauvegarder_et_supprimer_fichier($base_temporaire,true); 
 
           }else{
@@ -218,36 +215,24 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       }
   }
 
-  
   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
-
-
-  
-
   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
+  
  }else if( isset($_POST['___produire_le_dump_des_donnees'])){
   
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , true ) . '</pre>' ; exit(0);
      $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      
      $chemin_fichier='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
      
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_fichier , true ) . '</pre>' ; exit(0);
-      
-   //   $o1.='&nbsp <span>Ce '.$chemin_fichier.'</span>';  
-
      if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
          $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
          if($ret['status']===true){
           
           
-          //echo __FILE__ . ' ' . __LINE__ . ' $__valeurs = <pre>' . var_export( $__valeurs , true ) . '</pre> $ret = <pre>' . var_export( $ret , true ) . '</pre>' ; exit(0);
           $nom_du_fichier_dump   ='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'_donnees.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
           
-//          echo __FILE__ . ' ' . __LINE__ . ' $nom_du_fichier_dump = <pre>' . var_export( $nom_du_fichier_dump , true ) . '</pre>' ; exit(0);
           
           $retour_ecriture=ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier,$nom_du_fichier_dump,$ret['value']);
           if($retour_ecriture['status']===true){
@@ -282,6 +267,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
 //     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
      
      $chemin_bdd='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
       
@@ -298,8 +284,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
            $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
 //           echo __FILE__ . ' ' . __LINE__ . ' $ret2 = <pre>' . var_export( $ret2['value'] , true ) . '</pre>' ; exit(0);
           }else{
-
-           ajouterMessage('erreur' , __LINE__ . ' erreur sur la structure de la base 2 de la zone "genere" ' , BNF  );
+              ajouterMessage('erreur' , __LINE__ . ' erreur sur la structure de la base 2 de la zone "genere" ' , BNF  );
 
           }
           

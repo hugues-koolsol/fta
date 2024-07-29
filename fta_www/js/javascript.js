@@ -95,7 +95,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 }
 
             }else if((tab[i][1] == 'retourner') && (tab[i][2] == 'f')){
-             
+
                 if(tab[i][8] == 0){
                     try{
                         t+=espcLigne;
@@ -134,11 +134,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                 return(logerreur({status:false,value:t,id:i,tab:tab,'message':'erreur 0076 sur return '}));
                             }
                         }else if((tab[i+1][2] == 'f') && (tab[i+1][1] == 'testEnLigne' || tab[i+1][1] == 'egalstricte' || tab[i+1][1] == 'supeg' )){
-                         
+
                             var objtestLi = js_traiteInstruction1(tab,niveau,i+1);
                             
                             if(objtestLi.status == true){
-                                t+='return('+obj.value+')'+terminateur+'';
+                                t+='return('+objtestLi.value+')'+terminateur+'';
                             }else{
                                 return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur 0092 sur return'}));
                             }
@@ -1576,25 +1576,19 @@ function js_traiteInstruction1(tab,niveau,id){
         var j=0;
         for(j=0;j < testEnLigne.length;j=j+1){
             if(testEnLigne[j][1] === 'condition'){
-                niveau=niveau+1;
-                var objCondition = js_condition0(tab,testEnLigne[j][0],niveau);
-                niveau=niveau-1;
+                var objCondition = js_condition0(tab,testEnLigne[j][0],niveau+1);
                 if(objCondition.status === true){
                 }else{
                     return(logerreur({status:false,value:t,id:testEnLigne[j][0],tab:tab,'message':'1 js_traiteInstruction1 sur condition 1533 '+testEnLigne[j][0]}));
                 }
             }else if(testEnLigne[j][1] === 'siVrai'){
-                niveau=niveau+1;
-                var objSiVrai = js_traiteInstruction1(tab,niveau,(testEnLigne[j][0]+1));
-                niveau=niveau-1;
+                var objSiVrai = js_traiteInstruction1(tab,niveau+1,(testEnLigne[j][0]+1));
                 if(objSiVrai.status === true){
                 }else{
                     return(logerreur({status:false,value:t,id:testEnLigne[j][0],tab:tab,'message':'1 js_traiteInstruction1 sur siVrai 1542 '+testEnLigne[j][0]}));
                 }
             }else if(testEnLigne[j][1] === 'siFaux'){
-                niveau=niveau+1;
-                var objSiFaux = js_traiteInstruction1(tab,niveau,(testEnLigne[j][0]+1));
-                niveau=niveau-1;
+                var objSiFaux = js_traiteInstruction1(tab,niveau+1,(testEnLigne[j][0]+1));
                 if(objSiFaux.status === true){
                 }else{
                     return(logerreur({status:false,value:t,id:testEnLigne[j][0],tab:tab,'message':'1 js_traiteInstruction1 sur objSiFaux 1716 '+testEnLigne[j][0]}));
