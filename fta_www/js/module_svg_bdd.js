@@ -28,12 +28,16 @@ class module_svg_bdd{
       sert pour le zoom
     */
     #_dssvg={zoom1:1,'viewBoxInit':[],'parametres':{rayonReference:16}};
+    #id_svg_de_la_base_en_cours=0;
+    #id_bdd_de_la_base_en_cours=0;
+    /* arbre des bases : #arbre{id_de_la_base:{arbre_svg:{id:id,id_parent:id_parent,type_element:type_element,proprietes:{x:y}}}} */    
+    #arbre={};
+    
     #rayonPoint = (this.#_dssvg.parametres.rayonReference / this.#_dssvg.zoom1);
     #strkWiTexteSousPoignees = (this.#rayonPoint / 20);
     #fontSiTexteSousPoignees=this.#rayonPoint;
     #hauteur_du_svg=0;
     #largeur_du_svg=0;
-    #arbre={};
     #souris_element_a_deplacer='';
     #souris_init_objet={x:0,y:0,elem_bouge:null,'param_bouge':{}};
     #svg_tableaux_des_references_amont_aval={};
@@ -43,8 +47,6 @@ class module_svg_bdd{
     #propriete_pour_deplacement_y='pageY';
     #debut_de_click=0;
     #position_min_gauche_de_reference=999999;
-    #id_svg_de_la_base_en_cours=0;
-    #id_bdd_de_la_base_en_cours=0;
     #hauteur_de_boite = (CSS_TAILLE_REFERENCE_TEXTE + (2 * CSS_TAILLE_REFERENCE_PADDING) + (2 * this.#taille_bordure));
     #hauteur_de_boite_affichage = (this.#hauteur_de_boite + (3 * this.#taille_bordure));
     #liste_des_meta_base = [
@@ -389,12 +391,58 @@ class module_svg_bdd{
         var j=0;
         var i=0;
         document.getElementById('zone_message_ajouter_un_champ').innerHTML='';
-        if((type === '') || (typologie === '')){
-            document.getElementById('zone_message_ajouter_un_champ').innerHTML='Vous devez choisir un type et une typologie';
+        if((type === '') || (typologie === '' || nom_du_champ==='' )){
+            document.getElementById('zone_message_ajouter_un_champ').innerHTML='Vous devez choisir un type et une typologie et renseigner le nom du champ';
             return;
         }
+        
+        if(document.getElementById('table_mère').value!=='' || document.getElementById('champ_père').value!=='' ){
+            if(document.getElementById('table_mère').value==='' || document.getElementById('champ_père').value===''){
+               document.getElementById('zone_message_ajouter_un_champ').innerHTML='erreur sur la table ou le champ parent';
+               return;
+            }
+            /*
+            la référence croisée existe-t-elle dans le svg
+            */
+            var trouve=false;
+            var elems2=document.getElementById(this.#id_svg_de_la_base_en_cours).getElementsByTagName('rect');
+            for(var j=0;j<elems2.length && trouve===false ;j++){
+                if(
+                     elems2[j].getAttribute('type_element') 
+                  && elems2[j].getAttribute('type_element')==="rectangle_de_champ" 
+                  && elems2[j].getAttribute('nom_de_la_table' 
+                  && elems2[j].getAttribute('nom_de_la_table')===document.getElementById('table_mère').value
+                  && elems2[j].getAttribute('nom_du_champ')
+                  && elems2[j].getAttribute('nom_du_champ')===document.getElementById('champ_père').value){
+                      trouve=true;
+                      
+                  
+                }
+            }
+            if(trouve===false){
+               document.getElementById('zone_message_ajouter_un_champ').innerHTML='table mère ou champ père non trouvé';
+               return;
+            }
+        }
+        
         var indice_courant=this.#recuperer_prochain_id_svg();
-        var rev = ('nom_du_champ(\'' + nom_du_champ + '\'),type(' + type.toUpperCase() + ')' + ((primaire)?',primary_key(),':'') + ((non_nulle)?',non_nulle(),':'') + ',meta(typologie(' + typologie + '))');
+        var rev = 'nom_du_champ(\'' + nom_du_champ + '\'),';
+        rev +='type(' + type.toUpperCase() + ')';
+        rev +=((primaire)?',primary_key()':'') ;
+        rev +=((non_nulle)?',non_nulle()':'');
+        rev +=((auto_increment)?',auto_increment()':'');
+        
+        rev +=',meta(';
+        rev +='(\'champ\' , \'' + nom_du_champ.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+        rev +='typologie(' + typologie + ')';
+        rev +=((primaire)?',primary_key()':'') ;
+        rev +=((non_nulle)?',non_nulle()':'');
+        rev +=((auto_increment)?',auto_increment()':'');
+        rev +=',(\'nom_long_du_champ\' , \'' + document.getElementById('meta_ajouter__nom_long_du_champ').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+        rev +=',(\'nom_court_du_champ\' , \'' + document.getElementById('meta_ajouter__nom_court_du_champ').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+        rev +=',(\'nom_bref_du_champ\' , \'' + document.getElementById('meta_ajouter__nom_bref_du_champ').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+        rev +=')';
+        
         var a = this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,this.#id_bdd_de_la_base_en_cours,rev);
         global_modale1.close();
         this.#dessiner_le_svg();
@@ -519,7 +567,7 @@ class module_svg_bdd{
                 t+=',unique()';
             }else if((lst[i].id) && (lst[i].id === 'liste_des_champ_de_l_index')){
                 t+=(',fields(' + lst[i].value + ')');
-            }else if((lst[i].id) && (lst[i].id.substr(0,6) === 'meta__') && (lst[i].value !== '')){
+            }else if((lst[i].id) && (lst[i].id.substr(0,6) === 'meta_modifier__') && (lst[i].value !== '')){
                 meta+=(',(' + lst[i].id.substr(6) + ',\'' + lst[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
             }
         }
@@ -777,7 +825,7 @@ class module_svg_bdd{
                         }
                     }
                 }
-            }else if((lst[i].id) && (lst[i].id.substr(0,6) === 'meta__') && (lst[i].value !== '')){
+            }else if((lst[i].id) && (lst[i].id.substr(0,6) === 'meta_modifier__') && (lst[i].value !== '')){
                 meta+=(',(' + lst[i].id.substr(6) + ',\'' + lst[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
             }
         }
@@ -886,7 +934,7 @@ class module_svg_bdd{
             if(cle === 'index'){
             }else{
                 t+=('<br />' + cle.replace(/_/g,' ') + ' : ');
-                t+=('<input type="text" id="meta__' + cle + '" value="' + liste_meta_index[cle].replace(/"/g,'&quot;') + '" />');
+                t+=('<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_index[cle].replace(/"/g,'&quot;') + '" />');
             }
         }
         t+='<br />';
@@ -1007,7 +1055,7 @@ class module_svg_bdd{
             }else{
                 t+=('<br />' + cle.replace(/_/g,' ') + ' : ');
                 if(cle === 'typologie'){
-                    t+=('<select id="meta__' + cle + '">');
+                    t+=('<select id="meta_modifier__' + cle + '">');
                     t+=('<option value="chi" ' + ((liste_meta_champ[cle] === 'chi')?' selected':'') + '>index entier (chi) integer[n]</option>');
                     t+=('<option value="chx" ' + ((liste_meta_champ[cle] === 'chx')?' selected':'') + '>référence croisée (chx) integer[n]</option>');
                     t+=('<option value="che" ' + ((liste_meta_champ[cle] === 'che')?' selected':'') + '>entier (che) integer[n]</option>');
@@ -1023,7 +1071,7 @@ class module_svg_bdd{
                     t+=('<option value="chb" ' + ((liste_meta_champ[cle] === 'chb')?' selected':'') + '>blob (chb) blob</option>');
                     t+='</select>';
                 }else{
-                    t+=('<input type="text" id="meta__' + cle + '" value="' + liste_meta_champ[cle].replace(/"/g,'&quot;') + '" />');
+                    t+=('<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_champ[cle].replace(/"/g,'&quot;') + '" />');
                 }
             }
         }
@@ -1472,9 +1520,9 @@ class module_svg_bdd{
         var cle={};
         for(cle in liste_meta_table){
             if('transform_table_sur_svg' === cle){
-                t+=('<input type="hidden" id="meta__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement);
+                t+=('<input type="hidden" id="meta_modifier__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement);
             }else{
-                t+=('<br />' + cle.replace(/_/g,' ') + ' : ' + '<input type="text" id="meta__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement);
+                t+=('<br />' + cle.replace(/_/g,' ') + ' : ' + '<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement);
             }
         }
         t+=('<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_la_table_de_modale(' + id_svg_rectangle_de_la_table + ',&quot;' + nom_de_la_table + '&quot;)">modifier</a>');
@@ -1510,10 +1558,22 @@ class module_svg_bdd{
         t+='<br />champ père pour chx  : <input id="champ_père" type="text" value="" />';
         t+='<br />index primaire <input id="primaire" type="checkbox" /> ';
         t+='<br />non nulle <input id="non_nulle" type="checkbox" /> ';
-        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_un_champ_de_modale(' + element_g_conteneur_de_nom_de_table.getAttribute('id_svg_conteneur_table') + ',&quot;' + nom_de_la_table + '&quot;)">ajouter</a>');
+        t+='<br />auto increment <input id="auto_increment" type="checkbox" /> ';
+        t+='<br />valeur par défaut <input id="a_une_valeur_par_defaut" type="checkbox" /> , valeur : <input id="valeur_par_defaut" type="text" value="" /> ';
+        
+        t+='<br />nom long du champ : <input type="text" id="meta_ajouter__nom_long_du_champ" value="à faire ...">';
+        t+='<br />nom court du champ : <input type="text" id="meta_ajouter__nom_court_du_champ" value="à faire ...">';
+        t+='<br />nom bref du champ : <input type="text" id="meta_ajouter__nom_bref_du_champ" value="à faire ...">';
+        
+        
+        
+        t+=('<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_un_champ_de_modale(' + element_g_conteneur_de_nom_de_table.getAttribute('id_svg_conteneur_table') + ',&quot;' + nom_de_la_table + '&quot;)">ajouter</a>');
         /*
         
         */
+        
+        
+        
         t+='<hr />';
         t+='<h3>ajouter un index</h3>';
         t+='nom : <input id="nom_de_l_index" type="text" value="idx_" />';
@@ -1772,13 +1832,13 @@ class module_svg_bdd{
         var t = ('(table , ' + nom_de_la_table + ')');
         var i={};
         for(i in liste_meta_table){
-            if((document.getElementById(('meta__' + i)).value === '') && (liste_meta_table[i] === '')){
+            if((document.getElementById(('meta_modifier__' + i)).value === '') && (liste_meta_table[i] === '')){
                 /* il y a des valeurs qui ne sont pas obligatoires */
             }else{
                 if(i === 'transform_table_sur_svg'){
-                    t+=(',(' + i + ' , ' + document.getElementById(('meta__' + i)).value + ')');
+                    t+=(',(' + i + ' , ' + document.getElementById(('meta_modifier__' + i)).value + ')');
                 }else{
-                    t+=(',(' + i + ' , \'' + document.getElementById(('meta__' + i)).value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
+                    t+=(',(' + i + ' , \'' + document.getElementById(('meta_modifier__' + i)).value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
                 }
             }
         }
