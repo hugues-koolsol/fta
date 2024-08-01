@@ -263,44 +263,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   
  }else if( isset($_POST['__comparer_les_structures']) ){
   
-  
-
-     $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre><pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+     require_once(INCLUDE_PATH.'/phplib/sqlite.php');
      
-     $chemin_bdd='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
-      
-//     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_bdd , true ) . '</pre>' ; exit(0);
-
-     if( is_file($chemin_bdd)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
-
-         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_bdd,true);
-         if($ret['status']===true){
-          $tableauDesTables=$ret['value'];
-//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'] , true ) . '</pre>' ; exit(0);
-          $ret2=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']);
-          if($ret2['status']===true){
-           $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
-//           echo __FILE__ . ' ' . __LINE__ . ' $ret2 = <pre>' . var_export( $ret2['value'] , true ) . '</pre>' ; exit(0);
-          }else{
-              ajouterMessage('erreur' , __LINE__ . ' erreur sur la structure de la base 2 de la zone "genere" ' , BNF  );
-
-          }
-          
-          
-         }else{
-          
-           ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
-          
-         }
-       
+     $obj=comparer_une_base_physique_et_une_base_virtuelle($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']);
+     
+     if($obj['status']===true){
+         $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=$obj['value']; //array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
+//         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'] , true ) . '</pre>' ; exit(0);
      }else{
-
-             ajouterMessage('erreur' , __LINE__ .' fichier de la base de donnée sqlite introuvable ' , BNF );
-
+         ajouterMessage('erreur' , __LINE__ . ' erreur sur la comparaison des structures' , BNF  );
      }
-
     
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
@@ -961,9 +933,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
       }
    
   }
-  
-  if(isset($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']) && count($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'])>0){
 
+  if(isset($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']) && count($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'])>0){
+//      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
       $js_a_executer_apres_chargement[]=array(
         'nomDeLaFonctionAappeler' => 'comparer_deux_tableaux_de_bases_sqlite' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'] , 'zone_resultat' => 'chp_commentaire_basedd'  )
       );
@@ -992,11 +964,10 @@ $js_a_executer_apres_chargement[]=array(
   'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
 );
 
-
-
-
-
-
-$par=array('js_a_inclure'=>array('js/pour_zz_bdds_action1.js','js/sql.js'),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
+$par=array(
+ 'module_a_inclure'=>array('js/module_svg_bdd.js'),
+ 'js_a_inclure'=>array('js/pour_zz_bdds_action1.js','js/sql.js'),
+ 'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
+);
 $o1.=html_footer1($par);
 print($o1);$o1='';

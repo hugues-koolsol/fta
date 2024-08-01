@@ -1,5 +1,30 @@
 <?php
 
+function recuperer_les_tableaux_des_bases(&$data){
+/* 
+                        source_base_sql        : obj3.status,
+                        id_bdd_de_la_base      : id_bdd_de_la_base_en_cours,
+*/ 
+
+    require_once(INCLUDE_PATH.'/phplib/sqlite.php');
+    $obj=comparer_une_base_physique_et_une_base_virtuelle( $data['input']['id_bdd_de_la_base'] , $data['input']['source_base_sql'] );
+    if($obj['status']===true){
+        $data['value']=$obj['value'];
+        $data['status']='OK';
+    }else{
+        $data['message']='erreur sur recuperer_les_tableaux_des_bases';
+    }
+
+
+}
+
+/*
+========================================================
+*/
+function ajouter_en_bdd_le_champ(&$data){
+ operation_sur_base($data , 'ajouter_en_bdd_le_champ');
+}
+
 /*
   ==========================================================================================================
 */
@@ -35,22 +60,14 @@ function operation_sur_base(&$data, $nom_operation){
     $ret0=$db1->exec('BEGIN TRANSACTION;');
 
     if($ret0 !== true){
-
         $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' BEGIN transaction KO';
         return;
-
     }
-
- 
- 
     $ret1=$db1->exec($data['input']['source_sql']);
-
     if($ret1 !== true){
-
         $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' création table temporaire impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
-
     }
  
  
@@ -70,66 +87,13 @@ function operation_sur_base(&$data, $nom_operation){
 }
 
 /*
-========================================================
-*/
-function ajouter_en_bdd_le_champ(&$data){
- 
-    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
-    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-    $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
-    $chemin_bdd=realpath($chemin_bdd);
-    if(!(is_file($chemin_bdd))){
-
-        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ fichier de bdd non trouvé';
-        return;
-
-    }
- 
-    $db1=new SQLite3($chemin_bdd);
-    $ret0=$db1->exec('BEGIN TRANSACTION;');
-
-    if($ret0 !== true){
-
-        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ BEGIN transaction KO';
-        return;
-
-    }
-
- 
- 
-    $ret1=$db1->exec($data['input']['source_sql']);
-
-    if($ret1 !== true){
-
-        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ création table temporaire impossible';
-        $ret0=$db1->exec('ROLLBACK;');
-        return;
-
-    }
- 
- 
-    $retfin=$db1->exec('COMMIT;');
-
-    if($retfin !== true){
-
-        $data['messages'][]=__FILE__.' '.__LINE__.' ajouter_en_bdd_le_champ COMMIT impossible';
-        $ret0=$db1->exec('ROLLBACK;');
-        return;
-
-    }
-
-    $data['status']='OK';
- 
- 
-}
-/*
   ==========================================================================================================
 */
 function creer_table_dans_base(&$data){
  
     
 /*      
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data , true) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data=' . $data['input']['source_sql'] . CRLF.CRLF); fclose($fd);}
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .CRLF.CRLF); fclose($fd);}
 */
 

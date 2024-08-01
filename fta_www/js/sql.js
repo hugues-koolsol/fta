@@ -769,7 +769,7 @@ function tabToSql0(tab,id,niveau,options){
                 }
             }else if((tab[i][1] === 'create_table') || (tab[i][1] === 'créer_table')){
                 var engine='';
-                var auto_increment=0;
+                var auto_increment='';
                 var charset=0;
                 var collate=0;
                 t+=espacesn(true,niveau);
@@ -1238,7 +1238,17 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                 t+=('\n' + '   non_nulle()');
             }
             if(pc['dflt_value']){
-                t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt_value'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
+/*
+                if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==="'"){
+                    t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
+                }else if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==='"'){
+                    t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
+                }else{
+                    t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt_value'] + ')');
+                }
+*/
+                t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
+                
             }
             if(cle_etrangere === true){
                 t+=('\n' + '   references(\'' + pc['cle_etrangere']['table'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + pc['cle_etrangere']['to'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' )');

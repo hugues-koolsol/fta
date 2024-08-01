@@ -74,44 +74,50 @@ class module_svg_bdd{
     constructor(nom_de_la_variable,nom_de_la_div_contenant_le_svg,taille_bordure,id_text_area_contenant_les_id_des_bases){
         clearMessages('zone_global_messages');
         this.#nom_de_la_variable=nom_de_la_variable;
-        this.#div_svg=document.getElementById(nom_de_la_div_contenant_le_svg);
-        this.#taille_bordure=taille_bordure;
-        this.#id_text_area_contenant_les_id_des_bases=id_text_area_contenant_les_id_des_bases;
-        this.#div_svg.style.maxWidth='90vw';
-        this.#div_svg.style.width='90vw';
-        this.#div_svg.style.maxHeight='70vh';
-        this.#div_svg.style.height='70vh';
-        var e = this.#div_svg.getElementsByTagName('svg');
-        var i=0;
-        for(i=0;i < e.length;i++){
-            this.#svg_dessin=e[i];
-            break;
-        }
-        var taillereelle = this.#div_svg.getBoundingClientRect();
-        var hauteur_de_la_div=taillereelle.height;
-        var largeur_de_la_div=taillereelle.width;
-        this.#div_svg.style.height=(hauteur_de_la_div + 'px');
-        this.#div_svg.style.width=(largeur_de_la_div + 'px');
         /*
-          
-          le viewbox du svg est la taille de la div -2*bordure
+          si on utilise ce module en dehors d'un dessin svg par exemple pour comparer des tableaux des tables/champs
+          la div svg est nulle
         */
-        this.#hauteur_du_svg=(hauteur_de_la_div - (2 * this.#taille_bordure));
-        this.#largeur_du_svg=(largeur_de_la_div - (2 * this.#taille_bordure));
-        this.#hauteur_de_boite=(CSS_TAILLE_REFERENCE_TEXTE + (2 * CSS_TAILLE_REFERENCE_PADDING) + (2 * this.#taille_bordure));
-        this.#hauteur_de_boite_affichage=(this.#hauteur_de_boite + (1 * this.#taille_bordure));
-        this.#svg_dessin.setAttribute('viewBox',('0 0 ' + this.#largeur_du_svg + ' ' + this.#hauteur_du_svg));
-        this.#svg_dessin.style.width=(this.#largeur_du_svg + 'px');
-        this.#svg_dessin.style.height=(this.#hauteur_du_svg + 'px');
-        this.#_dssvg.viewBoxInit=[0,0,this.#largeur_du_svg,this.#hauteur_du_svg];
-        this.#div_svg.addEventListener('wheel',this.zoom_avec_roulette.bind(this),false);
-        window.addEventListener('mousedown',this.#souris_bas.bind(this),false);
-        window.addEventListener('mouseup',this.#souris_haut.bind(this),false);
-        window.addEventListener('mousemove',this.#souris_bouge.bind(this),false);
-        this.#svg_dessin.addEventListener('touchstart',this.#doigt_bas.bind(this),false);
-        window.addEventListener('touchend',this.#doigt_haut.bind(this),false);
-        window.addEventListener('touchmove',this.#doigt_bouge.bind(this),false);
-        this.#charger_les_bases_initiales_en_asynchrone();
+        if(nom_de_la_div_contenant_le_svg!==null){
+            this.#div_svg=document.getElementById(nom_de_la_div_contenant_le_svg);
+            this.#taille_bordure=taille_bordure;
+            this.#id_text_area_contenant_les_id_des_bases=id_text_area_contenant_les_id_des_bases;
+            this.#div_svg.style.maxWidth='90vw';
+            this.#div_svg.style.width='90vw';
+            this.#div_svg.style.maxHeight='70vh';
+            this.#div_svg.style.height='70vh';
+            var e = this.#div_svg.getElementsByTagName('svg');
+            var i=0;
+            for(i=0;i < e.length;i++){
+                this.#svg_dessin=e[i];
+                break;
+            }
+            var taillereelle = this.#div_svg.getBoundingClientRect();
+            var hauteur_de_la_div=taillereelle.height;
+            var largeur_de_la_div=taillereelle.width;
+            this.#div_svg.style.height=(hauteur_de_la_div + 'px');
+            this.#div_svg.style.width=(largeur_de_la_div + 'px');
+            /*
+              
+              le viewbox du svg est la taille de la div -2*bordure
+            */
+            this.#hauteur_du_svg=(hauteur_de_la_div - (2 * this.#taille_bordure));
+            this.#largeur_du_svg=(largeur_de_la_div - (2 * this.#taille_bordure));
+            this.#hauteur_de_boite=(CSS_TAILLE_REFERENCE_TEXTE + (2 * CSS_TAILLE_REFERENCE_PADDING) + (2 * this.#taille_bordure));
+            this.#hauteur_de_boite_affichage=(this.#hauteur_de_boite + (1 * this.#taille_bordure));
+            this.#svg_dessin.setAttribute('viewBox',('0 0 ' + this.#largeur_du_svg + ' ' + this.#hauteur_du_svg));
+            this.#svg_dessin.style.width=(this.#largeur_du_svg + 'px');
+            this.#svg_dessin.style.height=(this.#hauteur_du_svg + 'px');
+            this.#_dssvg.viewBoxInit=[0,0,this.#largeur_du_svg,this.#hauteur_du_svg];
+            this.#div_svg.addEventListener('wheel',this.zoom_avec_roulette.bind(this),false);
+            window.addEventListener('mousedown',this.#souris_bas.bind(this),false);
+            window.addEventListener('mouseup',this.#souris_haut.bind(this),false);
+            window.addEventListener('mousemove',this.#souris_bouge.bind(this),false);
+            this.#svg_dessin.addEventListener('touchstart',this.#doigt_bas.bind(this),false);
+            window.addEventListener('touchend',this.#doigt_haut.bind(this),false);
+            window.addEventListener('touchmove',this.#doigt_bouge.bind(this),false);
+            this.#charger_les_bases_initiales_en_asynchrone();
+        }
     }
     /*
       
@@ -383,11 +389,14 @@ class module_svg_bdd{
       function ajouter_un_champ_de_modale
     */
     ajouter_un_champ_de_modale(id_svg_conteneur_table,nom_de_la_table){
-        var nom_du_champ = document.getElementById('nom_du_champ').value;
-        var typologie = document.getElementById('typologie').value;
-        var type = document.getElementById('type').value;
-        var primaire = document.getElementById('primaire').checked;
-        var non_nulle = document.getElementById('non_nulle').checked;
+        var nom_du_champ            = document.getElementById('nom_du_champ').value;
+        var typologie               = document.getElementById('typologie').value;
+        var type                    = document.getElementById('type').value;
+        var primaire                = document.getElementById('primaire').checked;
+        var non_nulle               = document.getElementById('non_nulle').checked;
+        var auto_increment          = document.getElementById('auto_increment').checked;
+        var a_une_valeur_par_defaut = document.getElementById('a_une_valeur_par_defaut').checked;
+        var la_valeur_par_defaut_est_caractere= document.getElementById('la_valeur_par_defaut_est_caractere').checked;
         var j=0;
         var i=0;
         document.getElementById('zone_message_ajouter_un_champ').innerHTML='';
@@ -410,7 +419,7 @@ class module_svg_bdd{
                 if(
                      elems2[j].getAttribute('type_element') 
                   && elems2[j].getAttribute('type_element')==="rectangle_de_champ" 
-                  && elems2[j].getAttribute('nom_de_la_table' 
+                  && elems2[j].getAttribute('nom_de_la_table')
                   && elems2[j].getAttribute('nom_de_la_table')===document.getElementById('table_mère').value
                   && elems2[j].getAttribute('nom_du_champ')
                   && elems2[j].getAttribute('nom_du_champ')===document.getElementById('champ_père').value){
@@ -431,6 +440,29 @@ class module_svg_bdd{
         rev +=((primaire)?',primary_key()':'') ;
         rev +=((non_nulle)?',non_nulle()':'');
         rev +=((auto_increment)?',auto_increment()':'');
+        if(a_une_valeur_par_defaut===true){
+            if(la_valeur_par_defaut_est_caractere===true){
+                rev +=',valeur_par_defaut(\''+document.getElementById('valeur_par_defaut').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+            }else{
+                if(isNumeric(document.getElementById('valeur_par_defaut').value)){
+                    rev +=',valeur_par_defaut('+document.getElementById('valeur_par_defaut').value+')';
+                }else{
+                    var la_valeur=document.getElementById('valeur_par_defaut').value;
+                    if(   la_valeur.toLowerCase()==='true' 
+                       || la_valeur.toLowerCase()==='false' 
+                       || la_valeur.toLowerCase()==='null'
+                       || la_valeur.toUpperCase()==='CURRENT_TIMESTAMP'
+                       || la_valeur.toUpperCase()==='CURRENT_TIME'
+                       || la_valeur.toUpperCase()==='CURRENT_DATE'
+                    ){
+                        rev +=',valeur_par_defaut('+document.getElementById('valeur_par_defaut').value+')';
+                    }else{
+                        document.getElementById('zone_message_ajouter_un_champ').innerHTML='problème sur la valeur par défaut';
+                        return;
+                    }
+                }
+            }
+        }
         
         rev +=',meta(';
         rev +='(\'champ\' , \'' + nom_du_champ.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
@@ -740,6 +772,9 @@ class module_svg_bdd{
         var champ_pere='';
         var table_mere='';
         var meta = ('(champ , \'' + nom_du_champ + '\')');
+        document.getElementById('zone_message_modifier_un_champ').className='';
+        document.getElementById('zone_message_modifier_un_champ').innerHTML='';
+        
         t+=('nom_du_champ(\'' + nom_du_champ + '\')');
         var lst = document.getElementById('__contenu_modale').getElementsByTagName('*');
         var i=0;
@@ -754,6 +789,29 @@ class module_svg_bdd{
                 t+=',non_nulle()';
             }else if((lst[i].id) && (lst[i].id === 'auto_increment') && (lst[i].checked === true)){
                 t+=',auto_increment()';
+            }else if((lst[i].id) && (lst[i].id === 'a_une_valeur_par_defaut') && (lst[i].checked === true)){
+                if(document.getElementById('la_valeur_par_defaut_est_caractere').checked===true){
+                    t+=',valeur_par_defaut(\''+document.getElementById('valeur_par_defaut').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+                }else{
+                    if(isNumeric(document.getElementById('valeur_par_defaut').value)){
+                        t +=',valeur_par_defaut('+document.getElementById('valeur_par_defaut').value+')';
+                    }else{
+                        var la_valeur=document.getElementById('valeur_par_defaut').value;
+                        if(   la_valeur.toLowerCase()==='true' 
+                           || la_valeur.toLowerCase()==='false' 
+                           || la_valeur.toLowerCase()==='null'
+                           || la_valeur.toUpperCase()==='CURRENT_TIMESTAMP'
+                           || la_valeur.toUpperCase()==='CURRENT_TIME'
+                           || la_valeur.toUpperCase()==='CURRENT_DATE'
+                        ){
+                            t +=',valeur_par_defaut('+document.getElementById('valeur_par_defaut').value+')';
+                        }else{
+                            document.getElementById('zone_message_modifier_un_champ').className='yydanger';
+                            document.getElementById('zone_message_modifier_un_champ').innerHTML='problème sur la valeur par défaut';
+                            return;
+                        }
+                    }
+                }
             }else if((lst[i].id) && (lst[i].id === 'table_mère')){
                 if(lst[i].value !== ''){
                     if(document.getElementById('champ_père').value !== ''){
@@ -989,6 +1047,9 @@ class module_svg_bdd{
         var primary_key=false;
         var auto_increment=false;
         var non_nulle=false;
+        var a_une_valeur_par_defaut='';
+        var la_valeur_par_defaut_est_caractere=false;
+        var valeur_par_defaut='';
         var liste_meta_champ={nom_du_champ:nom_du_champ,'nom_long_du_champ':('à faire ' + nom_du_champ + ''),'nom_court_du_champ':('à faire ' + nom_du_champ + ''),'nom_bref_du_champ':('à faire ' + nom_du_champ + ''),typologie:'ch?',default_charset:'',collate:''};
         var id_svg_rectangle_du_champ=0;
         var lst = conteneur_de_champ.getElementsByTagName('rect');
@@ -1016,6 +1077,18 @@ class module_svg_bdd{
                                         auto_increment=true;
                                     }else if(obj_matrice_du_champ.value[k][1] === 'non_nulle'){
                                         non_nulle=true;
+                                    }else if(obj_matrice_du_champ.value[k][1] === 'valeur_par_defaut'){
+                                        a_une_valeur_par_defaut=true;
+                                        if(obj_matrice_du_champ.value[k][8]===1 && obj_matrice_du_champ.value[k+1][2]==='c'){
+                                            if(obj_matrice_du_champ.value[k+1][4]!==0){
+                                                /*
+                                                  si la valeur par défaut n'est pas une constante non quotée
+                                                */
+                                                la_valeur_par_defaut_est_caractere=true;
+                                            }
+                                            valeur_par_defaut=obj_matrice_du_champ.value[k+1][1];
+                                        }
+
                                     }else if(obj_matrice_du_champ.value[k][1] === 'meta'){
                                         for(l=(k + 1);l < obj_matrice_du_champ.value.length;l++){
                                             if((obj_matrice_du_champ.value[l][3] === (obj_matrice_du_champ.value[k][3] + 1)) && (obj_matrice_du_champ.value[l][8] === 2)){
@@ -1033,21 +1106,33 @@ class module_svg_bdd{
             }
         }
         var t='<h1>modification du champ</h1>';
+        t+=('<div class="" id="zone_message_modifier_un_champ"></div>');
         t+='<hr />';
         t+='<h2>dans ce graphique</h2>';
         t+='<hr />';
+        /*
+          ============================================================================================================
+        */
         t+='<h3>changer le nom</h3>';
         t+=('<input id="nouveau_nom" type="text" value="' + nom_du_champ + '" />');
         t+=('<input id="ancien_nom" type="hidden" value="' + nom_du_champ + '" />');
         t+=('<a href="javascript:' + this.#nom_de_la_variable + '.changer_le_nom_de_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ')">modifier</a>');
         t+='<hr />';
+        /*
+          ============================================================================================================
+        */
         t+='<h2>changer le type</h2>';
+        
         t+=('<br />type  : <input id="type_du_champ" value="' + type_du_champ + '" />');
         t+=('<br />table mère : <input id="table_mère" type="text" value="' + table_mere + '" />');
         t+=('<br />champ père : <input id="champ_père" type="text" value="' + champ_pere + '" />');
         t+=('<br />clé primaire  : <input type="checkbox" id="primary_key" ' + ((primary_key === true)?'checked':'') + ' />');
         t+=('<br />non nulle  : <input type="checkbox" id="non_nulle" ' + ((non_nulle === true)?'checked':'') + ' />');
         t+=('<br />auto increment  : <input type="checkbox" id="auto_increment" ' + ((auto_increment === true)?'checked':'') + ' />');
+        t+=('<br />a une valeur par défaut <input id="a_une_valeur_par_defaut" type="checkbox"  '+(a_une_valeur_par_defaut?'checked="true"':'')+'/>');
+        t+=(' , type caractère <input id="la_valeur_par_defaut_est_caractere" type="checkbox" '+(la_valeur_par_defaut_est_caractere?'checked="true"':'')+' />');
+        t+=(' , valeur : <input id="valeur_par_defaut" type="text" value="'+valeur_par_defaut+'" /> ');
+        t+='"CURRENT_TIMESTAMP","CURRENT_TIME","CURRENT_DATE"';
         t+='<br /><b>meta</b>';
         var cle={};
         for(cle in liste_meta_champ){
@@ -1076,7 +1161,10 @@ class module_svg_bdd{
             }
         }
         t+='<br />';
-        t+=('<a href="javascript:' + this.#nom_de_la_variable + '.modifier_un_champ_de_modale(' + id_svg_rectangle_du_champ + ',&quot;' + nom_du_champ + '&quot;,&quot;' + nom_de_la_table + '&quot;)">modifier</a>');
+        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_un_champ_de_modale(' + id_svg_rectangle_du_champ + ',&quot;' + nom_du_champ + '&quot;,&quot;' + nom_de_la_table + '&quot;)">modifier</a>');
+        /*
+          ============================================================================================================
+        */
         t+='<hr />';
         t+='<h3>supprimer</h3>';
         t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_le_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ',&quot;' + nom_du_champ + '&quot;,' + id_svg_rectangle_du_champ + ')">supprimer</a>');
@@ -1088,6 +1176,253 @@ class module_svg_bdd{
         t+='<hr />';
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
+    }
+    /*
+      ==============================================================================================================
+      function afficher_resultat_comparaison_base_physique_et_base_virtuelle
+    */
+    afficher_resultat_comparaison_base_physique_et_base_virtuelle(par){
+        global_modale1.close();
+        
+        var differences_entre_les_tables=false;
+
+        console.log(par['donnees']);
+        var tables={}; 
+        for(var a1 in par['donnees']['tableau1']){
+         tables[a1]={ 'presente_dans_tableau_1' : true ,  'presente_dans_tableau_2' : false  };
+        }
+        
+        for(var a2 in par['donnees']['tableau2']){
+         if(tables.hasOwnProperty(a2)){
+          tables[a2].presente_dans_tableau_2=true;
+         }else{
+          tables[a2]={ 'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
+          logerreur({status:false,message:' la table '  + a2 + ' est absente du tableau1 '});
+          differences_entre_les_tables=true;
+          
+         }
+        }
+        for(var a0 in tables){
+         if(tables[a0].presente_dans_tableau_2===false){
+          logerreur({status:false,message:' la table '  + a0 + ' est absente du tableau2'});
+          differences_entre_les_tables=true;
+         }
+        }
+        if(differences_entre_les_tables===true){
+          logerreur({status:false,message:' des tables ne sont pas les mêmes'});
+        }else{
+          logerreur({status:true,message:' il y a les mêmes tables dans les deux tableaux'});
+        }
+        console.log('tables=',tables)
+        
+        var t='<table>';
+        t+='<tr><th>Tables</th><th>dans la base physique</th><th>dans champ genere</th></tr>';
+        for( var tbl in tables){
+         t+='<tr>';
+         t+='<td>'+tbl+'</td>';
+         t+='<td>'+(tables[tbl].presente_dans_tableau_1?'<span class="yysucces">oui</span>':'non')+'</td>';
+         t+='<td>'+(tables[tbl].presente_dans_tableau_2?'<span class="yysucces">oui</span>':'non')+'</td>';
+         t+='</tr>';
+        }
+        t+='</table>';
+
+        
+        /*
+          analyse des champs des tables
+        */ 
+        var differences_entre_les_champs=false;
+
+        var tables_champs={};
+        for(var a0 in tables){
+            tables_champs[a0]={champs:null};
+            if(tables[a0].presente_dans_tableau_1===true && tables[a0].presente_dans_tableau_2===true ){
+                //debugger
+                var champs={};
+                for(var ind_champ in par['donnees']['tableau1'][a0]['liste_des_champs']){
+                    champs[ind_champ]={'table':a0,'presente_dans_tableau_1' : true , champs1 : par['donnees']['tableau1'][a0]['liste_des_champs'][ind_champ] ,  'presente_dans_tableau_2' : false , champs2 : null};
+                } 
+                for(var ind_champ in par['donnees']['tableau2'][a0]['liste_des_champs']){
+                    if(champs.hasOwnProperty(ind_champ)){
+                        champs[ind_champ].presente_dans_tableau_2=true;
+                        champs[ind_champ].champs2=par['donnees']['tableau2'][a0]['liste_des_champs'][ind_champ];
+                        if(
+                               champs[ind_champ].champs2['type'].toLowerCase() !==  champs[ind_champ].champs1['type'].toLowerCase()
+                            || champs[ind_champ].champs2['dflt_value']         !==  champs[ind_champ].champs1['dflt_value']
+                            || champs[ind_champ].champs2['auto_increment']     !==  champs[ind_champ].champs1['auto_increment']
+                            || champs[ind_champ].champs2['notnull']            !==  champs[ind_champ].champs1['notnull']
+                            || champs[ind_champ].champs2['pk']                 !==  champs[ind_champ].champs1['pk']
+                        ){
+                            par['donnees']['tableau2'][a0]['liste_des_champs'][ind_champ]['different']=true;
+                            differences_entre_les_champs=true;
+                        }
+                    }else{
+                        champs[ind_champ]={ 'table':a0,'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
+                        par['donnees']['tableau2'][a0]['liste_des_champs'][ind_champ]['different']=true;
+                        differences_entre_les_champs=true;
+                    }
+                }
+                if(differences_entre_les_champs===true){
+                    for( var champ in champs){
+                        if(champs[champ].presente_dans_tableau_1===true && champs[champ].presente_dans_tableau_2===true ){
+                            for( var typechamp in champs[champ]['champs1'] ){
+                                if(typeof champs[champ].champs1[typechamp]==='object'){
+                                }else{
+                                    if(champs[champ].champs1[typechamp]===champs[champ].champs2[typechamp]){
+                                    }else{
+                                        if('cid'===typechamp){
+                                        }else if(typechamp==='auto_increment'){
+                                            logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' , le type '+typechamp +' on a une différence mais ce n\'est peut-être pas une erreur ! ' });
+                                        }else{
+                                            logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' , le type '+typechamp +' on a une différence' });
+                                        }
+                                    }
+                                }
+                            }
+                            /*
+                            auto_increment: false
+                            cid: 0
+                            cle_etrangere: {}
+                            dflt_value: null
+                            name: "chi_id_groupe"
+                            notnull: 0
+                            pk: 1
+                            type: "INTEGER"
+                            */
+                         
+                        }else{
+                            if(champs[champ].presente_dans_tableau_1===true && champs[champ].presente_dans_tableau_2===false){
+                                logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' est dans la base physique mais pas dans la base du champ généré ' });
+                            }else{
+                                logerreur({status:false,message:' pour la table '  + a0 + ' , le champ '+champ + ' est dans la base du champ généré mais pas dans la base physique  ' });
+                            }
+                        }
+                    }
+                }
+                console.log('pour "'+a0+'" champs=',champs);
+                tables_champs[a0].champs=JSON.parse(JSON.stringify(champs));
+            }
+        }
+        console.log('differences_entre_les_champs=' , differences_entre_les_champs , 'tables_champs=' , tables_champs );
+        t+='<table>';
+        
+        t+='<tr>';
+        t+='<td colspan="4">';
+        t+=(differences_entre_les_tables?'<div class="yydanger">Il y a une différence entre les tables</div>':'<div class="yysucces">Pas de différence entre les tables</div>');
+        t+=(differences_entre_les_champs?'<div class="yydanger">Il y a une différence entre les champs</div>':'<div class="yysucces">Pas de différence entre les champs</div>');
+        t+='</td>';
+        t+='</tr>';
+        t+='<tr>';
+        
+        t+='<tr>';
+        t+='<th>Base physique</th>';
+        t+='<th>Base du champ genere</th>';
+        t+='</tr>';
+        t+='<tr>';
+        
+        var references=['tableau1','tableau2'];
+        for( var ref in references){
+          t+='<td style="vertical-align: baseline;">'
+          t+='<table>'
+          for( var i in par['donnees'][references[ref]]){
+              t+='<tr>'
+              t+='<th>'+i+'</th>'
+              t+='</tr>'
+              for( var j in par['donnees'][references[ref]][i].liste_des_champs){
+                  t+='<tr>';
+                   var la_class_quoi='';
+                   if(par['donnees'][references[ref]][i].liste_des_champs[j].hasOwnProperty('different') && par['donnees'][references[ref]][i].liste_des_champs[j].different===true){
+                    la_class_quoi='yyavertissement';
+                   }
+                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][i].liste_des_champs[j].name+'</td>';
+                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][i].liste_des_champs[j].type+'</td>';
+                  t+='</tr>';
+              }
+          }
+          t+='</table>'
+          t+='</td>';
+        }
+        
+        t+='</tr></table>'
+        
+        if(differences_entre_les_tables===false && differences_entre_les_champs===false){
+        }
+        
+        
+        document.getElementById('__contenu_modale').innerHTML=t;
+        global_modale1.showModal();        
+        
+    }
+    /*
+      ==========================================================================================================================
+      function comparer_la_base_physique_et_la_base_virtuelle
+    */
+    comparer_la_base_physique_et_la_base_virtuelle(id_bdd_de_la_base_en_cours){
+     
+        var obj1=this.#creer_rev_de_la_base_a_partir_de_svg(id_bdd_de_la_base_en_cours);
+        if(obj1.status===true){
+
+            var obj2 = rev_texte_vers_matrice(obj1.value);
+            if(obj2.status === true){
+                var obj3=tabToSql1(obj2.value,0,0);
+                if(obj3.status===true){
+                 
+                             
+                             
+                             
+                    async function recuperer_les_tableaux_des_bases(url="",donnees){
+                        var response= await fetch(url,{
+                            /* 6 secondes de timeout */
+                            'signal':AbortSignal.timeout(1000),
+                            /* *GET, POST, PUT, DELETE, etc. */
+                            method:"POST",
+                            /* no-cors, *cors, same-origin */
+                            mode:"cors",
+                            /* default, no-cache, reload, force-cache, only-if-cached */
+                            cache:"no-cache",
+                            /* include, *same-origin, omit */
+                            credentials:"same-origin",
+                            /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
+                            'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                            redirect:"follow",
+                            /*
+                              
+                              
+                              no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                            */
+                            referrerPolicy:"no-referrer",
+                            'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+                        });
+                        return(response.json());
+                    }
+                    var ajax_param={
+                        /* enveloppe d'appels */
+                        'call':{'lib':'core','file':'bdd','funct':'recuperer_les_tableaux_des_bases'},
+                        /* paramètres */
+                        source_base_sql        : obj3.value ,
+                        id_bdd_de_la_base      : id_bdd_de_la_base_en_cours,
+                    };
+                    recuperer_les_tableaux_des_bases('za_ajax.php?recuperer_les_tableaux_des_bases',ajax_param).then((donnees) => {
+                         debugger
+                        if(donnees.status === 'OK'){
+                         
+                            this.afficher_resultat_comparaison_base_physique_et_base_virtuelle({'donnees':donnees.value});
+                         
+                        }
+                    }).catch((err) => {
+                        /* en cas de timeout par esemple */
+                        debugger;
+                        console.error(err);
+                    });                      
+                 
+                }else{
+                }
+                
+            }else{
+            }
+         
+        }else{
+        }
+     
     }
     /*
       
@@ -1136,6 +1471,10 @@ class module_svg_bdd{
         t+='<hr /><h2>Ajouter une table</h2>';
         t+='<input id="nouveau_nom" type="text" value="tbl_" />';
         t+=('<a href="javascript:' + this.#nom_de_la_variable + '.ajouter_une_table_provenant_de_modale(&quot;nouveau_nom&quot;)">enregistrer</a>');
+        t+='<hr /><h2>comparer la base physique et la base virtuelle</h2>';
+        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.comparer_la_base_physique_et_la_base_virtuelle('+this.#id_bdd_de_la_base_en_cours+')">comparer</a>');
+        
+        
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
     }
@@ -1152,7 +1491,7 @@ class module_svg_bdd{
         var id_svg_conteneur_table=0;
         var i=0;
         for(i=0;i < lst.length;i++){
-            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (lst[i].getAttribute('id_bdd_de_la_base_en_cours') == this.#id_bdd_de_la_base_en_cours)){
+            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === this.#id_bdd_de_la_base_en_cours)){
                 racine_du_svg=lst[i];
                 break;
             }
@@ -1559,7 +1898,7 @@ class module_svg_bdd{
         t+='<br />index primaire <input id="primaire" type="checkbox" /> ';
         t+='<br />non nulle <input id="non_nulle" type="checkbox" /> ';
         t+='<br />auto increment <input id="auto_increment" type="checkbox" /> ';
-        t+='<br />valeur par défaut <input id="a_une_valeur_par_defaut" type="checkbox" /> , valeur : <input id="valeur_par_defaut" type="text" value="" /> ';
+        t+='<br />a une valeur par défaut <input id="a_une_valeur_par_defaut" type="checkbox" /> , type caractère <input id="la_valeur_par_defaut_est_caractere" type="checkbox" /> , valeur : <input id="valeur_par_defaut" type="text" value="" /> ';
         
         t+='<br />nom long du champ : <input type="text" id="meta_ajouter__nom_long_du_champ" value="à faire ...">';
         t+='<br />nom court du champ : <input type="text" id="meta_ajouter__nom_court_du_champ" value="à faire ...">';
@@ -2561,31 +2900,28 @@ class module_svg_bdd{
         a.remove();
         return largeur_de_la_boite;
     }
+    
     /*
-      
       ========================================================================================================
       on parcours l'arbre svg pour reconstruire le rev
-      function sauvegarder_la_base
+      function creer_rev_de_la_base_a_partir_de_svg
     */
-    sauvegarder_la_base(id_bdd_de_la_base){
-        this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd_de_la_base,10);
-        clearMessages('zone_global_messages');
+    #creer_rev_de_la_base_a_partir_de_svg(id_bdd_de_la_base){
+        var t='';
         var lst = document.getElementsByTagName('g');
         var racine_du_svg=null;
         var i=0;
         for(i=0;i < lst.length;i++){
-            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (lst[i].getAttribute('id_bdd_de_la_base_en_cours') == id_bdd_de_la_base)){
+            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === id_bdd_de_la_base)){
                 racine_du_svg=lst[i];
                 break;
             }
         }
         if(racine_du_svg === null){
-            logerreur({status:false,message:'0370 il y a eu un problème lors de la récupération de l\'arbre svg'});
-            displayMessages('zone_global_messages');
-            return;
+            
+            return logerreur({status:false,message:'2670 il y a eu un problème lors de la récupération de l\'arbre svg'});
         }
         this.#id_svg_de_la_base_en_cours=parseInt(racine_du_svg.getAttribute('id_svg_de_la_base_en_cours'),10);
-        var t='';
         /*
           
           ce sont les rectangles qui contiennent les informations sur la base
@@ -2609,6 +2945,26 @@ class module_svg_bdd{
                 t+=('\nadd_index(' + lst[i].getAttribute('donnees_rev_de_l_index') + ')');
             }
         }
+        return {status:true, value:t};        
+    }
+    
+    /*
+      ========================================================================================================
+      function sauvegarder_la_base
+    */
+    sauvegarder_la_base(id_bdd_de_la_base){
+        var t='';
+        this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd_de_la_base,10);
+        clearMessages('zone_global_messages');
+        var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
+        if(obj.status===true){
+         t=obj.value;
+        }else{
+         displayMessages('zone_global_messages');
+         alert('Problème sur la sauvegarde de la base ');
+         return;
+        }
+
         async function envoyer_le_rev_de_le_base_en_post(url="",donnees){
             var response= await fetch(url,{
                 /* 6 secondes de timeout */
@@ -2633,7 +2989,7 @@ class module_svg_bdd{
             });
             return(response.json());
         }
-        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'envoyer_le_rev_de_le_base_en_post'},source_rev_de_la_base:t,id_bdd_de_la_base:id_bdd_de_la_base};
+        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'envoyer_le_rev_de_le_base_en_post'},source_rev_de_la_base:t,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
                 console.log('OK');

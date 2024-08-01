@@ -1,4 +1,47 @@
 <?php
+
+function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_virtuelle){
+
+    $tableaux_retournes=array('tableau1' => array() , 'tableau2' => array() );
+    require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
+    $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $id_base , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+
+    $chemin_bdd='../../'.$__valeurs['T2.chp_dossier_cible'].'/'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
+
+    if( is_file($chemin_bdd)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
+
+        $ret=obtenir_la_structure_de_la_base_sqlite($chemin_bdd,true);
+        if($ret['status']===true){
+            $tableauDesTables=$ret['value'];
+            $ret2=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($source_base_virtuelle);
+            if($ret2['status']===true){
+
+                $tableaux_retournes=array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
+
+            }else{
+
+                ajouterMessage('erreur' , __LINE__ . ' erreur sur la structure de la base 2 de la zone "genere" ' , BNF  );
+                return array('status'=> false  );
+
+            }
+
+         
+        }else{
+
+            ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
+            return array('status'=> false  );
+
+        }
+
+    }else{
+
+        ajouterMessage('erreur' , __LINE__ .' fichier de la base de donnée sqlite introuvable ' , BNF );
+        return array('status'=> false  );
+        
+    }
+    
+    return array('status'=> true , 'value' => $tableaux_retournes );
+}
 /*
   ========================================================================================
 */
