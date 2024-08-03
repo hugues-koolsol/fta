@@ -91,7 +91,8 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
     var operateur = recuperer_operateur_sqlite(tab[id][1]);
     var premierChamp=true;
     var i = (id + 1);
-    for(i=(id + 1);(i < tab.length) && (tab[i][3] > tab[id][3]);i++){
+    var l01=tab.length;
+    for(i=(id + 1);(i < l01) && (tab[i][3] > tab[id][3]);i++){
         if(tab[i][7] === id){
             if(premierChamp === false){
                 if(operateur === 'concat'){
@@ -185,7 +186,8 @@ function tabToSql0(tab,id,niveau,options){
     var obj=null;
     var premiere_jointure_croisee=true;
     var meta='';
-    for(i=(id + 1);i < tab.length;i++){
+    var l01=tab.length;
+    for(i=(id + 1);i < l01;i++){
         if(tab[i][7] == id){
             if(tab[i][1] == 'sql'){
                 var obj = tabToSql0(tab,i,niveau,options);
@@ -211,20 +213,20 @@ function tabToSql0(tab,id,niveau,options){
                 var tableau_des_alias = [];
                 liste_des_tables='';
                 /* on commence par les tables pour avoir les références des alias ( select * from tbl T0 ) */
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if((tab[j][1] == 'provenance') && (tab[j][8] >= 1)){
                         premiere_jointure_croisee=true;
-                        for(l=(j + 1);(l < tab.length) && (tab[l][3] > tab[j][3]);l++){
+                        for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                             if(tab[l][7] == j){
                                 if((tab[l][2] === 'f') && ((tab[l][1] === 'table_reference') || (tab[l][1] === 'jointure_croisée') || (tab[l][1] === 'jointure_gauche'))){
                                     /*
                                       
                                       on commence par la source pour avoir les références des alias
                                     */
-                                    for(m=(l + 1);(m < tab.length) && (tab[m][3] > tab[l][3]);m++){
+                                    for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
                                         if(tab[m][7] == l){
                                             if(tab[m][1] === 'source'){
-                                                for(n=(m + 1);(n < tab.length) && (tab[n][3] > tab[m][3]);n++){
+                                                for(n=(m + 1);(n < l01) && (tab[n][3] > tab[m][3]);n++){
                                                     if(tab[n][7] == m){
                                                         if(tab[n][1] === 'nom_de_la_table'){
                                                             if(tab[n][8] === 1){
@@ -257,7 +259,7 @@ function tabToSql0(tab,id,niveau,options){
                                             }
                                         }
                                     }
-                                    for(m=(l + 1);(m < tab.length) && (tab[m][3] > tab[l][3]);m++){
+                                    for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
                                         if(tab[m][7] == l){
                                             if(tab[m][1] === 'contrainte'){
                                                 var obj = traite_sqlite_fonction_de_champ(tab,(m + 1),niveau,{tableau_des_alias:tableau_des_alias});
@@ -278,10 +280,10 @@ function tabToSql0(tab,id,niveau,options){
                     }
                 }
                 /* liste des champs extraits */
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if((tab[j][1] == 'valeurs') && (tab[j][8] >= 1)){
                         liste_des_valeurs='';
-                        for(l=(j + 1);(l < tab.length) && (tab[l][3] > tab[j][3]);l++){
+                        for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                             if(tab[l][7] == j){
                                 if(la_valeur != ''){
                                     la_valeur+=' , ';
@@ -324,7 +326,7 @@ function tabToSql0(tab,id,niveau,options){
                 }
                 /* liste des conditions (where)*/
                 var liste_des_conditions='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if((tab[j][1] == 'conditions') && (tab[j][8] >= 1)){
                         var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
                         if(obj.status === true){
@@ -339,9 +341,9 @@ function tabToSql0(tab,id,niveau,options){
                 }
                 /* liste des tris (ORDER BY)*/
                 var liste_des_tris='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if((tab[j][1] == 'trier_par') && (tab[j][8] >= 1)){
-                        for(l=(j + 1);(l < tab.length) && (tab[l][3] > tab[j][3]);l++){
+                        for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                             if(tab[l][7] == j){
                                 var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
                                 if(obj.status === true){
@@ -358,7 +360,7 @@ function tabToSql0(tab,id,niveau,options){
                 }
                 /* LIMIT */
                 var liste_des_limites='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if((tab[j][1] == 'limité_à') && (tab[j][8] >= 1)){
                         var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
                         if(obj.status === true){
@@ -366,7 +368,7 @@ function tabToSql0(tab,id,niveau,options){
                         }else{
                             return(logerreur({status:false,message:'0354 erreur sur conditions dans select '}));
                         }
-                        for(l=(j + 1);(l < tab.length) && (tab[l][3] > tab[j][3]);l++){
+                        for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                             if(tab[l][7] == j){
                             }
                         }
@@ -393,20 +395,20 @@ function tabToSql0(tab,id,niveau,options){
                 la_valeur='';
                 var nom_du_champ='';
                 var valeur_du_champ='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][7] == tab[i][0]){
                         if((tab[j][1] == 'nom_de_la_table') && (tab[j][8] == 1)){
                             nam=tab[(j + 1)][1];
                         }
                         if((tab[j][1] == 'valeurs') && (tab[j][8] >= 1)){
                             liste_des_valeurs='';
-                            for(l=(j + 1);(l < tab.length) && (tab[l][3] > tab[j][3]);l++){
+                            for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                                 if(tab[l][7] == j){
                                     if(la_valeur != ''){
                                         la_valeur+=' , ';
                                     }
                                     if(tab[l][1] === 'affecte'){
-                                        for(m=(l + 1);(m < tab.length) && (tab[m][3] > tab[l][3]);m++){
+                                        for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
                                             if(tab[m][7] == tab[l][0]){
                                                 if((tab[m][2] === 'f') && (tab[m][1] === 'champ')){
                                                     nom_du_champ=tab[(m + 1)][1];
@@ -439,7 +441,7 @@ function tabToSql0(tab,id,niveau,options){
                         }
                         if((tab[j][1] == 'conditions') && (tab[j][8] >= 1)){
                             conditions='';
-                            for(l=(j + 1);(l < tab.length) && (tab[l][3] > tab[j][3]);l++){
+                            for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                                 if(tab[l][7] == j){
                                     if(conditions != ''){
                                         conditions+=' , ';
@@ -473,13 +475,13 @@ function tabToSql0(tab,id,niveau,options){
                 */
                 nam='';
                 list='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][7] == tab[i][0]){
                         if((tab[j][1] == 'nom_de_la_table') && (tab[j][8] == 1)){
                             nam=tab[(j + 1)][1];
                         }
                         if(((tab[j][1] == 'fields') || (tab[j][1] == 'champs')) && (tab[j][8] >= 1)){
-                            for(k=(j + 1);k < tab.length;k++){
+                            for(k=(j + 1);k < l01;k++){
                                 if((tab[k][3] == (tab[j][3] + 1)) && (tab[k][7] == tab[j][0])){
                                     list+=(' ' + tab[k][1] + ' ,');
                                 }
@@ -487,10 +489,10 @@ function tabToSql0(tab,id,niveau,options){
                         }
                         if(((tab[j][1] == 'values') || (tab[j][1] == 'valeurs')) && (tab[j][8] >= 1)){
                             liste_des_valeurs='';
-                            for(k=(j + 1);k < tab.length;k++){
+                            for(k=(j + 1);k < l01;k++){
                                 if((tab[k][3] == (tab[j][3] + 1)) && (tab[k][7] == tab[j][0]) && (tab[k][1] == '')){
                                     la_valeur='';
-                                    for(l=(k + 1);(l < tab.length) && (tab[l][3] > tab[k][3]);l++){
+                                    for(l=(k + 1);(l < l01) && (tab[l][3] > tab[k][3]);l++){
                                         if(tab[l][7] == tab[k][0]){
                                             if(la_valeur != ''){
                                                 la_valeur+=' , ';
@@ -530,7 +532,7 @@ function tabToSql0(tab,id,niveau,options){
                 uniq=' INDEX ';
                 def='';
                 meta='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][7] == tab[i][0]){
                         if(((tab[j][1] == 'nom_de_la_table_pour_l_index') || (tab[j][1] == 'on_table') || ('sur_table' === tab[j][1])) && (tab[j][8] == 1)){
                             nam=tab[(j + 1)][1];
@@ -542,7 +544,7 @@ function tabToSql0(tab,id,niveau,options){
                             uniq=' UNIQUE INDEX ';
                         }
                         if(((tab[j][1] == 'fields') || (tab[j][1] == 'champs')) && (tab[j][8] >= 1)){
-                            for(k=(j + 1);k < tab.length;k++){
+                            for(k=(j + 1);k < l01;k++){
                                 if((tab[k][3] == (tab[j][3] + 1)) && (tab[k][7] == tab[j][0])){
                                     list+=(' `' + tab[k][1] + '` ,');
                                 }
@@ -570,7 +572,7 @@ function tabToSql0(tab,id,niveau,options){
                 nam='';
                 oldnam='';
                 def='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][7] == tab[i][0]){
                         if((tab[j][1] == 'nom_du_champ') && (tab[j][8] == 1)){
                             nam=tab[(j + 1)][1];
@@ -604,13 +606,13 @@ function tabToSql0(tab,id,niveau,options){
             }else if(tab[i][1] == 'add_primary_key'){
                 nam='';
                 list='';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][7] == tab[i][0]){
                         if((tab[j][1] == 'nom_de_la_table') && (tab[j][8] == 1)){
                             nam=tab[(j + 1)][1];
                         }
                         if((tab[j][1] == 'fields') && (tab[j][8] >= 1)){
-                            for(k=(j + 1);k < tab.length;k++){
+                            for(k=(j + 1);k < l01;k++){
                                 if((tab[k][3] == (tab[j][3] + 1)) && (tab[k][7] == tab[j][0])){
                                     list+=(' ' + tab[k][1] + ' ,');
                                 }
@@ -664,10 +666,31 @@ function tabToSql0(tab,id,niveau,options){
                   `fld_name_css` varchar[32] COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '{"showDeleteField":true}',
                   
                 */
-                var variables_pour_tableau_tables={'nom_du_champ':'','autoincrement':false,'non_nulle':false,'defaut':{'est_defini':false,'valeur':null},'cle_primaire':false,'reference':{'est_defini':false,'table':'','champ':''},'type':{'nom':false,'longueur':false}};
+                var variables_pour_tableau_tables={
+                 /* */
+                 'nom_du_champ':'',
+                 'autoincrement':false,
+                 'non_nulle':false,
+                 'defaut':{
+                  'est_defini':false,
+                  'valeur':null
+                 },
+                 'cle_primaire':false,
+                 'reference':{
+                  'est_defini':false,
+                  'table':'',
+                  'champ':''
+                 },
+                 'type':{
+                  'nom':false,
+                  'longueur':false
+                 },
+                 'commentaire' : '',
+                 'meta' : '',
+                };
                 var definition_sql_du_champ='';
                 var meta_du_champ='';
-                for(j=(i + 1);j < tab.length && tab[j][3] > tab[i][3] ;j++){
+                for(j=(i + 1);j < l01 && tab[j][3] > tab[i][3] ;j++){
 
                     if(tab[j][7] === i){
                         if((tab[j][1] == 'nom_du_champ') && (tab[j][8] == 1) && (tab[(j + 1)][2] == 'c')){
@@ -689,6 +712,7 @@ function tabToSql0(tab,id,niveau,options){
                             if(tab[j][13] === ''){
                             }else{
                                 definition_sql_du_champ+=('/* ' + tab[j][13].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /') + ' */');
+                                variables_pour_tableau_tables.commentaire=tab[j][13];
                             }
                             definition_sql_du_champ+=espacesn(true,niveau);
                         }else if((tab[j][1] === 'auto_increment') && (tab[j][8] === 0)){
@@ -746,6 +770,7 @@ function tabToSql0(tab,id,niveau,options){
                             if(obj.status === true){
                                 meta_du_champ+=espacesn(true,(niveau + 2));
                                 meta_du_champ+=('/* meta(' + obj.value + ') */');
+                                variables_pour_tableau_tables.meta=obj.value;
                                 meta_du_champ+=espacesn(true,(niveau + 2));
                             }else{
                                 return(logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'}));
@@ -778,9 +803,19 @@ function tabToSql0(tab,id,niveau,options){
                 t+=espacesn(true,niveau);
                 t+=espacesn(true,niveau);
                 var nom_table_en_cours='';
+                
+                var donnees_table={
+                     /* */
+                     'nom_de_la_table' : '' ,
+                     'champs'          : [] ,
+                     'engine'          : '' ,
+                     'charset'         : '' ,
+                     'collate'         : '' ,
+                     'meta'            : {} ,
+                };
 
                 t+='CREATE TABLE';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][3] > tab[i][3]){
                         if(tab[j][3] === (tab[i][3] + 1)){
                             if((tab[j][1] === 'ifexists') && (tab[j][8] === 0)){
@@ -789,12 +824,15 @@ function tabToSql0(tab,id,niveau,options){
                                 t+=' IF NOT EXISTS';
                             }else if((tab[j][1] === 'engine') && (tab[j][8] === 1)){
                                 engine=(' ENGINE=' + tab[(j + 1)][1] + '');
+                                donnees_table.engine=tab[(j + 1)][1];
                             }else if((tab[j][1] === 'auto_increment') && (tab[j][8] === 1)){
                                 auto_increment=(' AUTO_INCREMENT=' + tab[(j + 1)][1] + '');
                             }else if((tab[j][1] === 'charset') && (tab[j][8] === 1)){
                                 charset=(' DEFAULT CHARSET=' + tab[(j + 1)][1] + '');
+                                donnees_table.charset=tab[(j + 1)][1];
                             }else if((tab[j][1] === 'collate') && (tab[j][8] === 1)){
                                 collate=(' COLLATE=' + tab[(j + 1)][1] + '');
+                                donnees_table.collate=tab[(j + 1)][1];
                             }else if((tab[j][1] === 'nom_de_la_table') && (tab[j][8] === 1) && (tab[(j + 1)][2] === 'c')){
                                 t+=(' ' + tab[(j + 1)][1] + '(');
                                 nom_table_en_cours=tab[(j + 1)][1];
@@ -802,7 +840,8 @@ function tabToSql0(tab,id,niveau,options){
                             }else if(((tab[j][1] === 'fields') || (tab[j][1] === 'champs')) && (tab[j][8] > 0)){
                                 t+=' ';
                                 options.dans_definition_de_champ=true;
-                                options.tableau_tables_champs.push({'nom_de_la_table':nom_table_en_cours,'champs':[]});
+                                donnees_table.nom_de_la_table=nom_table_en_cours;
+                                options.tableau_tables_champs.push(donnees_table);
                                 
                                 obj=tabToSql0(tab,j,niveau+1,options);
                                 options.dans_definition_de_champ=false;
@@ -813,7 +852,7 @@ function tabToSql0(tab,id,niveau,options){
                                     return(logerreur({status:false,value:t,id:i,message:'sql.js erreur dans un sql définit dans un php'}));
                                 }
                                 t+=('' + ((engine === '')?'':(' ' + engine)) + ((auto_increment === '')?'':(' ' + auto_increment)) + ((charset == '')?'':(' ' + charset)) + ((collate == '')?'':(' ' + collate)));
-                                for(k=(j + 1);k < tab.length;k++){
+                                for(k=(j + 1);k < l01;k++){
                                     if(tab[k][3] > tab[j][3]){
                                     }else{
                                         j=(k - 1);
@@ -827,6 +866,13 @@ function tabToSql0(tab,id,niveau,options){
                                     t+=espacesn(true,(niveau + 1));
                                     t+=('/* meta(' + obj.value + ') */');
                                     t+=espacesn(true,(niveau + 1));
+                                    for(k=j+1;k<l01 && tab[k][3] > tab[j][3] ; k++){
+                                        if(tab[k][7] === j){
+                                            if(tab[k][8]===2){
+                                               donnees_table.meta[tab[k+1][1]]=tab[k+2][1];
+                                            }
+                                        }
+                                    }
                                 }else{
                                     return(logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'}));
                                 }
@@ -842,7 +888,7 @@ function tabToSql0(tab,id,niveau,options){
             }else if(tab[i][1] === 'drop_table'){
                 t+=espacesn(true,niveau);
                 t+='DROP TABLE';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][3] > tab[i][3]){
                         if(tab[j][3] === (tab[i][3] + 1)){
                             if((tab[j][1] === 'ifexists') && (tab[j][8] === 0)){
@@ -864,7 +910,7 @@ function tabToSql0(tab,id,niveau,options){
             }else if(tab[i][1] == 'create_database'){
                 t+=espacesn(true,niveau);
                 t+='CREATE DATABASE';
-                for(j=(i + 1);j < tab.length;j++){
+                for(j=(i + 1);j < l01;j++){
                     if(tab[j][3] > tab[i][3]){
                         if(tab[j][3] === (tab[i][3] + 1)){
                             if((tab[j][1] === 'ifnotexists') && (tab[j][8] === 0)){

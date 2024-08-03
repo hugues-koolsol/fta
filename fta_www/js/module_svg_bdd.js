@@ -634,7 +634,7 @@ class module_svg_bdd{
             
             var obj1=rev_texte_vers_matrice(definition_du_champ);
             if(obj1.status===true){
-                debugger
+
                 var obj2=tabToSql1(obj1.value,0,0);
                 if(obj2.status===true){
 //                    console.log(obj2.value);
@@ -1177,6 +1177,96 @@ class module_svg_bdd{
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
     }
+    
+
+    /*
+      ==============================================================================================================
+      function ajouter_cette_table_dans_tbl_tables
+    */
+    ajouter_cette_table_dans_tbl_tables(nom_de_la_table , id_bdd_de_la_base){
+     
+        var lst = document.getElementsByTagName('g');
+        var racine_du_svg=null;
+        var i=0;
+        for(i=0;i < lst.length;i++){
+            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === id_bdd_de_la_base)){
+                racine_du_svg=lst[i];
+                break;
+            }
+        }
+        if(racine_du_svg === null){
+            
+            return logerreur({status:false,message:'2670 il y a eu un problème lors de la récupération de l\'arbre svg'});
+        }
+        this.#id_svg_de_la_base_en_cours=parseInt(racine_du_svg.getAttribute('id_svg_de_la_base_en_cours'),10);
+        /*
+          
+          ce sont les rectangles qui contiennent les informations sur la base
+        */
+        lst=racine_du_svg.getElementsByTagName('rect');
+        var i=0;
+        for(i=0;i < lst.length;i++){
+            if(  lst[i].getAttribute('type_element') 
+              && lst[i].getAttribute('type_element') === 'rectangle_de_table' 
+              && lst[i].getAttribute('nom_de_la_table')===nom_de_la_table ){
+                var texte_rev=this.#creer_definition_table_en_rev(lst[i]);
+                
+                var obj2 = rev_texte_vers_matrice(texte_rev);
+                if(obj2.status === true){
+                    var tab=obj2.value;
+                    var obj=tabToSql1(tab,0,0);
+                    if(obj.status===true){
+                        async function ajouter_la_table_dans_la_table_tbl_tables(url="",donnees){
+                            var response= await fetch(url,{
+                                /* 6 secondes de timeout */
+                                'signal':AbortSignal.timeout(1000),
+                                /* *GET, POST, PUT, DELETE, etc. */
+                                method:"POST",
+                                /* no-cors, *cors, same-origin */
+                                mode:"cors",
+                                /* default, no-cache, reload, force-cache, only-if-cached */
+                                cache:"no-cache",
+                                /* include, *same-origin, omit */
+                                credentials:"same-origin",
+                                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
+                                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                                redirect:"follow",
+                                /*
+                                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                                */
+                                referrerPolicy:"no-referrer",
+                                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+                            });
+                            return(response.json());
+                        }
+                        var ajax_param={
+                            /* enveloppe d'appels */
+                            'call':{'lib':'core','file':'bdd','funct':'ajouter_la_table_dans_la_table_tbl_tables'},
+                            /* paramètres */
+                            tableau_des_tables_et_champs : obj.tableau_tables_champs  ,
+                            id_bdd_de_la_base            : id_bdd_de_la_base ,
+                        };
+                        ajouter_la_table_dans_la_table_tbl_tables('za_ajax.php?ajouter_la_table_dans_la_table_tbl_tables',ajax_param).then((donnees) => {
+
+                            if(donnees.status === 'OK'){
+                             
+                                debugger
+                             
+                            }else{
+                                debugger;
+                                console.error('donnees=' , donnees );
+                             
+                            }
+                        }).catch((err) => {
+                            /* en cas de timeout par exemple */
+                            debugger;
+                            console.error(err);
+                        });
+                    }
+                }
+            }
+        }
+    }
     /*
       ==============================================================================================================
       function afficher_resultat_comparaison_base_physique_et_base_virtuelle
@@ -1185,16 +1275,19 @@ class module_svg_bdd{
         global_modale1.close();
         
         var differences_entre_les_tables=false;
+        var differences_entre_les_champs=false;
 
         console.log(par['donnees']);
         var tables={}; 
         for(var a1 in par['donnees']['tableau1']){
-         tables[a1]={ 'presente_dans_tableau_1' : true ,  'presente_dans_tableau_2' : false  };
+
+         tables[a1]={ 'presente_dans_tableau_1' : true ,  'presente_dans_tableau_2' : false  , chi_id_table:par['donnees']['tableau1'][a1].chi_id_table };
         }
         
         for(var a2 in par['donnees']['tableau2']){
          if(tables.hasOwnProperty(a2)){
           tables[a2].presente_dans_tableau_2=true;
+          
          }else{
           tables[a2]={ 'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
           logerreur({status:false,message:' la table '  + a2 + ' est absente du tableau1 '});
@@ -1213,24 +1306,32 @@ class module_svg_bdd{
         }else{
           logerreur({status:true,message:' il y a les mêmes tables dans les deux tableaux'});
         }
-        console.log('tables=',tables)
+//        console.log('tables=',tables)
         
-        var t='<table>';
-        t+='<tr><th>Tables</th><th>dans la base physique</th><th>dans champ genere</th></tr>';
-        for( var tbl in tables){
-         t+='<tr>';
-         t+='<td>'+tbl+'</td>';
-         t+='<td>'+(tables[tbl].presente_dans_tableau_1?'<span class="yysucces">oui</span>':'non')+'</td>';
-         t+='<td>'+(tables[tbl].presente_dans_tableau_2?'<span class="yysucces">oui</span>':'non')+'</td>';
-         t+='</tr>';
+        /*
+        les champs sont-t-ils vraiment les mêmes
+        */
+        if(differences_entre_les_tables===false){
+            for(var a0 in tables){
+                for(var i in par['donnees']['tableau2'][a0].liste_des_champs){
+                    if(!(par['donnees']['tableau1'][a0].liste_des_champs.hasOwnProperty(i))){
+                        differences_entre_les_champs=true;
+                        par['donnees']['tableau2'][a0].liste_des_champs[i].absent_de_l_autre_tableau=true;
+                    }
+                }
+                for(var i in par['donnees']['tableau1'][a0].liste_des_champs){
+                    if(!(par['donnees']['tableau2'][a0].liste_des_champs.hasOwnProperty(i))){
+                        differences_entre_les_champs=true;
+                        par['donnees']['tableau1'][a0].liste_des_champs[i].absent_de_l_autre_tableau=true;
+                    }
+                }
+            }
         }
-        t+='</table>';
 
         
         /*
           analyse des champs des tables
         */ 
-        var differences_entre_les_champs=false;
 
         var tables_champs={};
         for(var a0 in tables){
@@ -1298,11 +1399,32 @@ class module_svg_bdd{
                         }
                     }
                 }
-                console.log('pour "'+a0+'" champs=',champs);
+//                console.log('pour "'+a0+'" champs=',champs);
                 tables_champs[a0].champs=JSON.parse(JSON.stringify(champs));
             }
         }
-        console.log('differences_entre_les_champs=' , differences_entre_les_champs , 'tables_champs=' , tables_champs );
+        
+        
+        var t='<table>';
+        t+='<tr><th>Tables</th><th>dans la base physique</th><th>dans champ genere</th><th>action</th></tr>';
+        for(var tbl in tables){
+            t+='<tr>';
+            t+='<td>'+tbl+'</td>';
+            t+='<td>'+(tables[tbl].presente_dans_tableau_1?'<span class="yysucces">oui</span>':'non')+'</td>';
+            t+='<td>'+(tables[tbl].presente_dans_tableau_2?'<span class="yysucces">oui</span>':'non')+'</td>';
+            if( differences_entre_les_tables===false && differences_entre_les_champs===false){
+                if(tables[tbl].chi_id_table===0){
+                    t+='<td>'
+                    t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_table_dans_tbl_tables(&quot;'+tbl+'&quot;,'+par.id_bdd_de_la_base_en_cours+')"">ajouter cett table dans tbl_tables</a>'
+                    t+='</td>'
+                }
+            }
+            t+='</tr>';
+        }
+        t+='</table>';
+        
+        
+//        console.log('differences_entre_les_champs=' , differences_entre_les_champs , 'tables_champs=' , tables_champs );
         t+='<table>';
         
         t+='<tr>';
@@ -1333,6 +1455,10 @@ class module_svg_bdd{
                    if(par['donnees'][references[ref]][i].liste_des_champs[j].hasOwnProperty('different') && par['donnees'][references[ref]][i].liste_des_champs[j].different===true){
                     la_class_quoi='yyavertissement';
                    }
+                   if(par['donnees'][references[ref]][i].liste_des_champs[j].hasOwnProperty('absent_de_l_autre_tableau') && par['donnees'][references[ref]][i].liste_des_champs[j].absent_de_l_autre_tableau===true){
+                    la_class_quoi='yyavertissement';
+                   }
+
                    t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][i].liste_des_champs[j].name+'</td>';
                    t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][i].liste_des_champs[j].type+'</td>';
                   t+='</tr>';
@@ -1343,10 +1469,6 @@ class module_svg_bdd{
         }
         
         t+='</tr></table>'
-        
-        if(differences_entre_les_tables===false && differences_entre_les_champs===false){
-        }
-        
         
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();        
@@ -1402,11 +1524,13 @@ class module_svg_bdd{
                         id_bdd_de_la_base      : id_bdd_de_la_base_en_cours,
                     };
                     recuperer_les_tableaux_des_bases('za_ajax.php?recuperer_les_tableaux_des_bases',ajax_param).then((donnees) => {
-                         debugger
+
                         if(donnees.status === 'OK'){
+                            
+                            this.afficher_resultat_comparaison_base_physique_et_base_virtuelle({'donnees':donnees.value,id_bdd_de_la_base_en_cours:id_bdd_de_la_base_en_cours});
                          
-                            this.afficher_resultat_comparaison_base_physique_et_base_virtuelle({'donnees':donnees.value});
-                         
+                        }else{
+                         console.error('donnees=' , donnees);
                         }
                     }).catch((err) => {
                         /* en cas de timeout par esemple */
@@ -1415,6 +1539,7 @@ class module_svg_bdd{
                     });                      
                  
                 }else{
+                 debugger
                 }
                 
             }else{
@@ -3495,6 +3620,7 @@ class module_svg_bdd{
             if(donnees.status === 'OK'){
                 var nouvel_arbre={};
                 var i={};
+
                 for(i in donnees.valeurs){
                     this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]={'chp_rev_travail_basedd':donnees.valeurs[i]['T0.chp_rev_travail_basedd'],'arbre_svg':[],'chp_nom_basedd':donnees.valeurs[i]['T0.chp_nom_basedd']};
                     if((donnees.valeurs[i]['T0.chp_rev_travail_basedd'] === '') || (donnees.valeurs[i]['T0.chp_rev_travail_basedd'] === null)){
@@ -3647,7 +3773,10 @@ class module_svg_bdd{
                   this.#modale_gerer_la_table(document.getElementById(78));
                 */
             }else{
-                logerreur({status:false,message:'0132'});
+                console.log('donnees=',donnees)
+                debugger
+                
+                logerreur({status:false,message:'0132 erreur de récupération des données de la base'});
                 displayMessages('zone_global_messages');
             }
         });

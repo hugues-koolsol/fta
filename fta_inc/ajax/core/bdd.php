@@ -1,5 +1,49 @@
 <?php
 
+
+function ajouter_la_table_dans_la_table_tbl_tables(&$data){
+    //recuperer_les_tableaux_des_bases
+    
+    require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
+    $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $data['input']['id_bdd_de_la_base'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+    
+    $chemin_bdd='../../'.$__valeurs['T2.chp_dossier_cible'].'/'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
+
+    if( !( is_file($chemin_bdd)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false ) ){
+        return;
+    }
+    
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .CRLF.CRLF); fclose($fd);}
+*/  
+
+    $id_bdd_de_la_base=$data['input']['id_bdd_de_la_base'];
+    
+    foreach( $data['input']['tableau_des_tables_et_champs'] as $k1 => $v1){
+        $nom_de_la_table=$v1['nom_de_la_table'];
+        $sql1='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_tables`( 
+                 chx_base_table                                    , chp_nom_table                                    , chp_classement_table         , chp_encodage_table           ,   chp_nom_long_table                            
+               , chp_nom_court_table                               , chp_nom_bref_table                                 ) VALUES(
+                '.sq0($id_bdd_de_la_base).'                        , \''.sq0($nom_de_la_table).'\'                    , \''.sq0($v1['collate']).'\'  , \''.sq0($v1['charset']).'\'  ,  \''.sq0($v1['meta']['nom_long_de_la_table']).'\' 
+               , \''.sq0($v1['meta']['nom_court_de_la_table']).'\' , \''.sq0($v1['meta']['nom_bref_de_la_table']).'\'
+        )';
+/*        
+        if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql1='.$sql1 .CRLF.CRLF); fclose($fd);}
+*/        
+        if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql1)){ // 
+         
+            ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+            $data['status']='KO';
+            return;
+          
+        }else{
+            $data['status']='OK';
+        }
+    }
+}
+/*
+  ===========================================================================================================
+*/
 function recuperer_les_tableaux_des_bases(&$data){
 /* 
                         source_base_sql        : obj3.status,
@@ -10,6 +54,59 @@ function recuperer_les_tableaux_des_bases(&$data){
     $obj=comparer_une_base_physique_et_une_base_virtuelle( $data['input']['id_bdd_de_la_base'] , $data['input']['source_base_sql'] );
     if($obj['status']===true){
         $data['value']=$obj['value'];
+        $id_bdd_de_la_base=$data['input']['id_bdd_de_la_base'];
+        
+        
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['value'] , true) .CRLF.CRLF); fclose($fd);}
+  
+$data=array (
+  'tableau1' => 
+  array (
+    'tbl_cibles' => 
+    array (
+      'liste_des_champs' => 
+      array (
+        'chi_id_cible' => 
+        array (
+          'cid' => 0,
+          'name' => 'chi_id_cible',
+          'type' => 'INTEGER',
+          'notnull' => 0,
+          'dflt_value' => NULL,
+          'pk' => 1,
+          'auto_increment' => false,
+          'cle_etrangere' => 
+          array (
+          ),
+        ),
+
+*/         
+        
+        /* recherche des id dans les tables tbl_tables et tbl_champs */
+        
+        foreach( $data['value']['tableau1'] as $k1 => $v1){
+         
+            $sql0='SELECT chi_id_table FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_tables` WHERE chp_nom_table=\''.$k1.'\' AND chx_base_table = '.$id_bdd_de_la_base.' ';
+         
+            $id_bdd_de_la_table=0;
+            $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+            $data0=array();
+
+            if($stmt !== false){
+
+                $result=$stmt->execute();
+                /* SQLITE3_NUM: SQLITE3_ASSOC*/
+                while(($arr=$result->fetchArray(SQLITE3_NUM))){
+                    $id_bdd_de_la_table = $arr[0];
+                }
+                $stmt->close();
+            }
+            $data['value']['tableau1'][$k1]['chi_id_table']=$id_bdd_de_la_table;
+         
+        }
+        
+        
         $data['status']='OK';
     }else{
         $data['message']='erreur sur recuperer_les_tableaux_des_bases';
