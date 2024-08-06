@@ -133,10 +133,12 @@ class traitements_sur_html{
                  if(attributs!==''){
                   attributs+=','
                  }
+                 attributs+='(\''+attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
+/*                 
                  for(var j in jsonDeHtml.attributes[attr]){
-
                      attributs+='(\''+j.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',"'+jsonDeHtml.attributes[attr][j].replace(/"/g,'&quot;')+'")';
                  }
+*/                 
              }
 
          }
@@ -309,7 +311,7 @@ class traitements_sur_html{
                  contenu='';
              }
              if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
-                 contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+//                 contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
              }
              if(contenu!=='' ){
                  //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
@@ -496,14 +498,14 @@ class traitements_sur_html{
               "image/svg+xml"
               "text/html"
             */
-            var docNode = parser.parseFromString('<aaaaa>'+element+'</aaaaa>','application/xml');
+            var docNode = parser.parseFromString('<aaaaa>'+element+'</aaaaa>','application/xml'); // element.replace(/&nbsp;/g,'&amp;#160;')
             var elementNoeud=docNode.firstChild; // element
             if(docNode.getElementsByTagName('parsererror').length || element.indexOf('<')<0){
                 /*
                   ce n'est pas un xml parfait
                 */
 
-                var docNode = parser.parseFromString(element,'text/html');
+                var docNode = parser.parseFromString(element.replace(/&/g,'&amp;'),'text/html');
                 elementNoeud = docNode.firstChild;
 
                 
@@ -1020,6 +1022,7 @@ class traitements_sur_html{
         var t='';
         var esp0 = ' '.repeat(NBESPACESREV*(niveau));
         var esp1 = ' '.repeat(NBESPACESREV);
+        var supprimer_le_tag_html_et_head=true;
         var elementsJson={};
         try{
             elementsJson=this.mapDOM(texteHtml,false);
@@ -1430,7 +1433,7 @@ class traitements_sur_html{
             ecriture de la valeur dans le cas d'une constante
             ===========================================================================================
            */
-           t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
+           t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
            contenuNiveauPlus1=tab[i][1];
           }
          }

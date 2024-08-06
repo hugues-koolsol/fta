@@ -1059,7 +1059,7 @@ function neRienFaire(par){
   =====================================================================================================================
 */
 function executerCesActionsPourLaPageLocale(par){
-    console.log('dans executerCesActionsPourLaPageLocale par=',par);
+//    console.log('dans executerCesActionsPourLaPageLocale par=',par);
     var i=0;
     for(i=0;i < par.length;i++){
         switch (par[i].nomDeLaFonctionAappeler){
@@ -1146,6 +1146,7 @@ function choisir_de_iframe1(parametres){
 var __gi1=null;
 var __module_html1=null;
 var __module_svg1=null;
+var __module_requete_sql1=null;
 /*
   
   =====================================================================================================================

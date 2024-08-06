@@ -24,74 +24,12 @@ print($o1);$o1='';
 
         <div class="menuScroller">
             <ul>
-                <li><a href="javascript:__svg1.zoomPlus()"  class="yysucces">Z+</a>&nbsp;</li>
-                <li><a href="javascript:__svg1.zoomMoins()"  class="yysucces">Z-</a>&nbsp;</li>
+                <li><a href="javascript:__module_svg1.zoomPlus()"  class="yysucces">Z+</a>&nbsp;</li>
+                <li><a href="javascript:__module_svg1.zoomMoins()"  class="yysucces">Z-</a>&nbsp;</li>
             </ul>
         </div>
   <h1>Svg de la base</h1>
   
-
- <!--
-  <div style="display:none">
-  
-      etude sur les tailles des boites avec des bordures de 1 px
-      conclusion : hauteur de boite = hauteur donnée + 2*(largeur_bordure/2)
-      donc :
-      
-          1°] si taille bordure est impaire, le conteneur de la base doit être décalé d'un demi pixel pour que les boites soient au pixel
-          2°] la taille de la boite fait la taille du rectangle + bordure
-      
-             
-         <div style="width:40px;height:40px;border:1px red solid;display:inline-block;">
-
-          <svg viewBox="0 0 38 38" style="background: transparent; width: 38px; height: 38px;">
-           <g transform="translate(0,0)">
-            <rect x="3" y="3" width="5" height="5" style="fill:yellow;stroke:red;stroke-width:1;" ></rect>
-            <rect x="12.5" y="3.5" width="6.5" height="6.5" style="fill:red;" ></rect>
-           </g>
-          </svg>  
-
-         </div>
-
-         <div style="width:40px;height:40px;border:1px red solid;display:inline-block;">
-
-          <svg viewBox="0 0 38 38" style="background: transparent; width: 38px; height: 38px;">
-           <g transform="translate(0,0)">
-            <rect x="3" y="3" width="6" height="6" style="fill:red;" ></rect>
-            <rect x="13" y="3" width="6" height="6" style="fill:red;stroke:green;stroke-width:1;" ></rect>
-            <rect x="23" y="3" width="6" height="6" style="fill:red;stroke:green;stroke-width:0.5;" ></rect>
-
-            <rect x="3.5" y="13.5" width="6" height="6" style="fill:red;" ></rect>
-            <rect x="13.5" y="13.5" width="6" height="6" style="fill:red;stroke:green;stroke-width:1;" ></rect>
-            <rect x="13.5" y="13.5" width="6" height="6" style="fill:red;stroke:green;stroke-width:1;" ></rect>
-           </g>
-          </svg>  
-
-         </div>
-         
-
-
-         <div style="width:40px;height:40px;border:1px red solid;display:inline-block;">
-
-          <svg viewBox="0 0 38 38" style="background: transparent; width: 38px; height: 38px;">
-           <g transform="translate(0.5,0.5)">
-            <rect x="3" y="3" width="6" height="6" style="fill:red;" ></rect>
-            <rect x="13" y="3" width="6" height="6" style="fill:red;stroke:green;stroke-width:1;" ></rect>
-            <rect x="23" y="3" width="6" height="6" style="fill:red;stroke:green;stroke-width:0.5;" ></rect>
-
-            <rect x="3.5" y="13.5" width="6" height="6" style="fill:red;" ></rect>
-            <rect x="13.5" y="13.5" width="6" height="6" style="fill:red;stroke:green;stroke-width:1;" ></rect>
-            <rect x="13.5" y="13.5" width="6" height="6" style="fill:red;stroke:green;stroke-width:1;" ></rect>
-           </g>
-          </svg>  
-
-         </div>
-      
-      
-  </div>
-  -->
-
-
   
   <div id="div_svg1" style="background: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#92;&quot;http://www.w3.org/2000/svg&#92;&quot; viewBox=&#92;&quot;0 0 10 10&#92;&quot;%3E%3Cpath d=&#92;&quot;M 0 0 l 10 10 l 0 -10 l -10 10 Z&#92;&quot; fill=&#92;&quot;black&#92;&quot; fill-opacity=&#92;&quot;.04&#92;&quot;/%3E%3C/svg%3E&quot;) 208px 261px / 10px;">
    <svg id="refZnDessin" transform="rotate(0 0 0)" viewBox="0 0 200 200" style="border: 0; position: relative; background: transparent; top: 0px; left: 0px; width: 200px; height: 200px;">

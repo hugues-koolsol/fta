@@ -1,6 +1,89 @@
 <?php
 
+/*
+  ===========================================================================================================
+*/
+function recuperer_les_bases(&$data){
+    require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
+    
+    $data['valeurs']=recupere_des_donnees_des_bases_de_donnees_avec_parents( $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+    $data['status']='OK';
 
+}
+
+/*
+  ===========================================================================================================
+*/
+function ajouter_le_champ_dans_la_table_tbl_champs(&$data){
+
+    require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
+
+    $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $data['input']['id_bdd_de_la_base'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+    
+    $chemin_bdd='../../'.$__valeurs['T2.chp_dossier_cible'].'/'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
+
+    if( !( is_file($chemin_bdd)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false ) ){
+        return;
+    }
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .CRLF.CRLF); fclose($fd);}
+*/
+
+/*
+
+chi_id_champ	INTEGER
+chx_table_champ	INTEGER
+chp_nom_champ	VARCHAR(64)
+chp_type_champ	VARCHAR(64)
+cht_typologie_champ	CHARACTER(3)
+chu_primaire_champ	INTEGER
+chu_non_nulle_champ	INTEGER
+chu_a_defaut_champ	INTEGER
+chp_valeur_defaut_champ	VARCHAR(64)
+che_position_champ	INTEGER
+
+*/    
+
+
+    $sql1='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_champs`( 
+             chx_table_champ
+           , chp_nom_champ
+           , chp_type_champ
+           , cht_typologie_champ
+           , chu_primaire_champ
+           , chu_non_nulle_champ
+           , chu_a_defaut_champ
+           , chp_valeur_defaut_champ
+           , che_position_champ
+           ) VALUES(
+               '.sq0($data['input']['id_bdd_de_la_table'])                               .'
+           , \''.sq0($data['input']['nom_du_champ'])                                     .'\'
+           , \''.sq0($data['input']['tableau_champ']['type']['nom'])                     .'\'
+           , \''.sq0($data['input']['tableau_champ']['tableau_meta']['typologie'])       .'\'
+           ,   '.sq0($data['input']['tableau_champ']['cle_primaire']===true?1:0)         .'
+           ,   '.sq0($data['input']['tableau_champ']['non_nulle']===true?1:0)            .'
+           ,   '.sq0($data['input']['tableau_champ']['defaut']['est_defini']===true?1:0) .'
+           ,'.($data['input']['tableau_champ']['defaut']['valeur']===NULL?'NULL':'\''.sq0($data['input']['tableau_champ']['defaut']['valeur']).'\'').'
+           ,   '.sq0($data['input']['tableau_champ']['position'])                        .'
+    )';
+/*    
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql1=' . $sql1  .CRLF.CRLF); fclose($fd);}
+*/    
+
+
+    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql1)){ // 
+     
+        ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+        $data['status']='KO';
+        return;
+      
+    }else{
+        $data['status']='OK';
+    }
+}
+/*
+  ===========================================================================================================
+*/
 function ajouter_la_table_dans_la_table_tbl_tables(&$data){
     //recuperer_les_tableaux_des_bases
     
@@ -22,10 +105,8 @@ function ajouter_la_table_dans_la_table_tbl_tables(&$data){
     foreach( $data['input']['tableau_des_tables_et_champs'] as $k1 => $v1){
         $nom_de_la_table=$v1['nom_de_la_table'];
         $sql1='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_tables`( 
-                 chx_base_table                                    , chp_nom_table                                    , chp_classement_table         , chp_encodage_table           ,   chp_nom_long_table                            
-               , chp_nom_court_table                               , chp_nom_bref_table                                 ) VALUES(
-                '.sq0($id_bdd_de_la_base).'                        , \''.sq0($nom_de_la_table).'\'                    , \''.sq0($v1['collate']).'\'  , \''.sq0($v1['charset']).'\'  ,  \''.sq0($v1['meta']['nom_long_de_la_table']).'\' 
-               , \''.sq0($v1['meta']['nom_court_de_la_table']).'\' , \''.sq0($v1['meta']['nom_bref_de_la_table']).'\'
+                 chx_base_table                                    , chp_nom_table                                    ,   chp_nom_long_table                                 , chp_nom_court_table                               , chp_nom_bref_table                                 ) VALUES(
+                '.sq0($id_bdd_de_la_base).'                        , \''.sq0($nom_de_la_table).'\'                    ,  \''.sq0($v1['meta']['nom_long_de_la_table']).'\'    , \''.sq0($v1['meta']['nom_court_de_la_table']).'\' , \''.sq0($v1['meta']['nom_bref_de_la_table']).'\'
         )';
 /*        
         if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql1='.$sql1 .CRLF.CRLF); fclose($fd);}
@@ -90,23 +171,44 @@ $data=array (
             $sql0='SELECT chi_id_table FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_tables` WHERE chp_nom_table=\''.$k1.'\' AND chx_base_table = '.$id_bdd_de_la_base.' ';
          
             $id_bdd_de_la_table=0;
-            $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+            $stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
             $data0=array();
 
-            if($stmt !== false){
+            if($stmt0 !== false){
 
-                $result=$stmt->execute();
+                $result0=$stmt0->execute();
                 /* SQLITE3_NUM: SQLITE3_ASSOC*/
-                while(($arr=$result->fetchArray(SQLITE3_NUM))){
-                    $id_bdd_de_la_table = $arr[0];
+                while(($arr0=$result0->fetchArray(SQLITE3_NUM))){
+                    $id_bdd_de_la_table = $arr0[0];
                 }
-                $stmt->close();
+                $stmt0->close();
             }
             $data['value']['tableau1'][$k1]['chi_id_table']=$id_bdd_de_la_table;
-         
+            if($id_bdd_de_la_table>0){
+                foreach($v1['liste_des_champs'] as $k2 => $v2){
+                 
+                    $sql1='
+                        SELECT chi_id_champ FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_champs` 
+                        WHERE chx_table_champ='.$id_bdd_de_la_table.' AND chp_nom_champ=\''.$k2.'\'  
+                    ';
+                 
+                    $id_bdd_du_champ=0;
+                    $stmt1=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql1);
+                    $data1=array();
+
+                    if($stmt1 !== false){
+
+                        $result1=$stmt1->execute();
+                        /* SQLITE3_NUM: SQLITE3_ASSOC*/
+                        while(($arr1=$result1->fetchArray(SQLITE3_NUM))){
+                            $id_bdd_du_champ = $arr1[0];
+                        }
+                        $stmt1->close();
+                    }
+                    $data['value']['tableau1'][$k1]['liste_des_champs'][$k2]['chi_id_champ']=$id_bdd_du_champ;
+                }
+            }
         }
-        
-        
         $data['status']='OK';
     }else{
         $data['message']='erreur sur recuperer_les_tableaux_des_bases';
@@ -114,22 +216,24 @@ $data=array (
 
 
 }
-
+/*
+========================================================
+*/
+function supprimer_en_bdd_le_champ(&$data){
+    operation_sur_base($data , 'supprimer_en_bdd_le_champ');
+}
 /*
 ========================================================
 */
 function ajouter_en_bdd_le_champ(&$data){
- operation_sur_base($data , 'ajouter_en_bdd_le_champ');
+    operation_sur_base($data , 'ajouter_en_bdd_le_champ');
 }
-
 /*
   ==========================================================================================================
 */
-
 function supprimer_table_dans_base(&$data){
- operation_sur_base($data , 'supprimer_table_dans_base');
+    operation_sur_base($data , 'supprimer_table_dans_base');
 }
-
 /*
   ==========================================================================================================
 */
@@ -137,8 +241,7 @@ function operation_sur_base(&$data, $nom_operation){
  
     
 /*      
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data , true) .CRLF.CRLF); fclose($fd);}
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .CRLF.CRLF); fclose($fd);}
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .CRLF.CRLF); fclose($fd);}
 */
 
     

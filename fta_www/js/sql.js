@@ -32,11 +32,12 @@
   =====================================================================================================================
 */
 function tabToSql1(tab,id,niveau){
-    var options={'dans_definition_de_champ':false,'longueur_maximum_des_champs':0,'nom_du_champ_max':'','tableau_tables_champs':[]};
+    var options={'dans_definition_de_champ':false,'longueur_maximum_des_champs':0,'nom_du_champ_max':'','tableau_tables_champs':[],'tableau_champ':[]};
     var ob = tabToSql0(tab,id,niveau,options);
     ob.longueur_maximum_des_champs=options.longueur_maximum_des_champs;
     ob.nom_du_champ_max=options.nom_du_champ_max;
     ob.tableau_tables_champs=options.tableau_tables_champs;
+    ob.tableau_champ=options.tableau_champ;
     return ob;
 }
 /*
@@ -687,6 +688,7 @@ function tabToSql0(tab,id,niveau,options){
                  },
                  'commentaire' : '',
                  'meta' : '',
+                 'tableau_meta' : {},
                 };
                 var definition_sql_du_champ='';
                 var meta_du_champ='';
@@ -772,6 +774,13 @@ function tabToSql0(tab,id,niveau,options){
                                 meta_du_champ+=('/* meta(' + obj.value + ') */');
                                 variables_pour_tableau_tables.meta=obj.value;
                                 meta_du_champ+=espacesn(true,(niveau + 2));
+                                for(k=j+1;k<l01 && tab[k][3] > tab[j][3] ; k++){
+                                    if(tab[k][7] === j){
+                                        if(tab[k][8]===2){
+                                           variables_pour_tableau_tables.tableau_meta[tab[k+1][1]]=tab[k+2][1];
+                                        }
+                                    }
+                                }
                             }else{
                                 return(logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'}));
                             }
@@ -787,11 +796,15 @@ function tabToSql0(tab,id,niveau,options){
                  si on est dans un "fields" et que ce n'est pas le dernier enfant, on ajoute une virgule
                 */
                 if(tab[tab[i][7]][1]==='fields' && tab[tab[i][7]][2]==='f' && tab[i][9]<tab[tab[i][7]][8] ){
-                 t+=',';
+                    t+=',';
                 }
                 if((options.hasOwnProperty('dans_definition_de_champ')) && (options.dans_definition_de_champ == true)){
                     options.tableau_tables_champs[(options.tableau_tables_champs.length - 1)].champs.push(variables_pour_tableau_tables);
                 }
+                if(options.hasOwnProperty('tableau_champ')){
+                    options.tableau_champ=variables_pour_tableau_tables;
+                }
+                
             }else if((tab[i][1] === 'create_table') || (tab[i][1] === 'créer_table')){
                 var engine='';
                 var auto_increment='';

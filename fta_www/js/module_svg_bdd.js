@@ -544,7 +544,7 @@ class module_svg_bdd{
               
               changement des champs nom_du_champ pour les éléments dans la base courante
             */
-            var lst = document.getElementById(this.#id_svg_de_la_base_en_cours).getElementsByTagName('*');
+            var lst = document.getElementById(id_svg_conteneur_table).getElementsByTagName('*');
             var i=0;
             for(i=0;i < lst.length;i++){
                 if((lst[i].getAttribute('nom_du_champ')) && (lst[i].getAttribute('nom_du_champ') === ancien_nom)){
@@ -618,6 +618,51 @@ class module_svg_bdd{
         global_modale1.close();
         this.#dessiner_le_svg();
     }
+    
+    /*
+      ====================================================================================================================
+      function supprimer_en_bdd_le_champ_de_modale
+    */
+    supprimer_en_bdd_le_champ_de_modale(id_svg_text,id_svg_conteneur_table,nom_du_champ,id_svg_rectangle_du_champ , nom_de_la_table){
+     
+        var source_sql='ALTER TABLE '+nom_de_la_table+' DROP COLUMN '+nom_du_champ+';';
+     
+        async function supprimer_en_bdd_le_champ(url="",donnees){
+            var response= await fetch(url,{
+                // 6 secondes de timeout 
+                'signal':AbortSignal.timeout(1000),
+                // *GET, POST, PUT, DELETE, etc. 
+                method:"POST",
+                // no-cors, *cors, same-origin 
+                mode:"cors",
+                // default, no-cache, reload, force-cache, only-if-cached 
+                cache:"no-cache",
+                // include, *same-origin, omit 
+                credentials:"same-origin",
+                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
+                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                redirect:"follow",
+                
+                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                
+                referrerPolicy:"no-referrer",
+                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+            });
+            return(response.json());
+        }
+        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
+        supprimer_en_bdd_le_champ('za_ajax.php?supprimer_en_bdd_le_champ',ajax_param).then((donnees) => {
+            if(donnees.status === 'OK'){
+                console.log('OK');
+            }else{
+                console.log('KO donnees=',donnees);
+            }
+        });
+
+     
+     
+    }
+    
     /*
       ====================================================================================================================
       function ajouter_en_bdd_le_champ_de_modale
@@ -883,8 +928,8 @@ class module_svg_bdd{
                         }
                     }
                 }
-            }else if((lst[i].id) && (lst[i].id.substr(0,6) === 'meta_modifier__') && (lst[i].value !== '')){
-                meta+=(',(' + lst[i].id.substr(6) + ',\'' + lst[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
+            }else if((lst[i].id) && (lst[i].id.substr(0,15) === 'meta_modifier__') && (lst[i].value !== '')){
+                meta+=(',(' + lst[i].id.substr(15) + ',\'' + lst[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
             }
         }
         t+=(',meta(' + meta + ')');
@@ -1171,14 +1216,15 @@ class module_svg_bdd{
         t+='<hr />';
         t+='<h2>dans la base de donnée</h2>';
         t+='<hr />';
-        t+='<h3>supprimer</h3>';
+        t+='<h3>ajouter</h3>';
         t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.ajouter_en_bdd_le_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ',&quot;' + nom_du_champ + '&quot;,' + id_svg_rectangle_du_champ + ',&quot;'+nom_de_la_table+'&quot;)">ajouter en bdd</a>');
+        t+='<hr />';
+        t+='<h3>supprimer</h3>';
+        t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_en_bdd_le_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ',&quot;' + nom_du_champ + '&quot;,' + id_svg_rectangle_du_champ + ',&quot;'+nom_de_la_table+'&quot;)">supprimer en bdd</a>');
         t+='<hr />';
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
     }
-    
-
     /*
       ==============================================================================================================
       function ajouter_cette_table_dans_tbl_tables
@@ -1249,8 +1295,8 @@ class module_svg_bdd{
                         ajouter_la_table_dans_la_table_tbl_tables('za_ajax.php?ajouter_la_table_dans_la_table_tbl_tables',ajax_param).then((donnees) => {
 
                             if(donnees.status === 'OK'){
-                             
-                                debugger
+
+                                this.comparer_la_base_physique_et_la_base_virtuelle(donnees.input.id_bdd_de_la_base);
                              
                             }else{
                                 debugger;
@@ -1267,6 +1313,104 @@ class module_svg_bdd{
             }
         }
     }
+    
+    /*
+      ==============================================================================================================
+      function ajouter_ce_champ_dans_tbl_champ
+    */
+    ajouter_ce_champ_dans_tbl_champ(nom_du_champ , id_bdd_de_la_table , nom_de_la_table ,  id_bdd_de_la_base, position){
+     
+        var lst = document.getElementsByTagName('g');
+        var racine_du_svg=null;
+        var i=0;
+        for(i=0;i < lst.length;i++){
+            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === id_bdd_de_la_base)){
+                racine_du_svg=lst[i];
+                break;
+            }
+        }
+        if(racine_du_svg === null){
+            
+            return logerreur({status:false,message:'2670 il y a eu un problème lors de la récupération de l\'arbre svg'});
+        }
+        this.#id_svg_de_la_base_en_cours=parseInt(racine_du_svg.getAttribute('id_svg_de_la_base_en_cours'),10);
+        /*
+          
+          ce sont les rectangles qui contiennent les informations sur la base
+        */
+        lst=racine_du_svg.getElementsByTagName('rect');
+        var i=0;
+        for(i=0;i < lst.length;i++){
+            if(  lst[i].getAttribute('type_element') 
+              && lst[i].getAttribute('type_element') === 'rectangle_de_champ' 
+              && lst[i].getAttribute('nom_de_la_table')===nom_de_la_table 
+              && lst[i].getAttribute('nom_du_champ')===nom_du_champ ){
+                
+                var texte_rev='field(' + lst[i].getAttribute('donnees_rev_du_champ') + ')';
+                
+                var obj2 = rev_texte_vers_matrice(texte_rev);
+                if(obj2.status === true){
+                    var tab=obj2.value;
+                    var obj=tabToSql1(tab,0,0);
+                    if(obj.status===true){
+                        obj.tableau_champ.position=position
+                        async function ajouter_le_champ_dans_la_table_tbl_champs(url="",donnees){
+                            var response= await fetch(url,{
+                                /* 6 secondes de timeout */
+                                'signal':AbortSignal.timeout(1000),
+                                /* *GET, POST, PUT, DELETE, etc. */
+                                method:"POST",
+                                /* no-cors, *cors, same-origin */
+                                mode:"cors",
+                                /* default, no-cache, reload, force-cache, only-if-cached */
+                                cache:"no-cache",
+                                /* include, *same-origin, omit */
+                                credentials:"same-origin",
+                                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
+                                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                                redirect:"follow",
+                                /*
+                                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                                */
+                                referrerPolicy:"no-referrer",
+                                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+                            });
+                            return(response.json());
+                        }
+                        
+                        var ajax_param={
+                            /* enveloppe d'appels */
+                            'call':{'lib':'core','file':'bdd','funct':'ajouter_le_champ_dans_la_table_tbl_champs'},
+                            /* paramètres */
+                            nom_du_champ       : nom_du_champ       ,
+                            id_bdd_de_la_base  : id_bdd_de_la_base  ,
+                            id_bdd_de_la_table : id_bdd_de_la_table ,
+                            nom_de_la_table    : nom_de_la_table    ,
+                            tableau_champ      : obj.tableau_champ  ,
+                        };
+                        ajouter_le_champ_dans_la_table_tbl_champs('za_ajax.php?ajouter_le_champ_dans_la_table_tbl_champs',ajax_param).then((donnees) => {
+
+                            if(donnees.status === 'OK'){
+
+                                this.comparer_la_base_physique_et_la_base_virtuelle(donnees.input.id_bdd_de_la_base);
+                             
+                            }else{
+                                debugger;
+                                console.error('donnees=' , donnees );
+                             
+                            }
+                        }).catch((err) => {
+                            /* en cas de timeout par exemple */
+                            debugger;
+                            console.error(err);
+                        });
+                    }
+                }
+            }
+        }
+    }
+    
+    
     /*
       ==============================================================================================================
       function afficher_resultat_comparaison_base_physique_et_base_virtuelle
@@ -1406,17 +1550,21 @@ class module_svg_bdd{
         
         
         var t='<table>';
-        t+='<tr><th>Tables</th><th>dans la base physique</th><th>dans champ genere</th><th>action</th></tr>';
-        for(var tbl in tables){
+        t+='<tr><th>Tables</th><th>dans la base physique</th><th>dans champ genere</th><th>action ou id</th></tr>';
+        for(var nom_de_la_table in tables){
             t+='<tr>';
-            t+='<td>'+tbl+'</td>';
-            t+='<td>'+(tables[tbl].presente_dans_tableau_1?'<span class="yysucces">oui</span>':'non')+'</td>';
-            t+='<td>'+(tables[tbl].presente_dans_tableau_2?'<span class="yysucces">oui</span>':'non')+'</td>';
+            t+='<td>'+nom_de_la_table+'</td>';
+            t+='<td>'+(tables[nom_de_la_table].presente_dans_tableau_1?'<span class="yysucces">oui</span>':'non')+'</td>';
+            t+='<td>'+(tables[nom_de_la_table].presente_dans_tableau_2?'<span class="yysucces">oui</span>':'non')+'</td>';
             if( differences_entre_les_tables===false && differences_entre_les_champs===false){
-                if(tables[tbl].chi_id_table===0){
-                    t+='<td>'
-                    t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_table_dans_tbl_tables(&quot;'+tbl+'&quot;,'+par.id_bdd_de_la_base_en_cours+')"">ajouter cett table dans tbl_tables</a>'
-                    t+='</td>'
+                if(tables[nom_de_la_table].chi_id_table===0){
+                    t+='<td>';
+                    t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_table_dans_tbl_tables(&quot;'+nom_de_la_table+'&quot;,'+par.id_bdd_de_la_base_en_cours+')"">ajouter cette table dans tbl_tables</a>';
+                    t+='</td>';
+                }else{
+                    t+='<td style="text-align:center;">';
+                    t+=tables[nom_de_la_table].chi_id_table;
+                    t+='</td>';
                 }
             }
             t+='</tr>';
@@ -1445,23 +1593,43 @@ class module_svg_bdd{
         for( var ref in references){
           t+='<td style="vertical-align: baseline;">'
           t+='<table>'
-          for( var i in par['donnees'][references[ref]]){
+          for( var nom_de_la_table in par['donnees'][references[ref]]){
               t+='<tr>'
-              t+='<th>'+i+'</th>'
+              t+='<th>'+nom_de_la_table+'</th>'
               t+='</tr>'
-              for( var j in par['donnees'][references[ref]][i].liste_des_champs){
+              var position=0;
+              for( var nom_du_champ in par['donnees'][references[ref]][nom_de_la_table].liste_des_champs){
                   t+='<tr>';
                    var la_class_quoi='';
-                   if(par['donnees'][references[ref]][i].liste_des_champs[j].hasOwnProperty('different') && par['donnees'][references[ref]][i].liste_des_champs[j].different===true){
+                   if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('different') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].different===true){
                     la_class_quoi='yyavertissement';
                    }
-                   if(par['donnees'][references[ref]][i].liste_des_champs[j].hasOwnProperty('absent_de_l_autre_tableau') && par['donnees'][references[ref]][i].liste_des_champs[j].absent_de_l_autre_tableau===true){
+                   if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('absent_de_l_autre_tableau') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].absent_de_l_autre_tableau===true){
                     la_class_quoi='yyavertissement';
                    }
 
-                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][i].liste_des_champs[j].name+'</td>';
-                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][i].liste_des_champs[j].type+'</td>';
+                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].name+'</td>';
+                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].type+'</td>';
+                   if(references[ref]==='tableau1' && la_class_quoi==='' ){
+                       t+='<td>';
+                        if(   
+                              par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('chi_id_champ')
+                           && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ===0 
+                           && par['donnees'][references[ref]][nom_de_la_table].chi_id_table>0
+                        ){
+                            if( differences_entre_les_tables===false && differences_entre_les_champs===false){
+                                t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_ce_champ_dans_tbl_champ(&quot;'+nom_du_champ+'&quot;,'+par['donnees'][references[ref]][nom_de_la_table].chi_id_table+',&quot;'+nom_de_la_table+'&quot;,'+par.id_bdd_de_la_base_en_cours+','+position+')"">ajouter ce champ dans tbl_champ</a>';
+                            }
+                        }else{
+                            t+=par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ;
+                        }
+                       t+='</td>';
+                   }
+                   
+                   
+                   
                   t+='</tr>';
+                  position++;
               }
           }
           t+='</table>'
@@ -2313,7 +2481,6 @@ class module_svg_bdd{
     
     
     /*
-      
       ====================================================================================================================
       function creer_definition_table_en_rev
     */
@@ -2337,9 +2504,6 @@ class module_svg_bdd{
        definition_de_table+='\n ),';
        definition_de_table+='\n)';
        return definition_de_table;
-     
-     
-     
     }    
 
     /*
@@ -2971,6 +3135,8 @@ class module_svg_bdd{
         */
         this.#svg_dessin.innerHTML=str;
         
+        var liste_des_tables_deja_faites=[];
+        
         var i={};
         for(i in this.#arbre){
             var tab = JSON.parse(JSON.stringify(this.#arbre[i].arbre_svg));
@@ -2982,10 +3148,20 @@ class module_svg_bdd{
             for(j=0;j < tab.length;j++){
                 if(tab[j] !== null){
                     if((tab[j].proprietes.type_element) && (tab[j].proprietes.type_element === 'conteneur_d_index')){
-                        var conteneur_de_table = this.#svg_dessin.getElementById(tab[j].id_parent);
-                        var nombre_elements=conteneur_de_table.childNodes.length;
-                        var position = ((((nombre_elements - 1)) * this.#hauteur_de_boite_affichage) + this.#taille_bordure);
-                        this.#recursuf_arbre_svg(tab,tab[j].id_parent,j,true,conteneur_de_table,position);
+                        var deja_fait=false;
+                        for(var nb1=0;nb1<liste_des_tables_deja_faites.length;nb1++){
+                         if(liste_des_tables_deja_faites[nb1]===tab[j].id_parent){
+                          deja_fait=true;
+                          break;
+                         }
+                        }
+                        if(deja_fait===false){
+                         var conteneur_de_table = this.#svg_dessin.getElementById(tab[j].id_parent);
+                         var nombre_elements=conteneur_de_table.childNodes.length;
+                         var position = ((((nombre_elements - 1)) * this.#hauteur_de_boite_affichage) + this.#taille_bordure);
+                         this.#recursuf_arbre_svg(tab,tab[j].id_parent,j,true,conteneur_de_table,position);
+                         liste_des_tables_deja_faites.push(tab[j].id_parent);
+                        }
                     }
                 }
             }
