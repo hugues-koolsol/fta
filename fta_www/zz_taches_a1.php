@@ -317,7 +317,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache">'.enti1($chp_texte_tache).'</textarea>'.CRLF;
+  $o1.='   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache" autocorrect="off" autocapitalize="off" spellcheck="false">'.enti1($chp_texte_tache).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -325,7 +325,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">priorité</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_priorite_tache).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="max-width:4em;" />'.CRLF;
+  $o1.='   <input type="text" value="'.enti1($chp_priorite_tache).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="max-width:4em;" />'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -384,7 +384,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
   $o1.='   <span>'.$__id.'</span>'.CRLF;
-  $o1.='   <textarea rows="20"  cols="20" name="chp_texte_tache" id="chp_texte_tache" style="width:80%;max-width:80%;" >'.enti1($__valeurs['T0.chp_texte_tache']).'</textarea>'.CRLF;
+  $o1.='   <textarea rows="20"  cols="20" name="chp_texte_tache" id="chp_texte_tache" style="width:80%;max-width:80%;" autocorrect="off" autocapitalize="off" spellcheck="false">'.enti1($__valeurs['T0.chp_texte_tache']).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
   

@@ -79,6 +79,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/zz_revs_l1.php' => array(),
       'fta_www/zz_taches_a1.php' => array(),
       'fta_www/zz_taches_l1.php' => array(),
+      'fta_www/zz_requete_sql.php' => array(),      
       'fta_www/svg_de_la_base.php' => array(),
       'fta_www/phpliteadmin.config.php' => array(),
       'fta_www/phpliteadmin.php' => array(),      
@@ -97,6 +98,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/js/pour_zz_bdds_action1.js' => array(),
       'fta_www/js/pour_zz_source1.js' => array(),
       'fta_www/js/pour_svg.js' => array(),
+      'fta_www/js/pour_requete_sql.js' => array(),
       
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
@@ -104,6 +106,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/js/module_html.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_svg_bdd.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_travail_en_arriere_plan0.js' => array(),
+      'fta_www/js/module_requete_sql.js' => array(),
       'fta_www/js/index_source_script-v0.js' => array(),
 
 
