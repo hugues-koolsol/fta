@@ -20,6 +20,37 @@ print($o1);$o1='';
   </div>
   <h1>Requête Sql</h1>
   <div id="div_de_travail"></div>
+  <br />
+  exemple
+  <pre>
+sélectionner(
+   valeurs(
+      champ(T0.chi_id_dossier),
+      champ(chp_nom_dossier),
+      champ(chx_cible_dossier),
+      champ(t1.chp_dossier_cible),
+      tous_les_champs(),
+      plus(champ(a) , 2),
+      concat('=>',champ(chi_id_dossier),'<='),
+      compter(tous_les_champs()),
+      5,
+   )
+   ,provenance(
+      table_reference(source(nom_de_la_table(tbl_dossiers,t0))),
+      jointure_croisée(
+         source(nom_de_la_table(tata,t2)
+         )),
+      jointure_gauche(
+         source(nom_de_la_table(tbl_cibles,t1)
+         ),contrainte(egal(champ(t1.chi_id_cible) , champ(t0.chx_cible_dossier)))),
+   )
+   ,conditions(
+      et(egal(champ(T0.chi_id_dossier) , 1) , egal(champ(t2.id) , champ(t0.chi_id_dossier))),
+   )
+   ,trier_par((champ(chp_nom_dossier),décroissant()),(champ(chx_cible_dossier),croissant()),)
+   ,limité_à(quantité(champ(roro)),début(3))
+),  
+  </pre>
   
 <?php
 
