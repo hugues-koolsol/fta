@@ -1718,7 +1718,108 @@ class module_svg_bdd{
      
     }
     /*
-      
+      ====================================================================================================================
+      function reecrire_la_base_a_partir_du_shema
+      ATTACH DATABASE 'db2.sqlite' as 'Y';
+      INSERT INTO X.TABLE SELECT * FROM Y.TABLE;
+    */
+    reecrire_la_base_a_partir_du_shema(id_bdd){
+     
+        var liste_des_tables=[];
+        
+        this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd,10);
+        clearMessages('zone_global_messages');
+        var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
+        if(obj.status===true){
+            var texte_rev=obj.value;
+            var obj2 = rev_texte_vers_matrice(texte_rev);
+            if(obj2.status===true){
+                var obj3=tabToSql1(obj2.value,0,0);
+                if(obj3.status===true){
+                  var source_sql_de_la_base=obj3.value
+                  var tab=obj2.value
+                  var l01=tab.length;
+                  for(var i=1;i < l01;i++){
+                      if((tab[i][7] === 0) && (tab[i][1] === 'create_table')){
+                          for(var j=i+1;j<l01 && tab[j][3]>tab[i][3] ; j++){
+                              if(tab[j][1]==="nom_de_la_table" && tab[j][2]==='f'){
+                                  if(tab[j][8]===1){
+                                      liste_des_tables.push(tab[j+1][1]);
+                                  }else{
+                                      displayMessages('zone_global_messages');
+                                      alert('Problème sur reecrire_la_base 1739 ');
+                                      return;
+                                  }
+                              }
+                          }
+                      }
+                  }
+                  
+                  
+                  
+                }else{
+                    displayMessages('zone_global_messages');
+                    alert('Problème sur reecrire_la_base 1739 ');
+                    return;
+                }
+             
+            }else{
+                displayMessages('zone_global_messages');
+                alert('Problème sur reecrire_la_base 1739 ');
+                return;
+            }
+
+         
+        }else{
+            displayMessages('zone_global_messages');
+            alert('Problème sur reecrire_la_base 1746 ');
+            return;
+        }
+        
+        async function reecrire_la_base_a_partir_du_shema_sur_disque(url="",donnees){
+            var response= await fetch(url,{
+                /* 10 secondes de timeout car il faut faire une copie de la base */
+                'signal':AbortSignal.timeout(10000),
+                /* *GET, POST, PUT, DELETE, etc. */
+                method:"POST",
+                /* no-cors, *cors, same-origin */
+                mode:"cors",
+                /* default, no-cache, reload, force-cache, only-if-cached */
+                cache:"no-cache",
+                /* include, *same-origin, omit */
+                credentials:"same-origin",
+                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
+                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                redirect:"follow",
+                /*
+                  
+                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                */
+                referrerPolicy:"no-referrer",
+                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+            });
+            return(response.json());
+        }
+        
+        var ajax_param={
+            'call':{'lib':'core','file':'bdd','funct':'reecrire_la_base_a_partir_du_shema_sur_disque'},
+            id_bdd_de_la_base     : this.#id_bdd_de_la_base_en_cours,
+            source_sql_de_la_base : source_sql_de_la_base  ,
+            liste_des_tables      : liste_des_tables       ,
+        };
+        
+
+        reecrire_la_base_a_partir_du_shema_sur_disque('za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque',ajax_param).then((donnees) => {
+            if(donnees.status === 'OK'){
+                console.log('OK');
+            }else{
+                console.error('KO donnees=' , donnees);
+            }
+        });
+
+     
+    }
+    /*
       ====================================================================================================================
       function modale_modifier_la_base
     */
@@ -1766,6 +1867,8 @@ class module_svg_bdd{
         t+=('<a href="javascript:' + this.#nom_de_la_variable + '.ajouter_une_table_provenant_de_modale(&quot;nouveau_nom&quot;)">enregistrer</a>');
         t+='<hr /><h2>comparer la base physique et la base virtuelle</h2>';
         t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.comparer_la_base_physique_et_la_base_virtuelle('+this.#id_bdd_de_la_base_en_cours+')">comparer</a>');
+        t+='<hr /><h2>réécrire la base physique à partir de ce schéma</h2>';
+        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.reecrire_la_base_a_partir_du_shema('+this.#id_bdd_de_la_base_en_cours+')">réecrire</a>');
         
         
         document.getElementById('__contenu_modale').innerHTML=t;

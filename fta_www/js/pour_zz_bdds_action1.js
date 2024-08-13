@@ -47,7 +47,6 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'bdd',
-   'chx_source_rev' : id_bdd,
    'id_cible' : id_cible
   }
   

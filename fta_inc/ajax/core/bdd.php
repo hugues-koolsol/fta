@@ -3,6 +3,85 @@
 /*
   ===========================================================================================================
 */
+function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
+ 
+ 
+    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
+    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+    $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
+    $chemin_bdd=realpath($chemin_bdd);
+    if(!(is_file($chemin_bdd))){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
+        return;
+
+    }
+
+    $chemin_bdd_base_temporaire='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/temporaire_'.md5(date('Y-m-d-H-i-s')).'.db';
+
+
+    $db1temp=new SQLite3($chemin_bdd_base_temporaire);
+    $ret1=$db1temp->exec('BEGIN TRANSACTION;');
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
+        return;
+
+    }
+
+    $ret1=$db1temp->exec($data['input']['source_sql_de_la_base']);
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque création table temporaire impossible';
+        $db1temp->close();
+        sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
+        return;
+
+    }
+    
+    $ret1=$db1temp->exec('COMMIT;');
+    
+    $sql2='ATTACH DATABASE \''.sq0($chemin_bdd).'\' as \'source\';';
+    $ret2=$db1temp->exec($sql2);
+    if($ret2 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque attach impossible';
+        $db1temp->close();
+        sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
+        return;
+
+    }
+    foreach( $data['input']['liste_des_tables'] as $k1 => $v1){
+        $sql3='INSERT INTO \''.sq0($v1).'\' SELECT * FROM source.\''.sq0($v1).'\'';
+        $ret3=$db1temp->exec($sql3);
+        if($ret3 !== true){
+
+            $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque, les donnees de '.$v1.' ne peuvent être copiées';
+            $db1temp->close();
+            sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
+            return;
+
+        }
+     
+     
+    }
+    $GLOBALS[BDD][BDD_1][LIEN_BDD]->close();
+    $db1temp->close();
+    sauvegarder_et_supprimer_fichier($chemin_bdd,false);
+    if((@rename($chemin_bdd_base_temporaire,$chemin_bdd))){
+
+        $data['status']='OK';
+
+    }
+    
+    
+ 
+}
+/*
+  ===========================================================================================================
+*/
 function recuperer_les_bases(&$data){
     require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
     
@@ -507,8 +586,8 @@ function recuperer_zone_travail_pour_les_bases(&$data){
 
 function sauvegarder_format_rev_en_dbb(&$data){
 
+    
     /*
-      
       if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
     */
     $db=new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
@@ -545,25 +624,29 @@ function sauvegarder_format_rev_en_dbb(&$data){
             0,
             0);
         $sql1='INSERT INTO `tbl_revs`(
-            `chx_cible_rev`                                                    ,   `chp_provenance_rev`                                                       ,   `chx_source_rev`                       
+            `chx_cible_rev`                                                    ,   `chp_provenance_rev`                                                       
         ,   `chp_id_rev`                                  ,   `chp_valeur_rev`                              
         ,   `chp_type_rev`                                ,   `chp_niveau_rev`                              ,   `chp_quotee_rev`                              ,   `chp_pos_premier_rev`                         ,   `chp_pos_dernier_rev`                         
         ,   `chp_parent_rev`                              ,   `chp_nbr_enfants_rev`                         ,   `chp_num_enfant_rev`                          ,   `chp_profondeur_rev`                          ,   `chp_pos_ouver_parenthese_rev`                
         ,   `chp_pos_fermer_parenthese_rev`               ,   `chp_commentaire_rev`                         
-        ) VALUES ';
+        ) VALUES '.CRLF;
         $liste_des_valeurs='';
         for($i=0;($i < count($data['input']['parametres_sauvegarde']['matrice']));        ($i++)){
             $tab=$data['input']['parametres_sauvegarde']['matrice'][$i];
             $liste_des_valeurs.=',(
-             \''.sq0($data['input']['parametres_sauvegarde']['id_cible']).'\'   ,   \''.sq0($data['input']['parametres_sauvegarde']['chp_provenance_rev']).'\' ,  \''.sq0($data['input']['parametres_sauvegarde']['chx_source_rev']).'\'      
-            ,\''.sq0($tab[3-3]).'\'  ,\''.sq0($tab[4-3]).'\'  
+             \''.sq0($data['input']['parametres_sauvegarde']['id_cible']).'\'   ,   \''.sq0($data['input']['parametres_sauvegarde']['chp_provenance_rev']).'\'       
+            ,  '.sq0($tab[3-3]).'    ,\''.sq0($tab[4-3]).'\'  
             ,\''.sq0($tab[5-3]).'\'  ,\''.sq0($tab[6-3]).'\'  ,\''.sq0($tab[7-3]).'\'   ,\''.sq0($tab[8-3]).'\'  ,\''.sq0($tab[9-3]).'\'                             
             ,\''.sq0($tab[10-3]).'\' ,\''.sq0($tab[11-3]).'\' ,\''.sq0($tab[12-3]).'\'  ,\''.sq0($tab[13-3]).'\' ,\''.sq0($tab[14-3]).'\'                            
             ,\''.sq0($tab[15-3]).'\' ,\''.sq0($tab[16-3]).'\' 
-            )';
+            )'.CRLF;
         }
         $liste_des_valeurs=substr($liste_des_valeurs,1);
         $sql1.=$liste_des_valeurs;
+
+        /*
+          if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql1='.$sql1."\r\n"); fclose($fd);}
+        */
 
         if(false === $db->exec($sql1)){
 

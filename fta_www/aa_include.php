@@ -96,15 +96,9 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
             $chemin_fichier_copie=$repertoire.DIRECTORY_SEPARATOR.uniqid().str_replace('\\','_',str_replace('/','_',$chemin_du_fichier));
 
-            if((@copy($chemin_du_fichier,$chemin_fichier_copie))){
+            if((@rename($chemin_du_fichier,$chemin_fichier_copie))){
 
-
-                if((@unlink($chemin_du_fichier))){
-
-                    return(true);
-
-                }
-
+                return(true);
 
             }
 
