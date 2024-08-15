@@ -105,8 +105,8 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       'fta_www/js/module_interface1.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_html.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_svg_bdd.js' => array('chp_type_source' => 'module_js'),
+      'fta_www/js/module_requete_sql.js' => array('chp_type_source' => 'module_js'),
       'fta_www/js/module_travail_en_arriere_plan0.js' => array(),
-      'fta_www/js/module_requete_sql.js' => array(),
       'fta_www/js/index_source_script-v0.js' => array(),
 
 

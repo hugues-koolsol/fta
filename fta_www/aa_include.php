@@ -22,6 +22,7 @@ define('TAILLE_MAXI_SOURCE',512000);
 define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_et_"suffisament"_longue'));
 define('ENCRYPTION_METHODE','aes-256-cbc');
 $GLOBALS['__date']=date('Y-m-d H:i:s');
+$GLOBALS['__le_biscuit']=array();
 
 
 /*===================================================================================================================*/
@@ -71,7 +72,6 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
 function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_copie=false){
 
     /*
-      
       Il n'y a qu'ici qu'on trouve unlink.
       Quand on crée un fichier temporaire et qu'on le supprime, on ne fait pas de copie dans le répertoire BACKUP_PATH
     */
@@ -92,9 +92,9 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
         $repertoire=BACKUP_PATH.DIRECTORY_SEPARATOR.date('Y/m/d');
 
-        if((is_dir($repertoire) || mkdir($repertoire,511,true))){
+        if((is_dir($repertoire) || mkdir($repertoire,0777,true))){
 
-            $chemin_fichier_copie=$repertoire.DIRECTORY_SEPARATOR.uniqid().str_replace('\\','_',str_replace('/','_',$chemin_du_fichier));
+            $chemin_fichier_copie=$repertoire.DIRECTORY_SEPARATOR.uniqid().str_replace('\\','_',str_replace('/','_',str_replace(':','_',$chemin_du_fichier)));
 
             if((@rename($chemin_du_fichier,$chemin_fichier_copie))){
 
@@ -714,6 +714,7 @@ function html_header1($parametres){
     $le_biscuit['--yyvhmd']=$css_hauteur_menu_defilement.'px';
     $le_biscuit['--yyvhgb']=$css_hauteur_grands_boutons.'px';
     $le_biscuit['--yyvhmc']=$css_hauteur_mini_conteneur.'px';
+    $GLOBALS['__le_biscuit']=$le_biscuit;
 
 
     
@@ -867,10 +868,10 @@ function html_footer1($parametres=array()){
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
     if(!preg_match('/.*_a[0-9]+\\.php/',BNF)){
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b±</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m±</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A'.$GLOBALS['__le_biscuit']['--yyvtrt'].'</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p'.$GLOBALS['__le_biscuit']['--yyvtrp'].'</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b'.$GLOBALS['__le_biscuit']['--yyvtrb'].'</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m'.$GLOBALS['__le_biscuit']['--yyvtrm'].'</a>'.CRLF;
         
         $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }

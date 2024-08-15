@@ -310,7 +310,7 @@ function traiteUneComposante(element , niveau , parentEstCrochet , dansSiOuBoucl
                 for(j=0;j < element.value.params.length;j=j+1){
                     if(element.value.params[j].type==="Identifier"){
                         t+='\n'+esp0+esp1+esp1+'argument('+element.value.params[j].name+')';
-                    }else if(element.params[j].type==="AssignmentPattern"){
+                    }else if(element.value.params[j].type==="AssignmentPattern"){
                      var obj=traiteAssignmentPattern(element.value.params[j],niveau,{});
                      if(obj.status===true){
                         

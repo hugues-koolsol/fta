@@ -3,28 +3,23 @@
 */
 class module_svg_bdd{
     /*
-      
       permet d'utiliser le nom de la variable dans des href="nom_de_la_variable.methode()"  
     */
     #nom_de_la_variable='';
     /*
-      
       référence de l'élément html "div" contenant le svg
     */
     #div_svg=null;
     /*
-      
       référence de l'élément html "svg"
     */
     #svg_dessin=null;
     /*
-      
       taille de la bordure des boites
     */
     #taille_bordure=0;
     #id_text_area_contenant_les_id_des_bases='';
     /*
-      
       sert pour le zoom
     */
     #_dssvg={zoom1:1,'viewBoxInit':[],'parametres':{rayonReference:16}};
@@ -1590,12 +1585,17 @@ class module_svg_bdd{
         t+='<tr>';
         
         var references=['tableau1','tableau2'];
+//        debugger
         for( var ref in references){
           t+='<td style="vertical-align: baseline;">'
           t+='<table>'
           for( var nom_de_la_table in par['donnees'][references[ref]]){
               t+='<tr>'
               t+='<th>'+nom_de_la_table+'</th>'
+              t+='<th>type</th>'
+              t+='<th>nn</th>'
+              t+='<th>pk</th>'
+              t+='<th>dft</th>'
               t+='</tr>'
               var position=0;
               for( var nom_du_champ in par['donnees'][references[ref]][nom_de_la_table].liste_des_champs){
@@ -1610,24 +1610,71 @@ class module_svg_bdd{
 
                    t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].name+'</td>';
                    t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].type+'</td>';
-                   if(references[ref]==='tableau1' && la_class_quoi==='' ){
-                       t+='<td>';
-                        if(   
-                              par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('chi_id_champ')
-                           && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ===0 
-                           && par['donnees'][references[ref]][nom_de_la_table].chi_id_table>0
-                        ){
-                            if( differences_entre_les_tables===false && differences_entre_les_champs===false){
-                                t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_ce_champ_dans_tbl_champ(&quot;'+nom_du_champ+'&quot;,'+par['donnees'][references[ref]][nom_de_la_table].chi_id_table+',&quot;'+nom_de_la_table+'&quot;,'+par.id_bdd_de_la_base_en_cours+','+position+')"">ajouter ce champ dans tbl_champ</a>';
-                            }
-                        }else{
-                            t+=par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ;
-                        }
-                       t+='</td>';
+                   
+                   var proprietes_a_tester=['name' , 'type' , 'notnull' , 'dflt_value' , 'pk' ];
+                   for( var ind_prop in proprietes_a_tester){
+                       if(references[ref]==='tableau1'){
+                           if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ]){
+                               if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]){
+                                   t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                               }else{
+                                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                               }
+                           }else{
+                               t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                           }
+                       }else{
+                           t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                       }
                    }
                    
-                   
-                   
+/*                   
+                   if(references[ref]==='tableau1'){
+                    
+                    if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ]){
+                        if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ].notnull!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull){
+                            t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
+                        }else{
+                            t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
+                        }
+                    }else{
+                            t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
+                    }
+                   }else{
+                      t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
+                   }
+                   if(references[ref]==='tableau1'){
+                    if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value){
+                        t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value+'</td>';
+                    }else{
+                        t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value+'</td>';
+                    }
+                   }else{
+                      t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value+'</td>';
+                   }
+*/                   
+//                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].pk+'</td>';
+/*
+                   if(references[ref]==='tableau1' && la_class_quoi==='' ){
+                       t+='<td>';
+                       if(   
+                             par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('chi_id_champ')
+                          && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ===0 
+                          && par['donnees'][references[ref]][nom_de_la_table].chi_id_table>0
+                       ){
+                           if( differences_entre_les_tables===false && differences_entre_les_champs===false){
+                               t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_ce_champ_dans_tbl_champ(&quot;'+nom_du_champ+'&quot;,'+par['donnees'][references[ref]][nom_de_la_table].chi_id_table+',&quot;'+nom_de_la_table+'&quot;,'+par.id_bdd_de_la_base_en_cours+','+position+')"">ajouter ce champ dans tbl_champ</a>';
+                           }
+                       }else{
+                           if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('chi_id_champ')){
+                               t+=par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ;
+                           }else{
+                               t+='';
+                           }
+                       }
+                       t+='</td>';
+                   }
+*/                   
                   t+='</tr>';
                   position++;
               }
@@ -1717,6 +1764,87 @@ class module_svg_bdd{
         }
      
     }
+    /*
+      ====================================================================================================================
+      function reecrire_la_base_a_partir_du_shema
+      ATTACH DATABASE 'db2.sqlite' as 'Y';
+      INSERT INTO X.TABLE SELECT * FROM Y.TABLE;
+    */
+    creer_la_base_a_partir_du_shema(id_bdd){
+        this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd,10);
+        clearMessages('zone_global_messages');
+        var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
+        if(obj.status===true){
+            var texte_rev=obj.value;
+            var obj2 = rev_texte_vers_matrice(texte_rev);
+            if(obj2.status===true){
+                var obj3=tabToSql1(obj2.value,0,0);
+                if(obj3.status===true){
+                  var source_sql_de_la_base=obj3.value
+                }else{
+                    displayMessages('zone_global_messages');
+                    alert('Problème sur reecrire_la_base 1739 ');
+                    return;
+                }
+             
+            }else{
+                displayMessages('zone_global_messages');
+                alert('Problème sur reecrire_la_base 1739 ');
+                return;
+            }
+
+         
+        }else{
+            displayMessages('zone_global_messages');
+            alert('Problème sur reecrire_la_base 1746 ');
+            return;
+        }
+        
+        async function creer_la_base_a_partir_du_shema_sur_disque(url="",donnees){
+            var response= await fetch(url,{
+                /* 10 secondes de timeout car il faut faire une copie de la base */
+                'signal':AbortSignal.timeout(10000),
+                /* *GET, POST, PUT, DELETE, etc. */
+                method:"POST",
+                /* no-cors, *cors, same-origin */
+                mode:"cors",
+                /* default, no-cache, reload, force-cache, only-if-cached */
+                cache:"no-cache",
+                /* include, *same-origin, omit */
+                credentials:"same-origin",
+                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
+                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                redirect:"follow",
+                /*
+                  
+                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                */
+                referrerPolicy:"no-referrer",
+                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+            });
+            return(response.json());
+        }
+        
+        var ajax_param={
+            'call':{'lib':'core','file':'bdd','funct':'creer_la_base_a_partir_du_shema_sur_disque'},
+            id_bdd_de_la_base     : this.#id_bdd_de_la_base_en_cours,
+            source_sql_de_la_base : source_sql_de_la_base  ,
+        };
+        
+
+        creer_la_base_a_partir_du_shema_sur_disque('za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque',ajax_param).then((donnees) => {
+            if(donnees.status === 'OK'){
+                console.log('OK');
+            }else{
+                console.error('KO donnees=' , donnees);
+            }
+        });
+        
+        
+        
+    }
+    
+    
     /*
       ====================================================================================================================
       function reecrire_la_base_a_partir_du_shema
@@ -1869,6 +1997,8 @@ class module_svg_bdd{
         t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.comparer_la_base_physique_et_la_base_virtuelle('+this.#id_bdd_de_la_base_en_cours+')">comparer</a>');
         t+='<hr /><h2>réécrire la base physique à partir de ce schéma</h2>';
         t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.reecrire_la_base_a_partir_du_shema('+this.#id_bdd_de_la_base_en_cours+')">réecrire</a>');
+        t+='<hr /><h2>créer la base physique à partir de ce schéma</h2>';
+        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.creer_la_base_a_partir_du_shema('+this.#id_bdd_de_la_base_en_cours+')">créer</a>');
         
         
         document.getElementById('__contenu_modale').innerHTML=t;

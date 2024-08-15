@@ -1047,37 +1047,42 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             }
         }
         for(j in par['donnees'][nom_de_la_table].create_index){
-            txt=par['donnees'][nom_de_la_table].create_index[j];
-            l01=txt.length;
-            for(i=0;i < l01;i++){
-                ci=txt.substr(i,1);
-                if(dans_comm === true){
-                    if(ci === '*'){
-                        if(i === (l01 - 1)){
-                            return({status:false,message:'1053 erreur commentaire'});
-                        }else{
-                            if(txt.substr((i + 1),1) === '/'){
-                                dans_comm=false;
-                                i++;
-                                tab_meta.push({txt_meta:txt_meta,statut:false,'matrice':[],type_element:'table|champ',nom_element:''});
-                                txt_meta='';
+            try{
+                txt=par['donnees'][nom_de_la_table].create_index[j];
+                l01=txt.length;
+                for(i=0;i < l01;i++){
+                    ci=txt.substr(i,1);
+                    if(dans_comm === true){
+                        if(ci === '*'){
+                            if(i === (l01 - 1)){
+                                return({status:false,message:'1053 erreur commentaire'});
+                            }else{
+                                if(txt.substr((i + 1),1) === '/'){
+                                    dans_comm=false;
+                                    i++;
+                                    tab_meta.push({txt_meta:txt_meta,statut:false,'matrice':[],type_element:'table|champ',nom_element:''});
+                                    txt_meta='';
+                                }
                             }
+                        }else{
+                            txt_meta+=ci;
                         }
                     }else{
-                        txt_meta+=ci;
-                    }
-                }else{
-                    if(ci === '/'){
-                        if(i === (l01 - 1)){
-                            return({status:false,message:'1053 erreur commentaire'});
-                        }else{
-                            if(txt.substr((i + 1),1) === '*'){
-                                dans_comm=true;
-                                i++;
+                        if(ci === '/'){
+                            if(i === (l01 - 1)){
+                                return({status:false,message:'1053 erreur commentaire'});
+                            }else{
+                                if(txt.substr((i + 1),1) === '*'){
+                                    dans_comm=true;
+                                    i++;
+                                }
                             }
                         }
                     }
                 }
+            }catch(e){
+             console.error('e=',e);
+             debugger
             }
         }
         for(i=0;i < tab_meta.length;i++){

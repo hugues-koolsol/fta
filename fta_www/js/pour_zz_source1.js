@@ -210,7 +210,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
         var tableau1 = iterateCharacters2(objRev.value);
         var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
         if(matriceFonction.status===true){
-            console.log(matriceFonction);
+//            console.log(matriceFonction);
             
             var objJs=parseJavascript0(matriceFonction.value,1,0);
             
@@ -245,7 +245,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
 }
 
 function traitement_apres_ajax_pour_conversion_fichier_php(par){
-    console.log('par=',par);
+//    console.log('par=',par);
 
     var ast=JSON.parse(par.value);
    
@@ -295,7 +295,7 @@ function convertir_un_source_sur_disque(id_source){
   try{
    var jsonRet=JSON.parse(r.responseText);
    if(jsonRet.status=='OK'){
-    console.log('jsonRet=',jsonRet);
+//    console.log('jsonRet=',jsonRet);
 //    dogid('chp_genere_source').value=jsonRet.value;
     var nom_source=jsonRet.db['T0.chp_nom_source'];
     var type_source=jsonRet.db['T0.chp_type_source'];

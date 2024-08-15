@@ -2507,7 +2507,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
 //     console.log('obj=',obj , stmts[i].value );
 
      /* recherche d'au moins un tag dans le texte */
-     var regex = /(<[a-zA-Z]+>)/g;
+     var regex = /(<[a-zA-Z0-9\-_]+)/g;
      var found = stmts[i].value.match(regex);
 
 
@@ -2525,7 +2525,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                dans ce cas tout est remplacé par des "echo" plus bas
              */
              estTraiteSansErreur=false;
-             debugger
+
          }
      }else{
          /*
@@ -2861,7 +2861,7 @@ function isHTML(str) {
        }else{
          presDe = str.substr(0,i+10);
        }
-       return({status:false,id:i,message:'Erreur 1804 pres de "'+presDe+'"'});
+       return({status:false,id:i,message:'Erreur 2864 pres de "'+presDe+'"'});
       }
       
      }else{
@@ -2881,8 +2881,23 @@ function isHTML(str) {
    }else if(dansNomTag){
     
     if(c0===' ' || c0==='\r' || c0==='\n' || c0==='\t'){
-     tabTags.push(nomTag);
-     dansNomTag=false;
+     if(dansCdata===true){
+      for(var j=i;j<l01;j++){
+       if(str.substr(j,3)===']]'+'>'){
+        i=j+2;
+        
+        break;
+       }
+      }
+      dansNomTag=false;
+      dansTag=false;
+      dansInner=true;
+      nomTag='';
+      continue
+     }else{
+      tabTags.push(nomTag);
+      dansNomTag=false;
+     }
     }else if(c0==='>'){
      if(dansBaliseFermante){ // </a>
       dansNomTag=false
@@ -2923,7 +2938,7 @@ function isHTML(str) {
      }else{
        presDe = str.substr(0,i+10);
      }
-     return({status:false,id:i,message:'Erreur 1804 pres de "'+presDe+'"'});
+     return({status:false,id:i,message:'Erreur 2926 pres de "'+presDe+'"'});
     }else{
      nomTag+=c0;
      if(nomTag==='![C'+'DATA['){
@@ -3245,7 +3260,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
 function transform_text_area_php_en_rev(nom_de_la_text_area){
   //"àà"
 
-  console.log('=========================\ndébut de transforme')
+//  console.log('=========================\ndébut de transforme')
   document.getElementById('txtar2').value='';
   document.getElementById('resultat1').innerHTML='';
   clearMessages('zone_global_messages');

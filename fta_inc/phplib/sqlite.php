@@ -245,19 +245,15 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
   ========================================================================================
 */
 function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_auto_increment){
- 
-
-    
 
     $t='';
+    $ret0= $db->query('create table ____temporaire_____ (id integer primary key autoincrement)');
     
     $auto_increment=false;
-    $sql='SELECT * FROM sqlite_sequence WHERE name = \''.$nom_de_la_table.'\'';
-    
+    $sql='SELECT * FROM sqlite_sequence WHERE name = \''.$nom_de_la_table.'\'';    
     /*
-     si il n'y a aucune table avec autoincrement alors la table sqlite_sequence n'existe pas et ça provoque une erreur
-    */
-    $niveau_erreur_php=error_reporting(0);
+      si il n'y a aucune table avec autoincrement alors la table sqlite_sequence n'existe pas et ça provoque une erreur
+    */    
     $stmt = $db->prepare($sql); 
     if($stmt!==false){
         $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
@@ -266,7 +262,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
         }
         $stmt->close(); 
     }
-    error_reporting($niveau_erreur_php);
+    $ret0= $db->query('drop table ____temporaire_____');
 
 
     $liste_des_champs=array();

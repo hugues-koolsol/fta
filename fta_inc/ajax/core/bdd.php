@@ -1,5 +1,56 @@
 <?php
 
+
+function creer_la_base_a_partir_du_shema_sur_disque(&$data){
+    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
+
+    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$ret0='.var_export( $ret0 , true ) .CRLF.CRLF); fclose($fd);}
+*/    
+
+
+    $chemin_bdd='..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
+    $repertoire=realpath(dirname($chemin_bdd));
+    $chemin_bdd=$repertoire.DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
+
+    if(is_file($chemin_bdd)){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque le fichier bdd existe déjà';
+        return;
+
+    }
+    
+
+    $db1temp=new SQLite3($chemin_bdd);
+    $ret1=$db1temp->exec('BEGIN TRANSACTION;');
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
+        return;
+
+    }
+
+    $ret1=$db1temp->exec($data['input']['source_sql_de_la_base']);
+
+    if($ret1 !== true){
+
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque création base impossible';
+        $db1temp->close();
+        sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
+        return;
+
+    }
+    
+    $ret1=$db1temp->exec('COMMIT;');
+    
+    $data['status']='OK';
+
+
+
+}
 /*
   ===========================================================================================================
 */
@@ -8,8 +59,10 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
  
     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
     $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'] , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
-    $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
-    $chemin_bdd=realpath($chemin_bdd);
+    
+    $chemin_bdd='..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
+    $repertoire=realpath(dirname($chemin_bdd));
+    $chemin_bdd=$repertoire.DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
     if(!(is_file($chemin_bdd))){
 
         $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
@@ -17,7 +70,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     }
 
-    $chemin_bdd_base_temporaire='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/temporaire_'.md5(date('Y-m-d-H-i-s')).'.db';
+    $chemin_bdd_base_temporaire=$repertoire.DIRECTORY_SEPARATOR.'temporaire_'.md5(date('Y-m-d-H-i-s')).'.db_temporaire';
 
 
     $db1temp=new SQLite3($chemin_bdd_base_temporaire);
@@ -34,7 +87,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque création table temporaire impossible';
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque création base temporaire impossible';
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -67,17 +120,19 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
      
      
     }
+    
     $GLOBALS[BDD][BDD_1][LIEN_BDD]->close();
     $db1temp->close();
-    sauvegarder_et_supprimer_fichier($chemin_bdd,false);
-    if((@rename($chemin_bdd_base_temporaire,$chemin_bdd))){
-
-        $data['status']='OK';
-
+    
+    /*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_bdd='.$chemin_bdd .CRLF.CRLF); fclose($fd);}
+    */
+    if(sauvegarder_et_supprimer_fichier($chemin_bdd,false)){
+        if((@rename($chemin_bdd_base_temporaire,$chemin_bdd))){
+            $data['status']='OK';
+        }
     }
     
-    
- 
 }
 /*
   ===========================================================================================================

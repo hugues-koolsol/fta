@@ -568,13 +568,14 @@ class traitements_sur_html{
                         var les_contenus=[];
                         for(var i=0;i<elements.length;i++){
                             var le_noeud={}
-                            var les_attributs=[];
+                            var les_attributs={};
                             le_noeud['type']=elements[i].nodeName;
                             if(elements[i].attributes && elements[i].attributes.length>0){
                                 for(var j=0;j<elements[i].attributes.length;j++){
-                                    var l_attribut={};
-                                    l_attribut[elements[i].attributes[j].name]=elements[i].attributes[j].value;
-                                    les_attributs.push(l_attribut);
+//                                    var l_attribut={};
+//                                    l_attribut[elements[i].attributes[j].name]=elements[i].attributes[j].value;
+                                    les_attributs[elements[i].attributes[j].name]=elements[i].attributes[j].value;
+//                                    les_attributs.push(l_attribut);
                                 }
                                 le_noeud['attributes']=les_attributs;
                             }

@@ -266,13 +266,17 @@ class requete_sql{
     ajouter_la_formule(){
         var zone_formule=document.getElementById('zone_formule');
         var rev_de_la_formule=zone_formule.value;
-        var obj=rev_texte_vers_matrice(rev_de_la_formule);
+        var obj=functionToArray(rev_de_la_formule , true, true , ''); //src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante
         if(obj.status===true){
          
          this.#obj_webs[this.#obj_webs.nom_zone_cible].push({
              type_d_element  : 'formule'  ,
              formule  : rev_de_la_formule  ,
          });
+         
+         sessionStorage.setItem(this.#nom_webs, JSON.stringify(this.#obj_webs));
+         global_modale1.close();
+         this.#afficher_les_donnees();
          
          
          
@@ -319,7 +323,7 @@ class requete_sql{
        }
         
        t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>';
-       t+='<a href="javascript:'+this.#nom_de_la_variable+'.ajouter_la_formule()">ajouter la formule</a>';
+       t+='<br /><a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.ajouter_la_formule()">ajouter la formule</a>';
         
         
         document.getElementById('__contenu_modale').innerHTML=t;
