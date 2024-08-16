@@ -47,7 +47,8 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'bdd',
-   'id_cible' : id_cible
+   'id_cible' : id_cible ,
+   'chx_source_rev' : null,
   }
   
   sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
@@ -64,7 +65,6 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
   var parametres_sauvegarde={
    'matrice': matriceFonction.value,
    'chp_provenance_rev' : 'bdd',
-   'chx_source_rev' : id_bdd,
    'id_cible' : id_cible
   }
  

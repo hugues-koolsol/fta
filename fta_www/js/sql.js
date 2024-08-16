@@ -32,7 +32,14 @@
   =====================================================================================================================
 */
 function tabToSql1(tab,id,niveau){
-    var options={'dans_definition_de_champ':false,'longueur_maximum_des_champs':0,'nom_du_champ_max':'','tableau_tables_champs':[],'tableau_champ':[]};
+    var options={
+        'dans_definition_de_table':false,
+        'dans_definition_de_champ':false,
+        'longueur_maximum_des_champs':0,
+        'nom_du_champ_max':'',
+        'tableau_tables_champs':[],
+        'tableau_champ':[]
+    };
     var ob = tabToSql0(tab,id,niveau,options);
     ob.longueur_maximum_des_champs=options.longueur_maximum_des_champs;
     ob.nom_du_champ_max=options.nom_du_champ_max;
@@ -791,13 +798,12 @@ function tabToSql0(tab,id,niveau,options){
                         }
                     }
                 }
-                t+=(meta_du_champ + definition_sql_du_champ);
-                /*
-                 si on est dans un "fields" et que ce n'est pas le dernier enfant, on ajoute une virgule
-                */
-                if(tab[tab[i][7]][1]==='fields' && tab[tab[i][7]][2]==='f' && tab[i][9]<tab[tab[i][7]][8] ){
-                    t+=',';
+                if(options.dans_definition_de_table===true){
+                 t+=',';
+
+                 t+=espacesn(true,niveau);
                 }
+                t+=(meta_du_champ + definition_sql_du_champ);
                 if((options.hasOwnProperty('dans_definition_de_champ')) && (options.dans_definition_de_champ == true)){
                     options.tableau_tables_champs[(options.tableau_tables_champs.length - 1)].champs.push(variables_pour_tableau_tables);
                 }
@@ -852,6 +858,7 @@ function tabToSql0(tab,id,niveau,options){
                                 j++;
                             }else if(((tab[j][1] === 'fields') || (tab[j][1] === 'champs')) && (tab[j][8] > 0)){
                                 t+=' ';
+                                options.dans_definition_de_table=true;
                                 options.dans_definition_de_champ=true;
                                 donnees_table.nom_de_la_table=nom_table_en_cours;
                                 options.tableau_tables_champs.push(donnees_table);
@@ -860,7 +867,10 @@ function tabToSql0(tab,id,niveau,options){
                                 options.dans_definition_de_champ=false;
                                 if(obj.status === true){
                                     t+=espacesn(true,niveau);
-                                    t+=obj.value;
+                                    /*
+                                     on supprime la virgule
+                                    */
+                                    t+=obj.value.substr(1); 
                                 }else{
                                     return(logerreur({status:false,value:t,id:i,message:'sql.js erreur dans un sql définit dans un php'}));
                                 }
@@ -873,6 +883,7 @@ function tabToSql0(tab,id,niveau,options){
                                     }
                                 }
                                 nom_table_en_cours='';
+                                options.dans_definition_de_table=false;
                             }else if((tab[j][1] === 'meta') && (tab[j][8] > 0)){
                                 var obj = a2F1(tab,j,false,(j + 1),false);
                                 if(obj.status === true){
@@ -897,6 +908,7 @@ function tabToSql0(tab,id,niveau,options){
                         break;
                     }
                 }
+                t+=espacesn(true,niveau+1);
                 t+=');';
             }else if(tab[i][1] === 'drop_table'){
                 t+=espacesn(true,niveau);
@@ -1047,42 +1059,42 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             }
         }
         for(j in par['donnees'][nom_de_la_table].create_index){
-            try{
-                txt=par['donnees'][nom_de_la_table].create_index[j];
-                l01=txt.length;
-                for(i=0;i < l01;i++){
-                    ci=txt.substr(i,1);
-                    if(dans_comm === true){
-                        if(ci === '*'){
-                            if(i === (l01 - 1)){
-                                return({status:false,message:'1053 erreur commentaire'});
-                            }else{
-                                if(txt.substr((i + 1),1) === '/'){
-                                    dans_comm=false;
-                                    i++;
-                                    tab_meta.push({txt_meta:txt_meta,statut:false,'matrice':[],type_element:'table|champ',nom_element:''});
-                                    txt_meta='';
-                                }
-                            }
-                        }else{
-                            txt_meta+=ci;
-                        }
-                    }else{
-                        if(ci === '/'){
-                            if(i === (l01 - 1)){
-                                return({status:false,message:'1053 erreur commentaire'});
-                            }else{
-                                if(txt.substr((i + 1),1) === '*'){
-                                    dans_comm=true;
-                                    i++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }catch(e){
-             console.error('e=',e);
-             debugger
+            txt=par['donnees'][nom_de_la_table].create_index[j];
+            if(txt!==null){
+               /*
+                on peut avoir un index du type "sqlite_autoindex_tbl_a_1" avec un texte qui est nul
+               */
+               l01=txt.length;
+               for(i=0;i < l01;i++){
+                   ci=txt.substr(i,1);
+                   if(dans_comm === true){
+                       if(ci === '*'){
+                           if(i === (l01 - 1)){
+                               return({status:false,message:'1053 erreur commentaire'});
+                           }else{
+                               if(txt.substr((i + 1),1) === '/'){
+                                   dans_comm=false;
+                                   i++;
+                                   tab_meta.push({txt_meta:txt_meta,statut:false,'matrice':[],type_element:'table|champ',nom_element:''});
+                                   txt_meta='';
+                               }
+                           }
+                       }else{
+                           txt_meta+=ci;
+                       }
+                   }else{
+                       if(ci === '/'){
+                           if(i === (l01 - 1)){
+                               return({status:false,message:'1053 erreur commentaire'});
+                           }else{
+                               if(txt.substr((i + 1),1) === '*'){
+                                   dans_comm=true;
+                                   i++;
+                               }
+                           }
+                       }
+                   }
+               }
             }
         }
         for(i=0;i < tab_meta.length;i++){
@@ -1339,6 +1351,13 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
         var nom_index={};
         for(nom_index in par['donnees'][nom_de_la_table]['structure']['liste_des_indexes']){
             var pc = par['donnees'][nom_de_la_table]['structure']['liste_des_indexes'][nom_index];
+            if(pc.origin && pc.origin!=='c'){
+             /*
+              seuls les indexes utilisateurs doivent être pris en compte
+              vu: pc.origin='pk' dans le cas ou un autoindex était créé sur un champ primary_key
+             */
+             continue
+            }
             t+=',';
             t+=('\n' + '#(==============================)');
             /*

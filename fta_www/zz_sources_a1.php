@@ -70,7 +70,12 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
     $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']=$_POST['chp_commentaire_source']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']=$_POST['chp_rev_source']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']=$_POST['chp_genere_source']??'';
-    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=((isset($_POST['chx_dossier_id_source']))?decrypter($_POST['chx_dossier_id_source']):'');
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);
+    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=((isset($_POST['chx_dossier_id_source']))?($_POST['chx_dossier_id_source']===''?NULL:decrypter($_POST['chx_dossier_id_source'])):'');
+    if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===''){
+     $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=NULL;
+    }
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);
 
     if(isset($_POST['__importer_le_fichier_source_de_fta'])){
 
@@ -244,7 +249,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);*/
 
-        if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === ''){
+        if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === NULL){
 
 
         }else{
@@ -287,7 +292,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
    UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` SET 
       `chp_nom_source`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']).'\'
     , `chp_type_source`        = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source']).'\'
-    , `chx_dossier_id_source`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']).'\'
+    , `chx_dossier_id_source`  = '.sq0(($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===NULL?'NULL':$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])).'
     , `chx_cible_id_source`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']).'\'
     , `chp_commentaire_source` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']).'\'
     , `chp_rev_source`         = \''.sq1($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']).'\'  
@@ -297,9 +302,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
     WHERE 
       `chi_id_source`          = '.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']).'
   ';
-        /* */
-        /*  echo $sql;*/
-        /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);*/
+//        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql) , true ) . '</pre>' ; exit(0);*/
         error_reporting(0);
 
@@ -479,20 +482,22 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         }
 
-        /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);*/
+          
+//        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);
+        
         $sql='
    INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` (`chp_nom_source` , chx_dossier_id_source , chx_cible_id_source, `chp_commentaire_source`, `chp_rev_source` , chp_genere_source , chp_type_source  ) VALUES
      (
         \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']).'\'
-      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']).'\'
-      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']).'\'
+      , '.sq0(($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===NULL?'NULL':$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'])).'
+      , '.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']).'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']).'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']).'\'
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']).'\'      
       , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_type_source']).'\'
      )
   ';
-        /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);*/
+//        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
         $val_erreur=error_reporting(0);
 
         if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){

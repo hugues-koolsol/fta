@@ -651,45 +651,46 @@ function sauvegarder_format_rev_en_dbb(&$data){
      DELETE FROM `tbl_revs` 
      WHERE `chx_cible_rev`          = '.sq0($data['input']['parametres_sauvegarde']['id_cible']).' 
        AND `chp_provenance_rev`     = \''.sq0($data['input']['parametres_sauvegarde']['chp_provenance_rev']).'\' 
-       AND `chx_source_rev`         = '.sq0($data['input']['parametres_sauvegarde']['chx_source_rev']).' 
     ';
+    if($data['input']['parametres_sauvegarde']['chx_source_rev']===null){
+     $sql0.='
+       AND `chx_source_rev` IS NULL 
+     ';
+    }else{
+     $sql0.='
+       AND `chx_source_rev`         = '.sq0($data['input']['parametres_sauvegarde']['chx_source_rev']).' 
+     ';
+    }
 
     if(false === $db->exec($sql0)){
 
         $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur la suppression';
 
     }else{
-
-        $tab=array(
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0);
+        /* 
+        15 champs
+        */
+        
+        $tab=array();
         $sql1='INSERT INTO `tbl_revs`(
-            `chx_cible_rev`                                                    ,   `chp_provenance_rev`                                                       
-        ,   `chp_id_rev`                                  ,   `chp_valeur_rev`                              
-        ,   `chp_type_rev`                                ,   `chp_niveau_rev`                              ,   `chp_quotee_rev`                              ,   `chp_pos_premier_rev`                         ,   `chp_pos_dernier_rev`                         
-        ,   `chp_parent_rev`                              ,   `chp_nbr_enfants_rev`                         ,   `chp_num_enfant_rev`                          ,   `chp_profondeur_rev`                          ,   `chp_pos_ouver_parenthese_rev`                
-        ,   `chp_pos_fermer_parenthese_rev`               ,   `chp_commentaire_rev`                         
+            `chx_cible_rev`                    ,   `chp_provenance_rev`     ,    chx_source_rev
+        ,   `chp_id_rev`                       ,   `chp_valeur_rev`                              
+        ,   `chp_type_rev`                     ,   `chp_niveau_rev`         ,   `chp_quotee_rev`     ,   `chp_pos_premier_rev`  ,   `chp_pos_dernier_rev`                         
+        ,   `chp_parent_rev`                   ,   `chp_nbr_enfants_rev`    ,   `chp_num_enfant_rev` ,   `chp_profondeur_rev`   ,   `chp_pos_ouver_parenthese_rev`                
+        ,   `chp_pos_fermer_parenthese_rev`    ,   `chp_commentaire_rev`                         
         ) VALUES '.CRLF;
         $liste_des_valeurs='';
-        for($i=0;($i < count($data['input']['parametres_sauvegarde']['matrice']));        ($i++)){
+        for($i=0;($i < count($data['input']['parametres_sauvegarde']['matrice']));($i++)){
             $tab=$data['input']['parametres_sauvegarde']['matrice'][$i];
             $liste_des_valeurs.=',(
              \''.sq0($data['input']['parametres_sauvegarde']['id_cible']).'\'   ,   \''.sq0($data['input']['parametres_sauvegarde']['chp_provenance_rev']).'\'       
+            ';
+            if($data['input']['parametres_sauvegarde']['chx_source_rev']===null){
+                 $liste_des_valeurs.=', NULL';
+            }else{
+                 $liste_des_valeurs.=', '.$data['input']['parametres_sauvegarde']['chx_source_rev'].' ';
+            }
+            $liste_des_valeurs.='
             ,  '.sq0($tab[3-3]).'    ,\''.sq0($tab[4-3]).'\'  
             ,\''.sq0($tab[5-3]).'\'  ,\''.sq0($tab[6-3]).'\'  ,\''.sq0($tab[7-3]).'\'   ,\''.sq0($tab[8-3]).'\'  ,\''.sq0($tab[9-3]).'\'                             
             ,\''.sq0($tab[10-3]).'\' ,\''.sq0($tab[11-3]).'\' ,\''.sq0($tab[12-3]).'\'  ,\''.sq0($tab[13-3]).'\' ,\''.sq0($tab[14-3]).'\'                            
