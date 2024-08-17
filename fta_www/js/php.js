@@ -279,133 +279,131 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          
         }else if(tab[i][1]=='castfloat' && tab[i][2]=='f'){
 
-         var obj1=php_traiteElement(tab,i+1,niveau,{});
-         if(obj1.status===true){
-          t+='(float)'+obj1.value;
-         }else{
-           return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans php_tabToPhp1 0425'});
-         }
-         debugger; // on ne devrait pas passer par ici
+            var obj1=php_traiteElement(tab,i+1,niveau,{});
+            if(obj1.status===true){
+             t+='(float)'+obj1.value;
+            }else{
+              return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans php_tabToPhp1 0425'});
+            }
+            debugger; // on ne devrait pas passer par ici
 
 
         }else if(tab[i][1]=='castint' && tab[i][2]=='f'){
 
-         var obj1=php_traiteElement(tab,i+1,niveau,{});
-         if(obj1.status===true){
-          t+='(int)'+obj1.value;
-         }else{
-           return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans php_tabToPhp1 0441'});
-         }
-         debugger; // on ne devrait pas passer par ici
+            var obj1=php_traiteElement(tab,i+1,niveau,{});
+            if(obj1.status===true){
+             t+='(int)'+obj1.value;
+            }else{
+              return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans php_tabToPhp1 0441'});
+            }
+            debugger; // on ne devrait pas passer par ici
 
         }else if(tab[i][1]=='appelf' && tab[i][2]=='f'){
 
-         obj=php_traiteAppelFonction(tab,i,dansInitialisation,niveau);
-         
-         if(obj.status==true){
-          t+=obj.value;
-         }else{
-          return php_logerr({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
-         }
+            obj=php_traiteAppelFonction(tab,i,dansInitialisation,niveau);
+            
+            if(obj.status==true){
+             t+=obj.value;
+            }else{
+             return php_logerr({status:false,value:t,id:id,tab:tab,message:'il faut un nom de fonction à appeler n(xxxx)'});
+            }
          
         }else if(tab[i][1]=='boucle'  && tab[i][2]=='f'){
         
-         tabchoix=[];
-         for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-          if(tab[j][3]==tab[i][3]+1){
-           if(tab[j][1]=='condition'){
-            tabchoix.push([j,tab[j][1],i,[]]);
-           }else if(tab[j][1]=='initialisation'){
-            tabchoix.push([j,tab[j][1],i,[]]);
-           }else if(tab[j][1]=='increment'){
-            tabchoix.push([j,tab[j][1],i,[]]);
-           }else if(tab[j][1]=='faire'){
-            tabchoix.push([j,tab[j][1],i,[]]);
-           }else if(tab[j][1]=='#'){
-            if(tabchoix.length==0){
-             tabchoix.push([j,tab[j][1],i,[]]);
-            }else{
-             tabchoix[tabchoix.length-1][3].push([j,tab[j][1],i,[]]); // position type 
+            tabchoix=[];
+            for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+                if(tab[j][3]==tab[i][3]+1){
+                    if(tab[j][1]=='condition'){
+                     tabchoix.push([j,tab[j][1],i,[]]);
+                    }else if(tab[j][1]=='initialisation'){
+                     tabchoix.push([j,tab[j][1],i,[]]);
+                    }else if(tab[j][1]=='increment'){
+                     tabchoix.push([j,tab[j][1],i,[]]);
+                    }else if(tab[j][1]=='faire'){
+                     tabchoix.push([j,tab[j][1],i,[]]);
+                    }else if(tab[j][1]=='#'){
+                     if(tabchoix.length==0){
+                      tabchoix.push([j,tab[j][1],i,[]]);
+                     }else{
+                      tabchoix[tabchoix.length-1][3].push([j,tab[j][1],i,[]]); // position type 
+                     }
+                    }else{
+                     return php_logerr({status:false,value:t,id:id,tab:tab,message:'la syntaxe de boucle est boucle(condition(),initialisation(),incrément(),faire())'});
+                    }
+                }
+            } 
+         //   console.log('tabchoix=',tabchoix);
+            var initialisation='';
+            var condition='';
+            var increment='';
+            var faire='';
+            for(j=0; j<tabchoix.length;j++){
+             if(tabchoix[j][1]=='#'){
+              t+=espacesn(true,niveau);
+             }
             }
-           }else{
-            return php_logerr({status:false,value:t,id:id,tab:tab,message:'la syntaxe de boucle est boucle(condition(),initialisation(),incrément(),faire())'});
-           }
-          }    
-         } 
-      //   console.log('tabchoix=',tabchoix);
-         var initialisation='';
-         var condition='';
-         var increment='';
-         var faire='';
-         for(j=0; j<tabchoix.length;j++){
-          if(tabchoix[j][1]=='#'){
-           t+=espacesn(true,niveau);
-          }
-         }
-         for(j=0; j<tabchoix.length;j++){
-          if(tabchoix[j][1]=='#'){
-           
-          }else if(tabchoix[j][1]=='initialisation'){
-              if(tab[tabchoix[j][0]][8]>0){
-                  obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,niveau);
-                  if(obj.status==true){
-                      if(obj.value.substr(obj.value.length-1,1)==';'){
-                       initialisation+=obj.value.substr(0,obj.value.length-1);
-                      }else{
-                       initialisation+=obj.value;
-                      }
-                      initialisation=initialisation.replace(/\n/g,'');
-                  }else{
-                      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0371 problème sur le alors du choix en indice '+tabchoix[j][0] });
-                  }
-              }
-           
-          }else if(tabchoix[j][1]=='condition'){
-           
-           obj=php_condition0(tab,tabchoix[j][0],niveau);
-           if(obj.status===true){
-            condition+=obj.value;
-           }else{
-      //      console.log(tab[tabchoix[j][0]],tab);
-            return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'1 problème sur la condition du choix en indice '+tabchoix[j][0] });
-           }
-           condition=condition.replace(/\n/g,'');
-           
-          }else if(tabchoix[j][1]=='increment'){
-           
-           obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,niveau);
-           if(obj.status==true){
-            obj.value=obj.value.replace(/\r/g,'').replace(/\n/g,'');
-            if(obj.value.substr(obj.value.length-1,1)==';'){
-             increment+=obj.value.substr(0,obj.value.length-1);
-            }else{
-             increment+=obj.value;
+            for(j=0; j<tabchoix.length;j++){
+                if(tabchoix[j][1]=='#'){
+                 
+                }else if(tabchoix[j][1]=='initialisation'){
+                    if(tab[tabchoix[j][0]][8]>0){
+                        obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,niveau);
+                        if(obj.status==true){
+                            if(obj.value.substr(obj.value.length-1,1)==';'){
+                             initialisation+=obj.value.substr(0,obj.value.length-1);
+                            }else{
+                             initialisation+=obj.value;
+                            }
+                            initialisation=initialisation.replace(/\n/g,'');
+                        }else{
+                            return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0371 problème sur le alors du choix en indice '+tabchoix[j][0] });
+                        }
+                    }
+                 
+                }else if(tabchoix[j][1]=='condition'){
+                 
+                    obj=php_condition0(tab,tabchoix[j][0],niveau);
+                    if(obj.status===true){
+                     condition+=obj.value;
+                    }else{
+               //      console.log(tab[tabchoix[j][0]],tab);
+                     return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'1 problème sur la condition du choix en indice '+tabchoix[j][0] });
+                    }
+                    condition=condition.replace(/\n/g,'');
+                 
+                }else if(tabchoix[j][1]=='increment'){
+                 
+                    obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,true,niveau);
+                    if(obj.status==true){
+                     obj.value=obj.value.replace(/\r/g,'').replace(/\n/g,'');
+                     if(obj.value.substr(obj.value.length-1,1)==';'){
+                      increment+=obj.value.substr(0,obj.value.length-1);
+                     }else{
+                      increment+=obj.value;
+                     }
+                     increment=increment.replace(/\n/g,'').trim();
+                    }else{
+                     return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0396 problème sur le alors du choix en indice '+tabchoix[j][0] });
+                    }
+                 
+                }else if(tabchoix[j][1]=='faire'){
+                 
+                 
+                    obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,false,niveau+1);
+                    
+                    if(obj.status==true){
+                     faire+=obj.value;
+                    }else{
+                     return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
+                    }
+                 
+                }
             }
-            increment=increment.replace(/\n/g,'');
-           }else{
-            return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0396 problème sur le alors du choix en indice '+tabchoix[j][0] });
-           }
-           
-          }else if(tabchoix[j][1]=='faire'){
-           
-           
-           obj=php_tabToPhp1(tab,tabchoix[j][0]+1,dansFonction,false,niveau+1);
-           
-           if(obj.status==true){
-            faire+=obj.value;
-           }else{
-            return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'problème sur le faire en indice '+tabchoix[j][0] });
-           }
-           
-          }
-          
-          
-         }
-         t+=espacesn(true,niveau);
-         t+='for('+initialisation+';'+condition+';'+increment+'){';
-         t+=faire;
-         t+=espacesn(true,niveau);
-         t+='}';
+            t+=espacesn(true,niveau);
+            t+='for('+initialisation+';'+condition+';'+increment+'){';
+            t+=faire;
+            t+=espacesn(true,niveau);
+            t+='}';
          
         }else if(tab[i][1]=='essayer'  && tab[i][2]=='f'){
 
@@ -458,9 +456,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
             t+=espacesn(true,niveau);
             t+='}';
             
-           
-           
-         
         }else if(tab[i][1]=='tantQue'  && tab[i][2]=='f'){
 
             for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
@@ -499,8 +494,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
 
         }else if(tab[i][1]=='choix'  && tab[i][2]=='f'){
          
-
-
          var tabchoix=[];
          var aDesSinonSi=false;
          var aUnSinon=false;
@@ -694,108 +687,105 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
 
         }else if(tab[i][1]=='affecteFonction'  && tab[i][2]=='f'){
 
-         if(tab[i+1][2]=='c' && tab[i][8]>=2 ){
-         }else{
-           return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans affecteFonction il faut au moins deux parametres affecteFonction(xxx,[p(yyy),]contenu())'});
-         }
-
-         var tabTemp=[];
-         var listeParametres
-         var positionContenu=-1;
-         argumentsFonction='';
-         
-         // r.onreadystatechange = function () {
-         
-         for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-          // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
-          if( tab[j][1]=='contenu' && tab[j][3]==tab[i][3]+1 && tab[j][2]=='f' ){
-           positionContenu=j;
-          }else{
-           if( tab[j][1]=='p' && tab[j][3]==tab[i][3]+1){
-            if( tab[j][8]==1 && tab[j+1][2]=='c' ){
-             argumentsFonction+=','+tab[j+1][1];
+            if(tab[i+1][2]=='c' && tab[i][8]>=2 ){
             }else{
-             return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans affecteFonction, les parametres doivent être des variables affecteFonction(xxx,[p(yyy),]contenu()) '});
+              return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans affecteFonction il faut au moins deux parametres affecteFonction(xxx,[p(yyy),]contenu())'});
             }
-           }
-          }
-         }
-         if(positionContenu>0){
-          obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,niveau);
-          if(obj.status==true){
-           if(!dansInitialisation){
-            t+=espacesn(true,niveau);
-           }
-           // r.onreadystatechange = function () {}
-           t+=''+tab[i+1][1]+'=function('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
-           t+=obj.value;
-           if(!dansInitialisation){
-            t+=espacesn(true,niveau);
-           }
-           t+='}'
-          }else{
-          }
-         }else{
-          return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans affecteFonction, il faut un contenu() : affecteFonction(xxx,[p(yyy),]contenu())'});
-         }
 
-
-        
+            var tabTemp=[];
+            var listeParametres
+            var positionContenu=-1;
+            argumentsFonction='';
+            
+            // r.onreadystatechange = function () {
+            
+            for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+             // 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE
+             if( tab[j][1]=='contenu' && tab[j][3]==tab[i][3]+1 && tab[j][2]=='f' ){
+              positionContenu=j;
+             }else{
+              if( tab[j][1]=='p' && tab[j][3]==tab[i][3]+1){
+               if( tab[j][8]==1 && tab[j+1][2]=='c' ){
+                argumentsFonction+=','+tab[j+1][1];
+               }else{
+                return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans affecteFonction, les parametres doivent être des variables affecteFonction(xxx,[p(yyy),]contenu()) '});
+               }
+              }
+             }
+            }
+            if(positionContenu>0){
+             obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,niveau);
+             if(obj.status==true){
+              if(!dansInitialisation){
+               t+=espacesn(true,niveau);
+              }
+              // r.onreadystatechange = function () {}
+              t+=''+tab[i+1][1]+'=function('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
+              t+=obj.value;
+              if(!dansInitialisation){
+               t+=espacesn(true,niveau);
+              }
+              t+='}'
+             }else{
+             }
+            }else{
+             return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans affecteFonction, il faut un contenu() : affecteFonction(xxx,[p(yyy),]contenu())'});
+            }
         
         }else if((tab[i][1]=='affecte' || tab[i][1]=='affecte_reference' )  && tab[i][2]=='f'){
         
-         if(!dansInitialisation){
-          t+=espacesn(true,niveau);
-         }
-         if(tab[i][8]==2){
-           var avantEgal='';
-           var apresEgal='';
-           for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-            if(tab[j][7]==i){
-             
-             var elt='';
-             var obj1=php_traiteElement(tab,j,niveau,{});
-             if(obj1.status===true){
-              elt=obj1.value;
-             }else{
-               return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans affecte 0804'});
-             }
-              
+            if(!dansInitialisation){
+             t+=espacesn(true,niveau);
+            }
+            if(tab[i][8]==2){
+              var avantEgal='';
+              var apresEgal='';
+              for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+               if(tab[j][7]==i){
+                
+                var elt='';
+                var obj1=php_traiteElement(tab,j,niveau,{});
+                if(obj1.status===true){
+                 elt=obj1.value;
+                }else{
+                  return php_logerr({status:false,value:t,id:id,tab:tab,message:'dans affecte 0804'});
+                }
+                 
 
-             
-             
-             /* enfant 1 ou 2 */
-             if(tab[j][9]===1){ 
-              avantEgal=elt;
-             }else{
-              apresEgal=elt;
-             }
-             
-            }
-           }
-           if(apresEgal.substr(0,avantEgal.length)==avantEgal && apresEgal.substr(avantEgal.length,1)==='.'){
-            if(tab[i][1]=='affecte_reference'){
-                t+=avantEgal+'.=&'+apresEgal.substr(avantEgal.length+1);
+                
+                
+                /* enfant 1 ou 2 */
+                if(tab[j][9]===1){ 
+                 avantEgal=elt;
+                }else{
+                 apresEgal=elt;
+                }
+                
+               }
+              }
+              if(apresEgal.substr(0,avantEgal.length)==avantEgal && apresEgal.substr(avantEgal.length,1)==='.'){
+               if(tab[i][1]=='affecte_reference'){
+                   t+=avantEgal+'.=&'+apresEgal.substr(avantEgal.length+1);
+               }else{
+                   t+=avantEgal+'.='+apresEgal.substr(avantEgal.length+1);
+               }
+              }else{
+               if(tab[i][1]=='affecte_reference'){
+                   t+=avantEgal+'=&'+apresEgal;
+               }else{
+                   t+=avantEgal+'='+apresEgal;
+               }
+              }
+              if(!dansInitialisation){
+               t+=';';
+              }
+              
+               
+               
+              
             }else{
-                t+=avantEgal+'.='+apresEgal.substr(avantEgal.length+1);
+             return php_logerr({status:false,value:t,id:i,tab:tab,message:'php.js 0946 affecte ne doit contenir que 2 arguments'});
             }
-           }else{
-            if(tab[i][1]=='affecte_reference'){
-                t+=avantEgal+'=&'+apresEgal;
-            }else{
-                t+=avantEgal+'='+apresEgal;
-            }
-           }
-           if(!dansInitialisation){
-            t+=';';
-           }
-           
-            
-            
-           
-         }else{
-          return php_logerr({status:false,value:t,id:i,tab:tab,message:'php.js 0946 affecte ne doit contenir que 2 arguments'});
-         }
 
         
         }else if( ( tab[i][1]=='static'   || tab[i][1]=='declare' ) && tab[i][2]=='f'){

@@ -2064,96 +2064,100 @@ function php_traite_Stmt_While(element,niveau,unElseIfOuUnElse){
  
 //=====================================================================================================================
 function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    var conditionIf='';
+    var instructionsDansElseOuElseifIf='';
+    if(element.cond){
 
- var t='';
- var esp0 = ' '.repeat(NBESPACESREV*(niveau));
- var esp1 = ' '.repeat(NBESPACESREV);
- var conditionIf='';
- var instructionsDansElseOuElseifIf='';
- if(element.cond){
-
-  var obj=php_traiteCondition1(element.cond,niveau,element);
-  if(obj.status===true){
-   
-   
-   conditionIf=obj.value;
-  }else{
-   conditionIf='#(TODO ERREUR dans php_traite_Stmt_If 0818)';
-  }
-   
- }else{
-  conditionIf='';
- }
- 
- var instructionsDansIf='';
- if(element.stmts){
-  niveau+=3;
-  var obj=TransformAstPhpEnRev(element.stmts,niveau,false);
-  niveau-=3;
-  if(obj.status===true){
-   instructionsDansIf+=obj.value;
-  }else{
-   return(astphp_logerreur({'status':false,'message':'1741  dans php_traite_Stmt_If',element:element}));
-
-//   instructionsDansIf+='#(ERREUR 0902 '+element.else.stmts[i].nodeType+' )';
-  }
- }else{
-  instructionsDansIf='#(PAS instructions dans if)';
- }
-
- if(unElseIfOuUnElse){
-  t+='\n'+esp0+esp1+'sinonsi('
-  t+='\n'+esp0+esp1+esp1+'condition('+conditionIf+')';
-  t+='\n'+esp0+esp1+esp1+'alors(\n'
-  t+=instructionsDansIf
-  t+='\n'+esp0+esp1+esp1+')';
-  t+='\n'+esp0+esp1+')'
-  
- }else{
-  t+='\n'+esp0+'choix('
-  t+='\n'+esp0+esp1+'si('
-  t+='\n'+esp0+esp1+esp1+'condition('+conditionIf+')';
-  t+='\n'+esp0+esp1+esp1+'alors(\n'
-  t+=instructionsDansIf
-  t+='\n'+esp0+esp1+esp1+')';
-  t+='\n'+esp0+esp1+')'
- }
- 
- 
- var listeDesElse='';
- var listeDesElseIf='';
- if(element.else){
-  if(element.else.stmts){
-   if(element.else.stmts.length===1 && element.else.stmts[0].nodeType==="Stmt_If"){
-    // c'est un elseif
-    var objElseIf=php_traite_Stmt_If(element.else.stmts[0],niveau,true);
-    if(objElseIf.status===true){
-     t+=''+objElseIf.value+'';
+        var obj=php_traiteCondition1(element.cond,niveau,element);
+        if(obj.status===true){
+            conditionIf=obj.value;
+        }else{
+            return(astphp_logerreur({'status':false,'message':'2081  dans php_traite_Stmt_If',element:element}));
+        }
+      
     }else{
-     instructionsDansElseOuElseifIf+='#(ERREUR 0902 '+element.else.stmts[0].nodeType+' )';
+        conditionIf='';
     }
-   }else{
-    // c'est un else
-    niveau+=3;
-    var obj=TransformAstPhpEnRev(element.else.stmts,niveau,false);
-    niveau-=3;
-    if(obj.status===true){
-     t+='\n'+esp0+esp1+'sinon('
-     t+='\n'+esp0+esp1+esp1+'alors(\n'
-     t+=obj.value;
-     t+='\n'+esp0+esp1+esp1+')';
-     t+='\n'+esp0+esp1+')'
+    
+    var instructionsDansIf='';
+    if(element.stmts){
+        niveau+=3;
+        var obj=TransformAstPhpEnRev(element.stmts,niveau,false);
+        niveau-=3;
+        if(obj.status===true){
+            instructionsDansIf+=obj.value;
+        }else{
+            return(astphp_logerreur({'status':false,'message':'2096  dans php_traite_Stmt_If',element:element}));
+        }
     }else{
-     t+='#(ERREUR 0902 '+element.else.stmts[0].nodeType+' )';
+        instructionsDansIf='#(PAS instructions dans if)';
     }
-   }
-  }
- }
- if(unElseIfOuUnElse){
- }else{
-  t+='\n'+esp0+')';
- }
- return {'status':true,'value':t};
+
+    if(unElseIfOuUnElse){
+        t+='\n'+esp0+esp1+'sinonsi('
+        t+='\n'+esp0+esp1+esp1+'condition('+conditionIf+')';
+        t+='\n'+esp0+esp1+esp1+'alors(\n'
+        t+=instructionsDansIf
+        t+='\n'+esp0+esp1+esp1+')';
+        t+='\n'+esp0+esp1+')'
+     
+    }else{
+        t+='\n'+esp0+'choix('
+        t+='\n'+esp0+esp1+'si('
+        t+='\n'+esp0+esp1+esp1+'condition('+conditionIf+')';
+        t+='\n'+esp0+esp1+esp1+'alors(\n'
+        t+=instructionsDansIf
+        t+='\n'+esp0+esp1+esp1+')';
+        t+='\n'+esp0+esp1+')'
+    }
+    
+    if(element.elseifs){
+        for(var j in element.elseifs ){
+            var objElseIf=php_traite_Stmt_If(element.elseifs[j],niveau,true);
+            if(objElseIf.status===true){
+                t+=''+objElseIf.value+'';
+            }else{
+                return(astphp_logerreur({'status':false,'message':'2126  dans php_traite_Stmt_If',element:element}));
+            }
+        }
+    }
+    
+    
+    if(element.else){
+        if(element.else.stmts){
+            if(element.else.stmts.length===1 && element.else.stmts[0].nodeType==="Stmt_If"){
+                // c'est un elseif
+                var objElseIf=php_traite_Stmt_If(element.else.stmts[0],niveau,true);
+                if(objElseIf.status===true){
+                    t+=''+objElseIf.value+'';
+                }else{
+                    return(astphp_logerreur({'status':false,'message':'2140  dans php_traite_Stmt_If',element:element}));
+                }
+            }else{
+                // c'est un else
+                niveau+=3;
+                var obj=TransformAstPhpEnRev(element.else.stmts,niveau,false);
+                niveau-=3;
+                if(obj.status===true){
+                    t+='\n'+esp0+esp1+'sinon('
+                    t+='\n'+esp0+esp1+esp1+'alors(\n'
+                    t+=obj.value;
+                    t+='\n'+esp0+esp1+esp1+')';
+                    t+='\n'+esp0+esp1+')'
+                }else{
+                    return(astphp_logerreur({'status':false,'message':'2154  dans php_traite_Stmt_If',element:element}));
+                }
+            }
+        }
+    }
+    if(unElseIfOuUnElse){
+    }else{
+        t+='\n'+esp0+')';
+    }
+    return {'status':true,'value':t};
 }
 /*
   =====================================================================================================================

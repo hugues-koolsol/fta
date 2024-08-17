@@ -403,36 +403,38 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
     if($stmt!==false){
         $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
         while($arr=$result->fetchArray(SQLITE3_NUM)){
-            $liste_des_indexes[$arr[1]]=array( // seq	name	unique	origin	partial	on_update	on_delete	match
-                'seq'	       => $arr[0],	
-                'name'       => $arr[1],	
-                'unique'  	  => $arr[2],	
-                'origin'     => $arr[3],		
-                'partial'    => $arr[4],	
-                'on_update'  => $arr[5]??null,	
-                'on_delete'  => $arr[6]??null,	
-                'match'      => $arr[7]??null,	
-                'champs'     => array(),
-            );
-            
-            $sql1= 'PRAGMA index_info(\''.$arr[1].'\') ';
-            $stmt1 = $db->prepare($sql1); 
-            if($stmt1!==false){
-                $result1 = $stmt1->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-                while($arr1=$result1->fetchArray(SQLITE3_NUM)){
-                    $liste_des_indexes[$arr[1]]['champs'][$arr1[2]]=array( // seqno	cid	name	origin	partial	on_update	on_delete	match
-                        'seqno'      => $arr1[0],	
-                        'cid'        => $arr1[1],	
-                        'name'       => $arr1[2],	
-                    );
+            if($arr[3]==='c'){
+                /*
+                on ne prend que origin = 'c' car ce sont les indexes créés par l'utilisateur
+                */
+                $liste_des_indexes[$arr[1]]=array( // seq	name	unique	origin	partial	on_update	on_delete	match
+                    'seq'	       => $arr[0],	
+                    'name'       => $arr[1],	
+                    'unique'  	  => $arr[2],	
+                    'origin'     => $arr[3],		
+                    'partial'    => $arr[4],	
+                    'on_update'  => $arr[5]??null,	
+                    'on_delete'  => $arr[6]??null,	
+                    'match'      => $arr[7]??null,	
+                    'champs'     => array(),
+                );
+                
+                $sql1= 'PRAGMA index_info(\''.$arr[1].'\') ';
+                $stmt1 = $db->prepare($sql1); 
+                if($stmt1!==false){
+                    $result1 = $stmt1->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
+                    while($arr1=$result1->fetchArray(SQLITE3_NUM)){
+                        $liste_des_indexes[$arr[1]]['champs'][$arr1[2]]=array( // seqno	cid	name	origin	partial	on_update	on_delete	match
+                            'seqno'      => $arr1[0],	
+                            'cid'        => $arr1[1],	
+                            'name'       => $arr1[2],	
+                        );
+                    }
+                    $stmt1->close(); 
+                }else{
+                  return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
                 }
-                $stmt1->close(); 
-            }else{
-              return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
             }
-            
-            
-            
         }
         $stmt->close(); 
     }else{
@@ -531,6 +533,7 @@ function obtenir_la_structure_de_la_base_sqlite_v2($chemin_base){
        ajouterMessage('erreur' , __LINE__ .' erreur sql ' , BNF );
     
    }
+//   echo __FILE__ . ' ' . __LINE__ . ' $tableauDesTables = <pre>' . var_export( $tableauDesTables , true ) . '</pre>' ; exit(0);
  
     return array('status'=>true,'value'=>$tableauDesTables);
  

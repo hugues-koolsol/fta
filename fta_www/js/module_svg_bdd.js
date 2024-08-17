@@ -1415,6 +1415,7 @@ class module_svg_bdd{
         
         var differences_entre_les_tables=false;
         var differences_entre_les_champs=false;
+        var differences_entre_les_indexe=false;
 
         console.log(par['donnees']);
         var tables={}; 
@@ -1447,11 +1448,11 @@ class module_svg_bdd{
         }
 //        console.log('tables=',tables)
         
-        /*
-        les champs sont-t-ils vraiment les mêmes
-        */
         if(differences_entre_les_tables===false){
             for(var a0 in tables){
+                /*
+                les champs sont-t-ils vraiment les mêmes
+                */
                 for(var i in par['donnees']['tableau2'][a0].liste_des_champs){
                     if(!(par['donnees']['tableau1'][a0].liste_des_champs.hasOwnProperty(i))){
                         differences_entre_les_champs=true;
@@ -1464,9 +1465,67 @@ class module_svg_bdd{
                         par['donnees']['tableau1'][a0].liste_des_champs[i].absent_de_l_autre_tableau=true;
                     }
                 }
+                
+                
+                for(var i in par['donnees']['tableau2'][a0].liste_des_indexes){
+                    if(!(par['donnees']['tableau1'][a0].liste_des_indexes.hasOwnProperty(i))){
+                        differences_entre_les_indexe=true;
+                        par['donnees']['tableau2'][a0].liste_des_indexes[i].absent_de_l_autre_tableau=true;
+                    }
+                }
+                for(var i in par['donnees']['tableau1'][a0].liste_des_indexes){
+                    if(!(par['donnees']['tableau2'][a0].liste_des_indexes.hasOwnProperty(i))){
+                        differences_entre_les_indexe=true;
+                        par['donnees']['tableau1'][a0].liste_des_indexes[i].absent_de_l_autre_tableau=true;
+                    }
+                }
+                
+                
             }
         }
 
+        /*
+          analyse des indexes
+        */ 
+
+        var tables_indexes={};
+        for(var a0 in tables){
+            tables_indexes[a0]={indexes:null};
+            if(tables[a0].presente_dans_tableau_1===true && tables[a0].presente_dans_tableau_2===true ){
+                var indexes={};
+                for(var ind_index in par['donnees']['tableau1'][a0]['liste_des_indexes']){
+                    indexes[ind_index]={
+                     'table':a0,
+                     'presente_dans_tableau_1' : true , 
+                     indexes1 : par['donnees']['tableau1'][a0]['liste_des_indexes'][ind_index] ,  
+                     'presente_dans_tableau_2' : false , 
+                     indexes2 : null};
+                } 
+                
+
+                for(var ind_index in par['donnees']['tableau2'][a0]['liste_des_indexes']){
+                    if(indexes.hasOwnProperty(ind_index)){
+                        indexes[ind_index].presente_dans_tableau_2=true;
+                        indexes[ind_index].indexes2=par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index];
+                        
+                        if(
+                               indexes[ind_index].indexes2['name']           !==  indexes[ind_index].indexes1['name']
+                            || indexes[ind_index].indexes2['unique']         !==  indexes[ind_index].indexes1['unique']
+                        ){
+                            par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index]['different']=true;
+                            differences_entre_les_indexe=true;
+                        }
+                    }else{
+                        champs[ind_index]={ 'table':a0,'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
+                        par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index]['different']=true;
+                        differences_entre_les_indexe=true;
+                    }
+                }
+                tables_indexes[a0].indexes=JSON.parse(JSON.stringify(indexes));
+            }
+        }
+        
+        console.log('tables_indexes=' , tables_indexes );
         
         /*
           analyse des champs des tables
@@ -1574,6 +1633,8 @@ class module_svg_bdd{
         t+='<td colspan="4">';
         t+=(differences_entre_les_tables?'<div class="yydanger">Il y a une différence entre les tables</div>':'<div class="yysucces">Pas de différence entre les tables</div>');
         t+=(differences_entre_les_champs?'<div class="yydanger">Il y a une différence entre les champs</div>':'<div class="yysucces">Pas de différence entre les champs</div>');
+        t+=(differences_entre_les_indexe?'<div class="yydanger">Il y a une différence entre les indexes</div>':'<div class="yysucces">Pas de différence entre les indexes</div>');
+        
         t+='</td>';
         t+='</tr>';
         t+='<tr>';
