@@ -24,12 +24,14 @@ class requete_sql{
       structure principale de ce programme
     */
     #obj_webs={
-     type_de_requete:'select',
-     bases:[],
-     ordre_des_tables:[],
-     nom_zone_cible:'champs_sortie',
-     champs_sortie:[],
-     champs_where:[],
+        type_de_requete                   : 'select',
+        bases                             : [],
+        ordre_des_tables                  : [],
+        nom_zone_cible                    : 'champs_sortie',
+        indice_table_pour_jointure_gauche : 0 ,
+        gauche_0_droite_1                 : 0 ,
+        champs_sortie                     : [],
+        champs_where                      : [],
     };
     #div_de_travail=null;
     #deb_selection_dans_formule=0;
@@ -139,10 +141,11 @@ class requete_sql{
             }
         }else{
             this.#obj_webs['ordre_des_tables'].push({
-                id_bdd            : id_bdd , 
-                nom_de_la_table   : nom_de_la_table,
-                indice_table      : 0 ,
-                jointure          : 'jointure_croisée' 
+                id_bdd                 : id_bdd , 
+                nom_de_la_table        : nom_de_la_table,
+                indice_table           : 0 ,
+                jointure               : 'jointure_croisée' ,
+                champs_jointure_gauche : { champ_table_fille:null , champ_table_mere:null},
             });
          
         }
@@ -166,9 +169,16 @@ class requete_sql{
       ================================================================================================================
       function selectionner_champs_destination
     */
-    selectionner_champs_destination(champs_selectionnes){
-//        console.log('champs_selectionnes=' , champs_selectionnes );
-        this.#obj_webs.nom_zone_cible=champs_selectionnes;
+    selectionner_champs_destination(champs_selectionnes,indice_table,gauche_0_droite_1){
+        if(champs_selectionnes==='champs_jointure_gauche'){
+            this.#obj_webs.nom_zone_cible=champs_selectionnes;
+            this.#obj_webs.indice_table_pour_jointure_gauche=indice_table;
+            this.#obj_webs.gauche_0_droite_1=gauche_0_droite_1;
+
+        }else{
+    //        console.log('champs_selectionnes=' , champs_selectionnes );
+            this.#obj_webs.nom_zone_cible=champs_selectionnes;
+        }
         sessionStorage.setItem(this.#nom_webs, JSON.stringify(this.#obj_webs));
         this.#afficher_les_donnees();
     }
@@ -189,13 +199,29 @@ class requete_sql{
       function selectionner_ce_champ
     */
     selectionner_ce_champ(nom_du_champ , nom_de_la_table,id_bdd,indice_table){
+
         var nom_zone_cible='champs_sortie';
-        if(this.#obj_webs.type_de_requete!=='insert'){
-            var lst=document.getElementsByName('champs_selectionnes');
-            for(var i=0;i<lst.length;i++){
-                if(lst[i].checked===true){
-                    nom_zone_cible=lst[i].value;
-                    break
+        if(this.#obj_webs.type_de_requete !== 'insert'){
+         
+            if(this.#obj_webs.nom_zone_cible==="champs_jointure_gauche"){
+
+                this.#obj_webs.ordre_des_tables[indice_table].champs_jointure_gauche.champ_table_fille={
+                    nom_du_champ    : nom_du_champ    ,
+                    nom_de_la_table : nom_de_la_table ,
+                    id_bdd          : id_bdd          ,
+                    indice_table    : indice_table    ,
+                };
+                sessionStorage.setItem(this.#nom_webs, JSON.stringify(this.#obj_webs));
+                this.#afficher_les_donnees();
+                return
+                
+            }else{
+                var lst=document.getElementsByName('champs_selectionnes');
+                for(var i=0;i<lst.length;i++){
+                    if(lst[i].checked===true){
+                        nom_zone_cible=lst[i].value;
+                        break
+                    }
                 }
             }
         }else{
@@ -400,7 +426,7 @@ class requete_sql{
              t+='</select>';
              t+='</td>' 
              }else{
-             t+='<td>table_reference</td>' 
+               t+='<td>table_reference</td>' 
              }
              t+='<td>' 
              for( var id_du_champ in this.#obj_webs['bases'][elem.id_bdd]['tables'][elem.nom_de_la_table]['champs']){
@@ -414,6 +440,47 @@ class requete_sql{
                  t+='</a>';
              }
              t+='</td>' 
+             if(this.#obj_webs['ordre_des_tables'][i].jointure==='jointure_gauche'){
+                 t+='<td>' 
+                 t+='ON' 
+                 t+='<input type="radio" ';
+                 t+=' onclick="javascript:'+this.#nom_de_la_variable+'.selectionner_champs_destination(&quot;champs_jointure_gauche&quot;,'+i+',0)" ';
+                 t+='name="champs_selectionnes" ';
+                 t+='id="champs_selectionnes_0_'+i+'" ';
+                 
+                 var chacked='';
+                 if(  this.#obj_webs.nom_zone_cible==='champs_jointure_gauche' 
+                   && this.#obj_webs.indice_table_pour_jointure_gauche===i 
+                   && this.#obj_webs.gauche_0_droite_1 === 0
+                 ){
+                  chacked=' checked="true" ';
+                 }
+                 t+='value="champs_sortie" '+chacked+'/>' ;
+
+                 if(this.#obj_webs.ordre_des_tables[i].champs_jointure_gauche.champ_table_fille!==null){
+                     t+='T'+this.#obj_webs.ordre_des_tables[i].champs_jointure_gauche.champ_table_fille.indice_table+ ' ' + this.#obj_webs.ordre_des_tables[i].champs_jointure_gauche.champ_table_fille.nom_du_champ;
+                 }
+
+
+
+                 t+=' &nbsp; = &nbsp; ' 
+
+                 var chacked='';
+                 if(  this.#obj_webs.nom_zone_cible==='champs_jointure_gauche' 
+                   && this.#obj_webs.indice_table_pour_jointure_gauche===i 
+                   && this.#obj_webs.gauche_0_droite_1 === 1
+                 ){
+                  chacked=' checked="true" ';
+                 }
+
+                 t+='<input type="radio" ';
+                 t+=' onclick="javascript:'+this.#nom_de_la_variable+'.selectionner_champs_destination(&quot;champs_jointure_gauche&quot;,'+i+',1)" ';
+                 t+='name="champs_selectionnes" ';
+                 t+='id="champs_selectionnes_1_'+i+'" ';
+                 t+='value="champs_sortie"  '+chacked+'/>' ;
+                 
+                 t+='</td>' 
+             }
              t+='</tr>' 
          }
          t+='</table>' 

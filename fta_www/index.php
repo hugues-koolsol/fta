@@ -16,7 +16,7 @@ print($o1);$o1='';
                 <li><a href="javascript:transformLeRev(false)" class="yysucces">traiter sans cst dans racine</a></li>
                 <li><a href="javascript:transformLeRev(true)" class="yysucces">traiter avec cst dans racine</a></li>
                 <li><a href="javascript:__gi1.aller_au_caractere_de_la_textarea(&quot;txtar1&quot;)" class="yysucces">aller au caractère</a></li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages" >🙈</a></li>
+
             </ul>
         </div>
         <h1>Page d'accueil</h1>

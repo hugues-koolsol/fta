@@ -11,15 +11,28 @@ print($o1);$o1='';
             <ul>
                 <li><a href="javascript:charger_source_de_test_sql('txtar1')">source de test</a>&nbsp;</li>
                 <li><a href="javascript:transform_sql_de_textarea_en_rev('txtar1' , 'txtar2')"  class="yysucces">convertir</a>&nbsp;</li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages">🙈</a>&nbsp;</li>
             </ul>
         </div>
   <h1>Convertir un sql en rev</h1>
   
-  <textarea class="txtar1" id="txtar1" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <div>
+   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar1&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
+  </div>
+  <textarea class="txtar1" id="txtar1" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div id="resultat1"></div>
-  <textarea class="txtar1" id="txtar2" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-  <textarea class="txtar1" id="txtar3" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <div>
+   <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
+   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
+   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar2&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
+  </div>
+  <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  
+  <div>
+      <a class="yyinfo" href="javascript:transform_rev_de_textarea_en_sql(&quot;txtar2&quot; , &quot;txtar3&quot;);" title="convertir rev en SQL">R2S</a>
+      <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar3&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
+  </div>
+  
+  <textarea class="txtar1" id="txtar3" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 <?php
 $js_a_executer_apres_chargement=array(
     array(

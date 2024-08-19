@@ -777,7 +777,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     var nombre_de_boutons_affiches=0;
     while(global_messages.errors.length > 0){
         if((zone_message_est_vide) && (numero_message === 0)){
-            zon.innerHTML+=('<div class="yyerreur" style="padding-left:31px;">' + global_messages.errors[i] + '</div>');
+            zon.innerHTML+=('<div class="yyerreur">' + global_messages.errors[i] + '</div>');
             numero_message++;
         }else{
             zon.innerHTML+=('<div class="yyerreur">' + global_messages.errors[i] + '</div>');
@@ -787,7 +787,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     }
     while(global_messages.warnings.length > 0){
         if((zone_message_est_vide) && (numero_message === 0)){
-            zon.innerHTML+=('<div class="yyavertissement" style="padding-left:31px;">' + global_messages.warnings[i] + '</div>');
+            zon.innerHTML+=('<div class="yyavertissement">' + global_messages.warnings[i] + '</div>');
             numero_message++;
         }else{
             zon.innerHTML+=('<div class="yyavertissement">' + global_messages.warnings[i] + '</div>');
@@ -797,7 +797,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     }
     while(global_messages.infos.length > 0){
         if((zone_message_est_vide) && (numero_message === 0)){
-            zon.innerHTML+=('<div class="yysucces" style="padding-left:31px;">' + global_messages.infos[i] + '</div>');
+            zon.innerHTML+=('<div class="yysucces">' + global_messages.infos[i] + '</div>');
             numero_message++;
         }else{
             zon.innerHTML+=('<div class="yysucces">' + global_messages.infos[i] + '</div>');
@@ -839,10 +839,6 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         zon.innerHTML=('&nbsp;<a href="javascript:selectionnerUnePlage(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML);
         global_messages.ranges.splice(0,1);
         affichagesPresents=true;
-    }
-    if((affichagesPresents) && (zone_message_est_vide)){
-        var ttt = ('<a class="yyavertissement" style="position:fixed;" href="javascript:masquerLesMessage(&quot;' + nomZone + '&quot;)" title="masquer les messages">🙈</a>');
-        zon.innerHTML=(ttt + zon.innerHTML);
     }
     if(zon.innerHTML !== ''){
         zon.style.visibility='visible';
@@ -890,10 +886,6 @@ function afficherOuMasquerLesMessages(){
     var zon = document.getElementById(nomZone);
     if((zon.style.visibility === 'hidden') || (zon.innerHTML === '')){
         zon.style.visibility='visible';
-        if(zon.innerHTML == ''){
-            var ttt = ('<a class="yyavertissement" style="float:inline-end;position:fixed;right:20px;" href="javascript:masquerLesMessage(&quot;' + nomZone + '&quot;)"  title="masquer les messages">🙈</a>');
-            zon.innerHTML=(ttt + zon.innerHTML);
-        }
     }else{
         zon.style.visibility='hidden';
     }

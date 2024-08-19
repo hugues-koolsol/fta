@@ -13,7 +13,6 @@ print($o1);$o1='';
                 
                 <li><a href="javascript:chargerSourceDeTestHtml()">source de test</a>&nbsp;</li>
                 <li><a href="javascript:transform_text_area_Html_en_rev(&quot;txtar1&quot;)"  class="yysucces">convertir</a>&nbsp;</li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" title="afficher/masquer les messages">🙈</a>&nbsp;</li>
                 
             </ul>
         </div>

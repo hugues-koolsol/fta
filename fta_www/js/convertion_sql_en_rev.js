@@ -1047,6 +1047,22 @@ function charger_le_dernier_source_sql(nom_de_la_textarea){
 /*
 =====================================================================================================================
 */
+function transform_rev_de_textarea_en_sql( nom_de_la_textarea_rev , nom_de_la_textarea_sql){
+    var tableau1 = iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
+    var obj1=functionToArray2(tableau1.out,false,true,'');
+    if(obj1.status===true){
+        var obj2=tabToSql1(obj1.value,0 , 0);
+        if(obj2.status===true){
+          displayMessages('zone_global_messages');
+          obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+          dogid(nom_de_la_textarea_sql).value=obj2.value;
+        }
+    }
+    displayMessages('zone_global_messages');
+}
+/*
+=====================================================================================================================
+*/
 function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql , nom_de_la_textarea_rev){
  
 //    console.clear();

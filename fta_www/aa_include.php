@@ -502,7 +502,6 @@ function ajouterMessage($type_de_message,$message,$page=''){
 */
 
 function recupereLesMessagesDeSession($f){
-    $numero_de_message=0;
     $les_messages_a_afficher='';
     $tableauTypeMessage=array(
         'normal',
@@ -519,12 +518,7 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$f][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$f][$v1] as $kerr => $verr){
-                    if($numero_de_message===0){
-                        $les_messages_a_afficher.='<div class="yy'.$v1.'" style="padding-left:30px;">'.$verr.'</div>'.CRLF;
-                        $numero_de_message++;
-                    }else{
-                        $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
-                    }
+                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
                 }
 
             }
@@ -540,12 +534,7 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
-                    if($numero_de_message===0){
-                        $les_messages_a_afficher.='<div class="yy'.$v1.'" style="padding-left:30px;">'.$verr.'</div>'.CRLF;
-                        $numero_de_message++;
-                    }else{
-                        $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
-                    }
+                     $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
                 }
 
             }
@@ -555,14 +544,6 @@ function recupereLesMessagesDeSession($f){
         }
 
     }
-
-    if(($les_messages_a_afficher !== '')){
-
-        $les_messages_a_afficher='<a class="yyavertissement" style="position: fixed;" href="javascript:masquerLesMessage(&quot;zone_global_messages&quot;)">🙈</a>'.$les_messages_a_afficher;
-
-    }
-
-
 
     return($les_messages_a_afficher);
 
@@ -742,6 +723,7 @@ function html_header1($parametres){
     $o1.=' var CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
+    $o1.=' var CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
     
     $o1.='</script>    '.CRLF;
     $o1.='    '.CRLF;

@@ -26,7 +26,7 @@ $o1='';?>
             <ul>
                 
                 <li><button class="yyinfo" onclick='enregistrer2()'>Convertir</button></li>
-                <li><a href="javascript:afficherOuMasquerLesMessages()" >a/m messages</a>&nbsp;</li>
+
                 <li><input type='text' id='nomDuSource' disabled='true' style='max-width: 150px;' /></li>
                 <li><button id='sauvegarderLeNormalise' onclick='sauvegardeTexteSource()' disabled='true' data-fichiertexte=''>sauvegarder le texte normalise</button></li>
                 

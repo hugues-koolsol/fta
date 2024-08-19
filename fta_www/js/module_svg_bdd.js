@@ -112,6 +112,7 @@ class module_svg_bdd{
             window.addEventListener('touchend',this.#doigt_haut.bind(this),false);
             window.addEventListener('touchmove',this.#doigt_bouge.bind(this),false);
             this.#charger_les_bases_initiales_en_asynchrone();
+            
         }
     }
     /*
@@ -1495,28 +1496,65 @@ class module_svg_bdd{
                 var indexes={};
                 for(var ind_index in par['donnees']['tableau1'][a0]['liste_des_indexes']){
                     indexes[ind_index]={
-                     'table':a0,
-                     'presente_dans_tableau_1' : true , 
-                     indexes1 : par['donnees']['tableau1'][a0]['liste_des_indexes'][ind_index] ,  
-                     'presente_dans_tableau_2' : false , 
-                     indexes2 : null};
+                        'table':a0,
+                        'present_dans_tableau_1' : true , 
+                        tableau1 : par['donnees']['tableau1'][a0]['liste_des_indexes'][ind_index] ,  
+                        'present_dans_tableau_2' : false , 
+                        tableau2 : null
+                    };
+//                    console.log(par['donnees']['tableau1'][a0]['liste_des_indexes'][ind_index]);
+                    var champs_de_l_index='';
+                    for( var champ_de_l_index in par['donnees']['tableau1'][a0]['liste_des_indexes'][ind_index]['champs']){
+                        champs_de_l_index+=','+champ_de_l_index;
+                    }
+                    if(champs_de_l_index!==''){
+                        champs_de_l_index=champs_de_l_index.substr(1);
+                    }
+                    indexes[ind_index]['tableau1'].champs_de_l_index=champs_de_l_index;
                 } 
                 
 
                 for(var ind_index in par['donnees']['tableau2'][a0]['liste_des_indexes']){
                     if(indexes.hasOwnProperty(ind_index)){
-                        indexes[ind_index].presente_dans_tableau_2=true;
-                        indexes[ind_index].indexes2=par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index];
+                        indexes[ind_index].present_dans_tableau_2=true;
+                        indexes[ind_index].tableau2=par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index];
+
+                        var champs_de_l_index='';
+                        for( var champ_de_l_index in par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index]['champs']){
+                            champs_de_l_index+=','+champ_de_l_index;
+                        }
+                        if(champs_de_l_index!==''){
+                            champs_de_l_index=champs_de_l_index.substr(1);
+                        }
+                        indexes[ind_index]['tableau2'].champs_de_l_index=champs_de_l_index;
                         
                         if(
-                               indexes[ind_index].indexes2['name']           !==  indexes[ind_index].indexes1['name']
-                            || indexes[ind_index].indexes2['unique']         !==  indexes[ind_index].indexes1['unique']
+                               indexes[ind_index].tableau2['name']              !==  indexes[ind_index].tableau1['name']
+                            || indexes[ind_index].tableau2['unique']            !==  indexes[ind_index].tableau1['unique']
+                            || indexes[ind_index].tableau2['champs_de_l_index'] !==  indexes[ind_index].tableau1['champs_de_l_index']
                         ){
                             par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index]['different']=true;
                             differences_entre_les_indexe=true;
                         }
                     }else{
-                        champs[ind_index]={ 'table':a0,'presente_dans_tableau_1' : false ,  'presente_dans_tableau_2' : true  };
+                        indexes[ind_index]={ 
+                            'table'                   : a0    ,
+                            'present_dans_tableau_1' : false ,  
+                            tableau1                  : null  ,  
+                            'present_dans_tableau_2' : true  ,
+                            tableau2                  : par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index] ,
+                        };
+                        
+                        var champs_de_l_index='';
+                        for( var champ_de_l_index in par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index]['champs']){
+                            champs_de_l_index+=','+champ_de_l_index;
+                        }
+                        if(champs_de_l_index!==''){
+                            champs_de_l_index=champs_de_l_index.substr(1);
+                        }
+                        indexes[ind_index]['tableau2'].champs_de_l_index=champs_de_l_index;
+                        
+                        
                         par['donnees']['tableau2'][a0]['liste_des_indexes'][ind_index]['different']=true;
                         differences_entre_les_indexe=true;
                     }
@@ -1658,86 +1696,105 @@ class module_svg_bdd{
               t+='<th>pk</th>'
               t+='<th>dft</th>'
               t+='</tr>'
-              var position=0;
+//              var position=0;
               for( var nom_du_champ in par['donnees'][references[ref]][nom_de_la_table].liste_des_champs){
                   t+='<tr>';
-                   var la_class_quoi='';
-                   if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('different') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].different===true){
-                    la_class_quoi='yyavertissement';
-                   }
-                   if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('absent_de_l_autre_tableau') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].absent_de_l_autre_tableau===true){
-                    la_class_quoi='yyavertissement';
-                   }
+                  var la_class_quoi='';
+                  if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('different') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].different===true){
+                   la_class_quoi='yyavertissement';
+                  }
+                  if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('absent_de_l_autre_tableau') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].absent_de_l_autre_tableau===true){
+                   la_class_quoi='yyavertissement';
+                  }
 
-                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].name+'</td>';
-                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].type+'</td>';
+                  t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].name+'</td>';
+                  t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].type+'</td>';
+                  
+                  var proprietes_a_tester=['name' , 'type' , 'notnull' , 'dflt_value' , 'pk' ];
+                  for( var ind_prop in proprietes_a_tester){
+                      if(references[ref]==='tableau1'){
+                          if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ]){
+                              if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]){
+                                  t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                              }else{
+                                  t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                              }
+                          }else{
+                              t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                          }
+                      }else{
+                          t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                      }
+                  }
                    
-                   var proprietes_a_tester=['name' , 'type' , 'notnull' , 'dflt_value' , 'pk' ];
-                   for( var ind_prop in proprietes_a_tester){
-                       if(references[ref]==='tableau1'){
-                           if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ]){
-                               if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]){
-                                   t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
-                               }else{
-                                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
-                               }
-                           }else{
-                               t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
-                           }
-                       }else{
-                           t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
-                       }
-                   }
-                   
-/*                   
-                   if(references[ref]==='tableau1'){
-                    
-                    if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ]){
-                        if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ].notnull!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull){
-                            t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
-                        }else{
-                            t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
-                        }
-                    }else{
-                            t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
-                    }
-                   }else{
-                      t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].notnull+'</td>';
-                   }
-                   if(references[ref]==='tableau1'){
-                    if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value){
-                        t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value+'</td>';
-                    }else{
-                        t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value+'</td>';
-                    }
-                   }else{
-                      t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].dflt_value+'</td>';
-                   }
-*/                   
-//                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].pk+'</td>';
-/*
-                   if(references[ref]==='tableau1' && la_class_quoi==='' ){
-                       t+='<td>';
-                       if(   
-                             par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('chi_id_champ')
-                          && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ===0 
-                          && par['donnees'][references[ref]][nom_de_la_table].chi_id_table>0
-                       ){
-                           if( differences_entre_les_tables===false && differences_entre_les_champs===false){
-                               t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_ce_champ_dans_tbl_champ(&quot;'+nom_du_champ+'&quot;,'+par['donnees'][references[ref]][nom_de_la_table].chi_id_table+',&quot;'+nom_de_la_table+'&quot;,'+par.id_bdd_de_la_base_en_cours+','+position+')"">ajouter ce champ dans tbl_champ</a>';
-                           }
-                       }else{
-                           if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('chi_id_champ')){
-                               t+=par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].chi_id_champ;
-                           }else{
-                               t+='';
-                           }
-                       }
-                       t+='</td>';
-                   }
-*/                   
                   t+='</tr>';
-                  position++;
+//                  position++;
+              }
+              /*
+                affichage des indexes
+              */
+              try{
+                  if(references[ref]==='tableau1'){
+                      if(tables_indexes.hasOwnProperty(nom_de_la_table)){
+                          for( var nom_de_l_index in tables_indexes[nom_de_la_table].indexes){
+                              t+='<tr>';
+                              if(tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_1===false){
+                                  t+='<td><b class="yydanger">'+nom_de_l_index+' absent</b></td>';
+                              }else{
+                                  t+='<td><b>'+nom_de_l_index+'</b></td>';
+                                  if(  tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_2===true 
+                                    && tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].unique === tables_indexes[nom_de_la_table].indexes[nom_de_l_index]['tableau2'].unique 
+                                  ){
+                                      t+='<td>unique '+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].unique+'</td>';
+                                  }else{
+                                      t+='<td class="yydanger">unique '+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].unique+'</td>';
+                                  }
+
+                                  if(  tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_2===true 
+                                    && tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].champs_de_l_index === tables_indexes[nom_de_la_table].indexes[nom_de_l_index]['tableau2'].champs_de_l_index 
+                                  ){
+                                      t+='<td colspan="5">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                  }else{
+                                      t+='<td colspan="5" class="yydanger">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                  }
+
+                              }
+                              t+='</tr>';
+                          }
+                      }
+                  }else if(references[ref]==='tableau2'){
+                      if(tables_indexes.hasOwnProperty(nom_de_la_table)){
+                          for( var nom_de_l_index in tables_indexes[nom_de_la_table].indexes){
+                              t+='<tr>';
+                              t+='<td>';
+                              if(tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_2===false){
+                                  t+='<b class="yydanger">'+nom_de_l_index+' absent</b>';
+                              }else{
+                                  t+='<b>'+nom_de_l_index+'</b>';
+                                  
+                                  if(  tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_1===true 
+                                    && tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].unique === tables_indexes[nom_de_la_table].indexes[nom_de_l_index]['tableau1'].unique 
+                                  ){
+                                      t+='<td>unique '+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].unique+'</td>';
+                                  }else{
+                                      t+='<td class="yydanger">unique '+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].unique+'</td>';
+                                  }
+                                  if(  tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_1===true 
+                                    && tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].champs_de_l_index === tables_indexes[nom_de_la_table].indexes[nom_de_l_index]['tableau1'].champs_de_l_index 
+                                  ){
+                                      t+='<td colspan="5">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                  }else{
+                                      t+='<td colspan="5" class="yydanger">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                  }
+                              }
+                              t+='</td>';
+                              t+='</tr>';
+                          }
+                      }
+                  }
+              }catch(err){
+                  console.error('err=',err);
+                  debugger
               }
           }
           t+='</table>'
@@ -4242,6 +4299,10 @@ class module_svg_bdd{
                   
                   this.#modale_gerer_la_table(document.getElementById(78));
                 */
+                
+                console.error('temporaire')
+                this.#modale_modifier_la_base(document.getElementById(1));
+                
             }else{
                 console.log('donnees=',donnees)
                 debugger
