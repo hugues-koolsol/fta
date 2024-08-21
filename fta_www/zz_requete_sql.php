@@ -15,7 +15,7 @@ print($o1);$o1='';
 
   <div class="menuScroller">
       <ul>
-          <li><a href="javascript:__module_requete_sql1.nouvelle()"  class="yysucces">nouvelle requête</a> </li>
+          <li><a href="javascript:__module_requete_sql1.nouvelle(null)"  class="yysucces">nouvelle requête</a> </li>
       </ul>
   </div>
   <h1>Requête Sql</h1>

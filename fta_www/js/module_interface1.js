@@ -428,7 +428,7 @@ class interface1{
                         /* 
                           le "line-height d'une textarea est fixé à 1.2 
                         */
-                        a.style.height=parseInt(((c.length+1)*1.2),10)+'em';
+                        a.style.height=(parseInt(((c.length+1)*1.2),10)+1)+'em';
                     }else{
                         a.rows=100;
                         a.style.height='100em';

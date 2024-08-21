@@ -85,7 +85,10 @@ function recuperer_operateur_sqlite(op){
         t='OFFSET';
     }else if(op === '#'){
         t='#';
+    }else if(op === 'conditions'){
+        t='conditions';
     }else{
+        debugger
         t=('inconnu opérateur "' + op + '"');
     }
     return t;
@@ -127,8 +130,17 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                     if(tab[i][1] === 'champ'){
                         if(obj.value.indexOf('.') > 0){
                             var nom_de_alias = obj.value.substr(0,obj.value.indexOf('.'));
-                            if((options.tableau_des_alias) && (options.tableau_des_alias.length > 0) && (options.tableau_des_alias.includes(nom_de_alias.toLowerCase()))){
-                                t+=('`' + nom_de_alias.toLowerCase() + '`.`' + obj.value.substr((obj.value.indexOf('.') + 1)) + '`');
+                            
+                            var dans_tableau_des_alias=-1;
+                            for(var ind=0;ind<options.tableau_des_alias.length;ind++){
+                                if(options.tableau_des_alias[ind].minuscule === nom_de_alias.toLowerCase()){
+                                    dans_tableau_des_alias=ind;
+                                    break;
+                                }
+                            }
+                            
+                            if((options.tableau_des_alias) && (options.tableau_des_alias.length > 0) && (dans_tableau_des_alias>=0) ){
+                                t+=('`' + options.tableau_des_alias[dans_tableau_des_alias].original + '`.`' + obj.value.substr((obj.value.indexOf('.') + 1)) + '`');
                             }else{
                                 return(logerreur({status:false,'message':('0116 il manque un alias de table pour le champ  "' + obj.value + '"')}));
                             }
@@ -147,7 +159,9 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
             premierChamp=false;
         }
     }
-    if(operateur.substr(0,7) === 'inconnu'){
+    if(operateur === 'conditions'){
+        t+='';
+    }else if(operateur.substr(0,7) === 'inconnu'){
         t+=('/* ' + operateur + ' */');
     }else if(operateur === '#'){
         t=('/* ' + t.trim() + ' */');
@@ -253,7 +267,11 @@ function tabToSql0(tab,id,niveau,options){
                                                                 }else{
                                                                     liste_des_tables+=(tab[(n + 1)][1] + ' ' + tab[(n + 2)][1] + '\n');
                                                                 }
-                                                                tableau_des_alias.push(tab[(n + 2)][1].toLowerCase());
+                                                                tableau_des_alias.push({
+                                                                 'minuscule' : tab[(n + 2)][1].toLowerCase(),
+                                                                 'majuscule' : tab[(n + 2)][1].toUpperCase(),
+                                                                 'original'  : tab[(n + 2)][1],
+                                                                });
                                                             }else{
                                                                 return(logerreur({status:false,'message':('0245 nom_de_la_table doit avoir que 1 ou 2 paramètre(s) "' + tab[n][1] + '"')}));
                                                             }
@@ -299,8 +317,15 @@ function tabToSql0(tab,id,niveau,options){
                                 if((tab[l][2] === 'f') && (tab[l][1] === 'champ')){
                                     if(tab[(l + 1)][1].indexOf('.') > 0){
                                         var nom_de_alias = tab[(l + 1)][1].substr(0,tab[(l + 1)][1].indexOf('.'));
-                                        if((tableau_des_alias.length > 0) && (tableau_des_alias.includes(nom_de_alias.toLowerCase()))){
-                                            nom_du_champ=('`' + nom_de_alias.toLowerCase() + '`.`' + tab[(l + 1)][1].substr((tab[(l + 1)][1].indexOf('.') + 1)) + '`');
+                                        var dans_tableau_des_alias=-1;
+                                        for(var ind=0;ind<tableau_des_alias.length;ind++){
+                                            if(tableau_des_alias[ind].minuscule === nom_de_alias.toLowerCase()){
+                                                dans_tableau_des_alias=ind;
+                                                break;
+                                            }
+                                        }
+                                        if((tableau_des_alias.length > 0) && (dans_tableau_des_alias>=0)){
+                                            nom_du_champ=('`' + tableau_des_alias[dans_tableau_des_alias].original + '`.`' + tab[(l + 1)][1].substr((tab[(l + 1)][1].indexOf('.') + 1)) + '`');
                                         }else{
                                             return(logerreur({status:false,'message':('276 il manque un alias de table pour le champ  "' + tab[(l + 1)][1] + '"')}));
                                         }
