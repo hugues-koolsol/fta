@@ -242,7 +242,7 @@ $from0='
 ';
 $sql0.=$from0;
 $where0='
- WHERE  "T0"."chx_utilisateur_tache" = \''.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'\' 
+ WHERE  "T0"."chx_utilisateur_tache" = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].' 
 ';
 
 if(($chi_id_tache != '' )){
@@ -251,21 +251,13 @@ if(($chi_id_tache != '' )){
 
 
 if(($chp_texte_tache != '')){
-
-    $where0.='
-  AND `T0`.`chp_texte_tache` LIKE \'%'.sq0($chp_texte_tache).'%\'
- ';
-
+    $where0.=CRLF.'AND `T0`.`chp_texte_tache` LIKE \'%'.sq0($chp_texte_tache).'%\'';
 }
 
 
 
 if(($chp_priorite_tache != '')){
-
-    $where0.='
-  AND `T0`.`chp_priorite_tache` LIKE \'%'.sq0($chp_priorite_tache).'%\'
- ';
-
+    $where0.=CRLF.'AND `T0`.`chp_priorite_tache` LIKE \'%'.sq0($chp_priorite_tache).'%\'';
 }
 
 

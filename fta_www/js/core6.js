@@ -37,6 +37,15 @@ var NBESPACESSOURCEPRODUIT=4;
 var php_contexte_commentaire_html=false;
 
 
+/*
+  =====================================================================================================================
+*/
+function raz_messages(zone_message){
+     if(zone_message && document.getElementById(zone_message)){
+      document.getElementById(zone_message).innerHTML='';
+     }
+     global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+}
 
 /*
   =====================================================================================================================

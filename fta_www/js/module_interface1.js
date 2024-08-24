@@ -105,25 +105,85 @@ class interface1{
     */
     agrandir_la_text_area(nom_de_la_textarea){
         var a = document.getElementById(nom_de_la_textarea);
+        var b = a.getBoundingClientRect();
         if(a){
-            var t = a.value.split('\n');
-            if(t.length < 100){
-                console.log(t.length);
-                a.rows=t.length;
+            var c=a.value.split('\n');
+    //                    console.log(c.length);
+            if(c.length<100){
+                a.rows=c.length+1;
+                /* 
+                  le "line-height d'une textarea est fixé à 1.2 
+                */
+                a.style.height=(parseInt(((c.length+1)*1.2),10)+1)+'em';
             }else{
-                var b = a.getBoundingClientRect();
                 a.rows=100;
                 a.style.height='100em';
-                /*
-                  
-                  on met la zone en haut
-                */
-                var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
-                window.scrollTo(0,d);
             }
+            /*
+              on met la zone en haut
+            */
+            var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
+            var lst=document.getElementsByClassName('menuScroller');
+            console.log(lst.length);
+            
+            if(lst.length>=2){
+             d=d-(lst.length-1)*CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
+            }
+            window.scrollTo(0,d);
             a.focus();
+
         }
     }
+    
+    /*
+      =============================================================================================================
+      ajuste la taille d'une textarea
+      =============================================================================================================
+    */
+    agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
+        try{
+            var a = document.getElementById(nom_de_la_textarea);
+            var b = a.getBoundingClientRect();
+            masquerLesMessage('zone_global_messages');
+            
+            if(a){
+                if(a.rows <= 10){
+                    var c=a.value.split('\n');
+//                    console.log(c.length);
+                    if(c.length<100){
+                        a.rows=c.length+1;
+                        /* 
+                          le "line-height d'une textarea est fixé à 1.2 
+                        */
+                        a.style.height=(parseInt(((c.length+1)*1.2),10)+1)+'em';
+                    }else{
+                        a.rows=100;
+                        a.style.height='100em';
+                    }
+                    /*
+                      on met la zone en haut
+                    */
+                    var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
+                    var lst=document.getElementsByClassName('menuScroller');
+                    console.log(lst.length);
+                    
+                    console.log('d=',d);
+                    if(lst.length>=2){
+                     d=d-(lst.length-1)*CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
+                    }
+                    window.scrollTo(0,d);
+                    a.focus();
+                }else{
+                    a.rows=5;
+                    a.style.height='5em';
+                    a.focus();
+                }
+            }
+        }catch(e){
+            console.log('e=',e);
+        }
+    }
+    
     /*
       
       =============================================================================================================
@@ -406,55 +466,6 @@ class interface1{
         this.#largeur_des_ascenseurs=(div.scrollTop - 1);
         div.removeChild(bag);
         body.removeChild(div);
-    }
-    /*
-      
-      =============================================================================================================
-      ajuste la taille d'une textarea
-      =============================================================================================================
-    */
-    agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
-        try{
-            var a = document.getElementById(nom_de_la_textarea);
-            var b = a.getBoundingClientRect();
-            masquerLesMessage('zone_global_messages');
-            
-            if(a){
-                if(a.rows <= 10){
-                    var c=a.value.split('\n');
-//                    console.log(c.length);
-                    if(c.length<100){
-                        a.rows=c.length+1;
-                        /* 
-                          le "line-height d'une textarea est fixé à 1.2 
-                        */
-                        a.style.height=(parseInt(((c.length+1)*1.2),10)+1)+'em';
-                    }else{
-                        a.rows=100;
-                        a.style.height='100em';
-                    }
-                    /*
-                      on met la zone en haut
-                    */
-                    var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
-                    var lst=document.getElementsByClassName('menuScroller');
-                    console.log(lst.length);
-                    
-                    console.log('d=',d);
-                    if(lst.length>=2){
-                     d=d-(lst.length-1)*CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
-                    }
-                    window.scrollTo(0,d);
-                    a.focus();
-                }else{
-                    a.rows=5;
-                    a.style.height='5em';
-                    a.focus();
-                }
-            }
-        }catch(e){
-            console.log('e=',e);
-        }
     }
     /*
       

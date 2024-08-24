@@ -19,8 +19,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      }else if(element.variant==='null'){
          t+='NULL';
      }else{
-         t+='#(TODO 0015 "'+JSON.stringify(json_partiel(element))+'")';
-         logerreur({status:false,message:'0016 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'});
+         return(logerreur({status:false,message:'0016 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
   
  }else if(element.type && 'join'===element.type){
@@ -30,8 +29,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      }else if(element.variant==='left join'){
          t+='jointure_gauche(';
      }else{
-         t+='#(TODO 0031 "'+JSON.stringify(json_partiel(element))+'")';
-         logerreur({status:false,message:'0031 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'});
+         return(logerreur({status:false,message:'0031 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
       
 
@@ -43,13 +41,12 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
             t+='\n'+esp0+esp1+esp1+esp1+')';
         }else{
           t+='#(TODO 0034 "'+JSON.stringify(json_partiel(element.source))+'")';
-          logerreur({status:false,message:'0034 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.source))+'"'});
+          return(logerreur({status:false,message:'0034 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.source))+'"'}));
         }
       
       
      }else{
-        t+='#(TODO 0030 "'+JSON.stringify(json_partiel(element.source))+'")';
-        logerreur({status:false,message:'0030 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element.source))+'"'});
+        return(logerreur({status:false,message:'0030 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element.source))+'"'}));
      }
      if(element.constraint){
        if(element.constraint.format && element.constraint.format ==="on" && element.constraint.on){
@@ -57,14 +54,12 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
            if(obj1.status===true){
                t+=',contrainte('+obj1.value+')';
            }else{
-               t+='#(TODO 0058 "'+JSON.stringify(json_partiel(element.constraint))+'")';
-               logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element.constraint))+'"'});
+               return(logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element.constraint))+'"'}));
            }
            
         
        }else{
-          t+='#(TODO 0069 "'+JSON.stringify(json_partiel(element.constraint))+'")';
-          logerreur({status:false,message:'0025 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element.constraint))+'"'});
+          return(logerreur({status:false,message:'0025 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element.constraint))+'"'}));
        }
      }
      
@@ -106,17 +101,14 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
               
               
              }else{
-                 t+='#(TODO 0092 "'+JSON.stringify(json_partiel(element))+'")';
-                 logerreur({status:false,message:'0092 recupere_element_de_ast_sql pas de columns dans expression table : "'+JSON.stringify(json_partiel(element))+'"'});
+                 return(logerreur({status:false,message:'0092 recupere_element_de_ast_sql pas de columns dans expression table : "'+JSON.stringify(json_partiel(element))+'"'}));
              }
          }else{
-           t+='#(TODO 0088 "'+JSON.stringify(json_partiel(element))+'")';
-           logerreur({status:false,message:'0088 recupere_element_de_ast_sql expression format non traite : "'+JSON.stringify(json_partiel(element))+'"'});
+           return(logerreur({status:false,message:'0088 recupere_element_de_ast_sql expression format non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
          }
       
      }else{
-         t+='#(TODO 0088 "'+JSON.stringify(json_partiel(element))+'")';
-         logerreur({status:false,message:'0016 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'});
+         return(logerreur({status:false,message:'0016 recupere_element_de_ast_sql variant non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
   
  }else if(element.type && 'expression'===element.type && element.variant==='order'){
@@ -135,8 +127,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
         }
         t+=')';
      }else{
-       t+='#(TODO 0042 "'+JSON.stringify(json_partiel(element))+'")';
-       logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'});
+       return(logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
 
 
@@ -146,8 +137,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      if(obj1.status===true){
         t+=obj1.value;
      }else{
-       t+='#(TODO 0042 "'+JSON.stringify(json_partiel(element))+'")';
-       logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'});
+       return(logerreur({status:false,message:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
   
  }else if(element.type && 'expression'===element.type && 'list'===element.variant ){
@@ -161,15 +151,12 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
               if(obj1.status===true){
                   t+=obj1.value;
               }else{
-                  t+='#(TODO 0142 "'+JSON.stringify(json_partiel(element.expression[i]))+'")';
-                  logerreur({status:false,message:'0142 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.expression[i]))});
+                  return(logerreur({status:false,message:'0142 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.expression[i]))}));
               }
          }
          t+=')';
-         
      }else{
-        t+='#(TODO 0137 "'+JSON.stringify(json_partiel(element))+'")';
-        logerreur({status:false,message:'0137 recupere_element_de_ast_sql pas de expression : "'+JSON.stringify(json_partiel(element))+'"'});
+        return(logerreur({status:false,message:'0137 recupere_element_de_ast_sql pas de expression : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
 
  }else if(element.type && 'function'===element.type ){
@@ -177,8 +164,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      if(obj1.status===true){
          t+=obj1.value;
      }else{
-         t+='#(TODO 0051 "'+JSON.stringify(json_partiel(element))+'")';
-         logerreur({status:false,message:'0051 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element))});
+         return(logerreur({status:false,message:'0051 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element))}));
      }
   
   
@@ -190,30 +176,31 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
       if(obj1.status===true){
           cible=obj1.value;
       }else{
-          t+='#(TODO 0165 "'+JSON.stringify(json_partiel(element.target))+'")';
-          logerreur({status:false,message:'0165 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.target))});
+          return(logerreur({status:false,message:'0165 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.target))}));
       }
   }else{
-      t+='#(TODO 0169 "'+JSON.stringify(json_partiel(element.target))+'")';
-      logerreur({status:false,message:'0169 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.target))});
+      return(logerreur({status:false,message:'0169 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.target))}));
   }
   if(element.value){
       var obj1=recupere_element_de_ast_sql(element.value,niveau,parent,options)
       if(obj1.status===true){
           valeur=obj1.value;
       }else{
-          t+='#(TODO 0180 "'+JSON.stringify(json_partiel(element.value))+'")';
-          logerreur({status:false,message:'0180 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.value))});
+          return(logerreur({status:false,message:'0180 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.value))}));
       }
   }else{
-      t+='#(TODO 0180 "'+JSON.stringify(json_partiel(element.value))+'")';
-      logerreur({status:false,message:'0180 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.value))});
+      return(logerreur({status:false,message:'0180 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.value))}));
   }
   t+='affecte('+cible+','+valeur+')'
 
+ }else if(element.type && 'variable'===element.type ){
+  if(element.format==='tcl'){
+   t+=element.name
+  }else{
+     return(logerreur({status:false,message:'0199 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
+  }
  }else{
-     t+='#(TODO 0141 "'+JSON.stringify(json_partiel(element))+'")';
-     logerreur({status:false,message:'0141 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'});
+     return(logerreur({status:false,message:'0141 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
  }
  return {status:true,value:t};
 
@@ -226,6 +213,8 @@ function recupere_operateur_dans_sql_ast(nom_de_l_operateur){
  
  if(nom_de_l_operateur==='+'){
   return 'plus';
+ }else if(nom_de_l_operateur==='like'){
+  return 'comme';
  }else if(nom_de_l_operateur==='='){
   return 'egal';
  }else if(nom_de_l_operateur==='and'){
