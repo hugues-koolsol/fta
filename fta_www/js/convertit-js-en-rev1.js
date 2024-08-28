@@ -2957,7 +2957,7 @@ function tagada() {
       var caractereDebut = ligneMatrice[5];
       var numeroDeLigne = 0;
       for (var j = caractereDebut; j >= 0; j--) {
-        if (global_messages.data.tableau.out[j][0] == "\n") {
+        if (global_messages.data.tableau.out[j][0] == "\\n") {
           numeroDeLigne++;
         }
       }
@@ -2974,9 +2974,9 @@ function tagada() {
 function espacesn(optionCRLF, i) {
   var t = "";
   if (optionCRLF) {
-    t = "\r\n";
+    t = "\\r\\n";
   } else {
-    t = "\n";
+    t = "\\n";
   }
   if (i > 0) {
     t += " ".repeat(NBESPACESSOURCEPRODUIT * i);

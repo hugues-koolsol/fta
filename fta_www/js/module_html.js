@@ -180,21 +180,28 @@ class traitements_sur_html{
 
              if(Array.isArray(jsonDeHtml.content)){
                  for(var i=0;i<jsonDeHtml.content.length;i++){
-                   if(jsonDeHtml.content[i].type==='#text'){
+                   if(jsonDeHtml.content[i].type && jsonDeHtml.content[i].type==='#text' || jsonDeHtml.content[i].type==='#cdata-section' ){
                        var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].content);
                        if(obj.status===true){
                            contenu+=obj.value;
+                       }else{
+                           return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
+                       }
+                   }else if( !jsonDeHtml.content[i].hasOwnProperty('type') ){
+                       /*
+                          il n'y a pas la propriété type, on suppose que c'est un text/javascript
+                       */
+                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i]);
+                       if(obj.status===true){
+                           if(t.indexOf('text/javascript')>=0){
+                               contenu+=obj.value;
+                           }else{
+                               contenu+='(\'type\' , "text/javascript")'+obj.value;
+                           }
                        }else{
                            return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
                        }
 
-                   }else if(jsonDeHtml.content[i].type==='#cdata-section'){
-                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].content);
-                       if(obj.status===true){
-                           contenu+=obj.value;
-                       }else{
-                           return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
-                       }
                    }else{
                        return(logerreur({status:false,'message':'erreur pour traiteJsonDeHtml 0190 '+jsonDeHtml.type}));
                    }

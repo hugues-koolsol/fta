@@ -256,14 +256,14 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
            
            
            if(nomFonction!=''){
-            t+='\n';
+            t+=CRLF;
             t+=espacesn(true,niveau);
             t+='function '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
-            t+='\n';
+            t+=CRLF;
             obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,niveau+1);
             if(obj.status==true){
              t+=obj.value;
-             t+='\n';
+             t+=CRLF;
              t+=espacesn(true,niveau);
              t+='}';
             }else{
@@ -354,7 +354,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             }else{
                              initialisation+=obj.value;
                             }
-                            initialisation=initialisation.replace(/\n/g,'');
+                            initialisation=initialisation.replace(/\n/g,'').replace(/\r/g,'');
                         }else{
                             return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0371 problème sur le alors du choix en indice '+tabchoix[j][0] });
                         }
@@ -369,7 +369,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                //      console.log(tab[tabchoix[j][0]],tab);
                      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'1 problème sur la condition du choix en indice '+tabchoix[j][0] });
                     }
-                    condition=condition.replace(/\n/g,'');
+                    condition=condition.replace(/\n/g,'').replace(/\r/g,'');
                  
                 }else if(tabchoix[j][1]=='increment'){
                  
@@ -381,7 +381,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                      }else{
                       increment+=obj.value;
                      }
-                     increment=increment.replace(/\n/g,'').trim();
+                     increment=increment.replace(/\n/g,'').replace(/\r/g,'').trim();
                     }else{
                      return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'0396 problème sur le alors du choix en indice '+tabchoix[j][0] });
                     }
@@ -572,7 +572,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
            
           }else if(tabchoix[j][1]=='si'){
            
-           t+='\n';
+           t+=CRLF;
            t+=espacesn(true,niveau);
            t+='if(';
            
@@ -591,7 +591,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
             return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'2 problème sur la condition du choix en indice '+tabchoix[j][0] });
            }
            t+='){';
-           t+='\n';
+           t+=CRLF;
            
            
            
@@ -611,16 +611,16 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
            }else{
             if(aUnSinon){
             }else{
-             t+='\n';
+             t+=CRLF;
              t+=espacesn(true,niveau);
              t+='}';
-             t+='\n';
+             t+=CRLF;
             }
            }
            
           }else if(tabchoix[j][1]=='sinonsi'){
            
-           t+='\n';
+           t+=CRLF;
            t+=espacesn(true,niveau); // espaces
            t+='}else if(';
            
@@ -639,7 +639,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
             return php_logerr({status:false,value:t,id:tabchoix[j][0],tab:tab,message:'3 problème sur la condition du choix en indice '+tabchoix[j][0] });
            }
            t+='){';
-           t+='\n';
+           t+=CRLF;
            
            
            if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
@@ -656,18 +656,18 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
            if(aUnSinon){
            }else{
             if(j==tabchoix.length-1){ // si c'est le dernier sinonsi
-             t+='\n';
+             t+=CRLF;
              t+=espacesn(true,niveau);
              t+='}';
-             t+='\n';
+             t+=CRLF;
             }
            }
            
           }else{
-           t+='\n';
+           t+=CRLF;
            t+=espacesn(true,niveau);
            t+='}else{';
-           t+='\n';
+           t+=CRLF;
            if(tabchoix[j][2]>0 && tabchoix[j][4]>0){ // si on a trouve un "alors" et qu'il contient des enfants
             niveau++;
             obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
@@ -680,10 +680,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
            }
            t+=espacesn(true,niveau);
            t+='}';
-           t+='\n';
+           t+=CRLF;
           }
          }
-
 
         }else if(tab[i][1]=='affecteFonction'  && tab[i][2]=='f'){
 
@@ -807,7 +806,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          php_contexte_commentaire_html=false;
          obj=php_tabToPhp1(tab,i+1,false,false,niveau); // tab,id,dansFonction,dansInitialisation,niveau){
          if(obj.status==true){
-          t+='<?'+'php'+obj.value+'\n?>';
+          t+='<?'+'php'+obj.value+CRLF+'?>';
           php_contexte_commentaire_html=true;
          }else{
           return php_logerr({status:false,value:t,id:i,tab:tab,message:'php.js erreur 621'});     

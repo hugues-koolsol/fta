@@ -101,7 +101,20 @@ function recuperer_operateur_sqlite(op){
 */
 function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
     var t='';
+    
+    if(tab[id][1]==='champ' && tab[id][2]==='f' ){
+        if(tab[id][8]===1 && tab[id+1][2]==='c' ){
+            t+=maConstante(tab[id+1]);
+            return({status:true, value:t});
+        }else if(tab[id][8]===2 && tab[id+1][2]==='c' && tab[id+2][2]==='c' ){
+            t+=maConstante(tab[id+1])+'.'+maConstante(tab[id+2]);
+            return({status:true, value:t});
+        }else{
+            return(logerreur({status:false,'message':('0114 traite_sqlite_fonction_de_champ')}));
+        }
+    }
     var operateur = recuperer_operateur_sqlite(tab[id][1]);
+    
     var premierChamp=true;
     var i = (id + 1);
     var l01=tab.length;
@@ -129,31 +142,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
             }else{
                 var obj = traite_sqlite_fonction_de_champ(tab,i,niveau,options);
                 if(obj.status === true){
-                    if(tab[i][1] === 'champ'){
-                        if(obj.value.indexOf('.') > 0){
-                            var nom_de_alias = obj.value.substr(0,obj.value.indexOf('.'));
-                            
-                            var dans_tableau_des_alias=-1;
-                            for(var ind=0;ind<options.tableau_des_alias.length;ind++){
-                                if(options.tableau_des_alias[ind].minuscule === nom_de_alias.toLowerCase()){
-                                    dans_tableau_des_alias=ind;
-                                    break;
-                                }
-                            }
-                            
-                            if((options.tableau_des_alias) && (options.tableau_des_alias.length > 0) && (dans_tableau_des_alias>=0) ){
-                                t+=('`' + options.tableau_des_alias[dans_tableau_des_alias].original + '`.`' + obj.value.substr((obj.value.indexOf('.') + 1)) + '`');
-                            }else{
-                                return(logerreur({status:false,'message':('0116 il manque un alias de table pour le champ  "' + obj.value + '"')}));
-                            }
-                        }else{
-                            t+=obj.value;
-                        }
-                    }else if(tab[i][1] === 'nom_de_la_table'){
-                        t+=obj.value;
-                    }else{
-                        t+=obj.value;
-                    }
+                    t+=obj.value;
                 }else{
                     return(logerreur({status:false,'message':('0078 traite_sqlite_fonction_de_champ "' + tab[i][1] + '"')}));
                 }
@@ -317,6 +306,28 @@ function tabToSql0(tab,id,niveau,options){
                                     la_valeur+=' , ';
                                 }
                                 if((tab[l][2] === 'f') && (tab[l][1] === 'champ')){
+                                 
+                                    if(tab[l][8]===1 && tab[l+1][2]==='c' ){
+                                        nom_du_champ=maConstante(tab[l + 1]);
+                                    }else if(tab[l][8]===2 && tab[l+1][2]==='c' && tab[l+2][2]==='c' ){
+                                        var nom_de_alias = tab[(l + 1)][1];
+                                        var dans_tableau_des_alias=-1;
+                                        for(var ind=0;ind<tableau_des_alias.length;ind++){
+                                            if(tableau_des_alias[ind].minuscule === nom_de_alias.toLowerCase()){
+                                                dans_tableau_des_alias=ind;
+                                                break;
+                                            }
+                                        }
+                                        if((tableau_des_alias.length > 0) && (dans_tableau_des_alias>=0)){
+                                            nom_du_champ= '`' + tableau_des_alias[dans_tableau_des_alias].original + '`.' + maConstante(tab[l+2]) ;
+                                        }else{
+                                            return(logerreur({status:false,'message':('314 erreur select champ "' + tab[(l + 1)][1] + '"')}));
+                                        }
+                                    }else {
+                                        return(logerreur({status:false,'message':('327 erreur select champ "' + tab[(l + 1)][1] + '"')}));
+                                    }
+                                    
+/*                                 
                                     if(tab[(l + 1)][1].indexOf('.') > 0){
                                         var nom_de_alias = tab[(l + 1)][1].substr(0,tab[(l + 1)][1].indexOf('.'));
                                         var dans_tableau_des_alias=-1;
@@ -334,6 +345,7 @@ function tabToSql0(tab,id,niveau,options){
                                     }else{
                                         nom_du_champ=tab[(l + 1)][1];
                                     }
+*/                                    
                                 }else{
                                     if(tab[l][2] === 'f'){
                                         var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
@@ -683,9 +695,7 @@ function tabToSql0(tab,id,niveau,options){
                     }
                     t+=';';
                 }else{
-                    logerreur({status:false,value:t,id:i,message:'sql.js cas non prévu dans un SET()'});
-                    t+=espacesn(true,niveau);
-                    t+=('-- todo ligne 35 temp ' + tab[i][1]);
+                    return(logerreur({status:false,value:t,id:i,message:'sql.js cas non prévu dans un SET()'}));
                 }
             }else if((tab[i][1] == 'field') ){
                 /*
@@ -798,8 +808,7 @@ function tabToSql0(tab,id,niveau,options){
                                 variables_pour_tableau_tables.type.longueur=tab[(j + 2)][1];
                                 j+=2;
                             }else{
-                                logerreur({status:false,id:i,message:'0271 sql.js erreur dans un field'});
-                                definition_sql_du_champ+=(' /* todo sql.js repere 0334 ' + tab[j][1] + ' */');
+                                return(logerreur({status:false,id:i,message:'0271 sql.js erreur dans un field'}));
                             }
                         }else if((tab[j][1] === 'meta') && (tab[j][8] > 0)){
                             var obj = a2F1(tab,j,false,(j + 1),false);
@@ -819,9 +828,7 @@ function tabToSql0(tab,id,niveau,options){
                                 return(logerreur({status:false,value:t,id:i,message:'0930 sql.js erreur dans un meta'}));
                             }
                         }else{
-                            logerreur({status:false,id:i,'message':('0275 sql.js erreur dans un field pour ' + tab[j][1])});
-                            definition_sql_du_champ+=('/* todo sql.js repere 0338 ' + tab[j][1] + ' */');
-                            debugger
+                            return(logerreur({status:false,id:i,'message':('0275 sql.js erreur dans un field pour ' + tab[j][1])}));
                         }
                     }
                 }

@@ -498,7 +498,6 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         }
     }
     /*
-      
       si on est ici, c'est qu'on a un commentaire multiligne
       qu'il faut formatter en alignant à gauche les textes 
       d'un nombre d'espaces correspondant au niveau
@@ -508,6 +507,8 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var s2='';
     for(i=0;i < l01;i++){
         t='';
+        /* les CR (les zimac) ne sont pas faits pour écrire des vrais programmes !*/
+        tab[i]=tab[i].replace(/\r/g,'');
         /*on enlève les espaces au début*/
         for(j=0;j < tab[i].length;j++){
             temps=tab[i].substr(j,1);
@@ -569,7 +570,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
      
      
     }
-    t=newTab.join('\n');
+    t=newTab.join(CRLF);
     return t;
 }
 /*
@@ -681,12 +682,12 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             }
         }
         if((forcerRetourLigne) && (arr[parentId][2] != 'INIT')){
-            t+=espacesnrev(false,arr[i][3]);
+            t+=espacesnrev(true,arr[i][3]);
         }else if(retourLigne){
             if(((arr[parentId][2] == 'INIT') && (arr[i][9] == 1)) || (condition1)){
                 /*on ne fait rien*/
             }else{
-                t+=espacesnrev(false,arr[i][3]);
+                t+=espacesnrev(true,arr[i][3]);
             }
         }
         /*
@@ -833,10 +834,10 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
               on met les retours de ligne
             */
             if((forcerRetourLigne) && (obj.forcerRetourLigne == true)){
-                t+=espacesnrev(false,arr[i][3]);
+                t+=espacesnrev(true,arr[i][3]);
             }else if(retourLigne){
                 if( !((arr[i][8] <= nombreEnfantsLimite) && (arr[i][10] <= profondeurLimite))){
-                    t+=espacesnrev(false,arr[i][3]);
+                    t+=espacesnrev(true,arr[i][3]);
                 }
             }
             /*
@@ -2090,14 +2091,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         }
     }
     /*
-      =======================================
+     =============================================================================================================
       profondeur des fonctions
       k=remonterAuNiveau
       l=idParent
-      =======================================
-    */
-    for(i=l01-1;i > 0;i--){
-        if(T[i][2] == 'c'){
+     =============================================================================================================
+     */
+     for(i=(l01 - 1);i > 0;i--){
+       if(T[i][2] == 'c'){
             T[i][10]=0;
         }
         if(T[i][7] > 0){

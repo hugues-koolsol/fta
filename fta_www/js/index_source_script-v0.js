@@ -174,7 +174,7 @@ function enregistrer2(){
         }
         zonedonneesComplementaires.appendChild(diResultatsCompactes);
         if(sourcesCompactesIdentiques){
-            if(a.value == fonctionReecriteAvecRetour1.value){
+            if(a.value == fonctionReecriteAvecRetour1.value.replace(/\r\n/g,'\n')){
                 logerreur({status:true,message:'<b>👍👍 sources Egaux</b>'});
                 document.getElementById('sauvegarderLeNormalise').disabled=false;
                 document.getElementById('nomDuSource').disabled=false;

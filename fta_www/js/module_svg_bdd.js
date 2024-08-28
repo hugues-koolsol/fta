@@ -679,10 +679,6 @@ class module_svg_bdd{
                 var obj2=tabToSql1(obj1.value,0,0);
                 if(obj2.status===true){
 //                    console.log(obj2.value);
-                    /*
-                    / * meta((champ,'chx_base_table'),(nom_long_du_champ,'à faire chx_base_table'),(nom_court_du_champ,'à faire chx_base_table'),(nom_bref_du_champ,'à faire chx_base_table'),(typologie,'chi')) * /
-         chx_base_table INTEGER REFERENCES tbl_bdds(chi_id_basedd)  NOT NULL,
-                    */
 
                     async function ajouter_en_bdd_le_champ(url="",donnees){
                         var response= await fetch(url,{
@@ -1221,191 +1217,6 @@ class module_svg_bdd{
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
     }
-    /*
-      ==============================================================================================================
-      function ajouter_cette_table_dans_tbl_tables
-    */
-    ajouter_cette_table_dans_tbl_tables(nom_de_la_table , id_bdd_de_la_base){
-     
-        var lst = document.getElementsByTagName('g');
-        var racine_du_svg=null;
-        var i=0;
-        for(i=0;i < lst.length;i++){
-            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === id_bdd_de_la_base)){
-                racine_du_svg=lst[i];
-                break;
-            }
-        }
-        if(racine_du_svg === null){
-            
-            return logerreur({status:false,message:'2670 il y a eu un problème lors de la récupération de l\'arbre svg'});
-        }
-        this.#id_svg_de_la_base_en_cours=parseInt(racine_du_svg.getAttribute('id_svg_de_la_base_en_cours'),10);
-        /*
-          
-          ce sont les rectangles qui contiennent les informations sur la base
-        */
-        lst=racine_du_svg.getElementsByTagName('rect');
-        var i=0;
-        for(i=0;i < lst.length;i++){
-            if(  lst[i].getAttribute('type_element') 
-              && lst[i].getAttribute('type_element') === 'rectangle_de_table' 
-              && lst[i].getAttribute('nom_de_la_table')===nom_de_la_table ){
-                var texte_rev=this.#creer_definition_table_en_rev(lst[i]);
-                
-                var obj2 = rev_texte_vers_matrice(texte_rev);
-                if(obj2.status === true){
-                    var tab=obj2.value;
-                    var obj=tabToSql1(tab,0,0);
-                    if(obj.status===true){
-                        async function ajouter_la_table_dans_la_table_tbl_tables(url="",donnees){
-                            var response= await fetch(url,{
-                                /* 6 secondes de timeout */
-                                'signal':AbortSignal.timeout(1000),
-                                /* *GET, POST, PUT, DELETE, etc. */
-                                method:"POST",
-                                /* no-cors, *cors, same-origin */
-                                mode:"cors",
-                                /* default, no-cache, reload, force-cache, only-if-cached */
-                                cache:"no-cache",
-                                /* include, *same-origin, omit */
-                                credentials:"same-origin",
-                                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                                redirect:"follow",
-                                /*
-                                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                                */
-                                referrerPolicy:"no-referrer",
-                                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                            });
-                            return(response.json());
-                        }
-                        var ajax_param={
-                            /* enveloppe d'appels */
-                            'call':{'lib':'core','file':'bdd','funct':'ajouter_la_table_dans_la_table_tbl_tables'},
-                            /* paramètres */
-                            tableau_des_tables_et_champs : obj.tableau_tables_champs  ,
-                            id_bdd_de_la_base            : id_bdd_de_la_base ,
-                        };
-                        ajouter_la_table_dans_la_table_tbl_tables('za_ajax.php?ajouter_la_table_dans_la_table_tbl_tables',ajax_param).then((donnees) => {
-
-                            if(donnees.status === 'OK'){
-
-                                this.comparer_la_base_physique_et_la_base_virtuelle(donnees.input.id_bdd_de_la_base);
-                             
-                            }else{
-                                debugger;
-                                console.error('donnees=' , donnees );
-                             
-                            }
-                        }).catch((err) => {
-                            /* en cas de timeout par exemple */
-                            debugger;
-                            console.error(err);
-                        });
-                    }
-                }
-            }
-        }
-    }
-    
-    /*
-      ==============================================================================================================
-      function ajouter_ce_champ_dans_tbl_champ
-    */
-    ajouter_ce_champ_dans_tbl_champ(nom_du_champ , id_bdd_de_la_table , nom_de_la_table ,  id_bdd_de_la_base, position){
-     
-        var lst = document.getElementsByTagName('g');
-        var racine_du_svg=null;
-        var i=0;
-        for(i=0;i < lst.length;i++){
-            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === id_bdd_de_la_base)){
-                racine_du_svg=lst[i];
-                break;
-            }
-        }
-        if(racine_du_svg === null){
-            
-            return logerreur({status:false,message:'2670 il y a eu un problème lors de la récupération de l\'arbre svg'});
-        }
-        this.#id_svg_de_la_base_en_cours=parseInt(racine_du_svg.getAttribute('id_svg_de_la_base_en_cours'),10);
-        /*
-          
-          ce sont les rectangles qui contiennent les informations sur la base
-        */
-        lst=racine_du_svg.getElementsByTagName('rect');
-        var i=0;
-        for(i=0;i < lst.length;i++){
-            if(  lst[i].getAttribute('type_element') 
-              && lst[i].getAttribute('type_element') === 'rectangle_de_champ' 
-              && lst[i].getAttribute('nom_de_la_table')===nom_de_la_table 
-              && lst[i].getAttribute('nom_du_champ')===nom_du_champ ){
-                
-                var texte_rev='field(' + lst[i].getAttribute('donnees_rev_du_champ') + ')';
-                
-                var obj2 = rev_texte_vers_matrice(texte_rev);
-                if(obj2.status === true){
-                    var tab=obj2.value;
-                    var obj=tabToSql1(tab,0,0);
-                    if(obj.status===true){
-                        obj.tableau_champ.position=position
-                        async function ajouter_le_champ_dans_la_table_tbl_champs(url="",donnees){
-                            var response= await fetch(url,{
-                                /* 6 secondes de timeout */
-                                'signal':AbortSignal.timeout(1000),
-                                /* *GET, POST, PUT, DELETE, etc. */
-                                method:"POST",
-                                /* no-cors, *cors, same-origin */
-                                mode:"cors",
-                                /* default, no-cache, reload, force-cache, only-if-cached */
-                                cache:"no-cache",
-                                /* include, *same-origin, omit */
-                                credentials:"same-origin",
-                                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                                redirect:"follow",
-                                /*
-                                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                                */
-                                referrerPolicy:"no-referrer",
-                                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                            });
-                            return(response.json());
-                        }
-                        
-                        var ajax_param={
-                            /* enveloppe d'appels */
-                            'call':{'lib':'core','file':'bdd','funct':'ajouter_le_champ_dans_la_table_tbl_champs'},
-                            /* paramètres */
-                            nom_du_champ       : nom_du_champ       ,
-                            id_bdd_de_la_base  : id_bdd_de_la_base  ,
-                            id_bdd_de_la_table : id_bdd_de_la_table ,
-                            nom_de_la_table    : nom_de_la_table    ,
-                            tableau_champ      : obj.tableau_champ  ,
-                        };
-                        ajouter_le_champ_dans_la_table_tbl_champs('za_ajax.php?ajouter_le_champ_dans_la_table_tbl_champs',ajax_param).then((donnees) => {
-
-                            if(donnees.status === 'OK'){
-
-                                this.comparer_la_base_physique_et_la_base_virtuelle(donnees.input.id_bdd_de_la_base);
-                             
-                            }else{
-                                debugger;
-                                console.error('donnees=' , donnees );
-                             
-                            }
-                        }).catch((err) => {
-                            /* en cas de timeout par exemple */
-                            debugger;
-                            console.error(err);
-                        });
-                    }
-                }
-            }
-        }
-    }
-    
     
     /*
       ==============================================================================================================
@@ -1422,7 +1233,7 @@ class module_svg_bdd{
         var tables={}; 
         for(var a1 in par['donnees']['tableau1']){
 
-         tables[a1]={ 'presente_dans_tableau_1' : true ,  'presente_dans_tableau_2' : false  , chi_id_table:par['donnees']['tableau1'][a1].chi_id_table };
+         tables[a1]={ 'presente_dans_tableau_1' : true ,  'presente_dans_tableau_2' : false  };
         }
         
         for(var a2 in par['donnees']['tableau2']){
@@ -1648,17 +1459,6 @@ class module_svg_bdd{
             t+='<td>'+nom_de_la_table+'</td>';
             t+='<td>'+(tables[nom_de_la_table].presente_dans_tableau_1?'<span class="yysucces">oui</span>':'non')+'</td>';
             t+='<td>'+(tables[nom_de_la_table].presente_dans_tableau_2?'<span class="yysucces">oui</span>':'non')+'</td>';
-            if( differences_entre_les_tables===false && differences_entre_les_champs===false){
-                if(tables[nom_de_la_table].chi_id_table===0){
-                    t+='<td>';
-                    t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_table_dans_tbl_tables(&quot;'+nom_de_la_table+'&quot;,'+par.id_bdd_de_la_base_en_cours+')"">ajouter cette table dans tbl_tables</a>';
-                    t+='</td>';
-                }else{
-                    t+='<td style="text-align:center;">';
-                    t+=tables[nom_de_la_table].chi_id_table;
-                    t+='</td>';
-                }
-            }
             t+='</tr>';
         }
         t+='</table>';
@@ -2262,16 +2062,6 @@ class module_svg_bdd{
         };
         ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-             /*
-               il faut réordonner le svg
-                "nom_de_la_table":"tbl_tables",
-                "ordre_original":"chx_base_table,chp_nom_table,chp_nom_long_table,chp_nom_court_table,chp_nom_bref_table,chp_encodage_table,chp_classement_table",
-                "ordre_modifie" :"chx_base_table,chp_nom_table,chp_nom_long_table,chp_nom_court_table,chp_nom_bref_table,chp_classement_table,chp_encodage_table",
-                
-                
-                this.#id_svg_de_la_base_en_cours
-
-             */
              //console.log( this.#arbre );
              
              var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg(donnees.input.id_bdd_de_la_base , donnees.input.nom_de_la_table , donnees.input.ordre_modifie , donnees.input.id_svg_conteneur_table , donnees.input.nouveau_rev);
@@ -4300,9 +4090,10 @@ class module_svg_bdd{
                   this.#modale_gerer_la_table(document.getElementById(78));
                 */
                 
+/*
                 console.error('temporaire')
                 this.#modale_modifier_la_base(document.getElementById(1));
-                
+*/                
             }else{
                 console.log('donnees=',donnees)
                 debugger

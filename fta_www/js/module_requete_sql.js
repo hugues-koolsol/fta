@@ -320,16 +320,20 @@ class requete_sql{
       function retirer_ce_champ_de_autre
     */
     retirer_ce_champ_de_autre(ind){
-        this.#obj_webs.champs_autre.splice(ind,1);
-        this.#mettre_en_stokage_local_et_afficher();
+        if(confirm('Certain ?')){
+            this.#obj_webs.champs_autre.splice(ind,1);
+            this.#mettre_en_stokage_local_et_afficher();
+        }
     }
     /*
       ================================================================================================================
       function retirer_ce_champ_de_where
     */
     retirer_ce_champ_de_where(ind){
-        this.#obj_webs.champs_where.splice(ind,1);
-        this.#mettre_en_stokage_local_et_afficher();
+        if(confirm('Certain ?')){
+            this.#obj_webs.champs_where.splice(ind,1);
+            this.#mettre_en_stokage_local_et_afficher();
+        }
     }
     /*
       ================================================================================================================
@@ -357,11 +361,11 @@ class requete_sql{
         
         var zone_formule=document.getElementById('zone_formule');
         if(this.#deb_selection_dans_formule===-1){
-            zone_formule.value=zone_formule.value+'champ(`T'+indice_table+'`.`'+nom_du_champ+'`),';
+            zone_formule.value=zone_formule.value+'champ(`T'+indice_table+'` , `'+nom_du_champ+'`),';
         }else{
             var debut=zone_formule.value.substr(0,this.#deb_selection_dans_formule);
             var fin=zone_formule.value.substr(this.#deb_selection_dans_formule);
-            zone_formule.value=debut+'champ(`T'+indice_table+'`.`'+nom_du_champ+'`),'+fin;
+            zone_formule.value=debut+'champ(`T'+indice_table+'` , `'+nom_du_champ+'`),'+fin;
         }
         zone_formule.focus();
     }
@@ -718,7 +722,7 @@ class requete_sql{
                     if(this.#obj_webs.champs_where[i].type_d_element==='champ'){
                         t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_where('+i+')">'+this.#obj_webs.champs_where[i].nom_du_champ+'</a>';
                     }else if(this.#obj_webs.champs_where[i].type_d_element==='formule'){
-                        t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_where('+i+')">'+this.#obj_webs.champs_where[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</a>';
+                        t+='<a style="max-width: 90%;display: inline;" href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_where('+i+')">'+this.#obj_webs.champs_where[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</a>';
                         t+='<a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.modifier_la_formule_de_destination('+i+',&quot;champs_where&quot;)">✎</a>';
                     }
                     t+='</li>' ;
@@ -769,7 +773,7 @@ class requete_sql{
                     valeurs+=',';
                 }
                 if(elem.type_d_element==='champ'){
-                     valeurs+=CRLF+'      '+'champ(T'+elem.indice_table+'.'+elem.nom_du_champ+')';
+                     valeurs+=CRLF+'      '+'champ(`T'+elem.indice_table+'` , `'+elem.nom_du_champ+'`)';
                 }else if(elem.type_d_element==='formule'){
                      valeurs+=CRLF+'      '+elem.formule;
                 }
