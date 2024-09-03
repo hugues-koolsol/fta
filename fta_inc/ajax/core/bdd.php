@@ -1,4 +1,108 @@
 <?php
+
+
+
+/*
+  =====================================================================================================================
+*/
+function modifier_le_rev_en_base(&$data){
+
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
+$data[input]=array (
+  'call' => 
+  array (
+    'lib' => 'core',
+    'file' => 'bdd',
+    'funct' => 'enregistrer_le_rev_en_base',
+  ),
+  'rev' => 'sélectionner(
+   valeurs(champ(`T0` , `chi_id_test`) , champ(`T0` , `chp_nom_test`)),
+   provenance(
+      table_reference(
+         source(nom_de_la_table(tbl_tests , alias(T0) , base(__base__1__)))
+      ),
+      jointure_croisée(
+         source(nom_de_la_table(tbl_a , alias(T1) , base(__base__9__)))
+      )
+   ),
+   conditions(
+      et(egal(champ(`T0` , `chi_id_test`) , __par__0__) , comme(champ(`T0` , `chp_nom_test`) , \'%__par__1__%\'))
+   ),
+   trier_par((champ(`T0` , `chi_id_test`) , décroissant())),
+   limité_à(quantité(__par__2__) , début(__par__3__))
+)',
+  'type' => 'select_liste',
+  id_requete => 1 ,
+)
+*/
+
+    $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_requetes` SET 
+       `chp_type_requete` = \''.sq0($data['input']['type']).'\' 
+     , `cht_rev_requete`  = \''.sq0($data['input']['rev']).'\' 
+        WHERE `chi_id_requete`  = '.sq0($data['input']['id_requete']).' 
+     ;';
+
+    $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+    
+    if( $ret0===false ){
+        $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
+    }else{
+        $data['status']='OK';
+    }
+}
+
+
+/*
+  =====================================================================================================================
+*/
+function enregistrer_le_rev_en_base(&$data){
+
+/*
+    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
+$data[input]=array (
+  'call' => 
+  array (
+    'lib' => 'core',
+    'file' => 'bdd',
+    'funct' => 'enregistrer_le_rev_en_base',
+  ),
+  'rev' => 'sélectionner(
+   valeurs(champ(`T0` , `chi_id_test`) , champ(`T0` , `chp_nom_test`)),
+   provenance(
+      table_reference(
+         source(nom_de_la_table(tbl_tests , alias(T0) , base(__base__1__)))
+      ),
+      jointure_croisée(
+         source(nom_de_la_table(tbl_a , alias(T1) , base(__base__9__)))
+      )
+   ),
+   conditions(
+      et(egal(champ(`T0` , `chi_id_test`) , __par__0__) , comme(champ(`T0` , `chp_nom_test`) , \'%__par__1__%\'))
+   ),
+   trier_par((champ(`T0` , `chi_id_test`) , décroissant())),
+   limité_à(quantité(__par__2__) , début(__par__3__))
+)',
+  'type' => 'select_liste',
+)
+*/
+
+    $sql0='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes( `chp_type_requete` , `cht_rev_requete` ) VALUES (\''.sq0($data['input']['type']).'\' , \''.sq0($data['input']['rev']).'\' );';
+
+    $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+    
+    if( $ret0===false ){
+        $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
+    }else{
+        $data['status']='OK';
+    }
+    
+    
+
+ 
+ 
+}
+
 /*
   =====================================================================================================================
 */

@@ -84,11 +84,25 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      }else if(element.variant==='star'){
          t+='tous_les_champs()';
      }else if(element.variant==='table'){
-         if(element.alias){
-             t+='nom_de_la_table('+element.name+','+element.alias+')';
+
+         var nom_de_la_table='';
+         var nom_de_la_base='';
+         var nom_de_l_alias='';
+         if(element.name.indexOf('.')>=1){
+             nom_de_la_table=element.name.substr(element.name.indexOf('.')+1);
+             nom_de_la_base=element.name.substr(0,element.name.indexOf('.'));
          }else{
-             t+='nom_de_la_table('+element.name+')';
+             nom_de_la_table=element.name;
          }
+         
+         if(element.alias){
+             nom_de_l_alias=element.alias;
+         }
+         if(nom_de_la_table===''){
+             return(logerreur({status:false,message:'0105 recupere_element_de_ast_sql table : "'+JSON.stringify(json_partiel(element))+'"'}));
+         }
+         t+='nom_de_la_table('+nom_de_la_table+''+(nom_de_l_alias!==''?',alias('+nom_de_l_alias+')':'')+''+(nom_de_la_base!==''?',base('+nom_de_la_base+')':'')+')';
+         
      }else if(element.variant==='expression'){
          if(element.format && element.format==='table'){
              t+='nom_de_la_table('+element.name+')';
@@ -317,6 +331,7 @@ function traite_operation_dans_ast_sql(element,niveau,parent,options){
      return(logerreur({status:false,message:'0017 pas de champ operation : '+JSON.stringify(json_partiel(element))}));
   }
   if(element.left){
+
      var obj_gauche=recupere_element_de_ast_sql(element.left,niveau,parent,options);
      if(obj_gauche.status===true){
        
@@ -511,6 +526,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
 
  if(element.from){
      t+='\n'+esp0+esp1+',provenance(';
+
      if(element.from.source){
          var obj1=recupere_element_de_ast_sql(element.from.source,niveau,parent,options);
          if(obj1.status===true){

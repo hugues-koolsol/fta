@@ -242,29 +242,40 @@ function tabToSql0(tab,id,niveau,options){
                                                 for(n=(m + 1);(n < l01) && (tab[n][3] > tab[m][3]);n++){
                                                     if(tab[n][7] == m){
                                                         if(tab[n][1] === 'nom_de_la_table'){
-                                                            if(tab[n][8] === 1){
-                                                                if(tab[l][1] === 'jointure_gauche'){
-                                                                    liste_des_tables+=(' LEFT JOIN ' + tab[(n + 1)][1]);
-                                                                }else if(tab[l][1] === 'table_reference'){
-                                                                    liste_des_tables+=('\n FROM ' + tab[(n + 1)][1]);
-                                                                }else{
-                                                                    liste_des_tables+=(tab[(n + 1)][1] + '\n');
+                                                            var nom_de_la_table='';
+                                                            var nom_de_la_base='';
+                                                            var nom_de_l_alias='';
+                                                            for(var o=n+1;o<l01 && tab[o][3]>tab[n][3];o++){
+                                                                if(tab[o][7]===n){
+                                                                    if(tab[o][2]==='c'){
+                                                                        nom_de_la_table=tab[o][1];
+                                                                    }else if(tab[o][2]==='f' && tab[o][1]==='alias'  && tab[o][8]===1 ){
+                                                                        nom_de_l_alias=tab[o+1][1];
+                                                                    }else if(tab[o][2]==='f' && tab[o][1]==='base'  && tab[o][8]===1 ){
+                                                                        nom_de_la_base=tab[o+1][1];
+                                                                    }else{
+                                                                     return(logerreur({status:false,'message':('0257 nom_de_la_table doit avoir que 1 ou 2 ou 3 paramètre(s) "' + tab[n][1] + '"')}));
+                                                                    }
                                                                 }
-                                                            }else if(tab[n][8] === 2){
-                                                                if(tab[l][1] === 'jointure_gauche'){
-                                                                    liste_des_tables+=(' LEFT JOIN ' + tab[(n + 1)][1] + ' ' + tab[(n + 2)][1]);
-                                                                }else if(tab[l][1] === 'table_reference'){
-                                                                    liste_des_tables+=('\n FROM ' + tab[(n + 1)][1] + ' ' + tab[(n + 2)][1] + '\n');
-                                                                }else{
-                                                                    liste_des_tables+=(tab[(n + 1)][1] + ' ' + tab[(n + 2)][1] + '\n');
-                                                                }
-                                                                tableau_des_alias.push({
-                                                                 'minuscule' : tab[(n + 2)][1].toLowerCase(),
-                                                                 'majuscule' : tab[(n + 2)][1].toUpperCase(),
-                                                                 'original'  : tab[(n + 2)][1],
-                                                                });
+                                                            }
+                                                            if(nom_de_la_table===''){
+                                                                return(logerreur({status:false,'message':('0262 nom_de_la_table non trouvé "' + tab[n][1] + '"')}));
+                                                            }
+                                                            if(tab[l][1] === 'jointure_gauche'){
+                                                                liste_des_tables+=(CRLF+' LEFT JOIN '+(nom_de_la_base!==''?nom_de_la_base+'.':'')+''+nom_de_la_table+''+(nom_de_l_alias!==''?' '+nom_de_l_alias:'')+'');
+                                                            }else if(tab[l][1] === 'table_reference'){
+                                                                liste_des_tables+=(' FROM '+(nom_de_la_base!==''?nom_de_la_base+'.':'')+''+ nom_de_la_table + ''+(nom_de_l_alias!==''?' '+nom_de_l_alias:'')+'');
+                                                            }else if(tab[l][1] === 'jointure_croisée'){
+                                                                liste_des_tables+=(CRLF+' , '+(nom_de_la_base!==''?nom_de_la_base+'.':'')+''+ nom_de_la_table + ''+(nom_de_l_alias!==''?' '+nom_de_l_alias:'')+'');
                                                             }else{
-                                                                return(logerreur({status:false,'message':('0245 nom_de_la_table doit avoir que 1 ou 2 paramètre(s) "' + tab[n][1] + '"')}));
+                                                                return(logerreur({status:false,'message':('0271 type jointure non prévue "' + tab[n][1] + '"')}));
+                                                            }
+                                                            if(nom_de_l_alias!==''){
+                                                                tableau_des_alias.push({
+                                                                 'minuscule' : nom_de_l_alias.toLowerCase(),
+                                                                 'majuscule' : nom_de_l_alias.toUpperCase(),
+                                                                 'original'  : nom_de_l_alias,
+                                                                });
                                                             }
                                                         }else if(tab[m][1] === '#'){
                                                             liste_des_tables+=('/* ' + tab[n][13].trim() + ' */');
@@ -295,6 +306,9 @@ function tabToSql0(tab,id,niveau,options){
                             }
                         }
                     }
+                }
+                if(liste_des_tables.substr(liste_des_tables.length-1,1)===','){
+                 liste_des_tables=liste_des_tables.substr(0,liste_des_tables.length-1);
                 }
                 /* liste des champs extraits */
                 for(j=(i + 1);j < l01 && tab[j][3]> tab[i][3];j++){
@@ -444,15 +458,56 @@ function tabToSql0(tab,id,niveau,options){
                 var valeur_du_champ='';
                 for(j=(i + 1);j < l01  && tab[j][3]> tab[i][3] ;j++){
                     if(tab[j][7] == tab[i][0]){
+                        if((tab[j][1] == 'provenance') && (tab[j][8] >= 1)){
+                            for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
+                                if(tab[l][7] == j){
+                                    if((tab[l][2] === 'f') && ((tab[l][1] === 'table_reference') )){
+                                     
+                                     
+                                     
+                                        /*
+                                          
+                                          on commence par la source pour avoir les références des alias
+                                        */
+                                        for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
+                                            if(tab[m][7] == l){
+                                                if(tab[m][1] === 'source'){
+                                                    for(n=(m + 1);(n < l01) && (tab[n][3] > tab[m][3]);n++){
+                                                        if(tab[n][7] == m){
+                                                            if(tab[n][1] === 'nom_de_la_table'){
+                                                                for(var o=n+1;o<l01 && tab[o][3]>tab[n][3];o++){
+                                                                    if(tab[o][7]===n){
+                                                                        if(tab[o][2]==='c'){
+                                                                            nam=tab[o][1];
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
                         if((tab[j][1] == 'nom_de_la_table') && (tab[j][8] == 1)){
                             nam=tab[(j + 1)][1];
                         }
+                        
                         if((tab[j][1] == 'valeurs') && (tab[j][8] >= 1)){
                             liste_des_valeurs='';
                             for(l=(j + 1);(l < l01) && (tab[l][3] > tab[j][3]);l++){
                                 if(tab[l][7] == j){
                                     if(la_valeur != ''){
                                         la_valeur+=' , ';
+                                    }
+
+                                    if(tab[l][1] === 'champ' && tab[l][2]==='f' ){
+                                        nom_du_champ=tab[(l + 1)][1];
                                     }
                                     if(tab[l][1] === 'affecte'){
                                         for(m=(l + 1);(m < l01) && (tab[m][3] > tab[l][3]);m++){
@@ -468,10 +523,14 @@ function tabToSql0(tab,id,niveau,options){
                                                             return(logerreur({status:false,'message':('0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"')}));
                                                         }
                                                     }else{
-                                                        if(tab[m][1].toLowerCase() === 'null'){
+                                                        if(tab[m][1].toLowerCase() === 'null' && tab[m][4]===0 ){
                                                             valeur_du_champ='NULL';
                                                         }else{
-                                                            valeur_du_champ=('\'' + tab[m][1].replace(/\'/g,"''") + '\'');
+                                                            if(tab[m][1].indexOf('__')>=0){
+                                                                valeur_du_champ= tab[m][1];
+                                                            }else{
+                                                                valeur_du_champ=('\'' + tab[m][1].replace(/\'/g,"''") + '\'');
+                                                            }
                                                         }
                                                     }
                                                 }

@@ -9,8 +9,40 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 }
 
 $o1='';
-$o1=html_header1(array('title'=>'requete sql' , 'description'=>'créer une requete sql'));
+$o1=html_header1(array('title'=>'requete sql' , 'description'=>'créer ou modifier une requete sql'));
 print($o1);$o1='';
+
+$id_requete=0;
+$rev_requete='';
+$type_requete='';
+if(isset($_GET['__action']) && $_GET['__action']=='__modification' && isset($_GET['__id'])  && is_numeric($_GET['__id']) ){
+     $id_requete=$_GET['__id'];
+     $sql0='
+      SELECT `cht_rev_requete` , T0.chp_type_requete 
+      FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes `T0`
+      WHERE   `chi_id_requete`='.$id_requete.'
+     ';
+     $stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+
+     if(($stmt0 !== false)){
+
+         $res0=$stmt0->execute();
+         while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
+             $rev_requete=$tab0[0];
+             $type_requete=$tab0[1];
+                 
+         }
+         $stmt0->close();
+     }
+}
+$o1.='<script type="text/javascript">'.CRLF;
+$o1.='var globale_id_requete='.$id_requete.';'.CRLF;
+$o1.='var globale_rev_requete=\''.str_replace('\'','\\\'',str_replace("\r",'\\r',str_replace("\n",'\\n',$rev_requete))).'\';'.CRLF;
+$o1.='var globale_type_requete=\''.$type_requete.'\';'.CRLF;
+$o1.='</script>'.CRLF;
+print($o1);$o1='';
+
+
 ?>
 
   <div class="menuScroller">
@@ -21,6 +53,10 @@ print($o1);$o1='';
   <h1>Requête Sql</h1>
   <div id="div_de_travail"></div>
   <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <br />
+  initialisation
+  <br />
+  <textarea class="txtar1" id="init" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <br />
   exemple
   <pre>
@@ -54,6 +90,7 @@ sélectionner(
   </pre>
   
 <?php
+
 
 $js_a_executer_apres_chargement=array(
     array(
