@@ -606,14 +606,110 @@ class module_svg_bdd{
     }
     /*
       ====================================================================================================================
-      function supprimer_un_index_de_modale
+      function supprimer_un_index_dans_rev_de_modale
     */
-    supprimer_un_index_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
+    supprimer_un_index_dans_rev_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
         var id_de_l_index = parseInt(document.getElementById(id_svg_rectangle_de_l_index).parentNode.id,10);
         this.#supprimer_recursivement_les_elements_de_l_arbre(this.#id_bdd_de_la_base_en_cours,id_de_l_index);
         global_modale1.close();
         this.#dessiner_le_svg();
     }
+    
+    
+    /*
+      ====================================================================================================================
+      function supprimer_un_index_dans_base_de_modale
+    */
+    supprimer_un_index_dans_base_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
+        var source_sql='DROP INDEX '+nom_de_l_index;
+
+        async function supprimer_en_bdd_l_index(url="",donnees){
+            var response= await fetch(url,{
+                // 6 secondes de timeout 
+                'signal':AbortSignal.timeout(1000),
+                // *GET, POST, PUT, DELETE, etc. 
+                method:"POST",
+                // no-cors, *cors, same-origin 
+                mode:"cors",
+                // default, no-cache, reload, force-cache, only-if-cached 
+                cache:"no-cache",
+                // include, *same-origin, omit 
+                credentials:"same-origin",
+                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
+                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                redirect:"follow",
+                
+                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                
+                referrerPolicy:"no-referrer",
+                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+            });
+            return(response.json());
+        }
+        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_en_bdd_l_index'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
+        supprimer_en_bdd_l_index('za_ajax.php?supprimer_en_bdd_l_index',ajax_param).then((donnees) => {
+            if(donnees.status === 'OK'){
+                console.log('OK');
+            }else{
+                console.log('KO donnees=',donnees);
+            }
+        });
+
+    }
+    
+    /*
+      ====================================================================================================================
+      function ajouter_un_index_dans_base_de_modale
+    */
+    ajouter_un_index_dans_base_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
+//        console.log(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table , document.getElementById(id_svg_rectangle_de_l_index));
+        var rev_texte='add_index('+document.getElementById(id_svg_rectangle_de_l_index).getAttribute('donnees_rev_de_l_index')+')';
+        var obj1=rev_texte_vers_matrice(rev_texte);
+        if(obj1.status===true){
+            var obj2=tabToSql1(obj1.value,0,0);
+            if(obj2.status===true){
+//                console.log('obj2.value=' , obj2.value );
+                var source_sql=obj2.value;
+                
+                async function ajouter_en_bdd_l_index(url="",donnees){
+                    var response= await fetch(url,{
+                        // 6 secondes de timeout 
+                        'signal':AbortSignal.timeout(1000),
+                        // *GET, POST, PUT, DELETE, etc. 
+                        method:"POST",
+                        // no-cors, *cors, same-origin 
+                        mode:"cors",
+                        // default, no-cache, reload, force-cache, only-if-cached 
+                        cache:"no-cache",
+                        // include, *same-origin, omit 
+                        credentials:"same-origin",
+                        // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
+                        'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                        redirect:"follow",
+                        
+                          //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        
+                        referrerPolicy:"no-referrer",
+                        'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+                    });
+                    return(response.json());
+                }
+                var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_l_index'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
+                ajouter_en_bdd_l_index('za_ajax.php?ajouter_en_bdd_l_index',ajax_param).then((donnees) => {
+                    if(donnees.status === 'OK'){
+                        console.log('OK');
+                    }else{
+                        console.error('KO donnees=',donnees);
+                    }
+                });
+                
+                
+                
+            }
+        }
+    }
+    
+    
     
     /*
       ====================================================================================================================
@@ -654,9 +750,6 @@ class module_svg_bdd{
                 console.log('KO donnees=',donnees);
             }
         });
-
-     
-     
     }
     
     /*
@@ -1015,12 +1108,13 @@ class module_svg_bdd{
         }
         var t='<h1>modification de l\'index</h1>';
         t+='<hr />';
-        t+='<h2>changer le nom</h2>';
+        t+='<h2>dans le rev</h2>';
+        t+='<h3>changer le nom</h3>';
         t+=('<input id="nouveau_nom" type="text" value="' + nom_de_l_index + '" />');
         t+=('<input id="ancien_nom" type="hidden" value="' + nom_de_l_index + '" />');
         t+=('<a href="javascript:' + this.#nom_de_la_variable + '.changer_le_nom_d_index_de_modale(' + id_element_svg + ',' + id_svg_conteneur_table + ','+id_svg_rectangle_de_l_index+','+id_svg_conteneur_d_index+')">modifier</a>');
         t+='<hr />';
-        t+='<h2>changer les champs</h2>';
+        t+='<h3>changer les champs</h3>';
         t+=('<br />liste des champ  : <input id="liste_des_champ_de_l_index" style="width:95%;" value="' + liste_des_champ_de_l_index + '" />');
         t+=('<br />unique  : <input type="checkbox" id="unique" ' + ((unique === true)?'checked':'') + ' />');
         t+='<br /><b>meta</b>';
@@ -1035,8 +1129,19 @@ class module_svg_bdd{
         t+='<br />';
         t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_un_index_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">modifier</a>');
         t+='<hr />';
-        t+='<h2>supprimer l\'index</h2>';
-        t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_index_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">supprimer</a>');
+        t+='<h3>supprimer l\'index</h3>';
+        t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_index_dans_rev_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">supprimer</a>');
+
+        t+='<hr />';
+        t+='<h2>dans la base physique</h2>';
+
+        t+='<h3>ajouter l\'index</h3>';
+        t+=('<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_un_index_dans_base_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">ajouter</a>');
+
+        t+='<h3>supprimer l\'index</h3>';
+        t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_index_dans_base_de_modale(' + id_svg_rectangle_de_l_index + ',&quot;' + nom_de_l_index + '&quot;,&quot;' + nom_de_la_table + '&quot;)">supprimer</a>');
+
+
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
     }

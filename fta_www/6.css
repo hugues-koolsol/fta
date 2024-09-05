@@ -142,6 +142,7 @@ a:hover,button:hover{
 }
 #modale1{
  min-width:80vw;
+ max-width:90vw;
  min-height:80vh;
  border: var(--yyvtrb) #607D8B solid;
  border-radius: 9px;
