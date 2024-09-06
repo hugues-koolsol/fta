@@ -129,14 +129,49 @@ class requete_sql{
                            on peut remplir ordre_des_tables
                          */
                          var champs_jointure_gauche={};
+                         var tab_jointure_gauche=[];
                          if( 'jointure_gauche' === tab[i][1] ){
                              for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
                                  if(tab[j][1]==='contrainte' && tab[j][2]==='f'){
                                      // contrainte(egal(champ('T1' , chi_id_test) , champ('T0' , chx_test_parent_test)))
                                      // champ_table_fille{ nom_du_champ: 'chi_id_test'          , nom_de_la_table: 'tbl_tests', id_bdd: 1, indice_table: 1}
                                      // champ_table_mere{  nom_du_champ: 'chx_test_parent_test' , nom_de_la_table: 'tbl_tests', id_bdd: 1, indice_table: 0 }
+                                     for(var k=j+1;k<l01 && tab[k][3]>tab[j][3];k++){
+                                         if(tab[k][1]==='egal' && tab[j][2]==='f'){
+                                             for(var l=k+1;l<l01 && tab[l][3]>tab[k][3];l++){
+                                                 if(tab[l][1]==='champ' && tab[l][2]==='f'){
+                                                     
+                                                     var nom_du_champ='';
+                                                     var alias_de_la_table_pour_le_champ='';
+                                                      /*
+                                                      champ(`T0` , `chi_id_test`)
+                                                      */
+                                                     if(tab[l][8]===2 ){
+                                                         for(var m=l+1;m<l01 && tab[m][3] > tab[l][3] ; m++){
+                                                             if(tab[m][2]==='c' ){
+                                                                 if(alias_de_la_table_pour_le_champ===''){
+                                                                     alias_de_la_table_pour_le_champ=tab[m][1];
+                                                                 }else{
+                                                                     nom_du_champ=tab[m][1];
+                                                                 }
+                                                             }
+                                                         }
+                                                     }else if(tab[l][8]===1){
+                                                         for(var m=l+1;m<l01 && tab[m][3] > tab[l][3] ; m++){
+                                                             if(tab[m][2]==='c' ){
+                                                                 nom_du_champ=tab[m][1];
+                                                             }
+                                                         }
+                                                     }
 
-                                     debugger
+                                                     tab_jointure_gauche.push({
+                                                         nom_du_champ                    : nom_du_champ                    ,
+                                                         alias_de_la_table_pour_le_champ : alias_de_la_table_pour_le_champ ,
+                                                     });
+                                                 }
+                                             }
+                                         }
+                                     }
                                  }
                              }
                          }
@@ -148,13 +183,36 @@ class requete_sql{
                              alias_de_la_table      : alias_de_la_table ,
                              indice_table           : indice_table ,
                              jointure               : jointure ,
-                             champs_jointure_gauche : {},
+                             champs_jointure_gauche : champs_jointure_gauche,
                          });
+                         if(tab_jointure_gauche.length===2){
 
-                         
+                             for( var j=0 ; j < tab_jointure_gauche.length ; j++){
+                                 for( var k=0;k<this.#obj_webs['ordre_des_tables'].length;k++){
+                                     if(
+                                         tab_jointure_gauche[j].alias_de_la_table_pour_le_champ === this.#obj_webs['ordre_des_tables'][k].alias_de_la_table
+                                      && k === this.#obj_webs['ordre_des_tables'].length-1
+                                     ){
+                                         champs_jointure_gauche['champ_table_mere']={ 
+                                             nom_du_champ         : tab_jointure_gauche[k].nom_du_champ                                                             ,
+                                             nom_de_la_table      : this.#obj_webs['ordre_des_tables'][j].nom_de_la_table ,
+                                             id_bdd               : this.#obj_webs['ordre_des_tables'][j].id_bdd          ,
+                                             indice_table         : this.#obj_webs['ordre_des_tables'][j].indice_table    ,                                          
+                                         };
+                                     }else if(tab_jointure_gauche[j].alias_de_la_table_pour_le_champ === this.#obj_webs['ordre_des_tables'][k].alias_de_la_table){
+                                         champs_jointure_gauche['champ_table_fille']={ 
+                                             nom_du_champ         : tab_jointure_gauche[k].nom_du_champ                                                             ,
+                                             nom_de_la_table      : this.#obj_webs['ordre_des_tables'][j].nom_de_la_table ,
+                                             id_bdd               : this.#obj_webs['ordre_des_tables'][j].id_bdd          ,
+                                             indice_table         : this.#obj_webs['ordre_des_tables'][j].indice_table    ,                                          
+                                         };
+                                     }
+                                 }
+                             }
+                             this.#obj_webs['ordre_des_tables'][this.#obj_webs['ordre_des_tables'].length-1].champs_jointure_gauche=champs_jointure_gauche;
+                         }
+                         tab_jointure_gauche=[];
                          indice_table++;
-                     
-                     
                     }
                 }
             }
