@@ -936,14 +936,22 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 }
                 var objInstructionGauche = js_traiteInstruction1(tab,niveau,tabAffecte['par0'][0]);
                 if(objInstructionGauche.status === true){
-                    
+
                     var objInstructionDroite = js_traiteInstruction1(tab,niveau,tabAffecte['par1'][0]);
                     if(objInstructionDroite.status === true){
                         /* on écrit l'affectation ici */
                         if(signe=='=' && objInstructionGauche.value===objInstructionDroite.value.substr(0,objInstructionGauche.value.length) && objInstructionDroite.value.substr(objInstructionGauche.value.length,1)==='+'){
-                         t+=''+objInstructionGauche.value+'+='+objInstructionDroite.value.substr(objInstructionGauche.value.length+1);
+                            var droite=objInstructionDroite.value.substr(objInstructionGauche.value.length + 1);
+                            if(droite.substr(0,1)==='(' && droite.substr(droite.length-1,1)===')'  && tab[tabAffecte['par1'][0]][1]!=='condition' ){
+                                droite = droite.substr(1,droite.length-2);
+                            }
+                            t+=''+objInstructionGauche.value+'+='+droite;
                         }else{
-                         t+=''+objInstructionGauche.value+signe+objInstructionDroite.value;
+                            var droite = objInstructionDroite.value;
+                            if(droite.substr(0,1)==='(' && droite.substr(droite.length-1,1)===')'  && tab[tabAffecte['par1'][0]][1]!=='condition' ){
+                               droite = droite.substr(1,droite.length-2);
+                            }
+                            t+=objInstructionGauche.value + signe + droite;
                         }
                         
                         
@@ -1037,6 +1045,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                     || (tabdeclare[1][1] === 'modulo') 
                                     || (tabdeclare[1][1] === 'concat')
                                     || (tabdeclare[1][1] === 'egalstricte')
+                                    || (tabdeclare[1][1] === 'egal')
                                     || (tabdeclare[1][1] === 'diffstricte')
                                    )
                             ){
@@ -1617,6 +1626,8 @@ function js_traiteInstruction1(tab,niveau,id){
         || 'supeg' === tab[id][1] 
         || 'diffstricte' === tab[id][1] 
         || 'egalstricte' ===  tab[id][1]
+        || 'egal' ===  tab[id][1]
+        || 'ou_bin' ===  tab[id][1]
     ){
         obj=js_condition1(tab,id,niveau); 
 
@@ -2264,6 +2275,10 @@ function recupere_operateur(n){
   return '&';
  }else if(n === 'decalDroite'){ 
   return '>>';
+ }else if(n === 'egalstricte'){ 
+  return '===';
+ }else if(n === 'egal'){ 
+  return '==';
  }else {
   debugger
   logerreur({status:false,message:'2118 recupere_operateur pour "'+n+'" '});
@@ -2753,7 +2768,7 @@ function js_condition1(tab,id,niveau){
                     return(logerreur({status:false,value:t,id:id,tab:tab,message:'erreur 1964 dans une condition'}));
                 }
                 i=max-1;
-            }else if(((tab[i][1] == 'egal') || (tab[i][1] == 'egalstricte') || (tab[i][1] == 'diff') || (tab[i][1] == 'diffstricte') || (tab[i][1] == 'sup') || (tab[i][1] == 'inf') || (tab[i][1] == 'supeg') || (tab[i][1] == 'infeg') || (tab[i][1] == 'Instanceof') || (tab[i][1] == 'in') ) && (tab[i][2] == 'f')){
+            }else if(((tab[i][1] == 'egal') || (tab[i][1] == 'egalstricte') || (tab[i][1] == 'diff') || (tab[i][1] == 'diffstricte') || (tab[i][1] == 'sup') || (tab[i][1] == 'inf') || (tab[i][1] == 'supeg') || (tab[i][1] == 'infeg') || (tab[i][1] == 'Instanceof') || (tab[i][1] == 'in') || (tab[i][1] == 'ou_bin') ) && (tab[i][2] == 'f')){
                 if(tab[i][8] == 2){
                     tabPar=[];
                     for(j=(id+1);j <= max;j=j+1){
@@ -2824,6 +2839,8 @@ function js_condition1(tab,id,niveau){
                         t+=' instanceof ';
                     }else if(tab[i][1] == 'in'){
                         t+=' in ';
+                    }else if(tab[i][1] == 'ou_bin'){
+                        t+=' | ';
                     }
                     if(tab[tabPar[1]][2] == 'c'){
                         /*

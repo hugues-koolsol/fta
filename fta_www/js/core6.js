@@ -1,3 +1,4 @@
+
 "use strict";
 /*
   todo traiter tous les escapes
@@ -35,18 +36,15 @@ var globale_LangueCourante='fr';
 var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
 var NBESPACESSOURCEPRODUIT=4;
 var php_contexte_commentaire_html=false;
-
-
 /*
   =====================================================================================================================
 */
 function raz_messages(zone_message){
-     if(zone_message && document.getElementById(zone_message)){
-      document.getElementById(zone_message).innerHTML='';
-     }
-     global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+    if((zone_message) && (document.getElementById(zone_message))){
+        document.getElementById(zone_message).innerHTML='';
+    }
+    global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
 }
-
 /*
   =====================================================================================================================
   met les valeurs dans la variable global_messages
@@ -78,16 +76,14 @@ function logerreur(o){
     if(o.hasOwnProperty('tabs')){
         global_messages['tabs'].push(o.tabs);
     }
-    if(o.hasOwnProperty('line') && o.line>=0){
+    if((o.hasOwnProperty('line')) && (o.line >= 0)){
         global_messages['lines'].push(o.line);
     }
     if(o.hasOwnProperty('position_caractere')){
         global_messages['positions_caracteres'].push(o.tabs);
     }
-    
     return o;
 }
-
 /*
   =====================================================================================================================
 */
@@ -100,20 +96,20 @@ function dogid(n){
 function maConstante(eltTab){
     var t='';
     if(eltTab[4] === 1){
-        t='\''+eltTab[1]+'\'';
+        t='\'' + eltTab[1] + '\'';
     }else if(eltTab[4] === 2){
         /*
-        constante avec des apostrophes inversées
+          constante avec des apostrophes inversées
         */
-        t='`'+eltTab[1]+'`';
+        t='`' + eltTab[1] + '`';
         t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
     }else if(eltTab[4] === 3){
-        t='"'+eltTab[1]+'"';
+        t='"' + eltTab[1] + '"';
     }else if(eltTab[4] === 4){
-        t='/'+eltTab[1]+'/'+eltTab[13];
+        t='/' + eltTab[1] + '/' + eltTab[13];
     }else{
         /*
-        constante non quotée, généralement une variable
+          constante non quotée, généralement une variable
         */
         if(eltTab[1] === 'vrai'){
             t='true';
@@ -125,20 +121,18 @@ function maConstante(eltTab){
     }
     return t;
 }
-//=====================================================================================================================
 function espacesn(optionCRLF,i){
- var t='';
- if(optionCRLF){
-  t='\r\n';
- }else{
-  t='\n';
- }
- if(i>0){
-  t+=' '.repeat(NBESPACESSOURCEPRODUIT*i);
- }
- return t;
+    var t='';
+    if(optionCRLF){
+        t='\r\n';
+    }else{
+        t='\n';
+    }
+    if(i > 0){
+        t+=' '.repeat((NBESPACESSOURCEPRODUIT * i));
+    }
+    return t;
 }
-
 /*
   =====================================================================================================================
 */
@@ -173,7 +167,7 @@ function espacesnrev(optionCRLF,i){
         t='\n';
     }
     if(i > 0){
-        t+=' '.repeat(NBESPACESREV*(i));
+        t+=' '.repeat((NBESPACESREV * i));
     }
     return t;
 }
@@ -248,7 +242,7 @@ function myReplace(s,chaineAremplacer,chaineQuiRemplace){
 */
 function nbre_caracteres2(lettre,chaine){
     var tt = chaine.split(lettre);
-    return tt.length-1;
+    return((tt.length - 1));
 }
 /*
   =====================================================================================================================
@@ -267,50 +261,50 @@ function reIndicerLeTableau(tab){
     var l=0;
     var niveau=0;
     /*
-      =================================================================================================================
+      =============================================================================================================
       indice et nombre d'enfants mis à zéro
-      =================================================================================================================
+      =============================================================================================================
     */
     for(i=1;i < l01;i++){
         tab[i][0]=i;
         tab[i][8]=0;
     }
     /*
-      =================================================================================================================
+      =============================================================================================================
       parent et nombre d'enfants
-      =================================================================================================================
+      =============================================================================================================
     */
-    for(i=l01-1;i > 0;i--){
+    for(i=l01 - 1;i > 0;i--){
         niveau=tab[i][3];
         for(j=i;j >= 0;j--){
-            if(tab[j][3] == niveau-1){
+            if(tab[j][3] === (niveau - 1)){
                 tab[i][7]=j;
-                tab[j][8]=(tab[j][8]+1);
+                tab[j][8]=tab[j][8] + 1;
                 break;
             }
         }
     }
     /*
-      =================================================================================================================
+      =============================================================================================================
       numéro d'enfant
-      =================================================================================================================
+      =============================================================================================================
     */
     for(i=0;i < l01;i++){
         k=0;
-        for(j=(i+1);j < l01;j++){
-            if(tab[j][7] == tab[i][0]){
+        for(j=i + 1;j < l01;j++){
+            if(tab[j][7] === tab[i][0]){
                 k++;
                 tab[j][9]=k;
             }
         }
     }
     /*
-      =================================================================================================================
+      =============================================================================================================
       profondeur
-      =================================================================================================================
+      =============================================================================================================
     */
-    for(i=l01-1;i > 0;i--){
-        if(tab[i][2] == 'c'){
+    for(i=l01 - 1;i > 0;i--){
+        if(tab[i][2] === 'c'){
             tab[i][10]=0;
         }
         if(tab[i][7] > 0){
@@ -332,24 +326,22 @@ function reIndicerLeTableau(tab){
   =====================================================================================================================
 */
 function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
-    var i = 0;
-    if(niveau===0){
-     var a_supprimer=[];
+    var i=0;
+    if(niveau === 0){
+        var a_supprimer = [];
     }
-    
-    if(tab[id][2]==='c' || ( tab[id][2]==='f' && tab[id][8]===0 ) ){
-        /* 
+    if((tab[id][2] === 'c') || ((tab[id][2] === 'f') && (tab[id][8] === 0))){
+        /*
           si c'est une constante ou une fonction vide  on l'efface directement
           son parent à un élément en moins
         */
         a_supprimer.push(id);
-        
     }else{
         /* sinon, on efface recursivement tous ses enfants avant de l'effacer */
         for(i=1;i < tab.length;i++){
             var i_avant=i;
-            if(tab[i][7]===id){
-                supprimer_un_element_de_la_matrice(tab,tab[i][0],niveau+1,a_supprimer);
+            if(tab[i][7] === id){
+                supprimer_un_element_de_la_matrice(tab,tab[i][0],(niveau + 1),a_supprimer);
             }
         }
         a_supprimer.push(id);
@@ -359,11 +351,12 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
           à la fin on efface effectivement les lignes en partant du bas 
           et on recalcul les indices
         */
-        a_supprimer.sort(function(a, b){return (b - a);});        
-        for(i=0;i<a_supprimer.length;i++){
-         tab.splice(a_supprimer[i],1);
+        a_supprimer.sort(function(a,b){
+            return((b - a));
+        });
+        for(i=0;i < a_supprimer.length;i++){
+            tab.splice(a_supprimer[i],1);
         }
-        
         tab=reIndicerLeTableau(tab);
         return tab;
     }
@@ -374,10 +367,10 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
   =====================================================================================================================
 */
 function baisserNiveauEtSupprimer(tab,id,niveau){
-    var i = (id+1);
-    for(i=(id+1);i < tab.length;i++){
+    var i = (id + 1);
+    for(i=id + 1;i < tab.length;i++){
         if(tab[i][7] === id){
-            tab[i][3]=tab[i][3]-1;
+            tab[i][3]=tab[i][3] - 1;
             if(tab[i][2] === 'f'){
                 niveau++;
                 /*
@@ -398,7 +391,7 @@ function baisserNiveauEtSupprimer(tab,id,niveau){
     }
 }
 /*
-  ========================================================================================================================
+  =====================================================================================================================
   fonction transforme un commentaire pour un fichier source à générer
 */
 function traiteCommentaire2(texte,niveau,ind){
@@ -406,7 +399,6 @@ function traiteCommentaire2(texte,niveau,ind){
     s=traiteCommentaireSourceEtGenere1(texte,niveau,ind,NBESPACESSOURCEPRODUIT,false);
     return s;
 }
-
 /*
   =====================================================================================================================
   fonction transforme un commentaire pour un fichier rev
@@ -443,13 +435,13 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var tab = [];
     var ne_contient_que_des_egals=false;
     /**/
-    unBloc=' '.repeat(nbEspacesSrc1*(niveau));
+    unBloc=' '.repeat((nbEspacesSrc1 * niveau));
     tab=texte.split('\n');
     l01=tab.length;
     /**/
     if(texte.length > 1){
         temps=texte.substr(0,1);
-        if(temps == '#'){
+        if(temps === '#'){
             /*
               on a un commentaire de type bloc non formaté 
               car le premier caractère = #.
@@ -479,17 +471,17 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             if(min > 2){
                 /*tout décaler à gauche*/
                 for(i=1;i < l01;i++){
-                    tab[i]=tab[i].substr(min-2);
+                    tab[i]=tab[i].substr((min - 2));
                 }
             }
             /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
             if(fichierRev0){
-                ligne=tab[tab.length-1];
+                ligne=tab[(tab.length - 1)];
                 ligne=replaceAll(ligne,' ','');
                 if(ligne != ''){
                     tab.push(unBloc);
                 }else{
-                    tab[tab.length-1]=unBloc;
+                    tab[(tab.length - 1)]=unBloc;
                 }
             }
             /**/
@@ -502,7 +494,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
       qu'il faut formatter en alignant à gauche les textes 
       d'un nombre d'espaces correspondant au niveau
     */
-    unBlocPlus1=' '.repeat(nbEspacesSrc1*(niveau)+2);
+    unBlocPlus1=' '.repeat(((nbEspacesSrc1 * niveau) + 2));
     var s1='';
     var s2='';
     for(i=0;i < l01;i++){
@@ -513,25 +505,24 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         for(j=0;j < tab[i].length;j++){
             temps=tab[i].substr(j,1);
             if(temps != ' '){
-                t+=tab[i].substr(j)
+                t+=tab[i].substr(j);
                 break;
             }
         }
-        
-        s1=unBloc+t;
-        s2=unBlocPlus1+t;
-        if(i == l01-1){
+        s1=unBloc + t;
+        s2=unBlocPlus1 + t;
+        if(i === (l01 - 1)){
             /*la dernière ligne du commentaire de bloc doit être vide*/
-            if(t == ''){
+            if(t === ''){
                 newTab.push(unBloc);
             }else{
                 /*on met la ligne et on ajoute une ligne vide*/
                 newTab.push(s2);
                 newTab.push(unBloc);
             }
-        }else if(i == 0){
+        }else if(i === 0){
             /*la première ligne du commentaire de bloc doit être vide*/
-            if(t == ''){
+            if(t === ''){
                 newTab.push(t);
             }else{
                 /*
@@ -546,29 +537,26 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             newTab.push(s2);
         }
     }
-    
     l01=newTab.length;
     var l02=0;
-    for(i=0;i<l01;i++){
-     ligne=newTab[i];
-     if(ligne.indexOf('====')>=0){
-      ne_contient_que_des_egals=true;
-      l02=ligne.length;
-      for(j=0;j<l02;j++){
-       if(!(ligne.substr(j,1)==='=' || ligne.substr(j,1)===' ')){
-        ne_contient_que_des_egals=false;
-        break;
-       }
-      }
-      if(ne_contient_que_des_egals===true){
-       var calcul=117-2*niveau*nbEspacesSrc1;
-       if(calcul>0){
-        newTab[i]='  '+' '.repeat(niveau*nbEspacesSrc1)+'='.repeat(calcul);
-       }
-      }
-     }
-     
-     
+    for(i=0;i < l01;i++){
+        ligne=newTab[i];
+        if(ligne.indexOf('====') >= 0){
+            ne_contient_que_des_egals=true;
+            l02=ligne.length;
+            for(j=0;j < l02;j++){
+                if( !((ligne.substr(j,1) === '=') || (ligne.substr(j,1) === ' '))){
+                    ne_contient_que_des_egals=false;
+                    break;
+                }
+            }
+            if(ne_contient_que_des_egals === true){
+                var calcul = (117 - (2 * niveau * nbEspacesSrc1));
+                if(calcul > 0){
+                    newTab[i]='  ' + ' '.repeat((niveau * nbEspacesSrc1)) + '='.repeat(calcul);
+                }
+            }
+        }
     }
     t=newTab.join(CRLF);
     return t;
@@ -582,15 +570,15 @@ function strToHtml(s){
     return(s.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;'));
 }
 /*
-  =================================================
+  =====================================================================================================================
   fonction qui reconstitue un texte source à partir du tableau représentant la matrice  du  programme
-  =================================================
+  =====================================================================================================================
 */
 function a2F1(arr,parentId,retourLigne,debut,coloration){
     /*
-      ========================================
+      =============================================================================================================
       Attention : cette fonction est récursive
-      ========================================
+      =============================================================================================================
     */
     var i=0;
     var j=0;
@@ -605,19 +593,19 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var c1='';
     var cm1='';
     var l01=arr.length;
-    var chCR = '¶'+'CR'+'¶';
-    var chLF = '¶'+'LF'+'¶';
+    var chCR = ('¶' + 'CR' + '¶');
+    var chLF = ('¶' + 'LF' + '¶');
     /*
-      =====================================================================
+      =============================================================================================================
       boucle principale qui commence à partir de "debut" passé en paramètre
-      =====================================================================
+      =============================================================================================================
     */
     for(i=debut;i < l01;i++){
         /*
           on ne traite que les enfants et les éléments 
           dont le niveau est supérieur au niveau du parent
         */
-        if(arr[i][7] == parentId){
+        if(arr[i][7] === parentId){
             /*On va à la suite du programme*/
         }else if(arr[i][3] <= arr[parentId][3]){
             break;
@@ -634,16 +622,16 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
           qu'il y a trop d'enfants ou bien qu'il
           y a des commentaires
         */
-        if((retourLigne == true) && (arr[parentId][10] > profondeurLimite)){
+        if((retourLigne === true) && (arr[parentId][10] > profondeurLimite)){
             forcerRetourLigne=true;
-        }else if(((retourLigne == true) && (arr[parentId][2] == 'f')) || (arr[parentId][2] == 'INIT')){
+        }else if(((retourLigne === true) && (arr[parentId][2] === 'f')) || (arr[parentId][2] === 'INIT')){
             /*le type du parent est une fonction ou bien c'est la racine*/
             /*
               Si c'est la premier enfant d'une fonction, 
               on teste si il existe des enfants de type commentaires
             */
             for(j=debut;(j < l01) && (arr[j][3] > arr[parentId][3]);j++){
-                if((arr[j][1] == DEBUTCOMMENTAIRE) && (arr[j][2] == 'f') && (arr[j][3] < arr[parentId][3]+profondeurLimite)){
+                if((arr[j][1] === DEBUTCOMMENTAIRE) && (arr[j][2] === 'f') && (arr[j][3] < (arr[parentId][3] + profondeurLimite))){
                     /*
                       il y a un commentaire
                       c'est une fonction
@@ -665,77 +653,75 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         }
         /*
           ici la variable forcerRetourLigne est éventuellement mise à true 
-          
         */
-        if(forcerRetourLigne===false && arr[i][2]=='c' && arr[i][1].length>100){
-         forcerRetourLigne=true;
+        if((forcerRetourLigne === false) && (arr[i][2] === 'c') && (arr[i][1].length > 100)){
+            forcerRetourLigne=true;
         }
-        
-        condition1=((arr[parentId][2] == 'f') && (arr[parentId][8] <= nombreEnfantsLimite)) && (arr[parentId][10] <= profondeurLimite);
+        condition1=((arr[parentId][2] === 'f') && (arr[parentId][8] <= nombreEnfantsLimite)) && (arr[parentId][10] <= profondeurLimite);
         /* si le numéro enfant ets >1, on ajoute une virgule */
         if(arr[i][9] > 1){
             /*!forcerRetourLigne && retourLigne==true && condition1*/
-            if(( !(forcerRetourLigne)) && (retourLigne == true) && (condition1)){
+            if(( !(forcerRetourLigne)) && (retourLigne === true) && (condition1)){
                 t+=' , ';
             }else{
                 t+=',';
             }
         }
-        if((forcerRetourLigne) && (arr[parentId][2] != 'INIT')){
+        if((forcerRetourLigne) && (arr[parentId][2] !== 'INIT')){
             t+=espacesnrev(true,arr[i][3]);
         }else if(retourLigne){
-            if(((arr[parentId][2] == 'INIT') && (arr[i][9] == 1)) || (condition1)){
+            if(((arr[parentId][2] === 'INIT') && (arr[i][9] === 1)) || (condition1)){
                 /*on ne fait rien*/
             }else{
                 t+=espacesnrev(true,arr[i][3]);
             }
         }
         /*
-          ======================================
+          =====================================================================================================
           ici, forcerRetourLigne est vrai ou pas
-          ======================================
+          =====================================================================================================
           si  on  doit  traiter  une  constante
-          ======================================
+          =====================================================================================================
         */
-        if(arr[i][2] == 'c'){
+        if(arr[i][2] === 'c'){
             var chaine='';
-            if(arr[i][4] == 1){
+            if(arr[i][4] === 1){
                 /* methode3' simple quote */
                 chaine=arr[i][1];
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t+='\''+strToHtml(chaine)+'\'';
+                    t+='\'' + strToHtml(chaine) + '\'';
                 }else{
-                    t+='\''+chaine+'\'';
+                    t+='\'' + chaine + '\'';
                 }
-            }else if(arr[i][4] == 2){
+            }else if(arr[i][4] === 2){
                 /* methode3modele ` */
                 chaine=arr[i][1];
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t+='`'+strToHtml(chaine)+'`';
+                    t+='`' + strToHtml(chaine) + '`';
                 }else{
-                    t+='`'+chaine+'`';
+                    t+='`' + chaine + '`';
                 }
-            }else if(arr[i][4] == 3){
+            }else if(arr[i][4] === 3){
                 /* methode3" double quote */
                 chaine=arr[i][1];
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t+='"'+strToHtml(chaine)+'"';
+                    t+='"' + strToHtml(chaine) + '"';
                 }else{
-                    t+='"'+chaine+'"';
+                    t+='"' + chaine + '"';
                 }
-            }else if(arr[i][4] == 4){
+            }else if(arr[i][4] === 4){
                 /* methode3regex */
                 chaine=arr[i][1];
                 if(coloration){
-                    t+='/'+strToHtml(chaine)+'/'+arr[i][13];
+                    t+='/' + strToHtml(chaine) + '/' + arr[i][13];
                 }else{
-                    t+='/'+chaine+'/'+arr[i][13];
+                    t+='/' + chaine + '/' + arr[i][13];
                 }
             }else{
                 if(coloration){
@@ -749,61 +735,61 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         /*
           
           
-          ===================================================
+          =====================================================================================================
           si on doit traiter une fonction de type commentaire
-          ===================================================            
+          =====================================================================================================
         */
-        if((arr[i][2] == 'f') && (arr[i][1] == DEBUTCOMMENTAIRE)){
+        if((arr[i][2] === 'f') && (arr[i][1] === DEBUTCOMMENTAIRE)){
             /*
-              ==========================
+              =============================================================================================
               on est dans un commentaire
-              ==========================
+              =============================================================================================
             */
             commentaire=ttcomm1(arr[i][13],arr[i][3],i);
             if(coloration){
                 /*mise en forme en HTML*/
                 commentaire=strToHtml(commentaire);
                 if(retourLigne){
-                    t+='<span style="color:darkgreen;background-color:lightgrey;">'+DEBUTCOMMENTAIRE+'('+commentaire+')</span>';
+                    t+='<span style="color:darkgreen;background-color:lightgrey;">' + DEBUTCOMMENTAIRE + '(' + commentaire + ')</span>';
                 }else{
-                    t+='<span style="color:darkgreen;background-color:lightgrey;">'+DEBUTCOMMENTAIRE+'()</span>';
+                    t+='<span style="color:darkgreen;background-color:lightgrey;">' + DEBUTCOMMENTAIRE + '()</span>';
                 }
             }else{
                 /*pas de mise en forme en HTML*/
                 if(retourLigne){
-                    t+=arr[i][1]+'('+commentaire+')';
+                    t+=arr[i][1] + '(' + commentaire + ')';
                 }else{
-                    t+=arr[i][1]+'()';
+                    t+=arr[i][1] + '()';
                 }
             }
             continue;
         }
         /*
-          ===================================================
+          =====================================================================================================
           si on doit traiter une fonction de type bloc
-          ===================================================            
+          =====================================================================================================
         */
-        if((arr[i][2] == 'f') && (arr[i][1] == DEBUTBLOC)){
+        if((arr[i][2] === 'f') && (arr[i][1] === DEBUTBLOC)){
             /*
-              ==========================
+              =============================================================================================
               on est dans un bloc
-              ==========================
+              =============================================================================================
             */
             commentaire=arr[i][13];
             if(coloration){
                 /*mise en forme en HTML*/
                 commentaire=strToHtml(commentaire);
                 if(retourLigne){
-                    t+='<span style="color:navy;background-color:lightgrey;">'+DEBUTBLOC+'('+commentaire+')</span>';
+                    t+='<span style="color:navy;background-color:lightgrey;">' + DEBUTBLOC + '(' + commentaire + ')</span>';
                 }else{
-                    t+='<span style="color:navy;background-color:lightgrey;">'+DEBUTBLOC+'()</span>';
+                    t+='<span style="color:navy;background-color:lightgrey;">' + DEBUTBLOC + '()</span>';
                 }
             }else{
                 /*pas de mise en forme en HTML*/
                 if(retourLigne){
-                    t+=arr[i][1]+'('+commentaire+')';
+                    t+=arr[i][1] + '(' + commentaire + ')';
                 }else{
-                    t+=arr[i][1]+'()';
+                    t+=arr[i][1] + '()';
                 }
             }
             continue;
@@ -811,29 +797,29 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         /*
           
           
-          ===========================================================
+          =====================================================================================================
           pour toutes les autres fonctions, on fait un appel récursif
-          ===========================================================    
+          =====================================================================================================
         */
         var obj={};
-        obj=a2F1(arr,i,retourLigne,(i+1),coloration);
+        obj=a2F1(arr,i,retourLigne,(i + 1),coloration);
         if(obj.status === true){
             /*on ajoute le nom de la fonction et on ouvre la parenthèse*/
             if(coloration){
-                t+=strToHtml(arr[i][1])+'(';
+                t+=strToHtml(arr[i][1]) + '(';
             }else{
-                t+=arr[i][1]+'(';
+                t+=arr[i][1] + '(';
             }
             /*
-              ============================================
+              =============================================================================================
               on ajoute le contenu récursif de la fonction
-              ============================================
+              =============================================================================================
             */
             t+=obj.value;
             /*
               on met les retours de ligne
             */
-            if((forcerRetourLigne) && (obj.forcerRetourLigne == true)){
+            if((forcerRetourLigne) && (obj.forcerRetourLigne === true)){
                 t+=espacesnrev(true,arr[i][3]);
             }else if(retourLigne){
                 if( !((arr[i][8] <= nombreEnfantsLimite) && (arr[i][10] <= profondeurLimite))){
@@ -850,15 +836,14 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     }
     return({'status':true,'value':t,'forcerRetourLigne':forcerRetourLigne});
 }
-
 /*
-  ===========================================
-  ===========================================
-  ===========================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
   fonction qui transforme un texte en tableau
-  ===========================================
-  ===========================================
-  ===========================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
 */
 function iterateCharacters2(str){
     var out = [];
@@ -878,41 +863,33 @@ function iterateCharacters2(str){
             /*
               0xD800 = 55296 = 1101 1000 0000 0000  , 0xF800 = 63488 = 1111 1000 0000 0000
             */
-            temp=codeCaractere&0xF800;
+            temp=codeCaractere & 0xF800;
             if(temp === 55296){
-                
-                out[indiceTab]=[
-                    str.substr(i,2),2,i,numLigne
-                ];
-                
+                out[indiceTab]=[str.substr(i,2),2,i,numLigne];
                 indiceTab++;
                 i++;
             }else{
-                out[indiceTab]=[
-                    str.substr(i,1),1,i,numLigne
-                ];
-                
+                out[indiceTab]=[str.substr(i,1),1,i,numLigne];
                 indiceTab++;
                 if(codeCaractere === 10){
                     numLigne++;
                 }
             }
         }else{
-            exceptions=(exceptions+1);
+            exceptions=exceptions + 1;
         }
     }
-    
     return({'out':out,'numLigne':numLigne,'exceptions':exceptions});
 }
 /*
-  ==================================================
-  ==================================================
-  ==================================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
   reconstruit une chaine à partir du tableau
   c'est utile en cas d'erreur !
-  ==================================================
-  ==================================================
-  ==================================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
 */
 function reconstruitChaine(tab,debut,fin){
     var t='';
@@ -923,122 +900,116 @@ function reconstruitChaine(tab,debut,fin){
     return t;
 }
 /*
-  ==========================================
+  =====================================================================================================================
   todo, à faire plus tard
-  ==========================================
+  =====================================================================================================================
 */
 function formaterErreurRev(obj){
- /*
- exemple de donnée en entrée
- {
-    type:'rev',
-    status:false,
-    ind:i,
-    message : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
-    texte:texte,
-    chaineTableau:chaineTableau,
-    tabComment:tabCommentaireEtFinParentheses,
-    tableauEntree:tableauEntree,
-    quitterSiErreurNiveau:quitterSiErreurNiveau,
-    autoriserCstDansRacine:autoriserCstDansRacine
- }
- */
+    /*
+      exemple de donnée en entrée
+      {
+      type:'rev',
+      status:false,
+      ind:i,
+      message : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+      texte:texte,
+      chaineTableau:chaineTableau,
+      tabComment:tabCommentaireEtFinParentheses,
+      tableauEntree:tableauEntree,
+      quitterSiErreurNiveau:quitterSiErreurNiveau,
+      autoriserCstDansRacine:autoriserCstDansRacine
+      }
+    */
     var t='';
     var i=0;
     var j=0;
     var finGrasFait=false;
     var presDe='';
     var line=0;
- 
     var message_ajoute='';
-    if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true ){
-      /*
-       si il y a un problème avec le JSON.parse:
-
-      SyntaxError: Bad control character in string literal in JSON at position 113 (line 1 column 114)
-      at JSON.parse (<anonymous>)
-      at functionToArray2 (core6.js:1939:13)
-      at transformLeRev (pour-index_php0.js:118:24)
-      at <anonymous>:1:1      
-      */
-      if(obj.ejson.message.indexOf('at position ')>=0){
-       var position=obj.ejson.message.substr(obj.ejson.message.indexOf('at position ')+12);
-       if(obj.ejson.message.indexOf(' ')>=0){
-        position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
-        for(i=position;i>=0  && message_ajoute==='' ;i--){
-         if(obj.chaineTableau.substr(i,1)==='['){
-          for(var j=i;j<obj.chaineTableau.length && message_ajoute==='';j++){
-           if(obj.chaineTableau.substr(j,1)===']'){
-             message_ajoute='près de `' + obj.chaineTableau.substr(i , j-i+1)+'`';
-             break;
-           }
-          }
-         }
-        }
-       }
-      }
-     
-     
-      return {'status':obj.status,'value':T,'id':obj.ind,'message':obj.message + ' ' + message_ajoute };
-    }
-    
-    var chaineTableau='['+obj.chaineTableau+']';
-    var T = JSON.parse(chaineTableau);
-
-    if(obj.hasOwnProperty('tableauEntree')){
-        if(obj.hasOwnProperty('ind')){
-            if(obj.ind>50){
-                for(i=obj.ind-50;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
-                    if(i===obj.ind-5){
-                     presDe+='<b>';
-                    }
-                    presDe+=strToHtml(obj.tableauEntree[i][0]);
-                    if(i===obj.ind+5){
-                     presDe+='</b>';
-                     finGrasFait=true;
+    if((obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json')) && (obj.erreur_conversion_chaineTableau_en_json === true)){
+        /*
+          si il y a un problème avec le JSON.parse:
+          
+          SyntaxError: Bad control character in string literal in JSON at position 113 (line 1 column 114)
+          at JSON.parse (<anonymous>)
+          at functionToArray2 (core6.js:1939:13)
+          at transformLeRev (pour-index_php0.js:118:24)
+          at <anonymous>:1:1      
+        */
+        if(obj.ejson.message.indexOf('at position ') >= 0){
+            var position = obj.ejson.message.substr((obj.ejson.message.indexOf('at position ') + 12));
+            if(obj.ejson.message.indexOf(' ') >= 0){
+                position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
+                for(i=position;(i >= 0) && (message_ajoute === '');i--){
+                    if(obj.chaineTableau.substr(i,1) === '['){
+                        var j=i;
+                        for(j=i;(j < obj.chaineTableau.length) && (message_ajoute === '');j++){
+                            if(obj.chaineTableau.substr(j,1) === ']'){
+                                message_ajoute='près de `' + obj.chaineTableau.substr(i,(((j - i)) + 1)) + '`';
+                                break;
+                            }
+                        }
                     }
                 }
-                if(!finGrasFait){
-                 presDe+='</b>'
+            }
+        }
+        return({'status':obj.status,'value':T,'id':obj.ind,'message':(obj.message + ' ' + message_ajoute)});
+    }
+    var chaineTableau = ('[' + obj.chaineTableau + ']');
+    var T = JSON.parse(chaineTableau);
+    if(obj.hasOwnProperty('tableauEntree')){
+        if(obj.hasOwnProperty('ind')){
+            if(obj.ind > 50){
+                for(i=obj.ind - 50;(i <= (obj.ind + 50)) && (i < obj.tableauEntree.length);i++){
+                    if(i === (obj.ind - 5)){
+                        presDe+='<b>';
+                    }
+                    presDe+=strToHtml(obj.tableauEntree[i][0]);
+                    if(i === (obj.ind + 5)){
+                        presDe+='</b>';
+                        finGrasFait=true;
+                    }
+                }
+                if( !(finGrasFait)){
+                    presDe+='</b>';
                 }
             }else{
                 presDe='<b>';
-                for(i=0;(i <= obj.ind+50) && (i < obj.tableauEntree.length);i++){
+                for(i=0;(i <= (obj.ind + 50)) && (i < obj.tableauEntree.length);i++){
                     presDe+=strToHtml(obj.tableauEntree[i][0]);
-                    if(i===obj.ind+5){
-                      presDe+='</b>';
-                      finGrasFait=true;
+                    if(i === (obj.ind + 5)){
+                        presDe+='</b>';
+                        finGrasFait=true;
                     }
                 }
-                if(!finGrasFait){
-                 presDe+='</b>'
+                if( !(finGrasFait)){
+                    presDe+='</b>';
                 }
-                
             }
-            message_ajoute+='position caractère='+obj.ind+'';
-            message_ajoute+='<br />près de ----'+presDe+'----<br />';
+            message_ajoute+='position caractère=' + obj.ind + '';
+            message_ajoute+='<br />près de ----' + presDe + '----<br />';
             line=0;
-            for(i=obj.ind;i>=0;i--){
-                if(obj.tableauEntree[i][0]==='\n'){
+            for(i=obj.ind;i >= 0;i--){
+                if(obj.tableauEntree[i][0] === '\n'){
                     line++;
                 }
             }
         }
     }
-    
-    var message=obj.message+message_ajoute;
+    var message = (obj.message + message_ajoute);
     var temp={'status':obj.status,'value':T,'id':obj.ind,'message':message,'line':line};
     return temp;
 }
 /*
-  ==================================================
-  ==================================================
-  ==================================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
   tableau retourné par l'analyse syntaxique 
   du texte en entrée de la fonction functionToArray2
-  ==================================================
-  ==================================================
-  ==================================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
 */
 var global_enteteTableau = [
     ['id','id'],
@@ -1057,19 +1028,19 @@ var global_enteteTableau = [
     ['com','commentaire']
 ];
 /*
-  ===================================================
-  ===================================================
-  ===================================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
   fonction d'analyse syntaxique d'un programme source
-  ===================================================
-  ===================================================
-  ===================================================
+  =====================================================================================================================
+  =====================================================================================================================
+  =====================================================================================================================
 */
 function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine,rechercheParentheseCorrespondante){
     /*
-      =========================
+      =============================================================================================================
       les chaines de caractères
-      =========================
+      =============================================================================================================
     */
     var texte='';
     var commentaire='';
@@ -1079,12 +1050,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var chaineTableau='';
     var typePrecedent='';
     var drapeauRegex='';
-    var chCR = '¶'+'CR'+'¶';
-    var chLF = '¶'+'LF'+'¶';
+    var chCR = ('¶' + 'CR' + '¶');
+    var chLF = ('¶' + 'LF' + '¶');
     /*
-      =========================
+      =============================================================================================================
       les entiers
-      =========================
+      =============================================================================================================
     */
     var i=0;
     var j=0;
@@ -1102,9 +1073,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var indiceTabCommentaire=0;
     var niveauPrecedent=0;
     /*
-      =========================
+      =============================================================================================================
       les booléens
-      =========================
+      =============================================================================================================
     */
     var dansCstSimple=false;
     var dansCstDouble=false;
@@ -1113,38 +1084,38 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var dsComment=false;
     var dsBloc=false;
     var constanteQuotee=0;
-    var drapeauParenthese=rechercheParentheseCorrespondante===''?false:true;
+    var drapeauParenthese = ((rechercheParentheseCorrespondante === '')?false:true);
     /*
-      ====================================
+      =============================================================================================================
       Le tableau en sortie si tout va bien
-      ====================================
+      =============================================================================================================
     */
-    var tabCommentaireEtFinParentheses=[];
-    var T=[];
+    var tabCommentaireEtFinParentheses = [];
+    var T = [];
     var temp={};
-    var tableauParenthesesCommentaires=[];
+    var tableauParenthesesCommentaires = [];
     /*
-      =======================================================================
+      =============================================================================================================
       initialisation du tableau contenant le source structuré en arborescence
-      =======================================================================
+      =============================================================================================================
       0id    1val  2typ  3niv  4coQ
       5pre   6der  7pId  8nbE  9numEnfant  
       10pro 11OPa 12FPa 13comm
     */
     /*
-      =========================================================================
+      =============================================================================================================
       Les performances sur chrome sont très mauvaises en utilisant des push
       c'est pourquoi on construit cette variable texte : "chaineTableau" 
       qui sera traitée avec un JSON.parse() plus bas.
       Sur un tableau de 25000 éléments, on multiplie la vitesse d'exécution 
       par un facteur compris entre 30 et 60
-      =========================================================================
+      =============================================================================================================
     */
     /*
       l'ancienne version avec push était :
       T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
     */
-    chaineTableau+='[0,"'+texte+'","INIT",-1,'+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+    chaineTableau+='[0,"' + texte + '","INIT",-1,' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
     typePrecedent='INIT';
     niveauPrecedent=niveau;
     var l01=tableauEntree.length;
@@ -1164,12 +1135,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
               
               
               
-              =============================
+              =============================================================================================
               Si on est dans un commentaire
-              =============================
+              =============================================================================================
             */
-            if(c == ')'){
-                if((niveau == (niveauDebutCommentaire+1)) && (niveauDansCommentaire == 0)){
+            if(c === ')'){
+                if((niveau === (niveauDebutCommentaire + 1)) && (niveauDansCommentaire === 0)){
                     posFerPar=i;
                     /*
                       comme on a supprimé les push sur le tableau principal et qu'on remplit les commentaires
@@ -1186,44 +1157,33 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     */
                     commentaire='';
                     dsComment=false;
-                    niveau=niveau-1;
+                    niveau=niveau - 1;
                     if(drapeauParenthese){
-                     
-                     if(i==l01-1){
-                      /*
-                        ===============================================================
-                        si on est en recherche de parenthèse correspondante 
-                        et que c'est le dernier caractère du tableau en entrée
-                        alors c'est une recherche de parenthèse ouvrante correspondante
-                        ===============================================================
-                      */
-                      // OK VALIDE
-                      
-                      return {status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[tableauParenthesesCommentaires.length-1]][2]};
-                     
-                     }
-                     
-                     
-                     tableauParenthesesCommentaires.pop();
+                        if(i === (l01 - 1)){
+                            /*
+                              =============================================================
+                              si on est en recherche de parenthèse correspondante 
+                              et que c'est le dernier caractère du tableau en entrée
+                              alors c'est une recherche de parenthèse ouvrante correspondante
+                              =============================================================
+                            */
+                            return({status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[(tableauParenthesesCommentaires.length - 1)]][2]});
+                        }
+                        tableauParenthesesCommentaires.pop();
                     }
                 }else{
-                    
                     if(drapeauParenthese){
-                     
-                     if(i===l01-1){
-                      
-                      // OK VALIDE
-                      return {status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[tableauParenthesesCommentaires.length-1]][2]};
-                     }
-                     tableauParenthesesCommentaires.pop();
+                        if(i === (l01 - 1)){
+                            return({status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[(tableauParenthesesCommentaires.length - 1)]][2]});
+                        }
+                        tableauParenthesesCommentaires.pop();
                     }
                     commentaire+=c;
-                    niveauDansCommentaire=niveauDansCommentaire-1;
-
+                    niveauDansCommentaire=niveauDansCommentaire - 1;
                 }
-            }else if(c == '('){
+            }else if(c === '('){
                 commentaire+=c;
-                niveauDansCommentaire=(niveauDansCommentaire+1);
+                niveauDansCommentaire=niveauDansCommentaire + 1;
                 if(drapeauParenthese){
                     tableauParenthesesCommentaires.push(i);
                 }
@@ -1231,58 +1191,54 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 commentaire+=c;
             }
             /*
-              =============================
+              =============================================================================================
               FIN de Si on est dans un commentaire
-              =============================
+              =============================================================================================
               
               
               
             */
-        }else if(dansCstDouble == true){
+        }else if(dansCstDouble === true){
             /*
               
               
               
-              ===================================
+              =============================================================================================
               Si on est dans une constante double
-              ===================================
+              =============================================================================================
             */
-            if(c == '"'){
+            if(c === '"'){
                 if(autoriserCstDansRacine !== true){
-                    if(i == l01-1){
+                    if(i === (l01 - 1)){
                         /* à faire, noter un cas d'erreur */
-                        console.error('core functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;')
+                        console.error('core functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;');
                         return(logerreur({'status':false,'id':i,'value':T,'message':'1148 la racine ne peut pas contenir des constantes'}));
                     }
                 }
-                if((i+1) < l01){
-                    c1=tableauEntree[i+1][0];
-                    if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
-                        dernier=i-1;
+                if((i + 1) < l01){
+                    c1=tableauEntree[(i + 1)][0];
+                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                        dernier=i - 1;
                     }else{
                         /* cas d'erreur = f(""") */
-
-                        return logerreur(formaterErreurRev({status:false,ind:i,message:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-
+                        return(logerreur(formaterErreurRev({status:false,ind:i,message:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
                     }
                 }else{
                     if( !(autoriserCstDansRacine === true)){
                         if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                            var presDe = reconstruitChaine(tableauEntree,(i - 100),(i + 110));
                         }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                            var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'id':i,'value':T,'message':'1172 la racine ne peut pas contenir des constantes près de '+presDe};
+                        temp={'status':false,'id':i,'value':T,'message':('1172 la racine ne peut pas contenir des constantes près de ' + presDe)};
                         return(logerreur(temp));
                     }
                 }
                 dansCstDouble=false;
                 if(autoriserCstDansRacine !== true){
-                    if(niveau == 0){
+                    if(niveau === 0){
                         /* cas d'erreur = "" */
-
-                        return logerreur(formaterErreurRev({status:false,ind:i,message:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-
+                        return(logerreur(formaterErreurRev({status:false,ind:i,message:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
                     }
                 }
                 constanteQuotee=3;
@@ -1293,7 +1249,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
                 indice++;
-                chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
                   T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
@@ -1302,62 +1258,62 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 texte='';
                 constanteQuotee=0;
-            }else if(c == '\\'){
-                if(i == l01-1){
-                    return(logerreur({'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une constante en i='+i}));
+            }else if(c === '\\'){
+                if(i === (l01 - 1)){
+                    return(logerreur({'status':false,'value':T,'id':i,'message':('un antislash ne doit pas terminer une constante en i=' + i)}));
                 }
                 /**/
-                c1=tableauEntree[i+1][0];
-                if((c1 == '\\') || (c1 == '"') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '>' ) || (c1 == '<') || (c1 == '/') || (c1 == '$')){
-                    if(texte == ''){
+                c1=tableauEntree[(i + 1)][0];
+                if((c1 === '\\') || (c1 === '"') || (c1 === 'n') || (c1 === 't') || (c1 === 'r') || (c1 === 'u') || (c1 === 'b') || (c1 === 'f') || (c1 === 'x') || (c1 === 'v') || (c1 === '0') || (c1 === '>') || (c1 === '<') || (c1 === '/') || (c1 === '$')){
+                    if(texte === ''){
                         premier=i;
                     }
-                    texte+='\\'+c1;
+                    texte+='\\' + c1;
                     i++;
-                }else if(c1 == '"'){
-                    texte+=texte+'"';
+                }else if(c1 === '"'){
+                    texte+=texte + '"';
                     i++;
                 }else{
-                    return logerreur(formaterErreurRev({status:false,ind:i,message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                    return(logerreur(formaterErreurRev({status:false,ind:i,message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
                 }
             }else{
-                if(texte == ''){
+                if(texte === ''){
                     premier=i;
                 }
                 texte+=c;
             }
             /*
-              ==========================================
+              =============================================================================================
               Fin de Si on est dans une constante double
-              ==========================================
+              =============================================================================================
             */
-        }else if(dansCstRegex == true){
+        }else if(dansCstRegex === true){
             /*
               
               
               
-              ========================
+              =============================================================================================
               Si on est dans une regex
-              ========================
+              =============================================================================================
             */
-            if(c == '/'){
+            if(c === '/'){
                 if(autoriserCstDansRacine !== true){
-                    if(i == l01-1){
+                    if(i === (l01 - 1)){
                         temp={'status':false,'id':i,'value':T,'message':'1656 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
-                if((i+1) < l01){
+                if((i + 1) < l01){
                     drapeauRegex='';
-                    c1=tableauEntree[i+1][0];
-                    if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
-                        dernier=i-1;
+                    c1=tableauEntree[(i + 1)][0];
+                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                        dernier=i - 1;
                     }else{
-                        for(j=(i+1);j < l01;j++){
+                        for(j=i + 1;j < l01;j++){
                             c1=tableauEntree[j][0];
-                            if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
+                            if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
                                 dernier=j;
-                                i=j-1;
+                                i=j - 1;
                                 break;
                             }else{
                                 drapeauRegex+=c1;
@@ -1373,18 +1329,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 dansCstRegex=false;
                 constanteQuotee=4;
                 if(autoriserCstDansRacine !== true){
-                    if(niveau == 0){
+                    if(niveau === 0){
                         temp={'status':false,'id':i,'value':T,'message':'1305 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
                 /* methode3regex */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
-                if((texte.indexOf('\n') > 0) || (texte.indexOf('\r')>=0) || (texte.indexOf('\t') > 0)){
-                    return logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                if((texte.indexOf('\n') > 0) || (texte.indexOf('\r') >= 0) || (texte.indexOf('\t') > 0)){
+                    return(logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
                 }
                 indice++;
-                chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
                   T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
@@ -1398,63 +1354,62 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 texte='';
                 constanteQuotee=0;
-            }else if(c == '\\'){
-                if(i == l01-1){
+            }else if(c === '\\'){
+                if(i === (l01 - 1)){
                     temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
                 /**/
-                c1=tableauEntree[i+1][0];
-                if(texte == ''){
+                c1=tableauEntree[(i + 1)][0];
+                if(texte === ''){
                     premier=i;
                 }
-                texte+='\\'+c1;
+                texte+='\\' + c1;
                 i++;
-            }else if(c==='\n' || c==='\r' ){
-                return logerreur(formaterErreurRev({status:false,ind:premier,message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-             
+            }else if((c === '\n') || (c === '\r')){
+                return(logerreur(formaterErreurRev({status:false,ind:premier,message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
             }else{
-                if(texte == ''){
+                if(texte === ''){
                     premier=i;
                 }
                 texte+=c;
             }
             /*
-              ===============================
+              =============================================================================================
               Fin de Si on est dans une regex
-              ===============================
+              =============================================================================================
               
               
               
               
             */
-        }else if(dansCstModele == true){
+        }else if(dansCstModele === true){
             /*
               
               
               
-              ===================================
+              =============================================================================================
               Si on est dans une constante modèle
-              ===================================
+              =============================================================================================
             */
-            if(c == '`'){
+            if(c === '`'){
                 if(autoriserCstDansRacine !== true){
-                    if(i == l01-1){
+                    if(i === (l01 - 1)){
                         temp={'status':false,'id':i,'value':T,'message':'1239 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
-                if((i+1) < l01){
-                    c1=tableauEntree[i+1][0];
-                    if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
-                        dernier=i-1;
+                if((i + 1) < l01){
+                    c1=tableauEntree[(i + 1)][0];
+                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                        dernier=i - 1;
                     }else{
                         if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                            var presDe = reconstruitChaine(tableauEntree,(i - 100),(i + 110));
                         }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                            var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':'1394 apres une constante, il doit y avoir un caractère d\'echappement près de '+presDe};
+                        temp={'status':false,'value':T,'id':i,'message':('1394 apres une constante, il doit y avoir un caractère d\'echappement près de ' + presDe)};
                         return(logerreur(temp));
                     }
                 }else{
@@ -1466,7 +1421,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 dansCstModele=false;
                 constanteQuotee=2;
                 if(autoriserCstDansRacine !== true){
-                    if(niveau == 0){
+                    if(niveau === 0){
                         temp={'status':false,'id':i,'value':T,'message':'1398 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
@@ -1478,7 +1433,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
                 indice++;
-                chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
                   T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
@@ -1487,59 +1442,59 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 texte='';
                 constanteQuotee=0;
-            }else if(c == '\\'){
-                if(i == l01-1){
+            }else if(c === '\\'){
+                if(i === (l01 - 1)){
                     temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
                 /**/
-                c1=tableauEntree[i+1][0];
-                if(texte == ''){
+                c1=tableauEntree[(i + 1)][0];
+                if(texte === ''){
                     premier=i;
                 }
-                texte+='\\'+c1;
+                texte+='\\' + c1;
                 i++;
             }else{
-                if(texte == ''){
+                if(texte === ''){
                     premier=i;
                 }
                 texte+=c;
             }
             /*
-              ==========================================
+              =============================================================================================
               Fin de Si on est dans une constante modèle
-              ==========================================
+              =============================================================================================
               
               
               
             */
-        }else if(dansCstSimple == true){
+        }else if(dansCstSimple === true){
             /*
               
               
               
-              ===================================
+              =============================================================================================
               Si on est dans une constante simple
-              ===================================
+              =============================================================================================
             */
-            if(c == '\''){
+            if(c === '\''){
                 if(autoriserCstDansRacine !== true){
-                    if(i == l01-1){
+                    if(i === (l01 - 1)){
                         temp={'status':false,'id':i,'value':T,'message':'1317 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
-                if((i+1) < l01){
-                    c1=tableauEntree[i+1][0];
-                    if((c1 == ',') || (c1 == '\t') || (c1 == '\n') || (c1 == '\r') || (c1 == '/') || (c1 == ' ') || (c1 == ')')){
-                        dernier=i-1;
+                if((i + 1) < l01){
+                    c1=tableauEntree[(i + 1)][0];
+                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                        dernier=i - 1;
                     }else{
                         if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                            var presDe = reconstruitChaine(tableauEntree,(i - 100),(i + 110));
                         }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                            var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':'1472 apres une constante, il doit y avoir un caractère d\'echappement,i='+i+' c1="'+c1+'" près de '+presDe};
+                        temp={'status':false,'value':T,'id':i,'message':('1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe)};
                         return(logerreur(temp));
                     }
                 }else{
@@ -1549,7 +1504,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if(autoriserCstDansRacine !== true){
-                    if(niveau == 0){
+                    if(niveau === 0){
                         temp={'status':false,'id':i,'value':T,'message':'1345 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
@@ -1563,7 +1518,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
                 indice++;
-                chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
                   T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
@@ -1572,38 +1527,38 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 texte='';
                 constanteQuotee=0;
-            }else if(c == '\\'){
-                if(i == l01-1){
+            }else if(c === '\\'){
+                if(i === (l01 - 1)){
                     temp={'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
                 /**/
-                c1=tableauEntree[i+1][0];
+                c1=tableauEntree[(i + 1)][0];
                 if(false){
-                    if(texte == ''){
+                    if(texte === ''){
                         premier=i;
                     }
                     texte+=c1;
                     i++;
-                }else if((c1 == '\\') || (c1 == '\'') || (c1 == '/') || (c1 == 'n') || (c1 == 't') || (c1 == 'r') || (c1 == 'u') || (c1 == 'b') || (c1 == 'f') || (c1 == 'x') || (c1 == 'v') || (c1 == '0') || (c1 == '$') ){
-                    if(texte == ''){
+                }else if((c1 === '\\') || (c1 === '\'') || (c1 === '/') || (c1 === 'n') || (c1 === 't') || (c1 === 'r') || (c1 === 'u') || (c1 === 'b') || (c1 === 'f') || (c1 === 'x') || (c1 === 'v') || (c1 === '0') || (c1 === '$')){
+                    if(texte === ''){
                         premier=i;
                     }
-                    texte+='\\'+c1;
+                    texte+='\\' + c1;
                     i++;
                 }else{
-                    return logerreur(formaterErreurRev({status:false,ind:i,message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                    return(logerreur(formaterErreurRev({status:false,ind:i,message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
                 }
             }else{
-                if(texte == ''){
+                if(texte === ''){
                     premier=i;
                 }
                 texte+=c;
             }
             /*
-              ==========================================
+              =============================================================================================
               Fin de Si on est dans une constante simple
-              ==========================================
+              =============================================================================================
               
               
               
@@ -1613,25 +1568,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
               
               
               
-              ==================================================
+              =============================================================================================
               on n'est pas dans un commentaire ou une constante,  
               donc c'est un nouveau type qu'il faut détecter
-              ==================================================
+              =============================================================================================
             */
-            if(c == '('){
+            if(c === '('){
                 /*
-                  ====================
+                  =====================================================================================
                   Parenthèse ouvrante
-                  ====================
+                  =====================================================================================
                   
                   
                 */
                 posOuvPar=i;
-                if(texte == DEBUTCOMMENTAIRE){
+                if(texte === DEBUTCOMMENTAIRE){
                     dsComment=true;
                     niveauDebutCommentaire=niveau;
                 }
-                if(texte == DEBUTBLOC){
+                if(texte === DEBUTBLOC){
                     dsComment=true;
                     niveauDebutCommentaire=niveau;
                 }
@@ -1642,46 +1597,46 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   le nom d'une fonction peut être vide , par exemple dans le cas html, on écrit a[[href,'exemple']]
                 */
                 indice++;
-                chaineTableau+=',['+indice+',"'+texte+'",'+'"f"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"f"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
                   T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                 */
                 typePrecedent='f';
                 niveauPrecedent=niveau;
-                niveau=(niveau+1);
+                niveau=niveau + 1;
                 texte='';
                 dansCstSimple=false;
                 dansCstDouble=false;
                 dansCstModele=false;
                 dansCstRegex=false;
                 /*
-                  ==========================
+                  =====================================================================================
                   FIN DE Parenthèse ouvrante
-                  ==========================
+                  =====================================================================================
                   
                   
                 */
-            }else if(c == ')'){
+            }else if(c === ')'){
                 /*
                   
                   
-                  ====================
+                  =====================================================================================
                   Parenthèse fermante
-                  ====================
+                  =====================================================================================
                 */
                 posFerPar=i;
                 if(texte != ''){
-                    if(niveau == 0){
+                    if(niveau === 0){
                         if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i-100,(i+110));
+                            var presDe = reconstruitChaine(tableauEntree,(i - 100),(i + 110));
                         }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i+10));
+                            var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':'une fermeture de parenthése ne doit pas être au niveau 0 près de '+presDe};
+                        temp={'status':false,'value':T,'id':i,'message':('une fermeture de parenthése ne doit pas être au niveau 0 près de ' + presDe)};
                         return(logerreur(temp));
                     }
                     indice++;
-                    chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                    chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                     /*
                       T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     */
@@ -1691,104 +1646,96 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 niveau--;
                 if(drapeauParenthese){
-                 if(i==l01-1){
-                  /*
-                    si on est en recherche de parenthèse correspondante et que c'est le dernier caractère du tableau en entrée
-                    alors c'est une recherche de parenthèse ouvrante correspondante
-                  */
-                  
-                  chaineTableau='['+chaineTableau+']';
-                  try{
-                   T=JSON.parse(chaineTableau);
-                  }catch(ejson){
-                    console.log('ejson=',ejson);
-                    return logerreur(formaterErreurRev({'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1555 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-                  }
-
-                  if(rechercheParentheseCorrespondante==='('){
-                        return {status:true,'posFerPar':tableauEntree[i][2]};
-                  }else{
-                      for(j=T.length-1;j>=0;j--){
-                           if(T[j][3]<T[T.length-1][3]){
-
-                               return {status:true,'posOuvPar':tableauEntree[T[j][11]][2]};
-                               break;
-                           }
-                      }
-                  }
-                  
-                 }else{
-                  if(niveau===0 && rechercheParentheseCorrespondante==='('){
-                   /*
-                     il faut retourner la position réelle en tenant compte des
-                     caractères utf8
-                   */
-
-                   return {status:true,'posFerPar':tableauEntree[posFerPar][2]};
-                  }
-                 
-                 }
-                 
+                    if(i === (l01 - 1)){
+                        /*
+                          si on est en recherche de parenthèse correspondante et que c'est le dernier caractère du tableau en entrée
+                          alors c'est une recherche de parenthèse ouvrante correspondante
+                        */
+                        chaineTableau='[' + chaineTableau + ']';
+                        try{
+                            T=JSON.parse(chaineTableau);
+                        }catch(ejson){
+                            console.log('ejson=',ejson);
+                            return(logerreur(formaterErreurRev({'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1555 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                        }
+                        if(rechercheParentheseCorrespondante === '('){
+                            return({status:true,'posFerPar':tableauEntree[i][2]});
+                        }else{
+                            for(j=T.length - 1;j >= 0;j--){
+                                if(T[j][3] < T[(T.length - 1)][3]){
+                                    return({status:true,'posOuvPar':tableauEntree[T[j][11]][2]});
+                                    break;
+                                }
+                            }
+                        }
+                    }else{
+                        if((niveau === 0) && (rechercheParentheseCorrespondante === '(')){
+                            /*
+                              il faut retourner la position réelle en tenant compte des
+                              caractères utf8
+                            */
+                            return({status:true,'posFerPar':tableauEntree[posFerPar][2]});
+                        }
+                    }
                 }
-                
                 posFerPar=0;
                 dansCstSimple=false;
                 dansCstDouble=false;
                 dansCstModele=false;
                 dansCstRegex=false;
                 /*
-                  ==========================
+                  =====================================================================================
                   FIN de Parenthèse fermante
-                  ==========================
+                  =====================================================================================
                   
                   
                 */
-            }else if(c == '\\'){
+            }else if(c === '\\'){
                 /*
                   
                   
-                  ===========
+                  =====================================================================================
                   anti slash 
-                  ===========
+                  =====================================================================================
                 */
                 if( !(dansCstSimple)){
-                    temp={'status':false,'value':T,'id':i,'message':'1474 un antislash doit être dans une constante en i='+i};
+                    temp={'status':false,'value':T,'id':i,'message':('1474 un antislash doit être dans une constante en i=' + i)};
                     return(logerreur(temp));
                 }
                 if( !(dansCstDouble)){
-                    temp={'status':false,'value':T,'id':i,'message':'1478 un antislash doit être dans une constante en i='+i};
+                    temp={'status':false,'value':T,'id':i,'message':('1478 un antislash doit être dans une constante en i=' + i)};
                     return(logerreur(temp));
                 }
                 if( !(dansCstModele)){
-                    temp={'status':false,'value':T,'id':i,'message':'1482 un antislash doit être dans une constante en i='+i};
+                    temp={'status':false,'value':T,'id':i,'message':('1482 un antislash doit être dans une constante en i=' + i)};
                     return(logerreur(temp));
                 }
                 if( !(dansCstRegex)){
-                    temp={'status':false,'value':T,'id':i,'message':'1482 un antislash doit être dans une constante en i='+i};
+                    temp={'status':false,'value':T,'id':i,'message':('1482 un antislash doit être dans une constante en i=' + i)};
                     return(logerreur(temp));
                 }
                 /*
-                  ===================
+                  =====================================================================================
                   Fin d'un anti slash
-                  ===================
+                  =====================================================================================
                   
                   
                 */
-            }else if(c == '\''){
+            }else if(c === '\''){
                 /*
                   
                   
-                  =============
+                  =====================================================================================
                   apostrophe '
-                  =============
+                  =====================================================================================
                 */
                 premier=i;
-                if(dansCstSimple == true){
+                if(dansCstSimple === true){
                     dansCstSimple=false;
                 }else{
                     if(texte !== ''){
                         indice++;
-                        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                         /*
                           T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                         */
@@ -1799,25 +1746,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstSimple=true;
                 }
                 /*
-                  ===============
+                  =====================================================================================
                   FIN apostrophe
-                  ===============
+                  =====================================================================================
                   
                   
                 */
-            }else if(c == '/'){
+            }else if(c === '/'){
                 /*
-                  ===========
+                  =====================================================================================
                   regex /
-                  ===========
+                  =====================================================================================
                 */
                 premier=i;
-                if(dansCstRegex == true){
+                if(dansCstRegex === true){
                     dansCstRegex=false;
                 }else{
                     if(texte !== ''){
                         indice++;
-                        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                         /*
                           T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                         */
@@ -1828,20 +1775,20 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstRegex=true;
                 }
                 /*
-                  ===============
+                  =====================================================================================
                   FIN regex /
-                  ===============
+                  =====================================================================================
                 */
-            }else if(c == '`'){
+            }else if(c === '`'){
                 /*
                   
                   
-                  ===========
+                  =====================================================================================
                   modele `
-                  ===========
+                  =====================================================================================
                 */
                 premier=i;
-                if(dansCstModele == true){
+                if(dansCstModele === true){
                     dansCstModele=false;
                 }else{
                     if(texte !== ''){
@@ -1849,7 +1796,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         /*
                           T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                         */
-                        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                         typePrecedent='c';
                         niveauPrecedent=niveau;
                         texte='';
@@ -1857,27 +1804,27 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstModele=true;
                 }
                 /*
-                  ===============
+                  =====================================================================================
                   FIN modele `
-                  ===============
+                  =====================================================================================
                   
                   
                 */
-            }else if(c == '"'){
+            }else if(c === '"'){
                 /*
                   
                   
-                  ===============
+                  =====================================================================================
                   double quote "
-                  ===============
+                  =====================================================================================
                 */
                 premier=i;
-                if(dansCstDouble == true){
+                if(dansCstDouble === true){
                     dansCstDouble=false;
                 }else{
                     if(texte !== ''){
                         indice++;
-                        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                         /*
                           T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
                         */
@@ -1888,36 +1835,36 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstDouble=true;
                 }
                 /*
-                  ===================
+                  =====================================================================================
                   FIN double quote "
-                  ===================
+                  =====================================================================================
                   
                   
                 */
-            }else if(c == ','){
+            }else if(c === ','){
                 /*
                   
                   
-                  ========================
+                  =====================================================================================
                   virgule donc séparateur
-                  ========================
+                  =====================================================================================
                 */
                 if(texte != ''){
                     if(autoriserCstDansRacine !== true){
-                        if(niveau == 0){
+                        if(niveau === 0){
                             temp={'status':false,'value':T,'id':i,'message':'1563 la racine ne peut pas contenir des constantes'};
                             return(logerreur(temp));
                         }
                     }
                     indice++;
-                    chaineTableau+=',['+indice+',"'+texte+'","c",'+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,'+posOuvPar+','+posFerPar+',""]';
+                    chaineTableau+=',[' + indice + ',"' + texte + '","c",' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                     /*
                       T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     */
                     typePrecedent='c';
                     niveauPrecedent=niveau;
                 }else{
-                    if(typePrecedent == 'f'){
+                    if(typePrecedent === 'f'){
                         /*ne rien faire*/
                     }else{
                         if(niveauPrecedent < niveau){
@@ -1932,30 +1879,30 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 dansCstModele=false;
                 dansCstRegex=false;
                 /*
-                  ============================
+                  =====================================================================================
                   FIN virgule donc séparateur
-                  ============================
+                  =====================================================================================
                   
                   
                 */
-            }else if((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n')){
+            }else if((c === ' ') || (c === '\t') || (c === '\r') || (c === '\n')){
                 /*
                   
                   
-                  =============================
+                  =====================================================================================
                   caractères séparateurs de mot
-                  =============================
+                  =====================================================================================
                 */
                 if(texte != ''){
                     if(autoriserCstDansRacine !== true){
-                        if(niveau == 0){
-                            return logerreur(formaterErreurRev({status:false,ind:i,message:'1602 la racine ne peut pas contenir des constantes',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+                        if(niveau === 0){
+                            return(logerreur(formaterErreurRev({status:false,ind:i,message:'1602 la racine ne peut pas contenir des constantes',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
                             temp={'status':false,'value':T,'id':i,'message':'1602 la racine ne peut pas contenir des constantes'};
                             return(logerreur(temp));
                         }
                     }
                     indice++;
-                    chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,0,0,""]';
+                    chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,0,0,""]';
                     /*
                       T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     */
@@ -1968,14 +1915,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     dansCstRegex=false;
                 }
                 /*
-                  ====================================
+                  =====================================================================================
                   FIN de caractères séparateurs de mot
-                  ====================================
+                  =====================================================================================
                   
                   
                 */
             }else{
-                if(texte == ''){
+                if(texte === ''){
                     premier=i;
                 }
                 dernier=i;
@@ -1984,61 +1931,53 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         }
     }
     /*
-      ========================================
+      =============================================================================================================
       on est en dehors de la boucle principale
-      ========================================
+      =============================================================================================================
     */
     if((niveau !== 0) && (quitterSiErreurNiveau)){
-        return logerreur(formaterErreurRev({status:false,ind:l01-1,message:'💥2401 des parenthèses ne correspondent pas, ('+(niveau>0?'il en manque :':'il y en a trop : ')+'niveau='+niveau+') ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-     
+        return(logerreur(formaterErreurRev({status:false,'ind':(l01 - 1),'message':('💥2401 des parenthèses ne correspondent pas, (' + ((niveau > 0)?'il en manque :':'il y en a trop : ') + 'niveau=' + niveau + ') '),type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
     }
-
     /*
       Si on autorise les constantes à la racine, il reste peut être du texte à traiter
     */
     if(texte != ''){
-        indice=(indice+1);
+        indice=indice + 1;
         if(autoriserCstDansRacine !== true){
-            if(niveau == 0){
-                return logerreur(formaterErreurRev({status:false,ind:l01-1,message:'1641 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
+            if(niveau === 0){
+                return(logerreur(formaterErreurRev({status:false,'ind':(l01 - 1),message:'1641 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
             }
         }
         /*
           T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
         */
-        chaineTableau+=',['+indice+',"'+texte+'",'+'"c"'+','+niveau+','+constanteQuotee+','+premier+','+dernier+',0,0,0,0,0,0,""]';
+        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,0,0,""]';
         typePrecedent='c';
         niveauPrecedent=niveau;
     }
     /*
-      =========================================================================
+      =============================================================================================================
       On reconstruit chaineTableau ici
-      =========================================================================
+      =============================================================================================================
     */
-    chaineTableau='['+chaineTableau+']';
+    chaineTableau='[' + chaineTableau + ']';
     try{
-     T=JSON.parse(chaineTableau);
+        T=JSON.parse(chaineTableau);
     }catch(ejson){
-
-      return logerreur(formaterErreurRev({ejson:ejson,'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine}));
-     
+        return(logerreur(formaterErreurRev({ejson:ejson,'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
     }
-    
     if(drapeauParenthese){
-     l01=T.length;
-     for(i=l01-1;i>=0;i--){
-      if(T[i][3]===niveau){
-       /* 
-       à cause des décallages utf8, il faut prendre la position réelle dans le tableau en entrée
-       */
-       
-       return {status:true,'posOuvPar':tableauEntree[T[i][11]][2]};
-      }
-     }
-     return {status:false,'message':'pas de correspondance trouvée'};
+        l01=T.length;
+        for(i=l01 - 1;i >= 0;i--){
+            if(T[i][3] === niveau){
+                /*
+                  à cause des décallages utf8, il faut prendre la position réelle dans le tableau en entrée
+                */
+                return({status:true,'posOuvPar':tableauEntree[T[i][11]][2]});
+            }
+        }
+        return({status:false,'message':'pas de correspondance trouvée'});
     }
-    
-    
     /*
       Puis on ajoute les commentaires 
       tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
@@ -2050,55 +1989,49 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1];
         T[tabCommentaireEtFinParentheses[i][0]][12]=tabCommentaireEtFinParentheses[i][2];
     }
-    
-    
-    
     /*
       
-      ==============================================================
+      =============================================================================================================
       mise à jour de l'id du parent[7] et du nombre d'éléments[8]
-      ============================================================== 
+      =============================================================================================================
     */
     l01=T.length;
-    for(i=l01-1;i > 0;i--){
+    for(i=l01 - 1;i > 0;i--){
         k=T[i][3];
         for(j=i;j >= 0;j--){
-            if(T[j][3] == k-1){
+            if(T[j][3] === (k - 1)){
                 T[i][7]=j;
                 T[j][8]++;
                 break;
             }
         }
     }
-
-    
-    
     /*
       
-      ============================== 
+      =============================================================================================================
       numérotation des enfants
       numenfant = k
-      ==============================
+      =============================================================================================================
     */
     k=0;
     for(i=0;i < l01;i++){
         k=0;
-        for(j=(i+1);j < l01;j++){
-            if(T[j][7] == T[i][0]){
+        for(j=i + 1;j < l01;j++){
+            if(T[j][7] === T[i][0]){
                 k++;
                 T[j][9]=k;
             }
         }
     }
     /*
-     =============================================================================================================
+      =============================================================================================================
       profondeur des fonctions
       k=remonterAuNiveau
       l=idParent
-     =============================================================================================================
-     */
-     for(i=(l01 - 1);i > 0;i--){
-       if(T[i][2] == 'c'){
+      =============================================================================================================
+    */
+    for(i=l01 - 1;i > 0;i--){
+        if(T[i][2] === 'c'){
             T[i][10]=0;
         }
         if(T[i][7] > 0){
