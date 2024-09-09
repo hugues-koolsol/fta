@@ -693,7 +693,6 @@ function reactiverLesBoutons(){
     }
 }
 /*
-  
   =====================================================================================================================
   quand on clique sur un lien javascript, on affiche la boite 1.5 secondes plus tard
   =====================================================================================================================
@@ -713,7 +712,6 @@ function clickLinkJs1(e){
     },300);
 }
 /*
-  
   =====================================================================================================================
   quand on clique sur un lien, on affiche la boite 1.5 secondes plus tard
   =====================================================================================================================
@@ -729,7 +727,6 @@ function clickLink1(e){
     }
 }
 /*
-  
   =====================================================================================================================
   quand on clique sur un bouton, on affiche la boite 1.5 secondes plus tard
   =====================================================================================================================
@@ -742,7 +739,6 @@ function clickButton1(e){
     globale_timeout_reference_timer_serveur_lent=setTimeout(affichageBoiteServeurLent,globale_timeout_serveur_lent);
 }
 /*
-  
   =====================================================================================================================
   supprime les messages de la zone global_messages et efface la zone de texte qui contient les message
   =====================================================================================================================
@@ -756,9 +752,11 @@ function clearMessages(nomZone){
     }catch(e){
     }
     global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+    try{
+      rangeErreurSelectionne=false;
+    }catch(e){}
 }
 /*
-  
   =====================================================================================================================
   affiche les messages contenus dans la variable global_messages
   =====================================================================================================================
@@ -835,7 +833,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         }
         global_messages.ids=[];
     }
-    while(global_messages.ranges.length > 0){
+    while(global_messages.ranges.length>0){
         zon.innerHTML=('&nbsp;<a href="javascript:selectionnerUnePlage(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML);
         global_messages.ranges.splice(0,1);
         affichagesPresents=true;

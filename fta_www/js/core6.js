@@ -1,33 +1,4 @@
-
 "use strict";
-/*
-  todo traiter tous les escapes
-  https://stackoverflow.com/questions/21672334/javascript-how-to-show-escape-characters-in-a-string
-  
-  js :
-  
-  \t tab
-  \v vertical tab (IE < 9 treats '\v' as 'v' instead of a vertical tab ('\x0B'). If cross-browser compatibility is a concern, use \x0B instead of \v.)
-  \f form feed
-  
-  \b backspace
-  \0 null character (U+0000 NULL) (only if the next character is not a decimal digit; else it’s an octal escape sequence)
-  
-  
-  php : 
-  
-  
-  \t	horizontal tab (HT or 0x09 (9) in ASCII)
-  \v	vertical tab (VT or 0x0B (11) in ASCII)
-  \f	form feed (FF or 0x0C (12) in ASCII)
-  
-  \e	escape (ESC or 0x1B (27) in ASCII)
-  \$	dollar sign
-  \[0-7]{1,3}	Octal: the sequence of characters matching the regular expression [0-7]{1,3} is a character in octal notation (e.g. "\101" === "A"), which silently overflows to fit in a byte (e.g. "\400" === "\000")
-  \x[0-9A-Fa-f]{1,2}	Hexadecimal: the sequence of characters matching the regular expression [0-9A-Fa-f]{1,2} is a character in hexadecimal notation (e.g. "\x41" === "A")
-  \u{[0-9A-Fa-f]+}	Unicode: the sequence of characters matching the regular expression [0-9A-Fa-f]+ is a Unicode codepoint, which will be output to the string as that codepoint's UTF-8 representation. The braces are required in the sequence. E.g. "\u{41}" === "A"
-  
-*/
 var DEBUTCOMMENTAIRE='#';
 var DEBUTBLOC='@';
 var CRLF='\r\n';
@@ -121,6 +92,9 @@ function maConstante(eltTab){
     }
     return t;
 }
+/*
+  =====================================================================================================================
+*/
 function espacesn(optionCRLF,i){
     var t='';
     if(optionCRLF){
@@ -339,7 +313,6 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
     }else{
         /* sinon, on efface recursivement tous ses enfants avant de l'effacer */
         for(i=1;i < tab.length;i++){
-            var i_avant=i;
             if(tab[i][7] === id){
                 supprimer_un_element_de_la_matrice(tab,tab[i][0],(niveau + 1),a_supprimer);
             }
@@ -415,7 +388,6 @@ function ttcomm1(texte,niveau,ind){
   =====================================================================================================================
 */
 function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
-    var i=0;
     /*Si c'est un commentaire monoligne, on le retourne sans aucune transformation*/
     i=texte.indexOf('\n');
     if(i < 0){
@@ -539,6 +511,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     }
     l01=newTab.length;
     var l02=0;
+    var calcul=0;
     for(i=0;i < l01;i++){
         ligne=newTab[i];
         if(ligne.indexOf('====') >= 0){
@@ -551,7 +524,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                 }
             }
             if(ne_contient_que_des_egals === true){
-                var calcul = (117 - (2 * niveau * nbEspacesSrc1));
+                calcul = (117 - (2 * niveau * nbEspacesSrc1));
                 if(calcul > 0){
                     newTab[i]='  ' + ' '.repeat((niveau * nbEspacesSrc1)) + '='.repeat(calcul);
                 }
@@ -595,6 +568,9 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var l01=arr.length;
     var chCR = ('¶' + 'CR' + '¶');
     var chLF = ('¶' + 'LF' + '¶');
+    var chaine='';
+    var obj={};
+    
     /*
       =============================================================================================================
       boucle principale qui commence à partir de "debut" passé en paramètre
@@ -684,7 +660,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
           =====================================================================================================
         */
         if(arr[i][2] === 'c'){
-            var chaine='';
+            chaine='';
             if(arr[i][4] === 1){
                 /* methode3' simple quote */
                 chaine=arr[i][1];
@@ -801,7 +777,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
           pour toutes les autres fonctions, on fait un appel récursif
           =====================================================================================================
         */
-        var obj={};
+        
         obj=a2F1(arr,i,retourLigne,(i + 1),coloration);
         if(obj.status === true){
             /*on ajoute le nom de la fonction et on ouvre la parenthèse*/
@@ -927,6 +903,7 @@ function formaterErreurRev(obj){
     var presDe='';
     var line=0;
     var message_ajoute='';
+    var position=0;
     if((obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json')) && (obj.erreur_conversion_chaineTableau_en_json === true)){
         /*
           si il y a un problème avec le JSON.parse:
@@ -938,12 +915,11 @@ function formaterErreurRev(obj){
           at <anonymous>:1:1      
         */
         if(obj.ejson.message.indexOf('at position ') >= 0){
-            var position = obj.ejson.message.substr((obj.ejson.message.indexOf('at position ') + 12));
+            position = obj.ejson.message.substr((obj.ejson.message.indexOf('at position ') + 12));
             if(obj.ejson.message.indexOf(' ') >= 0){
                 position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
                 for(i=position;(i >= 0) && (message_ajoute === '');i--){
                     if(obj.chaineTableau.substr(i,1) === '['){
-                        var j=i;
                         for(j=i;(j < obj.chaineTableau.length) && (message_ajoute === '');j++){
                             if(obj.chaineTableau.substr(j,1) === ']'){
                                 message_ajoute='près de `' + obj.chaineTableau.substr(i,(((j - i)) + 1)) + '`';
