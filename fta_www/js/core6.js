@@ -1,10 +1,23 @@
+
 "use strict";
 var DEBUTCOMMENTAIRE='#';
 var DEBUTBLOC='@';
 var CRLF='\r\n';
 var NBESPACESREV=3;
 var globale_LangueCourante='fr';
-var global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+var global_messages={
+    'e500logged':false,
+    'errors':[],
+    'warnings':[],
+    'infos':[],
+    'lines':[],
+    'tabs':[],
+    'ids':[],
+    'ranges':[],
+    'positions_caracteres':[],
+    'calls':'',
+    'data':{'matrice':[],'tableau':[],'sourceGenere':''}
+};
 var NBESPACESSOURCEPRODUIT=4;
 var php_contexte_commentaire_html=false;
 /*
@@ -14,7 +27,19 @@ function raz_messages(zone_message){
     if((zone_message) && (document.getElementById(zone_message))){
         document.getElementById(zone_message).innerHTML='';
     }
-    global_messages={'e500logged':false,'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+    global_messages={
+        'e500logged':false,
+        'errors':[],
+        'warnings':[],
+        'infos':[],
+        'lines':[],
+        'tabs':[],
+        'ids':[],
+        'ranges':[],
+        'positions_caracteres':[],
+        'calls':'',
+        'data':{'matrice':[],'tableau':[],'sourceGenere':''}
+    };
 }
 /*
   =====================================================================================================================
@@ -32,11 +57,11 @@ function logerreur(o){
             }
         }else{
             if(o.hasOwnProperty('message')){
-                if(o.message != ''){
+                if(o.message !== ''){
                     global_messages['infos'].push(o.message);
                 }
             }else if(o.hasOwnProperty('warning')){
-                if(o.warning != ''){
+                if(o.warning !== ''){
                     global_messages['warnings'].push(o.warning);
                 }
             }else{
@@ -122,7 +147,7 @@ function concat(){
   =====================================================================================================================
 */
 function isNumeric(str){
-    if(typeof str != 'string'){
+    if(typeof str !== 'string'){
         return false;
     }
     var leTest = ( !(isNaN(str))) && ( !(isNaN(parseFloat(str))));
@@ -430,7 +455,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                       le nombre d'espaces minimal à gauche
                     */
                     temps=ligne.substr(j,1);
-                    if(temps != ' '){
+                    if(temps !== ' '){
                         if(j < min){
                             /*on réajuste le minimum d'espaces au début de chaque ligne */
                             min=j;
@@ -448,12 +473,12 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             }
             /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
             if(fichierRev0){
-                ligne=tab[(tab.length - 1)];
+                ligne=tab[tab.length - 1];
                 ligne=replaceAll(ligne,' ','');
-                if(ligne != ''){
+                if(ligne !== ''){
                     tab.push(unBloc);
                 }else{
-                    tab[(tab.length - 1)]=unBloc;
+                    tab[tab.length - 1]=unBloc;
                 }
             }
             /**/
@@ -476,7 +501,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         /*on enlève les espaces au début*/
         for(j=0;j < tab[i].length;j++){
             temps=tab[i].substr(j,1);
-            if(temps != ' '){
+            if(temps !== ' '){
                 t+=tab[i].substr(j);
                 break;
             }
@@ -524,7 +549,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                 }
             }
             if(ne_contient_que_des_egals === true){
-                calcul = (117 - (2 * niveau * nbEspacesSrc1));
+                calcul=117 - (2 * niveau * nbEspacesSrc1);
                 if(calcul > 0){
                     newTab[i]='  ' + ' '.repeat((niveau * nbEspacesSrc1)) + '='.repeat(calcul);
                 }
@@ -566,11 +591,10 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var c1='';
     var cm1='';
     var l01=arr.length;
-    var chCR = ('¶' + 'CR' + '¶');
-    var chLF = ('¶' + 'LF' + '¶');
+    var chCR = '¶' + 'CR' + '¶';
+    var chLF = '¶' + 'LF' + '¶';
     var chaine='';
     var obj={};
-    
     /*
       =============================================================================================================
       boucle principale qui commence à partir de "debut" passé en paramètre
@@ -777,7 +801,6 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
           pour toutes les autres fonctions, on fait un appel récursif
           =====================================================================================================
         */
-        
         obj=a2F1(arr,i,retourLigne,(i + 1),coloration);
         if(obj.status === true){
             /*on ajoute le nom de la fonction et on ouvre la parenthèse*/
@@ -839,7 +862,7 @@ function iterateCharacters2(str){
             /*
               0xD800 = 55296 = 1101 1000 0000 0000  , 0xF800 = 63488 = 1111 1000 0000 0000
             */
-            temp=codeCaractere & 0xF800;
+            temp=(codeCaractere & 0xF800);
             if(temp === 55296){
                 out[indiceTab]=[str.substr(i,2),2,i,numLigne];
                 indiceTab++;
@@ -915,7 +938,7 @@ function formaterErreurRev(obj){
           at <anonymous>:1:1      
         */
         if(obj.ejson.message.indexOf('at position ') >= 0){
-            position = obj.ejson.message.substr((obj.ejson.message.indexOf('at position ') + 12));
+            position=obj.ejson.message.substr((obj.ejson.message.indexOf('at position ') + 12));
             if(obj.ejson.message.indexOf(' ') >= 0){
                 position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
                 for(i=position;(i >= 0) && (message_ajoute === '');i--){
@@ -930,9 +953,9 @@ function formaterErreurRev(obj){
                 }
             }
         }
-        return({'status':obj.status,'value':T,'id':obj.ind,'message':(obj.message + ' ' + message_ajoute)});
+        return({'status':obj.status,'value':T,'id':obj.ind,'message':obj.message + ' ' + message_ajoute});
     }
-    var chaineTableau = ('[' + obj.chaineTableau + ']');
+    var chaineTableau = '[' + obj.chaineTableau + ']';
     var T = JSON.parse(chaineTableau);
     if(obj.hasOwnProperty('tableauEntree')){
         if(obj.hasOwnProperty('ind')){
@@ -974,7 +997,13 @@ function formaterErreurRev(obj){
         }
     }
     var message = (obj.message + message_ajoute);
-    var temp={'status':obj.status,'value':T,'id':obj.ind,'message':message,'line':line};
+    var temp={
+        'status':obj.status,
+        'value':T,
+        'id':obj.ind,
+        'message':message,
+        'line':line
+    };
     return temp;
 }
 /*
@@ -1026,8 +1055,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var chaineTableau='';
     var typePrecedent='';
     var drapeauRegex='';
-    var chCR = ('¶' + 'CR' + '¶');
-    var chLF = ('¶' + 'LF' + '¶');
+    var chCR = '¶' + 'CR' + '¶';
+    var chLF = '¶' + 'LF' + '¶';
     /*
       =============================================================================================================
       les entiers
@@ -1143,14 +1172,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                               alors c'est une recherche de parenthèse ouvrante correspondante
                               =============================================================
                             */
-                            return({status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[(tableauParenthesesCommentaires.length - 1)]][2]});
+                            return({status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[tableauParenthesesCommentaires.length - 1]][2]});
                         }
                         tableauParenthesesCommentaires.pop();
                     }
                 }else{
                     if(drapeauParenthese){
                         if(i === (l01 - 1)){
-                            return({status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[(tableauParenthesesCommentaires.length - 1)]][2]});
+                            return({status:true,'posOuvPar':tableauEntree[tableauParenthesesCommentaires[tableauParenthesesCommentaires.length - 1]][2]});
                         }
                         tableauParenthesesCommentaires.pop();
                     }
@@ -1192,12 +1221,29 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if((i + 1) < l01){
-                    c1=tableauEntree[(i + 1)][0];
-                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                    c1=tableauEntree[i + 1][0];
+                    if((c1 === ',')
+                     || (c1 === '\t')
+                     || (c1 === '\n')
+                     || (c1 === '\r')
+                     || (c1 === '/')
+                     || (c1 === ' ')
+                     || (c1 === ')')){
                         dernier=i - 1;
                     }else{
                         /* cas d'erreur = f(""") */
-                        return(logerreur(formaterErreurRev({status:false,ind:i,message:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                        return(logerreur(formaterErreurRev({
+                            status:false,
+                            ind:i,
+                            message:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',
+                            type:'rev',
+                            texte:texte,
+                            chaineTableau:chaineTableau,
+                            tabComment:tabCommentaireEtFinParentheses,
+                            tableauEntree:tableauEntree,
+                            quitterSiErreurNiveau:quitterSiErreurNiveau,
+                            autoriserCstDansRacine:autoriserCstDansRacine
+                        })));
                     }
                 }else{
                     if( !(autoriserCstDansRacine === true)){
@@ -1206,7 +1252,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'id':i,'value':T,'message':('1172 la racine ne peut pas contenir des constantes près de ' + presDe)};
+                        temp={'status':false,'id':i,'value':T,'message':'1172 la racine ne peut pas contenir des constantes près de ' + presDe};
                         return(logerreur(temp));
                     }
                 }
@@ -1214,7 +1260,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
                         /* cas d'erreur = "" */
-                        return(logerreur(formaterErreurRev({status:false,ind:i,message:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                        return(logerreur(formaterErreurRev({
+                            status:false,
+                            ind:i,
+                            message:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',
+                            type:'rev',
+                            texte:texte,
+                            chaineTableau:chaineTableau,
+                            tabComment:tabCommentaireEtFinParentheses,
+                            tableauEntree:tableauEntree,
+                            quitterSiErreurNiveau:quitterSiErreurNiveau,
+                            autoriserCstDansRacine:autoriserCstDansRacine
+                        })));
                     }
                 }
                 constanteQuotee=3;
@@ -1236,11 +1293,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === (l01 - 1)){
-                    return(logerreur({'status':false,'value':T,'id':i,'message':('un antislash ne doit pas terminer une constante en i=' + i)}));
+                    return(logerreur({'status':false,'value':T,'id':i,'message':'un antislash ne doit pas terminer une constante en i=' + i}));
                 }
                 /**/
-                c1=tableauEntree[(i + 1)][0];
-                if((c1 === '\\') || (c1 === '"') || (c1 === 'n') || (c1 === 't') || (c1 === 'r') || (c1 === 'u') || (c1 === 'b') || (c1 === 'f') || (c1 === 'x') || (c1 === 'v') || (c1 === '0') || (c1 === '>') || (c1 === '<') || (c1 === '/') || (c1 === '$')){
+                c1=tableauEntree[i + 1][0];
+                if((c1 === '\\')
+                 || (c1 === '"')
+                 || (c1 === 'n')
+                 || (c1 === 't')
+                 || (c1 === 'r')
+                 || (c1 === 'u')
+                 || (c1 === 'b')
+                 || (c1 === 'f')
+                 || (c1 === 'x')
+                 || (c1 === 'v')
+                 || (c1 === '0')
+                 || (c1 === '>')
+                 || (c1 === '<')
+                 || (c1 === '/')
+                 || (c1 === '$')){
                     if(texte === ''){
                         premier=i;
                     }
@@ -1250,7 +1321,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte+=texte + '"';
                     i++;
                 }else{
-                    return(logerreur(formaterErreurRev({status:false,ind:i,message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                    return(logerreur(formaterErreurRev({
+                        status:false,
+                        ind:i,
+                        message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',
+                        type:'rev',
+                        texte:texte,
+                        chaineTableau:chaineTableau,
+                        tabComment:tabCommentaireEtFinParentheses,
+                        tableauEntree:tableauEntree,
+                        quitterSiErreurNiveau:quitterSiErreurNiveau,
+                        autoriserCstDansRacine:autoriserCstDansRacine
+                    })));
                 }
             }else{
                 if(texte === ''){
@@ -1281,13 +1363,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if((i + 1) < l01){
                     drapeauRegex='';
-                    c1=tableauEntree[(i + 1)][0];
-                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                    c1=tableauEntree[i + 1][0];
+                    if((c1 === ',')
+                     || (c1 === '\t')
+                     || (c1 === '\n')
+                     || (c1 === '\r')
+                     || (c1 === '/')
+                     || (c1 === ' ')
+                     || (c1 === ')')){
                         dernier=i - 1;
                     }else{
                         for(j=i + 1;j < l01;j++){
                             c1=tableauEntree[j][0];
-                            if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                            if((c1 === ',')
+                             || (c1 === '\t')
+                             || (c1 === '\n')
+                             || (c1 === '\r')
+                             || (c1 === '/')
+                             || (c1 === ' ')
+                             || (c1 === ')')){
                                 dernier=j;
                                 i=j - 1;
                                 break;
@@ -1313,7 +1407,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /* methode3regex */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
                 if((texte.indexOf('\n') > 0) || (texte.indexOf('\r') >= 0) || (texte.indexOf('\t') > 0)){
-                    return(logerreur(formaterErreurRev({status:false,ind:premier,message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                    return(logerreur(formaterErreurRev({
+                        status:false,
+                        ind:premier,
+                        message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',
+                        type:'rev',
+                        texte:texte,
+                        chaineTableau:chaineTableau,
+                        tabComment:tabCommentaireEtFinParentheses,
+                        tableauEntree:tableauEntree,
+                        quitterSiErreurNiveau:quitterSiErreurNiveau,
+                        autoriserCstDansRacine:autoriserCstDansRacine
+                    })));
                 }
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
@@ -1336,14 +1441,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur(temp));
                 }
                 /**/
-                c1=tableauEntree[(i + 1)][0];
+                c1=tableauEntree[i + 1][0];
                 if(texte === ''){
                     premier=i;
                 }
                 texte+='\\' + c1;
                 i++;
             }else if((c === '\n') || (c === '\r')){
-                return(logerreur(formaterErreurRev({status:false,ind:premier,message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                return(logerreur(formaterErreurRev({
+                    status:false,
+                    ind:premier,
+                    message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+                    type:'rev',
+                    texte:texte,
+                    chaineTableau:chaineTableau,
+                    tabComment:tabCommentaireEtFinParentheses,
+                    tableauEntree:tableauEntree,
+                    quitterSiErreurNiveau:quitterSiErreurNiveau,
+                    autoriserCstDansRacine:autoriserCstDansRacine
+                })));
             }else{
                 if(texte === ''){
                     premier=i;
@@ -1376,8 +1492,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if((i + 1) < l01){
-                    c1=tableauEntree[(i + 1)][0];
-                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                    c1=tableauEntree[i + 1][0];
+                    if((c1 === ',')
+                     || (c1 === '\t')
+                     || (c1 === '\n')
+                     || (c1 === '\r')
+                     || (c1 === '/')
+                     || (c1 === ' ')
+                     || (c1 === ')')){
                         dernier=i - 1;
                     }else{
                         if(i > 100){
@@ -1385,7 +1507,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':('1394 apres une constante, il doit y avoir un caractère d\'echappement près de ' + presDe)};
+                        temp={'status':false,'value':T,'id':i,'message':'1394 apres une constante, il doit y avoir un caractère d\'echappement près de ' + presDe};
                         return(logerreur(temp));
                     }
                 }else{
@@ -1424,7 +1546,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur(temp));
                 }
                 /**/
-                c1=tableauEntree[(i + 1)][0];
+                c1=tableauEntree[i + 1][0];
                 if(texte === ''){
                     premier=i;
                 }
@@ -1461,8 +1583,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if((i + 1) < l01){
-                    c1=tableauEntree[(i + 1)][0];
-                    if((c1 === ',') || (c1 === '\t') || (c1 === '\n') || (c1 === '\r') || (c1 === '/') || (c1 === ' ') || (c1 === ')')){
+                    c1=tableauEntree[i + 1][0];
+                    if((c1 === ',')
+                     || (c1 === '\t')
+                     || (c1 === '\n')
+                     || (c1 === '\r')
+                     || (c1 === '/')
+                     || (c1 === ' ')
+                     || (c1 === ')')){
                         dernier=i - 1;
                     }else{
                         if(i > 100){
@@ -1470,7 +1598,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':('1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe)};
+                        temp={'status':false,'value':T,'id':i,'message':'1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe};
                         return(logerreur(temp));
                     }
                 }else{
@@ -1509,21 +1637,44 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur(temp));
                 }
                 /**/
-                c1=tableauEntree[(i + 1)][0];
+                c1=tableauEntree[i + 1][0];
                 if(false){
                     if(texte === ''){
                         premier=i;
                     }
                     texte+=c1;
                     i++;
-                }else if((c1 === '\\') || (c1 === '\'') || (c1 === '/') || (c1 === 'n') || (c1 === 't') || (c1 === 'r') || (c1 === 'u') || (c1 === 'b') || (c1 === 'f') || (c1 === 'x') || (c1 === 'v') || (c1 === '0') || (c1 === '$')){
+                }else if((c1 === '\\')
+                 || (c1 === '\'')
+                 || (c1 === '/')
+                 || (c1 === 'n')
+                 || (c1 === 't')
+                 || (c1 === 'r')
+                 || (c1 === 'u')
+                 || (c1 === 'b')
+                 || (c1 === 'f')
+                 || (c1 === 'x')
+                 || (c1 === 'v')
+                 || (c1 === '0')
+                 || (c1 === '$')){
                     if(texte === ''){
                         premier=i;
                     }
                     texte+='\\' + c1;
                     i++;
                 }else{
-                    return(logerreur(formaterErreurRev({status:false,ind:i,message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                    return(logerreur(formaterErreurRev({
+                        status:false,
+                        ind:i,
+                        message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',
+                        type:'rev',
+                        texte:texte,
+                        chaineTableau:chaineTableau,
+                        tabComment:tabCommentaireEtFinParentheses,
+                        tableauEntree:tableauEntree,
+                        quitterSiErreurNiveau:quitterSiErreurNiveau,
+                        autoriserCstDansRacine:autoriserCstDansRacine
+                    })));
                 }
             }else{
                 if(texte === ''){
@@ -1601,14 +1752,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   =====================================================================================
                 */
                 posFerPar=i;
-                if(texte != ''){
+                if(texte !== ''){
                     if(niveau === 0){
                         if(i > 100){
                             var presDe = reconstruitChaine(tableauEntree,(i - 100),(i + 110));
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={'status':false,'value':T,'id':i,'message':('une fermeture de parenthése ne doit pas être au niveau 0 près de ' + presDe)};
+                        temp={'status':false,'value':T,'id':i,'message':'une fermeture de parenthése ne doit pas être au niveau 0 près de ' + presDe};
                         return(logerreur(temp));
                     }
                     indice++;
@@ -1632,13 +1783,23 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             T=JSON.parse(chaineTableau);
                         }catch(ejson){
                             console.log('ejson=',ejson);
-                            return(logerreur(formaterErreurRev({'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1555 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                            return(logerreur(formaterErreurRev({
+                                'erreur_conversion_chaineTableau_en_json':true,
+                                status:false,
+                                message:'1555 erreur de conversion de tableau',
+                                type:'rev',
+                                chaineTableau:chaineTableau,
+                                tabComment:tabCommentaireEtFinParentheses,
+                                tableauEntree:tableauEntree,
+                                quitterSiErreurNiveau:quitterSiErreurNiveau,
+                                autoriserCstDansRacine:autoriserCstDansRacine
+                            })));
                         }
                         if(rechercheParentheseCorrespondante === '('){
                             return({status:true,'posFerPar':tableauEntree[i][2]});
                         }else{
                             for(j=T.length - 1;j >= 0;j--){
-                                if(T[j][3] < T[(T.length - 1)][3]){
+                                if(T[j][3] < T[T.length - 1][3]){
                                     return({status:true,'posOuvPar':tableauEntree[T[j][11]][2]});
                                     break;
                                 }
@@ -1675,19 +1836,19 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   =====================================================================================
                 */
                 if( !(dansCstSimple)){
-                    temp={'status':false,'value':T,'id':i,'message':('1474 un antislash doit être dans une constante en i=' + i)};
+                    temp={'status':false,'value':T,'id':i,'message':'1474 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 if( !(dansCstDouble)){
-                    temp={'status':false,'value':T,'id':i,'message':('1478 un antislash doit être dans une constante en i=' + i)};
+                    temp={'status':false,'value':T,'id':i,'message':'1478 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 if( !(dansCstModele)){
-                    temp={'status':false,'value':T,'id':i,'message':('1482 un antislash doit être dans une constante en i=' + i)};
+                    temp={'status':false,'value':T,'id':i,'message':'1482 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 if( !(dansCstRegex)){
-                    temp={'status':false,'value':T,'id':i,'message':('1482 un antislash doit être dans une constante en i=' + i)};
+                    temp={'status':false,'value':T,'id':i,'message':'1482 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 /*
@@ -1825,7 +1986,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   virgule donc séparateur
                   =====================================================================================
                 */
-                if(texte != ''){
+                if(texte !== ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
                             temp={'status':false,'value':T,'id':i,'message':'1563 la racine ne peut pas contenir des constantes'};
@@ -1869,10 +2030,21 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   caractères séparateurs de mot
                   =====================================================================================
                 */
-                if(texte != ''){
+                if(texte !== ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(logerreur(formaterErreurRev({status:false,ind:i,message:'1602 la racine ne peut pas contenir des constantes',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                            return(logerreur(formaterErreurRev({
+                                status:false,
+                                ind:i,
+                                message:'1602 la racine ne peut pas contenir des constantes',
+                                type:'rev',
+                                texte:texte,
+                                chaineTableau:chaineTableau,
+                                tabComment:tabCommentaireEtFinParentheses,
+                                tableauEntree:tableauEntree,
+                                quitterSiErreurNiveau:quitterSiErreurNiveau,
+                                autoriserCstDansRacine:autoriserCstDansRacine
+                            })));
                             temp={'status':false,'value':T,'id':i,'message':'1602 la racine ne peut pas contenir des constantes'};
                             return(logerreur(temp));
                         }
@@ -1912,16 +2084,38 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
     */
     if((niveau !== 0) && (quitterSiErreurNiveau)){
-        return(logerreur(formaterErreurRev({status:false,'ind':(l01 - 1),'message':('💥2401 des parenthèses ne correspondent pas, (' + ((niveau > 0)?'il en manque :':'il y en a trop : ') + 'niveau=' + niveau + ') '),type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+        return(logerreur(formaterErreurRev({
+            status:false,
+            'ind':(l01 - 1),
+            'message':'💥2401 des parenthèses ne correspondent pas, (' + ((niveau > 0)?'il en manque :':'il y en a trop : ') + 'niveau=' + niveau + ') ',
+            type:'rev',
+            texte:texte,
+            chaineTableau:chaineTableau,
+            tabComment:tabCommentaireEtFinParentheses,
+            tableauEntree:tableauEntree,
+            quitterSiErreurNiveau:quitterSiErreurNiveau,
+            autoriserCstDansRacine:autoriserCstDansRacine
+        })));
     }
     /*
       Si on autorise les constantes à la racine, il reste peut être du texte à traiter
     */
-    if(texte != ''){
+    if(texte !== ''){
         indice=indice + 1;
         if(autoriserCstDansRacine !== true){
             if(niveau === 0){
-                return(logerreur(formaterErreurRev({status:false,'ind':(l01 - 1),message:'1641 la racine ne peut pas contenir des constantes ',type:'rev',texte:texte,chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+                return(logerreur(formaterErreurRev({
+                    status:false,
+                    'ind':(l01 - 1),
+                    message:'1641 la racine ne peut pas contenir des constantes ',
+                    type:'rev',
+                    texte:texte,
+                    chaineTableau:chaineTableau,
+                    tabComment:tabCommentaireEtFinParentheses,
+                    tableauEntree:tableauEntree,
+                    quitterSiErreurNiveau:quitterSiErreurNiveau,
+                    autoriserCstDansRacine:autoriserCstDansRacine
+                })));
             }
         }
         /*
@@ -1940,7 +2134,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     try{
         T=JSON.parse(chaineTableau);
     }catch(ejson){
-        return(logerreur(formaterErreurRev({ejson:ejson,'erreur_conversion_chaineTableau_en_json':true,status:false,message:'1836 erreur de conversion de tableau',type:'rev',chaineTableau:chaineTableau,tabComment:tabCommentaireEtFinParentheses,tableauEntree:tableauEntree,quitterSiErreurNiveau:quitterSiErreurNiveau,autoriserCstDansRacine:autoriserCstDansRacine})));
+        return(logerreur(formaterErreurRev({
+            ejson:ejson,
+            'erreur_conversion_chaineTableau_en_json':true,
+            status:false,
+            message:'1836 erreur de conversion de tableau',
+            type:'rev',
+            chaineTableau:chaineTableau,
+            tabComment:tabCommentaireEtFinParentheses,
+            tableauEntree:tableauEntree,
+            quitterSiErreurNiveau:quitterSiErreurNiveau,
+            autoriserCstDansRacine:autoriserCstDansRacine
+        })));
     }
     if(drapeauParenthese){
         l01=T.length;
