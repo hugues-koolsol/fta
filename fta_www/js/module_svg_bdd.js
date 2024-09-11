@@ -595,8 +595,8 @@ class module_svg_bdd{
                 t+=',unique()';
             }else if((lst[i].id) && (lst[i].id === 'liste_des_champ_de_l_index')){
                 t+=(',fields(' + lst[i].value + ')');
-            }else if((lst[i].id) && (lst[i].id.substr(0,6) === 'meta_modifier__') && (lst[i].value !== '')){
-                meta+=(',(' + lst[i].id.substr(6) + ',\'' + lst[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
+            }else if((lst[i].id) && (lst[i].id.substr(0,15) === 'meta_modifier__') && (lst[i].value !== '')){
+                meta+=(',(' + lst[i].id.substr(15) + ',\'' + lst[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')');
             }
         }
         t+=(',meta(' + meta + ')');

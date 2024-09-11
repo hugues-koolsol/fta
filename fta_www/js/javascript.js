@@ -3614,11 +3614,11 @@ function js_condition1(tab,id,niveau){
                         }
                     }
                     if(tab[i][1] === 'egal'){
-                        t+=' === ';
+                        t+=' '+'=='+' ';
                     }else if(tab[i][1] === 'egalstricte'){
                         t+=' === ';
                     }else if(tab[i][1] === 'diff'){
-                        t+=' !== ';
+                        t+=' '+'!='+' ';
                     }else if(tab[i][1] === 'diffstricte'){
                         t+=' !== ';
                     }else if(tab[i][1] === 'sup'){

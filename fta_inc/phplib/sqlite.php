@@ -194,12 +194,18 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
             $continuer=false;
         }
     }
+
     if($continuer===true){
      
         $fichier_temporaire=$chemin_fichier_temporaire.DIRECTORY_SEPARATOR.sha1(date('Y-m-d-H-i-s').$_SESSION[APP_KEY]['sess_id_utilisateur']).'.db';
         
+        
+        
+        
         $dbtemp = new SQLite3($fichier_temporaire);
         if(is_file($fichier_temporaire)){
+
+//            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $source , true ) . '</pre>' ; exit(0);
          
             $res0= $dbtemp->exec($source);
 //            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $source  . '</pre>' ; exit(0);
@@ -300,11 +306,6 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
             
         }
         $stmt->close();
-/*        
-        if($nom_de_la_table==='tbl_tables'){
-            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $liste_des_champs_non_null , true ) . '</pre>' ; exit(0);
-        }
-*/        
         if($essayer_auto_increment===true && $auto_increment=== false && $a_des_champs_index!=='' ){
             /*
               si la base sqlite vient d'être crée, les tables sont vides et 
@@ -331,11 +332,6 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
                     $sql2.=' , "1"' ;
                 }
                 $sql2.=')';
-/*                
-                if($nom_de_la_table==='tbl_tables'){
-                    echo __FILE__ . ' ' . __LINE__ . ' $sql2 = <pre>' . var_export( $sql2 , true ) . '</pre>' ; exit(0);
-                }
-*/                
                 $essai_insert= $db->querySingle($sql2);
                 if($essai_insert!==false){
                  

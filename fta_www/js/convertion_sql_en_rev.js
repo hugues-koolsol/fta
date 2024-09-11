@@ -957,7 +957,8 @@ function convertion_texte_sql_en_rev(texte_du_sql){
  texte_du_sql=texte_du_sql.replace(/\/\*\*\//g,'');
  var sqliteParser = require('sqlite-parser'); 
  var ast=sqliteParser(texte_du_sql);
- console.log('ast=',ast);
+// console.log('ast=',ast);
+
  var obj1=conversion_de_ast_vers_sql(ast,0,null,{});
  
  if(obj1.status===true){

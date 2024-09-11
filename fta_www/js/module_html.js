@@ -538,7 +538,7 @@ class traitements_sur_html{
                             }
                         }
                     }
-                    if(element.attributes != null){
+                    if(element.attributes && element.attributes != null){
                         if(element.attributes.length){
                             object['attributes']={};
                             for(i=0;i < element.attributes.length;i=i+1){
