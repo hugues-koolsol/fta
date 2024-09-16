@@ -213,7 +213,10 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
 
  }else if(element.type && 'variable'===element.type ){
   if(element.format==='tcl'){
-   t+=element.name
+    t+=element.name
+  }else if(element.format==='named'){
+    t+=element.name
+
   }else{
      return(logerreur({status:false,message:'0199 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
   }
@@ -1041,7 +1044,7 @@ function transform_rev_de_textarea_en_sql( nom_de_la_textarea_rev , nom_de_la_te
     var tableau1 = iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
     var obj1=functionToArray2(tableau1.out,false,true,'');
     if(obj1.status===true){
-        var obj2=tabToSql1(obj1.value,0 , 0);
+        var obj2=tabToSql1(obj1.value,0 , 0 , false);
         if(obj2.status===true){
           displayMessages('zone_global_messages');
           obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
@@ -1067,7 +1070,7 @@ function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql , nom_de_la_tex
         var tableau1 = iterateCharacters2(obj.value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.status===true){
-            var obj2=tabToSql1(obj1.value,0 , 0);
+            var obj2=tabToSql1(obj1.value,0 , 0 , false);
             if(obj2.status===true){
               displayMessages('zone_global_messages');
               obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');

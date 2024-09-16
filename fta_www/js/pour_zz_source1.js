@@ -16,7 +16,7 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
    global_messages.data.matrice=matriceFonction;
    if(matriceFonction.status===true){
 
-    var objSql=tabToSql1(matriceFonction.value,0,0);
+    var objSql=tabToSql1(matriceFonction.value,0,0,false);
     
     if(objSql.status===true){
      
@@ -127,7 +127,7 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
        
        if(matriceFonction.status===true){
         
-           var objSql=tabToSql1(matriceFonction.value,0,0);
+           var objSql=tabToSql1(matriceFonction.value,0,0,false);
            if(objSql.status===true){
             
                 var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');            

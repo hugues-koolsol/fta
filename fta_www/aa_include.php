@@ -378,6 +378,36 @@ function enti1($s){
 }
 /*========================================================================================================================*/
 
+function sq1($s){
+    if(is_numeric($s)){
+        return($s);
+    }else if($s === null){
+        return('NULL');
+    } 
+    $s1=SQLite3::escapeString($s);
+    $ua=array(
+        'à' => 'à',
+        'â' => 'â',
+        'ã' => 'ã',
+        'á' => 'á',
+        'é' => 'é',
+        'è' => 'è',
+        'ê' => 'ê',
+        'É' => 'É',
+        'ï' => 'ï',
+        'î' => 'î',
+        'ñ' => 'ñ',
+        'Ñ' => 'Ñ',
+        'ó' => 'ó',
+        'ô' => 'ô',
+        'ö' => 'ö',
+        'ü' => 'ü',
+        'Ü' => 'Ü');
+    $s1=strtr($s1,$ua);
+    return('\''.$s1.'\'');
+}
+/*========================================================================================================================*/
+
 function sq0($s){
 
     $s=SQLite3::escapeString($s);
@@ -407,10 +437,11 @@ function sq0($s){
   pour les programmes sources, il ne faut pas transformer les caractères "bizarres" 
   pour pouvoir intégrer la fonction sq0 çi dessus
 */
-
+/*
 function sq1($s){
     return(SQLite3::escapeString($s));
 }
+*/
 /*
   
   ========================================================================================

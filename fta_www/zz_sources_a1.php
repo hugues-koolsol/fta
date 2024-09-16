@@ -774,8 +774,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
     $o1.='   <a class="yysucces" href="javascript:__gi1.aller_a_la_position(&quot;chp_rev_source&quot;)">aller à la position</a>'.CRLF;
     $o1.='   <a class="yyinfo" href="javascript:__gi1.remplacer_la_selection_par(&quot;chp_rev_source&quot;)">remplacer la sélection</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_rev_source&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
     $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_rev_source&quot;);" title="agrandir la zone">🖐</a>'.CRLF;
+    $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_source&quot;);" title="réduire la zone">👊</a>'.CRLF;
+    
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -837,7 +838,8 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
     }
     $o1.='   <a class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;chp_genere_source&quot;);" title="agrandir ou réduire la zone">🖐👊</a>'.CRLF;
+    $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_genere_source&quot;);" title="agrandir la zone">🖐</a>'.CRLF;
+    $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_genere_source&quot;);" title="réduire la zone">👊</a>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.=' <div class="yyfdiv1">'.CRLF;

@@ -37,7 +37,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
  
  if(matriceFonction.status===true){
 
-  var objSql=tabToSql1(matriceFonction.value,0,0);
+  var objSql=tabToSql1(matriceFonction.value,0,0,false);
   if(objSql.status===true){
    var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
    dogid(nom_zone_genere).value=contenu;

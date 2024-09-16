@@ -2,7 +2,6 @@
 "use strict";
 /*
   
-  virer php_traite_Expr_New ?
   todo
   $c=$a<=>$b; // echo "a" <=> "b"; // -1 , ,,,, echo "a" <=> "a"; // 0 ,,,,, echo "b" <=> "a"; // 1
   $c=$a ** $b
@@ -524,6 +523,7 @@ function php_traite_Stmt_Function(element,niveau){
 }
 /*
   =====================================================================================================================
+  traite un "new"
 */
 function php_traite_Expr_New(element,niveau){
     var t='';
@@ -553,7 +553,7 @@ function php_traite_Expr_New(element,niveau){
     return({'status':true,'value':t});
 }
 /*
-  //=====================================================================================================================
+  =====================================================================================================================
 */
 function php_traite_Expr_MethodCall(element,niveau){
     var t='';
@@ -1947,10 +1947,19 @@ function ajouteCommentairesAvant(element,niveau){
                 if(element.attributes.comments[j].text.substr(0,2) === '/*'){
                     var c1 = nbre_caracteres2('(',txtComment);
                     var c2 = nbre_caracteres2(')',txtComment);
+                    var val=txtComment.substr(0,(txtComment.length - 2));
                     if(c1 === c2){
-                        t+='\n' + esp0 + '#(' + txtComment.substr(0,(txtComment.length - 2)) + ')';
+                        if(val.substr(0,1)==='*' || val.substr(0,1)==='#' ){
+                            t+='\n' + esp0 + '#(#' + val.substr(1) + ')';
+                        }else{
+                            t+='\n' + esp0 + '#(' + val + ')';
+                        }
                     }else{
-                        t+='\n' + esp0 + '#(' + txtComment.substr(0,(txtComment.length - 2)).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                        if(val.substr(0,1)==='*' || val.substr(0,1)==='#'){
+                            t+='\n' + esp0 + '#(#' + val.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                        }else{
+                            t+='\n' + esp0 + '#(' + val.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                        }
                     }
                     element.attributes.comments[j].text='';
                 }else if(element.attributes.comments[j].text.substr(0,2) === '//'){

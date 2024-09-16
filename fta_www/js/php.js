@@ -1446,7 +1446,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
 
  }else if(tab[ind][2]==='f' && tab[ind][1]==='sql' ){
 
-     obj=tabToSql1(tab,ind,niveau);
+     obj=tabToSql1(tab,ind,niveau,false);
      if(obj.status===true){
       t=obj.value;
      }else{

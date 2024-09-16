@@ -27,28 +27,36 @@
   ];
   
 */
+
 /*
-  
+  =====================================================================================================================
+  =====================================================================================================================
   =====================================================================================================================
 */
-function tabToSql1(tab,id,niveau){
+function tabToSql1(tab,id,niveau,au_format_php){
     var options={
         'dans_definition_de_table':false,
         'dans_definition_de_champ':false,
         'longueur_maximum_des_champs':0,
-        'nom_du_champ_max':'',
-        'tableau_tables_champs':[],
-        'tableau_champ':[]
+        'nom_du_champ_max'      :'',
+        'tableau_tables_champs' : [],
+        'tableau_champ'         : [],
+        'tableau_des_alias'     : [],
+        'au_format_php'         : au_format_php,
+        'id_base_principale'    : 0,
     };
     var ob = tabToSql0(tab,id,niveau,options);
     ob.longueur_maximum_des_champs=options.longueur_maximum_des_champs;
     ob.nom_du_champ_max=options.nom_du_champ_max;
     ob.tableau_tables_champs=options.tableau_tables_champs;
     ob.tableau_champ=options.tableau_champ;
+    ob.id_base_principale=options.id_base_principale;
+
     return ob;
 }
 /*
-  
+  =====================================================================================================================
+  =====================================================================================================================
   =====================================================================================================================
 */
 function recuperer_operateur_sqlite(op){
@@ -63,6 +71,8 @@ function recuperer_operateur_sqlite(op){
         t='+';
     }else if(op === 'egal'){
         t=' = ';
+    }else if(op === 'diff'){
+        t=' <> ';
     }else if(op === 'comme'){
         t=' LIKE ';
     }else if(op === 'et'){
@@ -96,7 +106,8 @@ function recuperer_operateur_sqlite(op){
     return t;
 }
 /*
-  
+  =====================================================================================================================
+  =====================================================================================================================
   =====================================================================================================================
 */
 function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
@@ -131,21 +142,50 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                 if(tab[i][1].toLowerCase() === 'null'){
                     t+='NULL';
                 }else{
+                    
                     if(tab[i][4] === 0){
-                        t+=tab[i][1];
+                     
+                        if(options.au_format_php===true){
+
+                            if(tab[i][1].substr(0,1)===':'){
+                                t+='\'.sq1($par[\''+tab[i][1].substr(1)+'\']).\'';
+                            }else{
+                                t+=tab[i][1];
+                            }
+                        }else{
+                            t+=tab[i][1];
+                        }
                     }else{
-                        t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
+                        if(options.au_format_php===true){
+                            if(tab[i][1].substr(0,1)===':'){
+                                t+='\'.sq1($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
+                            }else{
+                                t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
+                            }
+                        }else{
+                            t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
+                        }
                     }
                 }
+                premierChamp=false;
             }else{
                 var obj = traite_sqlite_fonction_de_champ(tab,i,niveau,options);
                 if(obj.status === true){
                     t+=obj.value;
+                    if(obj.operateur==='#' && premierChamp===true){
+                     /*
+                       cas d'un commentaire avant les contitions,
+                       / *  * /`T0`.`chi_id_test` = :par0 AND `T0`.`chp_nom_test` = :par1
+                       le commentaire n'est pas un premier champ
+                     */
+                     t+=' ';
+                    }else{
+                        premierChamp=false;
+                    }
                 }else{
                     return(logerreur({status:false,'message':'0078 traite_sqlite_fonction_de_champ "' + tab[i][1] + '"'}));
                 }
             }
-            premierChamp=false;
         }
     }
     if(operateur === 'conditions'){
@@ -175,10 +215,11 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
      || (operateur === ' OR ')){
         t='(' + t + ')';
     }
-    return({status:true,value:t});
+    return({status:true,value:t,operateur:operateur});
 }
 /*
-  
+  =====================================================================================================================
+  =====================================================================================================================
   =====================================================================================================================
 */
 function tabToSql0(tab,id,niveau,options){
@@ -257,6 +298,7 @@ function tabToSql0(tab,id,niveau,options){
                                                                         nom_de_l_alias=tab[o + 1][1];
                                                                     }else if((tab[o][2] === 'f') && (tab[o][1] === 'base') && (tab[o][8] === 1)){
                                                                         nom_de_la_base=tab[o + 1][1];
+                                                                        
                                                                     }else{
                                                                         return(logerreur({status:false,'message':'0257 nom_de_la_table doit avoir que 1 ou 2 ou 3 paramètre(s) "' + tab[n][1] + '"'}));
                                                                     }
@@ -268,7 +310,13 @@ function tabToSql0(tab,id,niveau,options){
                                                             if(tab[l][1] === 'jointure_gauche'){
                                                                 liste_des_tables+=CRLF + ' LEFT JOIN ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
                                                             }else if(tab[l][1] === 'table_reference'){
-                                                                liste_des_tables+=' FROM ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                if(options.au_format_php===true){
+                                                                    liste_des_tables+=' FROM `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                    options.id_base_principale=nom_de_la_base;
+                                                                }else{
+                                                                
+                                                                    liste_des_tables+=' FROM ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                }
                                                             }else if(tab[l][1] === 'jointure_croisée'){
                                                                 liste_des_tables+=CRLF + ' , ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
                                                             }else{
@@ -290,7 +338,9 @@ function tabToSql0(tab,id,niveau,options){
                                     for(m=l + 1;(m < l01) && (tab[m][3] > tab[l][3]);m++){
                                         if(tab[m][7] === l){
                                             if(tab[m][1] === 'contrainte'){
-                                                var obj = traite_sqlite_fonction_de_champ(tab,(m + 1),niveau,{tableau_des_alias:tableau_des_alias});
+                                                options.tableau_des_alias=tableau_des_alias;
+//                                                var obj = traite_sqlite_fonction_de_champ(tab,(m + 1),niveau,{tableau_des_alias:tableau_des_alias});
+                                                var obj = traite_sqlite_fonction_de_champ(tab,(m + 1),niveau,options);
                                                 if(obj.status === true){
                                                     liste_des_tables+=' ON ' + obj.value + '\n';
                                                 }else{
@@ -340,28 +390,11 @@ function tabToSql0(tab,id,niveau,options){
                                     }else{
                                         return(logerreur({status:false,'message':'327 erreur select champ "' + tab[l + 1][1] + '"'}));
                                     }
-                                    /*
-                                      if(tab[(l + 1)][1].indexOf('.') > 0){
-                                      var nom_de_alias = tab[(l + 1)][1].substr(0,tab[(l + 1)][1].indexOf('.'));
-                                      var dans_tableau_des_alias=-1;
-                                      for(var ind=0;ind<tableau_des_alias.length;ind++){
-                                      if(tableau_des_alias[ind].minuscule === nom_de_alias.toLowerCase()){
-                                      dans_tableau_des_alias=ind;
-                                      break;
-                                      }
-                                      }
-                                      if((tableau_des_alias.length > 0) && (dans_tableau_des_alias>=0)){
-                                      nom_du_champ=('`' + tableau_des_alias[dans_tableau_des_alias].original + '`.`' + tab[(l + 1)][1].substr((tab[(l + 1)][1].indexOf('.') + 1)) + '`');
-                                      }else{
-                                      return(logerreur({status:false,'message':('276 il manque un alias de table pour le champ  "' + tab[(l + 1)][1] + '"')}));
-                                      }
-                                      }else{
-                                      nom_du_champ=tab[(l + 1)][1];
-                                      }
-                                    */
                                 }else{
                                     if(tab[l][2] === 'f'){
-                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
+                                        options.tableau_des_alias=tableau_des_alias;
+//                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
+                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                         if(obj.status === true){
                                             nom_du_champ=obj.value;
                                         }else{
@@ -370,6 +403,15 @@ function tabToSql0(tab,id,niveau,options){
                                     }else{
                                         if(tab[l][1].toLowerCase() === 'null'){
                                             nom_du_champ='NULL';
+                                        }else if(tab[l][1].substr(0,1) === ':'){
+                                            /*
+                                              les variables sql commencent par un caractère ":"
+                                            */
+                                            if(options.au_format_php===true){
+                                                nom_du_champ='\'.sq1($par[\'' + tab[l][1].substr(1) + '\']).\'';
+                                            }else{
+                                                nom_du_champ='' + tab[l][1] + '';
+                                            }
                                         }else{
                                             nom_du_champ='\'' + tab[l][1].replace(/\'/g,"''") + '\'';
                                         }
@@ -388,7 +430,10 @@ function tabToSql0(tab,id,niveau,options){
                 var liste_des_conditions='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if((tab[j][1] === 'conditions') && (tab[j][8] >= 1)){
-                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
+//                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
+                        options.tableau_des_alias=tableau_des_alias;
+
+                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,options);
                         if(obj.status === true){
                             liste_des_conditions=obj.value;
                         }else{
@@ -405,7 +450,9 @@ function tabToSql0(tab,id,niveau,options){
                     if((tab[j][1] === 'trier_par') && (tab[j][8] >= 1)){
                         for(l=j + 1;(l < l01) && (tab[l][3] > tab[j][3]);l++){
                             if(tab[l][7] === j){
-                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
+//                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
+                                options.tableau_des_alias=tableau_des_alias;
+                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                 if(obj.status === true){
                                     liste_des_tris+=', ' + obj.value;
                                 }else{
@@ -422,7 +469,9 @@ function tabToSql0(tab,id,niveau,options){
                 var liste_des_limites='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if((tab[j][1] === 'limité_à') && (tab[j][8] >= 1)){
-                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
+//                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
+                        options.tableau_des_alias=tableau_des_alias;
+                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,options);
                         if(obj.status === true){
                             liste_des_limites+=',' + obj.value;
                         }else{
@@ -509,7 +558,8 @@ function tabToSql0(tab,id,niveau,options){
                                                     nom_du_champ=tab[m + 1][1];
                                                 }else{
                                                     if(tab[m][2] === 'f'){
-                                                        var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,{});
+//                                                        var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,{});
+                                                        var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,options);
                                                         if(obj.status === true){
                                                             valeur_du_champ=obj.value;
                                                         }else{
@@ -546,7 +596,8 @@ function tabToSql0(tab,id,niveau,options){
                                         conditions+=' , ';
                                     }
                                     if(tab[l][2] === 'f'){
-                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{});
+//                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{});
+                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                         if(obj.status === true){
                                             conditions+=obj.value;
                                         }else{
@@ -603,7 +654,8 @@ function tabToSql0(tab,id,niveau,options){
                                                     la_valeur+='\'' + tab[l][1] + '\'';
                                                 }
                                             }else{
-                                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{});
+//                                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{});
+                                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                                 if(obj.status === true){
                                                     la_valeur+=obj.value;
                                                 }else{
@@ -1094,7 +1146,7 @@ function tabToSql0(tab,id,niveau,options){
     return({status:true,value:t});
 }
 /*
-  
+  =====================================================================================================================
   =====================================================================================================================
 */
 function traite_le_tableau_de_la_base_sqlite_v2(par){
@@ -1209,7 +1261,10 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                     tab_meta[i].statut=true;
                     tab_meta[i].matrice=obj.value;
                     for(j=1;j < tab_meta[i].matrice.length;j++){
-                        if((tab_meta[i].matrice[j][3] === 2) && (tab_meta[i].matrice[j][9] === 1) && (tab_meta[i].matrice[j][1] === 'table') && (tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8] === 2)){
+                        if((tab_meta[i].matrice[j][3] === 2) 
+                           && (tab_meta[i].matrice[j][9] === 1) 
+                           && (tab_meta[i].matrice[j][1] === 'table') 
+                           && (tab_meta[i].matrice[tab_meta[i].matrice[j][7]][8] === 2)){
                             tab_meta[i].type_element='table';
                             tab_meta[i].nom_element=tab_meta[i].matrice[j + 1][1];
                             tab_meta[i].statut=true;

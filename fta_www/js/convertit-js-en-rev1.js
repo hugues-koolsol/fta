@@ -2661,10 +2661,18 @@ function ajouteCommentaireAvant(element,niveau){
                     var c1 = nbre_caracteres2('(',txtComment);
                     var c2 = nbre_caracteres2(')',txtComment);
                     if(c1 === c2){
+                        if(txtComment.substr(0,1)==='*' || txtComment.substr(0,1)==='#' ){
+                            t='\n' + esp0 + '#(#' + txtComment.substr(1) + '),' + t;
+                        }else{
 
-                        t='\n' + esp0 + '#(' + txtComment + '),' + t;
+                            t='\n' + esp0 + '#(' + txtComment + '),' + t;
+                        }
                     }else{
-                        t='\n' + esp0 + '#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + '),' + t;
+                        if(txtComment.substr(0,1)==='*' || txtComment.substr(0,1)==='#' ){
+                            t='\n' + esp0 + '#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + '),' + t;
+                        }else{
+                            t='\n' + esp0 + '#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + '),' + t;
+                        }
                     }
                     tabComment.splice(i,1);
                 }

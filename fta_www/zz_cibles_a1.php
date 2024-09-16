@@ -195,7 +195,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
     
    }
    
-   $contenu_fichier_structure=file_get_contents('../'.'fta_inc/db/sqlite/fta_structure.system.db.sql');
+   $contenu_fichier_structure=file_get_contents('../fta_inc/db/sqlite/fta_structure.system.db.sql');
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_fichier_structure ) . '</pre>' ; exit(0);
    

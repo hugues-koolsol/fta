@@ -238,8 +238,8 @@ function convertSource(objMatSrc){
    }
    return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_sql'  && (file_extension=='sql')){
-   //                             tab             , id    , niveau
-   retProgrammeSource=tabToSql1( objMatSrc.value , idJs+1 , 0      );
+   //                             tab             , id    , niveau , format php
+   retProgrammeSource=tabToSql1( objMatSrc.value , idJs+1 , 0      , false );
    if(retProgrammeSource.status==true){
     t+=retProgrammeSource.value;
    }else{

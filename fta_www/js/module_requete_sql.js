@@ -38,6 +38,7 @@ class requete_sql{
     #deb_selection_dans_formule=0;
     /*
       ================================================================================================================
+      ================================================================================================================
       function constructor
     */
     constructor(nom_de_la_variable , nom_de_la_div_de_travail){
@@ -49,6 +50,7 @@ class requete_sql{
     }
     
     /*
+      ================================================================================================================
       ================================================================================================================
       function convertir_rev_pour_construction
       il faut vérifier que le rev de la requete contient bien les références des tables et des champs
@@ -350,6 +352,7 @@ class requete_sql{
     
     /*
       ================================================================================================================
+      ================================================================================================================
       function apres_chargement_des_bases
     */
     apres_chargement_des_bases(init,that){
@@ -412,11 +415,13 @@ class requete_sql{
     }
     /*
       ================================================================================================================
+      ================================================================================================================
     */
     get nom_de_la_variable(){
         return this.#nom_de_la_variable
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function mettre_en_stokage_local_et_afficher
     */
@@ -434,11 +439,13 @@ class requete_sql{
     }
     /*
       ================================================================================================================
+      ================================================================================================================
     */
     initialisation(){
 //        console.log('initialisation de l\'objet ' , this.#nom_de_la_variable);     
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function selectionner_cette_base
     */
@@ -469,6 +476,7 @@ class requete_sql{
         
     }
     /*
+      ================================================================================================================
       ================================================================================================================
       function selectionner_ou_deselectionner_cette_table
     */
@@ -546,6 +554,7 @@ class requete_sql{
     }
     /* 
       ================================================================================================================
+      ================================================================================================================
       function selectionner_champs_destination
     */
     selectionner_champs_destination(champs_selectionnes,indice_table,gauche_0_droite_1){
@@ -562,6 +571,7 @@ class requete_sql{
     }
     /* 
       ================================================================================================================
+      ================================================================================================================
       function maj_type_de_requete
     */
     maj_type_de_requete(){
@@ -572,6 +582,7 @@ class requete_sql{
         this.#mettre_en_stokage_local_et_afficher();
     }
     /*
+      ================================================================================================================
       ================================================================================================================
       function selectionner_ce_champ
     */
@@ -627,6 +638,7 @@ class requete_sql{
     
     /*
       ================================================================================================================
+      ================================================================================================================
       function retirer_ce_champ_de_complements
     */
     retirer_ce_champ_de_complements(ind){
@@ -636,6 +648,7 @@ class requete_sql{
         }
     }
     /*
+      ================================================================================================================
       ================================================================================================================
       function retirer_ce_champ_de_where
     */
@@ -647,6 +660,7 @@ class requete_sql{
     }
     /*
       ================================================================================================================
+      ================================================================================================================
       function retirer_ce_champ_de_sortie
     */
     retirer_ce_champ_de_sortie(ind){
@@ -654,6 +668,7 @@ class requete_sql{
         this.#mettre_en_stokage_local_et_afficher();
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function changer_la_jointure
     */
@@ -664,6 +679,7 @@ class requete_sql{
         this.#mettre_en_stokage_local_et_afficher();
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function ajouter_ce_champ_dans_la_formule
     */
@@ -681,6 +697,7 @@ class requete_sql{
     }
     /* 
       ================================================================================================================
+      ================================================================================================================
       function ajouter_cette_formule_dans_la_formule
     */
     ajouter_cette_formule_dans_la_formule(formule){
@@ -695,6 +712,7 @@ class requete_sql{
         zone_formule.focus();
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function ajouter_la_formule
     */
@@ -714,9 +732,8 @@ class requete_sql{
             this.#mettre_en_stokage_local_et_afficher();
         }
     }
-    
-    
     /* 
+      ================================================================================================================
       ================================================================================================================
       function ajouter_une_formule
     */
@@ -774,6 +791,7 @@ class requete_sql{
     }
     /* 
       ================================================================================================================
+      ================================================================================================================
       function clic_sur_textarea_formule
     */
     clic_sur_textarea_formule(evt){
@@ -781,6 +799,7 @@ class requete_sql{
     }
     
     /* 
+      ================================================================================================================
       ================================================================================================================
       function modifier_la_formule_de_destination
     */
@@ -838,6 +857,7 @@ class requete_sql{
     
     /* 
       ================================================================================================================
+      ================================================================================================================
       function enregistrer_la_formule_de_destination
     */
     enregistrer_la_formule_de_destination(ind,destination){
@@ -857,6 +877,7 @@ class requete_sql{
         }
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function afficher_les_donnees
     */
@@ -1116,9 +1137,9 @@ class requete_sql{
                 provenance+=CRLF+'         '+'source(';
                 provenance+='nom_de_la_table(';
                 if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' ){
-                    provenance+=elem.nom_de_la_table+',base(__base__'+elem.id_bdd+'__)';
+                    provenance+=elem.nom_de_la_table+',base('+elem.id_bdd+')';
                 }else{
-                    provenance+=elem.nom_de_la_table+',alias(T'+elem.indice_table+'),base(__base__'+elem.id_bdd+'__)';
+                    provenance+=elem.nom_de_la_table+',alias(T'+elem.indice_table+'),base('+elem.id_bdd+')';
                 }
                 provenance+=')';
                 provenance+=')';
@@ -1225,6 +1246,8 @@ class requete_sql{
             t+='<a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.bouton_modifier_le_rev_en_base('+globale_id_requete+')" title="modifier_en_base">modifier en base('+globale_id_requete+')</a>';
             document.getElementById('init').value=globale_rev_requete.replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
+        t+='<a href="javascript:__gi1.reduire_la_text_area(&quot;txtar2&quot;);" title="réduire la zone">👊</a>';
+        t+='<a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar2&quot;);" title="agrandir la zone">🖐</a>';
         t+='</div>' ;
         console.log(' this.#obj_webs=' , this.#obj_webs );
 
@@ -1235,15 +1258,15 @@ class requete_sql{
         
         this.#div_de_travail.innerHTML=t;
     }
-    
     /* 
+      ================================================================================================================
       ================================================================================================================
       function bouton_ajouter_le_rev_en_base
     */
     bouton_modifier_le_rev_en_base(id_requete){
         async function modifier_le_rev_en_base(url="",ajax_param){
             var response= await fetch(url,{
-                // 6 secondes de timeout 
+                /* 6 secondes de timeout */
                 'signal':AbortSignal.timeout(1000),
                 // *GET, POST, PUT, DELETE, etc. 
                 method:"POST",
@@ -1268,7 +1291,7 @@ class requete_sql{
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.status===true){
-            var obj2=tabToSql1(obj1.value,0 , 0);
+            var obj2=tabToSql1(obj1.value,0 , 0 , false );
             if(obj2.status===true){
                 var ajax_param={
                      'call':{
@@ -1289,6 +1312,7 @@ class requete_sql{
         }
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function bouton_ajouter_le_rev_en_base
     */
@@ -1321,7 +1345,7 @@ class requete_sql{
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.status===true){
-            var obj2=tabToSql1(obj1.value,0 , 0);
+            var obj2=tabToSql1(obj1.value,0 , 0 , false );
             if(obj2.status===true){
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'enregistrer_le_rev_en_base'},'rev':document.getElementById('txtar1').value , type:this.#obj_webs.type_de_requete};
                 enregistrer_le_rev_en_base('za_ajax.php?enregistrer_le_rev_en_base',ajax_param).then((donnees) => {
@@ -1341,20 +1365,103 @@ class requete_sql{
     }
     /* 
       ================================================================================================================
+      ================================================================================================================
+      function transform_rev_vers_sql
+    */
+    #transformer_requete_en_fonction_php(chaine_sql, id_base_principale){
+        var t='';
+        var i=0;
+        var c='';
+        var nouvelle_chaine='';
+        var l01=chaine_sql.length;
+        var id_requete_en_base=0;
+        for(i=0;i<l01;i++){
+            c=chaine_sql.substr(i,1);
+            if(c==='\''){
+                if(i>0 && chaine_sql.substr(i-1,1)==='.'){
+                    nouvelle_chaine+=c;
+                }else if(i<l01-1 && chaine_sql.substr(i+1,1)==='.'){
+                    nouvelle_chaine+=c;
+                }else if(i>0 && chaine_sql.substr(i-1,1)==='['){
+                    nouvelle_chaine+=c;
+                }else if(i<l01-1 && chaine_sql.substr(i+1,1)===']'){
+                    nouvelle_chaine+=c;
+                }else{
+                    nouvelle_chaine+='\\\'';
+                }
+            }else{
+                nouvelle_chaine+=c;
+            }
+        }
+        console.log(nouvelle_chaine);
+        if(globale_id_requete && globale_id_requete>0){
+         id_requete_en_base=globale_id_requete;
+        }
+/*        
+        t+='/'+'*'+CRLF;
+        t+=chaine_sql+CRLF;
+        t+='*'+'/'+CRLF;
+*/        
+        t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
+        t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
+        t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
+        t+='    \';'+CRLF;
+        t+='    $stmt=$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->prepare($texte_sql_'+globale_id_requete+');'+CRLF;
+        t+='    /* echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0); */'+CRLF;
+        t+='    if($stmt !== false){'+CRLF;
+        t+='        $result=$stmt->execute();'+CRLF;
+        t+='        $donnees=array();'+CRLF;
+        t+='        $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
+        t+='        while(($arr !== false)){'+CRLF;
+        t+='            $donnees[]=$arr;'+CRLF;
+        t+='            $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
+        t+='        }'+CRLF;
+        t+='        $stmt->close();'+CRLF;
+        t+='        return(array( \'statut\' => true, \'valeur\' => $donnees));'+CRLF;
+        t+='    }else{'+CRLF;
+        t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+        t+='    }'+CRLF;
+        t+='}'+CRLF;
+        
+        
+        return({'status':true,value:t});
+    }
+    /* 
+      ================================================================================================================
+      ================================================================================================================
       function transform_rev_vers_sql
     */
     transform_rev_vers_sql(txtarea_source,txtarea_dest){
         raz_messages('zone_global_messages');
         masquerLesMessage('zone_global_messages');
+//        transform_rev_de_textarea_en_sql(txtarea_source , txtarea_dest);
+        
+        var tableau1 = iterateCharacters2(document.getElementById(txtarea_source).value);
+        var obj1=functionToArray2(tableau1.out,false,true,'');
+        if(obj1.status===true){
+            var obj2=tabToSql1(obj1.value,0 , 0 , false);
+            if(obj2.status===true){
+                obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                dogid(txtarea_dest).value=obj2.value;
+                var obj3=tabToSql1(obj1.value,0 , 0 , true);
+                if(obj3.status===true){
 
-        transform_rev_de_textarea_en_sql(txtarea_source , txtarea_dest);
+                    var obj4=this.#transformer_requete_en_fonction_php(obj3.value , obj3.id_base_principale);
+                    if(obj4.status===true){
+                        document.getElementById('txtar3').value=obj4.value;
+                    }
+                }
+            }
+        }
+        displayMessages('zone_global_messages');
+
     }
     /* 
+      ================================================================================================================
       ================================================================================================================
       function nouvelle
     */
     nouvelle( fonction_appelee_apres_chargement){
-//        console.log('nouvelle() ' , this.#nom_de_la_variable);  
    
         this.#obj_init={
             type_de_requete  : 'select',

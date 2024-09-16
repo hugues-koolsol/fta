@@ -1629,6 +1629,27 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                   debugger
                   }
                 */
+            }else if( ("non" === tab[i][1]) && (tab[i][2] === 'f')){
+                /*
+                  dans le cas d'un !function(){} !!!
+                */
+             
+                var objtestLi = js_tabTojavascript1(tab,(i + 1),false,true,niveau,false);
+                if(objtestLi.status === true){
+                    if(objtestLi.value.substr(0,2)===CRLF){
+                     objtestLi.value=objtestLi.value.substr(2);
+                    }
+                    t+='!' + objtestLi.value + '';
+                }else{
+                    return(logerreur({
+                        status:false,
+                        value:t,
+                        id:i,
+                        tab:tab,
+                        message:'erreur js_tabTojavascript1 1647'
+                    }));
+                }
+             
             }else{
                 return(logerreur({
                     status:false,
@@ -2291,7 +2312,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
             }
         }
     }
-    if((a_des_commentaires === false) && (tab[id][8] >= 5)){
+    if((a_des_commentaires === false) && (tab[id][8] > 5)){
         a_des_commentaires=true;
     }
     for(j=id + 1;(j < tab.length) && (tab[j][3] > tab[id][3]);j=j + 1){
@@ -2985,6 +3006,8 @@ function recupere_operateur(n){
         return '===';
     }else if(n === 'egal'){
         return '==';
+    }else if(n === 'Typeof'){
+        return 'typeof ';
     }else{
         debugger;
         logerreur({status:false,'message':'2118 recupere_operateur pour "' + n + '" '});
@@ -3663,7 +3686,7 @@ function js_condition1(tab,id,niveau){
                                     message:'il faut un nom de fonction à appeler n(xxxx)'
                                 }));
                             }
-                        }else if((tab[tabPar[1]][2] === 'f') && ((tab[tabPar[1]][1] === 'moins') || (tab[tabPar[1]][1] === 'plus') || (tab[tabPar[1]][1] === 'concat'))){
+                        }else if((tab[tabPar[1]][2] === 'f') && ((tab[tabPar[1]][1] === 'moins') || (tab[tabPar[1]][1] === 'plus') || (tab[tabPar[1]][1] === 'concat') || (tab[tabPar[1]][1] === 'Typeof'))){
                             var objOperation = TraiteOperations1(tab,tab[tabPar[1]][0]);
                             if(objOperation.status === true){
                                 t+=objOperation.value;
