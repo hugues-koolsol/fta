@@ -70,11 +70,14 @@ class requete_sql{
         var l01=tab.length;
         var indice_table=0;
         var jointure='';
+        var nom_de_la_table='';
+        var id_bdd=0;
         /*
           etape 1 références des tables
         */
+//        debugger
         for(var i=0;i<l01;i++){
-            var nom_de_la_table='';
+            nom_de_la_table='';
             var alias_de_la_table='';
             var indice_de_la_base='0';
             if(tab[i][2]==='f' && ( 'table_reference' === tab[i][1] || 'jointure_croisée' === tab[i][1] || 'jointure_gauche' === tab[i][1] )){
@@ -219,14 +222,23 @@ class requete_sql{
                 }
             }
         }
+        
+        if(that.#obj_webs.type_de_requete==='update'){
+         if(this.#obj_webs['ordre_des_tables'].length===1){
+          nom_de_la_table=this.#obj_webs['ordre_des_tables'][0].nom_de_la_table;
+          id_bdd=this.#obj_webs['ordre_des_tables'][0].id_bdd;
+         }
+        }
+        
         /*
           etape 2 références des champs pour champs_sortie chercher "valeurs"
         */
+        var nom_du_champ='';
         for(var i=0;i<l01;i++){
             if(tab[i][2]==='f' && ( 'valeurs' === tab[i][1] ) ){
                 for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-                    if(tab[j][2] === 'f' && "champ"===tab[j][1] ){
-                        var nom_du_champ='';
+                    if(tab[j][2] === 'f' && "champ"===tab[j][1] && tab[j][7]===i ){
+                        nom_du_champ='';
                         var alias_de_la_table_pour_le_champ='';
                          /*
                          champ(`T0` , `chi_id_test`)
@@ -301,7 +313,8 @@ class requete_sql{
                             }
                             
                             if(trouve!==false && tab[j][7]===i){
-                               /* si c'est une référence de champ directe sous le 'valeurs' 
+                               /* 
+                                  si c'est une référence de champ directe sous le 'valeurs' 
                                   alors c'est un champ en sortie, 
                                   sinon il est dans une formule 
                                */
@@ -318,14 +331,80 @@ class requete_sql{
 
                     }else if(tab[j][2] === 'f' && "champ"!==tab[j][1] ){
                         /*
-                         c'est une formule
+                         c'est probablement une formule 
                         */
-                        var obj=a2F1(tab,tab[j][7],true,j,false);
-                        if(obj.status===true){
-                            this.#obj_webs['champs_sortie'].push({
-                                type_d_element  : 'formule'  ,
-                                formule         : obj.value  ,
-                            })
+                        if(that.#obj_webs.type_de_requete==='update'){
+                            /* si on a un update, et un affecte */
+                            if(tab[j][1]==='affecte' && tab[j][2]==='f' ){
+
+                                /*
+                                 si le premier paramètre de affecte est un champ et le deuxième est une variable, 
+                                 alors c'est un champ en sortie
+                                */
+                                var indice_du_champ=-1;
+                                var indice_de_la_variable=-1;
+                                for( var k=j+1;k<l01 && tab[k][3]>tab[j][3];k++){
+                                 if(tab[k][7]===j){
+                                  if(tab[k][1]==='champ' && tab[k][2]==='f'){
+                                   indice_du_champ=k;
+                                   nom_du_champ=tab[k+1][1];
+                                  }else if(tab[k][1].substr(0,1)===':' && tab[k][2]==='c'){
+                                   indice_de_la_variable=k;
+                                  }
+                                 }
+                                }
+                                if(indice_de_la_variable>0 && indice_du_champ>0){
+                                    /* 
+                                     c'est un champ
+                                    */
+
+                                    
+                                    this.#obj_webs['champs_sortie'].push({
+                                        type_d_element  : 'champ'         ,
+                                        id_bdd          : id_bdd          ,
+                                        nom_de_la_table : nom_de_la_table ,
+                                        nom_du_champ    : nom_du_champ    ,
+                                        indice_table    : 0    ,
+                                    })
+                                    
+                                }else{
+                                    /* 
+                                      c'est une formule
+                                    */
+                                    var obj=a2F1(tab,tab[j][7],true,j,false);
+                                    if(obj.status===true){
+                                        this.#obj_webs['champs_sortie'].push({
+                                            type_d_element  : 'formule'  ,
+                                            formule         : obj.value  ,
+                                        })
+                                    }
+                                }
+                                
+                                
+                                
+                             
+                            }else{
+                                /*
+                                   c'est une formule
+                                */
+                                var obj=a2F1(tab,tab[j][7],true,j,false);
+                                if(obj.status===true){
+                                    this.#obj_webs['champs_sortie'].push({
+                                        type_d_element  : 'formule'  ,
+                                        formule         : obj.value  ,
+                                    })
+                                }
+                            }
+                             
+                        
+                        }else{
+                            var obj=a2F1(tab,tab[j][7],true,j,false);
+                            if(obj.status===true){
+                                this.#obj_webs['champs_sortie'].push({
+                                    type_d_element  : 'formule'  ,
+                                    formule         : obj.value  ,
+                                })
+                            }
                         }
                     }
                 }
@@ -687,11 +766,19 @@ class requete_sql{
         
         var zone_formule=document.getElementById('zone_formule');
         if(this.#deb_selection_dans_formule===-1){
-            zone_formule.value=zone_formule.value+'champ(`T'+indice_table+'` , `'+nom_du_champ+'`),';
+            if(this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert'){
+                zone_formule.value=zone_formule.value+'champ(`'+nom_du_champ+'`),';
+            }else{
+                zone_formule.value=zone_formule.value+'champ(`T'+indice_table+'` , `'+nom_du_champ+'`),';
+            }
         }else{
             var debut=zone_formule.value.substr(0,this.#deb_selection_dans_formule);
             var fin=zone_formule.value.substr(this.#deb_selection_dans_formule);
-            zone_formule.value=debut+'champ(`T'+indice_table+'` , `'+nom_du_champ+'`),'+fin;
+            if(this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert'){
+                zone_formule.value=debut+'champ( `'+nom_du_champ+'`),'+fin;
+            }else{
+                zone_formule.value=debut+'champ(`T'+indice_table+'` , `'+nom_du_champ+'`),'+fin;
+            }
         }
         zone_formule.focus();
     }
@@ -1042,7 +1129,11 @@ class requete_sql{
         t+='<td>' ;
         for(var i=0;i<this.#obj_webs.champs_sortie.length;i++){
          if(this.#obj_webs.champs_sortie[i].type_d_element==='champ'){
-             t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">T'+this.#obj_webs.champs_sortie[i].indice_table+'.'+this.#obj_webs.champs_sortie[i].nom_du_champ+'</a>';
+             if(this.#obj_webs.type_de_requete==='update'){
+                 t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">affecte(champ(`'+this.#obj_webs.champs_sortie[i].nom_du_champ+'` , :'+this.#obj_webs.champs_sortie[i].nom_du_champ+')</a>';
+             }else{
+                 t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">T'+this.#obj_webs.champs_sortie[i].indice_table+'.'+this.#obj_webs.champs_sortie[i].nom_du_champ+'</a>';
+             }
          }else if(this.#obj_webs.champs_sortie[i].type_d_element==='formule'){
              t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">'+this.#obj_webs.champs_sortie[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</a>';
          }
@@ -1115,7 +1206,7 @@ class requete_sql{
                 }
                 if(elem.type_d_element==='champ'){
                      if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' ){
-                         valeurs+=CRLF+'      '+'affecte( champ( `'+elem.nom_du_champ+'`) , __par__'+numero_champ+'___)';
+                         valeurs+=CRLF+'      '+'affecte( champ( `'+elem.nom_du_champ+'`) , :'+elem.nom_du_champ+')';
                          numero_champ++;
                      }else{
                          valeurs+=CRLF+'      '+'champ(`T'+elem.indice_table+'` , `'+elem.nom_du_champ+'`)';
@@ -1368,7 +1459,7 @@ class requete_sql{
       ================================================================================================================
       function transform_rev_vers_sql
     */
-    #transformer_requete_en_fonction_php(chaine_sql, id_base_principale){
+    #transformer_requete_en_fonction_php(chaine_sql, id_base_principale, type_de_requete){
         var t='';
         var i=0;
         var c='';
@@ -1401,26 +1492,68 @@ class requete_sql{
         t+='/'+'*'+CRLF;
         t+=chaine_sql+CRLF;
         t+='*'+'/'+CRLF;
-*/        
+*/      
         t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
         t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
         t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
         t+='    \';'+CRLF;
-        t+='    $stmt=$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->prepare($texte_sql_'+globale_id_requete+');'+CRLF;
-        t+='    /* echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0); */'+CRLF;
-        t+='    if($stmt !== false){'+CRLF;
-        t+='        $result=$stmt->execute();'+CRLF;
-        t+='        $donnees=array();'+CRLF;
-        t+='        $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
-        t+='        while(($arr !== false)){'+CRLF;
-        t+='            $donnees[]=$arr;'+CRLF;
-        t+='            $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
-        t+='        }'+CRLF;
-        t+='        $stmt->close();'+CRLF;
-        t+='        return(array( \'statut\' => true, \'valeur\' => $donnees));'+CRLF;
-        t+='    }else{'+CRLF;
-        t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
-        t+='    }'+CRLF;
+
+        if(type_de_requete==='select'){  
+            t+='    $stmt=$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->prepare($texte_sql_'+globale_id_requete+');'+CRLF;
+            t+='    /* echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0); */'+CRLF;
+            t+='    if($stmt !== false){'+CRLF;
+            t+='        $result=$stmt->execute();'+CRLF;
+            t+='        $donnees=array();'+CRLF;
+            t+='        $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
+            t+='        while(($arr !== false)){'+CRLF;
+            t+='            $donnees[]=$arr;'+CRLF;
+            t+='            $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
+            t+='        }'+CRLF;
+            t+='        $stmt->close();'+CRLF;
+            t+='        return(array( \'statut\' => true, \'valeur\' => $donnees));'+CRLF;
+            t+='    }else{'+CRLF;
+            t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='    }'+CRLF;
+        }else if(type_de_requete==='update'){
+            t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
+            t+='        return(array( \'statut\' => false, \'code_erreur\' => $GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorCode() ,\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='    }else{'+CRLF;         
+            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
+            t+='    }'+CRLF;         
+         
+/*
+  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+    error_reporting(E_ALL);
+    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
+     ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
+    }else{
+     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
+     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
+    }
+   
+  }else{
+   error_reporting(E_ALL);
+   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
+    
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
+    ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
+
+    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+    
+   }else{
+    
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+    
+   }
+  }
+
+*/         
+         
+         
+        }
         t+='}'+CRLF;
         
         
@@ -1446,7 +1579,7 @@ class requete_sql{
                 var obj3=tabToSql1(obj1.value,0 , 0 , true);
                 if(obj3.status===true){
 
-                    var obj4=this.#transformer_requete_en_fonction_php(obj3.value , obj3.id_base_principale);
+                    var obj4=this.#transformer_requete_en_fonction_php(obj3.value , obj3.id_base_principale , this.#obj_webs.type_de_requete);
                     if(obj4.status===true){
                         document.getElementById('txtar3').value=obj4.value;
                     }

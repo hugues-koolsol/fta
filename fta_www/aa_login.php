@@ -169,9 +169,9 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
       =============================================================================================================
       ... si oui on lui affiche un formulaire de DEconnexion
       =============================================================================================================
-    */?>    <form id="boite_de_connexion" method="post">
+    */?>    <form id="boite_de_connexion" method="post" style="margin-top:50px;">
         <input type="hidden" name="logout" id="logout" value="" />
-        <button type="submit">cliquez ici pour vous déconnecter</button>
+        <button type="submit" style="margin:0 auto;">cliquez ici pour vous déconnecter</button>
     </form><?php
 
 }else{
@@ -193,7 +193,7 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
             mot de passe
         </label>
         <input type="password" name="mot_de_passe" id="mot_de_passe" value="" />
-        <button class="yyinfo" type="submit">cliquez ici pour vous connecter</button>
+        <button class="yyinfo" type="submit" style="margin:1em auto;">cliquez ici pour vous connecter</button>
         <div>
             <br />
             Essayez

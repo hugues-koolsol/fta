@@ -498,7 +498,8 @@ function tabToSql0(tab,id,niveau,options){
                   UPDATE
                   =====================================================================================
                 */
-                nam='';
+                nom_de_la_table='';
+                var nom_de_la_base='';
                 list='';
                 conditions='';
                 la_valeur='';
@@ -524,7 +525,10 @@ function tabToSql0(tab,id,niveau,options){
                                                                 for(o=n + 1;(o < l01) && (tab[o][3] > tab[n][3]);o++){
                                                                     if(tab[o][7] === n){
                                                                         if(tab[o][2] === 'c'){
-                                                                            nam=tab[o][1];
+                                                                            nom_de_la_table=tab[o][1];
+                                                                        }else if((tab[o][2] === 'f') && (tab[o][1] === 'base') && (tab[o][8] === 1)){
+                                                                            nom_de_la_base=tab[o + 1][1];
+                                                                            options.id_base_principale=nom_de_la_base;
                                                                         }
                                                                     }
                                                                 }
@@ -539,7 +543,7 @@ function tabToSql0(tab,id,niveau,options){
                             }
                         }
                         if((tab[j][1] === 'nom_de_la_table') && (tab[j][8] === 1)){
-                            nam=tab[j + 1][1];
+                            nom_de_la_table=tab[j + 1][1];
                         }
                         if((tab[j][1] === 'valeurs') && (tab[j][8] >= 1)){
                             liste_des_valeurs='';
@@ -569,8 +573,12 @@ function tabToSql0(tab,id,niveau,options){
                                                         if((tab[m][1].toLowerCase() === 'null') && (tab[m][4] === 0)){
                                                             valeur_du_champ='NULL';
                                                         }else{
-                                                            if(tab[m][1].indexOf('__') >= 0){
-                                                                valeur_du_champ=tab[m][1];
+                                                            if(tab[m][1].substr(0,1)===':'){
+                                                                if(options.au_format_php===true){
+                                                                    valeur_du_champ='\'.sq1($par[\''+tab[m][1].substr(1)+'\']).\'';
+                                                                }else{
+                                                                    valeur_du_champ=tab[m][1];
+                                                                }
                                                             }else{
                                                                 valeur_du_champ='\'' + tab[m][1].replace(/\'/g,"''") + '\'';
                                                             }
@@ -580,7 +588,17 @@ function tabToSql0(tab,id,niveau,options){
                                             }
                                         }
                                     }
-                                    la_valeur+='' + nom_du_champ + ' = ' + valeur_du_champ + '';
+                                    if(options.au_format_php===true){
+                                        la_valeur+='\n      ' + nom_du_champ + ' = ' + valeur_du_champ + '';
+                                    }else{
+                                        if(nom_du_champ==='' && valeur_du_champ===''){
+                                         /*
+                                          dans le cas d'un commentaire
+                                         */
+                                        }else{
+                                            la_valeur+='' + nom_du_champ + ' = ' + valeur_du_champ + '';
+                                        }
+                                    }
                                 }
                             }
                             if(la_valeur !== ''){
@@ -609,11 +627,19 @@ function tabToSql0(tab,id,niveau,options){
                         }
                     }
                 }
-                if((nam !== '') && (la_valeur !== '')){
+                if((nom_de_la_table !== '') && (la_valeur !== '')){
                     t+=espacesn(true,niveau);
-                    t+='UPDATE ' + nam + ' SET ' + la_valeur + '';
+                    if(options.au_format_php===true){
+                        t+='UPDATE '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
+                    }else{
+                        t+='UPDATE '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
+                    }
                     if(conditions.length > 0){
-                        t+=' WHERE ' + conditions + ' ;';
+                        if(options.au_format_php===true){
+                            t+='\n    WHERE ' + conditions + ' ;';
+                        }else{
+                            t+='\nWHERE ' + conditions + ' ;';
+                        }
                     }
                 }
             }else if((tab[i][1] === 'insert_into') || (tab[i][1] === 'insérer')){

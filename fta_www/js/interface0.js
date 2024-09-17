@@ -882,7 +882,7 @@ function masquerLesMessage(nomZone){
 function afficherOuMasquerLesMessages(){
     var nomZone='zone_global_messages';
     var zon = document.getElementById(nomZone);
-    if((zon.style.visibility === 'hidden') || (zon.innerHTML === '')){
+    if((zon.style.visibility === 'hidden')){
         zon.style.visibility='visible';
     }else{
         zon.style.visibility='hidden';

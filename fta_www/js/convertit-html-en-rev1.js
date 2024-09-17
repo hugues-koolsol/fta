@@ -32,7 +32,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
     a.setAttribute('rows',(count+1));
     var startMicro=performance.now();
     var obj=__module_html1.TransformHtmlEnRev(a.value,0);
-    
+
     if(obj.status == true){
         var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
 //                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
@@ -51,8 +51,10 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
         }else{
             asthtml_logerreur({status:false,message:'erreur pour le rev'});
         }
+        displayMessages('zone_global_messages', 'txtar2');
+    }else{
+        displayMessages('zone_global_messages', 'txtar1');
     }
-    displayMessages('zone_global_messages');
     rangeErreurSelectionne=false;
     
     return;

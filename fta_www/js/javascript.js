@@ -3553,6 +3553,22 @@ function js_condition1(tab,id,niveau){
                     }));
                 }
                 i=max - 1;
+            }else if((tab[i][1] === 'defTab') && (tab[i][2] === 'f')){
+                var objtestLi = js_traiteDefinitionTableau(tab,i,niveau,{});
+                if(objtestLi.status === true){
+                    t+=objtestLi.value;
+                }else{
+                    return(logerreur({status:false,value:t,id:i,tab:tab,message:'erreur 3561 sur declaration '}));                 
+                }
+                var reprise = (i + 1);
+                var j = (i + 1);
+                for(j=i + 1;j < max;j=j + 1){
+                    if(tab[j][3] <= tab[i][3]){
+                        break;
+                    }
+                    reprise=j;
+                }
+                i=reprise;
             }else if((tab[i][1] === 'appelf') && (tab[i][2] === 'f')){
                 obj=js_traiteAppelFonction(tab,i,true,niveau,false);
                 if(obj.status === true){
