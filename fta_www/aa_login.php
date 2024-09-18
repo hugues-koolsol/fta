@@ -194,14 +194,10 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
         </label>
         <input type="password" name="mot_de_passe" id="mot_de_passe" value="" />
         <button class="yyinfo" type="submit" style="margin:1em auto;">cliquez ici pour vous connecter</button>
-        <div>
-            <br />
-            Essayez
-            <span style="color:red;background:white;">admin/admin</span>
-            , si vous ne l'avez pas deviné.
-            <br />
-            c'est encore un environnement de test !
-        </div>
+        <marquee scrollamount="6">
+
+            Essayez <span style="color:red;background:white;">admin/admin</span>, si vous ne l'avez pas deviné. C'est encore un environnement de test :-)
+        </marquee>
     </form>
 <script type="text/javascript">
 //<![CDATA[

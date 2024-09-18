@@ -449,52 +449,77 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
   =================================================================================== 
 */
 function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,options){
- var t='';
- var esp0 = ' '.repeat(NBESPACESREV*(niveau));
- var esp1 = ' '.repeat(NBESPACESREV);
- 
-// console.log('element ast select=' , element );
- 
- t+='\n'+esp0+'insérer(';
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    var tableau_des_champs=[];
+    
+   // console.log('element ast select=' , element );
+    
+    t+='\n'+esp0+'insérer(';
+    if(element.into){
+     
+        if(element.into.type==='identifier'){
+        
+         if(element.into.format && element.into.format==='table'){
+             t+='nom_de_la_table('+element.into.name+')';
+             if(element.into.columns){
+              
+                 for(var i=0;i<element.into.columns.length;i++){
+                  tableau_des_champs.push(element.into.columns[i].name);
+                 }
+              
+              
+             }else{
+                 return(logerreur({status:false,message:'0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "'+JSON.stringify(json_partiel(element))+'"'}));
+             }
+         }
+        }else{
+            return(logerreur({status:false,message:'0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "'+JSON.stringify(json_partiel(element))+'"'}));
+        }
 
- if(element.into){
-  
-    var obj1=recupere_element_de_ast_sql(element.into,niveau,parent,options);
-    if(obj1.status===true){
-        t+='\n'+esp0+esp1+esp1+obj1.value+'';
+     
     }else{
-      return(logerreur({status:false,message:'0279 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.into))+'"'}));
+        return(logerreur({status:false,message:'0275 dans pas de into : '+JSON.stringify(json_partiel(element))}));
     }
-  
- }else{
-     return(logerreur({status:false,message:'0275 dans pas de into : '+JSON.stringify(json_partiel(element))}));
- }
+    if(element.result && element.result.length>0){
+        t+='\n'+esp0+esp1+esp1+',valeurs(';
+        /*
+          on ne prend que la première valeur
+        */
+        if(element.result[0].type==='expression'  && 'list'===element.result[0].variant ){
+         
+         
+            if(element.result[0].expression && element.result[0].expression.length>0){
 
- if(element.result && element.result.length>0){
-     t+='\n'+esp0+esp1+esp1+',valeurs(';
-     for(var i=0;i<element.result.length;i++){
-         if(i>0){
-             t+=','
-         }
-         var obj1=recupere_element_de_ast_sql(element.result[i],niveau,parent,options);
-         if(obj1.status===true){
-             t+='\n'+esp0+esp1+esp1+esp1+obj1.value+'';
-         }else{
-             return(logerreur({status:false,message:'0279 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.result[i]))+'"'}));
-         }
-      
-      
-     }
-     t+='\n'+esp0+esp1+esp1+')';
- }
+                for(var i=0;i<element.result[0].expression.length;i++){
+                     if(i>0){
+                         t+=',';
+                     }
+                     var obj1=recupere_element_de_ast_sql(element.result[0].expression[i],niveau,parent,options)
+                     if(obj1.status===true){
+                         t+=CRLF+'        affecte(champ(`'+tableau_des_champs[i]+'`) , '+obj1.value+')';
+                     }else{
+                         return(logerreur({status:false,message:'0142 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.result[0].expression[i]))}));
+                     }
+                }
 
+            }else{
+               return(logerreur({status:false,message:'0137 recupere_element_de_ast_sql pas de expression : "'+JSON.stringify(json_partiel(element))+'"'}));
+            }
+         
+         
+         
+        }else{
+            return(logerreur({status:false,message:'0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.result[0].type different de expression : "'+JSON.stringify(json_partiel(element))+'"'}));
+        }
+        
+        t+='\n'+esp0+esp1+esp1+')';
+    }
 
-
- t+='\n'+esp0+')';
-
-
- 
- return {status:true,value:t};
+    t+='\n'+esp0+')';
+    
+    return {status:true,value:t};
 }
 
 /*
@@ -960,7 +985,7 @@ function convertion_texte_sql_en_rev(texte_du_sql){
  texte_du_sql=texte_du_sql.replace(/\/\*\*\//g,'');
  var sqliteParser = require('sqlite-parser'); 
  var ast=sqliteParser(texte_du_sql);
-// console.log('ast=',ast);
+ console.log('ast=',ast);
 
  var obj1=conversion_de_ast_vers_sql(ast,0,null,{});
  

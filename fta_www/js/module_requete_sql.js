@@ -92,8 +92,7 @@ class requete_sql{
                             if(tab[k][2] === 'f' && "base"===tab[k][1] ){
                                 if(tab[k+1][2]==='c'){
                                    indice_de_la_base=tab[k+1][1];
-                                   indice_de_la_base=indice_de_la_base.replace(/__base__/g,'');
-                                   indice_de_la_base=indice_de_la_base.replace(/__/g,'');
+                                   indice_de_la_base=indice_de_la_base.replace(/b/g,'');
 //                                   console.log(indice_de_la_base);
                                 }
                             }
@@ -223,7 +222,7 @@ class requete_sql{
             }
         }
         
-        if(that.#obj_webs.type_de_requete==='update'){
+        if(that.#obj_webs.type_de_requete==='update' || that.#obj_webs.type_de_requete==='insert' ){
          if(this.#obj_webs['ordre_des_tables'].length===1){
           nom_de_la_table=this.#obj_webs['ordre_des_tables'][0].nom_de_la_table;
           id_bdd=this.#obj_webs['ordre_des_tables'][0].id_bdd;
@@ -314,9 +313,9 @@ class requete_sql{
                             
                             if(trouve!==false && tab[j][7]===i){
                                /* 
-                                  si c'est une référence de champ directe sous le 'valeurs' 
-                                  alors c'est un champ en sortie, 
-                                  sinon il est dans une formule 
+                                 si c'est une référence de champ directe sous le 'valeurs' 
+                                 alors c'est un champ en sortie, 
+                                 sinon il est dans une formule 
                                */
 
                                this.#obj_webs['champs_sortie'].push({
@@ -331,15 +330,15 @@ class requete_sql{
 
                     }else if(tab[j][2] === 'f' && "champ"!==tab[j][1] ){
                         /*
-                         c'est probablement une formule 
+                          c'est probablement une formule
                         */
-                        if(that.#obj_webs.type_de_requete==='update'){
+                        if(that.#obj_webs.type_de_requete==='update' || that.#obj_webs.type_de_requete==='insert' ){
                             /* si on a un update, et un affecte */
                             if(tab[j][1]==='affecte' && tab[j][2]==='f' ){
 
                                 /*
-                                 si le premier paramètre de affecte est un champ et le deuxième est une variable, 
-                                 alors c'est un champ en sortie
+                                  si le premier paramètre de affecte est un champ et le deuxième est une variable, 
+                                  alors c'est un champ en sortie
                                 */
                                 var indice_du_champ=-1;
                                 var indice_de_la_variable=-1;
@@ -355,7 +354,7 @@ class requete_sql{
                                 }
                                 if(indice_de_la_variable>0 && indice_du_champ>0){
                                     /* 
-                                     c'est un champ
+                                      c'est un champ
                                     */
 
                                     
@@ -1228,7 +1227,7 @@ class requete_sql{
                 provenance+=CRLF+'         '+'source(';
                 provenance+='nom_de_la_table(';
                 if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' ){
-                    provenance+=elem.nom_de_la_table+',base('+elem.id_bdd+')';
+                    provenance+=elem.nom_de_la_table+',base(b'+elem.id_bdd+')';
                 }else{
                     provenance+=elem.nom_de_la_table+',alias(T'+elem.indice_table+'),base('+elem.id_bdd+')';
                 }
@@ -1295,8 +1294,8 @@ class requete_sql{
         }else if(this.#obj_webs.type_de_requete==='update'){
             rev_texte+='modifier(';
         }
-        rev_texte+=CRLF+'   '+'valeurs('+valeurs;
-        rev_texte+=CRLF+'   )';
+        rev_texte+=CRLF+'   '+'valeurs('+valeurs+CRLF+'   )';
+
         if(provenance!==''){
             rev_texte+=CRLF+'   '+'provenance('+provenance;
             rev_texte+=CRLF+'   )';
@@ -1514,45 +1513,12 @@ class requete_sql{
             t+='    }else{'+CRLF;
             t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
             t+='    }'+CRLF;
-        }else if(type_de_requete==='update'){
+        }else if(type_de_requete==='update' || type_de_requete==='insert' ){
             t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
             t+='        return(array( \'statut\' => false, \'code_erreur\' => $GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorCode() ,\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
             t+='    }else{'+CRLF;         
             t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
             t+='    }'+CRLF;         
-         
-/*
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
-    error_reporting(E_ALL);
-    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
-     ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
-    }else{
-     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
-    }
-   
-  }else{
-   error_reporting(E_ALL);
-   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
-    
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
-    ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
-
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
-    
-   }else{
-    
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
-    
-   }
-  }
-
-*/         
-         
-         
         }
         t+='}'+CRLF;
         

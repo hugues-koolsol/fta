@@ -491,11 +491,11 @@ function tabToSql0(tab,id,niveau,options){
                 }else{
                     return(logerreur({status:false,message:'0231 erreur dans select, pas de valeurs sélectionnées'}));
                 }
-            }else if(tab[i][1] === 'modifier'){
+            }else if(tab[i][1] === 'modifier' || (tab[i][1] === 'insérer') ){
                 /*
                   
                   =====================================================================================
-                  UPDATE
+                  UPDATE OR INSERT
                   =====================================================================================
                 */
                 nom_de_la_table='';
@@ -504,6 +504,8 @@ function tabToSql0(tab,id,niveau,options){
                 conditions='';
                 la_valeur='';
                 var nom_du_champ='';
+                var liste_des_champs_pour_insert='';
+                var liste_des_valeurs_pour_insert='';
                 var valeur_du_champ='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if(tab[j][7] === tab[i][0]){
@@ -542,10 +544,23 @@ function tabToSql0(tab,id,niveau,options){
                                 }
                             }
                         }
-                        if((tab[j][1] === 'nom_de_la_table') && (tab[j][8] === 1)){
-                            nom_de_la_table=tab[j + 1][1];
+                        if(tab[j][1] === 'nom_de_la_table' && tab[j][2] === 'f'){
+                            var o = (j + 1);
+                            for(o=j + 1;(o < l01) && (tab[o][3] > tab[j][3]);o++){
+                                if(tab[o][7] === j){
+                                    if(tab[o][2] === 'c'){
+                                        nom_de_la_table=tab[o][1];
+                                    }else if((tab[o][2] === 'f') && (tab[o][1] === 'base') && (tab[o][8] === 1)){
+                                        nom_de_la_base=tab[o + 1][1];
+                                        options.id_base_principale=nom_de_la_base;
+                                    }
+                                }
+                            }
                         }
+
+                        
                         if((tab[j][1] === 'valeurs') && (tab[j][8] >= 1)){
+
                             liste_des_valeurs='';
                             for(l=j + 1;(l < l01) && (tab[l][3] > tab[j][3]);l++){
                                 if(tab[l][7] === j){
@@ -589,18 +604,43 @@ function tabToSql0(tab,id,niveau,options){
                                         }
                                     }
                                     if(options.au_format_php===true){
-                                        la_valeur+='\n      ' + nom_du_champ + ' = ' + valeur_du_champ + '';
+                                        la_valeur+='\n      `' + nom_du_champ + '` = ' + valeur_du_champ + '';
+                                        
+                                        if(liste_des_champs_pour_insert!==''){
+                                            liste_des_champs_pour_insert+=' , ';
+                                        }
+                                        liste_des_champs_pour_insert+=CRLF+'   `'+nom_du_champ+'`';
+                                        
+                                        if(liste_des_valeurs_pour_insert!==''){
+                                            liste_des_valeurs_pour_insert+=' , ';
+                                        }
+                                        liste_des_valeurs_pour_insert+=CRLF+'    '+valeur_du_champ;
+                                        
+                                        
                                     }else{
                                         if(nom_du_champ==='' && valeur_du_champ===''){
                                          /*
-                                          dans le cas d'un commentaire
+                                           dans le cas d'un commentaire
                                          */
                                         }else{
-                                            la_valeur+='' + nom_du_champ + ' = ' + valeur_du_champ + '';
+                                            la_valeur+='`' + nom_du_champ + '` = ' + valeur_du_champ + '';
+                                            if(liste_des_champs_pour_insert!==''){
+                                                liste_des_champs_pour_insert+=' , ';
+                                            }
+                                            liste_des_champs_pour_insert+=CRLF+'    `'+nom_du_champ+'`';
+                                            
+                                            if(liste_des_valeurs_pour_insert!==''){
+                                                liste_des_valeurs_pour_insert+=' , ';
+                                            }
+                                            liste_des_valeurs_pour_insert+=CRLF+'    '+valeur_du_champ;
+                                            
+                                            
                                         }
                                     }
                                 }
                             }
+                            
+
                             if(la_valeur !== ''){
                                 liste_des_valeurs+=espacesn(true,niveau) + ' (';
                                 liste_des_valeurs+=la_valeur + ' ) ,';
@@ -629,20 +669,32 @@ function tabToSql0(tab,id,niveau,options){
                 }
                 if((nom_de_la_table !== '') && (la_valeur !== '')){
                     t+=espacesn(true,niveau);
-                    if(options.au_format_php===true){
-                        t+='UPDATE '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
-                    }else{
-                        t+='UPDATE '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
-                    }
-                    if(conditions.length > 0){
+                    
+                    if(tab[i][1] === 'insérer'){
                         if(options.au_format_php===true){
-                            t+='\n    WHERE ' + conditions + ' ;';
+                            t+='INSERT INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`(';
+                            t+=''+liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
                         }else{
-                            t+='\nWHERE ' + conditions + ' ;';
+                            t+='INSERT INTO '+(nom_de_la_base!==''?nom_de_la_base+'.':'') +'`'+ nom_de_la_table +'`(';
+                            t+=liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
+                        }
+                    }else{
+                    
+                        if(options.au_format_php===true){
+                            t+='UPDATE '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
+                        }else{
+                            t+='UPDATE '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
+                        }
+                        if(conditions.length > 0){
+                            if(options.au_format_php===true){
+                                t+='\n    WHERE ' + conditions + ' ;';
+                            }else{
+                                t+='\nWHERE ' + conditions + ' ;';
+                            }
                         }
                     }
                 }
-            }else if((tab[i][1] === 'insert_into') || (tab[i][1] === 'insérer')){
+            }else if(false && (tab[i][1] === 'insert_into') || (tab[i][1] === 'insérer')){
                 /*
                   
                   =====================================================================================
