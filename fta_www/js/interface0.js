@@ -1094,6 +1094,7 @@ function afficherModale1(parametres){
   =====================================================================================================================
 */
 function fermerModale1(){
+    document.getElementById('__message_modale').innerHTML='';
     global_modale1.close();
 }
 /*

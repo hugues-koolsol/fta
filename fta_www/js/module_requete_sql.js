@@ -221,8 +221,10 @@ class requete_sql{
                 }
             }
         }
-        
-        if(that.#obj_webs.type_de_requete==='update' || that.#obj_webs.type_de_requete==='insert' ){
+        /*
+          pour un update, insert,delete, il n'y a qu'une table
+        */        
+        if(that.#obj_webs.type_de_requete==='update' || that.#obj_webs.type_de_requete==='insert' || that.#obj_webs.type_de_requete==='delete' ){
          if(this.#obj_webs['ordre_des_tables'].length===1){
           nom_de_la_table=this.#obj_webs['ordre_des_tables'][0].nom_de_la_table;
           id_bdd=this.#obj_webs['ordre_des_tables'][0].id_bdd;
@@ -978,6 +980,7 @@ class requete_sql{
         t+='<option value="select" '+( this.#obj_webs.type_de_requete==='select'?' selected="true"':'')+'>select</option>';
         t+='<option value="update" '+( this.#obj_webs.type_de_requete==='update'?' selected="true"':'')+'>update</option>';
         t+='<option value="insert" '+( this.#obj_webs.type_de_requete==='insert'?' selected="true"':'')+'>insert</option>';
+        t+='<option value="delete" '+( this.#obj_webs.type_de_requete==='delete'?' selected="true"':'')+'>delete</option>';
         t+='</select>';
         t+='</div>';
         t+='<table>';
@@ -1226,7 +1229,7 @@ class requete_sql{
                 provenance+=CRLF+'      '+elem.jointure+'(';
                 provenance+=CRLF+'         '+'source(';
                 provenance+='nom_de_la_table(';
-                if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' ){
+                if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' || this.#obj_webs.type_de_requete==='delete' ){
                     provenance+=elem.nom_de_la_table+',base(b'+elem.id_bdd+')';
                 }else{
                     provenance+=elem.nom_de_la_table+',alias(T'+elem.indice_table+'),base('+elem.id_bdd+')';
@@ -1293,8 +1296,12 @@ class requete_sql{
             rev_texte+='insérer(';
         }else if(this.#obj_webs.type_de_requete==='update'){
             rev_texte+='modifier(';
+        }else if(this.#obj_webs.type_de_requete==='delete'){
+            rev_texte+='supprimer(';
         }
-        rev_texte+=CRLF+'   '+'valeurs('+valeurs+CRLF+'   )';
+        if(this.#obj_webs.type_de_requete!=='delete'){
+            rev_texte+=CRLF+'   '+'valeurs('+valeurs+CRLF+'   )';
+        }
 
         if(provenance!==''){
             rev_texte+=CRLF+'   '+'provenance('+provenance;
@@ -1354,7 +1361,7 @@ class requete_sql{
       function bouton_ajouter_le_rev_en_base
     */
     bouton_modifier_le_rev_en_base(id_requete){
-        async function modifier_le_rev_en_base(url="",ajax_param){
+        async function modifier_la_requete_en_base(url="",ajax_param){
             var response= await fetch(url,{
                 /* 6 secondes de timeout */
                 'signal':AbortSignal.timeout(1000),
@@ -1385,13 +1392,15 @@ class requete_sql{
             if(obj2.status===true){
                 var ajax_param={
                      'call':{
-                          'lib':'core','file':'bdd','funct':'modifier_le_rev_en_base'
+                          'lib':'core','file':'bdd','funct':'modifier_la_requete_en_base'
                       },
                       'rev':document.getElementById('txtar1').value , 
+                      'sql':document.getElementById('txtar2').value , 
+                      'php':document.getElementById('txtar3').value , 
                       type:this.#obj_webs.type_de_requete,
                       id_requete : id_requete,
                 };
-                modifier_le_rev_en_base('za_ajax.php?modifier_le_rev_en_base',ajax_param).then((donnees) => {
+                modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){
                     }
@@ -1408,7 +1417,7 @@ class requete_sql{
     */
     bouton_ajouter_le_rev_en_base(){
      
-        async function enregistrer_le_rev_en_base(url="",ajax_param){
+        async function enregistrer_la_requete_en_base(url="",ajax_param){
             var response= await fetch(url,{
                 // 6 secondes de timeout 
                 'signal':AbortSignal.timeout(1000),
@@ -1437,8 +1446,14 @@ class requete_sql{
         if(obj1.status===true){
             var obj2=tabToSql1(obj1.value,0 , 0 , false );
             if(obj2.status===true){
-                var ajax_param={'call':{'lib':'core','file':'bdd','funct':'enregistrer_le_rev_en_base'},'rev':document.getElementById('txtar1').value , type:this.#obj_webs.type_de_requete};
-                enregistrer_le_rev_en_base('za_ajax.php?enregistrer_le_rev_en_base',ajax_param).then((donnees) => {
+                var ajax_param={
+                 'call':{'lib':'core','file':'bdd','funct':'enregistrer_la_requete_en_base'},
+                 'rev':document.getElementById('txtar1').value , 
+                 'sql':document.getElementById('txtar2').value , 
+                 'php':document.getElementById('txtar3').value , 
+                 type:this.#obj_webs.type_de_requete
+                };
+                enregistrer_la_requete_en_base('za_ajax.php?enregistrer_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){
                     }
@@ -1447,34 +1462,27 @@ class requete_sql{
             }
         }else{
         }
-        
-        
-        
-     
-     
     }
     /* 
       ================================================================================================================
       ================================================================================================================
-      function transform_rev_vers_sql
+      function traiter_chaine_sql_pour_php
     */
-    #transformer_requete_en_fonction_php(chaine_sql, id_base_principale, type_de_requete){
-        var t='';
+    #traiter_chaine_sql_pour_php( chaine ){
         var i=0;
-        var c='';
         var nouvelle_chaine='';
-        var l01=chaine_sql.length;
-        var id_requete_en_base=0;
+        var c='';
+        var l01=chaine.length;
         for(i=0;i<l01;i++){
-            c=chaine_sql.substr(i,1);
+            c=chaine.substr(i,1);
             if(c==='\''){
-                if(i>0 && chaine_sql.substr(i-1,1)==='.'){
+                if(i>0 && chaine.substr(i-1,1)==='.'){
                     nouvelle_chaine+=c;
-                }else if(i<l01-1 && chaine_sql.substr(i+1,1)==='.'){
+                }else if(i<l01-1 && chaine.substr(i+1,1)==='.'){
                     nouvelle_chaine+=c;
-                }else if(i>0 && chaine_sql.substr(i-1,1)==='['){
+                }else if(i>0 && chaine.substr(i-1,1)==='['){
                     nouvelle_chaine+=c;
-                }else if(i<l01-1 && chaine_sql.substr(i+1,1)===']'){
+                }else if(i<l01-1 && chaine.substr(i+1,1)===']'){
                     nouvelle_chaine+=c;
                 }else{
                     nouvelle_chaine+='\\\'';
@@ -1483,22 +1491,79 @@ class requete_sql{
                 nouvelle_chaine+=c;
             }
         }
-        console.log(nouvelle_chaine);
+        return(nouvelle_chaine);
+        
+    }
+    /* 
+      ================================================================================================================
+      ================================================================================================================
+      function transform_rev_vers_sql
+    */
+    #transformer_requete_en_fonction_php( type_de_requete , obj3 ){
+        var t='';
+        var i=0;
+        var c='';
+        var id_requete_en_base=0;
+        var nouvelle_chaine='';
         if(globale_id_requete && globale_id_requete>0){
          id_requete_en_base=globale_id_requete;
         }
-/*        
-        t+='/'+'*'+CRLF;
-        t+=chaine_sql+CRLF;
-        t+='*'+'/'+CRLF;
-*/      
         t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
-        t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
-        t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
-        t+='    \';'+CRLF;
 
-        if(type_de_requete==='select'){  
-            t+='    $stmt=$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->prepare($texte_sql_'+globale_id_requete+');'+CRLF;
+        if(type_de_requete==='delete' ){
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
+            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
+            t+='    \';'+CRLF;
+            t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
+            t+='        return(array( ';         
+            t+='\'statut\' => false, ';         
+            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';
+            t+='\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='    }else{'+CRLF;         
+            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
+            t+='    }'+CRLF;         
+        }else if(type_de_requete==='insert' ){
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.debut_sql_pour_insert);
+            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
+            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
+            t+='    \';'+CRLF;
+            t+='    $liste_des_valeurs=\'\';'+CRLF;
+            t+='    for($i=0;($i < count($par[\'groupes\']));$i++){'+CRLF;
+            t+='        if($liste_des_valeurs != \'\'){'+CRLF;
+            t+='            $liste_des_valeurs.=\',\';'+CRLF;
+            t+='        }'+CRLF;
+            t+='        $liste_des_valeurs.=\'(\';'+CRLF;
+            for(i=0;i<obj3.tableau_des_valeurs_pour_insert.length;i++){
+                t+='        $liste_des_valeurs.=CRLF.\'      '+obj3.tableau_des_valeurs_pour_insert[i]+'';
+                if(i<obj3.tableau_des_valeurs_pour_insert.length-1){
+                 t+=',\';';
+                }else{
+                 t+='\';';
+                }
+                t+=CRLF;
+            }
+            
+            t+='        $liste_des_valeurs.=\')\';'+CRLF;
+            t+='    }'+CRLF;
+            t+='    $texte_sql_3.=$liste_des_valeurs;'+CRLF;
+            t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_3)){'+CRLF;
+            t+='        return(array( ';         
+            t+='\'statut\' => false, ';         
+            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_b1][LIEN_BDD]->lastErrorCode(), ';
+            t+='\'message\' => \'erreur sql_3()\'.\' \'.$GLOBALS[BDD][BDD_b1][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='    }else{'+CRLF;
+            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_b1][LIEN_BDD]->changes()));'+CRLF;
+            t+='    }'+CRLF;
+            
+            
+         
+        }else if(type_de_requete==='select'){
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
+            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
+            t+='    \';'+CRLF;
+            t+='    $stmt=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($texte_sql_'+globale_id_requete+');'+CRLF;
             t+='    /* echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0); */'+CRLF;
             t+='    if($stmt !== false){'+CRLF;
             t+='        $result=$stmt->execute();'+CRLF;
@@ -1511,13 +1576,20 @@ class requete_sql{
             t+='        $stmt->close();'+CRLF;
             t+='        return(array( \'statut\' => true, \'valeur\' => $donnees));'+CRLF;
             t+='    }else{'+CRLF;
-            t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
             t+='    }'+CRLF;
-        }else if(type_de_requete==='update' || type_de_requete==='insert' ){
+        }else if(type_de_requete==='update' ){
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
+            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
+            t+='    \';'+CRLF;
             t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
-            t+='        return(array( \'statut\' => false, \'code_erreur\' => $GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorCode() ,\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='        return(array( ';         
+            t+='\'statut\' => false, ';         
+            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';         
+            t+='\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
             t+='    }else{'+CRLF;         
-            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
+            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
             t+='    }'+CRLF;         
         }
         t+='}'+CRLF;
@@ -1545,7 +1617,7 @@ class requete_sql{
                 var obj3=tabToSql1(obj1.value,0 , 0 , true);
                 if(obj3.status===true){
 
-                    var obj4=this.#transformer_requete_en_fonction_php(obj3.value , obj3.id_base_principale , this.#obj_webs.type_de_requete);
+                    var obj4=this.#transformer_requete_en_fonction_php( this.#obj_webs.type_de_requete , obj3 );
                     if(obj4.status===true){
                         document.getElementById('txtar3').value=obj4.value;
                     }

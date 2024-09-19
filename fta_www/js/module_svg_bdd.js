@@ -116,7 +116,34 @@ class module_svg_bdd{
         }
     }
     /*
-      
+      ====================================================================================================================
+      function #message_succes_et_fermer_modale
+    */
+    #message_succes_et_fermer_modale(donnees){
+        document.getElementById('__message_modale').innerHTML='<div class="yysucces">OK</div>'
+        setTimeout(
+         function(){
+          global_modale1.close();
+          document.getElementById('__message_modale').innerHTML='';
+         },
+         500
+        );
+    }
+    /*
+      ====================================================================================================================
+      function #message_erreur_modale
+    */
+    #message_erreur_modale(donnees){
+        var t='';
+        t+='<div class="yyerreur">KO</div>';
+        if(donnees.messages){
+            for(var i in donnees.messages){
+                t+='<div class="yyerreur">'+donnees.messages[i]+'</div>';
+            }
+        }
+        document.getElementById('__message_modale').innerHTML=t;
+    }
+    /*
       ====================================================================================================================
       function svg_ajuster_la_largeur_des_boites_de_la_table
     */
@@ -717,7 +744,7 @@ class module_svg_bdd{
     */
     supprimer_en_bdd_le_champ_de_modale(id_svg_text,id_svg_conteneur_table,nom_du_champ,id_svg_rectangle_du_champ , nom_de_la_table){
      
-        var source_sql='ALTER TABLE '+nom_de_la_table+' DROP COLUMN '+nom_du_champ+';';
+        var source_sql='ALTER TABLE `'+nom_de_la_table+'` DROP COLUMN `'+nom_du_champ+'`';
      
         async function supprimer_en_bdd_le_champ(url="",donnees){
             var response= await fetch(url,{
@@ -745,10 +772,12 @@ class module_svg_bdd{
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         supprimer_en_bdd_le_champ('za_ajax.php?supprimer_en_bdd_le_champ',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-                console.log('OK');
+                this.#message_succes_et_fermer_modale(donnees);
             }else{
-                console.log('KO donnees=',donnees);
+                this.#message_erreur_modale(donnees);
+                console.error('KO donnees=' , donnees);
             }
+            
         });
     }
     
@@ -796,33 +825,25 @@ class module_svg_bdd{
                         });
                         return(response.json());
                     }
-                    var source_sql='ALTER TABLE '+nom_de_la_table+' ADD COLUMN '+ obj2.value+';';
+                    var source_sql='ALTER TABLE `'+nom_de_la_table+'` ADD COLUMN `'+ obj2.value+'`;';
 
                     var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
                     ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param).then((donnees) => {
                         if(donnees.status === 'OK'){
-                            console.log('OK');
+                            this.#message_succes_et_fermer_modale(donnees);
                         }else{
-                            console.log('KO donnees=',donnees);
+                            this.#message_erreur_modale(donnees);
+                            console.error('KO donnees=' , donnees);
                         }
                     });
 
-                    
-                    
                 }else{
                     debugger
                 }
             }else{
                 debugger
             }
-            
-            
-            
-            
-            
         }
-       
-     
     }
     /*
       ====================================================================================================================
@@ -1298,7 +1319,7 @@ class module_svg_bdd{
                     t+=('<option value="chb" ' + ((liste_meta_champ[cle] === 'chb')?' selected':'') + '>blob (chb) blob</option>');
                     t+='</select>';
                 }else{
-                    t+=('<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_champ[cle].replace(/"/g,'&quot;') + '" />');
+                    t+=('<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_champ[cle].replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/"/g,'&quot;') + '" />');
                 }
             }
         }
@@ -1962,8 +1983,9 @@ class module_svg_bdd{
 
         reecrire_la_base_a_partir_du_shema_sur_disque('za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-                console.log('OK');
+                this.#message_succes_et_fermer_modale(donnees);
             }else{
+                this.#message_erreur_modale(donnees);
                 console.error('KO donnees=' , donnees);
             }
         });
@@ -2040,7 +2062,7 @@ class module_svg_bdd{
         var id_svg_conteneur_table=0;
         var i=0;
         for(i=0;i < lst.length;i++){
-            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === this.#id_bdd_de_la_base_en_cours)){
+            if((lst[i].getAttribute('id_bdd_de_la_base_en_cours')) && (parseInt(lst[i].getAttribute('id_bdd_de_la_base_en_cours'),10) === parseInt(this.#id_bdd_de_la_base_en_cours , 10) )){
                 racine_du_svg=lst[i];
                 break;
             }
@@ -2257,8 +2279,7 @@ class module_svg_bdd{
         }
         txt_ordre_modifie=txt_ordre_modifie.substr(1);
         txt_ordre_original=txt_ordre_original.substr(1);
-        
-        
+
         this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie);
         
 
@@ -2400,7 +2421,11 @@ class module_svg_bdd{
             if('transform_table_sur_svg' === cle){
                 t+=('<input type="hidden" id="meta_modifier__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement);
             }else{
-                t+=('<br />' + cle.replace(/_/g,' ') + ' : ' + '<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement);
+
+                t+='<br />';
+                t+=''+cle.replace(/_/g,' ');
+                t+=' : ';
+                t+='<input type="text" id="meta_modifier__' + cle + '" value="' + liste_meta_table[cle].txt.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/"/g,'&quot;') + '" />' + liste_meta_table[cle].complement;
             }
         }
         t+=('<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_la_table_de_modale(' + id_svg_rectangle_de_la_table + ',&quot;' + nom_de_la_table + '&quot;)">modifier</a>');

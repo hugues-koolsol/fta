@@ -38,12 +38,14 @@ function tabToSql1(tab,id,niveau,au_format_php){
         'dans_definition_de_table':false,
         'dans_definition_de_champ':false,
         'longueur_maximum_des_champs':0,
-        'nom_du_champ_max'      :'',
-        'tableau_tables_champs' : [],
-        'tableau_champ'         : [],
-        'tableau_des_alias'     : [],
-        'au_format_php'         : au_format_php,
-        'id_base_principale'    : 0,
+        'nom_du_champ_max'                : '',
+        'tableau_tables_champs'           : [],
+        'tableau_champ'                   : [],
+        'tableau_des_alias'               : [],
+        'au_format_php'                   : au_format_php,
+        'id_base_principale'              : 0,
+        'debut_sql_pour_insert'           : '',
+        'tableau_des_valeurs_pour_insert' : [],
     };
     var ob = tabToSql0(tab,id,niveau,options);
     ob.longueur_maximum_des_champs=options.longueur_maximum_des_champs;
@@ -51,6 +53,8 @@ function tabToSql1(tab,id,niveau,au_format_php){
     ob.tableau_tables_champs=options.tableau_tables_champs;
     ob.tableau_champ=options.tableau_champ;
     ob.id_base_principale=options.id_base_principale;
+    ob.debut_sql_pour_insert=options.debut_sql_pour_insert;
+    ob.tableau_des_valeurs_pour_insert=options.tableau_des_valeurs_pour_insert;
 
     return ob;
 }
@@ -491,13 +495,13 @@ function tabToSql0(tab,id,niveau,options){
                 }else{
                     return(logerreur({status:false,message:'0231 erreur dans select, pas de valeurs sélectionnées'}));
                 }
-            }else if(tab[i][1] === 'modifier' || (tab[i][1] === 'insérer') ){
+            }else if(tab[i][1] === 'modifier' || tab[i][1] === 'insérer' || tab[i][1] === 'supprimer' ){
                 /*
-                  
                   =====================================================================================
-                  UPDATE OR INSERT
+                  UPDATE OR INSERT OR DELETE
                   =====================================================================================
                 */
+
                 nom_de_la_table='';
                 var nom_de_la_base='';
                 list='';
@@ -615,6 +619,8 @@ function tabToSql0(tab,id,niveau,options){
                                             liste_des_valeurs_pour_insert+=' , ';
                                         }
                                         liste_des_valeurs_pour_insert+=CRLF+'    '+valeur_du_champ;
+
+                                        options.tableau_des_valeurs_pour_insert.push(valeur_du_champ.replace(/\$par\[/g,'$par[\'groupes\'][$i]['));
                                         
                                         
                                     }else{
@@ -667,13 +673,30 @@ function tabToSql0(tab,id,niveau,options){
                         }
                     }
                 }
-                if((nom_de_la_table !== '') && (la_valeur !== '')){
+                if((nom_de_la_table !== '') && (la_valeur !== '' || ( tab[i][1] === 'supprimer' && la_valeur === '' ) )){
                     t+=espacesn(true,niveau);
                     
-                    if(tab[i][1] === 'insérer'){
+                    if(tab[i][1] === 'supprimer'){
+                        if(options.au_format_php===true){
+                            t+='DELETE FROM '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + '';
+                        }else{
+                            t+='DELETE FROM '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + '';
+                        }
+                        if(conditions.length > 0){
+                            if(options.au_format_php===true){
+                                t+='\n    WHERE ' + conditions + ' ;';
+                            }else{
+                                t+='\nWHERE ' + conditions + ' ;';
+                            }
+                        }
+                    }else if(tab[i][1] === 'insérer'){
                         if(options.au_format_php===true){
                             t+='INSERT INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`(';
                             t+=''+liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
+                            
+                            options.debut_sql_pour_insert='INSERT INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`('+liste_des_champs_pour_insert+CRLF+') VALUES ';
+                            
+                            
                         }else{
                             t+='INSERT INTO '+(nom_de_la_base!==''?nom_de_la_base+'.':'') +'`'+ nom_de_la_table +'`(';
                             t+=liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
@@ -694,67 +717,7 @@ function tabToSql0(tab,id,niveau,options){
                         }
                     }
                 }
-            }else if(false && (tab[i][1] === 'insert_into') || (tab[i][1] === 'insérer')){
-                /*
-                  
-                  =====================================================================================
-                  INSERT INTO
-                  =====================================================================================
-                */
-                nam='';
-                list='';
-                for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
-                    if(tab[j][7] === tab[i][0]){
-                        if((tab[j][1] === 'nom_de_la_table') && (tab[j][8] === 1)){
-                            nam=tab[j + 1][1];
-                        }
-                        if(((tab[j][1] === 'fields') || (tab[j][1] === 'champs')) && (tab[j][8] >= 1)){
-                            for(k=j + 1;k < l01;k++){
-                                if((tab[k][3] === (tab[j][3] + 1)) && (tab[k][7] === tab[j][0])){
-                                    list+=' ' + tab[k][1] + ' ,';
-                                }
-                            }
-                        }
-                        if(((tab[j][1] === 'values') || (tab[j][1] === 'valeurs')) && (tab[j][8] >= 1)){
-                            liste_des_valeurs='';
-                            for(k=j + 1;k < l01;k++){
-                                if((tab[k][3] === (tab[j][3] + 1)) && (tab[k][7] === tab[j][0]) && (tab[k][1] === '')){
-                                    la_valeur='';
-                                    for(l=k + 1;(l < l01) && (tab[l][3] > tab[k][3]);l++){
-                                        if(tab[l][7] === tab[k][0]){
-                                            if(la_valeur !== ''){
-                                                la_valeur+=' , ';
-                                            }
-                                            if(tab[l][2] === 'c'){
-                                                if(tab[l][1] === 'NULL'){
-                                                    la_valeur+='' + tab[l][1] + '';
-                                                }else{
-                                                    la_valeur+='\'' + tab[l][1] + '\'';
-                                                }
-                                            }else{
-//                                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{});
-                                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
-                                                if(obj.status === true){
-                                                    la_valeur+=obj.value;
-                                                }else{
-                                                    return(logerreur({status:false,'message':'0121 erreur sur fonction dans insert "' + tab[l][1] + '"'}));
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if(la_valeur !== ''){
-                                        liste_des_valeurs+=espacesn(true,niveau) + ' (';
-                                        liste_des_valeurs+=la_valeur + ' ) ,';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if((nam !== '') && (list !== '')){
-                    t+=espacesn(true,niveau);
-                    t+='INSERT INTO ' + nam + ' (' + list.substr(0,(list.length - 1)) + ') VALUES ' + liste_des_valeurs.substr(liste_des_valeurs,(liste_des_valeurs.length - 1)) + ' ;';
-                }
+
             }else if((tab[i][1] === 'add_index') || ('ajouter_index' === tab[i][1])){
                 nam='';
                 list='';
@@ -1430,7 +1393,8 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                 }
             }else{
                 if(liste_meta_table[elt_meta] !== ''){
-                    t+='\n' + '  (' + elt_meta + ' , \'' + liste_meta_table[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),';
+//                    t+='\n' + '  (' + elt_meta + ' , \'' + liste_meta_table[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),';
+                    t+='\n' + '  (' + elt_meta + ' , \'' + liste_meta_table[elt_meta] + '\'),';
                 }
             }
         }
@@ -1583,8 +1547,9 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             t+='\n' + '   meta(';
             var elt_meta={};
             for(elt_meta in liste_meta_champ){
-                if(liste_meta_table[elt_meta] !== ''){
-                    t+='\n' + '    (' + elt_meta + ' , \'' + liste_meta_champ[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),';
+                if(liste_meta_champ[elt_meta] !== ''){
+//                    t+='\n' + '    (' + elt_meta + ' , \'' + liste_meta_champ[elt_meta].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'),';
+                    t+='\n' + '    (' + elt_meta + ' , \'' + liste_meta_champ[elt_meta] + '\'),';
                 }
             }
             t+='\n' + '   )';

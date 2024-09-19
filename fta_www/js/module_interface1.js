@@ -137,7 +137,6 @@ class interface1{
             */
             var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
             var lst=document.getElementsByClassName('menuScroller');
-            console.log(lst.length);
             
             if(lst.length>=2){
              d=d-(lst.length-1)*CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;

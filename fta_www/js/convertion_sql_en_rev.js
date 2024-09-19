@@ -448,6 +448,49 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
 /*
   =================================================================================== 
 */
+function convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,parent,options){
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    t+='\n'+esp0+'supprimer(';
+    
+    if(element.from){
+     
+        if(element.from.type==='identifier'){
+        
+            if(element.from.variant && element.from.variant==='table'){
+                t+=CRLF+'    nom_de_la_table('+element.from.name+')';
+            }
+        }else{
+         
+            return(logerreur({status:false,message:'0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "'+JSON.stringify(json_partiel(element))+'"'}));
+            
+        }
+
+     
+    }else{
+        return(logerreur({status:false,message:'0472 dans delete pas de from : '+JSON.stringify(json_partiel(element))}));
+    }
+    if(element.where && element.where.length>0){
+        t+='\n'+esp0+esp1+',conditions(';
+        for(var i=0;i<element.where.length;i++){
+            var obj1=recupere_element_de_ast_sql(element.where[i],niveau,parent,options);
+            if(obj1.status===true){
+                t+='\n'+esp0+esp1+esp1+''+obj1.value+',';
+            }else{
+              return(logerreur({status:false,message:'0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.where[i]))+'"'}));
+            }
+        }
+        t+='\n'+esp0+esp1+')';
+    }
+    
+    t+=CRLF+esp0+')';
+
+    return {status:true,value:t};
+}    
+/*
+  =================================================================================== 
+*/
 function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,options){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -704,6 +747,23 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
      
      
      var obj=convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,null,options);
+     if(obj.status===true){
+         t+=obj.value;
+     }else{
+         return(logerreur({status:false,message:'0054 erreur conversion_de_ast_vers_sql dans un insert  : '+JSON.stringify(json_partiel(element))}));
+     }
+     
+     
+ }else if(element.type==='statement' && element.variant==='delete' ){
+  
+     /*
+     ========================================================================================
+      DELETE
+     ========================================================================================
+     */
+     
+     
+     var obj=convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,null,options);
      if(obj.status===true){
          t+=obj.value;
      }else{
@@ -1005,23 +1065,26 @@ function convertion_texte_sql_en_rev(texte_du_sql){
 function charger_source_de_test_sql(nom_de_la_textarea){
  var t=`
     
-  update ma_belle_table set champ1 = null , c2=1 , c3=(3+5) where ((x = 1 and y=2) or z=3);
 
+  delete FROM ma_belle_table where (x = 1 and y=2) or z=3;
     
 /*    
-    INSERT INTO ma_belle_table(a,b,c) values( 1 , '2' , null ),(4,5,6),(1+2,3,4);
 
-    
+UPDATE ma_belle_table SET champ1 = NULL , c2=1 , c3=(3+5) where ((x = 1 and y=2) or z=3);
+
+INSERT INTO ma_belle_table(a,b,c) values( 1 , '2' , null ),(4,5,6),(1+2,3,4);
+
+  
 
 
-  SELECT "T0".\`chi_id_dossier\` , \`chp_nom_dossier\` , \`chx_cible_dossier\` , T1.chp_dossier_cible , * , a+2,
-  concat( '=>' , \`chi_id_dossier\` , '<=') , count(*) , 5
-  FROM \`tbl_dossiers\` T0, 
-        tata T2
-        LEFT JOIN tbl_cibles   T1 ON T1.chi_id_cible  = T0.\`chx_cible_dossier\`
-  WHERE \`T0\`.\`chi_id_dossier\` = 1 and t2.id=t0.chi_id_dossier
-  ORDER BY chp_nom_dossier DESC , chx_cible_dossier ASC
-  LIMIT roro OFFSET 3;
+SELECT "T0".\`chi_id_dossier\` , \`chp_nom_dossier\` , \`chx_cible_dossier\` , T1.chp_dossier_cible , * , a+2,
+concat( '=>' , \`chi_id_dossier\` , '<=') , count(*) , 5
+FROM \`tbl_dossiers\` T0, 
+      tata T2
+      LEFT JOIN tbl_cibles   T1 ON T1.chi_id_cible  = T0.\`chx_cible_dossier\`
+WHERE \`T0\`.\`chi_id_dossier\` = 1 and t2.id=t0.chi_id_dossier
+ORDER BY chp_nom_dossier DESC , chx_cible_dossier ASC
+LIMIT roro OFFSET 3;
 
 
 

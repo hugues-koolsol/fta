@@ -76,7 +76,7 @@ $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
 $champs0='
- `chi_id_requete`          , `cht_rev_requete` , T0.chp_type_requete 
+ `chi_id_requete`          , `cht_rev_requete` , T0.chp_type_requete  , T0.cht_sql_requete  , T0.cht_php_requete 
 ';
 $sql0='SELECT '.$champs0;
 $from0='
@@ -128,6 +128,8 @@ if(($stmt0 !== false)){
             'T0.chi_id_requete' => $tab0[0],
             'T0.cht_rev_requete' => $tab0[1],
             'T0.chp_type_requete' => $tab0[2],
+            'T0.cht_sql_requete' => $tab0[3],
+            'T0.cht_php_requete' => $tab0[4],
         );
             
     }
@@ -180,8 +182,9 @@ $lsttbl='';
 $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';
 $lsttbl.='<th>id</th>';
-$lsttbl.='<th>rev</th>';
 $lsttbl.='<th>type</th>';
+$lsttbl.='<th>rev</th>';
+$lsttbl.='<th>sql</th>';
 $lsttbl.='</tr></thead><tbody>';
 foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
@@ -194,12 +197,14 @@ foreach($data0 as $k0 => $v0){
 
     $lsttbl.='</div>';
     $lsttbl.='</td>';
-
+    
     $lsttbl.='<td style="text-align:center;">'.$v0['T0.chi_id_requete'].'</td>';
     
-    $lsttbl.='<td style="text-align:left;">'.enti1(mb_substr($v0['T0.cht_rev_requete'],0,200)).'</td>';
-    
     $lsttbl.='<td style="text-align:left;">'.$v0['T0.chp_type_requete'].'</td>';
+
+    $lsttbl.='<td style="text-align:left;">'.enti1(mb_substr($v0['T0.cht_rev_requete'],0,200)).'</td>';
+
+    $lsttbl.='<td style="text-align:left;">'.enti1(mb_substr($v0['T0.cht_sql_requete'],0,300)).'</td>';
 
     $lsttbl.='</tr>';
 }
