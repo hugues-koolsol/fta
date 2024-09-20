@@ -905,12 +905,21 @@ function tabToSql0(tab,id,niveau,options){
                             variables_pour_tableau_tables.non_nulle=true;
                         }else if(((tab[j][1] === 'default') || (tab[j][1] === 'valeur_par_defaut')) && (tab[j][8] === 1)){
                             definition_sql_du_champ+=' DEFAULT ';
-                            if((false) && (tab[j + 1][1] === 'NULL')){
+                            if((tab[j + 1][1].toLowerCase() === 'null')){
                                 definition_sql_du_champ+=' NULL ';
                             }else{
-                                definition_sql_du_champ+=' ' + maConstante(tab[j + 1]) + ' ';
-                                variables_pour_tableau_tables.defaut.est_defini=true;
-                                variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j + 1]);
+                                if(tab[j + 1][4]===0){
+                                    definition_sql_du_champ+=' ' + maConstante(tab[j + 1]) + ' ';
+                                    variables_pour_tableau_tables.defaut.est_defini=true;
+                                    variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j + 1]);
+                                }else if(tab[j + 1][4]===1){
+                                    definition_sql_du_champ+=' \'' + tab[j + 1][1].replace(/\\\'/g,'\'\'') + '\' ';
+
+                                    variables_pour_tableau_tables.defaut.est_defini=true;
+                                    variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j + 1]);
+                                }else{
+                                     return(logerreur({status:false,value:t,id:i,message:'0914 sql.js on admet que les constantes quotées par des apostrophes pour les valeurs de texte par défaut'}));
+                                }
                             }
                             j++;
                         }else if((tab[j][1] === 'primary_key') && (tab[j][8] === 0)){

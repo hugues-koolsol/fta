@@ -1149,6 +1149,7 @@ window.addEventListener('load',function(){
     global_modale1.addEventListener('click',function(e){
         var dim = global_modale1.getBoundingClientRect();
         if((e.clientX < dim.left) || (e.clientX > dim.right) || (e.clientY < dim.top) || (e.clientY > dim.bottom)){
+            document.getElementById('__message_modale').innerHTML='';
             global_modale1.close();
         }
     });

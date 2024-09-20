@@ -5,7 +5,7 @@
 /*
   =====================================================================================================================
 */
-function modifier_le_rev_en_base(&$data){
+function modifier_la_requete_en_base(&$data){
 
 /*
     if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
@@ -40,6 +40,8 @@ $data[input]=array (
     $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_requetes` SET 
        `chp_type_requete` = \''.sq0($data['input']['type']).'\' 
      , `cht_rev_requete`  = \''.sq0($data['input']['rev']).'\' 
+     , `cht_sql_requete`  = \''.sq0($data['input']['sql']).'\' 
+     , `cht_php_requete`  = \''.sq0($data['input']['php']).'\' 
         WHERE `chi_id_requete`  = '.sq0($data['input']['id_requete']).' 
      ;';
 
@@ -56,7 +58,7 @@ $data[input]=array (
 /*
   =====================================================================================================================
 */
-function enregistrer_le_rev_en_base(&$data){
+function enregistrer_la_requete_en_base(&$data){
 
 /*
     if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
@@ -87,7 +89,17 @@ $data[input]=array (
 )
 */
 
-    $sql0='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes( `chp_type_requete` , `cht_rev_requete` ) VALUES (\''.sq0($data['input']['type']).'\' , \''.sq0($data['input']['rev']).'\' );';
+    $sql0='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes( 
+     `chp_type_requete` , 
+     `cht_rev_requete`  ,
+     `cht_sql_requete`  ,
+     `cht_php_requete` 
+    ) VALUES (
+     \''.sq0($data['input']['type']).'\' , 
+     \''.sq0($data['input']['rev']).'\'  ,
+     \''.sq0($data['input']['sql']).'\'  ,
+     \''.sq0($data['input']['php']).'\' 
+    );';
 
     $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
     
@@ -154,7 +166,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 */
 
 function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
-
+ 
     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
     $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
     $chemin_bdd='..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
@@ -296,15 +308,6 @@ function ajouter_en_bdd_l_index(&$data){
   =====================================================================================================================
 */
 
-function supprimer_en_bdd_le_champ(&$data){
-
-    operation_sur_base($data,'supprimer_en_bdd_le_champ');
-
-}
-/*
-  =====================================================================================================================
-*/
-
 function ajouter_en_bdd_le_champ(&$data){
 
     operation_sur_base($data,'ajouter_en_bdd_le_champ');
@@ -325,9 +328,9 @@ function supprimer_table_dans_base(&$data){
 
 function operation_sur_base(&$data,$nom_operation){
 
-    /*
+    /*    
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .CRLF.CRLF); fclose($fd);}
-    */
+    */    
     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
     $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
     $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
@@ -349,12 +352,14 @@ function operation_sur_base(&$data,$nom_operation){
         return;
 
     }
+    //error_reporting(0);
+    //$db1->enableExceptions(true);
 
     $ret1=$db1->exec($data['input']['source_sql']);
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' création table temporaire impossible';
+        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -434,6 +439,9 @@ function creer_table_dans_base(&$data){
 
 function ordonner_les_champs_de_table(&$data){
 
+    /*
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
+    */
     $db0=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
     $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$db0);

@@ -119,6 +119,13 @@ class module_svg_bdd{
       ====================================================================================================================
       function #message_succes_et_fermer_modale
     */
+    #message_succes_modale(donnees){
+        document.getElementById('__message_modale').innerHTML='<div class="yysucces">OK</div>'
+    }
+    /*
+      ====================================================================================================================
+      function #message_succes_et_fermer_modale
+    */
     #message_succes_et_fermer_modale(donnees){
         document.getElementById('__message_modale').innerHTML='<div class="yysucces">OK</div>'
         setTimeout(
@@ -737,50 +744,6 @@ class module_svg_bdd{
     }
     
     
-    
-    /*
-      ====================================================================================================================
-      function supprimer_en_bdd_le_champ_de_modale
-    */
-    supprimer_en_bdd_le_champ_de_modale(id_svg_text,id_svg_conteneur_table,nom_du_champ,id_svg_rectangle_du_champ , nom_de_la_table){
-     
-        var source_sql='ALTER TABLE `'+nom_de_la_table+'` DROP COLUMN `'+nom_du_champ+'`';
-     
-        async function supprimer_en_bdd_le_champ(url="",donnees){
-            var response= await fetch(url,{
-                // 6 secondes de timeout 
-                'signal':AbortSignal.timeout(1000),
-                // *GET, POST, PUT, DELETE, etc. 
-                method:"POST",
-                // no-cors, *cors, same-origin 
-                mode:"cors",
-                // default, no-cache, reload, force-cache, only-if-cached 
-                cache:"no-cache",
-                // include, *same-origin, omit 
-                credentials:"same-origin",
-                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                
-                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
-        }
-        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-        supprimer_en_bdd_le_champ('za_ajax.php?supprimer_en_bdd_le_champ',ajax_param).then((donnees) => {
-            if(donnees.status === 'OK'){
-                this.#message_succes_et_fermer_modale(donnees);
-            }else{
-                this.#message_erreur_modale(donnees);
-                console.error('KO donnees=' , donnees);
-            }
-            
-        });
-    }
-    
     /*
       ====================================================================================================================
       function ajouter_en_bdd_le_champ_de_modale
@@ -794,7 +757,7 @@ class module_svg_bdd{
             definition_du_champ+='sql(field(' + a.getAttribute('donnees_rev_du_champ') + '))';
             
 //            console.log(definition_du_champ);
-            
+
             var obj1=rev_texte_vers_matrice(definition_du_champ);
             if(obj1.status===true){
 
@@ -825,7 +788,8 @@ class module_svg_bdd{
                         });
                         return(response.json());
                     }
-                    var source_sql='ALTER TABLE `'+nom_de_la_table+'` ADD COLUMN `'+ obj2.value+'`;';
+                    var source_sql='ALTER TABLE `'+nom_de_la_table+'` ADD COLUMN '+ obj2.value+';';
+                    
 
                     var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
                     ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param).then((donnees) => {
@@ -941,9 +905,15 @@ class module_svg_bdd{
             }else if((lst[i].id) && (lst[i].id === 'auto_increment') && (lst[i].checked === true)){
                 t+=',auto_increment()';
             }else if((lst[i].id) && (lst[i].id === 'a_une_valeur_par_defaut') && (lst[i].checked === true)){
+                meta+=(',(a_une_valeur_par_defaut,1)');
+             
                 if(document.getElementById('la_valeur_par_defaut_est_caractere').checked===true){
                     t+=',valeur_par_defaut(\''+document.getElementById('valeur_par_defaut').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+                    meta+=(',(la_valeur_par_defaut_est_caractere,1)');
+                    meta+=',(valeur_par_defaut,\''+document.getElementById('valeur_par_defaut').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
                 }else{
+                    meta+=(',(la_valeur_par_defaut_est_caractere,0)');
+                    meta+=',(valeur_par_defaut,'+document.getElementById('valeur_par_defaut').value+')';
                     if(isNumeric(document.getElementById('valeur_par_defaut').value)){
                         t +=',valeur_par_defaut('+document.getElementById('valeur_par_defaut').value+')';
                     }else{
@@ -1294,7 +1264,7 @@ class module_svg_bdd{
         t+=('<br />auto increment  : <input type="checkbox" id="auto_increment" ' + ((auto_increment === true)?'checked':'') + ' />');
         t+=('<br />a une valeur par défaut <input id="a_une_valeur_par_defaut" type="checkbox"  '+(a_une_valeur_par_defaut?'checked="true"':'')+'/>');
         t+=(' , type caractère <input id="la_valeur_par_defaut_est_caractere" type="checkbox" '+(la_valeur_par_defaut_est_caractere?'checked="true"':'')+' />');
-        t+=(' , valeur : <input id="valeur_par_defaut" type="text" value="'+valeur_par_defaut+'" /> ');
+        t+=(' , valeur : <input id="valeur_par_defaut" type="text" value="'+valeur_par_defaut.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\')+'" /> ');
         t+='"CURRENT_TIMESTAMP","CURRENT_TIME","CURRENT_DATE"';
         t+='<br /><b>meta</b>';
         var cle={};
@@ -1338,7 +1308,7 @@ class module_svg_bdd{
         t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.ajouter_en_bdd_le_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ',&quot;' + nom_du_champ + '&quot;,' + id_svg_rectangle_du_champ + ',&quot;'+nom_de_la_table+'&quot;)">ajouter en bdd</a>');
         t+='<hr />';
         t+='<h3>supprimer</h3>';
-        t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_en_bdd_le_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ',&quot;' + nom_du_champ + '&quot;,' + id_svg_rectangle_du_champ + ',&quot;'+nom_de_la_table+'&quot;)">supprimer en bdd</a>');
+        t+=('<span>Veuillez passer par l\'écran table pour supprimer un champ dans la base physique</span>');
         t+='<hr />';
         document.getElementById('__contenu_modale').innerHTML=t;
         global_modale1.showModal();
@@ -2054,8 +2024,14 @@ class module_svg_bdd{
       ====================================================================================================================
       function modifier_une_table_en_bdd
     */
-    #modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie){
+    #modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie,mode_supression_de_champ,en_base_et_sur_schema){
      
+        /*
+          cette fonction est utilisée à la fois
+          - pour réordonner les champs
+          - pour supprimer un champ car même si un "ALTER TABLE t1 DROP COLUMN c1" fonctionne dans sqlite3.exe, il ne fonctionne pas via php !
+          Dans ce dernier cas, si en_base_et_sur_schema = true, on supprime aussi sur schema
+        */
 
         var lst = document.getElementsByTagName('g');
         var racine_du_svg=null;
@@ -2177,27 +2153,33 @@ class module_svg_bdd{
             /* enveloppe d'appels */
             'call':{'lib':'core','file':'bdd','funct':'ordonner_les_champs_de_table'},
             /* paramètres */
-            nom_de_la_table        : nom_de_la_table,
-            ordre_original         : txt_ordre_original,
-            ordre_modifie          : txt_ordre_modifie,
-            id_bdd_de_la_base      : this.#id_bdd_de_la_base_en_cours,
-            chaine_create_table    : chaine_create_table,
-            nom_table_temporaire   : nom_table_temporaire,
-            tab_des_index_sql      : tab_des_index_sql,
-            nouveau_rev            : nouveau_rev,
-            id_svg_conteneur_table : id_svg_conteneur_table,
+            nom_de_la_table          : nom_de_la_table,
+            ordre_original           : txt_ordre_original,
+            ordre_modifie            : txt_ordre_modifie,
+            id_bdd_de_la_base        : this.#id_bdd_de_la_base_en_cours,
+            chaine_create_table      : chaine_create_table,
+            nom_table_temporaire     : nom_table_temporaire,
+            tab_des_index_sql        : tab_des_index_sql,
+            nouveau_rev              : nouveau_rev,
+            id_svg_conteneur_table   : id_svg_conteneur_table,
+            mode_supression_de_champ : mode_supression_de_champ,
+            en_base_et_sur_schema    : en_base_et_sur_schema,
         };
         ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-             //console.log( this.#arbre );
-             
-             var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg(donnees.input.id_bdd_de_la_base , donnees.input.nom_de_la_table , donnees.input.ordre_modifie , donnees.input.id_svg_conteneur_table , donnees.input.nouveau_rev);
-             if(obj.status===true){
-                console.log('réordonner OK')
-             }else{
-                console.log('réordonner KO')
-             }
-             
+                //console.log( this.#arbre );
+                // mode_supression_de_champ,en_base_et_sur_schema
+                if(donnees.input.mode_supression_de_champ===true && en_base_et_sur_schema===false){
+                }else{
+                   var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg(donnees.input.id_bdd_de_la_base , donnees.input.nom_de_la_table , donnees.input.ordre_modifie , donnees.input.id_svg_conteneur_table , donnees.input.nouveau_rev);
+                   if(obj.status===true){
+                      console.log('réordonner OK')
+                   }else{
+                      console.log('réordonner KO')
+                   }
+                }
+                global_modale1.close();
+                this.#dessiner_le_svg();
             }
         }).catch((err) => {
             /* en cas de timeout par esemple */
@@ -2221,19 +2203,17 @@ class module_svg_bdd{
            this.#modifier_les_references_des_liens(id_bdd_de_la_base);
          
         }
-        global_modale1.close();
-        this.#dessiner_le_svg();
-        
-        
-        
         return{status:true};
     }
     /*
       ====================================================================================================================
       function supprimer_un_champ_de_la_table
     */
-    supprimer_un_champ_de_la_table(nom_de_la_table,nom_du_champ){
+    supprimer_un_champ_de_la_table(nom_de_la_table,nom_du_champ,en_base_et_sur_schema){
 
+        if(!confirm('Certain ?')){
+            return;
+        }
         var liste_ordre_modifie = [];        
         var txt_ordre_modifie='';
         var lst = document.getElementById('ordre_original').getElementsByTagName('div');
@@ -2249,9 +2229,9 @@ class module_svg_bdd{
             return;
         }
         txt_ordre_modifie=txt_ordre_modifie.substr(1);
+
         
-        
-        this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_modifie,txt_ordre_modifie,liste_ordre_modifie);
+        this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_modifie,txt_ordre_modifie,liste_ordre_modifie,true,en_base_et_sur_schema);
     }
     /*
       ====================================================================================================================
@@ -2280,7 +2260,7 @@ class module_svg_bdd{
         txt_ordre_modifie=txt_ordre_modifie.substr(1);
         txt_ordre_original=txt_ordre_original.substr(1);
 
-        this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie);
+        this.#modifier_une_table_en_bdd(nom_de_la_table,txt_ordre_original,txt_ordre_modifie,liste_ordre_modifie,false,true);
         
 
     }
@@ -2530,12 +2510,22 @@ class module_svg_bdd{
         for(i=0;i < liste_des_champs.length;i++){
             t+=('<div style="padding:' + CSS_TAILLE_REFERENCE_PADDING + 'px;">' + liste_des_champs[i] + '</div>');
         }
-        t+='</div></td><td>';
+        t+='</div></td>';
+        t+='<td>';
         t+='<div id="action_supprimer_dans_bdd" >';
         for(i=0;i < liste_des_champs.length;i++){
-            t+=('<div style="padding:' + CSS_TAILLE_REFERENCE_PADDING + 'px;"><a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_champ_de_la_table(&quot;' + nom_de_la_table + '&quot;,&quot;' + liste_des_champs[i] + '&quot;)">supprimer</a></div>');
+            t+=('<div style="padding:' + CSS_TAILLE_REFERENCE_PADDING + 'px;"><a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_champ_de_la_table(&quot;' + nom_de_la_table + '&quot;,&quot;' + liste_des_champs[i] + '&quot;,true)">supprimer en base et sur le schéma</a></div>');
         }
-        t+='</div></td></tr></table>';
+        t+='</div>';
+        t+='</td>';
+        t+='<td>';
+        t+='<div id="action_supprimer_dans_bdd" >';
+        for(i=0;i < liste_des_champs.length;i++){
+            t+=('<div style="padding:' + CSS_TAILLE_REFERENCE_PADDING + 'px;"><a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.supprimer_un_champ_de_la_table(&quot;' + nom_de_la_table + '&quot;,&quot;' + liste_des_champs[i] + '&quot;,false)">supprimer en base uniquement</a></div>');
+        }
+        t+='</div>';
+        t+='</td>';
+        t+='</tr></table>';
         
         t+='<hr />';
         t+='<h3>Créer la table dans la bdd</h3>';
@@ -2812,9 +2802,10 @@ class module_svg_bdd{
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_table_dans_base'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         supprimer_table_dans_base('za_ajax.php?supprimer_table_dans_base',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-                console.log('OK');
+                this.#message_succes_modale(donnees);
             }else{
-                console.log('KO donnees=',donnees);
+                this.#message_erreur_modale(donnees);
+                console.error('KO donnees=' , donnees);
             }
         });
      
@@ -2860,11 +2851,14 @@ class module_svg_bdd{
                 }
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'creer_table_dans_base'},source_sql:obj2.value,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
                 creer_table_dans_base('za_ajax.php?creer_table_dans_base',ajax_param).then((donnees) => {
+
                     if(donnees.status === 'OK'){
-                        console.log('OK');
+                        this.#message_succes_modale(donnees);
                     }else{
-                        console.log('KO donnees=',donnees);
+                        this.#message_erreur_modale(donnees);
+                        console.error('KO donnees=' , donnees);
                     }
+                    
                 });
                 
                 
@@ -2883,6 +2877,9 @@ class module_svg_bdd{
       function supprimer_la_table_de_modale
     */
     supprimer_la_table_de_modale(id_svg_conteneur_table,nom_de_la_table){
+        if(!confirm('certain ?')){
+            return;
+        }
         id_svg_conteneur_table=parseInt(id_svg_conteneur_table,10);
         /*
           
@@ -3689,7 +3686,10 @@ class module_svg_bdd{
                         var i={};
                         for(i in this.#arbre[id_bdd_de_la_base].arbre_svg){
                             var elem=this.#arbre[id_bdd_de_la_base].arbre_svg[i];
-                            if((elem.proprietes.type_element === 'conteneur_de_table') && (elem.proprietes.nom_de_la_table === tabrev[(o + 1)][1])){
+                            if(elem===null){
+                                continue;
+                            }
+                            if(elem.proprietes && elem.proprietes.type_element && (elem.proprietes.type_element === 'conteneur_de_table') && (elem.proprietes.nom_de_la_table === tabrev[(o + 1)][1])){
                                 id_svg_parent_table=parseInt(elem.proprietes.id,10);
                             }
                             if((elem.proprietes.type_element === 'conteneur_de_champ') && (elem.proprietes.id_svg_conteneur_table === id_svg_parent_table) && (elem.proprietes.nom_du_champ === tabrev[(o + 2)][1])){

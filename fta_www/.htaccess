@@ -192,9 +192,12 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
 # Block access to backup and source files. These files may be left by some
 # text/html editors and pose a great security danger, when anyone can access
 <FilesMatch "(\.(bak|config|fla|psd|ini|log|sh|inc|swp|dist|sql)|~)$">
-  Order allow,deny
-  Deny from all
-  Satisfy All
+# apache 2.2
+#  order allow,deny
+#  deny from all
+#  satisfy All
+# apache 2.4 en localhost
+  Require all denied
 </FilesMatch>
 
 <IfModule php7_module>

@@ -877,7 +877,7 @@ function html_footer1($parametres=array()){
 
     $o1='';
     $o1.='</main>'.CRLF;
-    $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><div id="__message_modale" style="max-height:200px;overflow-y:scroll;"></div><div id="__contenu_modale"><iframe id="iframe_modale_1" src=""></iframe></div></dialog>'.CRLF;
+    $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div><div id="__contenu_modale"><iframe id="iframe_modale_1" src=""></iframe></div></dialog>'.CRLF;
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
     if(!preg_match('/.*_a[0-9]+\\.php/',BNF)){
