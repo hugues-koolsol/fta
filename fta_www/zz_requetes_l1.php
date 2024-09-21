@@ -4,6 +4,96 @@ require_once('aa_include.php');
 initialiser_les_services(true,true); // sess,bdd
 
 
+function sql_nnn_pour_recuperation_des_requetes($par){
+    $texte_sql_1='
+      SELECT 
+       `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` 
+       FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes T0
+      ORDER BY `T0`.`chi_id_requete` ASC
+    ';
+    $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($texte_sql_1);
+    /* echo __FILE__ . ' ' . __LINE__ . ' $texte_sql_1 = <pre>' . $texte_sql_1 . '</pre>' ; exit(0); */
+    if($stmt !== false){
+        $result=$stmt->execute();
+        $donnees=array();
+        $arr=$result->fetchArray(SQLITE3_ASSOC);
+        while(($arr !== false)){
+            $donnees[]=$arr;
+            $arr=$result->fetchArray(SQLITE3_ASSOC);
+        }
+        $stmt->close();
+        return(array( 'statut' => true, 'valeur' => $donnees));
+    }else{
+        return(array( 'statut' => false, 'message' => 'erreur sql_nnn_pour_recuperation_des_requetes()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
+    }
+}
+
+/*
+  =====================================================================================================================
+*/
+function supprimer_reperdoire_et_fichiers_inclus($dirPath){
+    if(substr($dirPath,strlen($dirPath)-1,1) != '/'){
+        $dirPath.='/';
+    }
+    $files=glob($dirPath.'*',GLOB_MARK);
+    foreach($files as $file){
+        if(is_dir($file)){
+            supprimer_reperdoire_et_fichiers_inclus($file);
+        }else{
+            unlink($file);
+        }
+    }
+    rmdir($dirPath);
+}
+
+
+/*
+  =====================================================================================================================
+*/
+
+if((isset($_POST)) && (count($_POST) > 0)){
+ 
+    if(isset($_POST['__action']) && $_POST['__action']==='__gererer_les_fichiers_des_requetes'){
+      $retour_sql=sql_nnn_pour_recuperation_des_requetes(array());
+      if($retour_sql['statut']===true){
+          $repertoire_destination=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql';
+          
+          if(is_dir($repertoire_destination)){
+
+              supprimer_reperdoire_et_fichiers_inclus($repertoire_destination);
+          }
+          if(!mkdir($repertoire_destination,0777)){
+              ajouterMessage('erreur',__LINE__.' erreur création du répertoire inc/sql' , BNF );
+              recharger_la_page(BNF);
+          }
+          foreach( $retour_sql['valeur'] as $k1 => $v1){
+              $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'sql_'.$v1['chi_id_requete'].'.php';
+              if($fd=fopen($nom_fichier,'w')){
+                  if(fwrite($fd,'<?'.'php'.PHP_EOL.$v1['cht_php_requete'])){
+                      fclose($fd);
+                  }else{
+                      ajouterMessage('erreur',__LINE__.' erreur ecriture fichier sql_'.$v1['chi_id_requete'].'.php' , BNF );
+                      recharger_la_page(BNF);
+                  }
+              }else{
+                  ajouterMessage('erreur',__LINE__.' erreur ouverture fichier sql_'.$v1['chi_id_requete'].'.php' , BNF );
+                  recharger_la_page(BNF);
+              }
+          }
+          
+//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql['valeur'] , true ) . '</pre>' ; exit(0);
+          
+      }else{
+          ajouterMessage('erreur',__LINE__.' erreur sql '.$retour_sql['message'] , BNF );
+          recharger_la_page(BNF);
+      }
+      ajouterMessage('succes',__LINE__.' les fichiers sql ont bien été générés' , BNF );
+     
+    }
+
+    recharger_la_page(BNF);
+
+}
 
 /*
   =====================================================================================================================
@@ -169,6 +259,7 @@ if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
 
 $o1.='<div><form method="post" class="yylistForm1">';
 $o1.=' <a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>'.CRLF;
+$o1.=' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>'.CRLF;
 $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv;
 $o1.=' <div style="display:inline-block;">';
 if(($__nbEnregs > 0)){

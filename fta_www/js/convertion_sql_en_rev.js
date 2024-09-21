@@ -234,6 +234,8 @@ function recupere_operateur_dans_sql_ast(nom_de_l_operateur){
  
  if(nom_de_l_operateur==='+'){
   return 'plus';
+ }else if(nom_de_l_operateur==='<>'){
+  return 'diff';
  }else if(nom_de_l_operateur==='like'){
   return 'comme';
  }else if(nom_de_l_operateur==='='){

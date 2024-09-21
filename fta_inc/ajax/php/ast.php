@@ -12,7 +12,10 @@ use PhpParser\ParserFactory;
 function recupererAstDePhp(&$data){
     $parser=(new ParserFactory())->createForNewestSupportedVersion();
     try{
-        $ast=$parser->parse(($data['input']['texteSource']));
+     
+        $contenu=preg_replace('/\\/\\*sql_'.'inclure_deb\\*\\/(.*?)\\/\\*sql_'.'inclure_fin\\*\\//us','', $data['input']['texteSource']);
+
+        $ast=$parser->parse($contenu);
         $data['value']=json_encode($ast);
         $data['status']='OK';
     }catch(Error $error){

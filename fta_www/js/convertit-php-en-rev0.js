@@ -329,7 +329,11 @@ function php_traite_Expr_FuncCall(element,niveau){
             }
         }
     }
-    if('htmlDansPhp' === nomFonction){
+    if('sql_inclure_source' === nomFonction){
+            t+='sql_inclure_source(' + lesArgumentsCourts.substr(1) + ')';
+    }else if('sql_inclure_reference' === nomFonction){
+            t+='sql_inclure_reference(' + lesArgumentsCourts.substr(1) + ')';
+    }else if('htmlDansPhp' === nomFonction){
         if(lesArgumentsCourts.substr(0,1) === ','){
             lesArgumentsCourts=lesArgumentsCourts.substr(1);
         }

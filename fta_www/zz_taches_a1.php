@@ -321,7 +321,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
-  $chp_priorite_tache =isset($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']:'';
+  $chp_priorite_tache =isset($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']:'0';
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">priorité</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;

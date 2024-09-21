@@ -1056,6 +1056,24 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
            return(php_logerr({status:false,value:t,id:i,tab:tab,message:'php dans php_tabToPhp1 1230'}));
           }
           
+        }else if(tab[i][2]==='f' && tab[i][1]==='sql_inclure_reference' ){
+            if(tab[i][8]===1 && tab[i+1][2]==='c'){
+                t+=espacesn(true,niveau);
+                t+='sql_inclure_reference('+tab[i+1][1]+');';
+                t+=espacesn(true,niveau);
+                t+='/*sql_inclure_deb*/';
+                t+=espacesn(true,niveau);
+                t+='require_once(INCLUDE_PATH.\'/sql/sql_1.php\');';
+                t+=espacesn(true,niveau);
+                t+='/*sql_inclure_fin*/';
+                t+=espacesn(true,niveau);
+                debugger
+            }else{
+                return php_logerr({status:false,value:t,id:i,tab:tab,message:'php_tabToPhp1 dans sql_inclure_reference 1649'});
+            }
+          
+          
+          
         }else{
         
 
@@ -1636,6 +1654,27 @@ function php_traiteElement(tab , ind , niveau,options={}){
      }
      t='('+objCondition.value+'?'+objSiVrai.value+':'+objSiFaux.value+')';
 
+ }else if(tab[ind][2]==='f' && tab[ind][1]==='sql_inclure_source' ){
+     if(tab[ind][8]===1 && tab[ind+1][2]==='c'){
+         t+='sql_inclure_source('+tab[ind+1][1]+')';
+     }else{
+         return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php_traiteElement dans sql_inclure_source 1643'});
+     }
+ }else if(tab[ind][2]==='f' && tab[ind][1]==='sql_inclure_reference' ){
+     if(tab[ind][8]===1 && tab[ind+1][2]==='c'){
+         t+='sql_inclure_reference('+tab[ind+1][1]+')';
+         t+=espacesn(true,niveau);
+         t+='/*sql_inclure_deb*/';
+         t+=espacesn(true,niveau);
+         t+='require_once(INCLUDE_PATH.\'/sql/sql_1.php\');';
+         t+=espacesn(true,niveau);
+         t+='/*sql_inclure_fin*/';
+         t+=espacesn(true,niveau);
+         debugger
+     }else{
+         return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php_traiteElement dans sql_inclure_reference 1649'});
+     }
+  
  }else{
       
       return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php.js 1506 php_traiteElement "'+tab[ind][1]+'" non traité '});

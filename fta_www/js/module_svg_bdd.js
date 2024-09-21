@@ -1306,6 +1306,8 @@ class module_svg_bdd{
         t+='<hr />';
         t+='<h3>ajouter</h3>';
         t+=('<a class="yydanger" href="javascript:' + this.#nom_de_la_variable + '.ajouter_en_bdd_le_champ_de_modale(' + id_element_texte_du_nom_de_champ_svg + ',' + id_svg_conteneur_table + ',&quot;' + nom_du_champ + '&quot;,' + id_svg_rectangle_du_champ + ',&quot;'+nom_de_la_table+'&quot;)">ajouter en bdd</a>');
+        t+=('<span class="yyerreur">Ne pas oublier de réécrire la base après un ajout d\'un champ en base de donnée</span>');
+        
         t+='<hr />';
         t+='<h3>supprimer</h3>';
         t+=('<span>Veuillez passer par l\'écran table pour supprimer un champ dans la base physique</span>');

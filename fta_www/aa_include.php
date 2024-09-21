@@ -111,6 +111,13 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
 }
 
+/*===fonction vide intentionnelle à conserver ===*/
+function sql_inclure_source($i){
+}
+/*===fonction vide intentionnelle à conserver ===*/
+function sql_inclure_reference($i){
+}
+
 /*
 =====================================================================
 quand un champ de recherche contient des id, ils sont séparés par des virgules 

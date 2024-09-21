@@ -239,9 +239,9 @@ class traitements_sur_html{
                  contenu+=jsonDeHtml.content;
              }
              if(type.toLowerCase()==='#text'){
-                 contenu=contenu.replace(/\n/,' ').replace(/\r/,' ').trim();
+                 contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
                  if(contenu!==''){
-                     t+='\''+contenu.replace(/\\/,'\\\\').replace(/\'/,'\\\'')+'\'';
+                     t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
                  }
              }else{
                  t+=contenu;

@@ -35,7 +35,12 @@ function texte_aleatoire($length){
   =====================================================================================================================
   recherche en base de l'utilisateur grâce à son nom de connexion
 */
+sql_inclure_reference(1);
+/*sql_inclure_deb*/
+require_once(INCLUDE_PATH.'/sql/sql_1.php');
+/*sql_inclure_fin*/
 
+/*#
 function sql_1($par){
     $texte_sql_1='
       SELECT 
@@ -45,7 +50,7 @@ function sql_1($par){
       LIMIT 1 OFFSET 0 ;
     ';
     $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($texte_sql_1);
-    /* echo __FILE__ . ' ' . __LINE__ . ' $texte_sql_1 = <pre>' . $texte_sql_1 . '</pre>' ; exit(0); */
+    // echo __FILE__ . ' ' . __LINE__ . ' $texte_sql_1 = <pre>' . $texte_sql_1 . '</pre>' ; exit(0); 
     if($stmt !== false){
         $result=$stmt->execute();
         $donnees=array();
@@ -60,7 +65,7 @@ function sql_1($par){
         return(array( 'statut' => false, 'message' => 'erreur sql_1()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
     }
 }
-
+*/
 
 /*
   =====================================================================================================================

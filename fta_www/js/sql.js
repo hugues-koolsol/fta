@@ -511,6 +511,7 @@ function tabToSql0(tab,id,niveau,options){
                 var liste_des_champs_pour_insert='';
                 var liste_des_valeurs_pour_insert='';
                 var valeur_du_champ='';
+                var commentaire_general='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if(tab[j][7] === tab[i][0]){
                         if((tab[j][1] === 'provenance') && (tab[j][8] >= 1)){
@@ -671,6 +672,10 @@ function tabToSql0(tab,id,niveau,options){
                                 }
                             }
                         }
+                        if((tab[j][1] === '#') && (tab[j][2] === 'f')){
+                          debugger
+                          commentaire_general=tab[j][13];
+                        }
                     }
                 }
                 if((nom_de_la_table !== '') && (la_valeur !== '' || ( tab[i][1] === 'supprimer' && la_valeur === '' ) )){
@@ -678,9 +683,9 @@ function tabToSql0(tab,id,niveau,options){
                     
                     if(tab[i][1] === 'supprimer'){
                         if(options.au_format_php===true){
-                            t+='DELETE FROM '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + '';
+                            t+='DELETE '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'FROM '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + '';
                         }else{
-                            t+='DELETE FROM '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + '';
+                            t+='DELETE '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'FROM '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + '';
                         }
                         if(conditions.length > 0){
                             if(options.au_format_php===true){
@@ -691,22 +696,22 @@ function tabToSql0(tab,id,niveau,options){
                         }
                     }else if(tab[i][1] === 'insérer'){
                         if(options.au_format_php===true){
-                            t+='INSERT INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`(';
+                            t+='INSERT '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`(';
                             t+=''+liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
                             
                             options.debut_sql_pour_insert='INSERT INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`('+liste_des_champs_pour_insert+CRLF+') VALUES ';
                             
                             
                         }else{
-                            t+='INSERT INTO '+(nom_de_la_base!==''?nom_de_la_base+'.':'') +'`'+ nom_de_la_table +'`(';
+                            t+='INSERT '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'INTO '+(nom_de_la_base!==''?nom_de_la_base+'.':'') +'`'+ nom_de_la_table +'`(';
                             t+=liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
                         }
                     }else{
                     
                         if(options.au_format_php===true){
-                            t+='UPDATE '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
+                            t+='UPDATE '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+''+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
                         }else{
-                            t+='UPDATE '+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
+                            t+='UPDATE '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+''+(nom_de_la_base!==''?nom_de_la_base+'.':'') + nom_de_la_table + ' SET ' + la_valeur + '';
                         }
                         if(conditions.length > 0){
                             if(options.au_format_php===true){
@@ -913,7 +918,7 @@ function tabToSql0(tab,id,niveau,options){
                                     variables_pour_tableau_tables.defaut.est_defini=true;
                                     variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j + 1]);
                                 }else if(tab[j + 1][4]===1){
-                                    definition_sql_du_champ+=' \'' + tab[j + 1][1].replace(/\\\'/g,'\'\'') + '\' ';
+                                    definition_sql_du_champ+=' \'' + tab[j + 1][1].replace(/\\\'/g,'\'\'').replace(/\\\\/g,'\\') + '\' ';
 
                                     variables_pour_tableau_tables.defaut.est_defini=true;
                                     variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j + 1]);
@@ -1539,16 +1544,16 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                 t+='\n' + '   non_nulle()';
             }
             if(pc['dflt_value']){
-                /*
+                
                   if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==="'"){
-                  t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
+                      t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt_value'].substr(1,pc['dflt_value'].length-2).replace(/\'\'/g,'\\\'') + '\')');
                   }else if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==='"'){
-                  t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
+                      t+=('\n' + '   valeur_par_defaut("' + pc['dflt_value'].substr(1,pc['dflt_value'].length-2) + '")');
                   }else{
-                  t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt_value'] + ')');
+                      t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
                   }
-                */
-                t+='\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')';
+                
+//                t+='\n' + '   valeur_par_defaut(' + pc['dflt_value'].replace(/\'\'/g,'\\\'') + ')';
             }
             if(cle_etrangere === true){
                 t+='\n' + '   references(\'' + pc['cle_etrangere']['table'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + pc['cle_etrangere']['to'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' )';
