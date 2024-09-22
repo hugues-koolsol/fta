@@ -106,6 +106,7 @@ $data[input]=array (
     if( $ret0===false ){
         $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
     }else{
+        $data['nouvel_id']=$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID();
         $data['status']='OK';
     }
     

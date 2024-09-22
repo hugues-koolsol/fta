@@ -58,6 +58,7 @@ class requete_sql{
       puis mettre les valeurs dans les champs de #obj_webs
     */
     convertir_rev_pour_construction(that,init){
+        
         that.#obj_webs.type_de_requete=globale_type_requete;
         that.#obj_webs.bases=init.bases;
       
@@ -436,7 +437,7 @@ class requete_sql{
       function apres_chargement_des_bases
     */
     apres_chargement_des_bases(init,that){
-     
+        
         if(globale_id_requete && globale_id_requete>0){
 //            alert(globale_id_requete +'\n'+ globale_type_requete +'\n'+ globale_rev_requete );
             that.convertir_rev_pour_construction(that,init);
@@ -1232,7 +1233,7 @@ class requete_sql{
                 if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' || this.#obj_webs.type_de_requete==='delete' ){
                     provenance+=elem.nom_de_la_table+',base(b'+elem.id_bdd+')';
                 }else{
-                    provenance+=elem.nom_de_la_table+',alias(T'+elem.indice_table+'),base('+elem.id_bdd+')';
+                    provenance+=elem.nom_de_la_table+',alias(T'+elem.indice_table+'),base(b'+elem.id_bdd+')';
                 }
                 provenance+=')';
                 provenance+=')';
@@ -1399,10 +1400,12 @@ class requete_sql{
                       'php':document.getElementById('txtar3').value , 
                       type:this.#obj_webs.type_de_requete,
                       id_requete : id_requete,
+                      tableau_rev_requete : obj1.status,
                 };
                 modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){
+                     console.log('OK');
                     }
                 });
             }else{
@@ -1456,6 +1459,9 @@ class requete_sql{
                 enregistrer_la_requete_en_base('za_ajax.php?enregistrer_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){
+                     var recharger_page='zz_requetes_a1.php?__action=__modification&__id='+donnees.nouvel_id;
+                     window.location=recharger_page;
+                     return;
                     }
                 });
             }else{
@@ -1509,13 +1515,16 @@ class requete_sql{
          id_requete_en_base=globale_id_requete;
         }
         t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
+        if(obj3.id_base_principale.substr(0,1)==='b'){
+         obj3.id_base_principale=obj3.id_base_principale.substr(1);
+        }
 
         if(type_de_requete==='delete' ){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
             t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
             t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
             t+='    \';'+CRLF;
-            t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
+            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
             t+='        return(array( ';         
             t+='\'statut\' => false, ';         
             t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';
@@ -1547,13 +1556,13 @@ class requete_sql{
             t+='        $liste_des_valeurs.=\')\';'+CRLF;
             t+='    }'+CRLF;
             t+='    $texte_sql_3.=$liste_des_valeurs;'+CRLF;
-            t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_3)){'+CRLF;
+            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_3)){'+CRLF;
             t+='        return(array( ';         
             t+='\'statut\' => false, ';         
-            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_b1][LIEN_BDD]->lastErrorCode(), ';
-            t+='\'message\' => \'erreur sql_3()\'.\' \'.$GLOBALS[BDD][BDD_b1][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode(), ';
+            t+='\'message\' => \'erreur sql_3()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
             t+='    }else{'+CRLF;
-            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_b1][LIEN_BDD]->changes()));'+CRLF;
+            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
             t+='    }'+CRLF;
             
             
@@ -1583,7 +1592,7 @@ class requete_sql{
             t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
             t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
             t+='    \';'+CRLF;
-            t+='    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
+            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
             t+='        return(array( ';         
             t+='\'statut\' => false, ';         
             t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';         

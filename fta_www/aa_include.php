@@ -777,7 +777,7 @@ function html_header1($parametres){
         $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
         $o1.='    <div style="min-width:'.($css_hauteur_grands_boutons*2+4*$css_taille_reference_margin).'px;">'.CRLF;
         $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.(('index.php' === BNF)?'yymenusel1':'').'" title="page d\'accueil" style="">&#127968;</a>'.CRLF;
-        $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:afficherOuMasquerLesMessages()">🙈</a>'.CRLF;
+        $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:afficherOuMasquerLesMessages()">💬</a>'.CRLF;
         $o1.='    </div>'.CRLF;
         $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
         $o1.='      <div>'.CRLF;

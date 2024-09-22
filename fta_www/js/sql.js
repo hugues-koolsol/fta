@@ -311,8 +311,19 @@ function tabToSql0(tab,id,niveau,options){
                                                             if(nom_de_la_table === ''){
                                                                 return(logerreur({status:false,'message':'0262 nom_de_la_table non trouvé "' + tab[n][1] + '"'}));
                                                             }
+                                                            
+                                                            if(options.au_format_php===true){
+                                                             if(nom_de_la_base.substr(0,1)==='b'){
+                                                              nom_de_la_base=nom_de_la_base.substr(1);
+                                                             }
+                                                            }
+                                                            
                                                             if(tab[l][1] === 'jointure_gauche'){
-                                                                liste_des_tables+=CRLF + ' LEFT JOIN ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                if(options.au_format_php===true){
+                                                                    liste_des_tables+=CRLF + ' LEFT JOIN `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                }else{
+                                                                    liste_des_tables+=CRLF + ' LEFT JOIN ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                }
                                                             }else if(tab[l][1] === 'table_reference'){
                                                                 if(options.au_format_php===true){
                                                                     liste_des_tables+=' FROM `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
@@ -322,7 +333,11 @@ function tabToSql0(tab,id,niveau,options){
                                                                     liste_des_tables+=' FROM ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
                                                                 }
                                                             }else if(tab[l][1] === 'jointure_croisée'){
-                                                                liste_des_tables+=CRLF + ' , ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                if(options.au_format_php===true){
+                                                                    liste_des_tables+=' , ' + CRLF + '      `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                }else{
+                                                                    liste_des_tables+=' , ' + CRLF + '      '+((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                }
                                                             }else{
                                                                 return(logerreur({status:false,'message':'0271 type jointure non prévue "' + tab[n][1] + '"'}));
                                                             }
@@ -353,14 +368,12 @@ function tabToSql0(tab,id,niveau,options){
                                             }
                                         }
                                     }
-                                    if(tab[l][1] === 'jointure_croisée'){
-                                        liste_des_tables+=',';
-                                    }
                                 }
                             }
                         }
                     }
                 }
+                
                 if(liste_des_tables.substr((liste_des_tables.length - 1),1) === ','){
                     liste_des_tables=liste_des_tables.substr(0,(liste_des_tables.length - 1));
                 }

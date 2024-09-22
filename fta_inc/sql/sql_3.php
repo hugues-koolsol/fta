@@ -18,8 +18,8 @@ function sql_3($par){
     }
     $texte_sql_3.=$liste_des_valeurs;
     if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_3)){
-        return(array( 'statut' => false, 'code_erreur' => $GLOBALS[BDD][BDD_b1][LIEN_BDD]->lastErrorCode(), 'message' => 'erreur sql_3()'.' '.$GLOBALS[BDD][BDD_b1][LIEN_BDD]->lastErrorMsg()));
+        return(array( 'statut' => false, 'code_erreur' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode(), 'message' => 'erreur sql_3()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
     }else{
-        return(array( 'statut' => true, 'changements' => $GLOBALS[BDD][BDD_b1][LIEN_BDD]->changes()));
+        return(array( 'statut' => true, 'changements' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()));
     }
 }

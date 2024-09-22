@@ -12,10 +12,14 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
  /*debutspécifiquefta*/
  if(isset($_POST['__copier_les_fichiers_de_base_dans_ftb'])){
    
+   $time_start = microtime(true);
+   
    $tab=array(
       /* doit être en premier pour avoir l'indice 2 dans la base clonée */
       'fta_inc/db/sqlite/fta_structure.system.db.sql' => array(),
-      'fta_inc/db/sqlite/fta_structure.system.db.sql' => array(),
+      /* doit être en deuxième pour avoir l'indice 3 dans la base clonée */
+      'fta_inc/sql/sql_1.php'=>array('copier_tous_les_fichies_de_ce_repertoire'=>true),
+
       'fta_www/aa_include.php' => array(
          'remplacer' => array( 
            array( 
@@ -171,27 +175,57 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
 //           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
        }
 
-
-       
        $dossier_cible=$dossier_racine.'/'.substr($k1,0,strrpos($k1,'/'));
-//       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $dossier_cible , true ) . '</pre>' ; exit(0);
+
        if(is_dir($dossier_cible)){
+           /*
+             le dossier existe déjà
+           */
        }else{
-        if(!mkdir($dossier_cible,0777,true)){
-         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' impossible de créer le répertoire "'.$dossier_cible.'" </pre>' ; exit(0);
-        }
+           if(!mkdir($dossier_cible,0777,true)){
+               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' impossible de créer le répertoire "'.$dossier_cible.'" </pre>' ; exit(0);
+           }
        }
        $fichier_cible=$dossier_cible.substr($k1,strrpos($k1,'/'));
-//       echo __FILE__ . ' ' . __LINE__ . ' $fichier_cible = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
+
        if($fd=fopen($fichier_cible,'w')){
-        if(fwrite($fd,$contenu)){
-         fclose($fd);
-        }else{
-         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fwrite a échoué sur '.$k1.'</pre>' ; exit(0);
-        }
+           if(fwrite($fd,$contenu)){
+               fclose($fd);
+           }else{
+               echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fwrite a échoué sur '.$k1.'</pre>' ; exit(0);
+           }
        }else{
-         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fopen a échoué sur '.$k1.'</pre>' ; exit(0);
+           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fopen a échoué sur '.$k1.'</pre>' ; exit(0);
        }
+       if(isset($v1['copier_tous_les_fichies_de_ce_repertoire'])){
+           $fichierSource='../'.$k1;
+           $repertoire_source=substr($fichierSource,0,strrpos($fichierSource,'/'));
+           
+           $files=glob($repertoire_source.'/*',GLOB_MARK);
+//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $files , true ) . '</pre>' ; exit(0);
+           foreach($files as $file){
+               if(!is_dir($file)){
+//                   echo __FILE__ . ' ' . __LINE__ . ' $file = <pre>' . var_export( $file , true ) . '</pre>' ; exit(0);
+                   $contenu=file_get_contents($file);
+                   //echo __FILE__ . ' ' . __LINE__ . ' $contenu = <pre>' . var_export( str_replace('<','&lt;',$contenu) , true ) . '</pre>' ; exit(0);
+                   $fichier_cible=$dossier_cible.substr($file,strrpos($file,'/'));
+//                   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
+                   if($fd=fopen($fichier_cible,'w')){
+                       if(fwrite($fd,$contenu)){
+                           fclose($fd);
+                       }else{
+                           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fwrite a échoué sur '.$k1.'</pre>' ; exit(0);
+                       }
+                   }else{
+                       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . ' fopen a échoué sur '.$k1.'</pre>' ; exit(0);
+                   }
+               }
+           }
+//           echo __FILE__ . ' ' . __LINE__ . ' $dossier_cible = <pre>' .  $dossier_cible  . '</pre><pre>' . $fichier_cible  . '</pre><pre>' . $fichierSource  . '</pre><pre>' . $repertoire_source  . '</pre>' ; exit(0); 
+        
+       }
+       
+       
     
    }
    
@@ -336,7 +370,9 @@ $chemin_base_systeme
    
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
 
-    ajouterMessage('info' , ' les fichiers ont été copiés' , BNF );
+    $time_end = microtime(true);
+    $time = ((int)(($time_end - $time_start)*1000*1000))/1000;
+    ajouterMessage('succes' , __LINE__.' 👍 les fichiers ont été copiés ('.$time.' ms)' , BNF );
 
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
