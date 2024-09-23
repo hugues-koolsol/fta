@@ -59,12 +59,23 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
             attach database "C:\\...chemin...\\fta_inc\db\\sqlite\\system.db" as "system.db"
           */
           $sql0=$v1['initialisation'];
+          /*
+            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
+          */
           $ret0=$db0->exec($sql0);
+//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $ret0 , true ) . '</pre>' ; exit(0);
+          
       }
   }
   if($initialiser_session===true){
       session_start();
   }
+}
+
+/*===================================================================================================================*/
+
+function cst($a=''){
+ return $a;
 }
 
 /*===================================================================================================================*/
@@ -379,7 +390,9 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 /*========================================================================================================================*/
 
 function enti1($s){
-
+    if($s===null){
+        return('');
+    }
     return(htmlentities($s,ENT_COMPAT,'utf-8'));
 
 }

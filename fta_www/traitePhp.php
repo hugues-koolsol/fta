@@ -1,11 +1,4 @@
 <?php
-//the function echo the help [?] links to the documentation
-function helpLink($name){
-
-    global $lang;
-    return("<a href='?help=1' onclick='openHelp(\"".$name."\"); return false;' class='helpq' title='".$lang['help'].": ".$name."' target='_blank'><span>[?]</span></a>");
-
-}
 
 /*
 $name='toto';
@@ -13,18 +6,15 @@ $b="(?:[^\"]$name+|\"\")$name";
 // '(?:[^"]toto+|"")toto'
 echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $b , true ) . '</pre>' ; exit(0);
 */
-/*
-$a='\$';
-$b='\\$';
-echo __FILE__ . ' ' . __LINE__ . ' $a = <pre>' . var_export( $a , true ) . '</pre>  $b = <pre>' . var_export( $b , true ) . '</pre>' ; exit(0);
-*/
 define('BNF',basename(__FILE__));
+
 require_once 'aa_include.php';
 session_start();
 
 $o1='';
 $o1=html_header1(array('title'=>'convertir un php en rev' , 'description'=>'convertir un php en rev'));
 print($o1);$o1='';
+
 ?>
 
         <div class="menuScroller">
@@ -61,6 +51,7 @@ print($o1);$o1='';
 
 
 <?php
+
 $js_a_executer_apres_chargement=array(
     array(
      'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'txtar1'
@@ -83,30 +74,10 @@ window.addEventListener(\'load\',function(){
 //  transformPhpEnRev();
  }
 );
-</script>';
+</script>
+<!-- fin -->';
+
+$o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>';
 $o1.=html_footer1($par);
 print($o1);$o1='';
-/*
-
-<?php
-//- Chart javascript code
 ?>
-<script type='text/javascript'>
- x.y('string', '<?php echo $a; ?>');
- u.v('number', '<?php echo $b; ?>');
-</script>
-
-*/
-?>
-<script type="text/javascript">
-/*
-
-const paragraph = 'The quick <Brown> fox jumps over the lazy dog. It barked.';
-const regex = /(<[a-zA-Z]+>)/g;
-const found = paragraph.match(regex);
-
-console.log(found);
-
-*/
-
-</script>

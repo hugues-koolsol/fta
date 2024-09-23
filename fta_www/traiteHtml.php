@@ -1,4 +1,5 @@
 <?php
+
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();

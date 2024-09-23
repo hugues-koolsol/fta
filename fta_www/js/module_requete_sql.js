@@ -1400,7 +1400,7 @@ class requete_sql{
                       'php':document.getElementById('txtar3').value , 
                       type:this.#obj_webs.type_de_requete,
                       id_requete : id_requete,
-                      tableau_rev_requete : obj1.status,
+                      tableau_rev_requete : obj1.value,
                 };
                 modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );
@@ -1453,8 +1453,9 @@ class requete_sql{
                  'call':{'lib':'core','file':'bdd','funct':'enregistrer_la_requete_en_base'},
                  'rev':document.getElementById('txtar1').value , 
                  'sql':document.getElementById('txtar2').value , 
-                 'php':document.getElementById('txtar3').value , 
-                 type:this.#obj_webs.type_de_requete
+                 'php'  :document.getElementById('txtar3').value , 
+                 'type'                : this.#obj_webs.type_de_requete,
+                 'tableau_rev_requete' : obj1.value,
                 };
                 enregistrer_la_requete_en_base('za_ajax.php?enregistrer_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );

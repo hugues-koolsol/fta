@@ -193,7 +193,7 @@ $order0='
 $sql0.=$order0;
 $plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
 $sql0.=$plage0;
-/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = ' . htmlentities( $sql0 ) . '</pre>' ; exit(0);*/
+/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = ' . enti1( $sql0 ) . '</pre>' ; exit(0);*/
 $__nbEnregs=0;
 $data0=array();
 $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
@@ -282,14 +282,30 @@ foreach($data0 as $k0 => $v0){
     $__lsttbl.=enti1($v0['T0.chp_provenance_rev']).'';
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:left;">';
-    $__lsttbl.=enti1($v0['T1.chp_nom_source']).'';
+    if($v0['T0.chp_provenance_rev']==='source'){
+        $__lsttbl.=enti1($v0['T1.chp_nom_source']).'';
+    }else if($v0['T0.chp_provenance_rev']==='sql'){
+        $__lsttbl.=enti1('requête sql').'';
+    }
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:left;">';
     $__lsttbl.=$v0['T0.chx_source_rev'].'';
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:left;">';
-    $a=enti1(mb_substr($v0['T0.chp_valeur_rev'],0,100));
-    $__lsttbl.=str_replace('&para;CR&para;','<br />',str_replace('&para;LF&para;','<br />',str_replace('&para;CR&para;&para;LF&para;','<br />',$a)));
+    if($v0['T0.chp_provenance_rev']==='sql'){
+        if($v0['T0.chp_niveau_rev']==0){
+           $__lsttbl.='<b style="color:red;">'.$v0['T0.chp_valeur_rev'].'</b>';
+        }else{
+           $__lsttbl.=$v0['T0.chp_valeur_rev'];
+        }
+    }else{
+        if($v0['T0.chp_valeur_rev']===null){
+            $a='';
+        }else{
+            $a=enti1(mb_substr($v0['T0.chp_valeur_rev'],0,100));
+        }
+        $__lsttbl.=str_replace('&para;CR&para;','<br />',str_replace('&para;LF&para;','<br />',str_replace('&para;CR&para;&para;LF&para;','<br />',$a)));
+    }
     /* */
     $__lsttbl.='</td>';
 

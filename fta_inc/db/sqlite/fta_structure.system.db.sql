@@ -7,7 +7,7 @@
 
 
 CREATE TABLE  tbl_cibles(
-/* meta((table,'tbl_cibles'),(nom_long_de_la_table,'liste des systèmes cibles'),(nom_court_de_la_table,'une cible'),(nom_bref_de_la_table,'cible'),(transform_table_sur_svg,transform(translate(7,-133)))) */
+/* meta((table,'tbl_cibles'),(nom_long_de_la_table,'liste des systèmes cibles'),(nom_court_de_la_table,'une cible'),(nom_bref_de_la_table,'cible'),(transform_table_sur_svg,transform(translate(-56,-131)))) */
     
             /* meta((champ,'chi_id_cible'),(nom_long_du_champ,'identifiant unique de la cible'),(nom_court_du_champ,'identifiant cible'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
              chi_id_cible INTEGER PRIMARY KEY ,
@@ -100,7 +100,7 @@ CREATE  UNIQUE INDEX  idx_nom_et_dossier ON `tbl_sources`
 
 
 CREATE TABLE  tbl_utilisateurs(
-/* meta((table,'tbl_utilisateurs'),(nom_long_de_la_table,'liste des utilisateurs'),(nom_court_de_la_table,'un utilisateur'),(nom_bref_de_la_table,'utilisateurs'),(transform_table_sur_svg,transform(translate(-63,39)))) */
+/* meta((table,'tbl_utilisateurs'),(nom_long_de_la_table,'liste des utilisateurs'),(nom_court_de_la_table,'un utilisateur'),(nom_bref_de_la_table,'utilisateurs'),(transform_table_sur_svg,transform(translate(-70,248)))) */
     
             /* meta((champ,'chi_id_utilisateur'),(nom_long_du_champ,'à faire chi_id_utilisateur'),(nom_court_du_champ,'à faire chi_id_utilisateur'),(nom_bref_du_champ,'à faire chi_id_utilisateur'),(typologie,'chi')) */
              chi_id_utilisateur INTEGER PRIMARY KEY ,
@@ -131,7 +131,7 @@ CREATE  UNIQUE INDEX  idxNomUtilisateur ON `tbl_utilisateurs`
 
 
 CREATE TABLE  tbl_taches(
-/* meta((table,'tbl_taches'),(nom_long_de_la_table,'liste des tâches à réaliser'),(nom_court_de_la_table,'une tâche'),(nom_bref_de_la_table,'taches'),(transform_table_sur_svg,transform(translate(187,119)))) */
+/* meta((table,'tbl_taches'),(nom_long_de_la_table,'liste des tâches à réaliser'),(nom_court_de_la_table,'une tâche'),(nom_bref_de_la_table,'taches'),(transform_table_sur_svg,transform(translate(201,286)))) */
     
             /* meta((champ,'chi_id_tache'),(nom_long_du_champ,'à faire chi_id_tache'),(nom_court_du_champ,'à faire chi_id_tache'),(nom_bref_du_champ,'à faire chi_id_tache'),(typologie,'chi')) */
              chi_id_tache INTEGER PRIMARY KEY ,
@@ -166,7 +166,7 @@ CREATE TABLE  tbl_revs(
              chp_provenance_rev CHARACTER(32),
     
             /* meta((champ,'chx_source_rev'),(nom_long_du_champ,'à faire chx_source_rev'),(nom_court_du_champ,'à faire chx_source_rev'),(nom_bref_du_champ,'à faire chx_source_rev'),(typologie,'chx')) */
-             chx_source_rev INTEGER REFERENCES 'tbl_sources'('chi_id_source') ,
+             chx_source_rev INTEGER,
     
             /* meta((champ,'chp_id_rev'),(nom_long_du_champ,'à faire chp_id_rev'),(nom_court_du_champ,'à faire chp_id_rev'),(nom_bref_du_champ,'à faire chp_id_rev'),(typologie,'che')) */
              chp_id_rev INTEGER,
@@ -224,7 +224,7 @@ CREATE  UNIQUE INDEX  idx_ligne_rev ON `tbl_revs`
 
 
 CREATE TABLE  tbl_bdds(
-/* meta((table,'tbl_bdds'),(nom_long_de_la_table,'liste des bases de données'),(nom_court_de_la_table,'une base'),(nom_bref_de_la_table,'bases'),(transform_table_sur_svg,transform(translate(429,147)))) */
+/* meta((table,'tbl_bdds'),(nom_long_de_la_table,'liste des bases de données'),(nom_court_de_la_table,'une base'),(nom_bref_de_la_table,'bases'),(transform_table_sur_svg,transform(translate(448,140)))) */
     
             /* meta((champ,'chi_id_basedd'),(nom_long_du_champ,'à faire chi_id_basedd'),(nom_court_du_champ,'à faire chi_id_basedd'),(nom_bref_du_champ,'à faire chi_id_basedd'),(typologie,'chi')) */
              chi_id_basedd INTEGER PRIMARY KEY  AUTOINCREMENT,
@@ -290,10 +290,13 @@ CREATE  UNIQUE INDEX  idx_test_unique ON `tbl_tests`
 
 
 CREATE TABLE  tbl_requetes(
-/* meta((table,'tbl_requetes'),(nom_long_de_la_table,'liste des requêtes'),(nom_court_de_la_table,'une requête'),(nom_bref_de_la_table,'requêtes'),(transform_table_sur_svg,transform(translate(186,242)))) */
+/* meta((table,'tbl_requetes'),(nom_long_de_la_table,'liste des requêtes'),(nom_court_de_la_table,'une requête'),(nom_bref_de_la_table,'requêtes'),(transform_table_sur_svg,transform(translate(117,76)))) */
     
             /* meta((champ,'chi_id_requete'),(nom_long_du_champ,'identifiant unique de la requête'),(nom_court_du_champ,'id unique'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
              chi_id_requete INTEGER PRIMARY KEY ,
+    
+            /* meta((champ,'chx_cible_requete'),(nom_long_du_champ,'à faire ...'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'chi')) */
+             chx_cible_requete INTEGER NOT NULL DEFAULT  1  REFERENCES 'tbl_cibles'('chi_id_cible') ,
     
             /* meta((champ,'chp_type_requete'),(nom_long_du_champ,'type de la requête sql'),(nom_court_du_champ,'type requete'),(nom_bref_du_champ,'type'),(typologie,'chi')) */
              chp_type_requete VARCHAR(64) DEFAULT  'selectionner' ,

@@ -193,87 +193,90 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
         }else if(tab[i][1]=='fonction' && tab[i][2]=='f' ){
         
         
-          dansFonction=true;
-          positionDeclarationFonction=-1;
-          for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-           if(tab[j][1]=='definition' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){ 
-            positionDeclarationFonction=j;
-            break;
-           }
-          }
-          positionContenu=-1;
-          for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-           if(tab[j][1]=='contenu' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){ 
-            positionContenu=j;
-            break;
-           }
-          }
-          if(positionDeclarationFonction>=0 && positionContenu>=0){
-           for(j=positionDeclarationFonction+1;j<l01 && tab[j][3]>tab[positionDeclarationFonction][3];j++){
-            if(tab[j][1]=='nom' && tab[j][3]==tab[positionDeclarationFonction][3]+1){ 
-             if(tab[j][8]==1){
-              nomFonction=tab[j+1][1];
-             }else{
-              return {status:false,value:t,id:i,tab:tab,message:'le nom de la fonction doit être sous la forme  n(xxx) '};
+             dansFonction=true;
+             positionDeclarationFonction=-1;
+             for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+              if(tab[j][1]=='definition' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){ 
+               positionDeclarationFonction=j;
+               break;
+              }
              }
-            }
-           }
-           
-           argumentsFonction='';
-           for(j=positionDeclarationFonction+1;j<l01 && tab[j][3]>tab[positionDeclarationFonction][3];j++){
-            if(tab[j][1]=='argument' && tab[j][3]==tab[positionDeclarationFonction][3]+1){ 
-             if(tab[j][8]==1){
-              argumentsFonction+=','+tab[j+1][1];
-             }else if(tab[j][8]==2){
-              argumentsFonction+=','+tab[j+1][1];
-              for(var k=j+2;k<l01 && tab[k][3]>tab[j][3];k++){
-               if(tab[k][7]===j){
-                if(tab[k][1]==='defaut'){
-                 var obj1=php_traiteElement(tab,k+1,niveau,{});
-                 if(obj1.status===true){
-                  argumentsFonction+='='+obj1.value;
-                 }else{
-                  return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans les arguments passés à la fonction 0333'});
+             positionContenu=-1;
+             for(j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+              if(tab[j][1]=='contenu' && tab[j][2]=='f' && tab[j][3]==tab[i][3]+1){ 
+               positionContenu=j;
+               break;
+              }
+             }
+             if(positionDeclarationFonction>=0 && positionContenu>=0){
+                 for(j=positionDeclarationFonction+1;j<l01 && tab[j][3]>tab[positionDeclarationFonction][3];j++){
+                  if(tab[j][1]=='nom' && tab[j][3]==tab[positionDeclarationFonction][3]+1){ 
+                   if(tab[j][8]==1){
+                    nomFonction=tab[j+1][1];
+                   }else{
+                    return {status:false,value:t,id:i,tab:tab,message:'le nom de la fonction doit être sous la forme  n(xxx) '};
+                   }
+                  }
+                 }
+                 
+                 argumentsFonction='';
+                 for(j=positionDeclarationFonction+1;j<l01 && tab[j][3]>tab[positionDeclarationFonction][3];j++){
+                     if(tab[j][1]=='argument' && tab[j][3]==tab[positionDeclarationFonction][3]+1){
+                         if(tab[j][8]==1){
+                             argumentsFonction+=','+tab[j+1][1];
+                         }else if(tab[j][8]==2){
+                             argumentsFonction+=','+tab[j+1][1];
+                             for(var k=j+2;k<l01 && tab[k][3]>tab[j][3];k++){
+                                 if(tab[k][7]===j){
+                                     if(tab[k][1]==='defaut'){
+                                         var obj1=php_traiteElement(tab,k+1,niveau,{});
+                                         if(obj1.status===true){
+                                             argumentsFonction+='='+obj1.value;
+                                         }else{
+                                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans les arguments passés à la fonction 0333'});
+                                         }
+                                     }else{
+                                         return php_logerr({status:false,value:t,id:i,tab:tab,message:'0330 les arguments passés à la fonction '});
+                                     }
+                                 }
+                             }
+                         }else{
+                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'0325 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
+                         }
+                     }else if(tab[j][1]=='adresseArgument' && tab[j][3]==tab[positionDeclarationFonction][3]+1){ 
+                         if(tab[j][8]==1){
+                             argumentsFonction+=',&'+tab[j+1][1];
+                         }else{
+                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'0331 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
+                         }
+                     }
                  }
                  
                  
-                }else{
-                 return php_logerr({status:false,value:t,id:i,tab:tab,message:'0330 les arguments passés à la fonction '});
-                }
-               }
-              }
+                 if(nomFonction!=''){
+                      t+=CRLF;
+                      t+=espacesn(true,niveau);
+                      t+='function '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
+                      t+=CRLF;
+                      if(tab[positionContenu][8]===0){
+                          /* c'est une fonction vide */
+                          t+='}';
+                      }else{
+                          obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,niveau+1);
+                          if(obj.status==true){
+                              t+=obj.value;
+                              t+=CRLF;
+                              t+=espacesn(true,niveau);
+                              t+='}';
+                          }else{
+                              return {status:false,value:t,id:i,tab:tab,message:'problème sur le contenu de la fonction "'+nomFonction+'"'};
+                          }
+                      }
+                 }
              }else{
-              return php_logerr({status:false,value:t,id:i,tab:tab,message:'0325 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
+                 return {status:false,value:t,id:i,tab:tab,message:'il faut une declaration d(n(),a()...) et un contenu c(...) pour définir une fonction f()'};
              }
-            }else if(tab[j][1]=='adresseArgument' && tab[j][3]==tab[positionDeclarationFonction][3]+1){ 
-             if(tab[j][8]==1){
-              argumentsFonction+=',&'+tab[j+1][1];
-             }else{
-              return php_logerr({status:false,value:t,id:i,tab:tab,message:'0331 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
-             }
-            }
-           }
-           
-           
-           if(nomFonction!=''){
-            t+=CRLF;
-            t+=espacesn(true,niveau);
-            t+='function '+nomFonction+'('+(argumentsFonction==''?'':argumentsFonction.substr(1))+'){';
-            t+=CRLF;
-            obj=php_tabToPhp1(tab,positionContenu+1,dansFonction,false,niveau+1);
-            if(obj.status==true){
-             t+=obj.value;
-             t+=CRLF;
-             t+=espacesn(true,niveau);
-             t+='}';
-            }else{
-             return {status:false,value:t,id:i,tab:tab,message:'problème sur le contenu de la fonction "'+nomFonction+'"'};
-            }
-           }
-          }else{
-           return {status:false,value:t,id:i,tab:tab,message:'il faut une declaration d(n(),a()...) et un contenu c(...) pour définir une fonction f()'};
-          }
-          dansFonction=false;
+             dansFonction=false;
          
          
          
@@ -1063,11 +1066,17 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                 t+=espacesn(true,niveau);
                 t+='/*sql_inclure_deb*/';
                 t+=espacesn(true,niveau);
-                t+='require_once(INCLUDE_PATH.\'/sql/sql_1.php\');';
+                t+='require_once(INCLUDE_PATH.\'/sql/sql_'+tab[i+1][1]+'.php\');';
+                if(typeof aa_js_sql !== 'undefined' && aa_js_sql[tab[i+1][1]]){
+                 t+=espacesn(true,niveau);
+                 t+='/*'+CRLF+aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')+CRLF+'*/';
+                }else{
+                 t+=espacesn(true,niveau);
+                 t+='/* === ATTENTION === '+CRLF+ 'Le fichier des requêtes sql js est à regénérer et/ou à intégrer '+CRLF+'*/';
+                }
                 t+=espacesn(true,niveau);
                 t+='/*sql_inclure_fin*/';
                 t+=espacesn(true,niveau);
-                debugger
             }else{
                 return php_logerr({status:false,value:t,id:i,tab:tab,message:'php_tabToPhp1 dans sql_inclure_reference 1649'});
             }
@@ -1423,7 +1432,6 @@ function php_traiteElement(tab , ind , niveau,options={}){
 
 
  }else if(tab[ind][2]==='f' && ( tab[ind][1]==='concat' ||  tab[ind][1]==='plus' || tab[ind][1]==='moins' || tab[ind][1]==='mult' || tab[ind][1]==='divi' || tab[ind][1]==='infeg' || tab[ind][1]==='egal' || tab[ind][1]==='modulo'  || tab[ind][1]==='div' || 'ou_binaire' === tab[ind][1] || 'xou_binaire' ===  tab[ind][1] ) ){
-     
      obj=php_traiteOperation(tab,ind,niveau);
      if(obj.status==true){
          t=obj.value;
@@ -1557,7 +1565,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
   
      var obj1=php_traiteElement(tab,ind+1,niveau,{});
      if(obj1.status===true){
-         t+='(int)'+obj1.value;
+         t+='(int)('+obj1.value+')';
      }else{
          return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php_traiteElement dans castint 1436'});
      }
@@ -1679,7 +1687,9 @@ function php_traiteElement(tab , ind , niveau,options={}){
       
       return php_logerr({status:false,value:t,id:ind,tab:tab,message:'php.js 1506 php_traiteElement "'+tab[ind][1]+'" non traité '});
      /*
+      ========================================================
       dernier espoir coupé pour l'instant car boucle infinie
+      ========================================================
      */
 
      var obj1=php_tabToPhp1(tab,ind,true,true,niveau); // tab,id,dansFonction,dansInitialisation,niveau)php_traiteElement(tab,ind+1,niveau,{});
@@ -1801,7 +1811,11 @@ function php_traiteOperation(tab,id,niveau){
                         }else if((tab[i][1] === 'mult') || (tab[i][1] === 'plus') || (tab[i][1] === 'modulo') || (tab[i][1] === 'moins') || (tab[i][1] === 'mult') || (tab[i][1] === 'divi') || (tab[i][1] === 'etBin') || (tab[i][1] === 'concat' )  || (tab[i][1] === '??' )){
                             var objOperation = php_traiteOperation(tab,i,niveau);
                             if(objOperation.status === true){
-                                t+=''+objOperation.value+'';
+                                if( (tab[i][1] === 'plus' || tab[i][1] === 'moins' ) &&  (tab[tab[i][7]][1]==='mult' || tab[tab[i][7]][1]==='divi') ){
+                                    t+='('+objOperation.value+')';
+                                }else{
+                                    t+=''+objOperation.value+'';
+                                }
                             }else{
                                 return(php_logerr({status:false,id:i,tab:tab,message:' erreur sur php_traiteOperation 1634'}));
                             }
@@ -1937,6 +1951,13 @@ function php_traiteOperation(tab,id,niveau){
                              return php_logerr({status:false,value:t,id:i,tab:tab,message:'erreur dans php_traiteOperation 1723'});
                             }
 
+                        }else if(tab[i][1] == 'cst'){
+
+                            if(tab[i][8]===1 ){
+                                t+='cst('+maConstante(tab[i+1])+')';
+                            }else{
+                                return(php_logerr({status:false,id:i,tab:tab,'message':'php.js une constante ne doit avoir qu\'un seul paramètre non quoté 1943 "'+tab[i][1]+'"'}));
+                            }
                         }else{
                             return(php_logerr({status:false,id:i,tab:tab,'message':'fonction paramètre non reconnu 1391 "'+tab[i][1]+'"'}));
                         }

@@ -575,6 +575,11 @@ function tabToSql0(tab,id,niveau,options){
                                 }
                             }
                         }
+                        if(options.au_format_php===true){
+                         if(nom_de_la_base.substr(0,1)==='b'){
+                          nom_de_la_base=nom_de_la_base.substr(1);
+                         }
+                        }
 
                         
                         if((tab[j][1] === 'valeurs') && (tab[j][8] >= 1)){

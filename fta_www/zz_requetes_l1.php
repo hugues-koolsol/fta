@@ -69,6 +69,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
       $time_start = microtime(true);
       $retour_sql=sql_nnn_pour_recuperation_des_requetes(array());
       if($retour_sql['statut']===true){
+          $chaine_js='';
           $repertoire_destination=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql';
           
           if(is_dir($repertoire_destination)){
@@ -84,6 +85,8 @@ if((isset($_POST)) && (count($_POST) > 0)){
               if($fd=fopen($nom_fichier,'w')){
                   if(fwrite($fd,'<?'.'php'.PHP_EOL.$v1['cht_php_requete'])){
                       fclose($fd);
+                      $chaine_js.=CRLF.'"'.$v1['chi_id_requete'].'":'.json_encode($v1['cht_sql_requete']).',';
+                      
                   }else{
                       ajouterMessage('erreur',__LINE__.' erreur ecriture fichier sql_'.$v1['chi_id_requete'].'.php' , BNF );
                       recharger_la_page(BNF);
@@ -93,6 +96,20 @@ if((isset($_POST)) && (count($_POST) > 0)){
                   recharger_la_page(BNF);
               }
           }
+          $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'aa_js_sql.js';
+          if($fd=fopen($nom_fichier,'w')){
+              if(fwrite($fd,'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};')){
+                  fclose($fd);
+              }else{
+                  ajouterMessage('erreur',__LINE__.' erreur ecriture fichier saa_js_sql' , BNF );
+                  recharger_la_page(BNF);
+              }
+          }else{
+              ajouterMessage('erreur',__LINE__.' erreur ouverture fichier saa_js_sql' , BNF );
+              recharger_la_page(BNF);
+          }
+             
+          
           
 //          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql['valeur'] , true ) . '</pre>' ; exit(0);
           
@@ -111,19 +128,15 @@ if((isset($_POST)) && (count($_POST) > 0)){
     
     if(isset($_POST['supprimer_une_requete']) && is_numeric($_POST['supprimer_une_requete'])){
      
-//        sql_inclure_reference(6);
-        /*sql_inclure_deb*/
-//        require_once(INCLUDE_PATH.'/sql/sql_6.php');
-        /*sql_inclure_fin*/
   
-        function sql_6($par){
+        function sql_effacer_des_requetes($par){
             $texte_sql_6='
               
               DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes
                   WHERE (`chi_id_requete` = '.sq1($par['par0']).' AND `chx_cible_requete` = '.sq1($par['par1']).') ;
             ';
             if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_6)){
-                return(array( 'statut' => false, 'code_erreur' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() ,'message' => 'erreur sql_6()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
+                return(array( 'statut' => false, 'code_erreur' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() ,'message' => 'erreur sql_effacer_des_requetes()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
             }else{
                 return(array( 'statut' => true, 'changements' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()));
             }
@@ -131,13 +144,46 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
 
   
-        $sql6=sql_6(array( 'par0' => $_POST['supprimer_une_requete'] , 'par1' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ));
+        $sql6=sql_effacer_des_requetes(array( 'par0' => $_POST['supprimer_une_requete'] , 'par1' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ));
         if($sql6['statut'] !== true){
 
             ajouterMessage('erreur',__LINE__.' '.$sql6['message'],BNF);
             recharger_la_page(BNF);
 
         }
+
+//        sql_inclure_reference(5);
+        /*sql_inclure_deb*/
+//        require_once(INCLUDE_PATH.'/sql/sql_5.php');
+        /*sql_inclure_fin*/
+        
+        
+        function sql_5($par){
+            $texte_sql_5='
+              
+              DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs
+                  WHERE (`chx_cible_rev` = '.sq1($par['chx_cible_rev']).' AND `chp_provenance_rev` = '.sq1($par['chp_provenance_rev']).' AND `chx_source_rev` = '.sq1($par['chx_source_rev']).') ;
+            ';
+            if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_5)){
+                return(array( 'statut' => false, 'code_erreur' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() ,'message' => 'erreur sql_5()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
+            }else{
+                return(array( 'statut' => true, 'changements' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()));
+            }
+        }
+        $sql5=sql_5(
+         array( 
+          'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] , 
+          'chp_provenance_rev' => 'sql' ,
+          'chx_source_rev' => $_POST['supprimer_une_requete'] ,
+         )
+        );
+        if($sql5['statut'] !== true){
+
+            ajouterMessage('erreur',__LINE__.' '.$sql5['message'],BNF);
+            recharger_la_page(BNF);
+
+        }
+        
 
      
     
@@ -368,9 +414,17 @@ foreach($data0 as $k0 => $v0){
     
     $lsttbl.='<td style="text-align:left;">'.$v0['T0.chp_type_requete'].'</td>';
 
-    $lsttbl.='<td style="text-align:left;">'.enti1(mb_substr($v0['T0.cht_rev_requete'],0,500)).'</td>';
+    $lsttbl.='<td style="text-align:left;">';
+    if($v0['T0.cht_rev_requete']!==null){
+        $lsttbl.=enti1(mb_substr($v0['T0.cht_rev_requete'],0,500));
+    }
+    $lsttbl.='</td>';
 
-    $lsttbl.='<td style="text-align:left;">'.enti1(mb_substr($v0['T0.cht_sql_requete'],0,500)).'</td>';
+    $lsttbl.='<td style="text-align:left;">';
+    if($v0['T0.cht_sql_requete']!==null){
+        $lsttbl.=enti1(mb_substr($v0['T0.cht_sql_requete'],0,500));
+    }
+    $lsttbl.='</td>';
 
     $lsttbl.='</tr>';
 }

@@ -49,9 +49,25 @@ $data[input]=array (
     
     if( $ret0===false ){
         $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
+        return;
     }else{
-        $data['status']='OK';
+        // on continue
     }
+    
+    
+    /*
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][tableau_rev_requete]='.var_export( $data['input']['tableau_rev_requete'] , true ) .CRLF.CRLF); fclose($fd);}
+    */
+    
+    $data['input']['parametres_sauvegarde']=array(
+        'id_cible'           => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+        'chp_provenance_rev' => 'sql'                                  , // 'bdd' , '	source' , 'sql'
+        'chx_source_rev'     => $data['input']['id_requete']           , // id de la source
+        'matrice'            => $data['input']['tableau_rev_requete']  ,
+    );
+    
+    $ret=sauvegarder_format_rev_en_dbb($data);
+    
 }
 
 
@@ -107,9 +123,16 @@ $data[input]=array (
         $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
     }else{
         $data['nouvel_id']=$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID();
-        $data['status']='OK';
     }
     
+    $data['input']['parametres_sauvegarde']=array(
+        'id_cible'           => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+        'chp_provenance_rev' => 'sql'                                  , // 'bdd' , '	source' , 'sql'
+        'chx_source_rev'     => $data['nouvel_id']                     , // id de la source
+        'matrice'            => $data['input']['tableau_rev_requete']  ,
+    );
+    
+    $ret=sauvegarder_format_rev_en_dbb($data);
     
 
  
@@ -217,7 +240,10 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     }
 
     foreach($data['input']['liste_des_tables'] as $k1 => $v1){
-        $sql3='INSERT INTO \''.sq0($v1).'\' SELECT * FROM source.\''.sq0($v1).'\'';
+        $sql3='INSERT INTO `'.sq0($v1).'` SELECT * FROM `source`.`'.sq0($v1).'`';
+/*        
+          if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql3='.$sql3 .CRLF.CRLF); fclose($fd);}
+*/        
         $ret3=$db1temp->exec($sql3);
 
         if($ret3 !== true){
@@ -595,9 +621,19 @@ function recuperer_zone_travail_pour_les_bases(&$data){
 */
 
 function sauvegarder_format_rev_en_dbb(&$data){
+ 
+ /*
+ $data['input']['parametres_sauvegarde']=array(
+  'id_cible'           => id_cible           ,
+  'chp_provenance_rev' => chp_provenance_rev , // 'bdd' , '	source' , 'sql'
+  'chx_source_rev'     => chx_source_rev     , // id de la source
+  'matrice'            => matrice            ,
+ )
+ 
+ */
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][parametres_sauvegarde]='.var_export($data['input']['parametres_sauvegarde'],true).CRLF); fclose($fd);}
     */
     $db=new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
     $db->querySingle('PRAGMA foreign_keys=ON');
@@ -619,8 +655,9 @@ function sauvegarder_format_rev_en_dbb(&$data){
        AND `chx_source_rev`         = '.sq0($data['input']['parametres_sauvegarde']['chx_source_rev']).' 
      ';
     }
-
-
+    /*
+      if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql0='.var_export( $sql0 , true ).CRLF); fclose($fd);}
+    */
     if(false === $db->exec($sql0)){
 
         $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur la suppression';

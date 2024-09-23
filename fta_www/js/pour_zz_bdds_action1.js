@@ -25,38 +25,38 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
 
 function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , id_cible ){
  
- clearMessages('zone_global_messages');
- var a=dogid(nom_zone_source);
- var startMicro = performance.now();
- var tableau1 = iterateCharacters2(a.value);
- global_messages.data.tableau=tableau1;
- var endMicro = performance.now();
- console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
- var startMicro = performance.now();
- var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
- 
- if(matriceFonction.status===true){
+    clearMessages('zone_global_messages');
+    var a=dogid(nom_zone_source);
+    var startMicro = performance.now();
+    var tableau1 = iterateCharacters2(a.value);
+    global_messages.data.tableau=tableau1;
+    var endMicro = performance.now();
+    console.log('\n\n=============\nmise en tableau endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
+    var startMicro = performance.now();
+    var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
+    
+    if(matriceFonction.status===true){
 
-  var objSql=tabToSql1(matriceFonction.value,0,0,false);
-  if(objSql.status===true){
-   var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
-   dogid(nom_zone_genere).value=contenu;
-  }
-  displayMessages('zone_global_messages');
-  
-  var parametres_sauvegarde={
-   'matrice': matriceFonction.value,
-   'chp_provenance_rev' : 'bdd',
-   'id_cible' : id_cible ,
-   'chx_source_rev' : null,
-  }
-  
-  sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
-  
-  
- }else{
- displayMessages('zone_global_messages');
- }
+        var objSql=tabToSql1(matriceFonction.value,0,0,false);
+        if(objSql.status===true){
+            var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
+            dogid(nom_zone_genere).value=contenu;
+        }
+        displayMessages('zone_global_messages');
+        
+        var parametres_sauvegarde={
+            'matrice'            : matriceFonction.value ,
+            'chp_provenance_rev' : 'bdd'                 ,
+            'id_cible'           : id_cible              ,
+            'chx_source_rev'     : id_bdd                ,
+        }
+        
+        sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+        
+        
+    }else{
+       displayMessages('zone_global_messages');
+    }
 }
 
 function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){

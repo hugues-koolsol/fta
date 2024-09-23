@@ -140,7 +140,11 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
         }
         $sql.=CRLF.'(';
         foreach($tab0 as $k2 => $v2){
-         $sql.='\''.str_replace("'","''",$v2).'\',';
+         if($v2===null){
+             $sql.='NULL,';
+         }else{
+             $sql.='\''.str_replace("'","''",$v2).'\',';
+         }
         }
         $sql=substr($sql,0,-1);
         $sql.='),';

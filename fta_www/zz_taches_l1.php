@@ -361,7 +361,9 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='</td>';
     
     $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.=''.enti1(mb_substr($v0['T0.chp_texte_tache'],0,100)).'';
+    if($v0['T0.chp_texte_tache']!==null){
+        $lsttbl.=''.enti1(mb_substr($v0['T0.chp_texte_tache'],0,100)).'';
+    }
     $lsttbl.='</td>';
     
     $lsttbl.='<td style="text-align:left;">';

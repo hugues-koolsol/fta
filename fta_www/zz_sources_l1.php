@@ -248,7 +248,9 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='('.$v0['T0.chx_dossier_id_source'].')'.$v0['T1.chp_nom_dossier'].'';
     $lsttbl.='</td>';
     $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.=''.enti1(mb_substr($v0['T0.chp_commentaire_source'],0,50,'UTF-8')).'';
+    if($v0['T0.chp_commentaire_source']!==null){
+        $lsttbl.=''.enti1(mb_substr($v0['T0.chp_commentaire_source'],0,50,'UTF-8')).'';
+    }
     $lsttbl.='</td>';
     $lsttbl.='<tr>';
 }
@@ -264,8 +266,9 @@ $par=array(
   'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js',  'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 
 
   'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js' ), 
- 'module_a_inclure' => array('js/module_html.js'),
+ 'module_a_inclure' => array('js/module_html.js'), 
  'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

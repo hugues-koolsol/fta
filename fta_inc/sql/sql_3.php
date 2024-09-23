@@ -1,7 +1,7 @@
 <?php
 function sql_3($par){
     $texte_sql_3='
-      INSERT INTO `'.$GLOBALS[BDD][BDD_b1]['nom_bdd'].'`.`tbl_utilisateurs`(
+      INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_utilisateurs`(
          `chp_nom_de_connexion_utilisateur` , 
          `chp_mot_de_passe_utilisateur`
       ) VALUES 

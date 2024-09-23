@@ -163,7 +163,9 @@ foreach($data0 as $k0=>$v0){
  
  
  $lsttbl.='<td style="text-align:left;">';
- $lsttbl.=''.enti1(mb_substr( $v0['T0.chp_commentaire_basedd'], 0 , 50 , 'UTF-8')).'';
+ if($v0['T0.chp_commentaire_basedd']!==null){
+   $lsttbl.=''.enti1(mb_substr( $v0['T0.chp_commentaire_basedd'], 0 , 50 , 'UTF-8')).'';
+ }
  $lsttbl.='</td>';
  
  

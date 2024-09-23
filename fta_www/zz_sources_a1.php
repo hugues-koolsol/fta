@@ -604,7 +604,7 @@ $o1='';
 $o1=html_header1(array( 'title' => 'sources', 'description' => 'sources'));
 print($o1);
 $o1='';
-/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities(var_export( $_SESSION , true )) . '</pre>' ; exit(0);*/
+/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1(var_export( $_SESSION , true )) . '</pre>' ; exit(0);*/
 $o1.='<h1>gestion de source (dossier '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].')'.bouton_retour_a_la_liste('zz_sources_l1.php').'</h1>';
 
 if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
@@ -672,32 +672,11 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <a class="yyavertissement" href="javascript:annuler_champ(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
-    /*
-      
-      
-      $chp_rev_source =isset($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']:'';
-      $o1.=' <div class="yyfdiv1">'.CRLF;
-      $o1.='  <div class="yyflab1"><div style="word-break:break-word;">rev</div></div>'.CRLF;
-      $o1.='  <div class="yyfinp1"><div>'.CRLF;
-      $o1.='   <textarea  name="chp_rev_source" id="chp_rev_source"  rows="15" >'.htmlentities($chp_rev_source,ENT_COMPAT).'</textarea>'.CRLF;
-      $o1.='  </div></div>'.CRLF;
-      $o1.=' </div>'.CRLF;
-      
-      
-      $chp_genere_source =isset($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']:'';
-      $o1.=' <div class="yyfdiv1">'.CRLF;
-      $o1.='  <div class="yyflab1"><div style="word-break:break-word;">généré</div></div>'.CRLF;
-      $o1.='  <div class="yyfinp1"><div>'.CRLF;
-      $o1.='   <textarea  name="chp_genere_source" id="chp_genere_source"  rows="15" >'.htmlentities($chp_genere_source,ENT_COMPAT).'</textarea>'.CRLF;
-      $o1.='  </div></div>'.CRLF;
-      $o1.=' </div>'.CRLF;
-      
-    */
     $chp_commentaire_source=((isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']))?$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']:'');
     $o1.=' <div class="yyfdiv1">'.CRLF;
     $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.CRLF;
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="15" >'.htmlentities($chp_commentaire_source,ENT_COMPAT).'</textarea>'.CRLF;
+    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="15" >'.enti1($chp_commentaire_source,ENT_COMPAT).'</textarea>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -784,7 +763,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <div style="word-break:break-word;">rev</div>'.CRLF;
     $o1.='  </div>'.CRLF;
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_rev_source" id="chp_rev_source"  rows="15" spellcheck="false" >'.htmlentities($__valeurs['T0.chp_rev_source'],ENT_COMPAT).'</textarea>'.CRLF;
+    $o1.='   <textarea  name="chp_rev_source" id="chp_rev_source"  rows="15" spellcheck="false" >'.enti1($__valeurs['T0.chp_rev_source'],ENT_COMPAT).'</textarea>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -847,7 +826,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <div style="word-break:break-word;">genere</div>'.CRLF;
     $o1.='  </div>'.CRLF;
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_genere_source" id="chp_genere_source"  rows="15" spellcheck="false" >'.htmlentities($__valeurs['T0.chp_genere_source'],ENT_COMPAT).'</textarea>'.CRLF;
+    $o1.='   <textarea  name="chp_genere_source" id="chp_genere_source"  rows="15" spellcheck="false" >'.enti1($__valeurs['T0.chp_genere_source'],ENT_COMPAT).'</textarea>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -907,7 +886,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
     $o1.='  </div>'.CRLF;
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="5" >'.htmlentities($__valeurs['T0.chp_commentaire_source'],ENT_COMPAT).'</textarea>'.CRLF;
+    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="5" >'.enti1($__valeurs['T0.chp_commentaire_source'],ENT_COMPAT).'</textarea>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.='<div class="yyfdiv1">'.CRLF;
@@ -958,6 +937,7 @@ $par=array( 'js_a_inclure' => array(
             'js/texte.js',
             'js/jslib/sqlite_parser_from_demo.js',
             'js/convertion_sql_en_rev.js'), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

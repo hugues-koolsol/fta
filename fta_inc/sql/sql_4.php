@@ -2,7 +2,7 @@
 function sql_4($par){
     $texte_sql_4='
       
-      DELETE FROM `'.$GLOBALS[BDD][BDD_b1]['nom_bdd'].'`.tbl_utilisateurs
+      DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_utilisateurs
           WHERE `chi_id_utilisateur` = '.sq1($par['chi_id_utilisateur']).' ;
     ';
     if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($texte_sql_4)){

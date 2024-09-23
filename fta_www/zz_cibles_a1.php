@@ -147,11 +147,11 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
             if(isset($v2['a_remplacer_chaine'])){
 //            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v2 , true ) . '</pre>' ; exit(0);
               $contenu = str_replace($v2['a_remplacer_chaine'] , $v2['par'] , $contenu);
-//              echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
+//              echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( enti1($contenu) , true ) . '</pre>' ; exit(0);
             }else if(isset($v2['a_remplacer_preg'])){
 /*             
              $contenu=preg_replace($v2['a_remplacer_preg'],$v2['par'], $contenu);
-             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
+             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( enti1($contenu) , true ) . '</pre>' ; exit(0);
             /*
             
              $text = '<p style="padding:0px;"><strong style="padding:0;margin:0;">hello</strong></p>';
@@ -172,7 +172,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
 
        $contenu=preg_replace('/\\/\\*debut'.'spécifiquefta\\*\\/(.*?)\\/\\*fin'.'spécifiquefta\\*\\//us','/* spécifique fta */', $contenu);
        if($k1==='fta_www/zz_cibles_a1.php'){
-//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($contenu) , true ) . '</pre>' ; exit(0);
+//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( enti1($contenu) , true ) . '</pre>' ; exit(0);
        }
 
        $dossier_cible=$dossier_racine.'/'.substr($k1,0,strrpos($k1,'/'));
@@ -231,7 +231,7 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    
    $contenu_fichier_structure=file_get_contents('../fta_inc/db/sqlite/fta_structure.system.db.sql');
    
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_fichier_structure ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_fichier_structure ) . '</pre>' ; exit(0);
    
    if($contenu_fichier_structure===false){
     echo __FILE__ . ' ' . __LINE__ . ' fichier structure introuvable = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
@@ -303,17 +303,26 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
    }
    if($contenu_table_sources!==''){
     
-    $contenu_table_sources=substr($contenu_table_sources,1);
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_table_sources ) . '</pre>' ; exit(0);
-    
-    $contenu_table_sources ='INSERT INTO `tbl_sources`( `chp_nom_source`, `chx_cible_id_source`, `chx_dossier_id_source` , `chp_type_source` ) VALUES '.$contenu_table_sources;
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . htmlentities( $contenu_table_sources ) . '</pre>' ; exit(0);
-    if(false === $base_ftb->exec($contenu_table_sources)){
-     echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-    }
-    
-    
+       $contenu_table_sources=substr($contenu_table_sources,1);
+       // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_table_sources ) . '</pre>' ; exit(0);
+       
+       $contenu_table_sources ='INSERT INTO `tbl_sources`( `chp_nom_source`, `chx_cible_id_source`, `chx_dossier_id_source` , `chp_type_source` ) VALUES '.$contenu_table_sources;
+       // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_table_sources ) . '</pre>' ; exit(0);
+       if(false === $base_ftb->exec($contenu_table_sources)){
+        echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+       }
    }
+
+   /* 
+     on doit prendre les requetes sql de la table requetes 
+   */
+   
+   $ret0=$base_ftb->exec($GLOBALS[BDD][BDD_1]['initialisation']);
+   $sql_insere_requetes='INSERT INTO `'.cst('tbl_requetes').'` SELECT * FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`'.cst('tbl_requetes').'` WHERE `'.cst('chx_cible_requete').'`=1';
+   if(false === $base_ftb->exec($sql_insere_requetes)){
+    echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+   }
+   
    
    
    /* on ajoute le contenu du champ chp_rev_travail_basedd dans la base ftb pour le dessin de la base */
@@ -908,7 +917,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.=' <div class="yyfdiv1">'.CRLF;
   $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.htmlentities($chp_commentaire_cible,ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.enti1($chp_commentaire_cible,ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 
@@ -986,7 +995,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.htmlentities($__valeurs['T0.chp_commentaire_cible'],ENT_COMPAT).'</textarea>'.CRLF;
+  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.enti1($__valeurs['T0.chp_commentaire_cible'],ENT_COMPAT).'</textarea>'.CRLF;
   $o1.='  </div></div>'.CRLF;
   $o1.=' </div>'.CRLF;
 

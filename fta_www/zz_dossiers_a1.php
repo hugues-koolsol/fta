@@ -116,7 +116,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       , \''.sq0($contenuFichier)                                     .'\'      
      )
   ' ;
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( htmlentities($sql) , true ) . '</pre>' ; exit(0);
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( enti1($sql) , true ) . '</pre>' ; exit(0);
   if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
    
       ajouterMessage('erreur' , __LINE__ .' : le fichier n\'a pas été créé en base' , BNF );

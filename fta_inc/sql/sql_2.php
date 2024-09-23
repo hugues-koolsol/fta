@@ -2,7 +2,7 @@
 function sql_2($par){
     $texte_sql_2='
       
-      UPDATE `'.$GLOBALS[BDD][BDD_b1]['nom_bdd'].'`.tbl_utilisateurs SET 
+      UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_utilisateurs SET 
             `chp_nom_de_connexion_utilisateur` = '.sq1($par['chp_nom_de_connexion_utilisateur']).' , 
             `chp_mot_de_passe_utilisateur` = '.sq1($par['chp_mot_de_passe_utilisateur']).' , 
             `chp_parametres_utilisateur` = '.sq1($par['chp_parametres_utilisateur']).' , 
