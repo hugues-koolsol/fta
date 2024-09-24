@@ -38,34 +38,14 @@ function texte_aleatoire($length){
 sql_inclure_reference(1);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_1.php');
-/*sql_inclure_fin*/
-
-/*#
-function sql_1($par){
-    $texte_sql_1='
-      SELECT 
-      `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
-       FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_utilisateurs T0
-      WHERE `T0`.`chp_nom_de_connexion_utilisateur` = '.sq1($par['nom_de_connexion']).'
-      LIMIT 1 OFFSET 0 ;
-    ';
-    $stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($texte_sql_1);
-    // echo __FILE__ . ' ' . __LINE__ . ' $texte_sql_1 = <pre>' . $texte_sql_1 . '</pre>' ; exit(0); 
-    if($stmt !== false){
-        $result=$stmt->execute();
-        $donnees=array();
-        $arr=$result->fetchArray(SQLITE3_ASSOC);
-        while(($arr !== false)){
-            $donnees[]=$arr;
-            $arr=$result->fetchArray(SQLITE3_ASSOC);
-        }
-        $stmt->close();
-        return(array( 'statut' => true, 'valeur' => $donnees));
-    }else{
-        return(array( 'statut' => false, 'message' => 'erreur sql_1()'.' '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg()));
-    }
-}
+/*
+SELECT 
+`T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
+ FROM b1.tbl_utilisateurs T0
+WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion
+LIMIT 1 OFFSET 0 ;
 */
+/*sql_inclure_fin*/
 
 /*
   =====================================================================================================================
@@ -87,6 +67,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
             recharger_la_page(BNF);
 
         }
+
 
         if((count($sql1['valeur']) === 1) && (count($sql1['valeur'][0]) === 3) && (password_verify($_POST['mot_de_passe'],$sql1['valeur'][0]['chp_mot_de_passe_utilisateur']))){
 
@@ -174,7 +155,8 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
       =============================================================================================================
       ... si oui on lui affiche un formulaire de DEconnexion
       =============================================================================================================
-    */?>    <form id="boite_de_connexion" method="post" style="margin-top:50px;">
+    */?>    <!--  formulaire html en dehors du php  -->
+    <form id="boite_de_connexion" method="post" style="margin-top:50px;">
         <input type="hidden" name="logout" id="logout" value="" />
         <button type="submit" style="margin:0 auto;">cliquez ici pour vous déconnecter</button>
     </form><?php
@@ -185,7 +167,8 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
       =============================================================================================================
       ... sinon on lui affiche un formulaire de connexion
       =============================================================================================================
-    */?>    <form id="boite_de_connexion" method="post" onsubmit="return checkSubmit1()" style="margin-top:50px;">
+    */?>    <!--  formulaire html en dehors du php  -->
+    <form id="boite_de_connexion" method="post" onsubmit="return checkSubmit1()" style="margin-top:50px;">
         <div>
             Veuillez indiquer votre nom de connexion et votre mot de passe
         </div>
@@ -200,8 +183,9 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
         <input type="password" name="mot_de_passe" id="mot_de_passe" value="" />
         <button class="yyinfo" type="submit" style="margin:1em auto;">cliquez ici pour vous connecter</button>
         <marquee scrollamount="6">
-
-            Essayez <span style="color:red;background:white;">admin/admin</span>, si vous ne l'avez pas deviné. C'est encore un environnement de test :-)
+            Essayez
+            <span style="color:red;background:white;">admin/admin</span>
+            , si vous ne l'avez pas deviné. C'est encore un environnement de test :-)
         </marquee>
     </form>
 <script type="text/javascript">
@@ -240,14 +224,3 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 </script>
 <?php
 }
-
-/*
-  =====================================================================================================================
-  on imprime le formulaire
-  =====================================================================================================================
-*/
-$o1.=html_footer1();
-print($o1);
-/*..., puis on le reinitialise */
-$o1=' ';
-?>

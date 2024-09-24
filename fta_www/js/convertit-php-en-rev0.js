@@ -2528,11 +2528,34 @@ function isHTML(str){
                     }
                     dansBaliseFermante=true;
                     i++;
+                    dansInner=false;
+                    dansTag=true;
                 }else{
-                    niveau+=1;
+                    if(cp1 === '!' && i<l01-4 && str.substr(i+2,1)==='-'  && str.substr(i+3,1)==='-' ){
+                        /*
+                          on est dans un commentaire
+                        */
+                        var fin_de_commentaire_trouve=-1;
+                        for(j=i+4;j<l01-3 && fin_de_commentaire_trouve===-1 ; j++){
+                         if(str.substr(j,3)==='-->'){
+                          fin_de_commentaire_trouve=j;
+                         }
+                        }
+                        if(fin_de_commentaire_trouve>0){
+                            i=fin_de_commentaire_trouve+2;
+                            dansTag=false;
+                        }else{
+                            niveau+=1;
+                            dansInner=false;
+                            dansTag=true;
+                        }
+                    }else{
+                    
+                        niveau+=1;
+                        dansInner=false;
+                        dansTag=true;
+                    }
                 }
-                dansInner=false;
-                dansTag=true;
             }else if(c0 === '>'){
                 if(niveau === 0){
                     if(i > 50){

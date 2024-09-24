@@ -108,6 +108,23 @@ if((isset($_POST)) && (count($_POST) > 0)){
               ajouterMessage('erreur',__LINE__.' erreur ouverture fichier saa_js_sql' , BNF );
               recharger_la_page(BNF);
           }
+          
+          $zip = new ZipArchive();
+          if($zip->open($repertoire_destination.DIRECTORY_SEPARATOR.'sql.zip', ZIPARCHIVE::CREATE)!==TRUE) {
+              ajouterMessage('erreur',__LINE__.' erreur ouverture fichier zip' , BNF );
+              recharger_la_page(BNF);
+          }
+          foreach( $retour_sql['valeur'] as $k1 => $v1){
+            $chemin_fichier=realpath($repertoire_destination.DIRECTORY_SEPARATOR.'sql_'.$v1['chi_id_requete'].'.php');
+            $nom_fichier='sql_'.$v1['chi_id_requete'].'.php';
+            if(!$zip->addFile($chemin_fichier,$nom_fichier)){
+              $zip->close();
+              ajouterMessage('erreur',__LINE__.' ajout du fichier "'.$nom_fichier.'" au zip impossible ' , BNF );
+              recharger_la_page(BNF);
+            }
+          }
+          $zip->close();
+          
              
           
           
@@ -152,13 +169,8 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
         }
 
-//        sql_inclure_reference(5);
-        /*sql_inclure_deb*/
-//        require_once(INCLUDE_PATH.'/sql/sql_5.php');
-        /*sql_inclure_fin*/
         
-        
-        function sql_5($par){
+        function sql_supprimer_un_rev($par){
             $texte_sql_5='
               
               DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs
@@ -170,7 +182,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
                 return(array( 'statut' => true, 'changements' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()));
             }
         }
-        $sql5=sql_5(
+        $sql5=sql_supprimer_un_rev(
          array( 
           'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] , 
           'chp_provenance_rev' => 'sql' ,
@@ -282,84 +294,120 @@ $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[AP
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
-$champs0='
- `chi_id_requete`          , `cht_rev_requete` , T0.chp_type_requete  , T0.cht_sql_requete  , T0.cht_php_requete 
-';
-$sql0='SELECT '.$champs0;
-$from0='
- FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes `T0`
- 
-';
-$sql0.=$from0;
 
-$where0='
- WHERE   `T0`.`chx_cible_requete`='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
-';
+function sql_nnn($par){
 
+    $champs0='
+     `chi_id_requete`          , `cht_rev_requete` , T0.chp_type_requete  , T0.cht_sql_requete  , T0.cht_php_requete 
+    ';
+    $sql0='SELECT '.$champs0;
+    $from0='
+     FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes `T0`
+     
+    ';
+    $sql0.=$from0;
 
+    $where0='
+     WHERE   `T0`.`chx_cible_requete`='.sq1($par['T0_chx_cible_requete']).'
+    ';
 
-if(($chi_id_requete != '' )){
-    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_requete`',$chi_id_requete);
-}
-
-
-if(($cht_rev_requete != '')){
-    $where0.=CRLF.'AND `T0`.`cht_rev_requete` LIKE \'%'.sq0($cht_rev_requete).'%\'';
-}
+    if(($par['T0_chi_id_requete'] !== '' )){
+        $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_requete`',$par['T0_chi_id_requete']);
+    }
 
 
-
-if(($chp_type_requete != '')){
-    $where0.=CRLF.'AND `T0`.`chp_type_requete` LIKE \'%'.sq0($chp_type_requete).'%\'';
-}
+    if(($par['T0_cht_rev_requete'] !== '')){
+        $where0.=CRLF.'AND `T0`.`cht_rev_requete` LIKE \''.sq0($par['T0_cht_rev_requete']).'\'';
+    }
 
 
 
-$sql0.=$where0;
-$order0='
- ORDER BY `T0`.`chi_id_requete` DESC
-';
-$sql0.=$order0;
-$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
-$sql0.=$plage0;
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
-$data0=array();
+    if(($par['T0_chp_type_requete'] != '')){
+        $where0.=CRLF.'AND `T0`.`chp_type_requete` LIKE \''.sq0($par['T0_chp_type_requete']).'\'';
+    }
+    $sql0.=$where0;
+
+    $order0='
+     ORDER BY `T0`.`chi_id_requete` DESC
+    ';
+    $sql0.=$order0;
+    $plage0=' LIMIT '.sq0($par['quantitee']).' OFFSET '.sq0($par['debut']).';';
+    $sql0.=$plage0;
+    //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
+    $donnees0=array();
 
 
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
+    //echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
 
-$stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+    $stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
 
-if(($stmt0 !== false)){
+    if(($stmt0 !== false)){
 
-    $res0=$stmt0->execute();
-    while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
-        $data0[]=array(
-            'T0.chi_id_requete' => $tab0[0],
-            'T0.cht_rev_requete' => $tab0[1],
-            'T0.chp_type_requete' => $tab0[2],
-            'T0.cht_sql_requete' => $tab0[3],
-            'T0.cht_php_requete' => $tab0[4],
+        $res0=$stmt0->execute();
+        while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
+            $donnees0[]=array(
+                'T0.chi_id_requete' => $tab0[0],
+                'T0.cht_rev_requete' => $tab0[1],
+                'T0.chp_type_requete' => $tab0[2],
+                'T0.cht_sql_requete' => $tab0[3],
+                'T0.cht_php_requete' => $tab0[4],
+            );
+                
+        }
+        $stmt0->close();
+        $__nbEnregs=count($donnees0);
+
+        if(($__nbEnregs >= $par['quantitee'] || $_SESSION[APP_KEY]['__filtres'][$par['page_courante']]['champs']['__xpage'] > 0)){
+
+            $sql1='SELECT COUNT(*) '.$from0.$where0;
+            $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
+
+        }
+        return array(
+         'statut'  => true ,
+         'valeurs' => $donnees0,
+         'nombre' => $__nbEnregs,
+         'sql' => $sql0,
         );
-            
+
+
+    }else{
+
+        return array(
+         'statut'  => false ,
+         'message' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
+         'sql' => $sql0,
+        );
+
+        
     }
-    $stmt0->close();
-    $__nbEnregs=count($data0);
-
-    if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
-
-        $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
-
-    }
 
 
-}else{
-
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
-    exit(0);
-    
 }
+
+$tt=sql_nnn(array(
+    'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+    'T0_chi_id_requete'    => $chi_id_requete           ,
+    'T0_cht_rev_requete'   => '%'.$cht_rev_requete.'%'  , 
+    'T0_chp_type_requete'  => '%'.$chp_type_requete.'%' ,
+    'quantitee'            => $__nbMax                  ,
+    'debut'                => $__debut                  ,
+    'page_courante'        => BNF                       ,
+));
+if($tt['statut']===false){
+ $o1.='<div>';
+ $o1.='<div class="yydanger">Erreur sql</div>';
+ $o1.='<pre>'.$tt['sql'].'</per>';
+ $o1.='</div>';
+ $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+ $par=array( 'js_a_inclure' => array( '' ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+ $o1.=html_footer1($par);
+ print($o1);
+ $o1='';
+ exit(0);
+}
+
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);
 
 $consUrlRedir=''.'&amp;chi_id_requete='.rawurlencode($chi_id_requete).'&amp;cht_rev_requete='.rawurlencode($cht_rev_requete).'&amp;chp_type_requete='.rawurlencode($chp_type_requete).'';
 $__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
@@ -398,7 +446,7 @@ $lsttbl.='<th>type</th>';
 $lsttbl.='<th>rev</th>';
 $lsttbl.='<th>sql</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($data0 as $k0 => $v0){
+foreach($tt['valeurs'] as $k0 => $v0){
     $lsttbl.='<tr>';
 
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
@@ -439,4 +487,8 @@ $par=array( 'js_a_inclure' => array( '' ), 'js_a_executer_apres_chargement' => $
 $o1.=html_footer1($par);
 print($o1);
 $o1='';
+
+
+exit(0);
+
 ?>
