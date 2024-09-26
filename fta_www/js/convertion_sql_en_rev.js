@@ -70,10 +70,18 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
  }else if(element.type && 'identifier'===element.type){
   
      if(element.variant==='column'){
-         if(element.name.indexOf('.')>=1){
-             t+='champ(`'+element.name.substr(0,element.name.indexOf('.'))+'`,`'+element.name.substr(element.name.indexOf('.')+1)+'`)';
+         if(element.hasOwnProperty('alias')){
+             if(element.name.indexOf('.')>=1){
+                 t+='champ(`'+element.name.substr(0,element.name.indexOf('.'))+'`,`'+element.name.substr(element.name.indexOf('.')+1)+'` , alias_champ(`'+element.alias+'`))';
+             }else{
+                 t+='champ('+element.name+' , alias_champ(`'+element.alias+'`))';
+             }
          }else{
-             t+='champ('+element.name+')';
+             if(element.name.indexOf('.')>=1){
+                 t+='champ(`'+element.name.substr(0,element.name.indexOf('.'))+'`,`'+element.name.substr(element.name.indexOf('.')+1)+'`)';
+             }else{
+                 t+='champ('+element.name+')';
+             }
          }
      }else if(element.variant==='function'){
          if(element.name==='count'){

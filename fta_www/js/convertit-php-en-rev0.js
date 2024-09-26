@@ -611,6 +611,8 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
         operation='plus';
     }else if("Expr_AssignOp_BitwiseOr" === nodeType){
         operation='ou_binaire';
+    }else if("Expr_AssignOp_Minus" === nodeType){
+        operation='moins';
     }else{
         return(astphp_logerreur({'status':false,'message':'0706  php_traite_Expr_AssignOp_General "' + nodeType + '"',element:element}));
     }
