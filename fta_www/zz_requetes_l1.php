@@ -320,9 +320,7 @@ function sql_nnn($par){
         $where0.=CRLF.'AND `T0`.`cht_rev_requete` LIKE \''.sq0($par['T0_cht_rev_requete']).'\'';
     }
 
-
-
-    if(($par['T0_chp_type_requete'] != '')){
+    if(($par['T0_chp_type_requete'] !== '')){
         $where0.=CRLF.'AND `T0`.`chp_type_requete` LIKE \''.sq0($par['T0_chp_type_requete']).'\'';
     }
     $sql0.=$where0;

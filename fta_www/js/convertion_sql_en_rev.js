@@ -224,6 +224,8 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
     t+=element.name
   }else if(element.format==='named'){
     t+=element.name
+  }else if(element.format==='numbered'){
+    t+=element.name
 
   }else{
      return(logerreur({status:false,message:'0199 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));

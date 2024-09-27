@@ -1,5 +1,6 @@
 {
     "require": {
-        "nikic/php-parser": "^5.0"
+        "nikic/php-parser": "^5.0",
+        "phpmyadmin/sql-parser": "^5.9"
     }
 }

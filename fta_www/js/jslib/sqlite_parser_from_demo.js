@@ -1,5 +1,7 @@
 /*
  sqlite-parser-demo - v1.0.0
+ https://github.com/codeschool/sqlite-parser
+ https://codeschool.github.io/sqlite-parser/demo/
  @copyright 2015-2017 Code School (http://codeschool.com)
  @author Nick Wronski <nick@javascript.com>
  

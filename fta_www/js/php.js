@@ -246,8 +246,27 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                      }else if(tab[j][1]=='adresseArgument' && tab[j][3]==tab[positionDeclarationFonction][3]+1){ 
                          if(tab[j][8]==1){
                              argumentsFonction+=',&'+tab[j+1][1];
+                         }else if(tab[j][8]==2){
+                             argumentsFonction+=',&'+tab[j+1][1];
+                          
+                             for(var k=j+2;k<l01 && tab[k][3]>tab[j][3];k++){
+                                 if(tab[k][7]===j){
+                                     if(tab[k][1]==='defaut'){
+                                         var obj1=php_traiteElement(tab,k+1,niveau,{});
+                                         if(obj1.status===true){
+                                             argumentsFonction+='='+obj1.value;
+                                         }else{
+                                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'dans les arguments passés à la fonction 0333'});
+                                         }
+                                     }else{
+                                         return php_logerr({status:false,value:t,id:i,tab:tab,message:'0330 les arguments passés à la fonction '});
+                                     }
+                                 }
+                             }
+                          
+//                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'0331 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
                          }else{
-                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'0331 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
+                             return php_logerr({status:false,value:t,id:i,tab:tab,message:'0268 les arguments passés à la fonction doivent être sous la forme  a(xxx) '});
                          }
                      }
                  }

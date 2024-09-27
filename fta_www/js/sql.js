@@ -59,8 +59,6 @@ function tabToSql1(tab,id,niveau,au_format_php){
     ob.tableau_des_valeurs_pour_insert=options.tableau_des_valeurs_pour_insert;
     ob.tableau_des_champs_pour_select_php=options.tableau_des_champs_pour_select_php;
     ob.liste_des_tables_pour_select_php=options.liste_des_tables_pour_select_php;
-    
-
     return ob;
 }
 /*
@@ -158,6 +156,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
 
                             if(tab[i][1].substr(0,1)===':'){
                                 t+='\'.sq1($par[\''+tab[i][1].substr(1)+'\']).\'';
+                                
                             }else{
                                 t+=tab[i][1];
                             }
@@ -181,7 +180,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                 var obj = traite_sqlite_fonction_de_champ(tab,i,niveau,options);
                 if(obj.status === true){
                     t+=obj.value;
-                    if(obj.operateur==='#' && premierChamp===true){
+                    if(obj.operateur && obj.operateur==='#' && premierChamp===true){
                      /*
                        cas d'un commentaire avant les contitions,
                        / *  * /`T0`.`chi_id_test` = :par0 AND `T0`.`chp_nom_test` = :par1
@@ -397,6 +396,10 @@ function tabToSql0(tab,id,niveau,options){
                                     if(precedent_est_commentaire===false){
                                         la_valeur+=' , ';
                                     }
+                                    if(numero_de_champ%5===0){
+                                        la_valeur+=espacesn(true,niveau);
+                                    }
+
                                 }
                                 if((tab[l][2] === 'f') && (tab[l][1] === '#')){
                                   precedent_est_commentaire=true;
@@ -469,6 +472,7 @@ function tabToSql0(tab,id,niveau,options){
                                     }
                                     precedent_est_commentaire=false;
                                     la_valeur+='' + nom_du_champ;
+                                    numero_de_champ++;
                                     
                                 }else{
                                     if(tab[l][2] === 'f'){
@@ -498,6 +502,7 @@ function tabToSql0(tab,id,niveau,options){
                                     }
                                     precedent_est_commentaire=false;
                                    la_valeur+='' + nom_du_champ;
+                                   numero_de_champ++;
                                     
                                 }
                             }
@@ -509,7 +514,6 @@ function tabToSql0(tab,id,niveau,options){
                     }
                 }
                 options.tableau_des_champs_pour_select_php=tableau_des_champs_pour_select_php;
-//                debugger ; //tableau_des_champs_pour_select_php
 
                 /* liste des conditions (where)*/
                 var liste_des_conditions='';
@@ -517,7 +521,6 @@ function tabToSql0(tab,id,niveau,options){
                     if((tab[j][1] === 'conditions') && (tab[j][8] >= 1)){
 //                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
                         options.tableau_des_alias=tableau_des_alias;
-
                         var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,options);
                         if(obj.status === true){
                             liste_des_conditions=obj.value;

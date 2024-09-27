@@ -196,7 +196,15 @@
   function toggleClass(el, name, state) {
     if (el && name) {
       if (el.classList) {
+/*
         el.classList[state ? 'add' : 'remove'](name);
+*/
+        if(state){
+         el.classList.add(name);
+        }else{
+         el.classList.remove(name);
+        }
+        
       } else {
         var className = (' ' + el.className + ' ').replace(R_SPACE, ' ').replace(' ' + name + ' ', ' ');
         el.className = (className + (state ? ' ' + name : '')).replace(R_SPACE, ' ');

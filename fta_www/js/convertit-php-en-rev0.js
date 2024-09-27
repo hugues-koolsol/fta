@@ -417,7 +417,16 @@ function php_traite_Stmt_ClassMethod(element,niveau){
         for(i=0;i < element.params.length;i++){
             if((element.params[i].var) && ("Expr_Variable" === element.params[i].var.nodeType)){
                 if((element.params[i].byRef) && (element.params[i].byRef === true)){
-                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name + ')';
+                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name 
+                    if(element.params[i].default){
+                        var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
+                        if(obj.status === true){
+                            lesArguments+=',defaut(' + obj.value + ')';
+                        }else{
+                            return(astphp_logerreur({'status':false,'message':'0487  erreur php_traite_Stmt_ClassMethod ',element:element}));
+                        }
+                    }
+                    lesArguments+=')';
                 }else{
                     if((element.params[i].variadic) && (element.params[i].variadic === true)){
                         lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;
@@ -484,7 +493,16 @@ function php_traite_Stmt_Function(element,niveau){
         for(i=0;i < element.params.length;i++){
             if((element.params[i].var) && ("Expr_Variable" === element.params[i].var.nodeType)){
                 if((element.params[i].byRef) && (element.params[i].byRef === true)){
-                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name + ')';
+                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name ;
+                    if(element.params[i].default){
+                        var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
+                        if(obj.status === true){
+                            lesArguments+=',defaut(' + obj.value + ')';
+                        }else{
+                            t+='#(todo dans php_traite_Stmt_Function 0494 pas de expr )';
+                        }
+                    }
+                    lesArguments+=')';
                 }else{
                     if((element.params[i].variadic) && (element.params[i].variadic === true)){
                         lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;

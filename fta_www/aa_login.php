@@ -194,6 +194,7 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 
     "use strict";
     function checkSubmit1(){
+
         clearMessages('zone_global_messages');
         var valRet=false;
         var zone_nom_de_connexion = document.getElementById('nom_de_connexion');
@@ -224,3 +225,9 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 </script>
 <?php
 }
+
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$par=array( 'js_a_inclure' => array(), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$o1.=html_footer1($par);
+print($o1);
+$o1='';
