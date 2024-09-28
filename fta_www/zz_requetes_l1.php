@@ -362,25 +362,20 @@ function sql_nnn($par){
 
         }
         return array(
-         'statut'  => true ,
-         'valeurs' => $donnees0,
-         'nombre' => $__nbEnregs,
-         'sql' => $sql0,
+           'statut'  => true       ,
+           'valeurs' => $donnees0  ,
+           'nombre' => $__nbEnregs ,
+           'sql' => $sql0          ,
         );
 
 
     }else{
-
         return array(
          'statut'  => false ,
          'message' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
          'sql' => $sql0,
         );
-
-        
     }
-
-
 }
 
 $tt=sql_nnn(array(

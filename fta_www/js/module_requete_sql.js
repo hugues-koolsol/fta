@@ -1731,35 +1731,57 @@ class requete_sql{
                   les conditions dans un select list sont soit une seule conditions, soit une liste contenue dans un et[] 
                   Il n'y a alors qu'une seule formule
                 */
-                t+='    $where0=\' WHERE 1=1 \';'+CRLF;
+                t+='    $where0=\' WHERE 1=1 \'.CRLF;'+CRLF;
                 var tableau_des_conditions=[];
                 var formule=this.#obj_webs.conditions[0].formule;
                 var tableau1 = iterateCharacters2(formule);
                 var matriceFonction = functionToArray2(tableau1.out,true,true,'');
                 var tab=matriceFonction.value
                 var l01=tab.length;
+                var options={
+                    au_format_php:true,
+                };
+                
                 for(var i=1;i<l01;i++){
                     if(tab[i][7]===0){
                         if(tab[i][1]==='#' && tab[i][2]==='f'){
                          
                         }else{
                             if(tab[i][1]==='et' && tab[i][2]==='f'){
-                            }else if( tab[i][2]==='f' && ( tab[i][1]==='egal' ||  tab[i][1]==='diff'   ||  tab[i][1]==='comme'  )){
-                              var options={
-                               au_format_php:true,
-                              };
-                              var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
-                              if(obj.status===true){
-                                debugger
-                                var parametre=obj.value.match(/\$par\[(.*)\]/);
-                                if(parametre===null){
-                                   tableau_des_conditions.push({type:'constante',valeur:obj.value})
-                                }else{
-                                   tableau_des_conditions.push({type:'variable',valeur:obj.value,condition:parametre[0]})
+                                for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+                                    if(tab[j][7]===i){
+                                        if( tab[j][2]==='f' && ( tab[j][1]==='egal' ||  tab[j][1]==='diff'   ||  tab[j][1]==='comme'  ||  tab[j][1]==='sup' ||  tab[j][1]==='inf'  )){
+                                           var obj=traite_sqlite_fonction_de_champ(tab,j,0,options);
+                                           if(obj.status===true){
+                                               var parametre=obj.value.match(/\$par\[(.*)\]/);
+                                               if(parametre===null){
+                                                  tableau_des_conditions.push({type:'constante',valeur:obj.value})
+                                               }else{
+                                                  tableau_des_conditions.push({type:'variable',valeur:obj.value,condition:parametre[0],operation:tab[i][1]})
+                                               }
+                                           }else{
+                                            debugger
+                                           }
+                                         
+                                         
+                                        }else if( tab[i][2]==='f' &&  tab[i][1]==='#'){
+                                        }else{
+                                         debugger
+                                        }
+                                    }
                                 }
-                              }else{
-                               debugger
-                              }
+                            }else if( tab[i][2]==='f' && ( tab[i][1]==='egal' ||  tab[i][1]==='diff' || tab[i][1]==='comme' || tab[i][1]==='sup' || tab[i][1]==='inf' )){
+                                var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
+                                if(obj.status===true){
+                                    var parametre=obj.value.match(/\$par\[(.*)\]/);
+                                    if(parametre===null){
+                                       tableau_des_conditions.push({type:'constante',valeur:obj.value})
+                                    }else{
+                                       tableau_des_conditions.push({type:'variable',valeur:obj.value,condition:parametre[0],operation:tab[i][1]})
+                                    }
+                                }else{
+                                 debugger
+                                }
                             }else{
                                debugger
                             }
@@ -1767,12 +1789,43 @@ class requete_sql{
                     }
                 }
             }
+            for( var i=0;i<tableau_des_conditions.length;i++){
+             var elem=tableau_des_conditions[i];
+             if(elem.type==='constante'){
+              t+='    $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+             }else if(elem.type==='variable'){
+              t+='    if(('+elem.condition+' !== \'\')){'+CRLF;
+              t+='        $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+              t+='    }'+CRLF;
+             }
+            }
             
             console.log('tableau_des_conditions=' , tableau_des_conditions );
             
             t+='    $sql0.=$where0;'+CRLF;
+            debugger // this.#obj_webs.complements
+/*
+
+   complements(
+      trier_par((champ(`T0` , `chi_id_requete`) , décroissant())),
+      limité_à(quantité(:quantitee) , début(:debut))
+   )
+
+*/            
+            
+/*
+    $order0='
+     ORDER BY `T0`.`chi_id_requete` DESC
+    ';
+    $sql0.=$order0;
+
+*/
+/*
+    $plage0=' LIMIT '.sq0($par['quantitee']).' OFFSET '.sq0($par['debut']).';';
+    $sql0.=$plage0;
 
 
+*/
             
             
         }
