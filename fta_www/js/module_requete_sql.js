@@ -739,14 +739,14 @@ class requete_sql{
             if(this.#obj_webs.nom_zone_cible==="champs_jointure_gauche"){
                 
                 if(this.#obj_webs.gauche_0_droite_1===0){
-                    this.#obj_webs.ordre_des_tables[this.#obj_webs.indice_table_pour_jointure_gauche].champs_jointure_gauche.champ_table_fille={
+                    this.#obj_webs.ordre_des_tables[this.#obj_webs.indice_table_pour_jointure_gauche].champs_jointure_gauche.champ_table_mere={
                         nom_du_champ    : nom_du_champ    ,
                         nom_de_la_table : nom_de_la_table ,
                         id_bdd          : id_bdd          ,
                         indice_table    : indice_table    ,
                     };
                 }else{
-                    this.#obj_webs.ordre_des_tables[this.#obj_webs.indice_table_pour_jointure_gauche].champs_jointure_gauche.champ_table_mere={
+                    this.#obj_webs.ordre_des_tables[this.#obj_webs.indice_table_pour_jointure_gauche].champs_jointure_gauche.champ_table_fille={
                         nom_du_champ    : nom_du_champ    ,
                         nom_de_la_table : nom_de_la_table ,
                         id_bdd          : id_bdd          ,
@@ -962,6 +962,8 @@ class requete_sql{
                 contenu+='trier_par('+CRLF+'(champ(`T'+tabchamps[0].indice_table+'` , `'+tabchamps[0].nom_du_champ+'`),décroissant()),'+CRLF+'),'+CRLF+'limité_à(quantité(:quantitee),début(:debut))';
             }
         }
+        t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
+        t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
         t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">'+strToHtml(contenu)+'</textarea>';
         t+='<br /><a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.ajouter_la_formule(&quot;'+destination+'&quot;)">ajouter la formule</a>';
          
@@ -1025,6 +1027,8 @@ class requete_sql{
             t+='<a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.ajouter_cette_formule_dans_la_formule(&quot;'+tab_ex[i].replace(/"/g,'&#34;')+'&quot;)">'+tab_ex[i]+'</a>';
         }
          
+        t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
+        t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
         t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">';
         t+=this.#obj_webs[destination][ind].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         t+='</textarea>';
@@ -1739,7 +1743,11 @@ class requete_sql{
                 var tab=matriceFonction.value
                 var l01=tab.length;
                 var options={
-                    au_format_php:true,
+                    au_format_php                : true,
+                    tableau_des_tables_utilisees : obj3.tableau_des_tables_utilisees,
+                    pour_where                   : true,
+                    type_de_champ_pour_where     : '',
+                    nom_du_champ_pour_where      : '',
                 };
                 
                 for(var i=1;i<l01;i++){
@@ -1755,16 +1763,16 @@ class requete_sql{
                                            if(obj.status===true){
                                                var parametre=obj.value.match(/\$par\[(.*)\]/);
                                                if(parametre===null){
-                                                  tableau_des_conditions.push({type:'constante',valeur:obj.value})
+                                                  tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
                                                }else{
-                                                  tableau_des_conditions.push({type:'variable',valeur:obj.value,condition:parametre[0],operation:tab[i][1]})
+                                                  tableau_des_conditions.push({type_condition:'variable',valeur:obj.value,condition:parametre[0],operation:tab[j][1],type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
                                                }
                                            }else{
                                             debugger
                                            }
                                          
                                          
-                                        }else if( tab[i][2]==='f' &&  tab[i][1]==='#'){
+                                        }else if( tab[j][2]==='f' &&  tab[j][1]==='#'){
                                         }else{
                                          debugger
                                         }
@@ -1772,12 +1780,13 @@ class requete_sql{
                                 }
                             }else if( tab[i][2]==='f' && ( tab[i][1]==='egal' ||  tab[i][1]==='diff' || tab[i][1]==='comme' || tab[i][1]==='sup' || tab[i][1]==='inf' )){
                                 var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
+                                
                                 if(obj.status===true){
                                     var parametre=obj.value.match(/\$par\[(.*)\]/);
                                     if(parametre===null){
-                                       tableau_des_conditions.push({type:'constante',valeur:obj.value})
+                                       tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
                                     }else{
-                                       tableau_des_conditions.push({type:'variable',valeur:obj.value,condition:parametre[0],operation:tab[i][1]})
+                                       tableau_des_conditions.push({type_condition:'variable',valeur:obj.value,condition:parametre[0],operation:tab[i][1],type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
                                     }
                                 }else{
                                  debugger
@@ -1791,42 +1800,77 @@ class requete_sql{
             }
             for( var i=0;i<tableau_des_conditions.length;i++){
              var elem=tableau_des_conditions[i];
-             if(elem.type==='constante'){
+             if(elem.type_condition==='constante'){
               t+='    $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
-             }else if(elem.type==='variable'){
+             }else if(elem.type_condition==='variable'){
               t+='    if(('+elem.condition+' !== \'\')){'+CRLF;
-              t+='        $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+              if((elem.type.toLowerCase()==='integer' || elem.type.toLowerCase()==='int' ) && elem.operation==='egal' ){
+                  t+='        $where0.=CRLF.construction_where_sql_sur_id(\''+elem.nom_du_champ_pour_where+'\','+elem.condition+');'+CRLF
+              }else{
+                  t+='        $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+              }
+              
               t+='    }'+CRLF;
              }
             }
             
-            console.log('tableau_des_conditions=' , tableau_des_conditions );
-            
             t+='    $sql0.=$where0;'+CRLF;
-            debugger // this.#obj_webs.complements
-/*
-
-   complements(
-      trier_par((champ(`T0` , `chi_id_requete`) , décroissant())),
-      limité_à(quantité(:quantitee) , début(:debut))
-   )
-
-*/            
             
-/*
-    $order0='
-     ORDER BY `T0`.`chi_id_requete` DESC
-    ';
-    $sql0.=$order0;
-
-*/
-/*
-    $plage0=' LIMIT '.sq0($par['quantitee']).' OFFSET '.sq0($par['debut']).';';
-    $sql0.=$plage0;
-
-
-*/
+            if(this.#obj_webs.complements.length===0){
+                t+='    /* ATTENTION : pas de complements ( order by , limit dans cette liste */'+CRLF;
+                t+='    $order0=\'\';'+CRLF;
+                t+='    $plage0=\'\';'+CRLF;
+            }else{
+                if(obj3.liste_des_tris!==''){
+                   t+='    $order0=\''+obj3.liste_des_tris+'\';'+CRLF;
+                }else{
+                   t+='    /* ATTENTION : pas de tri */'+CRLF;
+                   t+='    $order0=\'\';'+CRLF;
+                }
+                t+='    $sql0.=$order0;'+CRLF;
+                if(obj3.liste_des_limites!==''){
+                   t+='    $plage0=\''+obj3.liste_des_limites+'\';'+CRLF;
+                }else{
+                   t+='    /* ATTENTION : pas de limites */'+CRLF;
+                   t+='    $plage0=\'\';'+CRLF;
+                }
+                t+='    $sql0.=$plage0;'+CRLF;
+                
+            }
             
+            t+='    $donnees0=array();'+CRLF;
+            t+='    //echo __FILE__ . \' \' . __LINE__ . \' $sql0 = <pre>\' . var_export( $sql0 , true ) . \'</pre>\' ; exit(0);'+CRLF;
+            t+='    $stmt0=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($sql0);'+CRLF;
+            t+='    if(($stmt0 !== false)){'+CRLF;
+            t+='        $res0=$stmt0->execute();'+CRLF;
+            t+='        while(($tab0=$res0->fetchArray(SQLITE3_NUM))){'+CRLF;
+            t+='            $donnees0[]=array('+CRLF;
+            
+            for(var i=0;i<obj3.tableau_des_champs_pour_select_php.length;i++){
+                 t+='            \''+obj3.tableau_des_champs_pour_select_php[i].alias+'.'+obj3.tableau_des_champs_pour_select_php[i].nom_du_champ+'\' => $tab0['+i+'],'+CRLF;
+            }
+
+            t+='            );'+CRLF;
+            t+='        }'+CRLF;
+            t+='        $stmt0->close();'+CRLF;
+            t+='        $__nbEnregs=count($donnees0);'+CRLF;
+            t+='        if(($__nbEnregs >= $par[\'quantitee\'] || $_SESSION[APP_KEY][\'__filtres\'][$par[\'page_courante\']][\'champs\'][\'__xpage\'] > 0)){'+CRLF;
+            t+='            $sql1=\'SELECT COUNT(*) \'.$from0.$where0;'+CRLF;
+            t+='            $__nbEnregs=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->querySingle($sql1);'+CRLF;
+            t+='        }'+CRLF;
+            t+='        return array('+CRLF;
+            t+='           \'statut\'  => true       ,'+CRLF;
+            t+='           \'valeurs\' => $donnees0  ,'+CRLF;
+            t+='           \'nombre\' => $__nbEnregs ,'+CRLF;
+            t+='           \'sql\' => $sql0          ,'+CRLF;
+            t+='        );'+CRLF;
+            t+='    }else{'+CRLF;
+            t+='        return array('+CRLF;
+            t+='         \'statut\'  => false ,'+CRLF;
+            t+='         \'message\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg(),'+CRLF;
+            t+='         \'sql\' => $sql0,'+CRLF;
+            t+='        );'+CRLF;
+            t+='    }'+CRLF;
             
         }
         t+='}'+CRLF;
@@ -1853,6 +1897,20 @@ class requete_sql{
                 dogid(txtarea_dest).value=obj2.value;
                 var obj3=tabToSql1(obj1.value,0 , 0 , true);
                 if(obj3.status===true){
+                 
+                    for(var i=0;i<obj3.tableau_des_tables_utilisees.length;i++){
+                        for(var base in this.#obj_webs.bases){
+                            if(base===obj3.tableau_des_tables_utilisees[i].base){
+                                for(var table in this.#obj_webs.bases[base].tables){
+                                    if(table === obj3.tableau_des_tables_utilisees[i].table){
+                                        obj3.tableau_des_tables_utilisees[i].champs=this.#obj_webs.bases[base].tables[table].champs;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                 
 
                     var obj4=this.#transformer_requete_en_fonction_php( this.#obj_webs.type_de_requete , obj3  );
                     if(obj4.status===true){

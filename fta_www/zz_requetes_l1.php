@@ -378,10 +378,16 @@ function sql_nnn($par){
     }
 }
 
+//sql_inclure_reference(6);
+/*sql_inclure_deb*/
+//require_once(INCLUDE_PATH.'/sql/sql_6.php');
+/*sql_inclure_fin*/
+
+
 $tt=sql_nnn(array(
     'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
     'T0_chi_id_requete'    => $chi_id_requete           ,
-    'T0_cht_rev_requete'   => '%'.$cht_rev_requete.'%'  , 
+    'T0_cht_rev_requete'   => ($cht_rev_requete===NULL?$cht_rev_requete:'%'.$cht_rev_requete.'%' ) , 
     'T0_chp_type_requete'  => '%'.$chp_type_requete.'%' ,
     'quantitee'            => $__nbMax                  ,
     'debut'                => $__debut                  ,

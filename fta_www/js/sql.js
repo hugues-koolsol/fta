@@ -35,6 +35,7 @@
 */
 function tabToSql1(tab,id,niveau,au_format_php){
     var options={
+        'au_format_php'                      : au_format_php,
         'dans_definition_de_table'           : false,
         'dans_definition_de_champ'           : false,
         'longueur_maximum_des_champs'        : 0,
@@ -42,12 +43,14 @@ function tabToSql1(tab,id,niveau,au_format_php){
         'tableau_tables_champs'              : [],
         'tableau_champ'                      : [],
         'tableau_des_alias'                  : [],
-        'au_format_php'                      : au_format_php,
         'id_base_principale'                 : 0,
         'debut_sql_pour_insert'              : '',
         'tableau_des_valeurs_pour_insert'    : [],
         'tableau_des_champs_pour_select_php' : [],
         'liste_des_tables_pour_select_php'   : '',
+        'tableau_des_tables_utilisees'       : [],
+        'liste_des_tris'                     : '',
+        'liste_des_limites'                  : '',
     };
     var ob = tabToSql0(tab,id,niveau,options);
     ob.longueur_maximum_des_champs=options.longueur_maximum_des_champs;
@@ -59,6 +62,10 @@ function tabToSql1(tab,id,niveau,au_format_php){
     ob.tableau_des_valeurs_pour_insert=options.tableau_des_valeurs_pour_insert;
     ob.tableau_des_champs_pour_select_php=options.tableau_des_champs_pour_select_php;
     ob.liste_des_tables_pour_select_php=options.liste_des_tables_pour_select_php;
+    ob.tableau_des_tables_utilisees=options.tableau_des_tables_utilisees;
+    ob.liste_des_tris=options.liste_des_tris;
+    ob.liste_des_limites=options.liste_des_limites;
+    
     return ob;
 }
 /*
@@ -120,11 +127,31 @@ function recuperer_operateur_sqlite(op){
 function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
     var t='';
     if((tab[id][1] === 'champ') && (tab[id][2] === 'f')){
+
         if((tab[id][8] === 1) && (tab[id + 1][2] === 'c')){
             t+=maConstante(tab[id + 1]);
             return({status:true,value:t});
         }else if((tab[id][8] === 2) && (tab[id + 1][2] === 'c') && (tab[id + 2][2] === 'c')){
             t+=maConstante(tab[id + 1]) + '.' + maConstante(tab[id + 2]);
+            if(
+                options.au_format_php===true && 
+                options.hasOwnProperty('pour_where') && 
+                options.pour_where===true && 
+                options.hasOwnProperty('tableau_des_tables_utilisees') && 
+                options.tableau_des_tables_utilisees.length>0
+            ){
+                for(var i=0;i<options.tableau_des_tables_utilisees.length;i++){
+                    if(options.tableau_des_tables_utilisees[i].nom_de_l_alias===tab[id + 1][1]){
+                        for(var j=0;i<options.tableau_des_tables_utilisees[i].champs.length;j++){
+                            if(options.tableau_des_tables_utilisees[i].champs[j].nom_du_champ===tab[id + 2][1]){
+                                options.type_de_champ_pour_where=options.tableau_des_tables_utilisees[i].champs[j].type;
+                                options.nom_du_champ_pour_where=maConstante(tab[id + 1]) + '.' + maConstante(tab[id + 2]);
+                                break
+                            }
+                        }
+                    }
+                }
+            }
             return({status:true,value:t});
         }else{
             return(logerreur({status:false,'message':'0114 traite_sqlite_fonction_de_champ'}));
@@ -328,6 +355,7 @@ function tabToSql0(tab,id,niveau,options){
                                                             if(tab[l][1] === 'jointure_gauche'){
                                                                 if(options.au_format_php===true){
                                                                     liste_des_tables+=CRLF + '       LEFT JOIN `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                    options.tableau_des_tables_utilisees.push({base:nom_de_la_base,table:nom_de_la_table,nom_de_l_alias:nom_de_l_alias,champs:[]});
                                                                 }else{
                                                                     liste_des_tables+=CRLF + ' LEFT JOIN ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
                                                                 }
@@ -335,6 +363,7 @@ function tabToSql0(tab,id,niveau,options){
                                                                 if(options.au_format_php===true){
                                                                     liste_des_tables+='      FROM `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
                                                                     options.id_base_principale=nom_de_la_base;
+                                                                    options.tableau_des_tables_utilisees.push({base:nom_de_la_base,table:nom_de_la_table,nom_de_l_alias:nom_de_l_alias,champs:[]});
                                                                 }else{
                                                                 
                                                                     liste_des_tables+=' FROM ' + ((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
@@ -342,6 +371,7 @@ function tabToSql0(tab,id,niveau,options){
                                                             }else if(tab[l][1] === 'jointure_croisée'){
                                                                 if(options.au_format_php===true){
                                                                     liste_des_tables+='      , ' + CRLF + '           `\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
+                                                                    options.tableau_des_tables_utilisees.push({base:nom_de_la_base,table:nom_de_la_table,nom_de_l_alias:nom_de_l_alias,champs:[]});
                                                                 }else{
                                                                     liste_des_tables+=' , ' + CRLF + '      '+((nom_de_la_base !== '')?(nom_de_la_base + '.'):'') + '' + nom_de_la_table + '' + ((nom_de_l_alias !== '')?(' ' + nom_de_l_alias):'') + '';
                                                                 }
@@ -551,7 +581,10 @@ function tabToSql0(tab,id,niveau,options){
                     }
                 }
                 if(liste_des_tris !== ''){
-                    liste_des_tris='\nORDER BY ' + liste_des_tris.substr(1);
+                    liste_des_tris=' ORDER BY ' + liste_des_tris.substr(1);
+                    if(options.au_format_php===true){
+                        options.liste_des_tris=CRLF+'      '+liste_des_tris;
+                    }
                 }
                 /* LIMIT */
                 var liste_des_limites='';
@@ -572,7 +605,10 @@ function tabToSql0(tab,id,niveau,options){
                     }
                 }
                 if(liste_des_limites !== ''){
-                    liste_des_limites='\n' + liste_des_limites.substr(1);
+                    liste_des_limites=' ' + liste_des_limites.substr(1);
+                    if(options.au_format_php===true){
+                        options.liste_des_limites=CRLF+'      '+liste_des_limites;
+                    }
                 }
                 if(liste_des_valeurs !== ''){
                     t+='SELECT ' + liste_des_valeurs + '\n' + liste_des_tables + liste_des_conditions + liste_des_tris + liste_des_limites + ';';

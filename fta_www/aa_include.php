@@ -147,12 +147,14 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
         }
         if($chaine_recherche!==''){
             $chaine_recherche=substr($chaine_recherche,1);
-            $champ_where.='AND '.sq0($nom_du_champ).' in ('.sq0($chaine_recherche).')';
+            $champ_where.='AND '.sq0($nom_du_champ).' in ('.sq0($chaine_recherche).') ';
         }    
      
     }else{
-        if(is_numeric($critere)){
-            $champ_where.='AND '.sq0($nom_du_champ).' = '.sq0($critere).'';
+        if($critere===null){
+            $champ_where.='AND '.sq0($nom_du_champ).' IS NULL ';
+        }else if(is_numeric($critere)){
+            $champ_where.='AND '.sq0($nom_du_champ).' = '.sq0($critere).' ';
         }
     }
 
