@@ -527,7 +527,13 @@ function tabToSql0(tab,id,niveau,options){
                                                 nom_du_champ='' + tab[l][1] + '';
                                             }
                                         }else{
-                                            nom_du_champ='\'' + tab[l][1].replace(/\'/g,"''") + '\'';
+//                                            nom_du_champ='\'' + tab[l][1].replace(/\'/g,"''") + '\'';
+
+                                            if(tab[l][4]===1){
+                                              nom_du_champ='\'' + tab[l][1].replace(/\\\'/g,"''") + '\'';
+                                            }else{
+                                              nom_du_champ=maConstante(tab[l]);
+                                            }
                                         }
                                     }
                                     precedent_est_commentaire=false;
