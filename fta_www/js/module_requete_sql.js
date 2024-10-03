@@ -1005,6 +1005,34 @@ class requete_sql{
             }else if( "complements" === destination ){
                 contenu+='trier_par('+CRLF+'(champ(`T'+tabchamps[0].indice_table+'` , `'+tabchamps[0].nom_du_champ+'`),décroissant()),'+CRLF+'),'+CRLF+'limité_à(quantité(:quantitee),début(:debut))';
             }
+        }else if("update" === this.#obj_webs.type_de_requete && tabchamps.length>0 ){
+            if( "champs_sortie" === destination ){
+                for(var i in tabchamps){
+                    contenu+=CRLF+' affecte(champ(`'+tabchamps[i].nom_du_champ+'`), :n_'+tabchamps[i].nom_du_champ+'),';
+                }
+            }else if( "conditions" === destination ){
+                var nombre=0;
+                for(var i in tabchamps){
+                    contenu+=CRLF+' egal(champ(`'+tabchamps[i].nom_du_champ+'`), :c_'+tabchamps[i].nom_du_champ+'),';
+                    nombre++;
+                }
+                if(nombre>1){
+                    contenu='et('+contenu+CRLF+')';
+                }
+            }
+
+        }else if("delete" === this.#obj_webs.type_de_requete && tabchamps.length>0 ){
+            if( "conditions" === destination ){
+                var nombre=0;
+                for(var i in tabchamps){
+                    contenu+=CRLF+' egal(champ(`'+tabchamps[i].nom_du_champ+'`), :'+tabchamps[i].nom_du_champ+'),';
+                    nombre++;
+                }
+                if(nombre>1){
+                    contenu='et('+contenu+CRLF+')';
+                }
+            }
+         
         }
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
@@ -1694,7 +1722,7 @@ class requete_sql{
             t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
             t+='    \';'+CRLF;
             t+='    $liste_des_valeurs=\'\';'+CRLF;
-            t+='    for($i=0;($i < count($par[\'groupes\']));$i++){'+CRLF;
+            t+='    for($i=0;($i < count($par));$i++){'+CRLF;
             t+='        if($liste_des_valeurs != \'\'){'+CRLF;
             t+='            $liste_des_valeurs.=\',\';'+CRLF;
             t+='        }'+CRLF;
@@ -1711,14 +1739,19 @@ class requete_sql{
             
             t+='        $liste_des_valeurs.=\')\';'+CRLF;
             t+='    }'+CRLF;
-            t+='    $texte_sql_3.=$liste_des_valeurs;'+CRLF;
-            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_3)){'+CRLF;
-            t+='        return(array( ';         
-            t+='\'statut\' => false, ';         
-            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode(), ';
-            t+='\'message\' => \'erreur sql_3()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='    $texte_sql_'+id_requete_en_base+'.=$liste_des_valeurs;'+CRLF;
+            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+id_requete_en_base+')){'+CRLF;
+            t+='        return(array('+CRLF;
+            t+='            \'statut\'      => false, '+CRLF;
+            t+='            \'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode(), '+CRLF;
+            t+='            \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()'+CRLF;
+            t+='        ));'+CRLF;
             t+='    }else{'+CRLF;
-            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
+            t+='        return(array( '+CRLF;
+            t+='            \'statut\'      => true,'+CRLF;
+            t+='            \'changements\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->changes(),'+CRLF;
+            t+='            \'nouvel_id\'   => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastInsertRowID(),'+CRLF;
+            t+='        ));'+CRLF;
             t+='    }'+CRLF;
             
             
@@ -1733,11 +1766,18 @@ class requete_sql{
             t+='    if($stmt !== false){'+CRLF;
             t+='        $result=$stmt->execute();'+CRLF;
             t+='        $donnees=array();'+CRLF;
-            t+='        $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
-            t+='        while(($arr !== false)){'+CRLF;
-            t+='            $donnees[]=$arr;'+CRLF;
-            t+='            $arr=$result->fetchArray(SQLITE3_ASSOC);'+CRLF;
+            t+='        $arr=$result->fetchArray(SQLITE3_NUM);'+CRLF;
+            t+='        while($arr !== false){'+CRLF;
+            t+='            $donnees[]=array('+CRLF;
+            for(var i=0;i<obj3.tableau_des_champs_pour_select_php.length;i++){
+                t+='                \''+obj3.tableau_des_champs_pour_select_php[i].alias+'.'+obj3.tableau_des_champs_pour_select_php[i].nom_du_champ+'\' => $arr['+i+'],'+CRLF;
+            }
+            t+='            );'+CRLF;
+            t+='            $arr=$result->fetchArray(SQLITE3_NUM);'+CRLF;
             t+='        }'+CRLF;
+            
+            
+            
             t+='        $stmt->close();'+CRLF;
             t+='        return(array( \'statut\' => true, \'valeur\' => $donnees));'+CRLF;
             t+='    }else{'+CRLF;
@@ -1861,7 +1901,7 @@ class requete_sql{
               if((elem.type.toLowerCase()==='integer' || elem.type.toLowerCase()==='int' ) && elem.operation==='egal' ){
                   t+='        $where0.=CRLF.construction_where_sql_sur_id(\''+elem.nom_du_champ_pour_where+'\','+elem.condition+');'+CRLF
               }else{
-                  t+='        $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+                  t+='        $where0.=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
               }
               
               t+='    }'+CRLF;
@@ -1901,7 +1941,7 @@ class requete_sql{
             t+='            $donnees0[]=array('+CRLF;
             
             for(var i=0;i<obj3.tableau_des_champs_pour_select_php.length;i++){
-                 t+='            \''+obj3.tableau_des_champs_pour_select_php[i].alias+'.'+obj3.tableau_des_champs_pour_select_php[i].nom_du_champ+'\' => $tab0['+i+'],'+CRLF;
+                 t+='                \''+obj3.tableau_des_champs_pour_select_php[i].alias+'.'+obj3.tableau_des_champs_pour_select_php[i].nom_du_champ+'\' => $tab0['+i+'],'+CRLF;
             }
 
             t+='            );'+CRLF;

@@ -16,22 +16,7 @@ $data[input]=array (
     'file' => 'bdd',
     'funct' => 'enregistrer_le_rev_en_base',
   ),
-  'rev' => 'sélectionner(
-   valeurs(champ(`T0` , `chi_id_test`) , champ(`T0` , `chp_nom_test`)),
-   provenance(
-      table_reference(
-         source(nom_de_la_table(tbl_tests , alias(T0) , base(__base__1__)))
-      ),
-      jointure_croisée(
-         source(nom_de_la_table(tbl_a , alias(T1) , base(__base__9__)))
-      )
-   ),
-   conditions(
-      et(egal(champ(`T0` , `chi_id_test`) , __par__0__) , comme(champ(`T0` , `chp_nom_test`) , \'%__par__1__%\'))
-   ),
-   trier_par((champ(`T0` , `chi_id_test`) , décroissant())),
-   limité_à(quantité(__par__2__) , début(__par__3__))
-)',
+  'rev' => 'sélectionner()',
   'type' => 'select_liste',
   id_requete => 1 ,
 )
@@ -85,46 +70,36 @@ $data[input]=array (
     'file' => 'bdd',
     'funct' => 'enregistrer_le_rev_en_base',
   ),
-  'rev' => 'sélectionner(
-   valeurs(champ(`T0` , `chi_id_test`) , champ(`T0` , `chp_nom_test`)),
-   provenance(
-      table_reference(
-         source(nom_de_la_table(tbl_tests , alias(T0) , base(__base__1__)))
-      ),
-      jointure_croisée(
-         source(nom_de_la_table(tbl_a , alias(T1) , base(__base__9__)))
-      )
-   ),
-   conditions(
-      et(egal(champ(`T0` , `chi_id_test`) , __par__0__) , comme(champ(`T0` , `chp_nom_test`) , \'%__par__1__%\'))
-   ),
-   trier_par((champ(`T0` , `chi_id_test`) , décroissant())),
-   limité_à(quantité(__par__2__) , début(__par__3__))
-)',
+  'rev' => 'sélectionner(....)',
+  'php' => '<....>',
+  'sql' => '....',
   'type' => 'select_liste',
 )
 */
 
-    $sql0='INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes( 
-     `chp_type_requete` , 
-     `cht_rev_requete`  ,
-     `cht_sql_requete`  ,
-     `cht_php_requete` 
-    ) VALUES (
-     \''.sq0($data['input']['type']).'\' , 
-     \''.sq0($data['input']['rev']).'\'  ,
-     \''.sq0($data['input']['sql']).'\'  ,
-     \''.sq0($data['input']['php']).'\' 
-    );';
 
-    $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-    
-    if( $ret0===false ){
-        $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
+    sql_inclure_reference(7);
+    // sql_inclure_deb
+    require_once(INCLUDE_PATH.'/sql/sql_7.php');
+    // sql_inclure_fin
+    $a_inserer=array(
+         array(
+          'chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+          'chp_type_requete' => $data['input']['type'],
+          'cht_rev_requete' => $data['input']['rev'],
+          'cht_sql_requete' => $data['input']['sql'],
+          'cht_php_requete' => $data['input']['php'],
+         )
+    );
+    $tt=sql_7($a_inserer);
+    if($tt['statut']===true){
+     $data['status']='OK';
+     $data['nouvel_id']=$tt['nouvel_id'];
+     
     }else{
-        $data['nouvel_id']=$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID();
+     $data['status']='KO';
     }
-    
+
     $data['input']['parametres_sauvegarde']=array(
         'id_cible'           => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
         'chp_provenance_rev' => 'sql'                                  , // 'bdd' , '	source' , 'sql'

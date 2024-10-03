@@ -1088,7 +1088,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                 t+='require_once(INCLUDE_PATH.\'/sql/sql_'+tab[i+1][1]+'.php\');';
                 if(typeof aa_js_sql !== 'undefined' && aa_js_sql[tab[i+1][1]]){
                  t+=espacesn(true,niveau);
-                 t+='/*'+CRLF+aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')+CRLF+'*/';
+                 var contenu='/*'+CRLF+espacesn(false,niveau)+aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /').replace(/\r/g,'').replace(/\n/g,'\n'+espacesn(false,niveau));
+                 contenu=contenu.replace(/\n\n/g,'\n')
+                 t+=contenu+CRLF+espacesn(false,niveau)+'*/';
                 }else{
                  t+=espacesn(true,niveau);
                  t+='/* === ATTENTION === '+CRLF+ 'Le fichier des requêtes sql js est à regénérer et/ou à intégrer '+CRLF+'*/';

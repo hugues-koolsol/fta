@@ -59,7 +59,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
     if((isset($_POST['nom_de_connexion'])) && (isset($_POST['mot_de_passe']))){
 
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
-
+        
         if($sql1['statut'] !== true){
 
             ajouterMessage('erreur',__LINE__.' '.$sql1['message'],BNF);
@@ -69,7 +69,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
         }
 
 
-        if((count($sql1['valeur']) === 1) && (count($sql1['valeur'][0]) === 3) && (password_verify($_POST['mot_de_passe'],$sql1['valeur'][0]['chp_mot_de_passe_utilisateur']))){
+        if((count($sql1['valeur']) === 1) && (count($sql1['valeur'][0]) === 3) && (password_verify($_POST['mot_de_passe'],$sql1['valeur'][0]['T0.chp_mot_de_passe_utilisateur']))){
 
             /*
               =============================================================================================
@@ -77,13 +77,13 @@ if((isset($_POST)) && (count($_POST) > 0)){
               et on met les données en session
               
             */
-            $_SESSION[APP_KEY]['sess_id_utilisateur']=$sql1['valeur'][0]['chi_id_utilisateur'];
-            $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$sql1['valeur'][0]['chi_id_utilisateur'];
+            $_SESSION[APP_KEY]['sess_id_utilisateur']=$sql1['valeur'][0]['T0.chi_id_utilisateur'];
+            $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$sql1['valeur'][0]['T0.chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']=base64_encode(openssl_random_pseudo_bytes(16));
             $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*10+20));
             $_SESSION[APP_KEY]['__filtres']=array();
             $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
-            $_SESSION[APP_KEY]['__parametres_utilisateurs']=(($sql1['valeur'][0]['chp_parametres_utilisateur'] !== '')?json_decode($sql1['valeur'][0]['chp_parametres_utilisateur'],true):array());
+            $_SESSION[APP_KEY]['__parametres_utilisateurs']=(($sql1['valeur'][0]['T0.chp_parametres_utilisateur'] !== '')?json_decode($sql1['valeur'][0]['T0.chp_parametres_utilisateur'],true):array());
             ajouterMessage('info',__LINE__.' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
 

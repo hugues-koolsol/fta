@@ -578,7 +578,12 @@ function tabToSql0(tab,id,niveau,options){
                                 options.tableau_des_alias=tableau_des_alias;
                                 var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                 if(obj.status === true){
-                                    liste_des_tris+=', ' + obj.value;
+
+                                    if(obj.operateur && ( obj.operateur==='ASC' || obj.operateur==='DESC'  )){
+                                        liste_des_tris+=' ' + obj.value;
+                                    }else{
+                                        liste_des_tris+=', ' + obj.value;
+                                    }
                                 }else{
                                     return(logerreur({status:false,message:'0354 erreur sur conditions dans select '}));
                                 }
@@ -756,7 +761,7 @@ function tabToSql0(tab,id,niveau,options){
                                         }
                                         liste_des_valeurs_pour_insert+=CRLF+'    '+valeur_du_champ;
 
-                                        options.tableau_des_valeurs_pour_insert.push(valeur_du_champ.replace(/\$par\[/g,'$par[\'groupes\'][$i]['));
+                                        options.tableau_des_valeurs_pour_insert.push(valeur_du_champ.replace(/\$par\[/g,'$par[$i]['));
                                         
                                         
                                     }else{
