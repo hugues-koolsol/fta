@@ -1,26 +1,24 @@
 Un programme en cours de développement pour transformer des fonctions imbriquées en tableau
 de façon à écrire des traitements et des données avec une syntaxe commune.
 
-Les deux types d'éléments de base sont les constantes et les fonctions. 
-
-Ces dernières peuvent contenir des constantes et/ou des fonctions.
-
-Ces dernières peuvent contenir des constantes et/ou des fonctions..
-
-Ces dernières peuvent contenir des constantes et/ou des fonctions... 
-
+Les deux types d'éléments de base sont les constantes et les fonctions.  
+Ces dernières peuvent contenir des constantes et/ou des fonctions.  
 etc...
 
 
 La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français.
 
-Un exemple de fichier produisant du html avec du javascript est là :
+Un exemple de fichier produisant du html contenant du javascript à partir d'un fichier rev est là :  
+[Format rev source](https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html)  
+[Format html produit](https://github.com/hugues-koolsol/fta/blob/master/fta_inc/rev/test_factorielle.rev)
 
-https://github.com/hugues-koolsol/fta/blob/master/fta_inc/rev/test_factorielle.rev
 
-Le résultat produit est là:
 
-https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html
+Un exemple de fichier produisant du php contenant du html et du javascript à partir d'un fichier rev est là :  
+[Format rev source](https://github.com/hugues-koolsol/fta/blob/master/fta_www/aa_login.rev)  
+[Format php produit](https://github.com/hugues-koolsol/fta/blob/master/fta_www/aa_login.php)
+
+
 
 
 **Brève description** : un source est écrit sous ce format "rev" ( comme réversible )
@@ -201,20 +199,20 @@ ils sont de 3 types :
 Si il existe des parenthèses dans un commentaire alors elles doivent être correspondantes :
 
 ```
- #( a() , b( c , d() ) )
+ #( a() , b( c , d(x) ) )
 ```
 est valide
 
 
 alors que
 ```
- #( a() , b( c , d(x ) )
+ #( a() , b( c , d(x  ) )
 ```
 ne l'est pas.
 
 
 
-**4°) les sources produits**  sont en :
+**4°) les programmes produits** qui ont un source rev sont en :
 
 - html ( peut contenir du javascript )
 
@@ -242,7 +240,7 @@ Ces "AST" sont ensuites traités pour produire les "rev".
 
 
 
-Tous les autres programmes sont convertis au format "rev"
+Tous les autres programmes et sql sont convertis au format "rev"
 
 
 

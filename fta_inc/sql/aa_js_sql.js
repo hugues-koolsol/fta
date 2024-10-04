@@ -7,4 +7,6 @@ aa_js_sql={
 "5":"\nDELETE FROM b1.tbl_revs\nWHERE (`chx_cible_rev` = :chx_cible_rev AND `chp_provenance_rev` = :chp_provenance_rev AND `chx_source_rev` = :chx_source_rev) ;",
 "6":"SELECT \n`T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete`\n FROM b1.tbl_requetes T0 ORDER BY  `T0`.`chi_id_requete`  ASC;",
 "7":"\nINSERT INTO b1.`tbl_requetes`(\n    `chx_cible_requete` , \n    `chp_type_requete` , \n    `cht_rev_requete` , \n    `cht_sql_requete` , \n    `cht_php_requete`\n) VALUES (\n    :chx_cible_requete , \n    :chp_type_requete , \n    :cht_rev_requete , \n    :cht_sql_requete , \n    :cht_php_requete\n);",
+"8":"\nUPDATE b1.tbl_revs SET `chx_source_rev` = :n_chx_source_rev\nWHERE (`chx_cible_rev` = :c_chx_cible_rev AND `chp_provenance_rev` = :c_chp_provenance_rev AND `chx_source_rev` = :c_chx_source_rev) ;",
+"9":"\nUPDATE b1.tbl_requetes SET `chp_type_requete` = :n_chp_type_requete , `cht_rev_requete` = :n_cht_rev_requete , `cht_sql_requete` = :n_cht_sql_requete , `cht_php_requete` = :n_cht_php_requete\nWHERE (`chi_id_requete` = :c_chi_id_requete AND `chx_cible_requete` = :c_chx_cible_requete) ;",
 };

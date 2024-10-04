@@ -7,42 +7,26 @@
 */
 function modifier_la_requete_en_base(&$data){
 
-/*
-    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
-$data[input]=array (
-  'call' => 
-  array (
-    'lib' => 'core',
-    'file' => 'bdd',
-    'funct' => 'enregistrer_le_rev_en_base',
-  ),
-  'rev' => 'sélectionner()',
-  'type' => 'select_liste',
-  id_requete => 1 ,
-)
-*/
-
-    $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_requetes` SET 
-       `chp_type_requete` = \''.sq0($data['input']['type']).'\' 
-     , `cht_rev_requete`  = \''.sq0($data['input']['rev']).'\' 
-     , `cht_sql_requete`  = \''.sq0($data['input']['sql']).'\' 
-     , `cht_php_requete`  = \''.sq0($data['input']['php']).'\' 
-        WHERE `chi_id_requete`  = '.sq0($data['input']['id_requete']).' 
-     ;';
-
-    $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
+    sql_inclure_reference(9);
+    // sql_inclure_deb
+    require_once(INCLUDE_PATH.'/sql/sql_9.php');
+    // sql_inclure_fin
+    $a_modifier=array(
+          'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+          'c_chi_id_requete' => $data['input']['id_requete'],
+          'n_chp_type_requete' => $data['input']['type'],
+          'n_cht_rev_requete' => $data['input']['rev'],
+          'n_cht_sql_requete' => $data['input']['sql'],
+          'n_cht_php_requete' => $data['input']['php'],
+    );
     
-    if( $ret0===false ){
-        $data['messages'][]=__FILE__.' '.__LINE__.' enregistrer_le_rev_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
-        return;
+    $tt=sql_9($a_modifier);
+    if($tt['statut']===true){
+        $data['status']='OK';
     }else{
-        // on continue
+        $data['messages'][]=__FILE__.' '.__LINE__.' modifier_la_requete_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
+        $data['status']='KO';
     }
-    
-    
-    /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][tableau_rev_requete]='.var_export( $data['input']['tableau_rev_requete'] , true ) .CRLF.CRLF); fclose($fd);}
-    */
     
     $data['input']['parametres_sauvegarde']=array(
         'id_cible'           => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
@@ -61,21 +45,6 @@ $data[input]=array (
 */
 function enregistrer_la_requete_en_base(&$data){
 
-/*
-    if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
-$data[input]=array (
-  'call' => 
-  array (
-    'lib' => 'core',
-    'file' => 'bdd',
-    'funct' => 'enregistrer_le_rev_en_base',
-  ),
-  'rev' => 'sélectionner(....)',
-  'php' => '<....>',
-  'sql' => '....',
-  'type' => 'select_liste',
-)
-*/
 
 
     sql_inclure_reference(7);

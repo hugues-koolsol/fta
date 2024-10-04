@@ -1305,7 +1305,7 @@ class requete_sql{
         for(var i=0;i<this.#obj_webs.champs_sortie.length;i++){
          if(this.#obj_webs.champs_sortie[i].type_d_element==='champ'){
              if(this.#obj_webs.type_de_requete==='update'){
-                 t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">affecte(champ(`'+this.#obj_webs.champs_sortie[i].nom_du_champ+'` , :'+this.#obj_webs.champs_sortie[i].nom_du_champ+')</a>';
+                 t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">affecte(champ(`'+this.#obj_webs.champs_sortie[i].nom_du_champ+'` , :n_'+this.#obj_webs.champs_sortie[i].nom_du_champ+')</a>';
              }else{
                  t+='<a href="javascript:'+this.#nom_de_la_variable+'.retirer_ce_champ_de_sortie('+i+')">T'+this.#obj_webs.champs_sortie[i].indice_table+'.'+this.#obj_webs.champs_sortie[i].nom_du_champ+'</a>';
              }
@@ -1380,7 +1380,11 @@ class requete_sql{
                     valeurs+=',';
                 }
                 if(elem.type_d_element==='champ'){
-                     if( this.#obj_webs.type_de_requete==='update' || this.#obj_webs.type_de_requete==='insert' ){
+                     if( this.#obj_webs.type_de_requete==='update' ){
+                      
+                         valeurs+=CRLF+'      '+'affecte( champ( `'+elem.nom_du_champ+'`) , :n_'+elem.nom_du_champ+')';
+                         numero_champ++;
+                     }else if( this.#obj_webs.type_de_requete==='insert' ){
                       
                          valeurs+=CRLF+'      '+'affecte( champ( `'+elem.nom_du_champ+'`) , :'+elem.nom_du_champ+')';
                          numero_champ++;
@@ -1571,10 +1575,11 @@ class requete_sql{
                       'rev':document.getElementById('txtar1').value , 
                       'sql':document.getElementById('txtar2').value , 
                       'php':document.getElementById('txtar3').value , 
-                      type:this.#obj_webs.type_de_requete,
+                      'type':this.#obj_webs.type_de_requete,
                       id_requete : id_requete,
                       tableau_rev_requete : obj1.value,
                 };
+
                 modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){

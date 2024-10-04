@@ -191,12 +191,37 @@ if((isset($_POST)) && (count($_POST) > 0)){
             'n_chi_id_requete' => $_POST['__nouveau_numéro'] ,
         ));
         if($tt['statut']===true){
-            ajouterMessage('info',__LINE__.' requête renumérotée de '.$_POST['renuméroter_une_requete'].' à '.$_POST['__nouveau_numéro'].'',BNF);
-            recharger_la_page(BNF);
+            ajouterMessage('info',__LINE__.' requête renumérotée dans requetes de '.$_POST['renuméroter_une_requete'].' à '.$_POST['__nouveau_numéro'].'',BNF);
         }else{
             ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
             recharger_la_page(BNF);
         }
+        
+        sql_inclure_reference(8);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_8.php');
+        /*sql_inclure_fin*/
+
+
+        $tt=sql_8(array(
+          'n_chx_source_rev' => $_POST['__nouveau_numéro'] ,
+          'c_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] , 
+          'c_chp_provenance_rev' => 'sql' ,
+          'c_chx_source_rev' => $_POST['renuméroter_une_requete'] ,
+        ));
+
+
+  
+        if($tt['statut'] !== true){
+
+            ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
+            recharger_la_page(BNF);
+
+        }else{
+            ajouterMessage('info',__LINE__.' requête renumérotée dans rev  de '.$_POST['renuméroter_une_requete'].' à '.$_POST['__nouveau_numéro'].'',BNF);
+            recharger_la_page(BNF);
+        }
+
      
      
     }
