@@ -408,7 +408,7 @@ $lsttbl.='<th>type</th>';
 $lsttbl.='<th>rev</th>';
 $lsttbl.='<th>sql</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($tt['valeurs'] as $k0 => $v0){
+foreach($tt['valeur'] as $k0 => $v0){
     $lsttbl.='<tr>';
 
     $lsttbl.='<td data-label="" style="text-align:left!important;">';

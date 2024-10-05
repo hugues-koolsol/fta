@@ -45,12 +45,6 @@ php(
          retourner($str)
       )
    ),
-   #(   importer_fonction_requete(1),),
-   #(
-     ===============================================================================================================
-     recherche en base de l'utilisateur grâce à son nom de connexion
-   ),
-   sql_inclure_reference(1),
    #(
      ===============================================================================================================
      si on est en post ...
@@ -80,6 +74,29 @@ php(
                      )
                   ),
                   alors(
+                     #(#
+  ===========================================================================
+  on importe la fonction sql 1 ( sql_inclure_reference(1)) qui recherche 
+  l'utilisateur en base grâce à son nom de connexion
+  le format rev de la requête est :
+  ===========================================================================
+  sélectionner(
+   valeurs(
+     champ(`T0` , `chi_id_utilisateur`) , 
+     champ(`T0` , `chp_mot_de_passe_utilisateur`) , 
+     champ(`T0` , `chp_parametres_utilisateur`)
+   ),
+   provenance(
+    table_reference(
+     source(nom_de_la_table(tbl_utilisateurs , alias(T0) , base(b1)))
+    )
+   ),
+   conditions(egal(champ(`T0` , `chp_nom_de_connexion_utilisateur`) , :nom_de_connexion)),
+   complements(limité_à(quantité(1) , début(0)))
+  )          
+  ===========================================================================
+                     ),
+                     sql_inclure_reference(1),
                      affecte(
                         $sql1,
                         appelf(
@@ -113,26 +130,10 @@ php(
                      choix(
                         si(
                            condition(
-                              et(
-                                 egalstricte(
-                                    appelf(
-                                       nomf(count),
-                                       p(tableau(nomt($sql1) , p('valeur')))
-                                    ),
-                                    1
-                                 ),
-                                 egalstricte(
-                                    appelf(
-                                       nomf(count),
-                                       p(tableau(nomt($sql1) , p('valeur') , p(0)))
-                                    ),
-                                    3
-                                 ),
-                                 appelf(
-                                    nomf(password_verify),
-                                    p(tableau(nomt($_POST) , p('mot_de_passe'))),
-                                    p(tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chp_mot_de_passe_utilisateur')))
-                                 )
+                              appelf(
+                                 nomf(password_verify),
+                                 p(tableau(nomt($_POST) , p('mot_de_passe'))),
+                                 p(tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chp_mot_de_passe_utilisateur')))
                               )
                            ),
                            alors(

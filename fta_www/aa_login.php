@@ -30,23 +30,6 @@ function texte_aleatoire($length){
     return($str);
 
 }
-/*   importer_fonction_requete(1),*/
-/*
-  =====================================================================================================================
-  recherche en base de l'utilisateur grâce à son nom de connexion
-*/
-sql_inclure_reference(1);
-/*sql_inclure_deb*/
-require_once(INCLUDE_PATH.'/sql/sql_1.php');
-/*
-SELECT 
-`T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
- FROM b1.tbl_utilisateurs T0
-WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion
-LIMIT 1 OFFSET 0 ;
-*/
-/*sql_inclure_fin*/
-
 /*
   =====================================================================================================================
   si on est en post ...
@@ -58,8 +41,42 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
     if((isset($_POST['nom_de_connexion'])) && (isset($_POST['mot_de_passe']))){
 
-        $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
+        /*#
+  ===========================================================================
+  on importe la fonction sql 1 ( sql_inclure_reference(1)) qui recherche 
+  l'utilisateur en base grâce à son nom de connexion
+  le format rev de la requête est :
+  ===========================================================================
+  sélectionner(
+   valeurs(
+     champ(`T0` , `chi_id_utilisateur`) , 
+     champ(`T0` , `chp_mot_de_passe_utilisateur`) , 
+     champ(`T0` , `chp_parametres_utilisateur`)
+   ),
+   provenance(
+    table_reference(
+     source(nom_de_la_table(tbl_utilisateurs , alias(T0) , base(b1)))
+    )
+   ),
+   conditions(egal(champ(`T0` , `chp_nom_de_connexion_utilisateur`) , :nom_de_connexion)),
+   complements(limité_à(quantité(1) , début(0)))
+  )          
+  ===========================================================================
+                     */
+        sql_inclure_reference(1);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_1.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
+         FROM b1.tbl_utilisateurs T0
+        WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion LIMIT 1 OFFSET 0 ;
+
+        */
+        /*sql_inclure_fin*/
         
+        $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
+
         if($sql1['statut'] !== true){
 
             ajouterMessage('erreur',__LINE__.' '.$sql1['message'],BNF);
@@ -69,7 +86,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
         }
 
 
-        if((count($sql1['valeur']) === 1) && (count($sql1['valeur'][0]) === 3) && (password_verify($_POST['mot_de_passe'],$sql1['valeur'][0]['T0.chp_mot_de_passe_utilisateur']))){
+        if(password_verify($_POST['mot_de_passe'],$sql1['valeur'][0]['T0.chp_mot_de_passe_utilisateur'])){
 
             /*
               =============================================================================================
@@ -194,7 +211,6 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 
     "use strict";
     function checkSubmit1(){
-
         clearMessages('zone_global_messages');
         var valRet=false;
         var zone_nom_de_connexion = document.getElementById('nom_de_connexion');
@@ -231,3 +247,4 @@ $par=array( 'js_a_inclure' => array(), 'js_a_executer_apres_chargement' => $js_a
 $o1.=html_footer1($par);
 print($o1);
 $o1='';
+?>

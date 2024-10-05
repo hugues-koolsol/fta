@@ -254,6 +254,8 @@ function recupere_operateur_dans_sql_ast(nom_de_l_operateur){
   return 'et';
  }else if(nom_de_l_operateur==='or'){
   return 'ou';
+ }else if(nom_de_l_operateur==='in'){
+  return 'dans';
  }else{
      logerreur({status:false,message:'0210 operateur non trouvé : "'+nom_de_l_operateur+'"'});
  }

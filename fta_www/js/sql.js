@@ -113,9 +113,11 @@ function recuperer_operateur_sqlite(op){
         t='#';
     }else if(op === 'conditions'){
         t='';
+    }else if(op === 'dans'){
+        t=' IN ';
     }else{
         debugger;
-        t='sql.js 94 inconnu opérateur "' + op + '"';
+        t='sql.js 0118 inconnu opérateur "' + op + '"';
     }
     return t;
 }
@@ -168,6 +170,9 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                     t+=',';
                 }else if(operateur === 'LIMIT'){
                     t='LIMIT ' + t;
+                }else if(operateur === '' && tab[tab[i][7]][1]==='' && tab[tab[i][7]][2]==='f'  && tab[tab[id][7]][1]==='dans' ){
+                  /* suite d'éléments comme dans un IN () */
+                    t+=',';
                 }else{
                     t+=operateur;
                 }
@@ -193,6 +198,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                     }else{
                         if(options.au_format_php===true){
                             if(tab[i][1].substr(0,1)===':'){
+                                debugger
                                 t+='\'.sq1($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
                             }else{
                                 t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
@@ -239,6 +245,8 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
         t='*';
     }else if(operateur === 'concat'){
         t='concat(' + t + ')';
+    }else if(operateur === '' && tab[tab[id][7]][1]==='dans' && tab[tab[id][7]][2]==='f' ){
+        t='(' + t + ')';
     }else if(operateur === 'OFFSET'){
         t=' OFFSET ' + t + ' ';
     }
@@ -576,6 +584,7 @@ function tabToSql0(tab,id,niveau,options){
                             if(tab[l][7] === j){
 //                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
                                 options.tableau_des_alias=tableau_des_alias;
+
                                 var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                 if(obj.status === true){
 

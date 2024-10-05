@@ -3529,11 +3529,11 @@ class module_svg_bdd{
         clearMessages('zone_global_messages');
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
         if(obj.status===true){
-         t=obj.value;
+            t=obj.value;
         }else{
-         displayMessages('zone_global_messages');
-         alert('Problème sur la sauvegarde de la base ');
-         return;
+            displayMessages('zone_global_messages');
+            alert('Problème sur la sauvegarde de la base ');
+            return;
         }
 
         async function envoyer_le_rev_de_le_base_en_post(url="",donnees){
@@ -3563,10 +3563,11 @@ class module_svg_bdd{
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'envoyer_le_rev_de_le_base_en_post'},source_rev_de_la_base:t,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
-                console.log('OK');
+               logerreur({status:true,message:' Le schema de la base est sauvegardé'});
             }else{
-                console.log('KO');
+               logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la base'});
             }
+            displayMessages('zone_global_messages');
         });
     }
     /*

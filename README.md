@@ -9,8 +9,8 @@ etc...
 La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français.
 
 Un exemple de fichier produisant du html contenant du javascript à partir d'un fichier rev est là :  
-[Format rev source](https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html)  
-[Format html produit](https://github.com/hugues-koolsol/fta/blob/master/fta_inc/rev/test_factorielle.rev)
+[Format rev source]((https://github.com/hugues-koolsol/fta/blob/master/fta_inc/rev/test_factorielle.rev)  
+[Format html produit]https://github.com/hugues-koolsol/fta/blob/master/fta_www/test_factorielle.html)
 
 
 
@@ -132,7 +132,7 @@ A partir du format tabulaire ( c'est en réalité un "arbre syntaxique" ), on pe
 
 Ainsi, les programmes sources deviennent des données qu'on peut traiter informatiquement en ajoutant, supprimant ou modifiant des éléments.
 
-**Les règles d'écriture** des programmes sont limitées.
+**Les règles d'écriture** des programmes rev sont limitées.
 
 **1°) Racine**
 
@@ -154,13 +154,16 @@ c(d())
 ```
 Ne l'est pas à cause de la constante "CeciEstUneErreur" qui est à la racine
 
+Cela dit, le programme qui traite ces sources rev peut accepter des constantes à la racine quand on veut 
+par exemple vérifier une suite d'éléments. mais cela doit être indiqué en paramètre.
+
 **2°) les constantes:**
 elles peuvent être 
 entre guillemets,  
 entre apostrophes, 
 entre apostrophes inversées,
 entre signe division (/)
-ou bien dans aucun des cas çi-dessus, typiquement pour les variables ou bien les valeurs numériques 
+ou bien dans aucun des cas çi-dessus, typiquement pour les variables, des constantes ( NULL , vrai , faux ) ou bien les valeurs numériques 
 
 
 **3°) les commentaires:**
@@ -224,18 +227,13 @@ ne l'est pas.
 
 **5°) les programmes existants**  sont convertis.
 
-Le programme permet de convertir les sources javascript, php, html, sql dans le format "rev" pour pouvoir reprendre l'existant.
-
-A partir du format rev, le programme permet de produire un format tabulaire qui est inséré en base de donnée.
-
+Le système permet de convertir les sources javascript, php, html, sql dans le format "rev" pour pouvoir reprendre l'existant.  
+A partir du format rev, le programme permet de produire un format tabulaire qui est inséré en base de donnée.  
 A partir du format tabulaire on peut regénérer le source original
 
 
-
-Pour l'instant les bibliothèques externes qui sont utilisées ne sont pas encore converties en format "rev". 
-
-Ces bibliothèques permettent de convertir les sources jsmt/js/php/sql en "AST" ( abstract syntax tree ).
-
+Pour l'instant les bibliothèques externes qui sont utilisées ne sont pas encore converties en format "rev".  
+Ces bibliothèques permettent de convertir les sources jsmt/js/php/sql en "AST" ( abstract syntax tree ).  
 Ces "AST" sont ensuites traités pour produire les "rev".
 
 

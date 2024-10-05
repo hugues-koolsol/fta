@@ -1215,9 +1215,19 @@ class traitements_sur_html{
       }
       if(tab[id][1]=='#'){
        if(tab[id][13]===''){
-        temp+='';
+        temp+='<!-- -->';
        }else{
-        temp+='<!-- '+traiteCommentaire2(tab[id][13],niveau,id);
+        var commentaire=traiteCommentaire2(tab[id][13],niveau,id);
+        if(commentaire!==''){
+         /* si le commentaire html n'est pas vide, on lui ajoute au besoin un espace avant et après */
+         if(commentaire.substr(0,1)!==' '){
+          commentaire=' '+commentaire;
+         }
+         if(commentaire.substr(commentaire.length-1,1)!==' '){
+          commentaire=commentaire+' ';
+         }
+        }        
+        temp+='<!--'+commentaire;
        }
       }else if(tab[id][1]=='php'){
        temp+='';
@@ -1496,7 +1506,7 @@ class traitements_sur_html{
           if(tab[id][13]===''){
            t+=CRLF;
           }else{
-           t+=' -->';
+           t+='-->';
           }
           
           
