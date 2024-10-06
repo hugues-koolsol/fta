@@ -2019,7 +2019,7 @@ class requete_sql{
                             if(tab[i][1]==='et' && tab[i][2]==='f'){
                                 for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
                                     if(tab[j][7]===i){
-                                        if( tab[j][2]==='f' && ( tab[j][1]==='egal' ||  tab[j][1]==='diff'   ||  tab[j][1]==='comme'  ||  tab[j][1]==='sup' ||  tab[j][1]==='inf' ||  tab[j][1]==='dans'  )){
+                                        if( tab[j][2]==='f' && ( tab[j][1]==='egal' ||  tab[j][1]==='diff'   ||  tab[j][1]==='comme'  ||  tab[j][1]==='sup' ||  tab[j][1]==='inf' ||  tab[j][1]==='dans' ||  tab[j][1]==='pas_comme'  )){
                                            var obj=traite_sqlite_fonction_de_champ(tab,j,0,options);
                                            if(obj.status===true){
                                                var parametre=obj.value.match(/\$par\[(.*)\]/);
@@ -2039,7 +2039,7 @@ class requete_sql{
                                         }
                                     }
                                 }
-                            }else if( tab[i][2]==='f' && ( tab[i][1]==='egal' ||  tab[i][1]==='diff' || tab[i][1]==='comme' || tab[i][1]==='sup' || tab[i][1]==='inf'|| tab[i][1]==='dans' )){
+                            }else if( tab[i][2]==='f' && ( tab[i][1]==='egal' ||  tab[i][1]==='diff' || tab[i][1]==='comme' || tab[i][1]==='sup' || tab[i][1]==='inf'|| tab[i][1]==='dans' || tab[i][1]==='pas_comme' )){
                                 var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
                                 
                                 if(obj.status===true){

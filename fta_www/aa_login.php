@@ -70,7 +70,8 @@ if((isset($_POST)) && (count($_POST) > 0)){
         SELECT 
         `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
          FROM b1.tbl_utilisateurs T0
-        WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion LIMIT 1 OFFSET 0 ;
+        WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion
+         LIMIT 1 OFFSET 0 ;
 
         */
         /*sql_inclure_fin*/
@@ -106,6 +107,11 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
         }else{
 
+            /*
+              =============================================================================================
+              ... sinon on efface la session et on recharge la page
+              
+            */
             supprimerLesValeursDeSession();
             ajouterMessage('erreur',__LINE__.' identifiant ou mot de passe incorrectes',BNF);
             sleep(2);

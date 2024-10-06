@@ -1,3 +1,4 @@
+
 /*
   =====================================================================================================================
   table tbl_cibles
@@ -290,7 +291,7 @@ CREATE  UNIQUE INDEX  idx_test_unique ON `tbl_tests`
 
 
 CREATE TABLE  tbl_requetes(
-/* meta((table,'tbl_requetes'),(nom_long_de_la_table,'liste des requêtes'),(nom_court_de_la_table,'une requête'),(nom_bref_de_la_table,'requêtes'),(transform_table_sur_svg,transform(translate(117,76)))) */
+/* meta((table,'tbl_requetes'),(nom_long_de_la_table,'liste des requêtes'),(nom_court_de_la_table,'une requête'),(nom_bref_de_la_table,'requêtes'),(transform_table_sur_svg,transform(translate(114,74)))) */
     
             /* meta((champ,'chi_id_requete'),(nom_long_du_champ,'identifiant unique de la requête'),(nom_court_du_champ,'id unique'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
              chi_id_requete INTEGER PRIMARY KEY ,

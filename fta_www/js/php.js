@@ -1088,8 +1088,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                 t+='require_once(INCLUDE_PATH.\'/sql/sql_'+tab[i+1][1]+'.php\');';
                 if(typeof aa_js_sql !== 'undefined' && aa_js_sql[tab[i+1][1]]){
                  t+=espacesn(true,niveau);
-                 var contenu='/*'+CRLF+espacesn(false,niveau)+aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /').replace(/\r/g,'').replace(/\n/g,'\n'+espacesn(false,niveau));
+                 var contenu='/*'+espacesn(false,niveau)+aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /').replace(/\r/g,'').replace(/\n/g,espacesn(false,niveau));
                  contenu=contenu.replace(/\n\n/g,'\n')
+                 contenu=contenu.replace(/ AND /g,espacesn(false,niveau)+' AND ')
+                 contenu=contenu.replace(/ ORDER BY /,espacesn(false,niveau)+' ORDER BY ')
+                 contenu=contenu.replace(/ LIMIT /,espacesn(false,niveau)+' LIMIT ')
                  t+=contenu+CRLF+espacesn(false,niveau)+'*/';
                 }else{
                  t+=espacesn(true,niveau);

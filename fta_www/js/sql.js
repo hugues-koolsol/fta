@@ -89,6 +89,8 @@ function recuperer_operateur_sqlite(op){
         t=' <> ';
     }else if(op === 'comme'){
         t=' LIKE ';
+    }else if(op === 'pas_comme'){
+        t=' NOT LIKE ';
     }else if(op === 'et'){
         t=' AND ';
     }else if(op === 'ou'){
