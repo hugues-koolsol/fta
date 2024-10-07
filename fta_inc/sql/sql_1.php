@@ -29,14 +29,16 @@ function sql_1($par){
         }
         return array(
            'statut'  => true       ,
-           'valeur' => $donnees0  ,
+           'valeur' => $donnees0   ,
            'sql' => $sql0          ,
+           'where0' => $where0     ,
         );
     }else{
         return array(
-         'statut'  => false ,
-         'message' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
-         'sql' => $sql0,
+           'statut'  => false ,
+           'message' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
+           'sql' => $sql0,
+           'where0' => $where0     ,
         );
     }
 }

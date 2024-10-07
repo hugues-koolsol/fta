@@ -336,24 +336,27 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    }
   }
   
-      $sql='
-       UPDATE `tbl_bdds` SET 
-          `chp_nom_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
-        , `chp_commentaire_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
-        , `chp_rev_travail_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
-        , `chp_rev_basedd`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
-        , `chp_genere_basedd`      = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
-        , `chx_dossier_id_basedd`  = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
-        , `chx_cible_id_basedd`    = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
-        , `chp_fournisseur_basedd` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) .'\'
-        
-        WHERE 
-          `chi_id_basedd`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']).'\'
-      ';
+  sql_inclure_reference(16);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_16.php');
+  /*sql_inclure_fin*/
+  
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] , true ) . '</pre>' ; exit(0);
 
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  error_reporting(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+  $tt=sql_16(array(
+      'n_chx_dossier_id_basedd'   => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'],
+      'n_chp_nom_basedd'          => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] ,
+      'n_chp_rev_basedd'          => $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'] ,
+      'n_chp_commentaire_basedd'  => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] ,
+      'n_chp_genere_basedd'       => $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'] ,
+      'n_chp_rev_travail_basedd'  => $_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd'] ,
+      'n_chp_fournisseur_basedd'  => $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] ,
+      'c_chi_id_basedd'           => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] ,
+      'c_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+      
+  ));
+
+  if($tt['statut'] === false){
     error_reporting(E_ALL);
     if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
      ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
@@ -363,7 +366,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
     }
-   
   }else{
    error_reporting(E_ALL);
    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
@@ -378,7 +380,10 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
     
    }
+   
   }
+  
+
 
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__confirme_suppression'){
 

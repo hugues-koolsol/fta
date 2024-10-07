@@ -70,10 +70,10 @@ class requete_sql{
             
             var l02=tab2.length;
             
-         
+
             for(var j=0;j<l02  ;j++){
                 if(tab2[j][2]==='f' && tab2[j][1]==='create_table'){
-                    for(var k=j+1;k<l02  && tab2[k][3]>tab2[j][3];j++){
+                    for(var k=j+1;k<l02  && tab2[k][3]>tab2[j][3];k++){
                         if(tab2[k][2]==='f' && tab2[k][1]==='nom_de_la_table'){
                             if(tab2[k+1][2] === 'c'  ){ // && tab2[k+1][1]===nom_de_la_table ){
                                 nom_de_la_table=tab2[k+1][1];
@@ -457,14 +457,13 @@ class requete_sql{
                                       c'est un champ
                                     */
 
-                                    
                                     this.#obj_webs['champs_sortie'].push({
-                                        type_d_element  : 'champ'         ,
-                                        id_bdd          : id_bdd          ,
-                                        nom_de_la_table : nom_de_la_table ,
-                                        nom_du_champ    : nom_du_champ    ,
-                                        indice_table    : 0               ,
-                                        alias_du_champ  : alias_du_champ  ,
+                                        type_d_element       : 'champ'              ,
+                                        id_bdd               : id_bdd               ,
+                                        nom_de_la_table      : nom_de_la_table      ,
+                                        nom_du_champ         : nom_du_champ         ,
+                                        indice_table         : 0                    ,
+                                        alias_du_champ       : alias_du_champ       ,
                                     })
                                     
                                 }else{
@@ -1685,6 +1684,69 @@ class requete_sql{
         return(nouvelle_chaine);
         
     }
+    #obtenir_le_tableau_des_conditions(formule,obj3){
+        var tableau_des_conditions=[];
+        var tableau1 = iterateCharacters2(formule);
+        var matriceFonction = functionToArray2(tableau1.out,true,true,'');
+        var tab=matriceFonction.value
+        var l01=tab.length;
+        var options={
+            au_format_php                : true,
+            tableau_des_tables_utilisees : obj3.tableau_des_tables_utilisees,
+            pour_where                   : true,
+            type_de_champ_pour_where     : '',
+            nom_du_champ_pour_where      : '',
+        };
+        
+        for(var i=1;i<l01;i++){
+            if(tab[i][7]===0){
+                if(tab[i][1]==='#' && tab[i][2]==='f'){
+                 
+                }else{
+                    if(tab[i][1]==='et' && tab[i][2]==='f'){
+                        for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+                            if(tab[j][7]===i){
+                                if( tab[j][2]==='f' && ( tab[j][1]==='egal' ||  tab[j][1]==='diff'   ||  tab[j][1]==='comme'  ||  tab[j][1]==='sup' ||  tab[j][1]==='inf' ||  tab[j][1]==='dans'  )){
+                                   var obj=traite_sqlite_fonction_de_champ(tab,j,0,options);
+                                   if(obj.status===true){
+                                       var parametre=obj.value.match(/\$par\[(.*)\]/);
+                                       if(parametre===null){
+                                          tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
+                                       }else{
+                                          tableau_des_conditions.push({type_condition:'variable',valeur:obj.value,condition:parametre[0],operation:tab[j][1],type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
+                                       }
+                                   }else{
+                                    debugger
+                                   }
+                                 
+                                 
+                                }else if( tab[j][2]==='f' &&  tab[j][1]==='#'){
+                                }else{
+                                 debugger
+                                }
+                            }
+                        }
+                    }else if( tab[i][2]==='f' && ( tab[i][1]==='egal' ||  tab[i][1]==='diff' || tab[i][1]==='comme' || tab[i][1]==='sup' || tab[i][1]==='inf'|| tab[i][1]==='dans' )){
+                        var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
+                        
+                        if(obj.status===true){
+                            var parametre=obj.value.match(/\$par\[(.*)\]/);
+                            if(parametre===null){
+                               tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
+                            }else{
+                               tableau_des_conditions.push({type_condition:'variable',valeur:obj.value,condition:parametre[0],operation:tab[i][1],type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where})
+                            }
+                        }else{
+                         debugger
+                        }
+                    }else{
+                       debugger
+                    }
+                }
+            }
+        }
+        return tableau_des_conditions;
+    }
     /* 
       ================================================================================================================
       ================================================================================================================
@@ -1769,9 +1831,92 @@ class requete_sql{
          
         }else if(type_de_requete==='update' ){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
-            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
-            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
-            t+='    \';'+CRLF;
+
+
+            var nom_de_la_table=this.#obj_webs['ordre_des_tables'][0]['nom_de_la_table'];
+            var champs_bdd=this.#obj_webs['tableau_des_bases_tables_champs'][obj3.id_base_principale][nom_de_la_table].champs;
+            
+            t+='    $texte_sql_'+id_requete_en_base+'=\'UPDATE `\'.$GLOBALS[BDD][BDD_1][\'nom_bdd\'].\'`.`'+nom_de_la_table+'` SET \'.CRLF;'+CRLF;
+            var liste_des_champs_pour_update='';
+            
+            var lng_max=0;
+            for(var champ_sortie=0;champ_sortie<this.#obj_webs['champs_sortie'].length;champ_sortie++){
+                var nom_du_champ=this.#obj_webs['champs_sortie'][champ_sortie].nom_du_champ;
+                if(nom_du_champ.length>lng_max){
+                    lng_max=nom_du_champ.length;
+                }
+            }
+            lng_max+=1;
+            for(var champ_sortie=0;champ_sortie<this.#obj_webs['champs_sortie'].length;champ_sortie++){
+                var nom_du_champ=this.#obj_webs['champs_sortie'][champ_sortie].nom_du_champ;
+                var champ_de_la_base=champs_bdd[nom_du_champ];
+                var lng=lng_max-nom_du_champ.length;
+                var rpt=' '.repeat(lng);
+                var encadrement_variable='\\\''
+                if(
+                    champ_de_la_base.type_du_champ.toLowerCase().indexOf('int')>=0 || 
+                    champ_de_la_base.type_du_champ.toLowerCase().indexOf('float')>=0  || 
+                    champ_de_la_base.type_du_champ.toLowerCase().indexOf('decimal')>=0  
+                ){
+                 encadrement_variable='';
+                }
+
+                if(champ_de_la_base.hasOwnProperty('non_nulle') && champ_de_la_base.non_nulle===true){
+                    liste_des_champs_pour_update+='    $texte_sql_'+id_requete_en_base+'.=\'    `'+nom_du_champ+'`'+rpt+' = '+encadrement_variable+'\'.sq0($par[\'n_'+nom_du_champ+'\']).\''+encadrement_variable+'';
+                    liste_des_champs_pour_update+=rpt;
+                    if(champ_sortie<this.#obj_webs['champs_sortie'].length-1){
+                        liste_des_champs_pour_update+=' ,';
+                    }
+                    liste_des_champs_pour_update+=' \'.CRLF;'+CRLF;
+                }else{
+                    liste_des_champs_pour_update+='    if($par[\'n_'+nom_du_champ+'\']===\'\' || $par[\'n_'+nom_du_champ+'\']===NULL ){'+CRLF;
+                    liste_des_champs_pour_update+='        $texte_sql_'+id_requete_en_base+'.=\'    `'+nom_du_champ+'`'+rpt+' = NULL';
+                    liste_des_champs_pour_update+=rpt;
+                    if(champ_sortie<this.#obj_webs['champs_sortie'].length-1){
+                        liste_des_champs_pour_update+=' ,';
+                    }
+                    liste_des_champs_pour_update+=' \'.CRLF;'+CRLF;
+                    liste_des_champs_pour_update+='    }else{'+CRLF;
+                    liste_des_champs_pour_update+='        $texte_sql_'+id_requete_en_base+'.=\'    `'+nom_du_champ+'`'+rpt+' = '+encadrement_variable+'\'.sq0($par[\'n_'+nom_du_champ+'\']).\''+encadrement_variable+'';
+                    if(champ_sortie<this.#obj_webs['champs_sortie'].length-1){
+                        liste_des_champs_pour_update+=' ,';
+                    }
+                    liste_des_champs_pour_update+=' \'.CRLF;'+CRLF;
+                    liste_des_champs_pour_update+='    }'+CRLF;
+                }
+
+            }
+            t+=liste_des_champs_pour_update;
+            
+            var tableau_des_conditions=[];
+            if(this.#obj_webs.conditions.length===0){
+                t+='    /* ATTENTION : pas de condition */'+CRLF;
+                t+='    $where0=\' WHERE 1 \';'+CRLF;
+            }else{
+                /* 
+                  les conditions dans un select list sont soit une seule conditions, soit une liste contenue dans un et[] 
+                  Il n'y a alors qu'une seule formule
+                */
+                t+='    $where0=\' WHERE 1=1 \'.CRLF;'+CRLF;
+                var formule=this.#obj_webs.conditions[0].formule;
+                
+                tableau_des_conditions=this.#obtenir_le_tableau_des_conditions(this.#obj_webs.conditions[0].formule,obj3);
+            }
+            for( var i=0;i<tableau_des_conditions.length;i++){
+             var elem=tableau_des_conditions[i];
+             if(elem.type_condition==='constante'){
+              t+='    $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+             }else if(elem.type_condition==='variable'){
+              if((elem.type.toLowerCase()==='integer' || elem.type.toLowerCase()==='int' ) && ( elem.operation==='egal' ||  elem.operation==='dans' )  ){
+                  t+='    $where0.=CRLF.construction_where_sql_sur_id(\''+elem.nom_du_champ_pour_where+'\','+elem.condition+');'+CRLF
+              }else{
+                  t+='    $where0.=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+              }
+             }
+            }
+            
+            t+='    $texte_sql_'+id_requete_en_base+'.=$where0;'+CRLF;
+            
             t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+globale_id_requete+')){'+CRLF;         
             t+='        return(array( ';         
             t+='\'statut\' => false, ';         
@@ -1780,34 +1925,6 @@ class requete_sql{
             t+='    }else{'+CRLF;         
             t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->changes()));'+CRLF;
             t+='    }'+CRLF;         
-        }else if(type_de_requete==='aaaselect'){
-            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
-            debugger
-            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
-            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
-            t+='    \';'+CRLF;
-            t+='    $stmt=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($texte_sql_'+globale_id_requete+');'+CRLF;
-            t+='    /* echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0); */'+CRLF;
-            t+='    if($stmt !== false){'+CRLF;
-            t+='        $result=$stmt->execute();'+CRLF;
-            t+='        $donnees=array();'+CRLF;
-            t+='        $arr=$result->fetchArray(SQLITE3_NUM);'+CRLF;
-            t+='        while($arr !== false){'+CRLF;
-            t+='            $donnees[]=array('+CRLF;
-            for(var i=0;i<obj3.tableau_des_champs_pour_select_php.length;i++){
-                t+='                \''+obj3.tableau_des_champs_pour_select_php[i].alias+'.'+obj3.tableau_des_champs_pour_select_php[i].nom_du_champ+'\' => $arr['+i+'],'+CRLF;
-            }
-            t+='            );'+CRLF;
-            t+='            $arr=$result->fetchArray(SQLITE3_NUM);'+CRLF;
-            t+='        }'+CRLF;
-            
-            
-            
-            t+='        $stmt->close();'+CRLF;
-            t+='        return(array( \'statut\' => true, \'valeur\' => $donnees));'+CRLF;
-            t+='    }else{'+CRLF;
-            t+='        return(array( \'statut\' => false, \'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
-            t+='    }'+CRLF;
         }else if(type_de_requete==='select'){
             console.log(this.#obj_webs);
             var champs0='';
@@ -1844,6 +1961,9 @@ class requete_sql{
                 */
                 t+='    $where0=\' WHERE 1=1 \'.CRLF;'+CRLF;
                 var formule=this.#obj_webs.conditions[0].formule;
+                
+                tableau_des_conditions=this.#obtenir_le_tableau_des_conditions(this.#obj_webs.conditions[0].formule,obj3);
+/*                
                 var tableau1 = iterateCharacters2(formule);
                 var matriceFonction = functionToArray2(tableau1.out,true,true,'');
                 var tab=matriceFonction.value
@@ -1903,6 +2023,7 @@ class requete_sql{
                         }
                     }
                 }
+*/                
             }
             for( var i=0;i<tableau_des_conditions.length;i++){
              var elem=tableau_des_conditions[i];
@@ -1939,7 +2060,9 @@ class requete_sql{
             
             t+='    $donnees0=array();'+CRLF;
             t+='    //echo __FILE__ . \' \' . __LINE__ . \' $sql0 = <pre>\' . var_export( $sql0 , true ) . \'</pre>\' ; exit(0);'+CRLF;
+            t+='    $errr=error_reporting(0);'+CRLF;
             t+='    $stmt0=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($sql0);'+CRLF;
+            t+='    error_reporting($errr);'+CRLF;
             t+='    if(($stmt0 !== false)){'+CRLF;
             t+='        $res0=$stmt0->execute();'+CRLF;
             t+='        while(($tab0=$res0->fetchArray(SQLITE3_NUM))){'+CRLF;
@@ -1953,14 +2076,16 @@ class requete_sql{
             t+='        }'+CRLF;
             t+='        return array('+CRLF;
             t+='           \'statut\'  => true       ,'+CRLF;
-            t+='           \'valeur\' => $donnees0  ,'+CRLF;
-            t+='           \'sql\' => $sql0          ,'+CRLF;
+            t+='           \'valeur\'  => $donnees0   ,'+CRLF;
+            t+='           \'sql0\'    => $sql0          ,'+CRLF;
+            t+='           \'where0\'  => $where0     ,'+CRLF;
             t+='        );'+CRLF;
             t+='    }else{'+CRLF;
             t+='        return array('+CRLF;
-            t+='         \'statut\'  => false ,'+CRLF;
-            t+='         \'message\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg(),'+CRLF;
-            t+='         \'sql\' => $sql0,'+CRLF;
+            t+='           \'statut\'  => false ,'+CRLF;
+            t+='           \'message\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg(),'+CRLF;
+            t+='           \'sql0\'    => $sql0,'+CRLF;
+            t+='           \'where0\'  => $where0     ,'+CRLF;
             t+='        );'+CRLF;
             t+='    }'+CRLF;
         }else if(type_de_requete==='select_liste'){
@@ -2062,7 +2187,7 @@ class requete_sql{
             for( var i=0;i<tableau_des_conditions.length;i++){
              var elem=tableau_des_conditions[i];
              if(elem.type_condition==='constante'){
-              t+='    $where0+=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+              t+='    $where0.=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
              }else if(elem.type_condition==='variable'){
               t+='    if(('+elem.condition+' !== \'\')){'+CRLF;
               if((elem.type.toLowerCase()==='integer' || elem.type.toLowerCase()==='int' ) && elem.operation==='egal' ){
@@ -2101,7 +2226,9 @@ class requete_sql{
             
             t+='    $donnees0=array();'+CRLF;
             t+='    //echo __FILE__ . \' \' . __LINE__ . \' $sql0 = <pre>\' . var_export( $sql0 , true ) . \'</pre>\' ; exit(0);'+CRLF;
+            t+='    $errr=error_reporting(0);'+CRLF;
             t+='    $stmt0=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($sql0);'+CRLF;
+            t+='    error_reporting($errr);'+CRLF;
             t+='    if(($stmt0 !== false)){'+CRLF;
             t+='        $res0=$stmt0->execute();'+CRLF;
             t+='        while(($tab0=$res0->fetchArray(SQLITE3_NUM))){'+CRLF;
@@ -2121,15 +2248,17 @@ class requete_sql{
             t+='        }'+CRLF;
             t+='        return array('+CRLF;
             t+='           \'statut\'  => true       ,'+CRLF;
-            t+='           \'valeur\' => $donnees0  ,'+CRLF;
-            t+='           \'nombre\' => $__nbEnregs ,'+CRLF;
-            t+='           \'sql\' => $sql0          ,'+CRLF;
+            t+='           \'valeur\'  => $donnees0   ,'+CRLF;
+            t+='           \'nombre\'  => $__nbEnregs ,'+CRLF;
+            t+='           \'sql0\'    => $sql0          ,'+CRLF;
+            t+='           \'where0\'  => $where0     ,'+CRLF;
             t+='        );'+CRLF;
             t+='    }else{'+CRLF;
             t+='        return array('+CRLF;
             t+='         \'statut\'  => false ,'+CRLF;
             t+='         \'message\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg(),'+CRLF;
-            t+='         \'sql\' => $sql0,'+CRLF;
+            t+='         \'sql0\'    => $sql0,'+CRLF;
+            t+='         \'where0\'  => $where0     ,'+CRLF;
             t+='        );'+CRLF;
             t+='    }'+CRLF;
             

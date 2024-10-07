@@ -406,7 +406,7 @@ if($tt['statut'] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
-    $o1.='<pre>'.$tt['sql'].'</per>';
+    $o1.='<pre>'.$tt['sql0'].'</per>';
     $o1.='</div>';
     $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
     $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
@@ -420,7 +420,9 @@ if($tt['statut'] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir=''.'&amp;chi_id_requete='.rawurlencode($chi_id_requete).'&amp;cht_rev_requete='.rawurlencode($cht_rev_requete).'&amp;chp_type_requete='.rawurlencode($chp_type_requete).'';
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,'');
+$boutons_avant='<a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>';
+$boutons_avant.=' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>'.CRLF;
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_avant);
 
 
 $lsttbl='';

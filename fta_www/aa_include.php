@@ -186,15 +186,16 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
 
    if(($__nbEnregs > 0)){
 
-       $o1.='<form class="yylistForm1">';
+       $o1.='<form class="yylistForm1" method="post">';
        $o1.=$boutons_avant;
        $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
-       $o1.='page '.number_format((($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )</div>'.CRLF;
+       $o1.='page '.number_format((($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )';
+       $o1.='</div>'.CRLF;
        $o1.='</form>';
 
    }else{
 
-       $o1.='<form class="yylistForm1 yyavertissement">';
+       $o1.='<form class="yylistForm1 yyavertissement" method="post">';
        $o1.=$boutons_avant;
        $o1.='Aucun enregistrement trouvé</form>'.CRLF;
    }

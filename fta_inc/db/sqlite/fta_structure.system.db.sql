@@ -1,4 +1,3 @@
-
 /*
   =====================================================================================================================
   table tbl_cibles
@@ -8,7 +7,7 @@
 
 
 CREATE TABLE  tbl_cibles(
-/* meta((table,'tbl_cibles'),(nom_long_de_la_table,'liste des systèmes cibles'),(nom_court_de_la_table,'une cible'),(nom_bref_de_la_table,'cible'),(transform_table_sur_svg,transform(translate(-56,-131)))) */
+/* meta((table,'tbl_cibles'),(nom_long_de_la_table,'liste des systèmes cibles'),(nom_court_de_la_table,'une cible'),(nom_bref_de_la_table,'cible'),(transform_table_sur_svg,transform(translate(-69,-131)))) */
     
             /* meta((champ,'chi_id_cible'),(nom_long_du_champ,'identifiant unique de la cible'),(nom_court_du_champ,'identifiant cible'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
              chi_id_cible INTEGER PRIMARY KEY ,
@@ -237,7 +236,7 @@ CREATE TABLE  tbl_bdds(
              chx_cible_id_basedd INTEGER NOT NULL REFERENCES 'tbl_cibles'('chi_id_cible') ,
     
             /* meta((champ,'chp_nom_basedd'),(nom_long_du_champ,'à faire chp_nom_basedd'),(nom_court_du_champ,'à faire chp_nom_basedd'),(nom_bref_du_champ,'à faire chp_nom_basedd'),(typologie,'cht')) */
-             chp_nom_basedd TEXT DEFAULT  '' ,
+             chp_nom_basedd TEXT NOT NULL DEFAULT  '' ,
     
             /* meta((champ,'chp_rev_basedd'),(nom_long_du_champ,'à faire chp_rev_basedd'),(nom_court_du_champ,'à faire chp_rev_basedd'),(nom_bref_du_champ,'à faire chp_rev_basedd'),(typologie,'cht')) */
              chp_rev_basedd TEXT,

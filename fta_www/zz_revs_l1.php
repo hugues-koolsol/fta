@@ -5,7 +5,7 @@ initialiser_les_services(true,true);
 /* sess,bdd*/
 require_once('../fta_inc/db/acces_bdd_revs1.php');
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -16,9 +16,20 @@ if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
 if((isset($_GET['supprimer_tout'])) && ($_GET['supprimer_tout'] === '1')){
 
-    $ret0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->exec('DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs');
+    sql_inclure_reference(14);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_14.php');
+    /*
+    
+    DELETE FROM b1.tbl_revs
+    WHERE `chx_cible_rev` = :chx_cible_rev ;
 
-    if($ret0 !== true){
+    */
+    /*sql_inclure_fin*/
+    
+    $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
+
+    if($tt['statut'] === false){
 
         ajouterMessage('erreur',__LINE__.' problème ',BNF);
 
@@ -118,12 +129,10 @@ $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
 $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-
 $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
-
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_13.php');
@@ -133,17 +142,16 @@ SELECT
 `T0`.`chp_type_rev` , `T0`.`chp_niveau_rev` , `T0`.`chp_pos_premier_rev` , `T0`.`chp_commentaire_rev`
  FROM b1.tbl_revs T0
  LEFT JOIN b1.tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
-
-WHERE (`T0`.`chx_cible_rev` = :T0_chx_cible_rev 
-  AND `T0`.`chp_provenance_rev` LIKE :T0_chp_provenance_rev 
-  AND `T0`.`chx_source_rev` = :T0_chx_source_rev 
-  AND `T1`.`chp_nom_source` LIKE :T1_chp_nom_source1 
-  AND `T1`.`chp_nom_source` NOT LIKE :T1_chp_nom_source2 
-  AND `T0`.`chp_valeur_rev` LIKE :T0_chp_valeur_rev 
-  AND `T0`.`chp_commentaire_rev` LIKE :T0_chp_commentaire_rev 
-  AND `T0`.`chi_id_rev` = :T0_chi_id_rev) 
-ORDER BY  `T0`.`chp_provenance_rev` ASC, `T0`.`chx_source_rev` ASC 
-LIMIT :quantitee OFFSET :debut ;
+WHERE (`T0`.`chx_cible_rev` = :T0_chx_cible_rev
+ AND `T0`.`chp_provenance_rev` LIKE :T0_chp_provenance_rev
+ AND `T0`.`chx_source_rev` = :T0_chx_source_rev
+ AND `T1`.`chp_nom_source` LIKE :T1_chp_nom_source1
+ AND `T1`.`chp_nom_source` NOT LIKE :T1_chp_nom_source2
+ AND `T0`.`chp_valeur_rev` LIKE :T0_chp_valeur_rev
+ AND `T0`.`chp_commentaire_rev` LIKE :T0_chp_commentaire_rev
+ AND `T0`.`chi_id_rev` = :T0_chi_id_rev)
+ ORDER BY  `T0`.`chp_provenance_rev` ASC, `T0`.`chx_source_rev` ASC
+ LIMIT :quantitee OFFSET :debut ;
 
 */
 /*sql_inclure_fin*/
@@ -165,7 +173,7 @@ if($tt['statut'] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
-    $o1.='<pre>'.$tt['sql'].'</per>';
+    $o1.='<pre>'.$tt['sql0'].'</per>';
     $o1.='</div>';
     $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
     $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
@@ -191,8 +199,8 @@ if(APP_KEY === 'fta'){
     $boutons_avant='<a class="yydanger" href="'.BNF.'?supprimer_tout=1">supprimer tout</a>';
 
 }
-$__nbEnregs=$tt['nombre'];
 
+$__nbEnregs=$tt['nombre'];
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_avant);
 $__lsttbl='';
 $__lsttbl.='<thead><tr>';
@@ -213,13 +221,16 @@ foreach($tt['valeur'] as $k0 => $v0){
     $__lsttbl.='<td data-label="" style="text-align:left!important;">';
     $__lsttbl.='<div class="yyflex1">';
     $__lsttbl.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chx_source_rev'].'" target="_blank" title="modifier">⇒</a>';
-    
-    if($v0['T0.chp_valeur_rev']==='#' && $v0['T0.chp_type_rev']==='f'){
+
+    if(($v0['T0.chp_valeur_rev'] === '#') && ($v0['T0.chp_type_rev'] === 'f')){
+
         $__lsttbl.=' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler('.$v0['T0.chx_source_rev'].','.$v0['T0.chi_id_rev'].')"  title="supprimer ce commentaire et recompiler">⚙️</a>';
+
     }else{
+
         $__lsttbl.=' <a class="yyunset" title="supprimer">⚙️</a>';
     }
-    
+
     $__lsttbl.='</div>';
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:center;">';
@@ -229,47 +240,68 @@ foreach($tt['valeur'] as $k0 => $v0){
     $__lsttbl.=enti1($v0['T0.chp_provenance_rev']).'';
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:left;">';
-    if($v0['T0.chp_provenance_rev']==='source'){
+
+    if($v0['T0.chp_provenance_rev'] === 'source'){
+
         $__lsttbl.=enti1($v0['T1.chp_nom_source']).'';
-    }else if($v0['T0.chp_provenance_rev']==='sql'){
+
+    }else if($v0['T0.chp_provenance_rev'] === 'sql'){
+
         $__lsttbl.=enti1('requête sql').'';
+
     }
+
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:left;">';
     $__lsttbl.=$v0['T0.chx_source_rev'].'';
     $__lsttbl.='</td>';
     $__lsttbl.='<td style="text-align:left;">';
-    if($v0['T0.chp_provenance_rev']==='sql'){
-        if($v0['T0.chp_niveau_rev']==0){
-           $__lsttbl.='<b style="color:red;">'.$v0['T0.chp_valeur_rev'].'</b>';
+
+    if($v0['T0.chp_provenance_rev'] === 'sql'){
+
+
+        if($v0['T0.chp_niveau_rev'] == 0){
+
+            $__lsttbl.='<b style="color:red;">'.$v0['T0.chp_valeur_rev'].'</b>';
+
         }else{
-           $__lsttbl.=$v0['T0.chp_valeur_rev'];
+
+            $__lsttbl.=$v0['T0.chp_valeur_rev'];
         }
+
+
     }else{
-        if($v0['T0.chp_valeur_rev']===null){
+
+
+        if($v0['T0.chp_valeur_rev'] === null){
+
             $a='';
+
         }else{
+
             $a=enti1(mb_substr($v0['T0.chp_valeur_rev'],0,100));
         }
+
         $__lsttbl.=str_replace('&para;CR&para;','<br />',str_replace('&para;LF&para;','<br />',str_replace('&para;CR&para;&para;LF&para;','<br />',$a)));
     }
+
     /* */
     $__lsttbl.='</td>';
 
     if($chp_valeur_rev != ''){
 
 
-        if(!(isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']]))){
+        if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']])){
 
             $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
-        }else if(!(isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]))){
+        }else if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
             $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
         }else{
 
-            ($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++);
+            $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
         }
 
 
@@ -307,7 +339,7 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
                 'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
                 'chaine_a_remplacer' => $chaine_a_remplacer,
                 'liste_des_taches' => $liste_des_taches,
-                'critere_de_recherche' => $where0);
+                'critere_de_recherche' => $tt['where0']);
             $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
             $paramUrl=str_replace('\\','\\\\',$paramUrl);
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
@@ -327,18 +359,6 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
   =====================================================================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-/*
-  
-  //$o1.='<script type="module" src="js/module_rectangle_et_carre.js"></script>';
-  $o1.='<script type="module">
-  import { Rectangle , Carre } from "./js/module_rectangle_et_carre.js";
-  window.Rectangle = Rectangle;
-  window.Carre = Carre;
-  import { Cercle } from "./js/module_cercle.js";
-  window.Cercle = Cercle;
-  </script>
-  ';
-*/
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);

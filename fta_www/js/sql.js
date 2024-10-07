@@ -812,7 +812,7 @@ function tabToSql0(tab,id,niveau,options){
                                         conditions+=' , ';
                                     }
                                     if(tab[l][2] === 'f'){
-//                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{});
+
                                         var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                         if(obj.status === true){
                                             conditions+=obj.value;
