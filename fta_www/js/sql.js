@@ -1,4 +1,3 @@
-
 "use strict";
 /*
   
@@ -83,8 +82,22 @@ function recuperer_operateur_sqlite(op){
         t='ASC';
     }else if(op === 'plus'){
         t='+';
+    }else if(op === 'moins'){
+        t='-';
+    }else if(op === 'mult'){
+        t='*';
+    }else if(op === 'divi'){
+        t='/';
     }else if(op === 'egal'){
         t=' = ';
+    }else if(op === 'supegal'){
+        t=' >= ';
+    }else if(op === 'infegal'){
+        t=' <= ';
+    }else if(op === 'sup'){
+        t=' > ';
+    }else if(op === 'inf'){
+        t=' < ';
     }else if(op === 'diff'){
         t=' <> ';
     }else if(op === 'comme'){
@@ -117,9 +130,11 @@ function recuperer_operateur_sqlite(op){
         t='';
     }else if(op === 'dans'){
         t=' IN ';
+    }else if(op === 'est'){
+        t=' IS ';
     }else{
         debugger;
-        t='sql.js 0118 inconnu opérateur "' + op + '"';
+        t=' sql.js 0118 inconnu opérateur "' + op + '"';
     }
     return t;
 }
@@ -732,6 +747,7 @@ function tabToSql0(tab,id,niveau,options){
                                                 if((tab[m][2] === 'f') && (tab[m][1] === 'champ')){
                                                     nom_du_champ=tab[m + 1][1];
                                                 }else{
+                                                    
                                                     if(tab[m][2] === 'f'){
 //                                                        var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,{});
                                                         var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,options);
@@ -751,7 +767,11 @@ function tabToSql0(tab,id,niveau,options){
                                                                     valeur_du_champ=tab[m][1];
                                                                 }
                                                             }else{
-                                                                valeur_du_champ='\'' + tab[m][1].replace(/\'/g,"''") + '\'';
+                                                                if(isNumeric(tab[m][1])){
+                                                                    valeur_du_champ=tab[m][1];
+                                                                }else{
+                                                                    valeur_du_champ='\'' + tab[m][1].replace(/\'/g,"''") + '\'';
+                                                                }
                                                             }
                                                         }
                                                     }

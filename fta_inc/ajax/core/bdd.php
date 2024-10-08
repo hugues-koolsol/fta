@@ -18,6 +18,7 @@ function modifier_la_requete_en_base(&$data){
           'n_cht_rev_requete' => $data['input']['rev'],
           'n_cht_sql_requete' => $data['input']['sql'],
           'n_cht_php_requete' => $data['input']['php'],
+          'n_cht_matrice_requete' => json_encode($data['input']['tableau_rev_requete']),
     );
     
     $tt=sql_9($a_modifier);

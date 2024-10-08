@@ -244,6 +244,12 @@ function recupere_operateur_dans_sql_ast(nom_de_l_operateur){
  
  if(nom_de_l_operateur==='+'){
   return 'plus';
+ }else if(nom_de_l_operateur==='-'){
+  return 'moins';
+ }else if(nom_de_l_operateur==='*'){
+  return 'mult';
+ }else if(nom_de_l_operateur==='/'){
+  return 'divi';
  }else if(nom_de_l_operateur==='<>'){
   return 'diff';
  }else if(nom_de_l_operateur==='not like'){
@@ -258,8 +264,18 @@ function recupere_operateur_dans_sql_ast(nom_de_l_operateur){
   return 'ou';
  }else if(nom_de_l_operateur==='in'){
   return 'dans';
+ }else if(nom_de_l_operateur==='>='){
+  return 'supegal';
+ }else if(nom_de_l_operateur==='<='){
+  return 'infegal';
+ }else if(nom_de_l_operateur==='>'){
+  return 'sup';
+ }else if(nom_de_l_operateur==='<'){
+  return 'inf';
+ }else if(nom_de_l_operateur==='is'){
+  return 'est';
  }else{
-     logerreur({status:false,message:'0210 operateur non trouvé : "'+nom_de_l_operateur+'"'});
+     logerreur({status:false,message:'0210 convertion_sql_en_rev operateur non trouvé : "'+nom_de_l_operateur+'"'});
  }
 }
 

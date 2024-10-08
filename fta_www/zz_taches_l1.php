@@ -23,20 +23,43 @@ function obtenir_entete_de_la_page(){
 if(isset($_POST['__soustraire_1_aux_priorites'])){
  
   
-  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-  $sql1='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache-1 WHERE chp_priorite_tache<50 AND  chp_priorite_tache>1 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
+  sql_inclure_reference(23);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_23.php');
+/*        
+UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '') AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
+*/          
+  /*sql_inclure_fin*/
   
-  if( $ret===false ){
+  $tt=sql_23(array( 
+    'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+    'n_chp_priorite_tache' => 50
+  ));
 
+  if($tt['statut'] === false){
     ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
-   
+    recharger_la_page(BNF);
+  }
+
+  sql_inclure_reference(25);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_25.php');
+  /*
+  UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1) WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache AND `chp_priorite_tache` < 50) ;
+  */
+  /*sql_inclure_fin*/
+  
+  $tt=sql_25(array( 
+    'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+  ));
+
+  if($tt['statut'] === false){
+      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+      recharger_la_page(BNF);
   }else{
-   
-    ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
-    
-  }   
+      ajouterMessage('info' , __LINE__ .' : les priorités ont été diminuées' );
+  }
+
   recharger_la_page(BNF);
 }
 
@@ -46,20 +69,43 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
 if(isset($_POST['__ajouter_1_aux_priorites'])){
  
   
-  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=50 WHERE ( chp_priorite_tache IS NULL OR  chp_priorite_tache = \'\' ) AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-  $sql1='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache+1 WHERE chp_priorite_tache<50 AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
+  sql_inclure_reference(23);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_23.php');
+/*        
+UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '') AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
+*/          
+  /*sql_inclure_fin*/
   
-  if( $ret===false ){
+  $tt=sql_23(array( 
+    'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+    'n_chp_priorite_tache' => 50
+  ));
 
+  if($tt['statut'] === false){
     ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
-   
+    recharger_la_page(BNF);
+  }
+  
+  sql_inclure_reference(24);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_24.php');
+  /*
+  UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1) WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache AND `chp_priorite_tache` < 50) ;
+  */
+  /*sql_inclure_fin*/
+  
+  $tt=sql_24(array( 
+    'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+  ));
+
+  if($tt['statut'] === false){
+      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+      recharger_la_page(BNF);
   }else{
-   
-    ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
-    
-  }   
+      ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
+  }
+  
   recharger_la_page(BNF);
 }
 
@@ -70,18 +116,26 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
 
  if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
-  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=99 WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-  if( $ret===false ){
 
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
-   
-  }else{
-   
-    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
-    
-  }   
+        sql_inclure_reference(22);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_22.php');
+        /*sql_inclure_fin*/
+        
+        $tt=sql_22(array( 
+          'c_chi_id_tache' => $_GET['__id'], 
+          'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+          'n_chp_priorite_tache' => 99
+        ));
 
+        if($tt['statut'] === false){
+
+            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+
+        }else{
+
+            ajouterMessage('info',__LINE__.' : tâche modifiée');
+        }
 
  }
 
@@ -96,17 +150,25 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
 
  if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
-  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=0 WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].'';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-  if( $ret===false ){
+        sql_inclure_reference(22);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_22.php');
+        /*sql_inclure_fin*/
+        
+        $tt=sql_22(array( 
+          'c_chi_id_tache' => $_GET['__id'], 
+          'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+          'n_chp_priorite_tache' => 0
+        ));
 
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
-   
-  }else{
-   
-    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
-    
-  }   
+        if($tt['statut'] === false){
+
+            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+
+        }else{
+
+            ajouterMessage('info',__LINE__.' : tâche modifiée');
+        }
 
 
  }
@@ -118,56 +180,81 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
 /*
   =====================================================================================================================
 */
-if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
 
- if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
-
-  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache+1 
-  WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].' AND chp_priorite_tache<50';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-  if( $ret===false ){
-
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
-   
-  }else{
-   
-    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
-    
-  }   
+if((isset($_GET['__action'])) && ('__mettre_a_plus_1' === $_GET['__action'])){
 
 
- }
+    if((isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
 
- recharger_la_page(BNF);
- 
+        sql_inclure_reference(21);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_21.php');
+        /*
+        
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1)
+        WHERE (`chi_id_tache` = :c_chi_id_tache
+         AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+         AND `chp_priorite_tache` < 50) ;
+
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_21(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
+
+        if($tt['statut'] === false){
+
+            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+
+        }else{
+
+            ajouterMessage('info',__LINE__.' : tâche modifiée');
+        }
+
+
+    }
+
+    recharger_la_page(BNF);
+
 }
-
 
 /*
   =====================================================================================================================
 */
-if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
 
- if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
-
-  $sql0='UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches SET chp_priorite_tache=chp_priorite_tache-1 
-  WHERE chi_id_tache = '.sq0($_GET['__id']).' AND chx_utilisateur_tache = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].' AND chp_priorite_tache>=1';
-  $ret=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-  if( $ret===false ){
-
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
-   
-  }else{
-   
-    ajouterMessage('info' , __LINE__ .' : tâche modifiée' );
-    
-  }   
+if((isset($_GET['__action'])) && ('__mettre_a_moins_1' === $_GET['__action'])){
 
 
- }
+    if((isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
 
- recharger_la_page(BNF);
- 
+        sql_inclure_reference(20);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_20.php');
+        /*
+        
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1)
+        WHERE (/ *  * / `chi_id_tache` = :c_chi_id_tache
+         AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+         AND `chp_priorite_tache` >= 1) ;
+
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_20(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
+
+        if($tt['statut'] === false){
+
+            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+
+        }else{
+
+            ajouterMessage('info',__LINE__.' : tâche modifiée');
+        }
+
+
+    }
+
+    recharger_la_page(BNF);
+
 }
 
 
@@ -231,108 +318,45 @@ $o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez s
 $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
-$champs0='
- `chi_id_tache`          , `chp_texte_tache` , T0.chp_priorite_tache 
-';
-$sql0='SELECT '.$champs0;
-$from0='
- FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_taches `T0`
- 
-';
-$sql0.=$from0;
-$where0='
- WHERE  "T0"."chx_utilisateur_tache" = '.$_SESSION[APP_KEY]['sess_id_utilisateur_init'].' 
-';
 
-if(($chi_id_tache != '' )){
-    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_tache`',$chi_id_tache);
-}
+$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
+sql_inclure_reference(19);
+/*sql_inclure_deb*/
+require_once(INCLUDE_PATH.'/sql/sql_19.php');
+/*sql_inclure_fin*/
 
+$tt=sql_19(array(
+    'T0_chi_id_tache' => $chi_id_tache,
+    'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+    'T0_chp_texte_tache' => (($chp_texte_tache === NULL)?$chp_texte_tache:(($chp_texte_tache === '')?'':'%'.$chp_texte_tache.'%')),
+    'T0_chp_priorite_tache' => $chp_priorite_tache ,
+    'quantitee' => $__nbMax,
+    'debut' => $__debut,
+    'page_courante' => BNF));
 
-if(($chp_texte_tache != '')){
-    $where0.=CRLF.'AND `T0`.`chp_texte_tache` LIKE \'%'.sq0($chp_texte_tache).'%\'';
-}
+if($tt['statut'] === false){
 
-
-
-if(($chp_priorite_tache != '')){
-    $where0.=CRLF.'AND `T0`.`chp_priorite_tache` LIKE \'%'.sq0($chp_priorite_tache).'%\'';
-}
-
-
-
-$sql0.=$where0;
-$order0='
- ORDER BY `T0`.`chp_priorite_tache` ASC
-';
-$sql0.=$order0;
-$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
-$sql0.=$plage0;
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
-$data0=array();
-
-
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-
-$stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
-
-if(($stmt0 !== false)){
-
-    $res0=$stmt0->execute();
-    while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
-        $data0[]=array(
-            'T0.chi_id_tache' => $tab0[0],
-            'T0.chp_texte_tache' => $tab0[1],
-            'T0.chp_priorite_tache' => $tab0[2],
-        );
-            
-    }
-    $stmt0->close();
-    $__nbEnregs=count($data0);
-
-    if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
-
-        $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
-
-    }
-
-
-}else{
-
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
+    $o1.='<div>';
+    $o1.='<div class="yydanger">Erreur sql</div>';
+    $o1.='<pre>'.$tt['sql0'].'</per>';
+    $o1.='</div>';
+    $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => array());
+    $o1.=html_footer1($par);
+    print($o1);
+    $o1='';
     exit(0);
+
 }
 
+$__nbEnregs=$tt['nombre'];
 $consUrlRedir=''.'&amp;chi_id_tache='.rawurlencode($chi_id_tache).'&amp;chp_texte_tache='.rawurlencode($chp_texte_tache).'&amp;chp_priorite_tache='.rawurlencode($chp_priorite_tache).'';
-$__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
 
-if(($__debut+$__nbMax < $__nbEnregs)){
+$boutons_haut=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
+$boutons_haut.=' <button name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
+$boutons_haut.=' <button name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.CRLF;
 
-    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_haut);
 
-}
-
-$__bouton_enregs_prec=' <span class="yybtn yyunset">&laquo;</span>';
-
-if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
-
-    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
-
-}
-
-$o1.='<div><form method="post" class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
-$o1.=' <button name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
-$o1.=' <button name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.CRLF;
-$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv;
-$o1.=' <div style="display:inline-block;">';
-if(($__nbEnregs > 0)){
-    $o1.='page '.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).'/'.ceil($__nbEnregs/($__nbMax)).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
-}else{
-    $o1.='pas d\'enregistrement'.CRLF;
-}
 $o1.='</div>';
 $o1.='</form></div>';
 $lsttbl='';
@@ -342,7 +366,7 @@ $lsttbl.='<th>id</th>';
 $lsttbl.='<th>tâche</th>';
 $lsttbl.='<th>priorite</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($data0 as $k0 => $v0){
+foreach($tt['valeur'] as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';

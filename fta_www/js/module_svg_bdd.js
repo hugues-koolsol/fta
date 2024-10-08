@@ -2577,7 +2577,11 @@ class module_svg_bdd{
         element_rectangle.setAttribute('x',Math.floor((groupe_apres_modifications.x - (1 * this.#taille_bordure))));
         element_rectangle.setAttribute('y',Math.floor((groupe_apres_modifications.y - (1 * this.#taille_bordure))));
         element_rectangle.setAttribute('width',Math.ceil((groupe_apres_modifications.width + (2 * this.#taille_bordure))));
-        element_rectangle.setAttribute('height',Math.ceil((groupe_apres_modifications.height + (2 * this.#taille_bordure))));
+        var hauteur_du_carre_de_la_base=Math.ceil((groupe_apres_modifications.height + (2 * this.#taille_bordure)));
+        if(hauteur_du_carre_de_la_base<2*this.#hauteur_de_boite){
+         hauteur_du_carre_de_la_base=2*this.#hauteur_de_boite;
+        }
+        element_rectangle.setAttribute('height',hauteur_du_carre_de_la_base);
         /*
           
           on fait réaparaître le rectangle de la base
@@ -4076,13 +4080,16 @@ class module_svg_bdd{
                     if((donnees.valeurs[i]['T0.chp_rev_travail_basedd'] === '') || (donnees.valeurs[i]['T0.chp_rev_travail_basedd'] === null)){
                         logerreur({status:false,message:'0803 le champ chp_rev_travail_basedd est vide [module_svg[charger_les_bases_en_asynchrone]]'});
                     }
-                    var obj1 = functionToArray(donnees.valeurs[i]['T0.chp_rev_travail_basedd'],true,false,'');
-                    if(obj1.status === true){
-                        this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]['matrice']=obj1.value;
+                    if(donnees.valeurs[i]['T0.chp_rev_travail_basedd']===null || donnees.valeurs[i]['T0.chp_rev_travail_basedd']===''){
                     }else{
-                        logerreur({status:false,message:'0126'});
-                        displayMessages('zone_global_messages');
-                        return;
+                        var obj1 = functionToArray(donnees.valeurs[i]['T0.chp_rev_travail_basedd'],true,false,'');
+                        if(obj1.status === true){
+                            this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]['matrice']=obj1.value;
+                        }else{
+                            logerreur({status:false,message:'0126'});
+                            displayMessages('zone_global_messages');
+                            return;
+                        }
                     }
                 }
                 var indice_svg_courant=0;
@@ -4114,7 +4121,6 @@ class module_svg_bdd{
                     this.#id_bdd_de_la_base_en_cours=id_bdd_de_la_base;
 //                    largeur_de_la_boite=1;
                     this.#svg_tableaux_des_references_amont_aval[id_bdd_de_la_base]=[];
-                    var tab = this.#arbre[id_bdd_de_la_base]['matrice'];
                     this.#id_svg_de_la_base_en_cours=indice_svg_courant;
                     this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg_courant]={type:'g',id:this.#id_svg_de_la_base_en_cours,id_parent:-1,'proprietes':{type_element:'conteneur_de_base',id_bdd_de_la_base_en_cours:id_bdd_de_la_base,id:indice_svg_courant,id_svg_de_la_base_en_cours:this.#id_svg_de_la_base_en_cours,transform:'translate(0,0)',decallage_x:0,decallage_y:0}};
                     indice_svg_courant++;
@@ -4127,6 +4133,11 @@ class module_svg_bdd{
                     this.#arbre[id_bdd_de_la_base].arbre_svg[indice_svg_courant]={type:'text',id:indice_svg_courant,'id_parent':(indice_svg_courant - 1),'contenu':('(' + id_bdd_de_la_base + ') ' + this.#arbre[id_bdd_de_la_base]['chp_nom_basedd'] + ' <a style="fill:green;" href="javascript:' + this.#nom_de_la_variable + '.sauvegarder_la_base(' + id_bdd_de_la_base + ')">sauvegarder</a>'),'proprietes':{id:indice_svg_courant,type_element:'texte_id_bdd_de_la_base',id_svg_de_la_base_en_cours:this.#id_svg_de_la_base_en_cours,x:this.#taille_bordure,'y':(this.#taille_bordure + CSS_TAILLE_REFERENCE_TEXTE),style:"fill:blue;"}};
                     indice_svg_courant++;
                     tableau_des_references_croisees=[];
+                    var tab=[];
+                    if(this.#arbre[id_bdd_de_la_base].hasOwnProperty('matrice')){
+                        
+                        tab = this.#arbre[id_bdd_de_la_base]['matrice'];
+                    }
                     var l01=tab.length;
                     /*
                       
@@ -4218,15 +4229,7 @@ class module_svg_bdd{
                   =============================
                 */
                 this.#dessiner_le_svg();
-                /*
-                  
-                  this.#modale_gerer_la_table(document.getElementById(78));
-                */
                 
-/*
-                console.error('temporaire')
-                this.#modale_modifier_la_base(document.getElementById(1));
-*/                
             }else{
                 console.log('donnees=',donnees)
                 debugger

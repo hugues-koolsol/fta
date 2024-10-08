@@ -311,5 +311,8 @@ CREATE TABLE  tbl_requetes(
              cht_php_requete TEXT,
     
             /* meta((champ,'cht_commentaire_requete'),(nom_long_du_champ,'à faire ...'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'cht')) */
-             cht_commentaire_requete TEXT
+             cht_commentaire_requete TEXT,
+    
+            /* meta((champ,'cht_matrice_requete'),(nom_long_du_champ,'à faire ...'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'cht')) */
+             cht_matrice_requete TEXT
     );

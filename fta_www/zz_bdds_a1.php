@@ -1,8 +1,4 @@
 <?php
-/*
-print_r(SQLite3::version()); 3.30.1
-exit();
-*/
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 initialiser_les_services(true,true);
@@ -27,39 +23,54 @@ $js_a_executer_apres_chargement=array();
 */
 //========================================================================================================================
 function erreur_dans_champs_saisis_basesdd(){
- $uneErreur=false;
- if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']===''){
-  /*
-  // A=65 , a=97 z=122 , 0=48 , 9=57
-  // todo ajouter le test
-  */
-  $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|'; 
-  ajouterMessage('erreur' ,  __LINE__ .' : le nom de la base de donnée doit etre indiqué et ne doit pas contenir les caractères espaces ' , BNF );
-  $uneErreur=true;
- }
- 
- if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'],0,1)===' '){
-  
-  ajouterMessage('erreur' ,  __LINE__ .' : le nom de la base de donnée ne doit pas commencer par un espace ' , BNF );
-  
-  $uneErreur=true;
-  
- }
- if($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='sqlite'){
-  if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']==='' || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']===false ){
-   ajouterMessage('erreur' ,  __LINE__ .' : le dossier doit être indiqué pour une base sqlite' , BNF );
-   $uneErreur=true;
-  }
- }
+    $uneErreur=false;
+    if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']===''){
+     /*
+     // A=65 , a=97 z=122 , 0=48 , 9=57 _ - .
+     // todo ajouter le test
+     */
+     $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|'; 
+     ajouterMessage('erreur' ,  __LINE__ .' : le nom de la base de donnée doit etre indiqué et ne doit pas contenir les caractères espaces ' , BNF );
+     $uneErreur=true;
+    }
+    
+    if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'],0,1)===' '){
+     
+     ajouterMessage('erreur' ,  __LINE__ .' : le nom de la base de donnée ne doit pas commencer par un espace ' , BNF );
+     
+     $uneErreur=true;
+     
+    }
+    if($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='sqlite'){
+     if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']==='' || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']===false ){
+      ajouterMessage('erreur' ,  __LINE__ .' : le dossier doit être indiqué pour une base sqlite' , BNF );
+      $uneErreur=true;
+     }
+    }
+
+    if(!($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='sqlite' || $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='mysql'|| $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='' )){
+        ajouterMessage('erreur' ,  __LINE__ .' : le fournisseur de la bdd doit être "sqlite" ou "mysql" ou bien ne doit pas être renseigné ' , BNF );
+        $uneErreur=true;
+    }
+
+    if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']===''){
+        $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']=NULL;
+    }
+
+    if($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']===''){
+        $_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']=NULL;
+    }
+    if($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']===''){
+        $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']=NULL;
+    }
+
+    if($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']===''){
+        $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']=NULL;
+    }
 
 
- if(!($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='sqlite' || $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='mysql'|| $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']==='' )){
-  ajouterMessage('erreur' ,  __LINE__ .' : le fournisseur de la bss doit être "sqlite" ou "mysql" ou bien ne doit pas être renseigné ' , BNF );
-  $uneErreur=true;
- }
 
-
- return($uneErreur);
+    return($uneErreur);
 }
 /*
   ========================================================================================
@@ -136,7 +147,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          ajouterMessage('erreur' , __LINE__ .' : problème sur le dossier cible ' );
          
      }
-     
      
      recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
@@ -221,7 +231,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
   recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
-  recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
   
  }else if( isset($_POST['___produire_le_dump_des_donnees'])){
   
@@ -394,7 +403,6 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   */
 
   $__id= isset($_POST['__id1'])?(is_numeric($_POST['__id1'])?$_POST['__id1']:0):0;
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
   if($__id!==0){
       $__valeurs=recupere_une_donnees_des_bases_de_donnees($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
@@ -403,17 +411,23 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }
 
-  $sql='DELETE FROM tbl_bdds WHERE `chi_id_basedd` = \''.sq0($__id).'\' ' ;
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+  sql_inclure_reference(18);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_18.php');
+  /*sql_inclure_fin*/
+  
 
+  $tt=sql_18(array(
+      'chi_id_basedd'           => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] ,
+      
+  ));
+
+  if($tt['statut'] === false){
       ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-
   }else{
-   
      ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
      recharger_la_page($__page_liste_de_reference);
-
   }
 
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__creation'){
@@ -430,33 +444,29 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         
     }
     
-    $sql='
-     INSERT INTO `tbl_bdds` (`chp_nom_basedd` , `chp_commentaire_basedd` , chp_rev_basedd , chp_genere_basedd , chx_dossier_id_basedd , chx_cible_id_basedd , chp_rev_travail_basedd , chp_fournisseur_basedd ) VALUES
-       (
-          \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'])         .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd'])         .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd'])      .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'])  .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd'])    .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']) .'\'
-        , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) .'\'
-       )
-    ' ;
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
-     
-        ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-        recharger_la_page(BNF.'?__action=__creation'); 
-      
-    }else{
-     
-      ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
-      recharger_la_page(BNF.'?__action=__modification&__id='.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID()); 
-     
-    }
-   
+  sql_inclure_reference(17);
+  /*sql_inclure_deb*/
+  require_once(INCLUDE_PATH.'/sql/sql_17.php');
+  /*sql_inclure_fin*/
+  
+//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] , true ) . '</pre>' ; exit(0);
 
+  $tt=sql_17(array(array(
+      'chx_dossier_id_basedd'   => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'],
+      'chp_nom_basedd'          => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] ,
+      'chp_commentaire_basedd'  => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] ,
+      'chp_fournisseur_basedd'  => $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] ,
+      'chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+  )));
+
+  if($tt['statut'] === false){
+    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+    recharger_la_page(BNF.'?__action=__creation'); 
+   
+  }else{
+    ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
+    recharger_la_page(BNF.'?__action=__modification&__id='.$tt['nouvel_id']); 
+  }
    
    
 

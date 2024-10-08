@@ -404,7 +404,7 @@ function enti1($s){
 function sq1($s){
     if(is_numeric($s)){
         return($s);
-    }else if($s === null){
+    }else if($s === NULL){
         return('NULL');
     } 
     $s1=SQLite3::escapeString($s);

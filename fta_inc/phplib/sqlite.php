@@ -111,6 +111,24 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
      fwrite($fd,'  ========================================================================='.CRLF);
      fwrite($fd,'*/'.CRLF);
      
+     if(   APP_KEY==='fta' 
+        && $_SESSION[APP_KEY]['sess_id_utilisateur']===1 
+        && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']===1 
+        && $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']==='fta'
+        && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']==='fta'
+        && $_SESSION[APP_KEY][NAV]['zz_bdds_a1.php']['chi_id_basedd']==='1'
+     ){
+         
+         if( $k0==='tbl_bdds' ){
+             /*
+              pour la base de donnée, principale de fta, on ne sauvegarde le format rev mais pas le rev de travail ni le sql
+             */
+
+             $listeDesChamps='`chi_id_basedd`, `chx_dossier_id_basedd`, `chx_cible_id_basedd`, `chp_nom_basedd`, `chp_commentaire_basedd`, `chp_rev_basedd`';
+             
+         }
+     }
+     
      /*
       on crée des insert par paquets de $nombre_de_values_par_insert
      */
