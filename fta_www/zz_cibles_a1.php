@@ -43,12 +43,10 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       
 
       'fta_inc/db/__liste_des_acces_bdd.php' => array(),
-      'fta_inc/db/acces_bdd_bases_de_donnees1.php' => array(),
       'fta_inc/db/acces_bdd_cibles1.php' => array(),
       'fta_inc/db/acces_bdd_dossiers1.php' => array(),
       'fta_inc/db/acces_bdd_sources1.php' => array(),
       'fta_inc/db/acces_bdd_revs1.php' => array(),
-      'fta_inc/db/acces_bdd_taches1.php' => array(),
       
       'fta_inc/phplib/mesBibliotheques.bat'=>array(),
       'fta_inc/phplib/sqlite.php'=>array(),

@@ -13,7 +13,7 @@ CREATE TABLE  tbl_cibles(
              chi_id_cible INTEGER PRIMARY KEY ,
     
             /* meta((champ,'chp_nom_cible'),(nom_long_du_champ,'nom de la cible'),(nom_court_du_champ,'nom cible'),(nom_bref_du_champ,'nom'),(typologie,'cht')) */
-             chp_nom_cible TEXT,
+             chp_nom_cible TEXT NOT NULL,
     
             /* meta((champ,'chp_dossier_cible'),(nom_long_du_champ,'à faire chp_dossier_cible'),(nom_court_du_champ,'à faire chp_dossier_cible'),(nom_bref_du_champ,'à faire chp_dossier_cible'),(typologie,'cho')) */
              chp_dossier_cible CHARACTER(3),
@@ -140,7 +140,7 @@ CREATE TABLE  tbl_taches(
              chx_utilisateur_tache INTEGER NOT NULL REFERENCES 'tbl_utilisateurs'('chi_id_utilisateur') ,
     
             /* meta((champ,'chp_texte_tache'),(nom_long_du_champ,'à faire chp_texte_tache'),(nom_court_du_champ,'à faire chp_texte_tache'),(nom_bref_du_champ,'à faire chp_texte_tache'),(typologie,'cht')) */
-             chp_texte_tache TEXT,
+             chp_texte_tache TEXT NOT NULL,
     
             /* meta((champ,'chp_priorite_tache'),(nom_long_du_champ,'à faire chp_priorite_tache'),(nom_court_du_champ,'à faire chp_priorite_tache'),(nom_bref_du_champ,'à faire chp_priorite_tache'),(typologie,'che')) */
              chp_priorite_tache INTEGER
@@ -224,7 +224,7 @@ CREATE  UNIQUE INDEX  idx_ligne_rev ON `tbl_revs`
 
 
 CREATE TABLE  tbl_bdds(
-/* meta((table,'tbl_bdds'),(nom_long_de_la_table,'liste des bases de données'),(nom_court_de_la_table,'une base'),(nom_bref_de_la_table,'bases'),(transform_table_sur_svg,transform(translate(448,140)))) */
+/* meta((table,'tbl_bdds'),(nom_long_de_la_table,'liste des bases de données'),(nom_court_de_la_table,'une base'),(nom_bref_de_la_table,'bases'),(transform_table_sur_svg,transform(translate(450,129)))) */
     
             /* meta((champ,'chi_id_basedd'),(nom_long_du_champ,'à faire chi_id_basedd'),(nom_court_du_champ,'à faire chi_id_basedd'),(nom_bref_du_champ,'à faire chi_id_basedd'),(typologie,'chi')) */
              chi_id_basedd INTEGER PRIMARY KEY  AUTOINCREMENT,
@@ -290,7 +290,7 @@ CREATE  UNIQUE INDEX  idx_test_unique ON `tbl_tests`
 
 
 CREATE TABLE  tbl_requetes(
-/* meta((table,'tbl_requetes'),(nom_long_de_la_table,'liste des requêtes'),(nom_court_de_la_table,'une requête'),(nom_bref_de_la_table,'requêtes'),(transform_table_sur_svg,transform(translate(114,74)))) */
+/* meta((table,'tbl_requetes'),(nom_long_de_la_table,'liste des requêtes'),(nom_court_de_la_table,'une requête'),(nom_bref_de_la_table,'requêtes'),(transform_table_sur_svg,transform(translate(115,69)))) */
     
             /* meta((champ,'chi_id_requete'),(nom_long_du_champ,'identifiant unique de la requête'),(nom_court_du_champ,'id unique'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
              chi_id_requete INTEGER PRIMARY KEY ,

@@ -7,21 +7,17 @@ $o1=html_header1(array('title'=>'convertir un sql en rev' , 'description'=>'conv
 print($o1);$o1='';
 ?>
 
-        <div class="menuScroller">
-            <ul>
-                <li><a href="javascript:charger_source_de_test_sql('txtar1')">source de test</a>&nbsp;</li>
-                <li><a href="javascript:transform_sql_de_textarea_en_rev('txtar1' , 'txtar2')"  class="yysucces">convertir</a>&nbsp;</li>
-            </ul>
-        </div>
   <h1>Convertir un sql en rev</h1>
   
   <div>
+   <a href="javascript:charger_source_de_test_sql('txtar1')">source de test</a>
+   <a href="javascript:transform_sql_de_textarea_en_rev('txtar1' , 'txtar2')"  class="yysucces">convertir</a>
    <a href="javascript:__gi1.agrandir_ou_reduire_la_text_area(&quot;txtar1&quot;);" title="agrandir ou réduire la zone">🖐👊</a>
    <a href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">👊</a>
    <a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">🖐</a>
   </div>
   <textarea class="txtar1" id="txtar1" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-  <div id="resultat1"></div>
+
   <div>
    <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
    <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>

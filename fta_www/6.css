@@ -258,7 +258,7 @@ tbody tr:nth-child(2n){background-color:#CFD8DC;}
 
 .yynormal       {background: linear-gradient(to bottom, #ECEFF1, #CFD8DC);}
 .yysucces       {color:#556B2F!important;background:linear-gradient(to bottom, #7FFF00, #5DB903)!important;}
-.yyinfo         {color:#ECEFF1!important;background:linear-gradient(to bottom, #2196F3, #1E87D8)!important;}
+.yyinfo         {color:#ECEFF1!important;background:linear-gradient(to bottom, #2196F3, #006dc1)!important;}
 .yyavertissement{color:#000000!important;background:linear-gradient(to bottom, #FFA500, #B77401)!important;}
 .yydanger       {color:#ECEFF1!important;background:linear-gradient(to bottom, #FF0000, #E50000)!important;}
 .yyerreur       {color:#FFFF33!important;background:linear-gradient(to bottom, #FD3131, #D32A2A)!important;}

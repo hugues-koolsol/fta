@@ -3569,6 +3569,14 @@ class module_svg_bdd{
             if(donnees.status === 'OK'){
                logerreur({status:true,message:' Le schema de la base est sauvegardé'});
             }else{
+               console.log(donnees);
+               if(donnees.hasOwnProperty('messages')){
+                   if(typeof donnees.messages === 'object' && !Array.isArray(donnees.messages) && donnees.messages !== null ){
+                       for(var i in donnees.messages){
+                           logerreur({status:false,message:donnees.messages[i]});
+                       }
+                   }
+               }
                logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la base'});
             }
             displayMessages('zone_global_messages');

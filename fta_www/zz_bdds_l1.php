@@ -3,7 +3,6 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services(true,true);
 /* sess,bdd*/
-require_once('../fta_inc/db/acces_bdd_bases_de_donnees1.php');
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 

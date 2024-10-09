@@ -1,13 +1,5 @@
 <?php
-
-/*
-$name='toto';
-$b="(?:[^\"]$name+|\"\")$name";
-// '(?:[^"]toto+|"")toto'
-echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $b , true ) . '</pre>' ; exit(0);
-*/
 define('BNF',basename(__FILE__));
-
 require_once 'aa_include.php';
 session_start();
 
@@ -17,23 +9,17 @@ print($o1);$o1='';
 
 ?>
 
-        <div class="menuScroller">
-            <ul>
-                <li><a href="javascript:chargerSourceDeTestPhp()">source de test</a>&nbsp;</li>
-                <li><a href="javascript:transform_text_area_php_en_rev(&quot;txtar1&quot;)"  class="yysucces">convertir</a>&nbsp;</li>
-                
-            </ul>
-        </div>
-
   <h1>Convertir un php en rev</h1>
   
   <div>
-   <a class="yysucces" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
+   <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
+   <a href="javascript:transform_text_area_php_en_rev(&quot;txtar1&quot;)"  class="yysucces">convertir</a>
+   <a class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
    <a href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">👊</a>
    <a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">🖐</a>
   </div>
   <textarea class="txtar1" id="txtar1" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-  <div id="resultat1"></div>
+
   <div>
    <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
    <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>

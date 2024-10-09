@@ -2758,8 +2758,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
     return({status:true});
 }
 function transform_text_area_php_en_rev(nom_de_la_text_area){
-    document.getElementById('txtar2').value='';
-    document.getElementById('resultat1').innerHTML='';
+    document.getElementById('txtar2').value='Veuillez patienter !';
     clearMessages('zone_global_messages');
     var a = document.getElementById(nom_de_la_text_area);
     localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);

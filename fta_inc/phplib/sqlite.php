@@ -3,8 +3,26 @@
 function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_virtuelle){
 
     $tableaux_retournes=array('tableau1' => array() , 'tableau2' => array() );
-    require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
-    $__valeurs=recupere_une_donnees_des_bases_de_donnees_avec_parents( $id_base , $GLOBALS[BDD][BDD_1][LIEN_BDD] );
+    
+    sql_inclure_reference(26);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_26.php');
+    /*sql_inclure_fin*/
+
+    $tt=sql_26(array(
+        'T0_chi_id_basedd'           => $id_base ,
+        'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    ));
+
+    if($tt['statut'] === false || count($tt['valeur'])!==1){
+        ajouterMessage('erreur' , __LINE__ . ' erreur de récupération de la base ' , BNF  );
+        return array('status'=> false  );
+    }  
+
+
+    $__valeurs=$tt['valeur'][0];
+
+
 
     $chemin_bdd='../../'.$__valeurs['T2.chp_dossier_cible'].'/'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_basedd'];
 
@@ -197,6 +215,26 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
  }
  
  fclose($fd);
+ 
+ $zip=new ZipArchive();
+
+ if($zip->open($nom_du_fichier_dump.'.zip',ZIPARCHIVE::CREATE) !== TRUE){
+
+     return array('status' => true , 'message' => __LINE__ . ' le fichier zip de '.$nom_du_fichier_dump.' ne peut être ouvert' );
+
+ }
+
+ $chemin_fichier=realpath($nom_du_fichier_dump);
+ $nom_fichier=basename($nom_du_fichier_dump);
+
+ if(!$zip->addFile($chemin_fichier,$nom_fichier)){
+
+     $zip->close();
+     return array('status' => true , 'message' => __LINE__ . ' ajout du fichier au zip impossible' );
+
+ }
+
+ $zip->close();
  
  
  return array('status' => true , 'value' => $nom_du_fichier_dump );

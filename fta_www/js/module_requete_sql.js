@@ -988,7 +988,7 @@ class requete_sql{
             t+='<a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.ajouter_cette_formule_dans_la_formule(&quot;'+tab_ex[i].replace(/"/g,'&#34;')+'&quot;)">'+tab_ex[i]+'</a>';
         }
         var contenu='';
-        if("select_liste" === this.#obj_webs.type_de_requete && tabchamps.length>0 ){
+        if( ( "select_liste" === this.#obj_webs.type_de_requete || "select" === this.#obj_webs.type_de_requete  ) && tabchamps.length>0 ){
             if( "conditions" === destination ){
                 for(var i in tabchamps){
 
@@ -2352,7 +2352,7 @@ class requete_sql{
             complements                       : [],
             tableau_des_bases_tables_champs   : {},
         };
-        async function recuperer_les_bases(url="",donnees){
+        async function recuperer_les_bases_de_la_cible_en_cours(url="",donnees){
             var response= await fetch(url,{
                 // 6 secondes de timeout 
                 'signal':AbortSignal.timeout(1000),
@@ -2375,8 +2375,8 @@ class requete_sql{
             });
             return(response.json());
         }
-        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_les_bases'}};
-        recuperer_les_bases('za_ajax.php?recuperer_les_bases',ajax_param).then((donnees) => {
+        var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_les_bases_de_la_cible_en_cours'}};
+        recuperer_les_bases_de_la_cible_en_cours('za_ajax.php?recuperer_les_bases_de_la_cible_en_cours',ajax_param).then((donnees) => {
             if(donnees.status === 'OK'){
 //                console.log('OK' , donnees);
                 this.#obj_init['bases']={};

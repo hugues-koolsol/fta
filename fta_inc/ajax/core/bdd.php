@@ -89,8 +89,27 @@ function enregistrer_la_requete_en_base(&$data){
 */
 function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
-    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
-    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    
+    sql_inclure_reference(26);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_26.php');
+    /*sql_inclure_fin*/
+
+    $tt=sql_26(array(
+        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    ));
+
+    if($tt['statut'] === false || count($tt['valeur'])!==1){
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        return;
+     
+    }  
+
+
+    $ret0=$tt['valeur'][0];
+    
+    
     /*
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$ret0='.var_export( $ret0 , true ) .CRLF.CRLF); fclose($fd);}
     */
@@ -135,9 +154,29 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 */
 
 function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
- 
-    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
-    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+
+    sql_inclure_reference(26);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_26.php');
+    /*sql_inclure_fin*/
+
+    $tt=sql_26(array(
+        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    ));
+
+    if($tt['statut'] === false || count($tt['valeur'])!==1){
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        return;
+     
+    }  
+
+
+    $ret0=$tt['valeur'][0];
+
+
+
+    
     $chemin_bdd='..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
     $repertoire=realpath(dirname($chemin_bdd));
     $chemin_bdd=$repertoire.DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
@@ -215,8 +254,6 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
             $data['status']='OK';
 
         }
-
-
     }
 
 
@@ -225,10 +262,27 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
   =====================================================================================================================
 */
 
-function recuperer_les_bases(&$data){
+function recuperer_les_bases_de_la_cible_en_cours(&$data){
+    sql_inclure_reference(27);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_27.php');
+    /*sql_inclure_fin*/
 
-    require_once(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php');
-    $data['valeurs']=recupere_des_donnees_des_bases_de_donnees_avec_parents($GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    $tt=sql_27(array(
+        'T0_chx_cible_id_basedd'   => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+    ));
+
+    if($tt['statut'] === false){
+        $data['messages'][]=__FILE__.' '.__LINE__.' recuperer_les_bases bdd non trouvée';
+        return;
+     
+    }  
+
+
+    $data['valeurs']=$tt['valeur'];
+    
+    
+    
     $data['status']='OK';
 
 }
@@ -303,8 +357,26 @@ function operation_sur_base(&$data,$nom_operation){
     /*    
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .CRLF.CRLF); fclose($fd);}
     */    
-    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
-    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    sql_inclure_reference(26);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_26.php');
+    /*sql_inclure_fin*/
+
+    $tt=sql_26(array(
+        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    ));
+
+    if($tt['statut'] === false || count($tt['valeur'])!==1){
+        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        return;
+     
+    }  
+
+
+    $ret0=$tt['valeur'][0];
+    
+    
     $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
 
@@ -360,8 +432,28 @@ function creer_table_dans_base(&$data){
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data=' . $data['input']['source_sql'] . CRLF.CRLF); fclose($fd);}
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .CRLF.CRLF); fclose($fd);}
     */
-    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
-    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+    
+    sql_inclure_reference(26);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_26.php');
+    /*sql_inclure_fin*/
+
+    $tt=sql_26(array(
+        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    ));
+
+    if($tt['statut'] === false || count($tt['valeur'])!==1){
+        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base bdd non trouvée';
+        return;
+     
+    }  
+
+
+    $ret0=$tt['valeur'][0];
+
+    
+    
     $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
 
@@ -415,8 +507,29 @@ function ordonner_les_champs_de_table(&$data){
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
     */
     $db0=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
-    require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_bases_de_donnees1.php'));
-    $ret0=recupere_une_donnees_des_bases_de_donnees_avec_parents($data['input']['id_bdd_de_la_base'],$db0);
+
+    sql_inclure_reference(26);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_26.php');
+    /*sql_inclure_fin*/
+
+    $tt=sql_26(array(
+        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    ));
+
+    if($tt['statut'] === false || count($tt['valeur'])!==1){
+        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table bdd non trouvée';
+        return;
+     
+    }  
+
+
+    $ret0=$tt['valeur'][0];
+
+    
+    
+    
     $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
 
@@ -523,7 +636,8 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
     // sql_inclure_fin
     $a_modifier=array(
           'n_chp_rev_travail_basedd' => $data['input']['source_rev_de_la_base'],
-          'c_chi_id_basedd' => $data['input']['id_bdd_de_la_base'],
+          'c_chi_id_basedd'          => $data['input']['id_bdd_de_la_base'],
+          'c_chx_cible_id_basedd'    => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     );
     
     $tt=sql_10($a_modifier);
@@ -546,7 +660,8 @@ function recuperer_zone_travail_pour_les_bases(&$data){
     require_once(INCLUDE_PATH.'/sql/sql_11.php');
     // sql_inclure_fin
     $a_selectionner=array(
-          'les_id_des_bases' => $data['input']['les_id_des_bases'],
+          'les_id_des_bases'     => $data['input']['les_id_des_bases'],
+          'chx_cible_id_basedd'  => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     );
     
     $tt=sql_11($a_selectionner);
