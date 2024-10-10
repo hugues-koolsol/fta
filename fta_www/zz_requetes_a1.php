@@ -9,36 +9,28 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 }
 
 $o1='';
-$o1=html_header1(array('title'=>'requete sql' , 'description'=>'créer ou modifier une requete sql'));
+$o1=html_header1(array('title'=>'editeur sql' , 'description'=>'créer ou modifier une requete sql'));
 print($o1);$o1='';
 
-$id_requete=0;
-$rev_requete='';
-$type_requete='';
+$requete_en_cours=array();
 if(isset($_GET['__action']) && $_GET['__action']=='__modification' && isset($_GET['__id'])  && is_numeric($_GET['__id']) ){
-     $id_requete=$_GET['__id'];
-     $sql0='
-      SELECT `cht_rev_requete` , T0.chp_type_requete 
-      FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_requetes `T0`
-      WHERE   `chi_id_requete`='.$id_requete.'
-     ';
-     $stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+     $id_requete=(int)$_GET['__id'];
 
-     if(($stmt0 !== false)){
-
-         $res0=$stmt0->execute();
-         while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
-             $rev_requete=$tab0[0];
-             $type_requete=$tab0[1];
-                 
-         }
-         $stmt0->close();
+     sql_inclure_reference(32);
+     /*sql_inclure_deb */
+     require_once(INCLUDE_PATH.'/sql/sql_32.php');
+     /*sql_inclure_fin*/
+     $tt=sql_32(array( 
+         'T0_chi_id_requete' => $id_requete, 
+         'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+     ));
+     if($tt['statut'] === true){
+      $requete_en_cours=$tt['valeur'][0];
+     }else{
      }
 }
 $o1.='<script type="text/javascript">'.CRLF;
-$o1.='var globale_id_requete='.$id_requete.';'.CRLF;
-$o1.='var globale_rev_requete=\''.str_replace('\'','\\\'',str_replace("\r",'\\r',str_replace("\n",'\\n',$rev_requete))).'\';'.CRLF;
-$o1.='var globale_type_requete=\''.$type_requete.'\';'.CRLF;
+$o1.='var globale_requete_en_cours='.json_encode($requete_en_cours,JSON_FORCE_OBJECT).';'.CRLF;
 $o1.='</script>'.CRLF;
 print($o1);$o1='';
 

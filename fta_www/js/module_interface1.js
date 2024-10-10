@@ -239,22 +239,25 @@ class interface1{
       =============================================================================================================
       function aller_a_la_ligne
     */
-    aller_a_la_ligne(nom_textarea){
-        var resultat = window.prompt('aller à la ligne n°?',1);
-        if((resultat) && (isNumeric(resultat))){
+    aller_a_la_ligne(nom_textarea,ajouter=0){
+        var i=0;
+        var position_fin=0;
+        var position_debut=0;
+        var numero_de_ligne = window.prompt('aller à la ligne n°?',1);
+        if((numero_de_ligne) && (isNumeric(numero_de_ligne))){
+            numero_de_ligne=parseInt(numero_de_ligne,10)+ajouter;
             var a = dogid(nom_textarea);
             var lignes = a.value.split('\n');
-            if(lignes.length >= resultat){
-                lignes.splice(resultat,(lignes.length - resultat));
-                var position=0;
-                console.log(lignes.length);
-                var i = (lignes.length - 1);
+            if(lignes.length > numero_de_ligne){
+                lignes.splice(numero_de_ligne-1,(lignes.length - numero_de_ligne)+1);
+                position_fin=0;
                 for(i=(lignes.length - 1);i >= 0;i--){
-                    position+=(lignes[i].length + 1);
+                    position_fin+=(lignes[i].length + 1);
                 }
+                position_debut=position_fin-lignes[lignes.length-1].length-1;
                 a.focus();
-                a.selectionStart=0;
-                a.selectionEnd=position;
+                a.selectionStart=position_debut;
+                a.selectionEnd=position_fin;
             }
         }
     }

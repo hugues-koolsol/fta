@@ -5,6 +5,28 @@
 /*
   =====================================================================================================================
 */
+function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete){
+    $repertoire_destination=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql';
+
+    $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'sql_'.$id_requete.'.php';
+
+
+    if($fd=fopen($nom_fichier,'w')){
+
+/*
+        if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$nom_fichier='.var_export( $nom_fichier , true ) .CRLF.CRLF); fclose($fdtoto);}
+*/
+        if(fwrite($fd,'<?'.'php'.PHP_EOL.$source_php_requete)){
+
+            fclose($fd);
+
+        }
+    }
+ 
+}
+/*
+  =====================================================================================================================
+*/
 function modifier_la_requete_en_base(&$data){
 
     sql_inclure_reference(9);
@@ -19,11 +41,16 @@ function modifier_la_requete_en_base(&$data){
           'n_cht_sql_requete' => $data['input']['sql'],
           'n_cht_php_requete' => $data['input']['php'],
           'n_cht_matrice_requete' => json_encode($data['input']['tableau_rev_requete']),
+          'n_cht_commentaire_requete' => $data['input']['cht_commentaire_requete'],
     );
     
     $tt=sql_9($a_modifier);
     if($tt['statut']===true){
         $data['status']='OK';
+        ecrire_le_php_de_la_requete_sur_disque($data['input']['id_requete'],$data['input']['php']);
+            
+        
+        
     }else{
         $data['messages'][]=__FILE__.' '.__LINE__.' modifier_la_requete_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
         $data['status']='KO';
@@ -59,13 +86,31 @@ function enregistrer_la_requete_en_base(&$data){
           'cht_rev_requete' => $data['input']['rev'],
           'cht_sql_requete' => $data['input']['sql'],
           'cht_php_requete' => $data['input']['php'],
+          'cht_commentaire_requete' => $data['input']['cht_commentaire_requete'],
          )
     );
     $tt=sql_7($a_inserer);
     if($tt['statut']===true){
-     $data['status']='OK';
-     $data['nouvel_id']=$tt['nouvel_id'];
-     
+        $data['status']='OK';
+        $data['nouvel_id']=$tt['nouvel_id'];
+        /*
+         lors de la création dans l'interface, l'id est égal à 0 ou bien nnn si on part d'une requête existante
+        */
+        $nouveau_php=str_replace( 'function sql_'.$data['input']['id_courant'].'(' , 'function sql_'.$data['nouvel_id'].'(' , $data['input']['php'] );
+        sql_inclure_reference(35);
+        // sql_inclure_deb
+        require_once(INCLUDE_PATH.'/sql/sql_35.php');
+        // sql_inclure_fin
+        $tt35=sql_35(array(
+              'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+              'c_chi_id_requete' => $data['nouvel_id'],
+              'n_cht_php_requete' => $nouveau_php,
+        ));
+        if($tt35['statut']===true){
+         
+            ecrire_le_php_de_la_requete_sur_disque($data['nouvel_id'],$nouveau_php);
+         
+        }
     }else{
      $data['status']='KO';
     }

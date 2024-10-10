@@ -824,6 +824,7 @@ function php_traite_Expr_List(element,niveau){
     return({'status':true,'value':t});
 }
 function php_traite_Expr_Array(element,niveau){
+
     var t='';
     var lesElements='';
     if(element.items){
@@ -844,6 +845,9 @@ function php_traite_Expr_Array(element,niveau){
                     if(objValeur.status === true){
                         if(lesElements !== ''){
                             lesElements+=' , ';
+                        }
+                        if(element.items[i].attributes.hasOwnProperty('comments') && element.items[i].attributes.comments.length>0){
+                          lesElements+=ajouteCommentairesAvant(element.items[i],niveau);
                         }
                         if(cle !== ''){
                             if((element.items[i].byRef) && (element.items[i].byRef === true)){

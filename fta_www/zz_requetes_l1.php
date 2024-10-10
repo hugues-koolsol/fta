@@ -57,12 +57,13 @@ if((isset($_POST)) && (count($_POST) > 0)){
         SELECT 
         `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete`
          FROM b1.tbl_requetes T0
+        WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
          ORDER BY  `T0`.`chi_id_requete`  ASC;
 
         */
         /*sql_inclure_fin*/
         
-        $retour_sql=sql_6(array());
+        $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
 
         if($retour_sql['statut'] === true){
@@ -237,7 +238,11 @@ if((isset($_POST)) && (count($_POST) > 0)){
         */
         /*sql_inclure_fin*/
         
-        $tt=sql_3(array( 'c_chi_id_requete' => $_POST['renuméroter_une_requete'], 'n_chi_id_requete' => $_POST['__nouveau_numéro']));
+        $tt=sql_3(array( 
+         'c_chi_id_requete' => $_POST['renuméroter_une_requete'], 
+         'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+         'n_chi_id_requete' => $_POST['__nouveau_numéro']
+        ));
 
         if($tt['statut'] === true){
 
@@ -417,19 +422,17 @@ if($tt['statut'] === false){
 
 }
 
-
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir=''.'&amp;chi_id_requete='.rawurlencode($chi_id_requete).'&amp;cht_rev_requete='.rawurlencode($cht_rev_requete).'&amp;chp_type_requete='.rawurlencode($chp_type_requete).'';
 $boutons_avant='<a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>';
 $boutons_avant.=' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>'.CRLF;
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_avant);
-
-
 $lsttbl='';
 $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';
 $lsttbl.='<th>id</th>';
 $lsttbl.='<th>type</th>';
+$lsttbl.='<th>commentaire</th>';
 $lsttbl.='<th>rev</th>';
 $lsttbl.='<th>sql</th>';
 $lsttbl.='</tr></thead><tbody>';
@@ -444,6 +447,7 @@ foreach($tt['valeur'] as $k0 => $v0){
     $lsttbl.='</td>';
     $lsttbl.='<td style="text-align:center;">'.$v0['T0.chi_id_requete'].'</td>';
     $lsttbl.='<td style="text-align:left;">'.$v0['T0.chp_type_requete'].'</td>';
+    $lsttbl.='<td style="text-align:center;">'.$v0['T0.cht_commentaire_requete'].'</td>';
     $lsttbl.='<td style="text-align:left;">';
 
     if($v0['T0.cht_rev_requete'] !== null){

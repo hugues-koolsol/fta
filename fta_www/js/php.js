@@ -2345,6 +2345,8 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){ // id = position
  var obje={};
  var textObj='';
  var l01=tab.length;
+ var seuil_elements_dans_tableau=3;
+ var commentaire='';
  
  var nombre_elements_dans_tableau=0;
  
@@ -2355,67 +2357,81 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){ // id = position
    }
   }
  }
- 
+
  for(j=id+1;j<tab.length && tab[j][3]>tab[id][3];j++){
-  if(tab[j][3]===tab[id][3]+1){ // si on est au niveau +1
-   if(tab[j][1]==='' && tab[j][2]==='f'){
-    if(tab[j][8]===2){
-     
-     /* format clé => valeur */
-     var cle='';
-     var valeur='';
-     for(var k=j+1;k<l01 && tab[k][3]>tab[j][3];k++){
-         if(tab[k][7]===j){
-             niveau+=2;
-             obje=php_traiteElement(tab , k , niveau,options);
-             niveau-=2;
-             if(obje.status===true){
-                 if(tab[k][9]===1){
-                    cle=obje.value;
-                 }else{
-                    valeur=obje.value;
+     if(tab[j][3]===tab[id][3]+1){ // si on est au niveau +1
+         if(tab[j][1]==='#' && tab[j][2]==='f'){
+             nombre_elements_dans_tableau=seuil_elements_dans_tableau+1;
+             commentaire+=tab[j][13];
+         }else if(tab[j][1]==='' && tab[j][2]==='f'){
+             if(tab[j][8]===2){
+                 
+                 /* format clé => valeur */
+                 var cle='';
+                 var valeur='';
+                 for(var k=j+1;k<l01 && tab[k][3]>tab[j][3];k++){
+                     if(tab[k][7]===j){
+                         if(tab[k][1]==='#' && tab[k][2]==='f' ){
+                           nombre_elements_dans_tableau=seuil_elements_dans_tableau+1;
+                         }else{
+                             niveau+=2;
+                             obje=php_traiteElement(tab , k , niveau,options);
+                             niveau-=2;
+                             if(obje.status===true){
+                                 if(tab[k][9]===1){
+                                    cle=obje.value;
+                                 }else{
+                                    valeur+=obje.value;
+                                 }
+                             }else{
+                                return php_logerr({status:false,value:t,id:id,tab:tab,message:'2357 php_traiteDefinitionTableau il y a un problème'});
+                             }
+                         }
+                     }
                  }
-             }else{
-                return php_logerr({status:false,value:t,id:id,tab:tab,message:'2357 php_traiteDefinitionTableau il y a un problème'});
+                 textObj+=',';
+                 if(nombre_elements_dans_tableau>seuil_elements_dans_tableau){
+                     textObj+=espacesn(true,niveau+1);
+                 }else{
+                     textObj+= ' ';
+                 }
+                 textObj+=cle+' => '+valeur+'';
+
+              
+             }else if(tab[j][8]===1){
+
+                 /* en php, i peut n'y avoir qu'une dimention sans cle => valeur array['a','b']  */
+                 
+                 niveau+=2;
+                 obje=php_traiteElement(tab , j+1 , niveau,options);
+                 niveau-=2;
+                 if(obje.status==true){
+                  textObj+=',';
+                  if(nombre_elements_dans_tableau>seuil_elements_dans_tableau){
+                   textObj+=espacesn(true,niveau+1);
+                  }else{
+                   textObj+= ' ';
+                  }
+                   textObj+=obje.value+'';
+                 }else{
+                  return php_logerr({status:false,value:t,id:id,tab:tab,message:'2378 php_traiteDefinitionTableau il y a un problème'});
+                 }
              }
          }
      }
-     textObj+=',';
-     if(nombre_elements_dans_tableau>3){
-      textObj+=espacesn(true,niveau+1);
-     }else{
-      textObj+= ' ';
-     }
-     textObj+=cle+' => '+valeur+'';
-
-     
-    }else if(tab[j][8]===1){
-
-     /* en php, i peut n'y avoir qu'une dimention sans cle => valeur array['a','b']  */
-     
-     niveau+=2;
-     obje=php_traiteElement(tab , j+1 , niveau,options);
-     niveau-=2;
-     if(obje.status==true){
-      textObj+=',';
-      if(nombre_elements_dans_tableau>3){
-       textObj+=espacesn(true,niveau+1);
-      }else{
-       textObj+= ' ';
-      }
-       textObj+=obje.value+'';
-     }else{
-      return php_logerr({status:false,value:t,id:id,tab:tab,message:'2378 php_traiteDefinitionTableau il y a un problème'});
-     }
-     
-     
-    }
-   }
-  }
  }
  t+='array(';
- if(textObj!==''){
-  t+=textObj.substr(1);
+ if(commentaire!==''){
+
+     if(textObj!==''){
+         t+=espacesn(true,niveau+1)+'/*'+commentaire+'*/'+textObj.substr(1);
+     }else{
+         t+=espacesn(true,niveau+1)+'/*'+commentaire+'*/';
+     }
+ }else{
+    if(textObj!==''){
+        t+=textObj.substr(1);
+    }
  }
  t+=')';
  
