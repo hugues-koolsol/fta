@@ -1006,6 +1006,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         }
                         t+=espcLigne;
                         t+='if(';
+                        
                         obj=js_condition0(tab,debutCondition,(niveau + 1));
                         if(obj.status === true){
                             if((obj.value.substr(0,1) === '(') && (obj.value.substr((obj.value.length - 1),1) === ')')){
@@ -1016,8 +1017,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                   on a une suite de et/ou 
                                 */
                                 obj.value=obj.value.replace(/ \|\| /g,espcLigne + ' || ').replace(/ && /g,espcLigne + ' && ');
+                                t+=obj.value;
+                                t+='){';
+                            }else{
+                                if(obj.value.length>120 && obj.value.indexOf('\n')<0){
+                                    
+                                    obj.value=obj.value.replace(/ \|\| /g,espcLigne + ' || ').replace(/ && /g,espcLigne + ' && ');
+                                    t+=obj.value;
+                                    t+=espcLigne +'){';
+                                }else{
+                                    t+=obj.value;
+                                    t+='){';
+                                }
                             }
-                            t+=obj.value;
                         }else{
                             return(logerreur({
                                 status:false,
@@ -1027,7 +1039,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                 'message':'2 problème sur la condition du choix en indice ' + tabchoix[j][0]
                             }));
                         }
-                        t+='){';
                         if((tabchoix[j][2] > 0) && (tabchoix[j][4] > 0)){
                             niveau=niveau + 1;
                             obj=js_tabTojavascript1(tab,tabchoix[j][2],dansFonction,false,niveau);
@@ -2048,6 +2059,7 @@ function js_traiteInstruction1(tab,niveau,id){
      || (tab[id][1] === 'modulo')
      || (tab[id][1] === 'moins')
      || (tab[id][1] === 'etBin')
+     || (tab[id][1] === 'puissance')
      || (tab[id][1] === 'decalDroite')
      || (tab[id][1] === 'concat')){
         var objOperation = TraiteOperations1(tab,tab[id][0]);
@@ -2992,6 +3004,8 @@ function recupere_operateur(n){
         return '/';
     }else if(n === 'modulo'){
         return '%';
+    }else if(n === 'puissance'){
+        return '**';
     }else if(n === 'plus'){
         return '+';
     }else if(n === 'concat'){
@@ -3676,17 +3690,6 @@ function js_condition1(tab,id,niveau){
                         t+=' | ';
                     }
                     if(tab[tabPar[1]][2] === 'c'){
-                        /*
-                          if[tab[tabPar[1]][4]==true]{
-                          t+='\''+tab[tabPar[1]][1]+'\'';
-                          }else{
-                          if[tab[tabPar[1]][1]=='vrai' || tab[tabPar[1]][1]=='faux']{
-                          t+=[tab[tabPar[1]][1]=='vrai'?'true':'false'];
-                          }else{
-                          t+=tab[tabPar[1]][1];
-                          }
-                          }
-                        */
                         t+=maConstante(tab[tabPar[1]]);
                     }else{
                         if((tab[tabPar[1]][2] === 'f') && (tab[tabPar[1]][1] === 'appelf')){
@@ -3702,7 +3705,7 @@ function js_condition1(tab,id,niveau){
                                     message:'il faut un nom de fonction à appeler n(xxxx)'
                                 }));
                             }
-                        }else if((tab[tabPar[1]][2] === 'f') && ((tab[tabPar[1]][1] === 'moins') || (tab[tabPar[1]][1] === 'plus') || (tab[tabPar[1]][1] === 'concat') || (tab[tabPar[1]][1] === 'Typeof'))){
+                        }else if((tab[tabPar[1]][2] === 'f') && ((tab[tabPar[1]][1] === 'moins') || (tab[tabPar[1]][1] === 'plus') || (tab[tabPar[1]][1] === 'mult') || (tab[tabPar[1]][1] === 'divi') || (tab[tabPar[1]][1] === 'concat') || (tab[tabPar[1]][1] === 'Typeof'))){
                             var objOperation = TraiteOperations1(tab,tab[tabPar[1]][0]);
                             if(objOperation.status === true){
                                 t+=objOperation.value;

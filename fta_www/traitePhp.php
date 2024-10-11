@@ -26,7 +26,7 @@ $o1='';?>
     </div>
     <textarea class="txtar1" id="txtar2" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
     <div style="width:90%;">
-        <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php('txtar2','txtar3')">R2P↧</a>
+        <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php(&quot;txtar2&quot;,&quot;txtar3&quot;,true)">R2P↧</a>
         <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar3&quot;,1)">aller à la ligne n°</a>
         <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar3&quot;)">aller à la position</a>
         <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>

@@ -2263,7 +2263,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                     t+=obj.value;
                 }else{
                     return(astphp_logerreur({'status':false,'message':'dans TransformAstPhpEnRev pour Expr_AssignOp_ 2261 ',element:stmts[i]}));
-                    t+='#(erreur TransformAstPhpEnRev 1950)';
+
                 }
                 /*===============================================*/
             }else if("Expr_Assign" === stmts[i].nodeType){

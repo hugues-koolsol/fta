@@ -100,6 +100,8 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
 function decaler(direction){
     parentheses();
     return;
+    /*#
+    en pause pour l'instant
     if(global_editeur_derniere_valeur_selecStart < global_editeur_derniere_valeur_selectEnd){
         console.log(global_editeur_derniere_valeur_selecStart,global_editeur_derniere_valeur_selectEnd);
         var zoneSource = document.getElementById(global_editeur_nomDeLaTextArea);
@@ -121,6 +123,7 @@ function decaler(direction){
         zoneSource.focus();
         zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
     }
+    */
 }
 /*
   

@@ -463,6 +463,9 @@ function recupNomOperateur(s){
     }else if(s === '%'){
 
         return 'modulo';
+    }else if(s === '**'){
+
+        return 'puissance';
     }else if(s === '=='){
 
         return 'egal';
@@ -1677,7 +1680,6 @@ function traiteObjectExpression1(element,niveau){
             t+='(' + val.key.raw + ',';
         }else{
             return(astjs_logerreur({status:false,'message':'erreur dans traiteObjectExpression1 609 ' + val.key.type,element:element}));
-            t+='(TODO_FOR_KEY_' + val.key.type + ' , ';
         }
         /*
           //     || 'AssignmentExpression'  === val.value.type

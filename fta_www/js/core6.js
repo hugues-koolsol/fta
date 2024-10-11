@@ -473,8 +473,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             }
             /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
             if(fichierRev0){
-                ligne=tab[tab.length - 1];
-                ligne=replaceAll(ligne,' ','');
+                ligne=tab[tab.length - 1].replace(/ /g,'');
                 if(ligne !== ''){
                     tab.push(unBloc);
                 }else{
@@ -2045,8 +2044,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 quitterSiErreurNiveau:quitterSiErreurNiveau,
                                 autoriserCstDansRacine:autoriserCstDansRacine
                             })));
-                            temp={'status':false,'value':T,'id':i,'message':'1602 la racine ne peut pas contenir des constantes'};
-                            return(logerreur(temp));
                         }
                     }
                     indice++;

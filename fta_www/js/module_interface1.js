@@ -514,7 +514,7 @@ class interface1{
       convertir le contenu d'une textearea rev et le mettre le résultat php dans une textarea
       =============================================================================================================
     */
-    convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php){
+    convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
         clearMessages('zone_global_messages');
         var a = dogid(nom_zone_source_rev);
         var startMicro = performance.now();
@@ -528,11 +528,18 @@ class interface1{
             var objPhp = parsePhp0(matriceFonction.value,0,0);
             if(objPhp.status === true){
                 dogid(nom_zone_genere_php).value=objPhp.value;
+                if(bouton_interface===true){
+                 /* pour firefox ! */
+                 return ;
+                }
                 return({status:true,value:matriceFonction.value});
             }
-        }else{
         }
         displayMessages('zone_global_messages');
+        if(bouton_interface===true){
+         /* pour firefox ! */
+         return;
+        }
         return({status:true});
     }
     /* function mouseWheelOnMenu */

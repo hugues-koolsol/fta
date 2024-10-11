@@ -557,6 +557,12 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
     }else{
         return(logerreur({status:false,message:'0275 dans pas de into : '+JSON.stringify(json_partiel(element))}));
     }
+
+    if(element.or){
+        if(element.or==='ignore'){
+             t+=',ignorer()';
+        }
+    }
     if(element.result && element.result.length>0){
         t+='\n'+esp0+esp1+esp1+',valeurs(';
         /*
@@ -1022,7 +1028,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
 
 
  return {status:true,value:t};
- return {status:true,value:t};
+
 }
 
 

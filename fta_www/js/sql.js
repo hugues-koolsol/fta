@@ -673,6 +673,7 @@ function tabToSql0(tab,id,niveau,options){
                 var liste_des_valeurs_pour_insert='';
                 var valeur_du_champ='';
                 var commentaire_general='';
+                var ignorer='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if(tab[j][7] === tab[i][0]){
                         if((tab[j][1] === 'provenance') && (tab[j][8] >= 1)){
@@ -709,6 +710,9 @@ function tabToSql0(tab,id,niveau,options){
                                     }
                                 }
                             }
+                        }
+                        if(tab[j][1] === 'ignorer' && tab[j][2] === 'f'){
+                         ignorer=' OR IGNORE ';
                         }
                         if(tab[j][1] === 'nom_de_la_table' && tab[j][2] === 'f'){
                             var o = (j + 1);
@@ -867,14 +871,14 @@ function tabToSql0(tab,id,niveau,options){
                         }
                     }else if(tab[i][1] === 'insérer'){
                         if(options.au_format_php===true){
-                            t+='INSERT '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`(';
+                            t+='INSERT '+ignorer+''+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`(';
                             t+=''+liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
                             
                             options.debut_sql_pour_insert='INSERT INTO '+(nom_de_la_base!==''?  '`\'.$GLOBALS[BDD][BDD_'+nom_de_la_base+'][\'nom_bdd\'].\'`.':'') +'`'+ nom_de_la_table + '`('+liste_des_champs_pour_insert+CRLF+') VALUES ';
                             
                             
                         }else{
-                            t+='INSERT '+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'INTO '+(nom_de_la_base!==''?nom_de_la_base+'.':'') +'`'+ nom_de_la_table +'`(';
+                            t+='INSERT '+ignorer+''+(commentaire_general!==''?'/* '+commentaire_general+' */ ':'')+'INTO '+(nom_de_la_base!==''?nom_de_la_base+'.':'') +'`'+ nom_de_la_table +'`(';
                             t+=liste_des_champs_pour_insert+CRLF+') VALUES ('+liste_des_valeurs_pour_insert+CRLF+');';
                         }
                     }else{

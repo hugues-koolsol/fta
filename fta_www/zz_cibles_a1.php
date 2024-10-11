@@ -2,7 +2,32 @@
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 initialiser_les_services(true,true); // sess,bdd
-require_once('../fta_inc/db/acces_bdd_cibles1.php');
+
+
+function recupere_une_donnees_des_cibles($id){
+ 
+        sql_inclure_reference(34);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_34.php');
+        /*
+        SELECT `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible` 
+        FROM b1.tbl_cibles T0 
+        WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
+
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_34(array( 'T0_chi_id_cible' => $id));
+
+        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+
+            return false;
+
+        }
+        $__valeurs=$tt['valeur'][0];
+        return $__valeurs;
+ 
+}
 
 
 /*
@@ -43,7 +68,6 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
       
 
       'fta_inc/db/__liste_des_acces_bdd.php' => array(),
-      'fta_inc/db/acces_bdd_cibles1.php' => array(),
       'fta_inc/db/acces_bdd_dossiers1.php' => array(),
       'fta_inc/db/acces_bdd_sources1.php' => array(),
       'fta_inc/db/acces_bdd_revs1.php' => array(),
@@ -235,16 +259,12 @@ require_once('../fta_inc/db/acces_bdd_cibles1.php');
     echo __FILE__ . ' ' . __LINE__ . ' fichier structure introuvable = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
    }
 
-/*
-======================
-          'fta_inc/db/__liste_des_acces_bdd.php' => array(),
-*/
    
    /* on supprime la base systeme ftb */
    $chemin_base_systeme=realpath($dossier_racine.'/fta_inc/db/sqlite/system.db');
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
+
    if(is_file($chemin_base_systeme)){
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_base_systeme , true ) . '</pre>' ; exit(0);
+
     if(!unlink($chemin_base_systeme)){
      echo __FILE__ . ' ' . __LINE__ . ' unlink base system impossible = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
     }
@@ -542,21 +562,17 @@ if(isset($_POST)&&sizeof($_POST)>=1){
   $__id= isset($_POST['__id1'])?(is_numeric($_POST['__id1'])?$_POST['__id1']:0):0;
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
-  if($__id!==0){
-      $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-  }else{
+  $__valeurs=recupere_une_donnees_des_cibles($__id);
+  if($__valeurs===false){
       ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
       recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
   }
-  
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
   
   
   if($__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta'){
     ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer "fta"');
     recharger_la_page('zz_cibles_l1.php');
   }
-  
   
   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('BEGIN TRANSACTION');
   
@@ -619,63 +635,88 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__creation'){
   
-  /*
-    ===================================================================================================================
-    ============================================= CREATION ============================================================
-    ===================================================================================================================
-  */
-  
-  if(erreur_dans_champs_saisis_cibles()){
-   
-      recharger_la_page(BNF.'?__action=__creation');
-      
-  }
-  
-  if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']==='fta' && $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] ==='fta'){
-      ajouterMessage('erreur' , __LINE__ .' : le projet fta est la racine et est déjà créé' , BNF );
-      recharger_la_page(BNF.'?__action=__creation');
-  }
-  
-  $sql='
-   INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` (`chp_nom_cible` , `chp_dossier_cible`, `chp_commentaire_cible` ) VALUES
-     (
-        \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])         .'\'
-      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])     .'\'
-      , \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) .'\'
-     )
-  ' ;
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
-   
-      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-      recharger_la_page(BNF.'?__action=__creation'); 
-    
-  }else{
-   
-    
-   
-    $__nouvel_id=$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID();
-    
-    /* insertion du dossier racine */    
-    $sql=' INSERT INTO `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` (`chp_nom_dossier` , `chx_cible_dossier` ) VALUES   (  \'/\' ,   '.sq0($__nouvel_id)     .'  ) ' ;
-    if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){ // 
+     /*
+       ===================================================================================================================
+       ============================================= CREATION ============================================================
+       ===================================================================================================================
+     */
      
-        ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-        recharger_la_page(BNF.'?__action=__creation'); 
-        
+     if(erreur_dans_champs_saisis_cibles()){
       
-    }else{
+         recharger_la_page(BNF.'?__action=__creation');
+         
+     }
+     
+     if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']==='fta' && $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] ==='fta'){
+         ajouterMessage('erreur' , __LINE__ .' : le projet fta est la racine et est déjà créé' , BNF );
+         recharger_la_page(BNF.'?__action=__creation');
+     }
+  
+     sql_inclure_reference(36);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_36.php');
+     /*
+     
+       INSERT INTO b1.`tbl_cibles`(
+           `chp_nom_cible` , 
+           `chp_dossier_cible` , 
+           `chp_commentaire_cible`
+       ) VALUES (
+           :chp_nom_cible , 
+           :chp_dossier_cible , 
+           :chp_commentaire_cible
+       );
+     */
+     /*sql_inclure_fin*/
+     
+     $tt=sql_36(array( 
+         array( 
+          'chp_nom_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] , 
+          'chp_dossier_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] , 
+          'chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] ,
+         )
+     ));
 
-        
-        $nom_du_dossier='../../'.$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'];
-        @mkdir($nom_du_dossier);
-        
-       
-        ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$__nouvel_id.') a bien été créé' , BNF );
-        recharger_la_page(BNF.'?__action=__modification&__id='.$__nouvel_id); 
-    }
-   
-  }
+     if($tt['statut'] === false){
+
+         ajouterMessage('erreur',__LINE__.' : '.$tt['message'],BNF);
+         recharger_la_page(BNF.'?__action=__creation');
+
+     }else{
+
+         /* création du dossier racine */    
+         
+         sql_inclure_reference(37);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_37.php');
+         /*
+           INSERT INTO b1.`tbl_dossiers`(
+               `chx_cible_dossier` , 
+               `chp_nom_dossier`
+           ) VALUES (
+               :chx_cible_dossier , 
+               :chp_nom_dossier
+           );         */
+         /*sql_inclure_fin*/
+         
+         $tt37=sql_37(array( 
+             array( 
+              'chx_cible_dossier' => $tt['nouvel_id'], 
+              'chp_nom_dossier' => '/', 
+             )
+         ));
+         if($tt37['statut'] === false){
+             ajouterMessage('erreur' , __LINE__ .' : ' . $tt37['message'] , BNF );
+             recharger_la_page(BNF.'?__action=__creation'); 
+         }else{
+             $nom_du_dossier='../../'.$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'];
+             @mkdir($nom_du_dossier);
+             
+            
+             ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$tt['nouvel_id'].') a bien été créé' , BNF );
+             recharger_la_page(BNF.'?__action=__modification&__id='.$tt['nouvel_id']); 
+         }
+     }
  
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__creation_du_dossier'){
 
@@ -692,12 +733,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     unset($_SESSION[APP_KEY][NAV][BNF]);
    }
    if($__id!==0){
-       $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-       $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
-       if(mkdir($__dossier)){
-           ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été créé avec succès !'  , BNF );
+       $__valeurs=recupere_une_donnees_des_cibles($__id);
+       if($__valeurs!==false){
+           $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
+           if(mkdir($__dossier)){
+               ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été créé avec succès !'  , BNF );
+           }else{
+               ajouterMessage('erreur' , __LINE__ . ' il y a eu un problème lors de la création du dossier "'.$__dossier.'" '  , BNF );
+           }
        }else{
-           ajouterMessage('erreur' , __LINE__ . ' il y a eu un problème lors de la création du dossier "'.$__dossier.'" '  , BNF );
+           ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
        }
    }else{
        ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
@@ -721,40 +766,37 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     ============================================= SUPPRESSION D'UN DOSSIER ============================================
     ===================================================================================================================
   */
-
-   $__id=$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
-   if($__id!==0 && $__id!=='1'  && $__id!==1 ){
-       $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-       $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
-       if(is_dir($__dossier)){
-          if(le_dossier_est_vide($__dossier)){
-              if(rmdir($__dossier)){
-                  ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été supprimé avec succès !'  , BNF );
+   
+   $__id=(int)$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
+   if($__id!==0 && $__id!==1 ){
+       $__valeurs=recupere_une_donnees_des_cibles($__id);
+       if($__valeurs!==false){
+           $__dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
+           if(is_dir($__dossier)){
+              if(le_dossier_est_vide($__dossier)){
+                  if(rmdir($__dossier)){
+                      ajouterMessage('succes' , __LINE__ . ' le dossier "'.$__dossier.'" a été supprimé avec succès !'  , BNF );
+                      unset($_SESSION[APP_KEY][NAV][BNF]);
+                      
+                  }else{
+                      ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
+                  }
               }else{
-                  ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
+                  ajouterMessage('avertissement' , __LINE__ . ' le dossier contient des éléments '  , BNF );
               }
-          }else{
-              ajouterMessage('avertissement' , __LINE__ . ' le dossier contient des éléments '  , BNF );
-          }
+           }else{
+             ajouterMessage('avertissement' , __LINE__ . ' le dossier est absent '  , BNF );
+           }
        }else{
-         ajouterMessage('avertissement' , __LINE__ . ' le dossier est absent '  , BNF );
+          ajouterMessage('avertissement' , __LINE__ . ' le dossier est absent '  , BNF );
        }
     
    }else{
        ajouterMessage('avertissement' , __LINE__ . ' il y a eu un problème'  , BNF );
    }
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SERVER['REQUEST_URI'] , true ) . '</pre>' ; exit(0);
    recharger_la_page($_SERVER['REQUEST_URI']);
 
-/*
-  if(is_dir($dossier)){
-   $o1.='le dossier existe '.CRLF;
-   
-   if(le_dossier_est_vide($dossier)){
-    
-    $o1.='<br />le dossier '.$dossier.' est vide'.CRLF;
-    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
-    $o1.=' <input type="hidden" value="__suppression_du_dossier" name="__action" id="__action" />'.CRLF;
-*/
 
  }else{
   
@@ -786,63 +828,31 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  ====================================================================================================================
  ====================================================================================================================
 */
-$__id='0';
-if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
- $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
-// echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
- if($__id===0 || $__id==='0' || $__id==='1'){
-       if($__id === '1'){
+$__id=0;
+if(isset($_GET['__action'])&&( $_GET['__action']==='__suppression' || ($_GET['__action'] === '__modification'))){
+    $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?(int)$_GET['__id']:0):0;
+    
+    if($__id === 1 && ($_GET['__action'] === '__suppression') ){
+        ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer la cible 1');
+        recharger_la_page('zz_cibles_l1.php');
+    }
 
-        if(APP_KEY === 'fta'){
-            ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer la cible 1');
+    if($__id===0 ){
+
+        recharger_la_page('zz_cibles_l1.php');
+
+    }else{
+     
+        $__valeurs=recupere_une_donnees_des_cibles($__id);
+        if($__valeurs === false){
+
+            ajouterMessage('erreur',__LINE__.' cible non trouvée');
             recharger_la_page('zz_cibles_l1.php');
-        }else{
-         /*
-          on peut y aller à priori
-         */
-         
+
         }
-       }
-
- }else{
-  /*
-  http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=1&__action=__suppression
-  */
-  $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-  
-
-  if($__valeurs['T0.chi_id_cible']===1){
-   ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer la cible 1'  );
-   recharger_la_page('zz_cibles_l1.php');
-  }
-  if($__valeurs['T0.chp_dossier_cible']!=='fta'){
-   $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
-  }else{
-   ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer fta"'  );
-   recharger_la_page('zz_cibles_l1.php');
-  }
-  
-  
- }
+        
+    }
 }  
-
-if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
- $__id= isset($_GET['__id'])?(is_numeric($_GET['__id'])?$_GET['__id']:0):0;
- if($__id==='0'){
-  recharger_la_page('zz_cibles_l1.php');
- }else{
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);
-  $__valeurs=recupere_une_donnees_des_cibles($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-  
-  
-  if(!isset($__valeurs['T0.chi_id_cible'])){
-   recharger_la_page('zz_cibles_l1.php');
-  }else{
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
-  }
- }
-}
-
 /*
 ============================================================================
 ==== entete de la page =====================================================

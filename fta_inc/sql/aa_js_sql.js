@@ -1,3 +1,4 @@
+//<![CDATA[
 aa_js_sql={
 
 "1":"SELECT \n`T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`\n FROM b1.tbl_utilisateurs T0\nWHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion LIMIT 1 OFFSET 0 ;",
@@ -35,4 +36,7 @@ aa_js_sql={
 "33":"SELECT \n`T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`\n FROM b1.tbl_cibles T0\nWHERE (`T0`.`chi_id_cible` = :T0_chi_id_cible AND `T0`.`chp_nom_cible` LIKE :T0_chp_nom_cible AND `T0`.`chp_dossier_cible` LIKE :T0_chp_dossier_cible AND `T0`.`chp_commentaire_cible` LIKE :T0_chp_commentaire_cible) ORDER BY  `T0`.`chi_id_cible` ASC LIMIT :quantitee OFFSET :debut ;",
 "34":"SELECT \n`T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`\n FROM b1.tbl_cibles T0\nWHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;",
 "35":"\nUPDATE b1.tbl_requetes SET `cht_php_requete` = :n_cht_php_requete\nWHERE (`chi_id_requete` = :c_chi_id_requete AND `chx_cible_requete` = :c_chx_cible_requete) ;",
+"36":"\nINSERT INTO b1.`tbl_cibles`(\n    `chp_nom_cible` , \n    `chp_dossier_cible` , \n    `chp_commentaire_cible`\n) VALUES (\n    :chp_nom_cible , \n    :chp_dossier_cible , \n    :chp_commentaire_cible\n);",
+"37":"\nINSERT INTO b1.`tbl_dossiers`(\n    `chx_cible_dossier` , \n    `chp_nom_dossier`\n) VALUES (\n    :chx_cible_dossier , \n    :chp_nom_dossier\n);",
 };
+//]]>

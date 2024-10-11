@@ -30,8 +30,8 @@ input{
  }
 .yyfilterForm input:not([value=""]){background:yellow;}
 input:focus,textarea:focus,select:focus,button:focus{box-shadow:inset 0px 0px 7px;outline:none;}
-input[type="radio"]{zoom:1.3;vertical-align:bottom;cursor:pointer;} 
-input[type="checkbox"]{zoom:1.5;vertical-align:sub;cursor:pointer;}
+input[type="radio"]{transform:translateY(-4px)scale(1.3);vertical-align:bottom;cursor:pointer;} 
+input[type="checkbox"]{transform:translateY(-2px)scale(1.4);vertical-align:sub;cursor:pointer;}
 input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:var(--yyvtrp);border;0;}
 b{font-weight:bold;}
 div{min-height:var(--yyvhmc);line-height:var(--yyvhmc);}

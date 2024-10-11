@@ -114,8 +114,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
             if($fd=fopen($nom_fichier,'w')){
 
-
-                if(fwrite($fd,'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};')){
+                if(fwrite($fd,'//<![CDATA['.CRLF.'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};'.CRLF.'//]]>')){
 
                     fclose($fd);
 

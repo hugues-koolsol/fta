@@ -13,15 +13,43 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
 
     if($fd=fopen($nom_fichier,'w')){
 
-/*
-        if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$nom_fichier='.var_export( $nom_fichier , true ) .CRLF.CRLF); fclose($fdtoto);}
-*/
         if(fwrite($fd,'<?'.'php'.PHP_EOL.$source_php_requete)){
 
             fclose($fd);
 
         }
     }
+    sql_inclure_reference(6);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_6.php');
+    /*
+    SELECT 
+    `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete`
+     FROM b1.tbl_requetes T0
+    WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
+     ORDER BY  `T0`.`chi_id_requete`  ASC;
+
+    */
+    /*sql_inclure_fin*/
+    
+    $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
+    /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
+
+    if($retour_sql['statut'] === true){
+        $chaine_js='';
+        foreach($retour_sql['valeur'] as $k1 => $v1){
+            $chaine_js.=CRLF.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
+        }
+        $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'aa_js_sql.js';
+
+        if($fd=fopen($nom_fichier,'w')){
+            if(fwrite($fd,'//<![CDATA['.CRLF.'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};'.CRLF.'//]]>')){
+                fclose($fd);
+            }
+        }
+    }
+            
+    
  
 }
 /*
