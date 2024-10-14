@@ -15,6 +15,9 @@ print($o1);$o1='';
 $requete_en_cours=array();
 if(isset($_GET['__action']) && $_GET['__action']=='__modification' && isset($_GET['__id'])  && is_numeric($_GET['__id']) ){
      $id_requete=(int)$_GET['__id'];
+     if($id_requete<=0){
+         recharger_la_page('zz_requetes_l1.php'); 
+     }
 
      sql_inclure_reference(32);
      /*sql_inclure_deb */

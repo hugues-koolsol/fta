@@ -32,7 +32,7 @@ function supprimer_repertoire_et_fichiers_inclus($dirPath){
             supprimer_repertoire_et_fichiers_inclus($file);
 
         }else{
-
+            
             unlink($file);
         }
 
@@ -43,7 +43,62 @@ function supprimer_repertoire_et_fichiers_inclus($dirPath){
 /*
   =====================================================================================================================
 */
+function integrer_la_requete_dans_la_table_rev( $id_requete , $matrice_requete ){
 
+    sql_inclure_reference(39);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_39.php');
+    /*
+      DELETE FROM b1.tbl_revs
+      WHERE ( `chx_cible_rev` = :chx_cible_rev AND `chp_provenance_rev` = :chp_provenance_rev AND `chx_source_rev` = :chx_source_rev) ;
+    */
+    /*sql_inclure_fin*/
+    $tt=sql_39(array( 
+        'chx_cible_rev'      => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+        'chp_provenance_rev' => 'sql'          ,
+        'chx_source_rev'     => $id_requete    ,
+    ));
+    $matrice=json_decode($matrice_requete,false);
+//    echo __FILE__ . ' ' . __LINE__ . ' $id_requete =  ' . $id_requete . '<pre> ' . var_export(  $matrice , true ) . '</pre>' ; exit(0);
+    
+    for($i=0;$i < count($matrice);$i++){
+        $tab=$matrice[$i];
+        /*
+          14 champs pour le rev + id_cible + chp_provenance_rev + chx_source_rev
+        */
+        $a_sauvegarder[]=array(
+         'chx_cible_rev'                 => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+         'chp_provenance_rev'            => 'sql',
+         'chx_source_rev'                => $id_requete,
+         'chp_id_rev'                    => $tab[0],
+         'chp_valeur_rev'                => $tab[1],
+         'chp_type_rev'                  => $tab[2],
+         'chp_niveau_rev'                => $tab[3],
+         'chp_quotee_rev'                => $tab[4],
+         'chp_pos_premier_rev'           => $tab[5],
+         'chp_pos_dernier_rev'           => $tab[6],
+         'chp_parent_rev'                => $tab[7],
+         'chp_nbr_enfants_rev'           => $tab[8],
+         'chp_num_enfant_rev'            => $tab[9],
+         'chp_profondeur_rev'            => $tab[10],
+         'chp_pos_ouver_parenthese_rev'  => $tab[11],
+         'chp_pos_fermer_parenthese_rev' => $tab[12],
+         'chp_commentaire_rev'           => $tab[13],
+                  
+        );
+    }
+    sql_inclure_reference(12);
+    // sql_inclure_deb
+    require_once(INCLUDE_PATH.'/sql/sql_12.php');
+    // sql_inclure_fin
+    
+    $tt=sql_12($a_sauvegarder);
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);
+ 
+}
+/*
+  =====================================================================================================================
+*/
 if((isset($_POST)) && (count($_POST) > 0)){
 
 
@@ -55,7 +110,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
         require_once(INCLUDE_PATH.'/sql/sql_6.php');
         /*
         SELECT 
-        `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete`
+        `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , `T0`.`cht_matrice_requete`
          FROM b1.tbl_requetes T0
         WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
          ORDER BY  `T0`.`chi_id_requete`  ASC;
@@ -161,6 +216,16 @@ if((isset($_POST)) && (count($_POST) > 0)){
             ajouterMessage('erreur',__LINE__.' erreur sql '.$retour_sql['message'],BNF);
             recharger_la_page(BNF);
         }
+        
+        
+        if($retour_sql['statut'] === true){
+            foreach($retour_sql['valeur'] as $k1 => $v1){
+                if($v1['T0.cht_matrice_requete']!==null){
+                     integrer_la_requete_dans_la_table_rev( $v1['T0.chi_id_requete'] , $v1['T0.cht_matrice_requete']);
+                }
+            }
+        }
+        
 
         $time_end=microtime(true);
         $time=(int)(($time_end-$time_start)*1000*1000)/1000;

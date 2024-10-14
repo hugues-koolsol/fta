@@ -16,8 +16,10 @@ function sql_1($par){
        LIMIT 1 OFFSET 0 ';
     $sql0.=$plage0;
     $donnees0=array();
-    //echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
+    //echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' .  $sql0  . '</pre>' ; exit(0);
+    $err=error_reporting(0);
     $stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
+    error_reporting($err);
     if(($stmt0 !== false)){
         $res0=$stmt0->execute();
         while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
@@ -29,16 +31,16 @@ function sql_1($par){
         }
         return array(
            'statut'  => true       ,
-           'valeur' => $donnees0   ,
-           'sql' => $sql0          ,
-           'where0' => $where0     ,
+           'valeur'  => $donnees0   ,
+           'sql0'    => $sql0          ,
+           'where0'  => $where0     ,
         );
     }else{
         return array(
            'statut'  => false ,
            'message' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
-           'sql' => $sql0,
-           'where0' => $where0     ,
+           'sql0'    => $sql0,
+           'where0'  => $where0     ,
         );
     }
 }

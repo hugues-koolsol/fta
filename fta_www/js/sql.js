@@ -304,15 +304,21 @@ function tabToSql0(tab,id,niveau,options){
     var premiere_jointure_croisee=true;
     var meta='';
     var l01=tab.length;
+    if(tab[id][1]==='bases' && tab[id][2]==='f'){
+        return{status:true,value:''};
+    }
+    
     for(i=id + 1;i < l01;i++){
         if(tab[i][7] === id){
-            if(tab[i][1] === 'sql'){
+            if(tab[i][1] === 'sql' || tab[i][1] === 'requete_manuelle' ){
                 var obj = tabToSql0(tab,i,niveau,options);
                 if(obj.status === true){
                     t+=obj.value;
                 }else{
                     return(logerreur({status:false,message:'erreur 0062'}));
                 }
+            }else if(tab[i][1] === 'base_de_reference'){
+                t+='';
             }else if(tab[i][1] === 'sélectionner'){
                 /*
                   
@@ -656,6 +662,7 @@ function tabToSql0(tab,id,niveau,options){
                 }else{
                     return(logerreur({status:false,message:'0231 erreur dans select, pas de valeurs sélectionnées'}));
                 }
+             
             }else if(tab[i][1] === 'modifier' || tab[i][1] === 'insérer' || tab[i][1] === 'supprimer' ){
                 /*
                   =====================================================================================
@@ -1338,6 +1345,9 @@ function tabToSql0(tab,id,niveau,options){
             }else if(tab[i][1] === 'commit'){
                 t+=espacesn(true,niveau);
                 t+='COMMIT;';
+            }else if(tab[i][1] === 'rollback'){
+                t+=espacesn(true,niveau);
+                t+='ROLLBACK;';
             }else if(tab[i][1] === 'transaction'){
                 niveau++;
                 obj=tabToSql0(tab,i,niveau,options);

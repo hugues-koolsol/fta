@@ -1,6 +1,4 @@
 'use strict';
-
-
 function recupere_element_de_ast_sql(element,niveau,parent,options){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));
@@ -962,6 +960,10 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
 //     debugger;
      t+='\n'+esp0+')'
   
+ }else if(element.type==='statement' && element.variant==='transaction' && element.action==='rollback'){
+     t+='\nrollback()';
+ }else if(element.type==='statement' && element.variant==='transaction' && element.action==='commit'){
+     t+='\ncommit()';
  }else if(element.type==='statement' && element.variant==='transaction' && element.action==='begin'){
   
      /*

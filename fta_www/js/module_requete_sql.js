@@ -163,6 +163,22 @@ class requete_sql{
           etape 1 références des tables
         */
 
+
+        for(var i=0;i<l01;i++){
+            if(tab[i][2]==='f' && ( 'base_de_reference' === tab[i][1]  )){
+                for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+                    if(tab[j][7]===i){
+                       if(tab[j][2] === 'c' ){
+                           that.#obj_webs['bases'][tab[j][1]].selectionne=true
+                       }else if(tab[j][2] === 'f' && tab[j][1]==='#' ){
+                           t+='';
+                       }else{
+                           debugger;
+                       }
+                    }
+                }
+            }
+        }
         for(var i=0;i<l01;i++){
             nom_de_la_table='';
             var alias_de_la_table='';
@@ -178,9 +194,9 @@ class requete_sql{
                         for(var k=j;k<l01 && tab[k][3] > tab[i+1][3] ; k++){
                             if(tab[k][2] === 'f' && "base"===tab[k][1] ){
                                 if(tab[k+1][2]==='c'){
-                                   indice_de_la_base=tab[k+1][1];
-                                   indice_de_la_base=indice_de_la_base.replace(/b/g,'');
-//                                   console.log(indice_de_la_base);
+                                    indice_de_la_base=tab[k+1][1];
+                                    indice_de_la_base=indice_de_la_base.replace(/b/g,'');
+                                    that.#obj_webs['bases'][indice_de_la_base].selectionne=true
                                 }
                             }
                         }
@@ -196,12 +212,9 @@ class requete_sql{
             }
             if(nom_de_la_table!=='' && indice_de_la_base!=='0'){
                 if(init.bases.hasOwnProperty(indice_de_la_base) ){
-
-
                     /* 
                       il faut chercher dans la matrice le 'create_table(nom_de_la_table(' de la table
                     */
-                    
                     var trouve=false; // 
 
                     if(that.#obj_webs.tableau_des_bases_tables_champs[indice_de_la_base] && that.#obj_webs.tableau_des_bases_tables_champs[indice_de_la_base][nom_de_la_table]){
@@ -668,6 +681,7 @@ class requete_sql{
                 break;
             }
         }
+
         this.#mettre_en_stokage_local_et_afficher();
         
     }
@@ -995,7 +1009,8 @@ class requete_sql{
             t+='<a class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.ajouter_cette_formule_dans_la_formule(&quot;'+tab_ex[i].replace(/"/g,'&#34;')+'&quot;)">'+tab_ex[i]+'</a>';
         }
         var contenu='';
-        if( ( "select_liste" === this.#obj_webs.type_de_requete || "select" === this.#obj_webs.type_de_requete  ) && tabchamps.length>0 ){
+        if( "requete_manuelle" === this.#obj_webs.type_de_requete ){
+        }else if( ( "select_liste" === this.#obj_webs.type_de_requete || "select" === this.#obj_webs.type_de_requete  ) && tabchamps.length>0 ){
             if( "conditions" === destination ){
                 for(var i in tabchamps){
 
@@ -1160,17 +1175,19 @@ class requete_sql{
       function afficher_les_donnees
     */
     #afficher_les_donnees(){
+        var rev_initial=document.getElementById('txtar1');
         this.#div_de_travail.innerHTML='';
         var t='';
         var champs_affiches=false;
         t+='<div>';
         t+='type de requête : ';
         t+='<select id="type_de_requete" onchange="'+this.#nom_de_la_variable+'.maj_type_de_requete()">';
-        t+='<option value="select_liste" '+( this.#obj_webs.type_de_requete==='select_liste'?' selected="true"':'')+'>select_liste</option>';
-        t+='<option value="select" '+( this.#obj_webs.type_de_requete==='select'?' selected="true"':'')+'>select</option>';
-        t+='<option value="update" '+( this.#obj_webs.type_de_requete==='update'?' selected="true"':'')+'>update</option>';
-        t+='<option value="insert" '+( this.#obj_webs.type_de_requete==='insert'?' selected="true"':'')+'>insert</option>';
-        t+='<option value="delete" '+( this.#obj_webs.type_de_requete==='delete'?' selected="true"':'')+'>delete</option>';
+        t+='<option value="select_liste"     '+( this.#obj_webs.type_de_requete==='select_liste'?' selected="true"':'')+'>select_liste</option>';
+        t+='<option value="select"           '+( this.#obj_webs.type_de_requete==='select'?' selected="true"':'')+'>select</option>';
+        t+='<option value="update"           '+( this.#obj_webs.type_de_requete==='update'?' selected="true"':'')+'>update</option>';
+        t+='<option value="insert"           '+( this.#obj_webs.type_de_requete==='insert'?' selected="true"':'')+'>insert</option>';
+        t+='<option value="delete"           '+( this.#obj_webs.type_de_requete==='delete'?' selected="true"':'')+'>delete</option>';
+        t+='<option value="requete_manuelle" '+( this.#obj_webs.type_de_requete==='requete_manuelle'?' selected="true"':'')+'>requete_manuelle</option>';
         t+='</select>';
         t+='</div>';
         t+='<table>';
@@ -1485,7 +1502,8 @@ class requete_sql{
         }
         
         
-        if(this.#obj_webs.type_de_requete==='select' || this.#obj_webs.type_de_requete==='select_liste'){
+        if(this.#obj_webs.type_de_requete==='requete_manuelle' ){
+        }else if(this.#obj_webs.type_de_requete==='select' || this.#obj_webs.type_de_requete==='select_liste'){
             rev_texte+='sélectionner(';
         }else if(this.#obj_webs.type_de_requete==='insert'){
             rev_texte+='insérer(';
@@ -1494,6 +1512,19 @@ class requete_sql{
         }else if(this.#obj_webs.type_de_requete==='delete'){
             rev_texte+='supprimer(';
         }
+        rev_texte+='base_de_reference(';
+        for(var i in this.#obj_webs['bases'] ){
+            var liste_des_bases='';
+            if(this.#obj_webs['bases'][i].selectionne===true){
+             if(liste_des_bases!==''){
+               liste_des_bases+=',';
+             }
+             liste_des_bases+=i;
+            }
+            rev_texte+=liste_des_bases;
+        }
+        rev_texte+=')';
+        
         if(this.#obj_webs.type_de_requete!=='delete'){
             rev_texte+=CRLF+'   '+'valeurs('+valeurs+CRLF+'   )';
         }
@@ -1522,7 +1553,71 @@ class requete_sql{
                 rev_texte=obj2.value;
             }
         }
-        
+        if(this.#obj_webs.type_de_requete==='requete_manuelle' ){
+         
+            if(rev_initial===null ){
+                if(this.#globale_rev_requete===''){
+                    rev_texte='requete_manuelle('+CRLF;
+                    rev_texte+='   base_de_reference(';
+                    for(var i in this.#obj_webs['bases'] ){
+                        var liste_des_bases='';
+                        if(this.#obj_webs['bases'][i].selectionne===true){
+                         if(liste_des_bases!==''){
+                           liste_des_bases+=',';
+                         }
+                         liste_des_bases+=i;
+                        }
+                        rev_texte+=liste_des_bases;
+                    }
+                    rev_texte+=')'+CRLF;
+                    rev_texte+=')'+CRLF;
+                }else{
+                    if(this.#globale_rev_requete!==''){
+                     
+                        rev_texte=this.#globale_rev_requete;
+                    }else{
+                        debugger
+                    }
+                }
+            }else{
+                if(rev_initial.value===''){
+                    rev_texte='requete_manuelle('+CRLF;
+                    rev_texte+='   base_de_reference(';
+                    for(var i in this.#obj_webs['bases'] ){
+                        var liste_des_bases='';
+                        if(this.#obj_webs['bases'][i].selectionne===true){
+                         if(liste_des_bases!==''){
+                           liste_des_bases+=',';
+                         }
+                         liste_des_bases+=i;
+                        }
+                        rev_texte+=liste_des_bases;
+                    }
+                    rev_texte+=')'+CRLF;
+                    rev_texte+=')'+CRLF;
+                }else{
+                    if(rev_initial.value.indexOf('base_de_reference()')>=0){
+                        rev_texte='requete_manuelle('+CRLF;
+                        rev_texte+='   base_de_reference(';
+                        for(var i in this.#obj_webs['bases'] ){
+                            var liste_des_bases='';
+                            if(this.#obj_webs['bases'][i].selectionne===true){
+                             if(liste_des_bases!==''){
+                               liste_des_bases+=',';
+                             }
+                             liste_des_bases+=i;
+                            }
+                            rev_texte+=liste_des_bases;
+                        }
+                        rev_texte+=')'+CRLF;
+                        rev_texte+=')'+CRLF;
+                    }else{
+                        debugger
+                    }
+                }
+            }
+        }
+
         t+='<div>';
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar1&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar1&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
@@ -1807,13 +1902,34 @@ class requete_sql{
             }
         }
 
-        if(type_de_requete==='delete' ){
+
+        if(type_de_requete==='requete_manuelle' ){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
             t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
             t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
             t+='    \';'+CRLF;
             t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0);'+CRLF;            
-            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+')){'+CRLF;         
+            t+='    $err=error_reporting(0);'+CRLF;
+            t+='    $ret=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            t+='    error_reporting($err);'+CRLF;
+            t+='    if(false === $ret){'+CRLF;         
+            t+='        return(array( ';         
+            t+='\'statut\' => false, ';         
+            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';
+            t+='\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='    }else{'+CRLF;         
+            t+='        return(array( \'statut\' => true ));'+CRLF;
+            t+='    }'+CRLF;         
+        }else if(type_de_requete==='delete' ){
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            t+='    $texte_sql_'+id_requete_en_base+'=\''+CRLF;
+            t+='      '+nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF+'      ')+CRLF;
+            t+='    \';'+CRLF;
+            t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0);'+CRLF;            
+            t+='    $err=error_reporting(0);'+CRLF;
+            t+='    $ret=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            t+='    error_reporting($err);'+CRLF;
+            t+='    if(false === $ret){'+CRLF;         
             t+='        return(array( ';         
             t+='\'statut\' => false, ';         
             t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';
@@ -1846,7 +1962,10 @@ class requete_sql{
             t+='    }'+CRLF;
             t+='    $texte_sql_'+id_requete_en_base+'.=$liste_des_valeurs;'+CRLF;
             t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0);'+CRLF;            
-            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+id_requete_en_base+')){'+CRLF;
+            t+='    $err=error_reporting(0);'+CRLF;
+            t+='    $ret=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            t+='    error_reporting($err);'+CRLF;
+            t+='    if(false === $ret){'+CRLF;         
             t+='        return(array('+CRLF;
             t+='            \'statut\'      => false, '+CRLF;
             t+='            \'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode(), '+CRLF;
@@ -2010,8 +2129,10 @@ class requete_sql{
             
             t+='    $texte_sql_'+id_requete_en_base+'.=$where0;'+CRLF;
             t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0);'+CRLF;
-            
-            t+='    if(false === $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+')){'+CRLF;         
+            t+='    $err=error_reporting(0);'+CRLF;
+            t+='    $ret=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            t+='    error_reporting($err);'+CRLF;
+            t+='    if(false === $ret){'+CRLF;         
             t+='        return(array( ';         
             t+='\'statut\' => false, ';         
             t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';         
@@ -2094,9 +2215,9 @@ class requete_sql{
             
             t+='    $donnees0=array();'+CRLF;
             t+='    //echo __FILE__ . \' \' . __LINE__ . \' $sql0 = <pre>\' .  $sql0  . \'</pre>\' ; exit(0);'+CRLF;
-            t+='    $errr=error_reporting(0);'+CRLF;
+            t+='    $err=error_reporting(0);'+CRLF;
             t+='    $stmt0=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($sql0);'+CRLF;
-            t+='    error_reporting($errr);'+CRLF;
+            t+='    error_reporting($err);'+CRLF;
             t+='    if(($stmt0 !== false)){'+CRLF;
             t+='        $res0=$stmt0->execute();'+CRLF;
             t+='        while(($tab0=$res0->fetchArray(SQLITE3_NUM))){'+CRLF;
@@ -2260,9 +2381,9 @@ class requete_sql{
             
             t+='    $donnees0=array();'+CRLF;
             t+='    //echo __FILE__ . \' \' . __LINE__ . \' $sql0 = <pre>\' . $sql0 . \'</pre>\' ; exit(0);'+CRLF;
-            t+='    $errr=error_reporting(0);'+CRLF;
+            t+='    $err=error_reporting(0);'+CRLF;
             t+='    $stmt0=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->prepare($sql0);'+CRLF;
-            t+='    error_reporting($errr);'+CRLF;
+            t+='    error_reporting($err);'+CRLF;
             t+='    if(($stmt0 !== false)){'+CRLF;
             t+='        $res0=$stmt0->execute();'+CRLF;
             t+='        while(($tab0=$res0->fetchArray(SQLITE3_NUM))){'+CRLF;

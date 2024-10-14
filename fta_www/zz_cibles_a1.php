@@ -490,148 +490,311 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    ====================================================================================================================
  */
  if(isset($_POST['__action'])&&$_POST['__action']=='__modification'){
-  if(erreur_dans_champs_saisis_cibles()){
-   if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])&&is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+     if(erreur_dans_champs_saisis_cibles()){
+         if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])&&is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
+          
+             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
-   }else{
-    ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'] );
-    recharger_la_page('zz_cibles_l1.php');
-   }
-  }
-  
-  if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']==='1'){
-      $sql='
-       UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` SET 
-          `chp_commentaire_cible` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
-        WHERE 
-          `chi_id_cible`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
-      ';
-  }else{
-      $sql='
-       UPDATE `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_cibles` SET 
-          `chp_nom_cible`         = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'])        .'\'
-        , `chp_dossier_cible`     = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'])    .'\'
-        , `chp_commentaire_cible` = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']).'\'
-        WHERE 
-          `chi_id_cible`          = \''.sq0($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']).'\'
-      ';
-  }
+         }else{
+             ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'] );
+             recharger_la_page('zz_cibles_l1.php');
+         }
+     }
+     
+     if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']==='1'){
+      
+      
+         sql_inclure_reference(47);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_47.php');
+         /* UPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible WHERE `chi_id_cible` = 1 ; */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_47(array(
+             'n_chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'],
+         ));
+     }else{
+         sql_inclure_reference(48);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_48.php');
+         /* 
+           UPDATE b1.tbl_cibles SET 
+            `chp_nom_cible` = :n_chp_nom_cible , 
+            `chp_dossier_cible` = :n_chp_dossier_cible , 
+           `chp_commentaire_cible` = :n_chp_commentaire_cible
+           WHERE (`chi_id_cible` = :c_chi_id_cible) ;
+         */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_48(array(
+             'n_chp_nom_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'],
+             'n_chp_dossier_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'],
+             'n_chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'],
+             'c_chi_id_cible' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'],
+         ));
+     }
+     
+     if($tt['statut'] === false){
+             ajouterMessage('erreur' , __LINE__ .' '. $tt['message'] , BNF );
+             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
+     }else{
+         if($tt['changements']===1){
+             ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  error_reporting(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
-    error_reporting(E_ALL);
-    if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
-     ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
-    }else{
-     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
-     ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
-    }
-   
-  }else{
-   error_reporting(E_ALL);
-   if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
-    
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->changes() , true ) . '</pre>' ; exit(0);
-    ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
-
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
-    
-   }else{
-    
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-    recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
-    
-   }
-  }
-
+             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+         }else{
+            ajouterMessage('erreur' , __LINE__ .' erreur de mise à jour' , BNF );
+            recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+         }
+     }
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__confirme_suppression'){
 
-  /*
-    ===================================================================================================================
-    ============================================= CONFIRMATION DE LA SUPPRESSION DE CIBLE =============================
-    ===================================================================================================================
-  */
+     /*
+       ===================================================================================================================
+       ============================================= CONFIRMATION DE LA SUPPRESSION DE CIBLE =============================
+       ===================================================================================================================
+     */
 
-  /*
-  http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=2&__action=__suppression
-  */
-  $__id= isset($_POST['__id1'])?(is_numeric($_POST['__id1'])?$_POST['__id1']:0):0;
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
+     /*
+     http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=2&__action=__suppression
+     */
+     $__id= isset($_POST['__id1'])?(is_numeric($_POST['__id1'])?$_POST['__id1']:0):0;
+   //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);
 
-  $__valeurs=recupere_une_donnees_des_cibles($__id);
-  if($__valeurs===false){
-      ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
-      recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-  }
-  
-  
-  if($__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta'){
-    ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer "fta"');
-    recharger_la_page('zz_cibles_l1.php');
-  }
-  
-  $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('BEGIN TRANSACTION');
-  
-  
-  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_revs WHERE `chx_cible_rev` = '.sq0($__id).' ';
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
-   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-  }else{
-   ajouterMessage('info' ,  __LINE__ .' : la suppression des rev a fonctionné' , BNF );
-  }
+     $__valeurs=recupere_une_donnees_des_cibles($__id);
+     if($__valeurs===false){
+         ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     
+     
+     if($__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta'){
+       ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer "fta"');
+       recharger_la_page('zz_cibles_l1.php');
+     }
+     
+     
+     sql_inclure_reference(38);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_38.php');
+     /*
+     
+       BEGIN TRANSACTION
+       
+     */
+     /*sql_inclure_fin*/
+     
+     $tt=sql_38(array());
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     
+     
+     /* 
+       ==============================================================================================================
+     */
+     sql_inclure_reference(14);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_14.php');
+     /*
+     
+       DELETE FROM b1.tbl_revs WHERE `chx_cible_rev` = :chx_cible_rev ;
+       
+     */
+     /*sql_inclure_fin*/
+     
+     $tt=sql_14(array(
+         'chx_cible_rev' => $__id,
+     ));
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         
+         sql_inclure_reference(40);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_40.php');
+         /*
+         
+           ROLLBACK
+           
+         */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_40(array());
+         
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     ajouterMessage('info' ,  __LINE__ .' : la suppression des rev a fonctionné'  );
+     
+     
+     /* 
+       ==============================================================================================================
+     */
+     sql_inclure_reference(41);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_41.php');
+     /*
+     
+       DELETE FROM b1.tbl_sources WHERE `chx_cible_id_source` = :chx_cible_id_source ;    
+     */
+     /*sql_inclure_fin*/
+     
+     $tt=sql_41(array(
+         'chx_cible_id_source' => $__id,
+     ));
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         
+         sql_inclure_reference(40);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_40.php');
+         /*
+         
+           ROLLBACK
+           
+         */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_40(array());
+         
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     ajouterMessage('info' ,  __LINE__ .' : la suppression des sources a fonctionné'  );
 
-  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_sources WHERE `chx_cible_id_source` = '.sq0($__id).' ';
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
-   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-  }else{
-   ajouterMessage('info' ,  __LINE__ .' : la suppression des sources a fonctionné' , BNF );
-  }
 
-  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE `chx_cible_id_basedd` = '.sq0($__id).' ';
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
-   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-  }else{
-   ajouterMessage('info' ,  __LINE__ .' : la suppression des bases_de_données a fonctionné' , BNF );
-  }
 
-  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers WHERE `chx_cible_dossier` = '.sq0($__id).' ';
-//  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
-   ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-   $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
-   recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
-  }else{
-   ajouterMessage('info' ,  __LINE__ .' : la suppression des dossiers a fonctionné' , BNF );
-  }
+     /* 
+       ==============================================================================================================
+     */
+     sql_inclure_reference(42);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_42.php');
+     /*
+       DELETE FROM b1.tbl_requetes WHERE (`chx_cible_requete` = :chx_cible_requete) ;    
+     */
+     /*sql_inclure_fin*/
+     
+     $tt=sql_42(array(
+         'chx_cible_requete' => $__id,
+     ));
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         
+         sql_inclure_reference(40);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_40.php');
+         /* ROLLBACK */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_40(array());
+         
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     ajouterMessage('info' ,  __LINE__ .' : la suppression des requetes a fonctionné'  );
 
-  
-  $sql='DELETE FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_cibles WHERE `chi_id_cible` = \''.sq0($__id).'\' ' ;
-  if(false === $GLOBALS[BDD][BDD_1][LIEN_BDD]->exec($sql)){
+     /* 
+       ==============================================================================================================
+     */
+     sql_inclure_reference(43);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_43.php');
+     /*
+       DELETE FROM b1.tbl_bdds WHERE (`chx_cible_id_basedd` = :chx_cible_id_basedd) ;
+     /*sql_inclure_fin*/
+     
+     $tt=sql_43(array(
+         'chx_cible_id_basedd' => $__id,
+     ));
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         
+         sql_inclure_reference(40);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_40.php');
+         /* ROLLBACK */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_40(array());
+         
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     ajouterMessage('info' ,  __LINE__ .' : la suppression des bases a fonctionné'  );
 
-      ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
-      $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('ROLLBACK');
-      recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     /* 
+       ==============================================================================================================
+     */
+     sql_inclure_reference(44);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_44.php');
+     /*
+       DELETE FROM b1.tbl_dossiers WHERE (`chx_cible_dossier` = :chx_cible_dossier) ;
+     /*sql_inclure_fin*/
+     
+     $tt=sql_44(array(
+         'chx_cible_dossier' => $__id,
+     ));
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         
+         sql_inclure_reference(40);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_40.php');
+         /* ROLLBACK */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_40(array());
+         
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     ajouterMessage('info' ,  __LINE__ .' : la suppression des dossiers a fonctionné'  );
 
-  }else{
-   
-     $GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle('COMMIT');
-     ajouterMessage('succes' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
+     /* 
+       ==============================================================================================================
+     */
+
+
+     sql_inclure_reference(45);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_45.php');
+     /*
+       DELETE FROM b1.tbl_cibles WHERE (`chi_id_cible` = :chi_id_cible) ;
+     /*sql_inclure_fin*/
+     
+     $tt=sql_45(array(
+         'chi_id_cible' => $__id,
+     ));
+     if($tt['statut'] === false){
+         ajouterMessage('erreur' , $tt['message'] , BNF );
+         
+         sql_inclure_reference(40);
+         /*sql_inclure_deb*/
+         require_once(INCLUDE_PATH.'/sql/sql_40.php');
+         /* ROLLBACK */
+         /*sql_inclure_fin*/
+         
+         $tt=sql_40(array());
+         
+         recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
+     }
+     ajouterMessage('info' ,  __LINE__ .' : la suppression de la cible a fonctionné'  );
+     
+     /* 
+       ==============================================================================================================
+     */
+     
+     sql_inclure_reference(46);
+     /*sql_inclure_deb*/
+     require_once(INCLUDE_PATH.'/sql/sql_46.php');
+     /* COMMIT */
+     /*sql_inclure_fin*/
+     
+     $tt=sql_46(array());
+
      recharger_la_page('zz_cibles_l1.php');
 
-  }
+     /* 
+       ==============================================================================================================
+     */
 
  }else if(isset($_POST['__action'])&&$_POST['__action']=='__creation'){
   
@@ -839,6 +1002,7 @@ if(isset($_GET['__action'])&&( $_GET['__action']==='__suppression' || ($_GET['__
 
     if($__id===0 ){
 
+        ajouterMessage('erreur',__LINE__.' on ne peut pas supprimer ou modifier la cible 0');
         recharger_la_page('zz_cibles_l1.php');
 
     }else{
