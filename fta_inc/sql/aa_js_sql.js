@@ -49,5 +49,10 @@ aa_js_sql={
 "46":"\nCOMMIT;",
 "47":"\nUPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible\nWHERE `chi_id_cible` = 1 ;",
 "48":"\nUPDATE b1.tbl_cibles SET `chp_nom_cible` = :n_chp_nom_cible , `chp_dossier_cible` = :n_chp_dossier_cible , `chp_commentaire_cible` = :n_chp_commentaire_cible\nWHERE (`chi_id_cible` = :c_chi_id_cible) ;",
+"49":"SELECT \ncount(*)\n FROM b1.tbl_bdds T0\nWHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);",
+"50":"SELECT \n`T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , \n`T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible`\n FROM b1.tbl_dossiers T0\n LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier\n\nWHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);",
+"51":"SELECT \n`T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`\n FROM b1.tbl_dossiers T0\nWHERE (`T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);",
+"52":"\nINSERT  OR IGNORE INTO b1.`tbl_dossiers`(\n    `chx_cible_dossier` , \n    `chp_nom_dossier`\n) VALUES (\n    :chx_cible_dossier , \n    :chp_nom_dossier\n);",
+"53":"SELECT \n`T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`\n FROM b1.tbl_dossiers T0\nWHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) ORDER BY  `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;",
 };
 //]]>

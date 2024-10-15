@@ -815,8 +815,8 @@ function html_header1($parametres){
                 $o1.='          <li><a class="yytbfixe '.(('zz_dossiers_l1.php' === BNF)?'yymenusel1':'').'" href="zz_dossiers_l1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
                 $o1.='          <li><a class="yytbfixe '.(('zz_sources_l1.php' === BNF)?'yymenusel1':'').'" href="zz_sources_l1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
                 $o1.='          <li><a class="yytbfixe '.(('zz_bdds_l1.php' === BNF)?'yymenusel1':'').'" href="zz_bdds_l1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_rev_l1.php' === BNF)?'yymenusel1':'').'" href="zz_revs_l1.php?idMenu='.($idMenu++).'">revs</a></li>'.CRLF;
                 $o1.='          <li><a class="yytbfixe '.(('zz_requetes_l1.php' === BNF)?'yymenusel1':'').'" href="zz_requetes_l1.php?idMenu='.($idMenu++).'">rsql</a></li>'.CRLF;
+                $o1.='          <li><a class="yytbfixe '.(('zz_rev_l1.php' === BNF)?'yymenusel1':'').'" href="zz_revs_l1.php?idMenu='.($idMenu++).'">revs</a></li>'.CRLF;
 
             }
 

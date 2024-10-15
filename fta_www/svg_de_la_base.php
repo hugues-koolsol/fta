@@ -8,11 +8,24 @@ if(!isset($_GET['__id_des_bases'])){
   recharger_la_page('zz_bdds_l1.php');
 }
 
-$sql0='SELECT COUNT(*) FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE chi_id_basedd IN ('.$_GET['__id_des_bases'] . ')'; 
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
-$__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql0);
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__nbEnregs , true ) . '</pre>' ; exit(0);
-if($__nbEnregs===false || $__nbEnregs===0){
+
+sql_inclure_reference(49);
+/*sql_inclure_deb*/
+require_once(INCLUDE_PATH.'/sql/sql_49.php');
+/*sql_inclure_fin*/
+
+$tt=sql_49(array(
+    'T0_chi_id_basedd'       => $_GET['__id_des_bases'] ,
+    'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
+));
+
+
+$__nbEnregs=0;
+if($tt['statut'] === true  && count($tt['valeur'])===1){
+    $__nbEnregs=$tt['valeur'][0][0];
+ 
+}  
+if($__nbEnregs===0){
   ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner une base '  );
   recharger_la_page('zz_bdds_l1.php');
 }

@@ -80,7 +80,7 @@ function modifier_la_requete_en_base(&$data){
         
         
     }else{
-        $data['messages'][]=__FILE__.' '.__LINE__.' modifier_la_requete_en_base '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg();
+        $data['messages'][]=__FILE__.' '.__LINE__.' erreur modifier_la_requete_en_base '.$tt['message'];
         $data['status']='KO';
     }
     
@@ -313,7 +313,6 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         }
 
     }
-    $GLOBALS[BDD][BDD_1][LIEN_BDD]->close();
     $db1temp->close();
     /*
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_bdd='.$chemin_bdd .CRLF.CRLF); fclose($fd);}

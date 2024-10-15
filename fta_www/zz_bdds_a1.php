@@ -422,17 +422,16 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      if($tt['statut'] === false){
          error_reporting(E_ALL);
-         if($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode()===19){
+         if($tt['code_erreur']===19){
           ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
           recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
          }else{
-          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorCode() , true ) . '</pre>' ; exit(0);
-          ajouterMessage('erreur' , __LINE__ .' '. $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+          ajouterMessage('erreur' , __LINE__ .' '. $tt['message'] , BNF );
           recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
          }
      }else{
          error_reporting(E_ALL);
-         if($GLOBALS[BDD][BDD_1][LIEN_BDD]->changes()===1){
+         if($tt['changements']===1){
           
              ajouterMessage('info' , ' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11).'.'.substr(microtime(),2,2) , BNF );
 
@@ -440,7 +439,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
           
          }else{
           
-             ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+             ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] , BNF );
              recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
           
          }
@@ -483,7 +482,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      ));
 
      if($tt['statut'] === false){
-         ajouterMessage('erreur' ,  __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+         ajouterMessage('erreur' ,  __LINE__ .' : ' . $tt['message'] , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
      }else{
         ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
@@ -520,11 +519,11 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      )));
 
      if($tt['statut'] === false){
-       ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , BNF );
+       ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] , BNF );
        recharger_la_page(BNF.'?__action=__creation'); 
       
      }else{
-       ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastInsertRowID().') a bien été créé' , BNF );
+       ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$tt['nouvel_id'].') a bien été créé' , BNF );
        recharger_la_page(BNF.'?__action=__modification&__id='.$tt['nouvel_id']); 
      }
       
@@ -704,9 +703,30 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
         $o1.='<span id="T0.chp_nom_dossier">base non rattaché à un dossier</span> '.CRLF;
 
     }else{
-     
-        require_once('../fta_inc/db/acces_bdd_dossiers1.php');
-        $__valeurs_dossier=recupere_une_donnees_des_dossiers($chx_dossier_id_basedd,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+        
+        sql_inclure_reference(50);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_50.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
+         FROM b1.tbl_dossiers T0
+        WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+        */        
+        /*sql_inclure_fin*/
+
+        $tt=sql_50(array(
+            'T0_chi_id_basedd'           => $chx_dossier_id_basedd ,
+            'T0_chx_cible_dossier'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+        ));
+
+        $nom_dossier='';
+        if($tt['statut'] === true && count($tt['valeur'])===1){
+            $nom_dossier=$tt['valeur'][0]['T0.chp_nom_dossier'];
+        }else{
+            $nom_dossier='<span class="yyerreur">il y a eu une erreur sur la récupération du dossier</span>';
+        }
+        
         
         $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs_dossier['T0.chp_nom_dossier'].'</b>" </span>'.CRLF;
      

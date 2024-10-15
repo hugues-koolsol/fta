@@ -141,30 +141,26 @@ Les fonctions peuvent être imbriquées
 ```
 a(),
 b(
- c()
+ c(ceci_est_une_constante,'ceci est une autre constante',123,456)
 )
 ```
 est légal mais
 
 ```
 a(),
-CeciEstUneErreur,
+ceci_est_une_erreur,
 c(d())
 
 ```
-Ne l'est pas à cause de la constante "CeciEstUneErreur" qui est à la racine
+Ne l'est pas à cause de la constante "ceci_est_une_erreur" qui est à la racine
 
 Cela dit, le programme qui traite ces sources rev peut accepter des constantes à la racine quand on veut 
 par exemple vérifier une suite d'éléments. mais cela doit être indiqué en paramètre.
 
 **2°) les constantes:**
-elles peuvent être 
-entre guillemets,  
-entre apostrophes, 
-entre apostrophes inversées,
-entre signe division (/)
-ou bien dans aucun des cas çi-dessus, typiquement pour les variables, des constantes ( NULL , vrai , faux ) ou bien les valeurs numériques 
-
+elles peuvent être  , entre guillemets,  entre apostrophes,  entre apostrophes inversées, entre signe division (/) dans le cas des regex  
+ou bien dans aucun des cas çi-dessus, typiquement pour les variables, des constantes ( NULL , vrai , faux ) ou bien les valeurs numériques  
+Dans le cas des regex, les éventuels indicateurs, par exemple i ou g sont placés dans la colonne des commentaires ( indice 13 )  
 
 **3°) les commentaires:**
 

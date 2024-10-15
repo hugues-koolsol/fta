@@ -46,7 +46,7 @@ print($o1);$o1='';
       </ul>
   </div>
   <h1>Requête Sql</h1>
-  <div id="div_de_travail"></div>
+  <div id="div_de_travail" style="max-width:100%;"></div>
   <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <br />
   <h4>php</h4>
