@@ -4070,16 +4070,45 @@ class module_svg_bdd{
     */
     #charger_les_bases_en_asynchrone(les_id_des_bases){
         async function recuperer_les_donnees_de_le_base_en_post(url="",donnees){
-            var response= await fetch(url,{
-                /* 6 secondes de timeout */
-                'signal':AbortSignal.timeout(1000),
-                method:"POST",
-                mode:"cors",cache:"no-cache",credentials:"same-origin",'headers':{'Content-Type':'application/x-www-form-urlencoded'},redirect:"follow",referrerPolicy:"no-referrer",'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))});
-            return(response.json());
+            var r=null;
+            try{
+              var en_entree={
+                     /* 6 secondes de timeout */
+                     'signal':AbortSignal.timeout(1000),
+                     'method':"POST",
+                     'mode':"cors",
+                     'cache':"no-cache",
+                     'credentials':"same-origin",
+                     'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                     'redirect':"follow",
+                     'referrerPolicy':"no-referrer",
+                     'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+                  };
+              var response= await fetch( url, en_entree);
+              /* 
+                il se peut qu'on ne reçoive pas du json en sortie 
+              */
+              var t=await response.text();
+              try{
+               var le_json=JSON.parse(t);
+               return le_json;
+              }catch(e){
+               return({status:'KO' , message:t});
+              }
+            }catch(e){
+             console.log('e=',e);
+             debugger
+            }
+            
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_zone_travail_pour_les_bases'},les_id_des_bases:les_id_des_bases};
         recuperer_les_donnees_de_le_base_en_post('za_ajax.php?recuperer_zone_travail_pour_les_bases',ajax_param).then((donnees) => {
-            if(donnees.status === 'OK'){
+            if(donnees.status !== 'OK'){
+                console.log('donnees=',donnees)
+                logerreur({status:false,message:donnees.message});
+                logerreur({status:false,message:'0132 erreur de récupération des données de la base'});
+                displayMessages('zone_global_messages');
+            }else{
                 var nouvel_arbre={};
                 var i={};
 
@@ -4238,12 +4267,6 @@ class module_svg_bdd{
                 */
                 this.#dessiner_le_svg();
                 
-            }else{
-                console.log('donnees=',donnees)
-                debugger
-                
-                logerreur({status:false,message:'0132 erreur de récupération des données de la base'});
-                displayMessages('zone_global_messages');
             }
         });
     }

@@ -357,7 +357,7 @@ $boutons_haut.=' <button name="__soustraire_1_aux_priorites" id="__soustraire_1_
 
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_haut);
 
-$o1.='</div>';
+
 $o1.='</form></div>';
 $lsttbl='';
 $lsttbl.='<thead><tr>';

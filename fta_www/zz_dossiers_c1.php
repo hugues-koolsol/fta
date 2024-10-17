@@ -71,61 +71,58 @@ $o1.='</form>'.CRLF;
 
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
+sql_inclure_reference(53);
+/*sql_inclure_deb*/
+require_once(INCLUDE_PATH.'/sql/sql_53.php');
+/*
+SELECT 
+`T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
+ FROM b1.tbl_dossiers T0
+WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier 
+ AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier 
+ AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
+ ORDER BY  `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;
+*/ 
+/*sql_inclure_fin*/
 
-$sql='
- SELECT `chi_id_dossier` , `chp_nom_dossier` 
- FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` `T0`
- WHERE "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
-';
+$tt=sql_53(array(
+    'T0_chi_id_dossier' => $chi_id_dossier,
+    'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    'T0_chp_nom_dossier' => (($chp_nom_dossier === NULL)?$chp_nom_dossier:(($chp_nom_dossier === '')?'':'%'.$chp_nom_dossier.'%')),
+    'quantitee' => $__nbMax,
+    'debut' => $__debut,
+    'page_courante' => BNF));
 
-if($chi_id_dossier!='' && is_numeric($chi_id_dossier)){
- $sql.='
-  AND `T0`.`chi_id_dossier` = \''.sq0($chi_id_dossier).'\'
- '; 
+if($tt['statut'] === false){
+
+    $o1.='<div>';
+    $o1.='<div class="yydanger">Erreur sql</div>';
+    $o1.='<pre>'.$tt['sql0'].'</per>';
+    $o1.='</div>';
+    $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => array());
+    $o1.=html_footer1($par);
+    print($o1);
+    $o1='';
+    exit(0);
+
 }
 
-if($chp_nom_dossier!='' ){
- $sql.='
-  AND `T0`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'
- '; 
-}
-
-$sql.=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
-
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql , true ) . '</pre>' ; exit(0);
-
-$data0=array();
-
-
-
-$stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql);
-if($stmt!==false){
-  $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-  while($arr=$result->fetchArray(SQLITE3_NUM))
-  {
-   array_push($data0, array(
-    'T0.chi_id_dossier'          => $arr[0],
-    'T0.chp_nom_dossier'         => $arr[1],
-   ));
-  }
-  $stmt->close(); 
-}else{
- echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() , true ) . '</pre>' ; exit(0);
-}
-
+$__nbEnregs=$tt['nombre'];
+$consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,'');
  
 
-$lsttbl='';
-$lsttbl.='<thead><tr>';
-$lsttbl.='<th>action</th>';
-$lsttbl.='<th>id</th>';
-$lsttbl.='<th>nom</th>';
-$lsttbl.='</tr></thead><tbody>';
-foreach($data0 as $k0=>$v0){
+$__lsttbl='';
+$__lsttbl.='  <thead><tr>';
+$__lsttbl.='<th>action</th>';
+$__lsttbl.='<th>id</th>';
+$__lsttbl.='<th>nom</th>';
+$__lsttbl.='</tr></thead>'.CRLF.'  <tbody>'.CRLF;
+foreach($tt['valeur'] as $k0=>$v0){
  
- $lsttbl.='<tr>';
- $lsttbl.='<td data-label="" style="text-align:left!important;">';
- $lsttbl.='<div class="yyflex1">';
+ $__lsttbl.='<tr>';
+ $__lsttbl.='<td data-label="" style="text-align:left!important;">';
+ $__lsttbl.='<div class="yyflex1">';
  
  $__champs_texte_a_rapatrier=array();
  foreach( $_SESSION[APP_KEY][BNF]['__parametres_choix']['__champs_texte_a_rapatrier'] as $__k1 => $__v1){
@@ -149,24 +146,24 @@ foreach($data0 as $k0=>$v0){
 
 
  
- $lsttbl.=' <a class="yyinfo" href="javascript:choisir_de_iframe1(\''.enti1($paramUrl).'\')" title="choisir">✎</a>';
- $lsttbl.='</div>';
+ $__lsttbl.=' <a class="yyinfo" href="javascript:choisir_de_iframe1(\''.enti1($paramUrl).'\')" title="choisir">✎</a>';
+ $__lsttbl.='</div>';
  
- $lsttbl.='</td>';
+ $__lsttbl.='</td>';
  
- $lsttbl.='<td data-label="id" style="text-align:center;">';
- $lsttbl.=''.$v0['T0.chi_id_dossier'].'';
- $lsttbl.='</td>';
+ $__lsttbl.='<td data-label="id" style="text-align:center;">';
+ $__lsttbl.=''.$v0['T0.chi_id_dossier'].'';
+ $__lsttbl.='</td>';
  
- $lsttbl.='<td data-label="id" style="text-align:left;">';
- $lsttbl.=''.$v0['T0.chp_nom_dossier'].'';
- $lsttbl.='</td>';
+ $__lsttbl.='<td data-label="id" style="text-align:left;">';
+ $__lsttbl.=''.$v0['T0.chp_nom_dossier'].'';
+ $__lsttbl.='</td>';
  
  
- $lsttbl.='<tr>';
+ $__lsttbl.='<tr>';
 }
 
-$o1.='<table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table>'.CRLF;
+$o1.='<table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table>'.CRLF;
 
 
 

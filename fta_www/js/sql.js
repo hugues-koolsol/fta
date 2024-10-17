@@ -176,10 +176,13 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
             return(logerreur({status:false,'message':'0114 traite_sqlite_fonction_de_champ'}));
         }
     }
+    var operateur_rev=tab[id][1];
     var operateur = recuperer_operateur_sqlite(tab[id][1]);
     var premierChamp=true;
     var i = (id + 1);
     var l01=tab.length;
+//    console.log('operateur_rev="'+operateur_rev+'"');
+    
     for(i=id + 1;(i < l01) && (tab[i][3] > tab[id][3]);i++){
         if(tab[i][7] === id){
             if(premierChamp === false){
@@ -198,13 +201,15 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                 if(tab[i][1].toLowerCase() === 'null'){
                     t+='NULL';
                 }else{
-                    
                     if(tab[i][4] === 0){
-                     
                         if(options.au_format_php===true){
-
                             if(tab[i][1].substr(0,1)===':'){
-                                t+='\'.sq1($par[\''+tab[i][1].substr(1)+'\']).\'';
+                                if((operateur_rev==='' && tab[tab[id][7]][1]==='dans') || operateur_rev==='dans'){
+                                    debugger;
+                                    t+='\'.sq0($par[\''+tab[i][1].substr(1)+'\']).\'';
+                                }else{
+                                    t+='\'.sq1($par[\''+tab[i][1].substr(1)+'\']).\'';
+                                }
                                 
                             }else{
                                 t+=tab[i][1];
@@ -215,8 +220,12 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                     }else{
                         if(options.au_format_php===true){
                             if(tab[i][1].substr(0,1)===':'){
-                                debugger
-                                t+='\'.sq1($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
+                                if((operateur_rev==='' && tab[tab[id][7]][1]==='dans') || operateur_rev==='dans' ){
+                                    debugger;
+                                    t+='\'.sq0($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
+                                }else{
+                                    t+='\'.sq1($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
+                                }
                             }else{
                                 t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
                             }

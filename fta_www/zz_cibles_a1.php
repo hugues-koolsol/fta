@@ -279,11 +279,54 @@ function recupere_une_donnees_des_cibles($id){
    }
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);   
    // donnees.system.db.sql   
+   
+   /* on récupère le contenu du champ chp_rev_travail_basedd de la base de fta pour le mettre dans la base ftb pour le dessin de la base */
+   
+   sql_inclure_reference(26);
+   /*sql_inclure_deb*/
+   require_once(INCLUDE_PATH.'/sql/sql_26.php');
+   /* UPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible WHERE `chi_id_cible` = 1 ; */
+   /*sql_inclure_fin*/
+   $tt=sql_26(array(
+       'T0_chi_id_basedd'       => 1,
+       'T0_chx_cible_id_basedd' => 1,
+   ));
+   if($tt['statut']===false || count($tt['valeur']) !== 1 ){
+      echo __FILE__ . ' ' . __LINE__ . ' erreur de récupération du rev de la base = <pre>' . $tt['message'] . '</pre>' ; exit(0);
+   }
+   $chp_rev_travail_basedd=$tt['valeur'][0]['T0.chp_rev_travail_basedd'];
+   
+   
    $contenu_initialisation="
-    INSERT INTO `tbl_cibles`( `chi_id_cible`, `chp_nom_cible`, `chp_commentaire_cible`, `chp_dossier_cible`) VALUES ('1','fta','la racine','ftb');
-    INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_dossier`) VALUES ('1','/','1');
-    INSERT INTO `tbl_bdds`( `chi_id_basedd`, `chp_nom_basedd`, `chp_rev_basedd`, `chp_commentaire_basedd`, `chx_dossier_id_basedd`, `chp_genere_basedd`, `chx_cible_id_basedd`) VALUES ('1','system.db','','initialisation','2','','1');
-    INSERT INTO `tbl_utilisateurs`( `chi_id_utilisateur`, `chp_nom_de_connexion_utilisateur`, `chp_mot_de_passe_utilisateur`, `chp_commentaire_utilisateur`) VALUES ('1','admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK','mdp = admin');
+    INSERT INTO `".cst('tbl_cibles')."`  ( 
+      `".cst('chi_id_cible')."`          , 
+      `".cst('chp_nom_cible')."`         , 
+      `".cst('chp_commentaire_cible')."` , 
+      `".cst('chp_dossier_cible')."`
+    ) VALUES ('1','fta','la racine','ftb');
+    
+    INSERT INTO `".cst('tbl_dossiers')."`( 
+      `".cst('chi_id_dossier')."`     , 
+      `".cst('chp_nom_dossier')."`    , 
+      `".cst('chx_cible_dossier')."`
+    ) VALUES ('1','/','1');
+    
+    INSERT INTO `".cst('tbl_bdds')."`    ( 
+      `".cst('chi_id_basedd')."`          , 
+      `".cst('chp_nom_basedd')."`         ,
+      `".cst('chp_rev_basedd')."`         ,
+      `".cst('chp_commentaire_basedd')."` ,
+      `".cst('chx_dossier_id_basedd')."`  , 
+      `".cst('chp_genere_basedd')."`      , 
+      `".cst('chx_cible_id_basedd')."`    ,
+      `".cst('chp_rev_travail_basedd')."`    
+    ) VALUES ('1','system.db','','initialisation','2','','1','".sq0($chp_rev_travail_basedd)."');
+    INSERT INTO `".cst('tbl_utilisateurs')."` ( 
+      `".cst('chi_id_utilisateur')."`, 
+      `".cst('chp_nom_de_connexion_utilisateur')."`, 
+      `".cst('chp_mot_de_passe_utilisateur')."`, 
+      `".cst('chp_commentaire_utilisateur')."`
+    ) VALUES ('1','admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK','mdp = admin');
    ";
 
    if(false === $base_ftb->exec($contenu_initialisation)){
@@ -299,7 +342,7 @@ function recupere_une_donnees_des_cibles($id){
    if($contenu_table_dossiers!==''){
     
     $contenu_table_dossiers=substr($contenu_table_dossiers,1);
-    $contenu_table_dossiers ='INSERT INTO `tbl_dossiers`( `chi_id_dossier`, `chp_nom_dossier`, `chx_cible_dossier`) VALUES '.$contenu_table_dossiers;
+    $contenu_table_dossiers ='INSERT INTO `'.cst('tbl_dossiers').'`( `'.cst('chi_id_dossier').'`, `'.cst('chp_nom_dossier').'`, `'.cst('chx_cible_dossier').'`) VALUES '.$contenu_table_dossiers;
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu_table_dossiers , true ) . '</pre>' ; exit(0);
     
     if(false === $base_ftb->exec($contenu_table_dossiers)){
@@ -324,17 +367,22 @@ function recupere_une_donnees_des_cibles($id){
        $contenu_table_sources=substr($contenu_table_sources,1);
        // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_table_sources ) . '</pre>' ; exit(0);
        
-       $contenu_table_sources ='INSERT INTO `tbl_sources`( `chp_nom_source`, `chx_cible_id_source`, `chx_dossier_id_source` , `chp_type_source` ) VALUES '.$contenu_table_sources;
+       $contenu_table_sources ='INSERT INTO `'.cst('tbl_sources').'`( `'.cst('chp_nom_source').'` , `'.cst('chx_cible_id_source').'`, `'.cst('chx_dossier_id_source').'` , `'.cst('chp_type_source').'` ) VALUES '.$contenu_table_sources;
        // echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_table_sources ) . '</pre>' ; exit(0);
        if(false === $base_ftb->exec($contenu_table_sources)){
         echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
        }
    }
 
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1]['initialisation'] , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1]['nom_bdd'] , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD] , true ) . '</pre>' ; exit(0);
    /* 
-     on doit prendre les requetes sql de la table requetes 
+     on doit prendre les requetes sql de la table requetes de fta pour les mettre dans ftb
+     la base $base_ftb pointe par défaut sur la base dans ftb
+     il faut une référence sur la base fta
+     
    */
-   
    $ret0=$base_ftb->exec($GLOBALS[BDD][BDD_1]['initialisation']);
    $sql_insere_requetes='INSERT INTO `'.cst('tbl_requetes').'` SELECT * FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`'.cst('tbl_requetes').'` WHERE `'.cst('chx_cible_requete').'`=1';
    if(false === $base_ftb->exec($sql_insere_requetes)){
@@ -342,24 +390,6 @@ function recupere_une_donnees_des_cibles($id){
    }
    
    
-   
-   /* on ajoute le contenu du champ chp_rev_travail_basedd dans la base ftb pour le dessin de la base */
-
-   $sql0='select chp_rev_travail_basedd from `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_bdds WHERE chi_id_basedd=1';
-//   echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
-   $stmt = $GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
-   if($stmt!==false){
-     $result = $stmt->execute(); // SQLITE3_NUM: SQLITE3_ASSOC
-     while($arr=$result->fetchArray(SQLITE3_NUM)){
-      $chp_rev_travail_basedd=$arr[0];
-     }
-     $stmt->close(); 
-     $slq_maj_ftb='UPDATE tbl_bdds SET chp_rev_travail_basedd = \''.sq0($chp_rev_travail_basedd).'\'  WHERE chi_id_basedd=1';
-
-     if(false === $base_ftb->exec($slq_maj_ftb)){
-      echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-     }
-   }
    $chemin_fichier_acces_pour_bdd=realpath($dossier_racine.'/fta_inc/db/__liste_des_acces_bdd.php');
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_fichier_acces_pour_bdd , true ) . '</pre>' ; exit(0);
    /*

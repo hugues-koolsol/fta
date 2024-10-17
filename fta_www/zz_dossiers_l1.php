@@ -237,7 +237,7 @@ $o1='';
 $o1=html_header1(array( 'title' => 'Dossiers', 'description' => 'Dossiers'));
 print($o1);
 $o1='';
-$o1.='<h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>';
+$o1.='    <h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>'.CRLF;
 /*
   =====================================================================================================================
 */
@@ -277,143 +277,67 @@ $o1.='</form>'.CRLF;
 
 
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
-$champs0=' `chi_id_dossier`          , `chp_nom_dossier` ';
-$sql0='SELECT '.$champs0;
-$from0='
- FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_dossiers` `T0`
- 
-';
-$sql0.=$from0;
-$where0='
- WHERE  "T0"."chx_cible_dossier" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
-';
 
-if($chp_nom_dossier != ''){
+sql_inclure_reference(53);
+/*sql_inclure_deb*/
+require_once(INCLUDE_PATH.'/sql/sql_53.php');
+/*
+SELECT 
+`T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
+ FROM b1.tbl_dossiers T0
+WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier 
+ AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier 
+ AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
+ ORDER BY  `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;
+*/ 
+/*sql_inclure_fin*/
 
-    $where0.='
-  AND `T0`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'
- ';
+$tt=sql_53(array(
+    'T0_chi_id_dossier' => $chi_id_dossier,
+    'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    'T0_chp_nom_dossier' => (($chp_nom_dossier === NULL)?$chp_nom_dossier:(($chp_nom_dossier === '')?'':'%'.$chp_nom_dossier.'%')),
+    'quantitee' => $__nbMax,
+    'debut' => $__debut,
+    'page_courante' => BNF));
 
-}
+if($tt['statut'] === false){
 
-
-if($chi_id_dossier != ''){
-
-    $where0.='
-  AND `T0`.`chi_id_dossier` = \''.sq0($chi_id_dossier).'\'
- ';
-
-}
-
-$sql0.=$where0;
-$order0='
- ORDER BY `T0`.`chp_nom_dossier` ASC
-';
-$sql0.=$order0;
-$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
-$sql0.=$plage0;
-$data0=array();
-$stmt=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
-
-if($stmt !== false){
-
-    $result=$stmt->execute();
-    /* SQLITE3_NUM: SQLITE3_ASSOC*/
-    while(($arr=$result->fetchArray(SQLITE3_NUM))){
-        array_push($data0,array( 'T0.chi_id_dossier' => $arr[0], 'T0.chp_nom_dossier' => $arr[1]));
-    }
-    $stmt->close();
-    $__nbEnregs=count($data0);
-
-    if(($__nbEnregs >= $__nbMax) || ($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
-
-        $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
-
-    }
-
-
-}else{
-
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
+    $o1.='<div>';
+    $o1.='<div class="yydanger">Erreur sql</div>';
+    $o1.='<pre>'.$tt['sql0'].'</per>';
+    $o1.='</div>';
+    $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => array());
+    $o1.=html_footer1($par);
+    print($o1);
+    $o1='';
     exit(0);
-}
-
-$consUrlRedir=''.'&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
-$__bouton_enregs_suiv=' <span class="yybtn yyunset">&raquo;</span>';
-
-if($__debut+$__nbMax < $__nbEnregs){
-
-    $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1).$consUrlRedir.'">&raquo;</a>';
 
 }
 
-$__bouton_enregs_prec=' <span class="yybtn yyunset">&laquo;</span>';
+$__nbEnregs=$tt['nombre'];
+$consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
+$boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_haut);
 
-if($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0){
-
-    $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
-
-}
-
-$o1.='<div>';
-$o1.='<form class="yylistForm1">';
-$o1.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
-$o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
-
-if($__nbEnregs > 0){
-
-    $o1.='page '.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1).'/'.ceil($__nbEnregs/$__nbMax).' ('.$__nbEnregs.' enregistrements )</div>'.CRLF;
-
-}else{
-
-    $o1.='pas d\'enregistrements'.CRLF;
-}
-
-$o1.='</form>';
-$o1.='</div>';
 $__lsttbl='';
-$__lsttbl.='<thead><tr>';
+$__lsttbl.='  <thead><tr>';
 $__lsttbl.='<th>action</th>';
 $__lsttbl.='<th>id</th>';
 $__lsttbl.='<th>nom</th>';
-$__lsttbl.='</tr></thead><tbody>';
-foreach($data0 as $k0 => $v0){
-    $__lsttbl.='<tr>';
+$__lsttbl.='</tr></thead>'.CRLF.'  <tbody>'.CRLF;
+foreach($tt['valeur'] as $k0 => $v0){
+    $__lsttbl.='<tr>'.CRLF;
     $__lsttbl.='<td data-label="" style="text-align:left!important;">';
     $__lsttbl.='<div class="yyflex1">';
 
     if($v0['T0.chp_nom_dossier'] !== '/'){
 
         $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
-        /*✎ #9998*/
         $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">🗑</a>';
 
     }else{
-
-        $__valeurs=recupere_une_donnees_des_dossiers_avec_parents($v0['T0.chi_id_dossier'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-
-        if(APP_KEY === 'fta'){
-
-
-            if($__valeurs['T1.chp_dossier_cible'] === 'fta'){
-
-                $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
-                $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
-
-            }else{
-
-                $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
-                $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
-            }
-
-
-        }else{
-
-            $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
-            $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">✘</a>';
-        }
-
+        $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
+        $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
     }
 
     $__lsttbl.='</div>';
@@ -424,9 +348,9 @@ foreach($data0 as $k0 => $v0){
     $__lsttbl.='<td style="text-align:left;">';
     $__lsttbl.='['.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].']'.$v0['T0.chp_nom_dossier'].'';
     $__lsttbl.='</td>';
-    $__lsttbl.='<tr>';
+    $__lsttbl.=CRLF.'</tr>'.CRLF;
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;">'.CRLF.' <table class="yytableResult1">'.CRLF.$__lsttbl.'  </tbody>'.CRLF.' </table>'.CRLF.'</div>'.CRLF;
 
 if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta') && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
 

@@ -1148,8 +1148,8 @@ class requete_sql{
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
         t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">';
-        
-        if(this.#obj_webs.type_de_requete==='select' || this.#obj_webs.type_de_requete==='select_liste' ){
+
+        if( (this.#obj_webs.type_de_requete==='select' || this.#obj_webs.type_de_requete==='select_liste' )&& destination==='champs_sortie'){
             var contenu='';
             for(var i=0;i<this.#obj_webs.champs_sortie.length;i++){
                 if(contenu!==''){
@@ -1871,6 +1871,11 @@ class requete_sql{
         return(nouvelle_chaine);
         
     }
+    /* 
+      ================================================================================================================
+      ================================================================================================================
+      function obtenir_le_tableau_des_conditions
+    */
     #obtenir_le_tableau_des_conditions(formule,obj3){
         var tableau_des_conditions=[];
         var tableau1 = iterateCharacters2(formule);
@@ -1894,7 +1899,17 @@ class requete_sql{
                     if(tab[i][1]==='et' && tab[i][2]==='f'){
                         for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
                             if(tab[j][7]===i){
-                                if( tab[j][2]==='f' && ( tab[j][1]==='ou' ||  tab[j][1]==='egal' ||  tab[j][1]==='diff'   ||  tab[j][1]==='comme'  ||  tab[j][1]==='sup' ||  tab[j][1]==='supegal' ||  tab[j][1]==='inf' ||  tab[j][1]==='infegal' ||  tab[j][1]==='dans'  )){
+                                if((tab[j][2] === 'f')
+                                 && ((tab[j][1] === 'ou')
+                                 || (tab[j][1] === 'egal')
+                                 || (tab[j][1] === 'diff')
+                                 || (tab[j][1] === 'comme')
+                                 || (tab[j][1] === 'sup')
+                                 || (tab[j][1] === 'supegal')
+                                 || (tab[j][1] === 'inf')
+                                 || (tab[j][1] === 'infegal')
+                                 || (tab[j][1] === 'dans'))
+                                ){
                                    var obj=traite_sqlite_fonction_de_champ(tab,j,0,options);
                                    if(obj.status===true){
                                        var parametre=obj.value.match(/\$par\[(.*)\]/);
@@ -2255,10 +2270,14 @@ class requete_sql{
              if(elem.type_condition==='constante'){
               t+='    $where0.=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
              }else if(elem.type_condition==='variable'){
-              if((elem.type.toLowerCase()==='integer' || elem.type.toLowerCase()==='int' ) && ( elem.operation==='egal' ||  elem.operation==='dans' )  ){
+              if((elem.type.toLowerCase()==='integer' || elem.type.toLowerCase()==='int' ) && ( elem.operation==='egal' )  ){
                   t+='    $where0.=CRLF.construction_where_sql_sur_id(\''+elem.nom_du_champ_pour_where+'\','+elem.condition+');'+CRLF
               }else{
+               if(elem.operation==='dans'){
                   t+='    $where0.=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+               }else{
+                  t+='    $where0.=\' AND '+elem.valeur+'\'.CRLF;'+CRLF;
+               }
               }
              }
             }

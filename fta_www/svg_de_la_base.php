@@ -18,16 +18,23 @@ $tt=sql_49(array(
     'T0_chi_id_basedd'       => $_GET['__id_des_bases'] ,
     'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
 ));
-
+$tableau_en_entree=explode(',',$_GET['__id_des_bases']);
 
 $__nbEnregs=0;
-if($tt['statut'] === true  && count($tt['valeur'])===1){
+if($tt['statut'] === true  ){
     $__nbEnregs=$tt['valeur'][0][0];
  
-}  
-if($__nbEnregs===0){
-  ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner une base '  );
-  recharger_la_page('zz_bdds_l1.php');
+}
+
+
+if($__nbEnregs===0 ){
+    ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner une base qui existe '  );
+    recharger_la_page('zz_bdds_l1.php');
+}
+
+if($__nbEnregs!==count($tableau_en_entree) ){
+    ajouterMessage('erreur' ,  __LINE__ .' : veuillez sélectionner des bases qui existent '  );
+    recharger_la_page('zz_bdds_l1.php');
 }
 
 $o1='';

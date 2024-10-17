@@ -5,6 +5,7 @@ define('PREFIXE_REPERTOIRES','fta');
 define('RACINE_DU_PROJET',realpath(dirname(__FILE__,2)));
 define('INCLUDE_PATH',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_inc');
 define('BACKUP_PATH',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_backup');
+define('RACINE_FICHIERS_PROVISOIRES',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_temp');
 define('LIEN_BDD','LIEN_BDD');
 define('BDD','BDD');
 $GLOBALS[BDD]=array();
@@ -186,12 +187,12 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
 
    if(($__nbEnregs > 0)){
 
-       $o1.='<form class="yylistForm1" method="post">';
+       $o1.='<form class="yylistForm1" method="post">'.CRLF;
        $o1.=$boutons_avant;
-       $o1.=' '.$__bouton_enregs_prec.' '.$__bouton_enregs_suiv.' <div style="display:inline-block;">';
-       $o1.='page '.number_format((($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )';
-       $o1.='</div>'.CRLF;
-       $o1.='</form>';
+       $o1.=$__bouton_enregs_prec.CRLF.$__bouton_enregs_suiv.CRLF.' <div style="display:inline-block;">'.CRLF;
+       $o1.='  page '.number_format((($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )'.CRLF;
+       $o1.=' </div>'.CRLF;
+       $o1.='</form>'.CRLF;
 
    }else{
 
@@ -785,7 +786,7 @@ function html_header1($parametres){
     $o1.=' </head>'.CRLF;
     $o1.=' <body data-temp="temp">'.CRLF;
 
-    $o1.='<!-- '.$texte_base_css.' -->';
+    $o1.='<!-- '.$texte_base_css.' -->'.CRLF;
 
 
     if(( !(isset($parametres['pas_de_menu'])))){
@@ -844,12 +845,12 @@ function html_header1($parametres){
 
     }
 
-    $o1.='    <main id="contenuPrincipal">'.CRLF;
+    $o1.='  <main id="contenuPrincipal">'.CRLF;
     $les_messages=recupereLesMessagesDeSession(BNF);
     if($les_messages!==''){
-      $o1.=' <div id="zone_global_messages" style="visibility:visible;">'.$les_messages.'</div>'.CRLF;
+      $o1.='   <div id="zone_global_messages" style="visibility:visible;">'.$les_messages.'</div>'.CRLF;
     }else{
-      $o1.=' <div id="zone_global_messages" style="visibility:hidden;">'.$les_messages.'</div>'.CRLF;
+      $o1.='   <div id="zone_global_messages" style="visibility:hidden;">'.$les_messages.'</div>'.CRLF;
     }
     return($o1);
 
@@ -900,7 +901,12 @@ function html_footer1($parametres=array()){
 
     $o1='';
     $o1.='</main>'.CRLF;
-    $o1.='<dialog id="modale1"><a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a><div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div><div id="__contenu_modale"><iframe id="iframe_modale_1" src=""></iframe></div></dialog>'.CRLF;
+    $o1.='<dialog id="modale1">'.CRLF.' <a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a>'.CRLF;
+    $o1.=' <div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div>'.CRLF;
+    $o1.=' <div id="__contenu_modale">'.CRLF;
+    $o1.='  <iframe id="iframe_modale_1" src=""></iframe>'.CRLF;
+    $o1.=' </div>'.CRLF;
+    $o1.='</dialog>'.CRLF;
     $o1.='<div id="bas_de_page">'.CRLF;
     $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
     if(!preg_match('/.*_a[0-9]+\\.php/',BNF)){

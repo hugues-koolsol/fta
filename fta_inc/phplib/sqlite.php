@@ -246,7 +246,8 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
 function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($source){
  
     $tableauDesTables=array(); 
-    $chemin_fichier_temporaire='..'.DIRECTORY_SEPARATOR.APP_KEY.'_temp/'.date('Y/m/d');
+    
+    $chemin_fichier_temporaire=RACINE_FICHIERS_PROVISOIRES.DIRECTORY_SEPARATOR.date('Y/m/d');
     $continuer=true;
     if(!is_dir($chemin_fichier_temporaire)){
         if(!mkdir($chemin_fichier_temporaire,0777,true)){

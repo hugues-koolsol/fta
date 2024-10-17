@@ -194,7 +194,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
    ============================================= CONVERTIR UN SQL EN REV ==============================================
    ====================================================================================================================
  */
-  $chemin_base_temporaire='..'.DIRECTORY_SEPARATOR.APP_KEY.'_temp/'.date('Y/m/d');
+  $chemin_base_temporaire=RACINE_FICHIERS_PROVISOIRES.DIRECTORY_SEPARATOR.date('Y/m/d');
   $continuer=true;
   if(!is_dir($chemin_base_temporaire)){
    if(!mkdir($chemin_base_temporaire,0777,true)){
