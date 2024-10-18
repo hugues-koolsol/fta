@@ -37,7 +37,7 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
   ));
 
   if($tt['statut'] === false){
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
     recharger_la_page(BNF);
   }
 
@@ -54,7 +54,7 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
   ));
 
   if($tt['statut'] === false){
-      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+      ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
       recharger_la_page(BNF);
   }else{
       ajouterMessage('info' , __LINE__ .' : les priorités ont été diminuées' );
@@ -83,7 +83,7 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
   ));
 
   if($tt['statut'] === false){
-    ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+    ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
     recharger_la_page(BNF);
   }
   
@@ -100,7 +100,7 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
   ));
 
   if($tt['statut'] === false){
-      ajouterMessage('erreur' , __LINE__ .' : ' . $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg() );
+      ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
       recharger_la_page(BNF);
   }else{
       ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
@@ -130,7 +130,7 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
 
         if($tt['statut'] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
 
         }else{
 
@@ -163,7 +163,7 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
 
         if($tt['statut'] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
 
         }else{
 
@@ -203,7 +203,7 @@ if((isset($_GET['__action'])) && ('__mettre_a_plus_1' === $_GET['__action'])){
 
         if($tt['statut'] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
 
         }else{
 
@@ -243,7 +243,7 @@ if((isset($_GET['__action'])) && ('__mettre_a_moins_1' === $_GET['__action'])){
 
         if($tt['statut'] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg());
+            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
 
         }else{
 

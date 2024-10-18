@@ -4,12 +4,40 @@
 function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 
     if((isset($data['input']['id_source']))){
-        $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
-        require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
-        $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
+        
+        sql_inclure_reference(62);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_62.php');
+        /*
+          SELECT 
+          `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+          `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+          `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+           FROM b1.tbl_sources T0
+           LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+
+           LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+          WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_62(array( 
+         'T0_chi_id_source'       => $data['input']['id_source'], 
+         'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
+        ));
+
+        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+                $data['status']='KO';
+                $data['messages'][]=__LINE__. ' ' . __FILE__ . ' KO';
+                return;
+        }
+        $__valeurs=$tt['valeur'][0];
+
         
         
-        $chemin_fichier='../../'.$ret['T2.chp_dossier_cible'].$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
+        
+        $chemin_fichier='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
         
         
         if($fd=fopen($chemin_fichier,'w')){
@@ -22,9 +50,9 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
                   'chp_provenance_rev'      => 'source'                                             ,
                   'chx_source_rev'          => $data['input']['id_source']                          ,
                   'matrice'                 => $data['input']['matrice']                            ,
-                  'nom_du_source'           => $ret['T0.chp_nom_source']                            ,
-                  'dossier_du_source'       => $ret['T1.chp_nom_dossier']                           ,
-                  'dossier_cible_du_source' => $ret['T2.chp_dossier_cible']                         ,
+                  'nom_du_source'           => $__valeurs['T0.chp_nom_source']                            ,
+                  'dossier_du_source'       => $__valeurs['T2.chp_nom_dossier']                           ,
+                  'dossier_cible_du_source' => $__valeurs['T1.chp_dossier_cible']                         ,
             );
             require_once(realpath(INCLUDE_PATH.'/ajax/core/bdd.php'));
             sauvegarder_format_rev_en_dbb($data);
@@ -36,17 +64,47 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 function charger_un_fichier_source_par_son_identifiant(&$data){
 
  if((isset($data['input']['id_source']))){
-     $db=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
-     require_once(realpath(INCLUDE_PATH.'/db/acces_bdd_sources1.php'));
-     $ret=recupere_une_donnees_des_sources_avec_parents($data['input']['id_source'],$db);
 
-     $chemin_fichier='../../'.$ret['T2.chp_dossier_cible'].$ret['T1.chp_nom_dossier'].'/'.$ret['T0.chp_nom_source'];
+
+        sql_inclure_reference(62);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_62.php');
+        /*
+          SELECT 
+          `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+          `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+          `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+           FROM b1.tbl_sources T0
+           LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+
+           LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+          WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_62(array( 
+         'T0_chi_id_source'       => $data['input']['id_source'], 
+         'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
+        ));
+
+        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+                $data['status']='KO';
+                $data['messages'][]=__LINE__. ' ' . __FILE__ . ' KO';
+                return;
+        }
+        $__valeurs=$tt['valeur'][0];
+
+
+
+
+     $chemin_fichier='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
      if(is_file($chemin_fichier)){
       
           $contenu_du_fichier = file_get_contents($chemin_fichier);
           if($contenu_du_fichier!==false){
               $data['contenu_du_fichier']=$contenu_du_fichier;
-              $data['db']=$ret;
+              $data['db']=$__valeurs;
               $data['status']='OK';
           }
       

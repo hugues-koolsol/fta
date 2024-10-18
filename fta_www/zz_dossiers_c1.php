@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 initialiser_les_services(true,true); // sess,bdd
 
-require_once('../fta_inc/db/acces_bdd_dossiers1.php');
+
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
    ajouterMessage('info' ,  __LINE__ .' : veuillez sélectionner une cible avant d\'accéder aux dossiers'  );

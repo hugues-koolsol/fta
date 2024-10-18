@@ -2,7 +2,7 @@
 define("BNF",basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services(true,true); // sess,bdd
-require_once('../fta_inc/db/acces_bdd_sources1.php');
+
 
 if(( !(isset($_SESSION[APP_KEY]['cible_courante'])))){
 
@@ -95,96 +95,56 @@ $o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[AP
 $o1.='   </div>'.CRLF;
 $o1.='</form>'.CRLF;
 $__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
-$champs0='
- `chi_id_source`          , `chp_nom_source` , T1.chp_nom_dossier , chp_commentaire_source , T0.chx_dossier_id_source , 
-  T0.chp_type_source  
-';
-$sql0='SELECT '.$champs0;
-$from0='
- FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`tbl_sources` `T0`
-  LEFT JOIN `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_source  
- 
-';
-$sql0.=$from0;
-$where0='
- WHERE  "T0"."chx_cible_id_source" = \''.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'\' 
-';
+sql_inclure_reference(61);
+/*sql_inclure_deb*/
+require_once(INCLUDE_PATH.'/sql/sql_61.php');
+/*
+SELECT 
+`T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+`T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+`T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+ FROM b1.tbl_sources T0
+ LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
 
-if(($chi_id_source != '' )){
+ LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
 
-    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_source`' , $chi_id_source );
+WHERE (`T0`.`chx_cible_id_source` = :T0_chx_cible_id_source 
+   AND `T0`.`chi_id_source` = :T0_chi_id_source 
+   AND `T0`.`chp_nom_source` LIKE :T0_chp_nom_source 
+   AND `T0`.`chp_type_source` LIKE :T0_chp_type_source 
+   AND `T2`.`chp_nom_dossier` LIKE :T2_chp_nom_dossier 
+   AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source) 
+ORDER BY  `T0`.`chp_nom_source` ASC LIMIT :quantitee OFFSET :debut ;
 
-}
+*/
+/*sql_inclure_fin*/
 
+$tt=sql_61(array(
+    'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
+    'T0_chi_id_source'       => $chi_id_source,
+    'T0_chp_nom_source' => (($chp_nom_source === NULL)?$chp_nom_source:(($chp_nom_source === '')?'':'%'.$chp_nom_source.'%')),
+    'T0_chp_type_source' => (($chp_type_source === NULL)?$chp_type_source:(($chp_type_source === '')?'':'%'.$chp_type_source.'%')),
+    'T2_chp_nom_dossier' => (($chp_nom_dossier === NULL)?$chp_nom_dossier:(($chp_nom_dossier === '')?'':'%'.$chp_nom_dossier.'%')),
+    'T0_chx_dossier_id_source' => $chi_id_dossier ,
+    'quantitee' => $__nbMax,
+    'debut' => $__debut,
+    'page_courante' => BNF));
 
-if(($chp_nom_source != '')){
+if($tt['statut'] === false){
 
-    $where0.=CRLF.'AND `T0`.`chp_nom_source` LIKE \'%'.sq0($chp_nom_source).'%\'';
-
-}
-
-
-if(($chp_type_source != '')){
-
-    $where0.=CRLF.'AND `T0`.`chp_type_source` LIKE \'%'.sq0($chp_type_source).'%\'';
-
-}
-
-if(($chp_nom_dossier != '')){
-
-    $where0.=CRLF.'AND `T1`.`chp_nom_dossier` LIKE \'%'.sq0($chp_nom_dossier).'%\'';
-
-}
-
-
-if(($chi_id_dossier != '')){
-
-    $where0.=CRLF.construction_where_sql_sur_id('`T0`.`chi_id_dossier`' , $chi_id_dossier );
-
-}
-
-$sql0.=$where0;
-$order0='
- ORDER BY `T0`.`chp_nom_source` ASC
-';
-$sql0.=$order0;
-$plage0=' LIMIT '.sq0($__nbMax).' OFFSET '.sq0($__debut).';';
-$sql0.=$plage0;
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . $sql0  . '</pre>' ; exit(0);
-$data0=array();
-
-$stmt0=$GLOBALS[BDD][BDD_1][LIEN_BDD]->prepare($sql0);
-
-if(($stmt0 !== false)){
-
-    $res0=$stmt0->execute();
-    while(($tab0=$res0->fetchArray(SQLITE3_NUM))){
-        $data0[]=array(
-            'T0.chi_id_source' => $tab0[0],
-            'T0.chp_nom_source' => $tab0[1],
-            'T1.chp_nom_dossier' => $tab0[2],
-            'T0.chp_commentaire_source' => $tab0[3],
-            'T0.chx_dossier_id_source' => $tab0[4] ,
-            'T0.chp_type_source'       => $tab0[5] ,
-        );
-            
-    }
-    $stmt0->close();
-    $__nbEnregs=count($data0);
-
-    if(($__nbEnregs >= $__nbMax || $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
-
-        $sql1='SELECT COUNT(*) '.$from0.$where0;
-        $__nbEnregs=$GLOBALS[BDD][BDD_1][LIEN_BDD]->querySingle($sql1);
-
-    }
-
-
-}else{
-
-    echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export($GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),true).'</pre>' ;
+    $o1.='<div>';
+    $o1.='<div class="yydanger">Erreur sql</div>';
+    $o1.='<pre>'.$tt['sql0'].'</per>';
+    $o1.='</div>';
+    $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => array());
+    $o1.=html_footer1($par);
+    print($o1);
+    $o1='';
     exit(0);
+
 }
+
+$__nbEnregs=$tt['nombre'];
 
 $consUrlRedir=''.'&amp;chi_id_source='.rawurlencode($chi_id_source).'&amp;chp_nom_source='.rawurlencode($chp_nom_source).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
 $consUrlRedir='';
@@ -208,7 +168,7 @@ $lsttbl.='<th>type</th>';
 $lsttbl.='<th>dossier</th>';
 $lsttbl.='<th>commentaire</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($data0 as $k0 => $v0){
+foreach($tt['valeur'] as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
@@ -245,7 +205,7 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='</td>';
     
     $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.='('.$v0['T0.chx_dossier_id_source'].')'.$v0['T1.chp_nom_dossier'].'';
+    $lsttbl.='('.$v0['T0.chx_dossier_id_source'].')'.$v0['T2.chp_nom_dossier'].'';
     $lsttbl.='</td>';
     $lsttbl.='<td style="text-align:left;">';
     if($v0['T0.chp_commentaire_source']!==null){
@@ -255,7 +215,6 @@ foreach($data0 as $k0 => $v0){
     $lsttbl.='<tr>';
 }
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
-/* $o1.= __FILE__ . ' ' . __LINE__ . ' $tab0 = <pre>' . var_export( $data0 , true ) . '</pre>' ;*/
 /*
   ============================================================================
 */

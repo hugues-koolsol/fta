@@ -65,12 +65,8 @@ function recupere_une_donnees_des_cibles($id){
       'fta_inc/ajax/php/ast.php' => array(),
       'fta_inc/ajax/php/session.php' => array(),
       'fta_inc/ajax/php/travail_en_arriere_plan1.php' => array(),
-      
 
       'fta_inc/db/__liste_des_acces_bdd.php' => array(),
-      'fta_inc/db/acces_bdd_dossiers1.php' => array(),
-      'fta_inc/db/acces_bdd_sources1.php' => array(),
-      'fta_inc/db/acces_bdd_revs1.php' => array(),
       
       'fta_inc/phplib/mesBibliotheques.bat'=>array(),
       'fta_inc/phplib/sqlite.php'=>array(),
@@ -374,8 +370,8 @@ function recupere_une_donnees_des_cibles($id){
        }
    }
 
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1]['initialisation'] , true ) . '</pre>' ; exit(0);
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][BDD_1]['nom_bdd'] , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][1]['initialisation'] , true ) . '</pre>' ; exit(0);
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][1]['nom_bdd'] , true ) . '</pre>' ; exit(0);
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD] , true ) . '</pre>' ; exit(0);
    /* 
      on doit prendre les requetes sql de la table requetes de fta pour les mettre dans ftb
@@ -383,8 +379,8 @@ function recupere_une_donnees_des_cibles($id){
      il faut une référence sur la base fta
      
    */
-   $ret0=$base_ftb->exec($GLOBALS[BDD][BDD_1]['initialisation']);
-   $sql_insere_requetes='INSERT INTO `'.cst('tbl_requetes').'` SELECT * FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.`'.cst('tbl_requetes').'` WHERE `'.cst('chx_cible_requete').'`=1';
+   $ret0=$base_ftb->exec($GLOBALS[BDD][1]['initialisation']);
+   $sql_insere_requetes='INSERT INTO `'.cst('tbl_requetes').'` SELECT * FROM `'.$GLOBALS[BDD][1]['nom_bdd'].'`.`'.cst('tbl_requetes').'` WHERE `'.cst('chx_cible_requete').'`=1';
    if(false === $base_ftb->exec($sql_insere_requetes)){
     echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
    }

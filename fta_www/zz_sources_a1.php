@@ -3,8 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services(true,true);
 /* sess,bdd*/
-require_once('../fta_inc/db/acces_bdd_sources1.php');
-require_once('../fta_inc/db/acces_bdd_dossiers1.php');
+
 
 if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
@@ -88,12 +87,45 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta') && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
 
-            $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-            $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+            
+            sql_inclure_reference(62);
+            /*sql_inclure_deb*/
+            require_once(INCLUDE_PATH.'/sql/sql_62.php');
+            /*
+              SELECT 
+              `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+              `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+              `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+               FROM b1.tbl_sources T0
+               LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+
+               LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+              WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+            */
+            /*sql_inclure_fin*/
+            
+            $tt=sql_62(array( 
+             'T0_chi_id_source'       => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 
+             'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
+            ));
+
+            if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+
+                ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
+                recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+
+            }
+            $__valeurs=$tt['valeur'][0];
+
+            
+            
+            
+            $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
 
             if(is_file($nom_complet_du_source_dans_fta)){
 
-                $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+                $nomCompletSource='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
 
                 if(copy($nom_complet_du_source_dans_fta,$nomCompletSource)){
 
@@ -157,12 +189,43 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
           =====================================================================================================
         */
         /*     echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();*/
-        $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+        
+        sql_inclure_reference(62);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_62.php');
+        /*
+          SELECT 
+          `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+          `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+          `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+           FROM b1.tbl_sources T0
+           LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+
+           LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+          WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_62(array( 
+         'T0_chi_id_source'       => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 
+         'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
+        ));
+
+        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+
+            ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
+            recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+
+        }
+        $__valeurs=$tt['valeur'][0];
+        
+        
         /*     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
 
-        if(($__valeurs['T2.chp_dossier_cible'] !== null) && ($__valeurs['T1.chp_nom_dossier'] !== null)){
+        if(($__valeurs['T1.chp_dossier_cible'] !== null) && ($__valeurs['T2.chp_nom_dossier'] !== null)){
 
-            $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
+            $nomCompletSource='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
 
             if(is_file($nomCompletSource)){
 
@@ -245,8 +308,39 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
         $le_fichier_est_renomme=false;
-        $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-        $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+        sql_inclure_reference(62);
+        /*sql_inclure_deb*/
+        require_once(INCLUDE_PATH.'/sql/sql_62.php');
+        /*
+          SELECT 
+          `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+          `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+          `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+           FROM b1.tbl_sources T0
+           LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+
+           LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+          WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+        */
+        /*sql_inclure_fin*/
+        
+        $tt=sql_62(array( 
+         'T0_chi_id_source'       => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 
+         'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
+        ));
+
+        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+
+            ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
+            recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+
+        }
+        $__valeurs=$tt['valeur'][0];
+
+        
+        
+        $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);*/
 
         if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === NULL){
@@ -254,7 +348,36 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         }else{
 
-            $nouveau_dossier=recupere_une_donnees_des_dossiers_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+
+            sql_inclure_reference(50);
+            /*sql_inclure_deb*/
+            require_once(INCLUDE_PATH.'/sql/sql_50.php');
+            /*
+              SELECT 
+              `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+              `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible`
+               FROM b1.tbl_dossiers T0
+               LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
+
+              WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+            */        
+            /*sql_inclure_fin*/
+
+            $tt=sql_50(array(
+                'T0_chi_id_dossier'     => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] ,
+                'T0_chx_cible_dossier'  => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']  ,
+            ));
+
+            $nom_dossier='';
+            if($tt['statut'] === true && count($tt['valeur'])===1){
+                $nouveau_dossier=$tt['valeur'][0];
+            }else{
+                ajouterMessage('erreur',__LINE__.' :  dossier non trouvé');
+                recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+            }
+
+
+
             /*      echo __FILE__ . ' ' . __LINE__ . ' $nouveau_dossier = <pre>' . var_export( $nouveau_dossier , true ) . '</pre>' ; exit(0);*/
             $nom_complet_du_nouveau_fichier='../../'.$nouveau_dossier['T1.chp_dossier_cible'].$nouveau_dossier['T0.chp_nom_dossier'].'/'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
             /*  echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>, $nom_complet_du_nouveau_fichier<pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>' ; exit(0);*/
@@ -397,14 +520,43 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         if($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'] !== false){
 
-            $__valeurs=recupere_une_donnees_des_sources_avec_parents($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+            sql_inclure_reference(62);
+            /*sql_inclure_deb*/
+            require_once(INCLUDE_PATH.'/sql/sql_62.php');
+            /*
+              SELECT 
+              `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+              `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+              `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+               FROM b1.tbl_sources T0
+               LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
 
-            if((APP_KEY !== 'fta') && ($__valeurs['T2.chp_dossier_cible'] === 'fta')){
+               LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+              WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+            */
+            /*sql_inclure_fin*/
+            
+            $tt=sql_62(array( 
+             'T0_chi_id_source'       => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 
+             'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
+            ));
+
+            if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+
+                ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
+                recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+
+            }
+            $__valeurs=$tt['valeur'][0];
+
+
+            if((APP_KEY !== 'fta') && ($__valeurs['T1.chp_dossier_cible'] === 'fta')){
 
                 /*
                   
                   si on est dans l'environnement ftx ( APP_KEY !== 'fta' ) 
-                  et que le dossier cible est fta ( $__valeurs['T2.chp_dossier_cible'] === 'fta' )
+                  et que le dossier cible est fta ( $__valeurs['T1.chp_dossier_cible'] === 'fta' )
                   on ne doit pas effacer ce fichier car il appartient à fta et il n'y a que fta
                   qui peut gérer les fichiers de fta
                 */
@@ -413,7 +565,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             }else{
 
                 /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
-                $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+                $nom_complet_de_l_ancien_fichier='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
 
                 if(is_file($nom_complet_de_l_ancien_fichier)){
 
@@ -461,7 +613,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
                 ajouterMessage('info','384 l\'enregistrement a été supprimé à '.substr($GLOBALS['__date'],11));
                 recharger_la_page('zz_sources_l1.php');
-                /* ?chp_nom_dossier='.rawurlencode($__valeurs['T1.chp_nom_dossier'])*/
+                /* ?chp_nom_dossier='.rawurlencode($__valeurs['T2.chp_nom_dossier'])*/
             }
 
         }
@@ -549,51 +701,49 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
   =====================================================================================================================
   =====================================================================================================================
 */
-$__id='0';
 
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
-    $__id=((isset($_GET['__id']))?((is_numeric($_GET['__id']))?$_GET['__id']:0):0);
-    /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);*/
+if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_GET['__action'] == '__suppression'))){
 
-    if(($__id === 0) || ($__id === '0')){
+    $__id=((isset($_GET['__id']))?((is_numeric($_GET['__id']))?(int)($_GET['__id']):0):0);
+
+    if(($__id === 0)){
 
         ajouterMessage('erreur',__LINE__.' il y a eu un problème ');
         recharger_la_page('zz_sources_l1.php');
 
-    }else{
+    }
+    
+    
+    sql_inclure_reference(62);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_62.php');
+    /*
+      SELECT 
+      `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+      `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+      `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+       FROM b1.tbl_sources T0
+       LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
 
-        $__valeurs=recupere_une_donnees_des_sources($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
+       LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+      WHERE (`T0`.`chi_id_source` = :T0_chi_id_source AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+    */
+    /*sql_inclure_fin*/
+    
+    $tt=sql_62(array( 'T0_chi_id_source' => $__id, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
+
+    if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+
+        ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
+        recharger_la_page(BNF.'?__action=__modification&__id='.$__id);
+
     }
 
-
+    $__valeurs=$tt['valeur'][0];
+    
 }
-
-
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
-
-    $__id=((isset($_GET['__id']))?((is_numeric($_GET['__id']))?$_GET['__id']:0):0);
-
-    if($__id === '0'){
-
-        recharger_la_page('zz_sources_l1.php');
-
-    }else{
-
-        /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( is_numeric($__id) , true ) . '</pre>' ; exit(0);*/
-        $__valeurs=recupere_une_donnees_des_sources_avec_parents($__id,$GLOBALS[BDD][BDD_1][LIEN_BDD]);
-
-        if(!(isset($__valeurs['T0.chi_id_source']))){
-
-            recharger_la_page('zz_sources_l1.php');
-
-        }
-
-    }
-
-
-}
-
 /*
   
   =====================================================================================================================
@@ -738,7 +888,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     }else{
 
         /*   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
-        $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T1.chp_nom_dossier'].'</b>" </span>'.CRLF;
+        $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T2.chp_nom_dossier'].'</b>" </span>'.CRLF;
     }
 
     $o1.='  </div></div>'.CRLF;
@@ -836,9 +986,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
     $o1.='   <button id="__ecrire_sur_disque" name="__ecrire_sur_disque" class="yyinfo">ecrire le généré sur le disque</button>'.CRLF;
 
-    if(($__valeurs['T2.chp_dossier_cible'] !== null) && ($__valeurs['T1.chp_nom_dossier'] !== null)){
+    if(($__valeurs['T1.chp_dossier_cible'] !== null) && ($__valeurs['T2.chp_nom_dossier'] !== null)){
 
-        $nomCompletSource='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+        $nomCompletSource='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
         /*   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomCompletSource , true ) . '</pre>' ; exit(0);*/
 
         if(is_file($nomCompletSource)){
@@ -860,7 +1010,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
         if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta') && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
 
-            $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T1.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
+            $nom_complet_du_source_dans_fta='../../fta'.$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
 
             if(is_file($nom_complet_du_source_dans_fta)){
 

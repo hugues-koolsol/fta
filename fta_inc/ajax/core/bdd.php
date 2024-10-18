@@ -313,7 +313,11 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         }
 
     }
+    /*
+      il faut supprimer les connexions aux bases;
+    */
     $db1temp->close();
+    $GLOBALS[BDD][$data['input']['id_bdd_de_la_base']][LIEN_BDD]->close();
     /*
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_bdd='.$chemin_bdd .CRLF.CRLF); fclose($fd);}
     */
