@@ -6,3 +6,12 @@ $GLOBALS[BDD][1]=array(
  'initialisation' => 'attach database "C:\\wamp64\\www\\functToArray\\fta\\fta_inc\db\\sqlite\\system.db" as `system.db`;',
  'lien' => null,
 );
+/*
+$GLOBALS[BDD][9]=array(
+ 'id' => 9,
+ 'nom_bdd' => 'test.db',
+ 'fournisseur' => 'sqlite',
+ 'initialisation' => 'attach database "C:\\wamp64\\www\\functToArray\\fta\\fta_inc\db\\sqlite\\test.db" as `test.db`;',
+ 'lien' => null,
+);
+*/

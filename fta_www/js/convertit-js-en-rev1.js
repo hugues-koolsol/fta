@@ -505,9 +505,22 @@ function recupNomOperateur(s){
     }else if(s === '&'){
 
         return 'etBin';
+    }else if(s === '~'){
+
+        return 'nonBin';
+    }else if(s === '^'){
+
+        return 'ou_ex_bin';
+        
     }else if(s === '>>'){
 
         return 'decalDroite';
+    }else if(s === '>>>'){
+
+        return 'decal_droite_non_signe';
+    }else if(s === '<<'){
+
+        return 'decalGauche';
     }else if(s === 'in'){
 
         return 'in';

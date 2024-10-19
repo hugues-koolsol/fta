@@ -228,6 +228,9 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
 function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
+/*
+    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data,true) .CRLF.CRLF); fclose($fdtoto);}
+*/
     sql_inclure_reference(26);
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_26.php');
@@ -317,10 +320,9 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
       il faut supprimer les connexions aux bases;
     */
     $db1temp->close();
-    $GLOBALS[BDD][$data['input']['id_bdd_de_la_base']][LIEN_BDD]->close();
-    /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_bdd='.$chemin_bdd .CRLF.CRLF); fclose($fd);}
-    */
+    if(isset($GLOBALS[BDD][$data['input']['id_bdd_de_la_base']])){
+        $GLOBALS[BDD][$data['input']['id_bdd_de_la_base']][LIEN_BDD]->close();
+    }
 
     if(sauvegarder_et_supprimer_fichier($chemin_bdd,false)){
 
@@ -331,6 +333,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
         }
     }
+
 
 
 }
@@ -582,7 +585,6 @@ function ordonner_les_champs_de_table(&$data){
     /*
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
     */
-    $db0=new SQLite3(INCLUDE_PATH.'/db/sqlite/system.db');
 
     sql_inclure_reference(26);
     /*sql_inclure_deb*/

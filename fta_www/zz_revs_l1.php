@@ -335,17 +335,22 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
         if($chaine_a_remplacer !== ''){
 
             /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_taches=' . $liste_des_taches;*/
+         
             $__parametres_pour_travail_en_arriere_plan=array(
                 'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
-                'chaine_a_remplacer' => $chaine_a_remplacer,
-                'liste_des_taches' => $liste_des_taches,
-                'critere_de_recherche' => $tt['where0']);
+                'chaine_a_remplacer'   => $chaine_a_remplacer,
+                'liste_des_taches'     => $liste_des_taches,
+                'critere_de_recherche' => $tt['where0'],
+                'provenance'           => 'source'
+            );
             $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
             $paramUrl=str_replace('\\','\\\\',$paramUrl);
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan</a>'.CRLF;
+            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.CRLF;
+         
+
 
         }
 
