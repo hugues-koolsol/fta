@@ -45,19 +45,24 @@ function supprimer_repertoire_et_fichiers_inclus($dirPath){
 */
 function integrer_la_requete_dans_la_table_rev( $id_requete , $matrice_requete ){
 
-    sql_inclure_reference(39);
+
+    sql_inclure_reference(5);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH.'/sql/sql_39.php');
+    require_once(INCLUDE_PATH.'/sql/sql_5.php');
     /*
       DELETE FROM b1.tbl_revs
-      WHERE ( `chx_cible_rev` = :chx_cible_rev AND `chp_provenance_rev` = :chp_provenance_rev AND `chx_source_rev` = :chx_source_rev) ;
+      WHERE (
+            `chx_cible_rev` = :chx_cible_rev
+        AND `chp_provenance_rev` = :chp_provenance_rev
+        AND `chx_source_rev` = :chx_source_rev
+      ) ;
     */
     /*sql_inclure_fin*/
-    $tt=sql_39(array( 
-        'chx_cible_rev'      => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-        'chp_provenance_rev' => 'sql'          ,
-        'chx_source_rev'     => $id_requete    ,
-    ));
+    
+    $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' =>$id_requete));
+
+
+
     $matrice=json_decode($matrice_requete,false);
 //    echo __FILE__ . ' ' . __LINE__ . ' $id_requete =  ' . $id_requete . '<pre> ' . var_export(  $matrice , true ) . '</pre>' ; exit(0);
     

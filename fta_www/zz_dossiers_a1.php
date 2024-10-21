@@ -510,34 +510,15 @@ if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_
         if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
 
             ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
-            recharger_la_page(BNF.'?__action=__modification&__id='.$__id);
+            recharger_la_page('zz_dossiers_l1.php');
 
         }
 
         $__valeurs=$tt['valeur'][0];
+        
     }
-
-
 }
 
-if($__valeurs['T0.chp_nom_dossier']==='/'){
- 
-
-      if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
-       
-        /*
-         si on est dans un environnement ftx et que la cible courante est fta,
-         on a le droit de supprimer le dossier da la base
-        
-        
-        */
-
-      }else{
-          recharger_la_page('zz_dossiers_l1.php');
-      }
- 
- 
-}
 
 /*
 ============================================================================
@@ -560,6 +541,19 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   ==== __suppression =========================================================
   ============================================================================
   */
+
+
+  if($__valeurs['T0.chp_nom_dossier']==='/'){
+      if($__valeurs['T1.chp_dossier_cible']==='fta' && APP_KEY !== 'fta'){
+        /*
+         si on est dans un environnement ftx et que la cible courante est fta,
+         on a le droit de supprimer le dossier da la base
+        */
+      }else{
+          recharger_la_page('zz_dossiers_l1.php');
+      }
+  }
+
 
  $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
  $o1.=' <form method="post" class="yyformDelete">'.CRLF;

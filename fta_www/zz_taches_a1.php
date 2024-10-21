@@ -191,8 +191,13 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         }else{
 
-            ajouterMessage('info',__LINE__.' : l\'enregistrement ('.$tt['nouvel_id'].') a bien été créé',BNF);
-            recharger_la_page(BNF.'?__action=__modification&__id='.$tt['nouvel_id']);
+            if(isset($_POST['option']) && $_POST['option'] === 'enregistrer_et_revenir_a_la_liste'){
+                ajouterMessage('info',__LINE__.' : l\'enregistrement ('.$tt['nouvel_id'].') a bien été créé');
+                recharger_la_page('zz_taches_l1.php');
+            }else{
+                ajouterMessage('info',__LINE__.' : l\'enregistrement ('.$tt['nouvel_id'].') a bien été créé',BNF);
+                recharger_la_page(BNF.'?__action=__modification&__id='.$tt['nouvel_id']);
+            }
         }
 
 
@@ -282,7 +287,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $o1.=' <form method="post" class="yyformDelete">'.CRLF;
     $o1.='   veuillez confirmer le suppression de  : '.CRLF;
-    $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_tache'].')  nom : '.$__valeurs['T0.chp_texte_tache'].'    <br /> '.'</b><br />'.CRLF;
+    $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_tache'].')  nom : '.enti1($__valeurs['T0.chp_texte_tache']).'    <br /> '.'</b><br />'.CRLF;
     $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.CRLF;
     $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
     $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.CRLF;
@@ -317,6 +322,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <button type="submit">enregistrer</button>'.CRLF;
     $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.CRLF;
     $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.CRLF;
+    $o1.='   <button type="submit" name="option" value="enregistrer_et_revenir_a_la_liste">enregistrer et revenir à la liste</button>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.='</form>'.CRLF;
@@ -343,6 +349,8 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
     $o1.='   <span>'.$__id.'</span>'.CRLF;
     $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_priorite_tache']).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="width:100%;max-width:4em;" />'.CRLF;
+    $o1.='   <a href="javascript:document.getElementById(\'chp_priorite_tache\').value=99;">99</a>'.CRLF;
+    
     $o1.='  </div></div>'.CRLF;
     $o1.=' </div>'.CRLF;
     $o1.=' <div class="yyfdiv1">'.CRLF;
@@ -358,6 +366,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
     $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications" class="">enregistrer les modifications</button>'.CRLF;
     $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications_et_retour" class="">enregistrer les modifications et retour</button>'.CRLF;
+    $o1.='   <a class="yydanger" href="?__action=__suppression&__id='.$__id.'">supprimer</a>'.CRLF;
     $o1.='  </div></div>'.CRLF;
     $o1.='</div>'.CRLF;
     $o1.='</form>'.CRLF;

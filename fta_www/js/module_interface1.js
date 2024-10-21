@@ -13,8 +13,17 @@ class interface1{
     #largeur_des_ascenseurs=11;
     
     /*
+     
     */
     #programme_en_arriere_plan=null;
+    
+    /*
+      modale
+    */
+    global_modale2=null;
+    global_modale2_contenu=null;
+    global_modale2_iframe=null;
+    
     
     /*
       ==============================================================================
@@ -22,6 +31,20 @@ class interface1{
     */
     constructor(nom_de_la_variable){
         this.#nom_de_la_variable=nom_de_la_variable;
+        this.global_modale2=document.getElementById('modale1');
+        this.global_modale2_contenu=document.getElementById('__contenu_modale');
+        this.global_modale2_iframe=document.getElementById('iframe_modale_1');
+        
+        
+        this.global_modale2.addEventListener('click',function(e){
+            var dim = e.target.getBoundingClientRect();
+            if((e.clientX < dim.left) || (e.clientX > dim.right) || (e.clientY < dim.top) || (e.clientY > dim.bottom)){
+                document.getElementById('__message_modale').innerHTML='';
+                e.target.close();
+            }
+        });
+        
+        
     }
     /* function nom_de_la_variable */
     get nom_de_la_variable(){
@@ -32,6 +55,55 @@ class interface1{
         return this.#largeur_des_ascenseurs;
     }
     
+    /*
+      ==============================================================================
+      modale
+    */
+    fermerModale2(){
+        document.getElementById('__message_modale').innerHTML='';
+        this.global_modale2.close();
+    }
+    
+    afficherModale2(parametres){
+        console.log(('parametres=' + parametres));
+        var jsn1 = JSON.parse(parametres);
+        if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
+            var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'],'__nom_champ_dans_parent':jsn1['__nom_champ_dans_parent']};
+            this.global_modale2_iframe.src=(jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale)));
+            this.global_modale2.showModal();
+        }
+    }
+    
+    annuler_champ_modale(parametres){
+        var jsn1 = JSON.parse(parametres);
+        document.getElementById(jsn1['__nom_champ_dans_parent']).value='';
+        try{
+            if(jsn1.__champs_texte_a_rapatrier){
+                var i={};
+                for(i in jsn1.__champs_texte_a_rapatrier){
+                    window.parent.document.getElementById(i).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_si_vide;
+                }
+            }
+        }catch(e){
+            console.log(e);
+        }
+    }
+    
+    choisir_de_iframe2(parametres){
+        var jsn1 = JSON.parse(parametres);
+        window.parent.document.getElementById(jsn1['__nom_champ_rapatrie']).value=jsn1['__valeur_champ_id_rapatrie'];
+        try{
+            if(jsn1.__champs_texte_a_rapatrier){
+                var i={};
+                for(i in jsn1.__champs_texte_a_rapatrier){
+                    window.parent.document.getElementById(i).innerHTML=(jsn1.__champs_texte_a_rapatrier[i].__libelle_avant + jsn1.__champs_texte_a_rapatrier[i].__valeur + jsn1.__champs_texte_a_rapatrier[i].__libelle_apres);
+                }
+            }
+        }catch(e){
+            console.log(e);
+        }
+        window.parent.__gi1.fermerModale2()
+    }
     
     
     /*
@@ -346,15 +418,15 @@ class interface1{
       function fixer_les_parametres_pour_une_liste
     */
     fixer_les_parametres_pour_une_liste(nom_de_la_page){
-        global_modale1_iframe.style.visibility='none';
+        this.global_modale2_iframe.style.visibility='none';
         var t='';
         t+='<h1>fixer les paramètres</h1>';
         var i=10;
         for(i=10;i <= 50;i+=10){
             t+=('<a href="javascript:' + this.#nom_de_la_variable + '.definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&quot;' + nom_de_la_page + '&quot;,' + i + ')">afficher ' + i + ' lignes</a>');
         }
-        global_modale1_contenu.innerHTML=t;
-        global_modale1.showModal();
+        this.global_modale2_contenu.innerHTML=t;
+        this.global_modale2.showModal();
     }
     /*
       

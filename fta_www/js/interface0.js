@@ -8,9 +8,6 @@ var global_editeur_debut_texte_tab = [];
 var global_editeur_scrolltop=0;
 var global_editeur_nomDeLaTextArea='';
 var global_editeur_timeout=null;
-var global_modale1=null;
-var global_modale1_iframe=null;
-var global_modale1_contenu=null;
 var global_indice_erreur_originale_traitee=-1;
 var global_programme_en_arriere_plan=null;
 /*
@@ -1083,60 +1080,7 @@ function executerCesActionsPourLaPageLocale(par){
   
   =====================================================================================================================
 */
-function afficherModale1(parametres){
-    console.log(('parametres=' + parametres));
-    var jsn1 = JSON.parse(parametres);
-    if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
-        var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'],'__nom_champ_dans_parent':jsn1['__nom_champ_dans_parent']};
-        global_modale1_iframe.src=(jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale)));
-        global_modale1.showModal();
-    }
-}
-/*
-  
-  =====================================================================================================================
-*/
-function fermerModale1(){
-    document.getElementById('__message_modale').innerHTML='';
-    global_modale1.close();
-}
-/*
-  
-  =====================================================================================================================
-*/
-function annuler_champ(parametres){
-    var jsn1 = JSON.parse(parametres);
-    document.getElementById(jsn1['__nom_champ_dans_parent']).value='';
-    try{
-        if(jsn1.__champs_texte_a_rapatrier){
-            var i={};
-            for(i in jsn1.__champs_texte_a_rapatrier){
-                window.parent.document.getElementById(i).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_si_vide;
-            }
-        }
-    }catch(e){
-        console.log(e);
-    }
-}
-/*
-  
-  =====================================================================================================================
-*/
-function choisir_de_iframe1(parametres){
-    var jsn1 = JSON.parse(parametres);
-    window.parent.document.getElementById(jsn1['__nom_champ_rapatrie']).value=jsn1['__valeur_champ_id_rapatrie'];
-    try{
-        if(jsn1.__champs_texte_a_rapatrier){
-            var i={};
-            for(i in jsn1.__champs_texte_a_rapatrier){
-                window.parent.document.getElementById(i).innerHTML=(jsn1.__champs_texte_a_rapatrier[i].__libelle_avant + jsn1.__champs_texte_a_rapatrier[i].__valeur + jsn1.__champs_texte_a_rapatrier[i].__libelle_apres);
-            }
-        }
-    }catch(e){
-        console.log(e);
-    }
-    window.parent.global_modale1.close();
-}
+
 var __gi1=null;
 var __module_html1=null;
 var __module_svg1=null;
@@ -1146,25 +1090,16 @@ var __module_requete_sql1=null;
   =====================================================================================================================
 */
 window.addEventListener('load',function(){
-    global_modale1=document.getElementById('modale1');
-    global_modale1_contenu=document.getElementById('__contenu_modale');
-    global_modale1_iframe=document.getElementById('iframe_modale_1');
-    global_modale1.addEventListener('click',function(e){
-        var dim = global_modale1.getBoundingClientRect();
-        if((e.clientX < dim.left) || (e.clientX > dim.right) || (e.clientY < dim.top) || (e.clientY > dim.bottom)){
-            document.getElementById('__message_modale').innerHTML='';
-            global_modale1.close();
-        }
-    });
-    setTimeout(function(){
-        recuperer_les_travaux_en_arriere_plan_de_la_session();
-    },1000);
+    console.log('load fait');
     import('./module_interface1.js').then(function(Module){
         __gi1= new Module.interface1('__gi1');
         __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
         __gi1.deplace_la_zone_de_message();
         fonctionDeLaPageAppeleeQuandToutEstCharge();
     });
+    setTimeout(function(){
+        recuperer_les_travaux_en_arriere_plan_de_la_session();
+    },1000);
     var liste_des_scripts = document.getElementsByTagName('script');
     var i=0;
     for(i=0;i < liste_des_scripts.length;i++){

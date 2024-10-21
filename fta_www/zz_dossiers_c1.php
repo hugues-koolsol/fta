@@ -146,7 +146,7 @@ foreach($tt['valeur'] as $k0=>$v0){
 
 
  
- $__lsttbl.=' <a class="yyinfo" href="javascript:choisir_de_iframe1(\''.enti1($paramUrl).'\')" title="choisir">✎</a>';
+ $__lsttbl.=' <a class="yyinfo" href="javascript:__gi1.choisir_de_iframe2(\''.enti1($paramUrl).'\')" title="choisir">✎</a>';
  $__lsttbl.='</div>';
  
  $__lsttbl.='</td>';

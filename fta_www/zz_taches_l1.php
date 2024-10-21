@@ -17,6 +17,62 @@ function obtenir_entete_de_la_page(){
     return(array( 'status' => true, 'value' => $o1));
 
 }
+
+/*
+  =====================================================================================================================
+*/
+if(isset($_POST['__ordonner_les_taches'])){
+    sql_inclure_reference(64);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_64.php');
+    /*        
+      SELECT 
+      `T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
+       FROM b1.tbl_taches T0
+      WHERE (`T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache
+         AND `T0`.`chp_priorite_tache` < :T0_chp_priorite_tache) 
+      ORDER BY `T0`.`chi_id_tache` ASC;
+   */          
+    /*sql_inclure_fin*/
+    
+    $tt=sql_64(array( 
+      'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+      'T0_chp_priorite_tache' => 50
+    ));
+    if($tt['statut'] === false){
+        ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
+        recharger_la_page(BNF);
+    }
+    $nouvelle_priorite=1;
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['valeur'] , true ) . '</pre>' ; exit(0);
+    foreach($tt['valeur'] as $k1 => $v1){
+        if($nouvelle_priorite<50){
+         
+            sql_inclure_reference(65);
+            /*sql_inclure_deb*/
+            require_once(INCLUDE_PATH.'/sql/sql_65.php');
+            /*        
+              UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
+              WHERE (`chi_id_tache` = :c_chi_id_tache
+                 AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
+            */          
+            /*sql_inclure_fin*/
+//            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ; exit(0);
+            
+            $tt2=sql_65(array( 
+              'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+              'c_chi_id_tache'          => $v1['T0.chi_id_tache'],
+              'n_chp_priorite_tache'    => $nouvelle_priorite
+            ));
+            if($tt2['statut'] === false){
+                ajouterMessage('erreur' , __LINE__ .' : ' . $tt2['message'] );
+                recharger_la_page(BNF);
+            }
+        }
+        $nouvelle_priorite++; 
+    }
+}
+
 /*
   =====================================================================================================================
 */
@@ -354,6 +410,7 @@ $consUrlRedir=''.'&amp;chi_id_tache='.rawurlencode($chi_id_tache).'&amp;chp_text
 $boutons_haut=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
 $boutons_haut.=' <button name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
 $boutons_haut.=' <button name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.CRLF;
+$boutons_haut.=' <button name="__ordonner_les_taches" id="__ordonner_les_taches" class="yyinfo" title="réordonner les tâches" >#</button>'.CRLF;
 
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_haut);
 

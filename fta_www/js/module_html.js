@@ -1031,8 +1031,23 @@ class traitements_sur_html{
         var esp0 = ' '.repeat(NBESPACESREV*(niveau));
         var esp1 = ' '.repeat(NBESPACESREV);
         var supprimer_le_tag_html_et_head=true;
+        var doctype='';
         var elementsJson={};
         try{
+            var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
+            if(position_doctype>=0){
+                if(position_doctype===0){
+                    var doctype
+                    for(var i=1;i<texteHtml.length && doctype=='';i++){
+                     if(texteHtml.substr(i,1)==='>'){
+                      doctype=texteHtml.substr(0,i+1); //<!DOCTYPE html>
+                      texteHtml=texteHtml.substr(i+1);
+                     }
+                    }
+                }
+            }
+            
+         
             elementsJson=this.mapDOM(texteHtml,false);
             if(elementsJson.status===true){
                 if(elementsJson.parfait===true){
@@ -1049,7 +1064,13 @@ class traitements_sur_html{
 
                 var obj=this.traiteAstDeHtml(elementsJson.value,0,supprimer_le_tag_html_et_head,'');
                 if(obj.status===true){
-                    
+                    if(obj.value.indexOf('html(')>=0){
+                     if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
+                        obj.value=obj.value.replace(/html\(/,'html((doctype)');
+                     }else{
+                        obj.value=obj.value.replace(/html\(/,'html(#(?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                     }
+                    }
                     t=obj.value;
                 }else{
                     return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));

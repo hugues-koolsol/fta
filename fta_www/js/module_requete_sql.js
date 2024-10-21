@@ -887,6 +887,9 @@ class requete_sql{
                 this.#obj_webs.champs_sortie=[];
                 this.#mettre_en_stokage_local_et_afficher();
             }
+        }else if( ( "update" === this.#obj_webs.type_de_requete  ) ){
+            this.#obj_webs.champs_sortie=[];
+            this.#mettre_en_stokage_local_et_afficher();
         }else{
             this.#obj_webs.champs_sortie.splice(ind,1);
             this.#mettre_en_stokage_local_et_afficher();
@@ -961,7 +964,8 @@ class requete_sql{
                 type_d_element  : 'formule'  ,
                 formule  : rev_de_la_formule  ,
             });
-            global_modale1.close();
+
+            __gi1.global_modale2.close();
             this.#mettre_en_stokage_local_et_afficher();
         }
     }
@@ -1087,7 +1091,8 @@ class requete_sql{
          
         
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();
+        
+        __gi1.global_modale2.showModal();
         document.getElementById('zone_formule').addEventListener('click',this.clic_sur_textarea_formule.bind(this));
         document.getElementById('zone_formule').addEventListener('keyup',this.clic_sur_textarea_formule.bind(this));
         
@@ -1173,7 +1178,7 @@ class requete_sql{
          
          
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();
+        __gi1.global_modale2.showModal();
         document.getElementById('zone_formule').addEventListener('click',this.clic_sur_textarea_formule.bind(this));
         document.getElementById('zone_formule').addEventListener('keyup',this.clic_sur_textarea_formule.bind(this));
      
@@ -1204,7 +1209,7 @@ class requete_sql{
                     formule  : rev_de_la_formule  ,
                 };
             }
-            global_modale1.close();
+            __gi1.global_modale2.close();
             this.#mettre_en_stokage_local_et_afficher();
         }
     }
@@ -1710,6 +1715,49 @@ class requete_sql{
         
         this.#div_de_travail.innerHTML=t;
     }
+    /*
+      ========================================================================================================
+      function recupérer_un_fetch
+    */
+    async #recupérer_un_fetch(url,donnees){
+//            var r=null;
+            var en_entree={
+                'signal':AbortSignal.timeout(2000),
+                'method':"POST",
+                'mode':"cors",
+                'cache':"no-cache",
+                'credentials':"same-origin",
+                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                'redirect':"follow",
+                'referrerPolicy':"no-referrer",
+                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+            };
+            try{
+
+                var response= await fetch( url, en_entree);
+                
+                var t=await response.text();
+                try{
+                    var le_json=JSON.parse(t);
+                    return le_json;
+                }catch(e){
+                    logerreur({status:false,message:'erreur sur convertion json, texte non json='+t});
+                    logerreur({status:false,message:'url='+url});
+                    logerreur({status:false,message:JSON.stringify(en_entree)});
+                    logerreur({status:false,message:JSON.stringify(donnees)});
+                    return({status:'KO' , message:'le retour n\'est pas en json'});
+                }
+
+            }catch(e){
+
+                debugger
+                console.log('e=',e);
+                return({status:'KO' , message:e.message});
+                
+            }
+            
+    }
+    
     /* 
       ================================================================================================================
       ================================================================================================================
@@ -1717,28 +1765,8 @@ class requete_sql{
     */
     bouton_modifier_le_rev_en_base(id_requete){
         clearMessages('zone_global_messages');
-        async function modifier_la_requete_en_base(url="",ajax_param){
-            var response= await fetch(url,{
-                /* 6 secondes de timeout */
-                'signal':AbortSignal.timeout(1000),
-                // *GET, POST, PUT, DELETE, etc. 
-                method:"POST",
-                // no-cors, *cors, same-origin 
-                mode:"cors",
-                // default, no-cache, reload, force-cache, only-if-cached 
-                cache:"no-cache",
-                // include, *same-origin, omit 
-                credentials:"same-origin",
-                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                
-                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)))
-            });
-            return(response.json());
+        async function modifier_la_requete_en_base(url="",ajax_param,that){
+            return that.#recupérer_un_fetch(url,ajax_param);
         }
         
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
@@ -1759,7 +1787,7 @@ class requete_sql{
                       'cht_commentaire_requete' : document.getElementById('cht_commentaire_requete').value
                 };
 
-                modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param).then((donnees) => {
+                modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){
                         logerreur({status:true,message:' requête sauvegardée'});
@@ -1785,27 +1813,7 @@ class requete_sql{
      
         clearMessages('zone_global_messages');
         async function enregistrer_la_requete_en_base(url="",ajax_param){
-            var response= await fetch(url,{
-                // 6 secondes de timeout 
-                'signal':AbortSignal.timeout(1000),
-                // *GET, POST, PUT, DELETE, etc. 
-                method:"POST",
-                // no-cors, *cors, same-origin 
-                mode:"cors",
-                // default, no-cache, reload, force-cache, only-if-cached 
-                cache:"no-cache",
-                // include, *same-origin, omit 
-                credentials:"same-origin",
-                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                
-                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)))
-            });
-            return(response.json());
+            return that.#recupérer_un_fetch(url,ajax_param,that);
         }
         
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
@@ -1823,7 +1831,7 @@ class requete_sql{
                  'cht_commentaire_requete' : document.getElementById('cht_commentaire_requete').value,
                  'id_courant':id_courant,
                 };
-                enregistrer_la_requete_en_base('za_ajax.php?enregistrer_la_requete_en_base',ajax_param).then((donnees) => {
+                enregistrer_la_requete_en_base('za_ajax.php?enregistrer_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=' , donnees );
                     if(donnees.status === 'OK'){
                      var recharger_page='zz_requetes_a1.php?__action=__modification&__id='+donnees.nouvel_id;
@@ -2543,6 +2551,18 @@ class requete_sql{
             var obj2=tabToSql1(obj1.value,0 , 0 , false);
             if(obj2.status===true){
                 obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                if(obj2.value.indexOf('WHERE ')>=0){
+                 var str1=obj2.value.substr(0,obj2.value.indexOf('WHERE '));
+                 var str2=obj2.value.substr(obj2.value.indexOf('WHERE '));
+                 str2=str2.replace(/ AND/g,CRLF+'   AND');
+                 if(str2.indexOf('ORDER BY ')>=0){
+                   str2=str2.replace(/ORDER BY /g,CRLF+'ORDER BY');
+                 }
+                 if(str2.indexOf('LIMIT ')>=0){
+                   str2=str2.replace(/LIMIT /g,CRLF+'LIMIT');
+                 }
+                 obj2.value=str1+str2;
+                }
                 dogid(txtarea_dest).value=obj2.value;
                 var obj3=tabToSql1(obj1.value,0 , 0 , true);
                 if(obj3.status===true){
@@ -2590,31 +2610,11 @@ class requete_sql{
             complements                       : [],
             tableau_des_bases_tables_champs   : {},
         };
-        async function recuperer_les_bases_de_la_cible_en_cours(url="",donnees){
-            var response= await fetch(url,{
-                // 6 secondes de timeout 
-                'signal':AbortSignal.timeout(1000),
-                // *GET, POST, PUT, DELETE, etc. 
-                method:"POST",
-                // no-cors, *cors, same-origin 
-                mode:"cors",
-                // default, no-cache, reload, force-cache, only-if-cached 
-                cache:"no-cache",
-                // include, *same-origin, omit 
-                credentials:"same-origin",
-                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                
-                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function recuperer_les_bases_de_la_cible_en_cours(url="",donnees,that){
+            return that.#recupérer_un_fetch(url,ajax_param,that);
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_les_bases_de_la_cible_en_cours'}};
-        recuperer_les_bases_de_la_cible_en_cours('za_ajax.php?recuperer_les_bases_de_la_cible_en_cours',ajax_param).then((donnees) => {
+        recuperer_les_bases_de_la_cible_en_cours('za_ajax.php?recuperer_les_bases_de_la_cible_en_cours',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
 //                console.log('OK' , donnees);
                 this.#obj_init['bases']={};

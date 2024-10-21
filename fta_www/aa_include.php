@@ -55,16 +55,18 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
       foreach($GLOBALS[BDD] as $k1=>$v1){
           define('BDD_'.$v1['id'],$v1['id']);
           $GLOBALS[BDD][$k1][LIEN_BDD]=$db0;
-          /*
-            l'initialisation permet de déclencher par exemple
-            attach database "C:\\...chemin...\\fta_inc\db\\sqlite\\system.db" as "system.db"
-          */
-          $sql0=$v1['initialisation'];
-          /*
-            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
-          */
-          $ret0=$db0->exec($sql0);
-//          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $ret0 , true ) . '</pre>' ; exit(0);
+          if($v1['fournisseur']==='sqlite'){
+              /*
+                l'initialisation permet de déclencher par exemple
+                attach database "C:\\...chemin...\\fta_inc\db\\sqlite\\system.db" as "system.db"
+              */
+              $sql0=$v1['initialisation'];
+              /*
+                echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql0 , true ) . '</pre>' ; exit(0);
+              */
+              $ret0=$db0->exec($sql0);
+    //          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $ret0 , true ) . '</pre>' ; exit(0);
+          }
           
       }
   }
@@ -901,7 +903,7 @@ function html_footer1($parametres=array()){
 
     $o1='';
     $o1.='</main>'.CRLF;
-    $o1.='<dialog id="modale1">'.CRLF.' <a id="__fermerModale1" href="javascript:fermerModale1()" class="yydanger">×</a>'.CRLF;
+    $o1.='<dialog id="modale1">'.CRLF.' <a id="__fermerModale1" href="javascript:__gi1.fermerModale2()" class="yydanger">×</a>'.CRLF;
     $o1.=' <div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div>'.CRLF;
     $o1.=' <div id="__contenu_modale">'.CRLF;
     $o1.='  <iframe id="iframe_modale_1" src=""></iframe>'.CRLF;

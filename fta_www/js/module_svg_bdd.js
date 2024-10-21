@@ -116,6 +116,48 @@ class module_svg_bdd{
         }
     }
     /*
+      ========================================================================================================
+      function recupérer_un_fetch
+    */
+    async #recupérer_un_fetch(url,donnees){
+//            var r=null;
+            var en_entree={
+                'signal':AbortSignal.timeout(2000),
+                'method':"POST",
+                'mode':"cors",
+                'cache':"no-cache",
+                'credentials':"same-origin",
+                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+                'redirect':"follow",
+                'referrerPolicy':"no-referrer",
+                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
+            };
+            try{
+
+                var response= await fetch( url, en_entree);
+                
+                var t=await response.text();
+                try{
+                    var le_json=JSON.parse(t);
+                    return le_json;
+                }catch(e){
+                    logerreur({status:false,message:'erreur sur convertion json, texte non json='+t});
+                    logerreur({status:false,message:'url='+url});
+                    logerreur({status:false,message:JSON.stringify(en_entree)});
+                    logerreur({status:false,message:JSON.stringify(donnees)});
+                    return({status:'KO' , message:'le retour n\'est pas en json'});
+                }
+
+            }catch(e){
+
+                debugger
+                console.log('e=',e);
+                return({status:'KO' , message:e.message});
+                
+            }
+            
+    }
+    /*
       ====================================================================================================================
       function #message_succes_et_fermer_modale
     */
@@ -130,7 +172,7 @@ class module_svg_bdd{
         document.getElementById('__message_modale').innerHTML='<div class="yysucces">OK</div>'
         setTimeout(
          function(){
-          global_modale1.close();
+          __gi1.global_modale2.close();
           document.getElementById('__message_modale').innerHTML='';
          },
          500
@@ -310,7 +352,7 @@ class module_svg_bdd{
     */
     modale_ajouter_une_table(){
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();
+        __gi1.global_modale2.showModal();
     }
     /*
       
@@ -370,7 +412,7 @@ class module_svg_bdd{
                 }
             }
             this.#svg_ajuster_largeur_de_table(id_svg_conteneur_table);
-            global_modale1.close();
+            __gi1.global_modale2.close();
         }
     }
     /*
@@ -408,7 +450,7 @@ class module_svg_bdd{
         var id_svg_conteneur_table=a.id_svg_conteneur_table;
         indice_courant+=2;
         var a = this.#ajouter_nom_de_table_au_svg(nom_de_la_table,indice_courant,id_svg_conteneur_table,0);
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
 //        this.#svg_ajuster_la_largeur_des_boites_de_la_table([id_svg_conteneur_table,this.#id_bdd_de_la_base_en_cours]);
 //        this.#svg_ajuster_la_largeur_de_la_base(this.#id_svg_de_la_base_en_cours);
@@ -506,7 +548,7 @@ class module_svg_bdd{
         rev +=')';
         
         var a = this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,this.#id_bdd_de_la_base_en_cours,rev);
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
 //        this.#svg_ajuster_la_largeur_des_boites_de_la_table([id_svg_conteneur_table,this.#id_bdd_de_la_base_en_cours]);
 //        this.#svg_ajuster_la_largeur_de_la_base(this.#id_svg_de_la_base_en_cours);
@@ -546,7 +588,7 @@ class module_svg_bdd{
             }
         }
         this.#svg_ajuster_largeur_de_table(id_svg_conteneur_table);
-        global_modale1.close();
+        __gi1.global_modale2.close();
     }
     /*
       
@@ -607,7 +649,7 @@ class module_svg_bdd{
                 }
             }
             this.#svg_ajuster_largeur_de_table(id_svg_conteneur_table);
-            global_modale1.close();
+            __gi1.global_modale2.close();
         }
     }
     /*
@@ -635,7 +677,7 @@ class module_svg_bdd{
         }
         t+=(',meta(' + meta + ')');
         this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[id_svg_rectangle_de_l_index].proprietes['donnees_rev_de_l_index']=t;
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
     }
     /*
@@ -645,7 +687,7 @@ class module_svg_bdd{
     supprimer_un_index_dans_rev_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
         var id_de_l_index = parseInt(document.getElementById(id_svg_rectangle_de_l_index).parentNode.id,10);
         this.#supprimer_recursivement_les_elements_de_l_arbre(this.#id_bdd_de_la_base_en_cours,id_de_l_index);
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
     }
     
@@ -657,31 +699,11 @@ class module_svg_bdd{
     supprimer_un_index_dans_base_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
         var source_sql='DROP INDEX '+nom_de_l_index;
 
-        async function supprimer_en_bdd_l_index(url="",donnees){
-            var response= await fetch(url,{
-                // 6 secondes de timeout 
-                'signal':AbortSignal.timeout(1000),
-                // *GET, POST, PUT, DELETE, etc. 
-                method:"POST",
-                // no-cors, *cors, same-origin 
-                mode:"cors",
-                // default, no-cache, reload, force-cache, only-if-cached 
-                cache:"no-cache",
-                // include, *same-origin, omit 
-                credentials:"same-origin",
-                // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                
-                  //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function supprimer_en_bdd_l_index(url="",donnees,that){
+            return that.#recupérer_un_fetch(url,donnees);
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_en_bdd_l_index'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-        supprimer_en_bdd_l_index('za_ajax.php?supprimer_en_bdd_l_index',ajax_param).then((donnees) => {
+        supprimer_en_bdd_l_index('za_ajax.php?supprimer_en_bdd_l_index',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
                 console.log('OK');
             }else{
@@ -705,31 +727,11 @@ class module_svg_bdd{
 //                console.log('obj2.value=' , obj2.value );
                 var source_sql=obj2.value;
                 
-                async function ajouter_en_bdd_l_index(url="",donnees){
-                    var response= await fetch(url,{
-                        // 6 secondes de timeout 
-                        'signal':AbortSignal.timeout(1000),
-                        // *GET, POST, PUT, DELETE, etc. 
-                        method:"POST",
-                        // no-cors, *cors, same-origin 
-                        mode:"cors",
-                        // default, no-cache, reload, force-cache, only-if-cached 
-                        cache:"no-cache",
-                        // include, *same-origin, omit 
-                        credentials:"same-origin",
-                        // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                        'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                        redirect:"follow",
-                        
-                          //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        
-                        referrerPolicy:"no-referrer",
-                        'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                    });
-                    return(response.json());
+                async function ajouter_en_bdd_l_index(url="",donnees,that){
+                    return that.#recupérer_un_fetch(url,donnees);
                 }
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_l_index'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-                ajouter_en_bdd_l_index('za_ajax.php?ajouter_en_bdd_l_index',ajax_param).then((donnees) => {
+                ajouter_en_bdd_l_index('za_ajax.php?ajouter_en_bdd_l_index',ajax_param,this).then((donnees) => {
                     if(donnees.status === 'OK'){
                         console.log('OK');
                     }else{
@@ -765,34 +767,15 @@ class module_svg_bdd{
                 if(obj2.status===true){
 //                    console.log(obj2.value);
 
-                    async function ajouter_en_bdd_le_champ(url="",donnees){
-                        var response= await fetch(url,{
-                            // 6 secondes de timeout 
-                            'signal':AbortSignal.timeout(1000),
-                            // *GET, POST, PUT, DELETE, etc. 
-                            method:"POST",
-                            // no-cors, *cors, same-origin 
-                            mode:"cors",
-                            // default, no-cache, reload, force-cache, only-if-cached 
-                            cache:"no-cache",
-                            // include, *same-origin, omit 
-                            credentials:"same-origin",
-                            // "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  
-                            'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                            redirect:"follow",
-                            
-                              //no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                            
-                            referrerPolicy:"no-referrer",
-                            'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                        });
-                        return(response.json());
+                    async function ajouter_en_bdd_le_champ(url="",donnees,that){
+                        return that.#recupérer_un_fetch(url,donnees);
+                     
                     }
                     var source_sql='ALTER TABLE `'+nom_de_la_table+'` ADD COLUMN '+ obj2.value+';';
                     
 
                     var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-                    ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param).then((donnees) => {
+                    ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param,this).then((donnees) => {
                         if(donnees.status === 'OK'){
                             this.#message_succes_et_fermer_modale(donnees);
                         }else{
@@ -872,7 +855,7 @@ class module_svg_bdd{
                 }
             }
         }
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
     }
     /*
@@ -1010,7 +993,7 @@ class module_svg_bdd{
         }
         t+=(',meta(' + meta + ')');
         this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[id_svg_rectangle_du_champ].proprietes['donnees_rev_du_champ']=t;
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
     }
     /*
@@ -1134,7 +1117,7 @@ class module_svg_bdd{
 
 
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();
+        __gi1.global_modale2.showModal();
     }
     /*
       
@@ -1313,7 +1296,7 @@ class module_svg_bdd{
         t+=('<span>Veuillez passer par l\'écran table pour supprimer un champ dans la base physique</span>');
         t+='<hr />';
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();
+        __gi1.global_modale2.showModal();
     }
     
     /*
@@ -1321,7 +1304,7 @@ class module_svg_bdd{
       function afficher_resultat_comparaison_base_physique_et_base_virtuelle
     */
     afficher_resultat_comparaison_base_physique_et_base_virtuelle(par){
-        global_modale1.close();
+        __gi1.global_modale2.close();
         
         var differences_entre_les_tables=false;
         var differences_entre_les_champs=false;
@@ -1702,7 +1685,7 @@ class module_svg_bdd{
         t+='</tr></table>'
         
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();        
+        __gi1.global_modale2.showModal();        
         
     }
     /*
@@ -1720,32 +1703,10 @@ class module_svg_bdd{
                 if(obj3.status===true){
                  
                              
-                             
-                             
-                    async function recuperer_les_tableaux_des_bases(url="",donnees){
-                        var response= await fetch(url,{
-                            /* 6 secondes de timeout */
-                            'signal':AbortSignal.timeout(1000),
-                            /* *GET, POST, PUT, DELETE, etc. */
-                            method:"POST",
-                            /* no-cors, *cors, same-origin */
-                            mode:"cors",
-                            /* default, no-cache, reload, force-cache, only-if-cached */
-                            cache:"no-cache",
-                            /* include, *same-origin, omit */
-                            credentials:"same-origin",
-                            /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                            'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                            redirect:"follow",
-                            /*
-                              
-                              
-                              no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                            */
-                            referrerPolicy:"no-referrer",
-                            'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                        });
-                        return(response.json());
+                    async function recuperer_les_tableaux_des_bases(url="",donnees,that){
+
+                        return that.#recupérer_un_fetch(url,donnees);
+
                     }
                     var ajax_param={
                         /* enveloppe d'appels */
@@ -1754,7 +1715,7 @@ class module_svg_bdd{
                         source_base_sql        : obj3.value ,
                         id_bdd_de_la_base      : id_bdd_de_la_base_en_cours,
                     };
-                    recuperer_les_tableaux_des_bases('za_ajax.php?recuperer_les_tableaux_des_bases',ajax_param).then((donnees) => {
+                    recuperer_les_tableaux_des_bases('za_ajax.php?recuperer_les_tableaux_des_bases',ajax_param,this).then((donnees) => {
 
                         if(donnees.status === 'OK'){
                             
@@ -1816,29 +1777,10 @@ class module_svg_bdd{
             return;
         }
         
-        async function creer_la_base_a_partir_du_shema_sur_disque(url="",donnees){
-            var response= await fetch(url,{
-                /* 10 secondes de timeout car il faut faire une copie de la base */
-                'signal':AbortSignal.timeout(10000),
-                /* *GET, POST, PUT, DELETE, etc. */
-                method:"POST",
-                /* no-cors, *cors, same-origin */
-                mode:"cors",
-                /* default, no-cache, reload, force-cache, only-if-cached */
-                cache:"no-cache",
-                /* include, *same-origin, omit */
-                credentials:"same-origin",
-                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                /*
-                  
-                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                */
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function creer_la_base_a_partir_du_shema_sur_disque(url="",donnees,that){
+         
+            return that.#recupérer_un_fetch(url,donnees);
+         
         }
         
         var ajax_param={
@@ -1848,7 +1790,7 @@ class module_svg_bdd{
         };
         
 
-        creer_la_base_a_partir_du_shema_sur_disque('za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque',ajax_param).then((donnees) => {
+        creer_la_base_a_partir_du_shema_sur_disque('za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
                 console.log('OK');
             }else{
@@ -1920,29 +1862,9 @@ class module_svg_bdd{
             return;
         }
         
-        async function reecrire_la_base_a_partir_du_shema_sur_disque(url="",donnees){
-            var response= await fetch(url,{
-                /* 10 secondes de timeout car il faut faire une copie de la base */
-                'signal':AbortSignal.timeout(10000),
-                /* *GET, POST, PUT, DELETE, etc. */
-                method:"POST",
-                /* no-cors, *cors, same-origin */
-                mode:"cors",
-                /* default, no-cache, reload, force-cache, only-if-cached */
-                cache:"no-cache",
-                /* include, *same-origin, omit */
-                credentials:"same-origin",
-                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                /*
-                  
-                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                */
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function reecrire_la_base_a_partir_du_shema_sur_disque(url="",donnees,that){
+            return that.#recupérer_un_fetch(url,donnees);
+
         }
         
         var ajax_param={
@@ -1953,7 +1875,7 @@ class module_svg_bdd{
         };
         
 
-        reecrire_la_base_a_partir_du_shema_sur_disque('za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque',ajax_param).then((donnees) => {
+        reecrire_la_base_a_partir_du_shema_sur_disque('za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
                 this.#message_succes_et_fermer_modale(donnees);
             }else{
@@ -2019,7 +1941,7 @@ class module_svg_bdd{
         
         
         document.getElementById('__contenu_modale').innerHTML=t;
-        global_modale1.showModal();
+        __gi1.global_modale2.showModal();
     }
     
     /*
@@ -2126,30 +2048,8 @@ class module_svg_bdd{
           console.log('tab_des_index_sql=' , tab_des_index_sql );
           debugger;
         */
-        async function ordonner_les_champs_de_table(url="",donnees){
-            var response= await fetch(url,{
-                /* 6 secondes de timeout */
-                'signal':AbortSignal.timeout(1000),
-                /* *GET, POST, PUT, DELETE, etc. */
-                method:"POST",
-                /* no-cors, *cors, same-origin */
-                mode:"cors",
-                /* default, no-cache, reload, force-cache, only-if-cached */
-                cache:"no-cache",
-                /* include, *same-origin, omit */
-                credentials:"same-origin",
-                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                /*
-                  
-                  
-                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                */
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function ordonner_les_champs_de_table(url="",donnees,that){
+            return that.#recupérer_un_fetch(url,donnees);
         }
         var ajax_param={
             /* enveloppe d'appels */
@@ -2167,7 +2067,7 @@ class module_svg_bdd{
             mode_supression_de_champ : mode_supression_de_champ,
             en_base_et_sur_schema    : en_base_et_sur_schema,
         };
-        ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param).then((donnees) => {
+        ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
                 //console.log( this.#arbre );
                 // mode_supression_de_champ,en_base_et_sur_schema
@@ -2180,7 +2080,7 @@ class module_svg_bdd{
                       console.log('réordonner KO')
                    }
                 }
-                global_modale1.close();
+                __gi1.global_modale2.close();
                 this.#dessiner_le_svg();
             }
         }).catch((err) => {
@@ -2303,7 +2203,7 @@ class module_svg_bdd{
      
      var a =this.#ajouter_index_a_table(this.#id_bdd_de_la_base_en_cours,max_id,nom_de_l_index,id_svg_conteneur_table,nom_de_la_table,donnees_rev_de_l_index);
 
-     global_modale1.close();
+     __gi1.global_modale2.close();
      this.#dessiner_le_svg();
      
      
@@ -2541,7 +2441,7 @@ class module_svg_bdd{
         document.getElementById('__contenu_modale').innerHTML=t;
         
         new Sortable(ordre_modifie,{animation:150,ghostClass:'blue-background-class'});
-        global_modale1.showModal();
+        __gi1.global_modale2.showModal();
     }
     /*
       
@@ -2717,7 +2617,7 @@ class module_svg_bdd{
             }
         }
         this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[id_svg_rectangle_de_la_base].proprietes.donnees_rev_meta_de_la_base=t;
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
     }
     /*
@@ -2742,7 +2642,7 @@ class module_svg_bdd{
             }
         }
         this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[id_svg_rectangle_de_la_table].proprietes.meta_rev_de_la_table=t;
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
     }
     
@@ -2781,32 +2681,11 @@ class module_svg_bdd{
      
         var source_sql='DROP table '+nom_de_la_table;
      
-        async function supprimer_table_dans_base(url="",donnees){
-            var response= await fetch(url,{
-                /* 6 secondes de timeout */
-                'signal':AbortSignal.timeout(1000),
-                /* *GET, POST, PUT, DELETE, etc. */
-                method:"POST",
-                /* no-cors, *cors, same-origin */
-                mode:"cors",
-                /* default, no-cache, reload, force-cache, only-if-cached */
-                cache:"no-cache",
-                /* include, *same-origin, omit */
-                credentials:"same-origin",
-                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                /*
-                  
-                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                */
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function supprimer_table_dans_base(url="",donnees,that){
+            return that.#recupérer_un_fetch(url,donnees);
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_table_dans_base'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-        supprimer_table_dans_base('za_ajax.php?supprimer_table_dans_base',ajax_param).then((donnees) => {
+        supprimer_table_dans_base('za_ajax.php?supprimer_table_dans_base',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
                 this.#message_succes_modale(donnees);
             }else{
@@ -2831,32 +2710,11 @@ class module_svg_bdd{
 //                console.log(obj2.value);
                 
                 
-                async function creer_table_dans_base(url="",donnees){
-                    var response= await fetch(url,{
-                        /* 6 secondes de timeout */
-                        'signal':AbortSignal.timeout(1000),
-                        /* *GET, POST, PUT, DELETE, etc. */
-                        method:"POST",
-                        /* no-cors, *cors, same-origin */
-                        mode:"cors",
-                        /* default, no-cache, reload, force-cache, only-if-cached */
-                        cache:"no-cache",
-                        /* include, *same-origin, omit */
-                        credentials:"same-origin",
-                        /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                        'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                        redirect:"follow",
-                        /*
-                          
-                          no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        */
-                        referrerPolicy:"no-referrer",
-                        'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                    });
-                    return(response.json());
+                async function creer_table_dans_base(url="",donnees,that){
+                    return that.#recupérer_un_fetch(url,donnees);
                 }
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'creer_table_dans_base'},source_sql:obj2.value,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-                creer_table_dans_base('za_ajax.php?creer_table_dans_base',ajax_param).then((donnees) => {
+                creer_table_dans_base('za_ajax.php?creer_table_dans_base',ajax_param,this).then((donnees) => {
 
                     if(donnees.status === 'OK'){
                         this.#message_succes_modale(donnees);
@@ -2945,7 +2803,7 @@ class module_svg_bdd{
                 }
             }
         }
-        global_modale1.close();
+        __gi1.global_modale2.close();
         this.#dessiner_le_svg();
         this.#svg_ajuster_la_largeur_de_la_base(this.#id_svg_de_la_base_en_cours);
     }
@@ -3540,32 +3398,11 @@ class module_svg_bdd{
             return;
         }
 
-        async function envoyer_le_rev_de_le_base_en_post(url="",donnees){
-            var response= await fetch(url,{
-                /* 6 secondes de timeout */
-                'signal':AbortSignal.timeout(1000),
-                /* *GET, POST, PUT, DELETE, etc. */
-                method:"POST",
-                /* no-cors, *cors, same-origin */
-                mode:"cors",
-                /* default, no-cache, reload, force-cache, only-if-cached */
-                cache:"no-cache",
-                /* include, *same-origin, omit */
-                credentials:"same-origin",
-                /* "Content-Type": "application/json"   'Content-Type': 'application/x-www-form-urlencoded'  */
-                'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                redirect:"follow",
-                /*
-                  
-                  no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                */
-                referrerPolicy:"no-referrer",
-                'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-            });
-            return(response.json());
+        async function envoyer_le_rev_de_le_base_en_post(url="",donnees,that){
+            return that.#recupérer_un_fetch(url,donnees);
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'envoyer_le_rev_de_le_base_en_post'},source_rev_de_la_base:t,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
-        envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param).then((donnees) => {
+        envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
                logerreur({status:true,message:' Le schema de la base est sauvegardé'});
             }else{
@@ -4069,40 +3906,13 @@ class module_svg_bdd{
       function charger_les_bases
     */
     #charger_les_bases_en_asynchrone(les_id_des_bases){
-        async function recuperer_les_donnees_de_le_base_en_post(url="",donnees){
-            var r=null;
-            try{
-              var en_entree={
-                     /* 6 secondes de timeout */
-                     'signal':AbortSignal.timeout(1000),
-                     'method':"POST",
-                     'mode':"cors",
-                     'cache':"no-cache",
-                     'credentials':"same-origin",
-                     'headers':{'Content-Type':'application/x-www-form-urlencoded'},
-                     'redirect':"follow",
-                     'referrerPolicy':"no-referrer",
-                     'body':('ajax_param=' + encodeURIComponent(JSON.stringify(donnees)))
-                  };
-              var response= await fetch( url, en_entree);
-              /* 
-                il se peut qu'on ne reçoive pas du json en sortie 
-              */
-              var t=await response.text();
-              try{
-               var le_json=JSON.parse(t);
-               return le_json;
-              }catch(e){
-               return({status:'KO' , message:t});
-              }
-            }catch(e){
-             console.log('e=',e);
-             debugger
-            }
+        async function recuperer_les_donnees_de_le_base_en_post(url="",donnees,that){
+         
+            return that.#recupérer_un_fetch(url,donnees);
             
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_zone_travail_pour_les_bases'},les_id_des_bases:les_id_des_bases};
-        recuperer_les_donnees_de_le_base_en_post('za_ajax.php?recuperer_zone_travail_pour_les_bases',ajax_param).then((donnees) => {
+        recuperer_les_donnees_de_le_base_en_post('za_ajax.php?recuperer_zone_travail_pour_les_bases',ajax_param,this).then((donnees) => {
             if(donnees.status !== 'OK'){
                 console.log('donnees=',donnees)
                 logerreur({status:false,message:donnees.message});
