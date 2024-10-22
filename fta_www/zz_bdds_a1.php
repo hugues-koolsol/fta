@@ -903,7 +903,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">format rev</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a href="javascript:parentheses(&quot;chp_rev_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.parentheses1(&quot;chp_rev_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_basedd&quot;);" title="réduire la zone">👊</a>'.CRLF;
@@ -939,7 +939,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
   $o1.='  </div>'.CRLF;
   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <a href="javascript:parentheses(&quot;chp_rev_travail_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
+  $o1.='   <a href="javascript:__gi1.parentheses1(&quot;chp_rev_travail_basedd&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_travail_basedd&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
   $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_travail_basedd&quot;);" title="réduire la zone">👊</a>'.CRLF;
@@ -988,7 +988,12 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
       if($_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables']==='___produire_le_rev_v2'){
           $js_a_executer_apres_chargement[]=array(
-            'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite_v2' , 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 'zone_rev' => 'chp_rev_basedd' , 'contexte' => $_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables'] )
+            'nomDeLaFonctionAappeler' => 'traite_le_tableau_de_la_base_sqlite_v2' , 
+            'parametre' => array( 
+             'donnees' => $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , 
+             'zone_rev' => 'chp_rev_basedd' , 
+             'contexte' => $_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables'] 
+            )
           );
           unset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']);
       }

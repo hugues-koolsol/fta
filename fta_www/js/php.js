@@ -1309,6 +1309,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
   
 
  }else if(tab[ind][2]==='f' && ( tab[ind][1]==='variable_protégée' || tab[ind][1]==='variable_privée' || tab[ind][1]==='variable_publique' || tab[ind][1]==='variable_publique_statique' || tab[ind][1]==='variable_privée_statique' ) ){
+    debugger
     var declaration='';
     for( var i=ind+1;i<l01 && tab[i][3]>tab[ind][3];i++){
         if(tab[i][7]===ind){
@@ -2590,6 +2591,8 @@ function php_condition1(tab,id,niveau,id_parent){
                  }else{
                      return php_logerr({status:false,value:t,id:i,tab:tab,message:'2456 erreur dans une condition il doit y avoir 2 opérandes dans une comparaison'});
                  }
+             }else if(tab[i][1]==='#' ){
+              t+='/* */';
              }else{
                  
                  var obj1=php_traiteElement(tab , i , niveau,{});
@@ -2597,7 +2600,7 @@ function php_condition1(tab,id,niveau,id_parent){
                      t+=obj1.value;
                      return {value:t,status:true};
                  }else{
-                     return php_logerr({status:false,value:t,id:id,tab:tab,message:'erreur 1858'});
+                     return php_logerr({status:false,value:t,id:id,tab:tab,message:'erreur 2600 '+tab[i][1]});
                  }
              }
          }else{

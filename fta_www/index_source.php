@@ -27,41 +27,41 @@ $o1='';?>
                 
                 <li><button class="yyinfo" onclick='enregistrer2()'>Convertir</button></li>
 
-                <li><input type='text' id='nomDuSource' disabled='true' style='max-width: 150px;' /></li>
-                <li><button id='sauvegarderLeNormalise' onclick='sauvegardeTexteSource()' disabled='true' data-fichiertexte=''>sauvegarder le texte normalise</button></li>
+                <li><input type="text" id="nomDuSource" disabled="true" style="max-width: 150px;" /></li>
+                <li><button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" data-fichiertexte="">sauvegarder le texte normalise</button></li>
                 
             </ul>
         </div>
         <h1>convertir un rev en js,php,html,sql...</h1>
         <div class="not menuScroller">
-         <a href='javascript:insertSource(&quot;choix&quot;);'>choix</a>
-         <a href='javascript:insertSource(&quot;boucle&quot;);'>Boucle</a>
-         <a href='javascript:insertSource(&quot;appelf&quot;);'>appelf</a>
-         <a href='javascript:insertSource(&quot;affecte&quot;);'>affecte</a>
-         <a href="javascript:parentheses(&quot;zonesource&quot;);" title='repérer la parenthèse ouvrante ou fermante correspondante'>(|.|)</a>
-         <a href='javascript:decaler(&quot;droite&quot;);'>(|&gt;&gt;&gt;</a>
-         <a href='javascript:mettreEnCommentaire();'>#()</a>
+         <a href="javascript:insertSource(&quot;choix&quot;);">choix</a>
+         <a href="javascript:insertSource(&quot;boucle&quot;);">Boucle</a>
+         <a href="javascript:insertSource(&quot;appelf&quot;);">appelf</a>
+         <a href="javascript:insertSource(&quot;affecte&quot;);">affecte</a>
+         <a href="javascript:__gi1.parentheses1(&quot;zonesource&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>
+         <a href="javascript:decaler(&quot;droite&quot;);">(|&gt;&gt;&gt;</a>
+         <a href="javascript:mettreEnCommentaire();">#()</a>
         </div>
     <table>
         <tbody>
             <tr>
-                <td id='zoneRevFiles' style='max-width:100px;overflow-x: hidden;'></td>
+                <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;"></td>
                 <td>
-                    <textarea id='zonesource' class='yytextSmall' cols='150' rows='60' spellcheck='false' style='height:75vh;'></textarea>
+                    <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:75vh;"></textarea>
                 </td>
-                <td style='vertical-align: text-top;'>
-                    <textarea id='normalise' class='yytextSmall' style='display:none' cols='100' rows='10' spellcheck='false'></textarea>
+                <td style="vertical-align: text-top;">
+                    <textarea id="normalise" class="yytextSmall" style="display:none" cols="100" rows="10" spellcheck="false"></textarea>
                 </td>
             </tr>
             <tr>
                 <td colspan='3'>
-                    <div id='message_erreur'></div>
+                    <div id="message_erreur"></div>
                 </td>
             </tr>
         </tbody>
     </table>
-    <table id='arrayed'></table>
-    <div id='donneesComplementaires'></div>
+    <table id="arrayed"></table>
+    <div id="donneesComplementaires"></div>
 <?php
 /*
   ici finit le php spécifique de la page

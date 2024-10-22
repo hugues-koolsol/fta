@@ -646,12 +646,8 @@ function decrypter($entree){
 /*===================================================================================================================*/
 
 function html_header1($parametres){
-
-
     if(( !(ob_start("ob_gzhandler")))){
-
         ob_start();
-
     }
     $o1='';
     $o1.='<!DOCTYPE html>'.CRLF;
@@ -774,6 +770,7 @@ function html_header1($parametres){
     
     $o1.='  <link rel="stylesheet" type="text/css" href="6.css" />'.CRLF;
     $o1.='<script type="text/javascript">'.CRLF;
+    $o1.=' var __debut_execution=performance.now();'.CRLF;
     $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
     $o1.=' var NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN='.(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])?count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']):0).';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
@@ -782,8 +779,9 @@ function html_header1($parametres){
     $o1.=' var CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
     
-    $o1.='</script>    '.CRLF;
-    $o1.='    '.CRLF;
+    $o1.='</script>'.CRLF;
+    $o1.='  <script type="text/javascript" defer src="js/interface0.js"></script>'.CRLF;
+    $o1.=''.CRLF;
 
     $o1.=' </head>'.CRLF;
     $o1.=' <body data-temp="temp">'.CRLF;
@@ -956,6 +954,7 @@ function html_footer1($parametres=array()){
     }
 
     $o1.='<script type="text/javascript">'.CRLF;
+    $o1.='"use strict";'.CRLF;
 
     if((isset($parametres['js_a_executer_apres_chargement']))){
 
@@ -977,17 +976,16 @@ function html_footer1($parametres=array()){
             }
 
         }
-        $o1.=' arrayLocalJs=['.CRLF.$txt1.CRLF.' ];'.CRLF;
+        $o1.=' var arrayLocalJs=['.CRLF.$txt1.CRLF.' ];'.CRLF;
         $o1.=' executerCesActionsPourLaPageLocale(arrayLocalJs);'.CRLF;
         $o1.='}'.CRLF;
 
     }else{
 
-        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* do nothing */};'.CRLF;
+        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};'.CRLF;
     }
 
     $o1.='</script>'.CRLF;
-    $o1.='  <script type="text/javascript" src="js/interface0.js"></script>'.CRLF;
     $o1.='</body></html>'.CRLF;
 
     if((isset($parametres['ne_pas_supprimer_les_valeurs_de_session_sur_un_choix']))){

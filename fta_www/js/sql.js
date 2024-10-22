@@ -997,7 +997,7 @@ function tabToSql0(tab,id,niveau,options){
                             oldnam=tab[j + 1][1];
                         }
                         if(tab[j][1] === 'new_def'){
-                            dans_definition_de_champ=true;
+//                            dans_definition_de_champ=true;
                             options.dans_definition_de_champ=true;
                             obj=tabToSql0(tab,j,niveau,options);
                             options.dans_definition_de_champ=false;
@@ -1343,7 +1343,7 @@ function tabToSql0(tab,id,niveau,options){
                                 t+=' ' + tab[j + 1][1] + '';
                                 j++;
                             }else{
-                                t+=' todo sql.js repere 0375 ' + tab[j][1];
+                                t+=' todo sql.js repere 0375 "' + tab[j][1]+'" ';
                             }
                         }
                     }else{
@@ -1371,7 +1371,7 @@ function tabToSql0(tab,id,niveau,options){
                                 t+=' COLLATE ' + tab[j + 1][1] + '';
                                 j++;
                             }else{
-                                t+=' todo sql.js repere 76 ' + tab[j][1];
+                                t+=' todo sql.js repere 1374 "' + tab[j][1]+'"';
                             }
                         }
                     }else{

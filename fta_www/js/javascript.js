@@ -1301,7 +1301,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         message:'dans appelf de "affecte" ou "dans" 0805 '
                     }));
                 }
-            }else if(((tab[i][1] === 'declare') || ("variable_privée" === tab[i][1])) && (tab[i][2] === 'f')){
+            }else if(((tab[i][1] === 'declare') || ("variable_privée" === tab[i][1]) || ("variable_publique" === tab[i][1])) && (tab[i][2] === 'f')){
                 t+=espcLigne;
                 var tabdeclare = [];
                 for(j=i + 1;j < l01;j=j + 1){
@@ -1319,6 +1319,8 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     var prefixe_declaration='var ';
                     if("variable_privée" === tab[i][1]){
                         prefixe_declaration='#';
+                    }else if("variable_publique" === tab[i][1]){
+                        prefixe_declaration='';
                     }else{
                     }
                     if((tabdeclare[0][2] === 'c') && (tabdeclare[1][2] === 'c')){

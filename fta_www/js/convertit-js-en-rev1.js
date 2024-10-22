@@ -329,6 +329,10 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
 
                 t+='\n' + esp0 + esp1 + esp1 + 'mode(privée),';
             }
+            if(element.value.async===true){
+
+                t+='\n' + esp0 + esp1 + esp1 + 'asynchrone(),';
+            }
             if((element.value.params) && (element.value.params.length > 0)){
 
                 t+=',';
@@ -379,10 +383,14 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
             return(astjs_logerreur({status:false,'message':'erreur traiteUneComposante 0278 pour ' + element.type,element:element}));
         }
     }else if('PropertyDefinition' === element.type){
+        if(element.key.type === 'PrivateIdentifier' || element.key.type === 'Identifier'){
 
-        if(element.key.type === 'PrivateIdentifier'){
-
-            t+='\n' + esp0 + esp1 + 'variable_privée(' + element.key.name;
+            if(element.key.type === 'PrivateIdentifier'){
+             
+              t+='\n' + esp0 + esp1 + 'variable_privée(' + element.key.name;
+            }else if(element.key.type === 'Identifier' ){
+              t+='\n' + esp0 + esp1 + 'variable_publique(' + element.key.name;
+            }
             if(element.value){
 
                 if(element.value.type === 'Literal'){

@@ -65,7 +65,7 @@ class interface1{
     }
     
     afficherModale2(parametres){
-        console.log(('parametres=' + parametres));
+//        console.log(('parametres=' + parametres));
         var jsn1 = JSON.parse(parametres);
         if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
             var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'],'__nom_champ_dans_parent':jsn1['__nom_champ_dans_parent']};
@@ -102,10 +102,14 @@ class interface1{
         }catch(e){
             console.log(e);
         }
-        window.parent.__gi1.fermerModale2()
+        window.parent[this.#nom_de_la_variable].fermerModale2()
     }
-    
-    
+    /*===================================================================================================================*/
+    ne_rien_faire(par){
+      // rien ici
+      //  console.log('par=',par);
+    }
+
     /*
       =====================================================================================================================
       function supprimer_ce_commentaire_et_recompiler
@@ -1109,6 +1113,168 @@ class interface1{
             }
         }
     }
+    /*
+      =============================================================================================================
+      =============================================================================================================
+    */
+    parentheses1(nomDeLaTextAreaContenantLeSource){
+        var i=0;
+        if(global_editeur_derniere_valeur_selecStart < 0){
+            logerreur({'status':false,'message':'veuillez sélectionner une parenthèse dans la zone de texte'});
+            displayMessages('zone_global_messages',nomDeLaTextAreaContenantLeSource);
+            return;
+        }
+        var zoneSource = document.getElementById(nomDeLaTextAreaContenantLeSource);
+        var texte=zoneSource.value;
+        if((global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart) && (texte.substr((global_editeur_derniere_valeur_selecStart - 1),1) == '(')){
+            /*
+              
+              on s'est placé juste après une parenthèse ouvrante
+            */
+            if(texte.substr(global_editeur_derniere_valeur_selecStart,1) == ')'){
+                /*
+                  
+                  on est entre 2 parenthèses ouvrante et fermante consécutives,
+                */
+                if((global_editeur_derniere_valeur_selecStart - 2) > 0){
+                    for(i=(global_editeur_derniere_valeur_selecStart - 2);i >= 1;i--){
+                        if(texte.substr(i,1) === '('){
+                            texte=texte.substr(i);
+                            var arr = functionToArray(texte,false,false,'(');
+                            if(arr.status === true){
+                                zoneSource.focus();
+                                zoneSource.selectionStart=(i + 1);
+                                global_editeur_derniere_valeur_selecStart=(i + 1);
+                                zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
+                                initialisationEditeur();
+                                return;
+                            }
+                        }
+                    }
+                    zoneSource.focus();
+                }else{
+                    zoneSource.focus();
+                }
+            }else{
+                texte=texte.substr((global_editeur_derniere_valeur_selecStart - 1));
+                console.log('texte="',(texte + '"'));
+                var arr = functionToArray(texte,false,false,'(');
+                if(arr.status === true){
+                    zoneSource.focus();
+                    zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
+                    zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
+                    initialisationEditeur();
+                    return;
+                }
+            }
+        }else if((global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart) && (texte.substr(global_editeur_derniere_valeur_selecStart,1) == ')')){
+            /*
+              
+              on s'est placé juste avant une parenthèse fermante
+            */
+            texte=texte.substr(0,(global_editeur_derniere_valeur_selecStart + 1));
+            var arr = functionToArray(texte,false,false,')');
+            if(arr.status === true){
+                zoneSource.focus();
+                zoneSource.selectionStart=(arr.posOuvPar + 1);
+                zoneSource.selectionEnd=global_editeur_derniere_valeur_selecStart;
+                initialisationEditeur();
+                return;
+            }
+        }else{
+            if(global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart){
+                /*
+                  
+                  on est placé quelquepart, on recherche la parenthèse ouvrante précédente
+                */
+                for(i=(global_editeur_derniere_valeur_selecStart - 2);i >= 1;i--){
+                    if(texte.substr(i,1) === '('){
+                        texte=texte.substr(i);
+                        var arr = functionToArray(texte,false,false,'(');
+                        if(arr.status === true){
+                            zoneSource.focus();
+                            zoneSource.selectionStart=(i + 1);
+                            global_editeur_derniere_valeur_selecStart=(i + 1);
+                            zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
+                            initialisationEditeur();
+                            return;
+                        }
+                    }
+                }
+                zoneSource.focus();
+            }else if(global_editeur_derniere_valeur_selectEnd !== global_editeur_derniere_valeur_selecStart){
+                /*
+                  
+                  c'est une sélection de plage entre 2 parenthèses
+                */
+                if((texte.substr((global_editeur_derniere_valeur_selecStart - 1),1) == '(') && (texte.substr(global_editeur_derniere_valeur_selectEnd,1) == ')')){
+                    /*
+                      
+                      la plage est contenue dans 2 parenthèses, on essaie de remonter d'un niveau
+                      en allant chercher le parenthèse ouvrante précédente
+                    */
+                    var tableau1 = iterateCharacters2(texte);
+                    var matriceFonction = functionToArray2(tableau1.out,false,true,'');
+                    if(matriceFonction.status === true){
+                        var l01=matriceFonction.value.length;
+                        var fait=false;
+                        var repereDansTableau=-1;
+                        for(i=0;i < tableau1.out.length;i++){
+                            if(tableau1.out[i][2] === global_editeur_derniere_valeur_selecStart){
+                                repereDansTableau=i;
+                                break;
+                            }
+                        }
+                        if(repereDansTableau >= 0){
+                            for(i=0;i < l01;i++){
+                                if(matriceFonction.value[i][11] === (repereDansTableau - 1)){
+                                    if(matriceFonction.value[i][7] > 0){
+                                        var positionParentheseDuParent=matriceFonction.value[matriceFonction.value[i][7]][11];
+                                        texte=texte.substr(positionParentheseDuParent);
+                                        var arr = functionToArray(texte,false,false,'(');
+                                        if(arr.status === true){
+                                            zoneSource.focus();
+                                            global_editeur_derniere_valeur_selecStart=(tableau1.out[positionParentheseDuParent][2] + 1);
+                                            global_editeur_derniere_valeur_selectEnd=(positionParentheseDuParent + arr.posFerPar);
+                                            zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
+                                            zoneSource.selectionEnd=global_editeur_derniere_valeur_selectEnd;
+                                            initialisationEditeur();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if(fait === false){
+                            zoneSource.focus();
+                            return;
+                        }
+                    }
+                }else{
+                    /*
+                      
+                      on est placé quelquepart, on recherche la parenthèse ouvrante précédente
+                    */
+                    for(i=(global_editeur_derniere_valeur_selecStart - 2);i >= 1;i--){
+                        if(texte.substr(i,1) === '('){
+                            texte=texte.substr(i);
+                            var arr = functionToArray(texte,false,false,'(');
+                            if(arr.status === true){
+                                zoneSource.focus();
+                                zoneSource.selectionStart=(i + 1);
+                                global_editeur_derniere_valeur_selecStart=(i + 1);
+                                zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
+                                initialisationEditeur();
+                                return;
+                            }
+                        }
+                    }
+                    zoneSource.focus();
+                }
+            }
+        }
+    }
+    
     /*
       
       =============================================================================================================
