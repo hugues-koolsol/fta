@@ -377,9 +377,11 @@ function obtenir_entete_de_la_page(){
   =====================================================================================================================
   =====================================================================================================================
 */
-$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
+
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
+
+
 
 if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression') && (isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
 
@@ -407,9 +409,17 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__renuméroter') && (iss
 }
 
 $o1='';
+
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
-$__nbEnregs=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+if(isset($_GET['button_chercher'])){
+ $__xpage=0;
+}else{
+ $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+}
+$__nbEnregs=0;
+
 $chi_id_requete=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_requete',BNF);
 $cht_rev_requete=recuperer_et_sauvegarder_les_parametres_de_recherche('cht_rev_requete',BNF);
 $chp_type_requete=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_type_requete',BNF);
@@ -442,13 +452,12 @@ $o1.='   <div>'.CRLF;
 $o1.='    <label for="chp_type_requete">type</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_type_requete" id="chp_type_requete"   value="'.enti1($chp_type_requete).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_type_requete')?' autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
-$o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
-$o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+
 $o1.='</form>'.CRLF;
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
+$__debut=$__xpage*($__nbMax);
+
 sql_inclure_reference(2);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_2.php');
@@ -492,10 +501,16 @@ if($tt['statut'] === false){
 }
 
 $__nbEnregs=$tt['nombre'];
-$consUrlRedir=''.'&amp;chi_id_requete='.rawurlencode($chi_id_requete).'&amp;cht_rev_requete='.rawurlencode($cht_rev_requete).'&amp;chp_type_requete='.rawurlencode($chp_type_requete).'';
+
+$consUrlRedir='';
+$consUrlRedir.=(($chi_id_requete !== '')?'&amp;chi_id_requete='.rawurlencode($chi_id_requete):'');
+$consUrlRedir.=(($cht_rev_requete !== '')?'&amp;cht_rev_requete='.rawurlencode($cht_rev_requete):'');
+$consUrlRedir.=(($chp_type_requete !== '')?'&amp;chp_type_requete='.rawurlencode($chp_type_requete):'');
+
+
 $boutons_avant='<a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>';
 $boutons_avant.=' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>'.CRLF;
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_avant);
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
 $lsttbl='';
 $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';

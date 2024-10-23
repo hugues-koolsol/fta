@@ -274,6 +274,9 @@ function php_traite_Expr_Isset(element,niveau){
     t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
     return({'status':true,'value':t});
 }
+/*
+  =======================
+*/
 function php_traite_Expr_Unset(element,niveau){
     var t='';
     var nomFonction='unset';
@@ -292,6 +295,9 @@ function php_traite_Expr_Unset(element,niveau){
     t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
     return({'status':true,'value':t});
 }
+/*
+  =======================
+*/
 function php_traite_Expr_FuncCall(element,niveau){
     var t='';
     var nomFonction='';
@@ -307,6 +313,10 @@ function php_traite_Expr_FuncCall(element,niveau){
             }
         }else if("Identifier" === element.name.nodeType){
             nomFonction=element.name.name;
+
+        }else if(element.name.nodeType === "Expr_Variable"){
+            nomFonction='$'+element.name.name;
+            
         }else{
             return(astphp_logerreur({'status':false,'message':'0364  erreur php_traite_Expr_FuncCall',element:element}));
         }
@@ -335,6 +345,21 @@ function php_traite_Expr_FuncCall(element,niveau){
         t+='sql_inclure_source(' + lesArgumentsCourts.substr(1) + ')';
     }else if('sql_inclure_reference' === nomFonction){
         t+='sql_inclure_reference(' + lesArgumentsCourts.substr(1) + ')';
+    }else if('sql_dans_php' === nomFonction){
+        if(lesArgumentsCourts.substr(0,1) === ','){
+            lesArgumentsCourts=lesArgumentsCourts.substr(1);
+        }
+        var source = lesArgumentsCourts.substr(1,(lesArgumentsCourts.length - 2));
+        var source = source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
+
+        var obj=convertion_texte_sql_en_rev(source);
+        if(obj.status === true){
+            t+='sql(' + obj.value + ')';
+        }else{
+            t+='#(erreur convertit-php-en-rev pour sql_dans_php 0373)';
+        }
+
+        
     }else if('htmlDansPhp' === nomFonction){
         if(lesArgumentsCourts.substr(0,1) === ','){
             lesArgumentsCourts=lesArgumentsCourts.substr(1);
@@ -345,7 +370,7 @@ function php_traite_Expr_FuncCall(element,niveau){
         if(obj.status === true){
             t+='html(' + obj.value + ')';
         }else{
-            t+='#(erreur convertit-php-en-rev 0373)';
+            t+='#(erreur convertit-php-en-rev pour htmlDansPhp 0373)';
         }
     }else if('concat' === nomFonction){
         if(lesArgumentsCourts.substr(0,1) === ','){
@@ -1599,6 +1624,10 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
         }else{
             t+='et(' + gauche + ' , ' + droite + ')';
         }
+    }else if(element.nodeType === 'Expr_BinaryOp_LogicalAnd'){
+        t+='et_logique(' + gauche + ' , ' + droite + ')';
+    }else if(element.nodeType === 'Expr_BinaryOp_LogicalOr'){
+        t+='ou_logique(' + gauche + ' , ' + droite + ')';
     }else if(element.nodeType === 'Expr_BinaryOp_BitwiseXor'){
         t+='xou_binaire(' + gauche + ' , ' + droite + ')';
     }else if(element.nodeType === 'Expr_BinaryOp_BitwiseOr'){

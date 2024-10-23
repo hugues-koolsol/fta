@@ -220,14 +220,10 @@ function recupere_une_donnees_des_cibles($id){
            $repertoire_source=substr($fichierSource,0,strrpos($fichierSource,'/'));
            
            $files=glob($repertoire_source.'/*',GLOB_MARK);
-//           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $files , true ) . '</pre>' ; exit(0);
            foreach($files as $file){
                if(!is_dir($file)){
-//                   echo __FILE__ . ' ' . __LINE__ . ' $file = <pre>' . var_export( $file , true ) . '</pre>' ; exit(0);
                    $contenu=file_get_contents($file);
-                   //echo __FILE__ . ' ' . __LINE__ . ' $contenu = <pre>' . var_export( str_replace('<','&lt;',$contenu) , true ) . '</pre>' ; exit(0);
                    $fichier_cible=$dossier_cible.substr($file,strrpos($file,'/'));
-//                   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $fichier_cible , true ) . '</pre>' ; exit(0);
                    if($fd=fopen($fichier_cible,'w')){
                        if(fwrite($fd,$contenu)){
                            fclose($fd);
@@ -239,7 +235,6 @@ function recupere_une_donnees_des_cibles($id){
                    }
                }
            }
-//           echo __FILE__ . ' ' . __LINE__ . ' $dossier_cible = <pre>' .  $dossier_cible  . '</pre><pre>' . $fichier_cible  . '</pre><pre>' . $fichierSource  . '</pre><pre>' . $repertoire_source  . '</pre>' ; exit(0); 
         
        }
        
@@ -370,9 +365,6 @@ function recupere_une_donnees_des_cibles($id){
        }
    }
 
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][1]['initialisation'] , true ) . '</pre>' ; exit(0);
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD][1]['nom_bdd'] , true ) . '</pre>' ; exit(0);
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $GLOBALS[BDD] , true ) . '</pre>' ; exit(0);
    /* 
      on doit prendre les requetes sql de la table requetes de fta pour les mettre dans ftb
      la base $base_ftb pointe par défaut sur la base dans ftb
@@ -387,9 +379,7 @@ function recupere_une_donnees_des_cibles($id){
    
    
    $chemin_fichier_acces_pour_bdd=realpath($dossier_racine.'/fta_inc/db/__liste_des_acces_bdd.php');
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chemin_fichier_acces_pour_bdd , true ) . '</pre>' ; exit(0);
-   /*
-   */
+
    $contenu_fichier_acces_pour_bdd='';
    $contenu_fichier_acces_pour_bdd.='<'.'?php'.CRLF;
    $contenu_fichier_acces_pour_bdd.='$GLOBALS[BDD][1]=array('.CRLF;
@@ -400,7 +390,7 @@ function recupere_une_donnees_des_cibles($id){
    $contenu_fichier_acces_pour_bdd.=' \'lien\' => null,'.CRLF;
    $contenu_fichier_acces_pour_bdd.=');'.CRLF;
    
-//   echo __FILE__ . ' ' . __LINE__ . ' $contenu_fichier_acces_pour_bdd = <pre>' . enti1($contenu_fichier_acces_pour_bdd)  . '</pre>' ; exit(0);
+
    if($fd=fopen($chemin_fichier_acces_pour_bdd,'w')){
        if(fwrite($fd,$contenu_fichier_acces_pour_bdd)){
            fclose($fd);
@@ -411,18 +401,6 @@ function recupere_une_donnees_des_cibles($id){
        echo __FILE__ . ' ' . __LINE__ . ' erreur ouverture $contenu_fichier_acces_pour_bdd' ; exit(0);
    }
  
- 
-/*
-
-$chemin_base_systeme
-<?php
-
-*/
-   
-   
-   
-//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
-
     $time_end = microtime(true);
     $time = ((int)(($time_end - $time_start)*1000*1000))/1000;
     ajouterMessage('succes' , __LINE__.' 👍 les fichiers ont été copiés ('.$time.' ms)' , BNF );

@@ -241,9 +241,16 @@ $o1.='    <h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_
 /*
   =====================================================================================================================
 */
-$__nbMax=20;
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+if(isset($_GET['button_chercher'])){
+ $__xpage=0;
+}else{
+ $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+}
+$__nbEnregs=0;
+
 $chi_id_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier',BNF);
 $chp_nom_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier',BNF);
 $autofocus='chi_id_dossier';
@@ -264,19 +271,16 @@ $o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
 $o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="xsrch_chp_nom_dossier">nom</label>'.CRLF;
+$o1.='    <label for="chp_nom_dossier">nom</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
-$o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
 
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+
 $o1.='</form>'.CRLF;
 
 
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
+$__debut=$__xpage*($__nbMax);
 
 sql_inclure_reference(53);
 /*sql_inclure_deb*/
@@ -317,7 +321,7 @@ if($tt['statut'] === false){
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
 $boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_haut);
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_haut);
 
 $__lsttbl='';
 $__lsttbl.='  <thead><tr>';

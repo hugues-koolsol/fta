@@ -58,6 +58,14 @@ $o1.='<h1>Liste des revs de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_
 $__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
+if(isset($_GET['button_chercher'])){
+ $__xpage=0;
+}else{
+ $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+}
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__xpage , true ) . '</pre>' ; exit(0);
+$__nbEnregs=0;
 $chi_id_rev=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_rev',BNF);
 $chp_provenance_rev=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_provenance_rev',BNF);
 $chp_nom_source1=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_source1',BNF);
@@ -126,13 +134,11 @@ $o1.='   <div>'.CRLF;
 $o1.='    <label for="chi_id_rev">id rev</label>'.CRLF;
 $o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_rev')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
-$o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
-$o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+
 $o1.='</form>'.CRLF;
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
+$__debut=$__xpage*$__nbMax;
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_13.php');
@@ -201,7 +207,7 @@ if(APP_KEY === 'fta'){
 }
 
 $__nbEnregs=$tt['nombre'];
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$boutons_avant);
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
 $__lsttbl='';
 $__lsttbl.='<thead><tr>';
 $__lsttbl.='<th>action</th>';

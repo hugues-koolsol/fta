@@ -31,8 +31,13 @@ print($o1['value']);
 $o1='';
 $__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
-$__nbEnregs=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+if(isset($_GET['button_chercher'])){
+ $__xpage=0;
+}else{
+ $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+}
+$__nbEnregs=0;
 $chi_id_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_source',BNF);
 $chp_nom_source=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_source',BNF);
 $chp_nom_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier',BNF);
@@ -88,13 +93,14 @@ $o1.='   <div>'.CRLF;
 $o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
 $o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
-$o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
-$o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+
 $o1.='</form>'.CRLF;
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*($__nbMax);
+
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $o1 , true ) . '</pre>' ; exit(0);
+
+$__debut=$__xpage*($__nbMax);
 sql_inclure_reference(61);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_61.php');
@@ -146,7 +152,6 @@ if($tt['statut'] === false){
 
 $__nbEnregs=$tt['nombre'];
 
-$consUrlRedir=''.'&amp;chi_id_source='.rawurlencode($chi_id_source).'&amp;chp_nom_source='.rawurlencode($chp_nom_source).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
 $consUrlRedir='';
 $consUrlRedir.=$chi_id_source          !==''?'&amp;chi_id_source='.rawurlencode($chi_id_source):'';
 $consUrlRedir.=$chp_nom_source         !==''?'&amp;chp_nom_source='.rawurlencode($chp_nom_source):'';
@@ -156,7 +161,7 @@ $consUrlRedir.=$chp_nom_dossier        !==''?'&amp;chp_nom_dossier='.rawurlencod
 
 
 
-$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , '<a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>' );
+$o1.=construire_navigation_pour_liste( $__debut , $__nbMax , $__nbEnregs , $consUrlRedir , $__xpage , '<a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>' );
 
 
 $lsttbl='';

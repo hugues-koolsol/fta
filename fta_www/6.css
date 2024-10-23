@@ -68,6 +68,7 @@ a,button{
  color:#FFFFFF;
  margin:var(--yyvtrm);
  padding: var(--yyvtrp);
+ webkit-user-select:none;
  user-select:none;
  inline-size: max-content;
  /* pour les boutons, il faut préciser la taille de la police !!! */

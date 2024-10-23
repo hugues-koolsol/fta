@@ -63,6 +63,14 @@ $o1.='<h1>Liste des systèmes cibles</h1>';
 $__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+if(isset($_GET['button_chercher'])){
+ $__xpage=0;
+}else{
+ $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+}
+$__nbEnregs=0;
+
+
 $chi_id_cible=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_cible',BNF);
 $chp_nom_cible=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_cible',BNF);
 $chp_dossier_cible=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_dossier_cible',BNF);
@@ -94,24 +102,23 @@ $o1.='    <label for="chi_id_cible">id cible</label>'.CRLF;
 $o1.='    <input  type="text" name="chi_id_cible" id="chi_id_cible"   value="'.enti1($chi_id_cible).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_cible')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="xsrch_chp_nom_cible">nom</label>'.CRLF;
+$o1.='    <label for="chp_nom_cible">nom</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_nom_cible" id="chp_nom_cible"   value="'.enti1($chp_nom_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_cible')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="xsrch_chp_dossier_cible">dossier</label>'.CRLF;
+$o1.='    <label for="chp_dossier_cible">dossier</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_dossier_cible" id="chp_dossier_cible"   value="'.enti1($chp_dossier_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_dossier_cible')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 $o1.='   <div>'.CRLF;
 $o1.='    <label for="chp_commentaire_cible">commentaire</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_commentaire_cible" id="chp_commentaire_cible"   value="'.enti1($chp_commentaire_cible).'"  size="8" maxlength="64" '.(($autofocus == 'chp_commentaire_cible')?'autofocus="autofocus"':'').'  />'.CRLF;
 $o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
-$o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
-$o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+
 $o1.=' </form>'.CRLF;
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
+$__debut=$__xpage*($__nbMax);
+
 sql_inclure_reference(33);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_33.php');
@@ -137,6 +144,9 @@ $tt=sql_33(array(
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF));
+    
+    
+//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['sql0'] , true ) . '</pre>' ; exit(0);
 
 if($tt['statut'] === false){
 
@@ -158,7 +168,7 @@ $consUrlRedir.=(($chi_id_cible !== '')?'&amp;chi_id_cible='.rawurlencode($chi_id
 $consUrlRedir.=(($chp_nom_cible !== '')?'&amp;chp_nom_cible='.rawurlencode($chp_nom_cible):'');
 $consUrlRedir.=(($chp_dossier_cible !== '')?'&amp;chp_dossier_cible='.rawurlencode($chp_dossier_cible):'');
 $consUrlRedir.=(($chp_commentaire_cible !== '')?'&amp;chp_nom_source='.rawurlencode($chp_commentaire_cible):'');
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,'<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>');
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>');
 $lsttbl='';
 $lsttbl.='<thead><tr>';
 $lsttbl.='<th>action</th>';

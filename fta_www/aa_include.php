@@ -168,22 +168,22 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
 /*
   =====================================================================================================================
 */
-function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $consUrlRedir , $boutons_avant=''){
+function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $consUrlRedir , $__xpage , $boutons_avant=''){
    $o1='';
 
    $__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
 
    if(($__debut+$__nbMax < $__nbEnregs)){
 
-       $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)).$consUrlRedir.'">&raquo;</a>';
+       $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.($__xpage+1).$consUrlRedir.'">&raquo;</a>';
 
    }
 
    $__bouton_enregs_prec=' <a class="yyunset">&laquo;</a>';
 
-   if(($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'] > 0)){
+   if(($__xpage > 0)){
 
-       $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']-1).$consUrlRedir.'">&laquo;</a>';
+       $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($__xpage-1).$consUrlRedir.'">&laquo;</a>';
 
    }
 
@@ -192,7 +192,7 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
        $o1.='<form class="yylistForm1" method="post">'.CRLF;
        $o1.=$boutons_avant;
        $o1.=$__bouton_enregs_prec.CRLF.$__bouton_enregs_suiv.CRLF.' <div style="display:inline-block;">'.CRLF;
-       $o1.='  page '.number_format((($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )'.CRLF;
+       $o1.='  page '.number_format((($__xpage+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )'.CRLF;
        $o1.=' </div>'.CRLF;
        $o1.='</form>'.CRLF;
 
@@ -208,6 +208,15 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
  return $o1; 
 }
 
+
+/*
+  =====================================================================================================================
+*/
+function html_du_bouton_rechercher_pour_les_listes(){
+ $o='    <label for="button_chercher">rechercher</label>'.CRLF;
+ $o.='    <button id="button_chercher" name="button_chercher" type="submit" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche" value="0">🔎</button>'.CRLF;
+ return $o;
+}
 
 /*
   =====================================================================================================================
@@ -650,7 +659,7 @@ function html_header1($parametres){
         ob_start();
     }
     $o1='';
-    $o1.='<!DOCTYPE html>'.CRLF;
+    $o1.='<!DOCTYPE HTML>'.CRLF;
     $o1.='<html lang="fr">'.CRLF;
     $o1.=' <head>'.CRLF;
     $o1.='  <meta charset="utf-8" />'.CRLF;
@@ -768,7 +777,7 @@ function html_header1($parametres){
 
     $o1.=$texte_base_css;
     
-    $o1.='  <link rel="stylesheet" type="text/css" href="6.css" />'.CRLF;
+    $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.CRLF;
     $o1.='<script type="text/javascript">'.CRLF;
     $o1.=' var __debut_execution=performance.now();'.CRLF;
     $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
@@ -780,7 +789,8 @@ function html_header1($parametres){
     $o1.=' var CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
     
     $o1.='</script>'.CRLF;
-    $o1.='  <script type="text/javascript" defer src="js/interface0.js"></script>'.CRLF;
+    $o1.='  <script type="text/javascript" rel="preload" as="script" defer src="js/interface0.js"></script>'.CRLF;
+    $o1.='  <script type="module" src="js/module_interface1.js"></script>'.CRLF;
     $o1.=''.CRLF;
 
     $o1.=' </head>'.CRLF;
@@ -918,8 +928,7 @@ function html_footer1($parametres=array()){
         $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }
     $o1.='</div>'.CRLF;
-    $o1.='  <script type="text/javascript" src="js/core6.js"></script>'.CRLF;
-    $o1.='  <script type="module" src="js/module_interface1.js"></script>'.CRLF;
+    $o1.='  <script type="text/javascript" defer src="js/core6.js"></script>'.CRLF;
 
     /*
      d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
@@ -977,7 +986,7 @@ function html_footer1($parametres=array()){
 
         }
         $o1.=' var arrayLocalJs=['.CRLF.$txt1.CRLF.' ];'.CRLF;
-        $o1.=' executerCesActionsPourLaPageLocale(arrayLocalJs);'.CRLF;
+        $o1.=' __gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);'.CRLF;
         $o1.='}'.CRLF;
 
     }else{

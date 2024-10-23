@@ -30,11 +30,20 @@ if(isset($_GET['__parametres_choix'])){
  
 }
 
-$__nbMax=20;
-$__debut=0;
-$__xpage=0;
 
-$__xpage                 = recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage'           , BNF);
+
+
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??1;
+$__debut=0;
+$__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+if(isset($_GET['button_chercher'])){
+ $__xpage=0;
+}else{
+ $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+}
+$__nbEnregs=0;
+
+
 $chi_id_dossier          = recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier'   , BNF);
 $chp_nom_dossier         = recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier'   , BNF);
 
@@ -54,11 +63,10 @@ $o1.='    <label for="xsrch_chp_nom_dossier">nom</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.($autofocus=='chp_nom_dossier'?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="button_chercher" title="cliquez sur ce bouton pour lancer la recherche">rechercher</label>'.CRLF;
-$o1.='    <button id="button_chercher" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche">🔎</button>'.CRLF; // &#128270;
-$o1.='    <input type="hidden" name="__xpage" id="__xpage" value="'.$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'].'" />'.CRLF;
-$o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+
+
 
 $o1.='   <input type="hidden" value="'.enti1($_SESSION[APP_KEY][BNF]['__parametres_choix']['__nom_champ_dans_parent']).'"    name="__nom_champ_dans_parent"    id="__nom_champ_dans_parent" >'.CRLF;
 $o1.='   <input type="hidden" value="'.enti1(json_encode($_SESSION[APP_KEY][BNF]['__parametres_choix']['__champs_texte_a_rapatrier'])).'" name="__champs_texte_a_rapatrier" id="__champs_texte_a_rapatrier" >'.CRLF;
@@ -66,11 +74,11 @@ $o1.='   <input type="hidden" value="'.enti1(json_encode($_SESSION[APP_KEY][BNF]
 
 $o1.='</form>'.CRLF;
 
+$__debut=$__xpage*($__nbMax);
 
 
 
 
-$__debut=$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']*$__nbMax;
 sql_inclure_reference(53);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_53.php');
@@ -109,7 +117,13 @@ if($tt['statut'] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,'');
+
+$consUrlRedir='';
+$consUrlRedir.=(($chi_id_dossier !== '')?'&amp;chi_id_dossier='.rawurlencode($chi_id_dossier):'');
+$consUrlRedir.=(($chp_nom_dossier !== '')?'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier):'');
+
+
+$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'');
  
 
 $__lsttbl='';

@@ -1106,14 +1106,18 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
           
           
         }else{
-        
 
-          var obj=php_traiteElement(tab , i , niveau,{})
-          if(obj.status===true){
-           t+=espacesn(true,niveau);
-           t+=obj.value+';';
+          if( (tab[tab[i][7]][1]==='et_logique' || tab[tab[i][7]][1]==='ou_logique' ) && tab[tab[i][7]][2]==='f'){
+            t+='';
           }else{
-           return(php_logerr({status:false,value:t,id:i,tab:tab,message:'php dans php_tabToPhp1 1230 pour i='+i+''}));
+
+              var obj=php_traiteElement(tab , i , niveau,{})
+              if(obj.status===true){
+               t+=espacesn(true,niveau);
+               t+=obj.value+';';
+              }else{
+               return(php_logerr({status:false,value:t,id:i,tab:tab,message:'php dans php_tabToPhp1 1230 pour i='+i+''}));
+              }
           }
         }
       }
@@ -1444,8 +1448,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
      }
 
 
- }else if(tab[ind][2]==='f' && ( tab[ind][1]==='non'  || tab[ind][1]==='et'  || tab[ind][1]==='ou'  ) ){
-  
+ }else if(tab[ind][2]==='f' && ( tab[ind][1]==='non'  || tab[ind][1]==='et'  || tab[ind][1]==='ou'  || tab[ind][1]==='et_logique' || tab[ind][1]==='ou_logique'  ) ){
     
      obj=php_condition1(tab,ind,niveau,tab[ind][7]);
      if(obj.status===true){
@@ -1498,7 +1501,8 @@ function php_traiteElement(tab , ind , niveau,options={}){
 
      obj=tabToSql1(tab,ind,niveau,false);
      if(obj.status===true){
-      t=obj.value;
+      t='sql_dans_php(\''+obj.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+//      t=obj.value;
      }else{
       return php_logerr({status:false,value:t,id:ind,tab:tab,message:'erreur php_traiteElement dans un sql 1205 définit dans un php'});
      }
@@ -2477,7 +2481,7 @@ function php_condition1(tab,id,niveau,id_parent){
                      return php_logerr({status:false,value:t,id:i,tab:tab,message:'2359 erreur dans une condition'});
                  }
 
-             }else if(tab[i][1]==='et' || tab[i][1]==='ou'){
+             }else if(tab[i][1]==='et' || tab[i][1]==='ou' || tab[i][1]==='et_logique' || tab[i][1]==='ou_logique'){
               
                  cumul='';
                  premiere=true;
@@ -2494,6 +2498,10 @@ function php_condition1(tab,id,niveau,id_parent){
                                }else{
                                    if(tab[i][1]==='et'){
                                        cumul+=' && ';
+                                   }else if(tab[i][1]==='et_logique'){
+                                       cumul+=' and ';
+                                   }else if(tab[i][1]==='ou_logique'){
+                                       cumul+=' or ';
                                    }else{
                                        cumul+=' || ';
                                    }
@@ -2516,6 +2524,10 @@ function php_condition1(tab,id,niveau,id_parent){
                             }else{
                                if(tab[i][1]==='et'){
                                   cumul+=' && ';
+                               }else if(tab[i][1]==='et_logique'){
+                                  cumul+=' and ';
+                               }else if(tab[i][1]==='ou_logique'){
+                                  cumul+=' or ';
                                }else{
                                   cumul+=' || ';
                                }

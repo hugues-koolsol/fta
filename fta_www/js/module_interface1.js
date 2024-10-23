@@ -1274,6 +1274,47 @@ class interface1{
             }
         }
     }
+    /*
+      =====================================================================================================================
+    */
+    #ne_rien_faire1(par){
+      /**
+      on ne fait rien mais on le fait bien ici
+      console.log('#ne_rien_faire1 par=',par);
+      */
+    }
+    /*
+      =====================================================================================================================
+    */
+    executerCesActionsPourLaPageLocale2(par){
+        console.log('dans executerCesActionsPourLaPageLocale2 par=',par);
+        var i=0;
+        for(i=0;i < par.length;i++){
+
+            switch (par[i].nomDeLaFonctionAappeler){
+                case 'neRienFaire':
+                    this.#ne_rien_faire1(par[i].parametre);
+                    break;
+                    
+                case 'initialiserEditeurPourUneTextArea':
+                    initialiserEditeurPourUneTextArea(par[i].parametre);
+                    break;
+                    
+                case 'traite_le_tableau_de_la_base_sqlite_v2':
+                    traite_le_tableau_de_la_base_sqlite_v2(par[i].parametre);
+                    break;
+                    
+                case 'comparer_deux_tableaux_de_bases_sqlite':
+                    comparer_deux_tableaux_de_bases_sqlite(par[i].parametre);
+                    break;
+                    
+                default:
+                    console.log(('fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler));
+                    break;
+                    
+            }
+        }
+    }
     
     /*
       
