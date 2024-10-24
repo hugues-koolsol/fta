@@ -263,7 +263,7 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lstt
 /*
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 print($o1);
 $o1='';

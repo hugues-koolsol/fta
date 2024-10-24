@@ -182,7 +182,7 @@ foreach($tt['valeur'] as $k0 => $v0){
     $lsttbl.=' <a class="yydanger" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">🗑</a>';
     
     if( 
-         ( $v0['T0.chp_type_source']==='normal' || $v0['T0.chp_type_source']==='module_js' ) 
+         ( $v0['T0.chp_type_source']==='normal'  ) 
       && ( 
               substr($v0['T0.chp_nom_source'],-4)==='.php' 
            || substr($v0['T0.chp_nom_source'],-3)==='.js' 
@@ -223,7 +223,7 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lstt
 /*
   ============================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array( 
  'js_a_inclure' => array( 
   'js/pour_zz_source1.js', 

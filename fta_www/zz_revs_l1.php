@@ -181,7 +181,7 @@ if($tt['statut'] === false){
     $o1.='<div class="yydanger">Erreur sql</div>';
     $o1.='<pre>'.$tt['sql0'].'</per>';
     $o1.='</div>';
-    $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+    $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
     $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
     $o1.=html_footer1($par);
     print($o1);
@@ -369,7 +369,7 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
   
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);

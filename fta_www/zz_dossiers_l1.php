@@ -366,7 +366,7 @@ if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta') && ($_SESSI
 /*
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);

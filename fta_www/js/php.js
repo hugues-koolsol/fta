@@ -1313,7 +1313,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
   
 
  }else if(tab[ind][2]==='f' && ( tab[ind][1]==='variable_protégée' || tab[ind][1]==='variable_privée' || tab[ind][1]==='variable_publique' || tab[ind][1]==='variable_publique_statique' || tab[ind][1]==='variable_privée_statique' ) ){
-    debugger
+
     var declaration='';
     for( var i=ind+1;i<l01 && tab[i][3]>tab[ind][3];i++){
         if(tab[i][7]===ind){

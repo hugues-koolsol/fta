@@ -125,10 +125,10 @@ function recupere_une_donnees_des_cibles($id){
       
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
-      'fta_www/js/module_interface1.js' => array('chp_type_source' => 'module_js'),
-      'fta_www/js/module_html.js' => array('chp_type_source' => 'module_js'),
-      'fta_www/js/module_svg_bdd.js' => array('chp_type_source' => 'module_js'),
-      'fta_www/js/module_requete_sql.js' => array('chp_type_source' => 'module_js'),
+      'fta_www/js/module_interface1.js' => array(),
+      'fta_www/js/module_html.js' => array(),
+      'fta_www/js/module_svg_bdd.js' => array(),
+      'fta_www/js/module_requete_sql.js' => array(),
       'fta_www/js/module_travail_en_arriere_plan0.js' => array(),
       'fta_www/js/index_source_script-v0.js' => array(),
 
@@ -1250,7 +1250,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 */
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => '#ne_rien_faire1' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);

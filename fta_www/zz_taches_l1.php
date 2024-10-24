@@ -342,6 +342,7 @@ $__nbEnregs=0;
 $chi_id_tache=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_tache',BNF);
 $chp_texte_tache=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_texte_tache',BNF);
 $chp_priorite_tache=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_priorite_tache',BNF);
+$chp_priorite_tache2=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_priorite_tache2',BNF);
 
 $autofocus='chp_priorite_tache';
 
@@ -352,6 +353,10 @@ if(($chp_texte_tache != '')){
 }else if(($chp_priorite_tache != '')){
 
     $autofocus='chp_priorite_tache';
+
+}else if(($chp_priorite_tache2 != '')){
+
+    $autofocus='chp_priorite_tache2';
 
 }else if(($chi_id_tache != '')){
 
@@ -367,8 +372,13 @@ $o1.='    <input  type="text" name="chp_texte_tache" id="chp_texte_tache"   valu
 $o1.='   </div>'.CRLF;
 
 $o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_priorite_tache">priorité</label>'.CRLF;
+$o1.='    <label for="chp_priorite_tache">priorité =</label>'.CRLF;
 $o1.='    <input  type="text" name="chp_priorite_tache" id="chp_priorite_tache"   value="'.enti1($chp_priorite_tache).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_priorite_tache')?'autofocus="autofocus"':'').' />'.CRLF;
+$o1.='   </div>'.CRLF;
+
+$o1.='   <div>'.CRLF;
+$o1.='    <label for="chp_priorite_tache">priorité <</label>'.CRLF;
+$o1.='    <input  type="text" name="chp_priorite_tache2" id="chp_priorite_tache2"   value="'.enti1($chp_priorite_tache2).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_priorite_tache2')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
 
 $o1.='   <div>'.CRLF;
@@ -392,6 +402,7 @@ $tt=sql_19(array(
     'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
     'T0_chp_texte_tache' => (($chp_texte_tache === NULL)?$chp_texte_tache:(($chp_texte_tache === '')?'':'%'.$chp_texte_tache.'%')),
     'T0_chp_priorite_tache' => $chp_priorite_tache ,
+    'T0_chp_priorite_tache2' => $chp_priorite_tache2 ,
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF));
@@ -417,6 +428,7 @@ $consUrlRedir='';
 $consUrlRedir.=(($chi_id_tache !== '')?'&amp;chi_id_tache='.rawurlencode($chi_id_tache):'');
 $consUrlRedir.=(($chp_texte_tache !== '')?'&amp;chp_texte_tache='.rawurlencode($chp_texte_tache):'');
 $consUrlRedir.=(($chp_priorite_tache !== '')?'&amp;chp_priorite_tache='.rawurlencode($chp_priorite_tache):'');
+$consUrlRedir.=(($chp_priorite_tache2 !== '')?'&amp;chp_priorite_tache2='.rawurlencode($chp_priorite_tache2):'');
 
 $boutons_haut=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
 $boutons_haut.=' <button type="submit" name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
@@ -470,7 +482,7 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lstt
 /*
   ============================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array( 'js_a_inclure' => array( '' ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);

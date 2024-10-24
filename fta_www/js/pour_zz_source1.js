@@ -168,12 +168,12 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
 /*
   =====================================================================================================================
 */
-function convertir_js_en_rev(chp_genere_source , chp_rev_source , type='script'){
+function convertir_js_en_rev(chp_genere_source , chp_rev_source ){
    clearMessages('zone_global_messages');
    var a = document.getElementById(chp_genere_source);
    
    
-  var obj1=recupere_ast_de_source_js_en_synchrone(a.value , type);
+  var obj1=recupere_ast_de_source_js_en_synchrone(a.value);
   if(obj1.status===true){
        tabComment=obj1.commentaires;
        var objRev = TransformAstEnRev(obj1.value.body,0);
@@ -194,12 +194,8 @@ function convertir_js_en_rev(chp_genere_source , chp_rev_source , type='script')
 */
 
 function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
-  var type='script';
-  if(type_source==='module_js'){
-   type='module';
-  }
   
-  var obj1=recupere_ast_de_source_js_en_synchrone(par.contenu_du_fichier , type );
+  var obj1=recupere_ast_de_source_js_en_synchrone(par.contenu_du_fichier  );
   if(obj1.status===true){
 //       console.log('obj1=' , obj1 );
        tabComment=obj1.commentaires;

@@ -818,7 +818,7 @@ function html_header1($parametres){
             $o1.='          <li><a class="yytbfixe '.(('traitePhp.php' === BNF)?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
             $o1.='          <li><a class="yytbfixe '.(('traiteSql.php' === BNF)?'yymenusel1':'').'" href="traiteSql.php?idMenu='.($idMenu++).'">SQL</a></li>'.CRLF;
             $o1.='          <li><a class="yytbfixe '.(('index_source.php' === BNF)?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('zz_taches_l1.php' === BNF)?'yymenusel1':'').'" href="zz_taches_l1.php?idMenu='.($idMenu++).'">tâches</a></li>'.CRLF;
+            $o1.='          <li><a class="yytbfixe '.(('zz_taches_l1.php' === BNF)?'yymenusel1':'').'" href="zz_taches_l1.php?idMenu='.($idMenu++).'&chp_priorite_tache2=99">tâches</a></li>'.CRLF;
             $o1.='          <li><a class="yytbfixe '.(('zz_cibles_l1.php' === BNF)?'yymenusel1':'').'" href="zz_cibles_l1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
 
             if((isset($_SESSION[APP_KEY]['cible_courante']))){

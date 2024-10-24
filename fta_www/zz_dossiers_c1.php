@@ -186,7 +186,7 @@ $o1.='<table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table>'.CRLF;
 */
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => '#ne_rien_faire1' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 $par=array('js_a_inclure'=>array(''),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement,'ne_pas_supprimer_les_valeurs_de_session_sur_un_choix'=>true);

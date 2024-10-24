@@ -10,9 +10,7 @@ print($o1);$o1='';
         <div class="menuScroller">
             <ul>
                 <li><a href="javascript:chargerSourceDeTestJs()">source de test</a>&nbsp;</li>
-
-                <li><a href="javascript:transform_textarea_js_en_rev_avec_acorn( 'txtar1' , 'txtar2', 'script' )"  class="yysucces">convertir script acorn</a>&nbsp;</li>
-                <li><a href="javascript:transform_textarea_js_en_rev_avec_acorn( 'txtar1' , 'txtar2', 'module' )"  class="yysucces">convertir module acorn</a>&nbsp;</li>
+                <li><a href="javascript:transform_textarea_js_en_rev_avec_acorn( 'txtar1' , 'txtar2' )"  class="yysucces">convertir module acorn</a>&nbsp;</li>
 
             </ul>
         </div>
@@ -44,7 +42,7 @@ $js_a_executer_apres_chargement=array(
      'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'txtar1'
     ),
     array(
-     'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
+     'nomDeLaFonctionAappeler' => '#ne_rien_faire1' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
     )
 );
 $par=array(

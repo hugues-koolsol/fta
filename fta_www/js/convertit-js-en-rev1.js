@@ -1789,7 +1789,6 @@ function traiteMemberExpression1(element,niveau,parent){
                         if(prop.value !== ''){
 
                             if(objTxt.substr(0,8) === 'tableau('){
-
                                 t+=objTxt.substr(0,(objTxt.length - 1)) + ',prop(' + prop.value + '))';
                             }else{
                                 if(objTxt.substr(0,6) === 'appelf'){
@@ -1946,34 +1945,50 @@ function traiteMemberExpression1(element,niveau,parent){
 
             var obj1 = traiteUneComposante(element.property,niveau,true,false);
             if(obj1.status === true){
+                if(element.object.type=== 'Identifier' || element.object.type=== 'MemberExpression'){
+                    if(obj1.value.substr(0,5)==='plus(' || obj1.value.substr(0,6)==='moins('){
+                        /*#
+                         on essaie de mettre un arr[i+1][j+1] à la place d'un                      
+                         tableau(
+                          nomt(
+                           tableau(nomt(arr) , p(plus(i , 1)))
+                          ),
+                          p(plus(j , 1))
+                         )
+                        */
+//                        t+='arr[i+1]';
+                        var obj_nom_tableau=functionToArray(objTxt,true,true,'');
+                        if(false && obj_nom_tableau.status===true && obj_nom_tableau.value.length===2 && obj_nom_tableau.value[1][2]==='c'){
+                            /*
+                             le nom du tableau est une constante
+                            */
+                            var obj_indice_tableau=functionToArray(obj1.value,true,true,'');
+                            if(obj_indice_tableau.status===true && obj_indice_tableau.value.length===4 && obj_indice_tableau.value[2][2]==='c' && obj_indice_tableau.value[3][2]==='c'){
+                                if(obj1.value.substr(0,5)==='plus('){
+                                    t+='' + objTxt + '['+obj_indice_tableau.value[2][1]+'+'+obj_indice_tableau.value[3][1]+']';
+                                }else if(obj1.value.substr(0,5)==='moins('){
+                                    t+='' + objTxt + '['+obj_indice_tableau.value[2][1]+'-'+obj_indice_tableau.value[3][1]+']';
+                                }else{
+                                    t+='tableau(nomt(' + objTxt + '),p(' + obj1.value + '))';
+                                }
 
-                t+='tableau(nomt(' + objTxt + '),p(' + obj1.value + '))';
+                            }else{
+                             t+='tableau(nomt(' + objTxt + '),p(' + obj1.value + '))';
+                            }
+                            
+                        }else{
+                            t+='tableau(nomt(' + objTxt + '),p(' + obj1.value + '))';
+                        }
+                    }else{
+                        t+='tableau(nomt(' + objTxt + '),p(' + obj1.value + '))';
+                    }
+                }else{
+                    t+='tableau(nomt(' + objTxt + '),p(' + obj1.value + '))';
+                }
+
             }else{
                 return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1572 pour ' + element.type,element:element}));
             }
-            /*
-              if(element.property.type === 'BinaryExpression'){
-              var obj1 = traiteBinaryExpress1(element.property,niveau,true,false);
-              if(obj1.status === true){
-              t+='tableau(nomt('+objTxt+'),p('+obj1.value+'))';
-              }else{
-              return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1572 pour '+element.type,element:element}));
-              }
-              }else if(element.property.type === 'Identifier'){
-              t+='tableau(nomt('+objTxt+'),p('+element.property.name+'))';
-              }else if(element.property.type === 'Literal'){
-              t+='tableau(nomt('+objTxt+'),p('+element.property.raw+'))';
-              }else if(element.property.type === 'MemberExpression'){
-              var obj1 = traiteMemberExpression1(element.property,niveau,element);
-              if(obj1.status === true){
-              t+='tableau(nomt('+objTxt+'),p('+obj1.value+'))';
-              }else{
-              return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1526 pour '+element.type,element:element}));
-              }
-              }else{
-              return(astjs_logerreur({status:false,'message':'erreur traiteMemberExpression1 1604 pas de propriété pour '+element.property.type,element:element}));
-              }
-            */
         }else{
             t=objTxt;
         }
@@ -3054,7 +3069,7 @@ function TransformAstEnRev(les_elements,niveau){
 /*
   =====================================================================================================================
 */
-function recupere_ast_de_source_js_en_synchrone(texteSource,type_de_source){
+function recupere_ast_de_source_js_en_synchrone(texteSource){
     var r= new XMLHttpRequest();
     /*
       =============================================================================================================
@@ -3079,7 +3094,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource,type_de_source){
         console.error('e=',e);
         return({status:false});
     };
-    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'type_de_source':type_de_source};
+    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource};
     try{
         r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
@@ -3110,7 +3125,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource,type_de_source){
 function convertit_source_javascript_en_rev(sourceDuJavascript){
     var t='';
     try{
-        var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript,'script');
+        var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript);
         if(obj1.status === true){
 
             tabComment=obj1.commentaires;
@@ -3251,7 +3266,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
         console.error('e=',e);
         return;
     };
-    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'type_de_source':options.type_de_source,'options':options};
+    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'options':options};
     try{
         r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
@@ -3264,10 +3279,10 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
 /*
   =====================================================================================================================
 */
-function transform_source_js_en_rev_avec_acorn(source,type_de_source,options){
+function transform_source_js_en_rev_avec_acorn(source,options){
     var ret={status:true,message:'OK'};
     try{
-        var ret = recupere_ast_de_js_avec_acorn(source,{type_de_source:type_de_source,options:options},traitement_apres_recuperation_ast_de_js_avec_acorn);
+        var ret = recupere_ast_de_js_avec_acorn(source,{options:options},traitement_apres_recuperation_ast_de_js_avec_acorn);
         if(ret.status === true){
 
         }else{
@@ -3284,11 +3299,11 @@ function transform_source_js_en_rev_avec_acorn(source,type_de_source,options){
 /*
   =====================================================================================================================
 */
-function transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev,type_de_source){
+function transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev){
     clearMessages('zone_global_messages');
     var a = document.getElementById(nom_de_la_text_area_source);
     localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
-    var obj = transform_source_js_en_rev_avec_acorn(a.value,type_de_source,{nom_de_la_text_area_source:nom_de_la_text_area_source,nom_de_la_text_area_rev:nom_de_la_text_area_rev});
+    var obj = transform_source_js_en_rev_avec_acorn(a.value,{nom_de_la_text_area_source:nom_de_la_text_area_source,nom_de_la_text_area_rev:nom_de_la_text_area_rev});
     if(obj.status === true){
 
     }else{

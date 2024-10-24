@@ -365,7 +365,7 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
   =====================================================================================================================
 */
 function baisserNiveauEtSupprimer(tab,id,niveau){
-    var i = (id + 1);
+    var i = 0;
     for(i=id + 1;i < tab.length;i++){
         if(tab[i][7] === id){
             tab[i][3]=tab[i][3] - 1;
@@ -794,8 +794,6 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             continue;
         }
         /*
-          
-          
           =====================================================================================================
           pour toutes les autres fonctions, on fait un appel récursif
           =====================================================================================================
@@ -806,6 +804,12 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             if(coloration){
                 t+=strToHtml(arr[i][1]) + '(';
             }else{
+                if(obj.forcerRetourLigne === true 
+                  && arr[i][9]===1 
+                  && i>1
+                  && !(t.length>=arr[i][3]*NBESPACESREV && t.substr(t.length-arr[i][3]*NBESPACESREV)===' '.repeat(arr[i][3]*NBESPACESREV)) ){
+                    t+=espacesnrev(true,arr[i][3]);
+                }
                 t+=arr[i][1] + '(';
             }
             /*

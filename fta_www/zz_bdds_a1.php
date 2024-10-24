@@ -1027,7 +1027,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 */
 
 $js_a_executer_apres_chargement[]=array(
-  'nomDeLaFonctionAappeler' => 'neRienFaire' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
+  'nomDeLaFonctionAappeler' => '#ne_rien_faire1' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )
 );
 
 $par=array(

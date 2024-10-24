@@ -104,11 +104,6 @@ class interface1{
         }
         window.parent[this.#nom_de_la_variable].fermerModale2()
     }
-    /*===================================================================================================================*/
-    ne_rien_faire(par){
-      // rien ici
-      //  console.log('par=',par);
-    }
 
     /*
       =====================================================================================================================
@@ -1279,8 +1274,8 @@ class interface1{
     */
     #ne_rien_faire1(par){
       /**
-      on ne fait rien mais on le fait bien ici
-      console.log('#ne_rien_faire1 par=',par);
+        on ne fait rien mais on le fait bien ici
+        console.log('#ne_rien_faire1 par=',par);
       */
     }
     /*
@@ -1292,7 +1287,7 @@ class interface1{
         for(i=0;i < par.length;i++){
 
             switch (par[i].nomDeLaFonctionAappeler){
-                case 'neRienFaire':
+                case '#ne_rien_faire1':
                     this.#ne_rien_faire1(par[i].parametre);
                     break;
                     

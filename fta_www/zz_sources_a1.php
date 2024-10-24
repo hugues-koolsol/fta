@@ -983,18 +983,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='  <div class="yyfinp1"><div>'.CRLF;
     $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
 
-    if($__valeurs['T0.chp_type_source'] === 'module_js'){
-
-
-        if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
-
-            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.CRLF;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;module&quot;)">&#8613;J-&gt;R</a>'.CRLF;
-
-        }
-
-
-    }else if($__valeurs['T0.chp_type_source'] === 'normal'){
+    if($__valeurs['T0.chp_type_source'] === 'normal'){
 
 
         if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
@@ -1059,7 +1048,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
         if(is_file($nomCompletSource)){
 
 
-            if(($__valeurs['T0.chp_type_source'] === 'normal') || ($__valeurs['T0.chp_type_source'] === 'module_js')){
+            if(($__valeurs['T0.chp_type_source'] === 'normal') ){
 
                 $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.CRLF;
                 $o1.='   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">supprimer du disque</a>'.CRLF;
@@ -1141,7 +1130,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
   =====================================================================================================================
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'neRienFaire', 'parametre' => array( 'c\'est pour', 'l\'exemple'));
+$js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'));
 $par=array( 'js_a_inclure' => array(
             'js/javascript',
             'js/html',

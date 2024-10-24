@@ -399,7 +399,7 @@ php(
       defTab(
          (
             defTab(
-               ('nomDeLaFonctionAappeler' , 'neRienFaire'),
+               ('nomDeLaFonctionAappeler' , '#ne_rien_faire1'),
                ('parametre' , defTab(('c\'est pour') , ('l\'exemple')))
             )
          )
