@@ -1310,6 +1310,13 @@ class interface1{
             }
         }
     }
+    /*
+      =====================================================================================================================
+    */
+    allerAlaLigne(i,nomTextAreaSource){
+        masquerLesMessage('zone_global_messages');
+        selectionnerLigneDeTextArea(document.getElementById(nomTextAreaSource),i);
+    }
     
     /*
       

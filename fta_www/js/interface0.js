@@ -607,6 +607,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
     var zon = document.getElementById(nomZone);
     var zone_message_est_vide=true;
     var numero_message=0;
+    var temp='';
     if(zon.innerHTML !== ''){
         zone_message_est_vide=false;
     }
@@ -643,7 +644,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         affichagesPresents=true;
     }
     while(global_messages.lines.length > 0){
-        zon.innerHTML=('<a href="javascript:allerAlaLigne(' + ((global_messages.lines[i] + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + ((global_messages.lines[i] + 1)) + '</a>&nbsp;' + zon.innerHTML);
+        zon.innerHTML=('<a href="javascript:__gi1.allerAlaLigne(' + ((global_messages.lines[i] + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + ((global_messages.lines[i] + 1)) + '</a>&nbsp;' + zon.innerHTML);
         global_messages.lines.splice(0,1);
         affichagesPresents=true;
     }
@@ -663,7 +664,7 @@ function displayMessages(nomZone,nomDeLaTextAreaContenantLeTexteSource){
             }
             if(numeroDeLigne >= 0){
                 if(numeroDeLigne != numLignePrecedente){
-                    zon.innerHTML=('<a href="javascript:allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML);
+                    zon.innerHTML=('<a href="javascript:__gi1.allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML);
                     affichagesPresents=true;
                     numLignePrecedente=numeroDeLigne;
                     nombre_de_boutons_affiches++;
@@ -786,7 +787,7 @@ function selectionnerLigneDeTextArea(tarea,lineNum){
         }
     }
     if(typeof tarea.selectionStart != 'undefined'){
-        tarea.focus();
+        tarea.select();
         tarea.selectionStart=startPos;
         tarea.selectionEnd=endPos;
         var debut=startPos;
@@ -820,13 +821,6 @@ function selectionnerLigneDeTextArea(tarea,lineNum){
         return true;
     }
     return false;
-}
-/*
-  
-  =====================================================================================================================
-*/
-function allerAlaLigne(i,nomTextAreaSource){
-    selectionnerLigneDeTextArea(document.getElementById(nomTextAreaSource),i);
 }
 /*
   =====================================================================================================================

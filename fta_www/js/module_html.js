@@ -1033,12 +1033,12 @@ class traitements_sur_html{
         var supprimer_le_tag_html_et_head=true;
         var doctype='';
         var elementsJson={};
+        var i=0;
         try{
             var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
             if(position_doctype>=0){
                 if(position_doctype===0){
-                    var doctype
-                    for(var i=1;i<texteHtml.length && doctype=='';i++){
+                    for(i=1;i<texteHtml.length && doctype=='';i++){
                      if(texteHtml.substr(i,1)==='>'){
                       doctype=texteHtml.substr(0,i+1); //<!DOCTYPE html>
                       texteHtml=texteHtml.substr(i+1);
