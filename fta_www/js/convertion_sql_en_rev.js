@@ -228,8 +228,16 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
   }else{
      return(logerreur({status:false,message:'0199 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
   }
+ }else if(element.type && 'statement'===element.type ){
+  
+  var obj=conversion_de_ast_vers_sql(element,niveau,parent,options);
+  if(obj.status===true){
+      t+='sql('+obj.value+')';
+  }else{
+      return(logerreur({status:false,message:'0141 convertion_sql "'+JSON.stringify(json_partiel(element))+'"'}));
+  }
  }else{
-     return(logerreur({status:false,message:'0141 recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
+     return(logerreur({status:false,message:'0141 convertion_sql recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
  }
  return {status:true,value:t};
 
@@ -528,25 +536,28 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
     var tableau_des_champs=[];
     
    // console.log('element ast select=' , element );
-    
     t+='\n'+esp0+'insérer(';
     if(element.into){
      
         if(element.into.type==='identifier'){
         
-         if(element.into.format && element.into.format==='table'){
-             t+='nom_de_la_table('+element.into.name+')';
-             if(element.into.columns){
-              
-                 for(var i=0;i<element.into.columns.length;i++){
-                  tableau_des_champs.push(element.into.columns[i].name);
-                 }
-              
-              
-             }else{
-                 return(logerreur({status:false,message:'0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "'+JSON.stringify(json_partiel(element))+'"'}));
-             }
-         }
+            if(element.into.format && element.into.format==='table'){
+                t+='nom_de_la_table('+element.into.name+')';
+                if(element.into.columns){
+                 
+                    for(var i=0;i<element.into.columns.length;i++){
+                     tableau_des_champs.push(element.into.columns[i].name);
+                    }
+                 
+                 
+                }else{
+                    return(logerreur({status:false,message:'0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "'+JSON.stringify(json_partiel(element))+'"'}));
+                }
+            }else if(element.into.variant==='table' && element.into.type==='identifier'){
+                t+='nom_de_la_table('+element.into.name+')';
+            }else{
+                return(logerreur({status:false,message:'0559 convertit_sql_insert_sqlite_de_ast_vers_rev : "'+JSON.stringify(json_partiel(element))+'"'}));
+            }
         }else{
             return(logerreur({status:false,message:'0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "'+JSON.stringify(json_partiel(element))+'"'}));
         }
@@ -594,6 +605,22 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
         }
         
         t+='\n'+esp0+esp1+esp1+')';
+    }else if(element.result && element.result.type==='statement'){
+        if(tableau_des_champs.length>0){
+         t+=',valeurs(';
+         for(var j=0;j<tableau_des_champs.length;j++){
+             t+=CRLF+'        champ(`'+tableau_des_champs[j]+'`)';
+         }
+         t+=')';
+        }
+     
+        var obj=conversion_de_ast_vers_sql(element.result,niveau,parent,options);
+        if(obj.status===true){
+            t+=',sql('+obj.value+')';
+        }else{
+            return(logerreur({status:false,message:'0141 convertion_sql "'+JSON.stringify(json_partiel(element))+'"'}));
+        }
+     
     }
 
     t+='\n'+esp0+')';
