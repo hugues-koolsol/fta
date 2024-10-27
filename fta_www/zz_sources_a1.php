@@ -1143,7 +1143,9 @@ $par=array( 'js_a_inclure' => array(
             'js/javascript.js',
             'js/texte.js',
             'js/jslib/sqlite_parser_from_demo.js',
-            'js/convertion_sql_en_rev.js'), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+            'js/convertion_sql_en_rev.js',
+            'js/convertit-html-en-rev1.js',
+            ), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
 $o1.=html_footer1($par);
 print($o1);

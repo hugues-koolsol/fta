@@ -1620,6 +1620,7 @@ class requete_sql{
                 rev_texte=obj2.value;
             }
         }
+        var requete_manuelle_avec_base=0;
         if(this.#obj_webs.type_de_requete==='requete_manuelle' ){
          
             if(rev_initial===null ){
@@ -1629,6 +1630,9 @@ class requete_sql{
                     for(var i in this.#obj_webs['bases'] ){
                         var liste_des_bases='';
                         if(this.#obj_webs['bases'][i].selectionne===true){
+                         if(requete_manuelle_avec_base===0){
+                           requete_manuelle_avec_base=i;
+                         }
                          if(liste_des_bases!==''){
                            liste_des_bases+=',';
                          }
@@ -1640,10 +1644,17 @@ class requete_sql{
                     rev_texte+=')'+CRLF;
                 }else{
                     if(this.#globale_rev_requete!==''){
-                     
+
                         rev_texte=this.#globale_rev_requete;
+                        if(rev_texte.indexOf('base_de_reference()')>=0){
+                         requete_manuelle_avec_base=0;
+                        }else{
+                         if(rev_texte.indexOf('base_de_reference(')>=0){
+                          requete_manuelle_avec_base=1;
+                         }
+                        }
                     }else{
-                        debugger
+
                     }
                 }
             }else{
@@ -1653,6 +1664,9 @@ class requete_sql{
                     for(var i in this.#obj_webs['bases'] ){
                         var liste_des_bases='';
                         if(this.#obj_webs['bases'][i].selectionne===true){
+                         if(requete_manuelle_avec_base===0){
+                           requete_manuelle_avec_base=i;
+                         }
                          if(liste_des_bases!==''){
                            liste_des_bases+=',';
                          }
@@ -1669,6 +1683,9 @@ class requete_sql{
                         for(var i in this.#obj_webs['bases'] ){
                             var liste_des_bases='';
                             if(this.#obj_webs['bases'][i].selectionne===true){
+                             if(requete_manuelle_avec_base===0){
+                               requete_manuelle_avec_base=i;
+                             }
                              if(liste_des_bases!==''){
                                liste_des_bases+=',';
                              }
@@ -1679,9 +1696,26 @@ class requete_sql{
                         rev_texte+=')'+CRLF;
                         rev_texte+=')'+CRLF;
                     }else{
-                        debugger
+                        /* une requete manuelle peut ne pas avoir de base de référence */
                     }
                 }
+            }
+            if(rev_initial!==null){
+              rev_texte=rev_initial.value;
+            }
+            debugger
+            if(requete_manuelle_avec_base>0){
+             var regex = /base_de_reference\(\d+\)/g;
+             rev_texte = rev_texte.replace(regex, '');
+             var regex = /base_de_reference\(\)/g;
+             rev_texte = rev_texte.replace(regex, '');
+             rev_texte=rev_texte.replace('requete_manuelle(','requete_manuelle(base_de_reference('+requete_manuelle_avec_base+')')
+            }else{
+             var regex = /base_de_reference\(\d+\)/g;
+             rev_texte = rev_texte.replace(regex, '');
+             var regex = /base_de_reference\(\)/g;
+             rev_texte = rev_texte.replace(regex, '');
+             rev_texte=rev_texte.replace('requete_manuelle(','requete_manuelle(base_de_reference()')
             }
         }
 
@@ -1972,7 +2006,19 @@ class requete_sql{
         if(this.#globale_id_requete>0){
          id_requete_en_base=this.#globale_id_requete;
         }
-        t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
+        var manuelle_sans_base_de_reference=false;
+        if(type_de_requete==='requete_manuelle' ){
+          var text_rev=document.getElementById('txtar1').value;
+          if(text_rev.indexOf('base_de_reference()')>=0){
+           manuelle_sans_base_de_reference=true;
+           t+='function sql_'+id_requete_en_base+'($par,$db){'+CRLF;
+          }else{
+           t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
+          }
+         }else{
+          t+='function sql_'+id_requete_en_base+'($par){'+CRLF;
+        }
+        
         if(obj3.id_base_principale===0){
          /*
           si c'est une requete de type "SELECT 1;", on prend la première référence de base disponible
@@ -1995,13 +2041,22 @@ class requete_sql{
             t+='    \';'+CRLF;
             t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_'+id_requete_en_base+' = <pre>\' . $texte_sql_'+id_requete_en_base+' . \'</pre>\' ; exit(0);'+CRLF;            
             t+='    $err=error_reporting(0);'+CRLF;
-            t+='    $ret=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            if(manuelle_sans_base_de_reference===true){
+                t+='    $ret=$db->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            }else{
+                t+='    $ret=$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->exec($texte_sql_'+this.#globale_id_requete+');'+CRLF;
+            }
             t+='    error_reporting($err);'+CRLF;
             t+='    if(false === $ret){'+CRLF;         
             t+='        return(array( ';         
-            t+='\'statut\' => false, ';         
-            t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';
-            t+='\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            t+='\'statut\' => false, ';
+            if(manuelle_sans_base_de_reference===true){
+                t+='\'code_erreur\' => $db->lastErrorCode() ,';
+                t+='\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$db->lastErrorMsg()));'+CRLF;
+            }else{
+                t+='\'code_erreur\' => $GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorCode() ,';
+                t+='\'message\' => \'erreur sql_'+id_requete_en_base+'()\'.\' \'.$GLOBALS[BDD][BDD_'+obj3.id_base_principale+'][LIEN_BDD]->lastErrorMsg()));'+CRLF;
+            }
             t+='    }else{'+CRLF;         
             t+='        return(array( \'statut\' => true ));'+CRLF;
             t+='    }'+CRLF;         

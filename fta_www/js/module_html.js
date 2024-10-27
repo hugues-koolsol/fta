@@ -191,7 +191,7 @@ class traitements_sur_html{
                        /*
                           il n'y a pas la propriété type, on suppose que c'est un text/javascript
                        */
-                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i]);
+                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].replace(/&amp;/g,'&'));
                        if(obj.status===true){
                            if(t.indexOf('text/javascript')>=0){
                                contenu+=obj.value;
@@ -1061,19 +1061,23 @@ class traitements_sur_html{
                     }
                     
                 }
-
-                var obj=this.traiteAstDeHtml(elementsJson.value,0,supprimer_le_tag_html_et_head,'');
-                if(obj.status===true){
-                    if(obj.value.indexOf('html(')>=0){
-                     if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
-                        obj.value=obj.value.replace(/html\(/,'html((doctype)');
-                     }else{
-                        obj.value=obj.value.replace(/html\(/,'html(#(?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
-                     }
+                try{
+                    var obj=this.traiteAstDeHtml(elementsJson.value,0,supprimer_le_tag_html_et_head,'');
+                    if(obj.status===true){
+                        if(obj.value.indexOf('html(')>=0){
+                         if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
+                            obj.value=obj.value.replace(/html\(/,'html((doctype)');
+                         }else{
+                            obj.value=obj.value.replace(/html\(/,'html(#(?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                         }
+                        }
+                        t=obj.value;
+                    }else{
+                        return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));
                     }
-                    t=obj.value;
-                }else{
-                    return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));
+                }catch(e){
+                    console.error('e=',e);
+                        return(asthtml_logerreur({status:false,message:'erreur module_html 0667 '}));
                 }
                 
                 

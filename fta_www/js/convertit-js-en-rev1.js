@@ -3080,22 +3080,30 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
       =============================================================================================================
       =============================================================================================================
     */
+/*    
     try{
-        r.open("POST",'za_ajax.php?recupererAstDeJs',false);
     }catch(e){
         console.log('e=',e);
     }
-    try{
-        r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    }catch(e){
-        console.log('e=',e);
-    }
+*/
+/*    
     r.onerror=function(e){
         console.error('e=',e);
         return({status:false});
     };
+*/    
+/*
+    try{
+        debugger
+    }catch(e){
+        console.log('e=',e);
+    }
+*/    
     var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource};
     try{
+
+        r.open("POST",'za_ajax.php?recupererAstDeJs',false);
+        r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
         r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
         console.error('e=',e);
@@ -3103,17 +3111,21 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
         return({status:false});
     }
     if(r.readyState === 4){
+        try{
+            var jsonRet = JSON.parse(r.responseText);
+            if(jsonRet.status === 'OK'){
 
-        var jsonRet = JSON.parse(r.responseText);
-        if(jsonRet.status === 'OK'){
-
-            var elem={};
-            for(elem in jsonRet.messages){
-                logerreur({'status':true,'message':'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+                var elem={};
+                for(elem in jsonRet.messages){
+                    logerreur({'status':true,'message':'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+                }
+                return({status:true,'value':JSON.parse(jsonRet.value),'commentaires':JSON.parse(jsonRet.commentaires)});
+            }else{
+                console.error('jsonRet=',jsonRet);
+                return({status:false});
             }
-            return({status:true,'value':JSON.parse(jsonRet.value),'commentaires':JSON.parse(jsonRet.commentaires)});
-        }else{
-            return({status:false});
+        }catch(e){
+           console.error('e=',e);
         }
     }else{
         return({status:false});
