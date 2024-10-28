@@ -74,7 +74,7 @@ $js_a_executer_apres_chargement=array(
 
 
 $a=array( 
-  'js_a_inclure' => array( 'js/compile1.js', 'js/php.js', 'js/javascript.js', 'js/html.js', 'js/sql.js', 'js/index_source_script-v0.js'),
+  'js_a_inclure' => array( 'js/compile1.js', 'js/php.js', 'js/javascript.js', 'js/sql.js', 'js/index_source_script-v0.js'),
   'module_a_inclure' => array('js/module_html.js'),
   'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );

@@ -1468,7 +1468,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
 
   
  }else if(tab[ind][2]==='f' && tab[ind][1]==='tableau' ){
-  
+
      var objTableau = php_traiteTableau1(tab,ind,niveau);
      if(objTableau.status === true){
       t=objTableau.value;

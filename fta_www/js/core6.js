@@ -3,6 +3,8 @@
 var DEBUTCOMMENTAIRE='#';
 var DEBUTBLOC='@';
 var CRLF='\r\n';
+var CR='\r';
+var LF='\n';
 var NBESPACESREV=3;
 var globale_LangueCourante='fr';
 var global_messages={

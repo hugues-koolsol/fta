@@ -840,11 +840,19 @@ function simplifie_tableau(nom_variable,parametres,num){
         var obj_indice_tableau=functionToArray(parametres,true,true,'');
         if(obj_indice_tableau.status===true && (
             (
+                obj_indice_tableau.value.length===2 
+                && obj_indice_tableau.value[1][1]==='p' 
+                && obj_indice_tableau.value[1][2]==='f' 
+                && obj_indice_tableau.value[1][8]===0
+            )
+            ||
+            (
                 obj_indice_tableau.value.length===3 
                 && obj_indice_tableau.value[1][1]==='p' 
                 && obj_indice_tableau.value[1][2]==='f' 
                 && obj_indice_tableau.value[1][8]===1
                 && obj_indice_tableau.value[2][2]==='c' 
+                && obj_indice_tableau.value[2][4]==='0' 
             )
             ||
             (
@@ -853,22 +861,28 @@ function simplifie_tableau(nom_variable,parametres,num){
                 && obj_indice_tableau.value[1][2]==='f' 
                 && obj_indice_tableau.value[1][8]===1
                 && obj_indice_tableau.value[2][2]==='c' 
+                && obj_indice_tableau.value[2][4]===0 
                 && obj_indice_tableau.value[3][1]==='p' 
                 && obj_indice_tableau.value[3][2]==='f' 
                 && obj_indice_tableau.value[3][8]===1
                 && obj_indice_tableau.value[4][2]==='c' 
+                && obj_indice_tableau.value[4][4]==='0' 
             )
            )
         ){
             if(obj_nom_tableau.value.length===2){
-                if(obj_indice_tableau.value.length===3 ){
+                if(obj_indice_tableau.value.length===2 ){
+                    t=obj_nom_tableau.value[1][1]+'[]';
+                }else if(obj_indice_tableau.value.length===3 ){
                  
                     t=obj_nom_tableau.value[1][1]+'['+obj_indice_tableau.value[2][1]+']';
                 }else if(obj_indice_tableau.value.length===5 ){
                     t=obj_nom_tableau.value[1][1]+'['+obj_indice_tableau.value[2][1]+']'+'['+obj_indice_tableau.value[4][1]+']';
                 }
             }else{
-                if(obj_indice_tableau.value.length===3 ){
+                if(obj_indice_tableau.value.length===2 ){
+                    t=obj_nom_tableau.value[2][1]+'[]';
+                }else if(obj_indice_tableau.value.length===3 ){
                  
                     t=obj_nom_tableau.value[2][1]+'['+obj_indice_tableau.value[2][1]+']';
                 }else if(obj_indice_tableau.value.length===5 ){
@@ -876,14 +890,21 @@ function simplifie_tableau(nom_variable,parametres,num){
                 }
             }
         }else{
-
-            t='tableau(' + nom_variable + parametres + ')';
+            if(nom_variable.substr(0,4)==='nomt'){
+                t='tableau(' + nom_variable + parametres + ')';
+            }else{
+                t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
+            }
         }
      
      
     }else{
 
-        t='tableau(' + nom_variable + parametres + ')';
+        if(nom_variable.substr(0,4)==='nomt'){
+            t='tableau(' + nom_variable + parametres + ')';
+        }else{
+            t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
+        }
     }
     return t;
  

@@ -16,11 +16,36 @@ function asthtml_logerreur(o){
 /*
   =================================================================================== 
 */
+function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textarea_html){
+
+    clearMessages('zone_global_messages');
+    var a = document.getElementById(nom_de_la_textarea_rev);
+    
+    
+    var obj1 = functionToArray2(a.value,false,true,'');
+    if(obj1.status === true){
+        
+        var obj2=__module_html1.tabToHtml1(obj1.value,0,false,0);
+        if(obj2.status===true){
+         dogid(nom_de_la_textarea_html).value=obj2.value;
+         asthtml_logerreur({status:true,message:'html produit'});
+        }else{
+         asthtml_logerreur({status:false,message:'erreur de reconstruction du html'});
+        }
+    }else{
+        asthtml_logerreur({status:false,message:'erreur pour le rev'});
+    }
+    displayMessages('zone_global_messages', 'nom_de_la_textarea_rev');
+    
+}
+/*
+  =================================================================================== 
+*/
 //var __ht1=null;
 var tabComment=[];
 function transform_text_area_Html_en_rev(nom_de_la_textarea){
  
-    console.log('=========================\ndébut de transforme');
+//    console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
     dogid('txtar3').value='';
 //    document.getElementById('resultat1').innerHTML='';

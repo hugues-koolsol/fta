@@ -113,7 +113,7 @@ function recupere_une_donnees_des_cibles($id){
       'fta_www/js/convertion_sql_en_rev.js' => array(),
       'fta_www/js/convertit-php-en-rev0.js' => array(),
       'fta_www/js/core6.js' => array(),
-      'fta_www/js/html.js' => array(),
+//      'fta_www/js/html.js' => array(),
       'fta_www/js/interface0.js' => array(),
       'fta_www/js/javascript.js' => array(),
       'fta_www/js/php.js' => array(),

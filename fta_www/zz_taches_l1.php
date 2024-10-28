@@ -455,8 +455,8 @@ foreach($tt['valeur'] as $k0 => $v0){
     $lsttbl.=' <a class="yydanger" href="zz_taches_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_tache'].'" title="supprimer">x</a>';
     $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_99&amp;__id='.$v0['T0.chi_id_tache'].'" title="mettre cette priorité à 99">99</a>';
     $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_0&amp;__id='.$v0['T0.chi_id_tache'].'" title="mettre cette priorité 0">00</a>';
-    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_plus_1&amp;__id='.$v0['T0.chi_id_tache'].'" title="ajouter 1 à cette priotité">+1</a>';
-    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_moins_1&amp;__id='.$v0['T0.chi_id_tache'].'" title="soustraire 1 à cette priotité">-1</a>';
+    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_plus_1&amp;__id='.$v0['T0.chi_id_tache'].'" title="ajouter 1 à cette priorité">+1</a>';
+    $lsttbl.=' <a class="yyinfo"   href="zz_taches_l1.php?__action=__mettre_a_moins_1&amp;__id='.$v0['T0.chi_id_tache'].'" title="soustraire 1 à cette priorité">-1</a>';
 
     $lsttbl.='</div>';
     $lsttbl.='</td>';

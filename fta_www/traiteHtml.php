@@ -19,22 +19,27 @@ print($o1);$o1='';
         </div>
 
   <h1>Convertir un html en rev</h1>
-  <div>
-   <a href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">👊</a>
-   <a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">🖐</a>
+  <div style="width:90%;">
+   <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar1&quot;,1)">aller à la ligne n°</a>
+   <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
+   <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
+   <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
   </div>
 
   <textarea class="txtar1" id="txtar1" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   
-  <div>
+  <div style="width:90%;">
    <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
    <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
-   <a href="javascript:__gi1.reduire_la_text_area(&quot;txtar2&quot;);" title="réduire la zone">👊</a>
-   <a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar2&quot;);" title="agrandir la zone">🖐</a>
+   <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar1&quot;,1)">aller à la ligne n°</a>
+   <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
+   <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
+   <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
   </div>
 
   <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-  <div>
+  <div style="width:90%;">
+   <a href="javascript:transform_text_area_rev_en_html(&quot;txtar2&quot;,&quot;txtar3&quot;)"  class="yyinfo">R2H</a>
    <a href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">👊</a>
    <a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar3&quot;);" title="agrandir la zone">🖐</a>
   </div>
@@ -50,7 +55,7 @@ $js_a_executer_apres_chargement=array(
 );
 $par=array(
     'js_a_inclure'=>array('js/compile1.js','js/javascript.js',
-    'js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js'), // ,'js/html.js'
+    'js/convertit-html-en-rev1.js','js/convertit-js-en-rev1.js'),
     'module_a_inclure' => array( 'js/module_interface1.js' , 'js/module_html.js' ),
     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );

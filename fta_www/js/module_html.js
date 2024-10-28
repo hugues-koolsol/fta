@@ -36,7 +36,7 @@ class traitements_sur_html{
            }
          }
          
-         var ob=this.tabToHtml0(tab,startId,false,false,false,noHead,false,niveau);
+         var ob=this.tabToHtml0(tab,startId,false,false,false,noHead,false,false,niveau);
          if(ob.status===true){
           if(ob.value.substr(0,2)===CRLF){
            ob.value=ob.value.substr(2);
@@ -104,7 +104,7 @@ class traitements_sur_html{
                           typeScriptNonTraite=true;
                           type='script';
                           t+='\n'+esp0+'script(';
-                          logerreur({status:false,'message':'html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
+                          logerreur({status:false,'message':'module_html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
                       }
                  }else{
                   /*
@@ -239,9 +239,25 @@ class traitements_sur_html{
                  contenu+=jsonDeHtml.content;
              }
              if(type.toLowerCase()==='#text'){
-                 contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
-                 if(contenu!==''){
-                     t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                 if(typeParent==='style'){
+                     contenu=contenu.trim();
+                     if(contenu.substr(0,2)===CRLF){
+                        contenu=contenu.substr(2);
+                     }
+                     if(contenu.substr(0,1)===LF){
+                        contenu=contenu.substr(2);
+                     }
+                     if(contenu.substr(0,1)===CR){
+                        contenu=contenu.substr(1);
+                     }
+                     if(contenu!==''){
+                         t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                     }
+                 }else{
+                     contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
+                     if(contenu!==''){
+                         t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                     }
                  }
              }else{
                  t+=contenu;
@@ -438,7 +454,6 @@ class traitements_sur_html{
                                    for(var j=0;j<nouveauTableau1.length;j++){
                                        if(nouveauTableau1[j][7]===1){
                                            var obj=a2F1(nouveauTableau1,1,true,j,false);
-//                                           var obj=this.tabToHtml0(nouveauTableau1,j,false,false,false,true,0);
                                            if(obj.status===true){
                                                t+=','+obj.value+'\n';
                                            }else{
@@ -1064,7 +1079,7 @@ class traitements_sur_html{
                 try{
                     var obj=this.traiteAstDeHtml(elementsJson.value,0,supprimer_le_tag_html_et_head,'');
                     if(obj.status===true){
-                        if(obj.value.indexOf('html(')>=0){
+                        if(obj.value.trim().indexOf('html(')==0){
                          if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
                             obj.value=obj.value.replace(/html\(/,'html((doctype)');
                          }else{
@@ -1167,7 +1182,7 @@ class traitements_sur_html{
     
     
     //=====================================================================================================================
-    tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , niveau){
+    tabToHtml0( tab ,id , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , niveau){
      var t='';
      var i=0;
      var j=0;
@@ -1181,6 +1196,9 @@ class traitements_sur_html{
      
      if(tab[id][1]=='head'){
       dansHead=true;
+     }
+     if(tab[id][1]=='style'){
+      dansCss=true;
      }
      if(tab[id][1]=='body'){
       dansBody=true;
@@ -1205,7 +1223,7 @@ class traitements_sur_html{
       }
       t+=' ?>';
       
-      return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
+      return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
 
      }else if(dansJs&&tab[id][1]=='source'){ // i18
       // analyse de source javascript
@@ -1229,7 +1247,7 @@ class traitements_sur_html{
        return logerreur({status:false,value:t,message:'erreur de script dans un html'});
       }
       
-      return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp};
+      return {status:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
 
      }else{
       temp='';
@@ -1440,12 +1458,12 @@ class traitements_sur_html{
             /*
               dans le cas du script, on le met à la racine
             */
-            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,0);
+            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
             
             
            }else{
             niveau++;
-            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,niveau); // appel récursif
+            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau); // appel récursif
             niveau--;
            }
            
@@ -1476,7 +1494,11 @@ class traitements_sur_html{
             ecriture de la valeur dans le cas d'une constante
             ===========================================================================================
            */
-           t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+           if(dansCss===true){
+             t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n'+' '.repeat((niveau+1)*NBESPACESSOURCEPRODUIT)).replace(/¶CR¶/g,'\r');
+           }else{
+             t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+           }
            contenuNiveauPlus1=tab[i][1];
           }
          }
@@ -1510,6 +1532,9 @@ class traitements_sur_html{
           }
          }
         }
+       }
+       if('style'==tab[id][1]){
+        dansCss=false;
        }
        if('script'==tab[id][1]){
         dansJs=false;

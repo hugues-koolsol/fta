@@ -3066,6 +3066,62 @@ function TransformAstEnRev(les_elements,niveau){
     }
     return({status:true,value:t});
 }
+
+/*
+  =====================================================================================================================
+*/
+function analyse_fichier_log_acorn(jsonRet){
+ 
+ 
+    var numero_de_ligne=-1;
+    var position=-1;
+    var caractere_incorrecte='';
+    if(jsonRet.fichier_erreur.indexOf('loc: Position')>=0){
+     var temp=jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('loc: Position')+14);
+     if(temp.indexOf('}')>=0){
+      temp=temp.substr(0,temp.indexOf('}')+1);
+      try{
+       var temp=temp.replace(/ /g,'');
+       var temp=temp.replace(/line/g,'"line"');
+       var temp=temp.replace(/column/g,'"column"');
+       var tt=JSON.parse(temp);
+       if(tt.hasOwnProperty('line')){
+        numero_de_ligne=tt.line-1;
+       }
+//                       console.log(tt);
+      }catch(e){
+//                       console.error(e);
+      }
+     }
+    }
+    if(jsonRet.fichier_erreur.indexOf('pos: ')>=0){
+     var temp=jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('pos: ')+5);
+     if(temp.indexOf(',')>=0){
+      temp=temp.substr(0,temp.indexOf(','));
+      try{
+          position=parseInt(temp,10);
+          if(jsonRet.input && jsonRet.input.texteSource){
+           if(jsonRet.input.texteSource.length>=position){
+            caractere_incorrecte=jsonRet.input.texteSource.substr(position,1);
+            logerreur({status:false,message:'erreur dans un source javascript caractere_incorrecte="'+caractere_incorrecte+'"'});
+            if(position-10>0){
+             logerreur({status:false,message:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(position-10,20)+'"'});
+            }else{
+             logerreur({status:false,message:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(0,20)+'"'});
+            }
+            return({status:true});
+           }
+          }
+
+      }catch(e){
+      }
+     }
+    }
+    
+
+    return({status:false});
+}
+
 /*
   =====================================================================================================================
 */
@@ -3075,30 +3131,16 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
       =============================================================================================================
       =============================================================================================================
       =============================================================================================================
-      appel "SYNCHRONE" à la récupération ast
+      ATTENTION appel "SYNCHRONE" à la récupération ast, le r.open a comme dernier paramètre : false
       =============================================================================================================
       =============================================================================================================
       =============================================================================================================
     */
-/*    
-    try{
-    }catch(e){
-        console.log('e=',e);
-    }
-*/
-/*    
+    
     r.onerror=function(e){
         console.error('e=',e);
         return({status:false});
     };
-*/    
-/*
-    try{
-        debugger
-    }catch(e){
-        console.log('e=',e);
-    }
-*/    
     var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource};
     try{
 
@@ -3121,8 +3163,20 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
                 }
                 return({status:true,'value':JSON.parse(jsonRet.value),'commentaires':JSON.parse(jsonRet.commentaires)});
             }else{
-                console.error('jsonRet=',jsonRet);
-                return({status:false});
+//                console.error('jsonRet=',jsonRet);
+                if(jsonRet.fichier_erreur){
+                   var obj=analyse_fichier_log_acorn(jsonRet);
+                   if(obj.status===true){
+                   }else{
+                    
+                      console.error(jsonRet.fichier_erreur);
+                      console.error(jsonRet.input.texteSource);
+                      
+                      logerreur({status:false,message:'erreur dans un source javascript'});
+                      return(logerreur({status:false,message:jsonRet.fichier_erreur}));
+                   }
+                }
+                return({status:false,message:'convertit js en rev erreur dans le source js '});
             }
         }catch(e){
            console.error('e=',e);
@@ -3249,31 +3303,13 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
                     logerreur({'status':false,'message':'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
                 }
                 if(jsonRet.fichier_erreur){
-//                    console.log( jsonRet.fichier_erreur );
-                    
-                    var numero_de_ligne=0;
-                    if(jsonRet.fichier_erreur.indexOf('loc: Position')>=0
-                    ){
-                     var temp=jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('loc: Position')+14);
-                     if(temp.indexOf('}')>=0){
-                      temp=temp.substr(0,temp.indexOf('}')+1);
-                      try{
-                       var temp=temp.replace(/ /g,'');
-                       var temp=temp.replace(/line/g,'"line"');
-                       var temp=temp.replace(/column/g,'"column"');
-                       var tt=JSON.parse(temp);
-                       if(tt.hasOwnProperty('line')){
-                        numero_de_ligne=tt.line-1;
-                       }
-//                       console.log(tt);
-                      }catch(e){
-//                       console.error(e);
-                      }
-                     }
+                    var obj=analyse_fichier_log_acorn(jsonRet);
+                    if(obj.status===true){
+                    }else{
+                     logerreur({'status':false,'message':'<pre>' + jsonRet.fichier_erreur.replace(/&/g,'&lt;').replace(/\n/,'<br />') + '</pre>'});
                     }
                     
 
-                    logerreur({'status':false,line:numero_de_ligne,'message':'<pre>' + jsonRet.fichier_erreur.replace(/&/g,'&lt;').replace(/\n/,'<br />') + '</pre>'});
                 }
                 if(jsonRet.hasOwnProperty('input')
                   && jsonRet.input.hasOwnProperty('options')
