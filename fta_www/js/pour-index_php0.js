@@ -150,7 +150,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
      if(compacteOriginal.status==true && compacteReecrit.status===true){
       if(compacteOriginal.value == compacteReecrit.value){
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;">'+strToHtml(compacteOriginal.value)+'</textarea>';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">'+strToHtml(compacteOriginal.value)+'</textarea>';
        
         logerreur({'status':true,'message':'👍 sources compactés Egaux : ' + tempsTraitement});
        

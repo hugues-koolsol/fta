@@ -991,7 +991,7 @@ function formaterErreurRev(obj){
                     presDe+='</b>';
                 }
             }
-            message_ajoute+='position caractère=' + obj.ind + '';
+            message_ajoute+=' position caractère=' + obj.ind + '';
             message_ajoute+='<br />près de ----' + presDe + '----<br />';
             line=0;
             for(i=obj.ind;i >= 0;i--){
@@ -1001,15 +1001,7 @@ function formaterErreurRev(obj){
             }
         }
     }
-    var message = (obj.message + message_ajoute);
-    var temp={
-        'status':obj.status,
-        'value':T,
-        'id':obj.ind,
-        'message':message,
-        'line':line
-    };
-    return temp;
+    return({'status':obj.status,'value':T,'id':obj.ind,'message':(obj.message + message_ajoute),'line':line});
 }
 /*
   =====================================================================================================================
@@ -1053,6 +1045,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
     */
     var texte='';
+    var textePrecedent='';
     var commentaire='';
     var c='';
     var c1='';
@@ -1094,6 +1087,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var dsComment=false;
     var dsBloc=false;
     var constanteQuotee=0;
+    var constanteQuoteePrecedente=0;
     var drapeauParenthese = ((rechercheParentheseCorrespondante === '')?false:true);
     /*
       =============================================================================================================
@@ -1222,6 +1216,21 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(i === (l01 - 1)){
                         /* à faire, noter un cas d'erreur */
                         console.error('core functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;');
+                        
+                        return(logerreur(formaterErreurRev({
+                            status:false,
+                            ind:i,
+                            message:'1148 la racine ne peut pas contenir des constantes',
+                            type:'rev',
+                            texte:texte,
+                            chaineTableau:chaineTableau,
+                            tabComment:tabCommentaireEtFinParentheses,
+                            tableauEntree:tableauEntree,
+                            quitterSiErreurNiveau:quitterSiErreurNiveau,
+                            autoriserCstDansRacine:autoriserCstDansRacine
+                        })));
+                        
+                        
                         return(logerreur({'status':false,'id':i,'value':T,'message':'1148 la racine ne peut pas contenir des constantes'}));
                     }
                 }
@@ -1280,6 +1289,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 constanteQuotee=3;
+                constanteQuoteePrecedente=3;
                 /* methode3" */
                 texte=texte.replace(/\\/g,'\\\\');
                 texte=texte.replace(/"/g,'\\"');
@@ -1294,6 +1304,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 */
                 typePrecedent='c';
                 niveauPrecedent=niveau;
+                textePrecedent=texte;
                 texte='';
                 constanteQuotee=0;
             }else if(c === '\\'){
@@ -1403,6 +1414,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 dansCstRegex=false;
                 constanteQuotee=4;
+                constanteQuoteePrecedente=4;
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
                         temp={'status':false,'id':i,'value':T,'message':'1305 la racine ne peut pas contenir des constantes'};
@@ -1438,6 +1450,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 indiceTabCommentaire++;
                 typePrecedent='c';
                 niveauPrecedent=niveau;
+                textePrecedent=texte;
                 texte='';
                 constanteQuotee=0;
             }else if(c === '\\'){
@@ -1523,6 +1536,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 dansCstModele=false;
                 constanteQuotee=2;
+                constanteQuoteePrecedente=2;
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
                         temp={'status':false,'id':i,'value':T,'message':'1398 la racine ne peut pas contenir des constantes'};
@@ -1543,6 +1557,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 */
                 typePrecedent='c';
                 niveauPrecedent=niveau;
+                textePrecedent=texte;
                 texte='';
                 constanteQuotee=0;
             }else if(c === '\\'){
@@ -1620,6 +1635,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 dansCstSimple=false;
                 constanteQuotee=1;
+                constanteQuoteePrecedente=1;
                 /* methode3' */
                 texte=texte.replace(/\\/g,'\\\\');
                 texte=texte.replace(/"/g,'\\"');
@@ -1634,6 +1650,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 */
                 typePrecedent='c';
                 niveauPrecedent=niveau;
+                textePrecedent=texte;
                 texte='';
                 constanteQuotee=0;
             }else if(c === '\\'){
@@ -1736,6 +1753,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 typePrecedent='f';
                 niveauPrecedent=niveau;
                 niveau=niveau + 1;
+                textePrecedent=texte;
                 texte='';
                 dansCstSimple=false;
                 dansCstDouble=false;
@@ -1757,15 +1775,24 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   =====================================================================================
                 */
                 posFerPar=i;
+                
                 if(texte !== ''){
                     if(niveau === 0){
-                        if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,(i - 100),(i + 110));
-                        }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
-                        }
-                        temp={'status':false,'value':T,'id':i,'message':'une fermeture de parenthése ne doit pas être au niveau 0 près de ' + presDe};
-                        return(logerreur(temp));
+                     
+                     
+                        return(logerreur(formaterErreurRev({
+                            'erreur_conversion_chaineTableau_en_json':true,
+                            status:false,
+                            ind:i,
+                            message:'1786 une fermeture de parenthése ne doit pas être au niveau 0',
+                            type:'rev',
+                            chaineTableau:chaineTableau,
+                            tabComment:tabCommentaireEtFinParentheses,
+                            tableauEntree:tableauEntree,
+                            quitterSiErreurNiveau:quitterSiErreurNiveau,
+                            autoriserCstDansRacine:autoriserCstDansRacine
+                        })));
+                     
                     }
                     indice++;
                     chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
@@ -1774,7 +1801,26 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     */
                     typePrecedent='c';
                     niveauPrecedent=niveau;
+                    textePrecedent=texte;
                     texte='';
+                }else{
+                    /* à faire : parentèse fermante avec un virgule avant : x(a,) */
+                    /**
+                    if(niveauPrecedent === niveau && textePrecedent===''  && constanteQuoteePrecedente===0 ){
+                        return(logerreur(formaterErreurRev({
+                            status:false,
+                            ind:premier,
+                            message:'1803 une virgule ne doit terminer une fonction ',
+                            type:'rev',
+                            texte:texte,
+                            chaineTableau:chaineTableau,
+                            tabComment:tabCommentaireEtFinParentheses,
+                            tableauEntree:tableauEntree,
+                            quitterSiErreurNiveau:quitterSiErreurNiveau,
+                            autoriserCstDansRacine:autoriserCstDansRacine
+                        })));
+                    }
+                    */
                 }
                 niveau--;
                 if(drapeauParenthese){
@@ -1791,6 +1837,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             return(logerreur(formaterErreurRev({
                                 'erreur_conversion_chaineTableau_en_json':true,
                                 status:false,
+                                ind:i,
                                 message:'1555 erreur de conversion de tableau',
                                 type:'rev',
                                 chaineTableau:chaineTableau,
@@ -1883,6 +1930,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         */
                         typePrecedent='c';
                         niveauPrecedent=niveau;
+                        textePrecedent=texte;
                         texte='';
                     }
                     dansCstSimple=true;
@@ -1912,6 +1960,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         */
                         typePrecedent='c';
                         niveauPrecedent=niveau;
+                        textePrecedent=texte;
                         texte='';
                     }
                     dansCstRegex=true;
@@ -1941,6 +1990,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                         typePrecedent='c';
                         niveauPrecedent=niveau;
+                        textePrecedent=texte;
                         texte='';
                     }
                     dansCstModele=true;
@@ -1972,6 +2022,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         */
                         typePrecedent='c';
                         niveauPrecedent=niveau;
+                        textePrecedent=texte;
                         texte='';
                     }
                     dansCstDouble=true;
@@ -1985,8 +2036,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 */
             }else if(c === ','){
                 /*
-                  
-                  
                   =====================================================================================
                   virgule donc séparateur
                   =====================================================================================
@@ -2003,19 +2052,69 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     /*
                       T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     */
+                    textePrecedent='';
+                    texte='';
                     typePrecedent='c';
                     niveauPrecedent=niveau;
                 }else{
                     if(typePrecedent === 'f'){
-                        /*ne rien faire*/
+                        if(niveauPrecedent === niveau){
+                            /*
+                             cas très spécial : todo
+                            */
+                            typePrecedent='c';
+                            textePrecedent='';
+                            constanteQuoteePrecedente=0;
+                        }else{
+                            if(niveauPrecedent < niveau){
+                                return(logerreur(formaterErreurRev({
+                                    status:false,
+                                    ind:premier,
+                                    message:'2023 une virgule ne doit pas être précédée d\'un vide',
+                                    type:'rev',
+                                    texte:texte,
+                                    chaineTableau:chaineTableau,
+                                    tabComment:tabCommentaireEtFinParentheses,
+                                    tableauEntree:tableauEntree,
+                                    quitterSiErreurNiveau:quitterSiErreurNiveau,
+                                    autoriserCstDansRacine:autoriserCstDansRacine
+                                })));
+                             
+                            }
+                        }
                     }else{
-                        if(niveauPrecedent < niveau){
-                            temp={'status':false,'value':T,'id':i,'message':'une virgule ne doit pas être précédée d\'un vide'};
-                            return(logerreur(temp));
+                        if(niveauPrecedent < niveau ){
+                            return(logerreur(formaterErreurRev({
+                                status:false,
+                                ind:premier,
+                                message:'2041 une virgule ne doit pas être précédée d\'un vide',
+                                type:'rev',
+                                texte:texte,
+                                chaineTableau:chaineTableau,
+                                tabComment:tabCommentaireEtFinParentheses,
+                                tableauEntree:tableauEntree,
+                                quitterSiErreurNiveau:quitterSiErreurNiveau,
+                                autoriserCstDansRacine:autoriserCstDansRacine
+                            })));
+                         
+
+                        }else if(niveauPrecedent === niveau && textePrecedent==='' && constanteQuoteePrecedente===0 ){ // constanteQuoteePrecedente
+                            return(logerreur(formaterErreurRev({
+                                status:false,
+                                ind:premier,
+                                message:'2067 une virgule ne doit pas être précédée d\'un vide ',
+                                type:'rev',
+                                texte:texte,
+                                chaineTableau:chaineTableau,
+                                tabComment:tabCommentaireEtFinParentheses,
+                                tableauEntree:tableauEntree,
+                                quitterSiErreurNiveau:quitterSiErreurNiveau,
+                                autoriserCstDansRacine:autoriserCstDansRacine
+                            })));
+
                         }
                     }
                 }
-                texte='';
                 dansCstSimple=false;
                 dansCstDouble=false;
                 dansCstModele=false;
@@ -2024,23 +2123,20 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   =====================================================================================
                   FIN virgule donc séparateur
                   =====================================================================================
-                  
-                  
                 */
             }else if((c === ' ') || (c === '\t') || (c === '\r') || (c === '\n')){
                 /*
-                  
-                  
                   =====================================================================================
                   caractères séparateurs de mot
                   =====================================================================================
                 */
                 if(texte !== ''){
+
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
                             return(logerreur(formaterErreurRev({
                                 status:false,
-                                ind:i,
+                                ind:premier,
                                 message:'1602 la racine ne peut pas contenir des constantes',
                                 type:'rev',
                                 texte:texte,
@@ -2059,6 +2155,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     */
                     typePrecedent='c';
                     niveauPrecedent=niveau;
+                    textePrecedent=texte;
                     texte='';
                     dansCstSimple=false;
                     dansCstDouble=false;

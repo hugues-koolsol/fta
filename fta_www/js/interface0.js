@@ -758,70 +758,7 @@ function display_ajax_error_in_cons(jsonRet){
     console.log(('%c' + txt),'color:red;background:orange;');
     console.log('jsonRet=',jsonRet);
 }
-/*
-  
-  =====================================================================================================================
-*/
-function selectionnerLigneDeTextArea(tarea,lineNum){
-    lineNum=((lineNum <= 0)?1:lineNum);
-    lineNum=(lineNum - 1);
-    var numeroLigne=0;
-    var startPos=0;
-    var endPos=0;
-    var i=0;
-    for(i=0;i < tarea.value.length;i++){
-        if(tarea.value.substr(i,1) === '\n'){
-            numeroLigne++;
-            if(numeroLigne === lineNum){
-                startPos=(i + 1);
-                break;
-            }
-        }
-    }
-    var endPos=i;
-    var i=startPos;
-    for(i=startPos;i < tarea.value.length;i++){
-        if(tarea.value.substr(i,1) === '\n'){
-            endPos=i;
-            break;
-        }
-    }
-    if(typeof tarea.selectionStart != 'undefined'){
-        tarea.select();
-        tarea.selectionStart=startPos;
-        tarea.selectionEnd=endPos;
-        var debut=startPos;
-        var fin=endPos;
-        tarea.select();
-        tarea.selectionStart=debut;
-        tarea.selectionEnd=fin;
-        var texteDebut = tarea.value.substr(0,debut);
-        var texteFin = tarea.value.substr(debut);
-        tarea.value=texteDebut;
-        tarea.scrollTo(0,9999999);
-        var nouveauScroll=tarea.scrollTop;
-        tarea.value=(texteDebut + texteFin);
-        if(nouveauScroll > 50){
-            tarea.scrollTo(0,(nouveauScroll + 50));
-        }else{
-            tarea.scrollTo(0,0);
-        }
-        tarea.selectionStart=debut;
-        tarea.selectionEnd=fin;
-        return true;
-    }
-    if((document.selection) && (document.selection.createRange)){
-        tarea.focus();
-        tarea.select();
-        var range = document.selection.createRange();
-        range.collapse(true);
-        range.moveEnd('character',endPos);
-        range.moveStart('character',startPos);
-        range.select();
-        return true;
-    }
-    return false;
-}
+
 /*
   =====================================================================================================================
 */

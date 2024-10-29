@@ -1311,11 +1311,82 @@ class interface1{
         }
     }
     /*
+      
+      =====================================================================================================================
+    */
+    selectionner_ligne_de_text_area1(tarea,numero_de_ligne_qui_commence_par_1){
+     
+        var lineNum=((numero_de_ligne_qui_commence_par_1 <= 0)?1:numero_de_ligne_qui_commence_par_1);
+        lineNum=(lineNum - 1);
+        var numeroLigne=0;
+        var startPos=0;
+        var endPos=0;
+        var contenu=tarea.value;
+        var l01=contenu.length
+        var i=0;
+        for(i=0;i < l01;i++){
+            if(contenu.substr(i,1) === '\n'){
+                numeroLigne++;
+                if(numeroLigne === lineNum){
+                    startPos=(i + 1);
+                    break;
+                }
+            }
+        }
+        var endPos=startPos;
+        for(i=startPos;i < l01;i++){
+            endPos=i;
+            if(contenu.substr(i,1) === '\n'){
+                break;
+            }
+        }
+        if(i===l01){
+            /* c'est la dernière ligne */
+            endPos=l01;
+        }
+        
+        if(typeof tarea.selectionStart !== 'undefined'){
+            tarea.select();
+            tarea.selectionStart=startPos;
+            tarea.selectionEnd=endPos;
+            var debut=startPos;
+            var fin=endPos;
+            tarea.select();
+            tarea.selectionStart=debut;
+            tarea.selectionEnd=fin;
+            var texteDebut = contenu.substr(0,debut);
+            var texteFin = contenu.substr(debut);
+            tarea.value=texteDebut;
+            tarea.scrollTo(0,9999999);
+            var nouveauScroll=tarea.scrollTop;
+            tarea.value=(texteDebut + texteFin);
+            if(nouveauScroll > 50){
+                tarea.scrollTo(0,(nouveauScroll + 50));
+            }else{
+                tarea.scrollTo(0,0);
+            }
+            tarea.selectionStart=debut;
+            tarea.selectionEnd=fin;
+            return true;
+        }
+        if((document.selection) && (document.selection.createRange)){
+            tarea.focus();
+            tarea.select();
+            var range = document.selection.createRange();
+            range.collapse(true);
+            range.moveEnd('character',endPos);
+            range.moveStart('character',startPos);
+            range.select();
+            return true;
+        }
+        return false;
+    }    
+    /*
       =====================================================================================================================
     */
     allerAlaLigne(i,nomTextAreaSource){
         masquerLesMessage('zone_global_messages');
-        selectionnerLigneDeTextArea(document.getElementById(nomTextAreaSource),i);
+        this.selectionner_ligne_de_text_area1(document.getElementById(nomTextAreaSource),i);
     }
     
     /*

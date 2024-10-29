@@ -331,7 +331,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
             }
             if(element.value.async===true){
 
-                t+='\n' + esp0 + esp1 + esp1 + 'asynchrone(),';
+                t+='\n' + esp0 + esp1 + esp1 + 'asynchrone()';
             }
             if((element.value.params) && (element.value.params.length > 0)){
 
@@ -2700,16 +2700,16 @@ function ajouteCommentaireAvant(element,niveau){
                     var c2 = nbre_caracteres2(')',txtComment);
                     if(c1 === c2){
                         if(txtComment.substr(0,1)==='*' || txtComment.substr(0,1)==='#' ){
-                            t='\n' + esp0 + '#(#' + txtComment.substr(1) + '),' + t;
+                            t='\n' + esp0 + '#(#' + txtComment.substr(1) + ')' + t;
                         }else{
 
-                            t='\n' + esp0 + '#(' + txtComment + '),' + t;
+                            t='\n' + esp0 + '#(' + txtComment + ')' + t;
                         }
                     }else{
                         if(txtComment.substr(0,1)==='*' || txtComment.substr(0,1)==='#' ){
-                            t='\n' + esp0 + '#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + '),' + t;
+                            t='\n' + esp0 + '#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')' + t;
                         }else{
-                            t='\n' + esp0 + '#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + '),' + t;
+                            t='\n' + esp0 + '#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')' + t;
                         }
                     }
                     tabComment.splice(i,1);
