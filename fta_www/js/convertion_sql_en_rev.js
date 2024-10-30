@@ -1179,7 +1179,7 @@ BEGIN TRANSACTION;
 COMMIT;
 */
   `;
- dogid(nom_de_la_textarea).value=t;
+ document.getElementById(nom_de_la_textarea).value=t;
  
 }
 
@@ -1189,7 +1189,7 @@ COMMIT;
 function charger_le_dernier_source_sql(nom_de_la_textarea){
     var fta_traiteSql_dernier_fichier_charge=localStorage.getItem("fta_traiteSql_dernier_fichier_charge");
     if(fta_traiteSql_dernier_fichier_charge!==null){
-        dogid(nom_de_la_textarea).value=fta_traiteSql_dernier_fichier_charge;
+        document.getElementById(nom_de_la_textarea).value=fta_traiteSql_dernier_fichier_charge;
     }
 }
 /*
@@ -1201,47 +1201,60 @@ function transform_rev_de_textarea_en_sql( nom_de_la_textarea_rev , nom_de_la_te
     if(obj1.status===true){
         var obj2=tabToSql1(obj1.value,0 , 0 , false);
         if(obj2.status===true){
-          displayMessages('zone_global_messages');
           obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-          dogid(nom_de_la_textarea_sql).value=obj2.value;
+          document.getElementById(nom_de_la_textarea_sql).value=obj2.value;
+          __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+          return;
         }
     }
-    displayMessages('zone_global_messages');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
 }
 /*
 =====================================================================================================================
 */
 function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql , nom_de_la_textarea_rev){
  
-//    console.clear();
-    clearMessages('zone_global_messages');
-
-    var texte=dogid(nom_de_la_textarea_sql).value;
+    __gi1.raz_des_messages();
+    var texte=document.getElementById(nom_de_la_textarea_sql).value;
     localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
-    var obj=convertion_texte_sql_en_rev(texte);
-    if(obj.status===true){
-        dogid(nom_de_la_textarea_rev).value=obj.value;
-        
-        var tableau1 = iterateCharacters2(obj.value);
-        var obj1=functionToArray2(tableau1.out,false,true,'');
-        if(obj1.status===true){
-            var obj2=tabToSql1(obj1.value,0 , 0 , false);
-            if(obj2.status===true){
-              displayMessages('zone_global_messages');
-              obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-              dogid('txtar3').value=obj2.value;
+    try{
+        var obj=convertion_texte_sql_en_rev(texte);
+        if(obj.status===true){
+            document.getElementById(nom_de_la_textarea_rev).value=obj.value;
+            
+            var tableau1 = iterateCharacters2(obj.value);
+            var obj1=functionToArray2(tableau1.out,false,true,'');
+            if(obj1.status===true){
+                var obj2=tabToSql1(obj1.value,0 , 0 , false);
+                if(obj2.status===true){
+                      logerreur({status:true,message:'sql => rev ok et rev => sql  OK'});
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                    obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                    document.getElementById('txtar3').value=obj2.value;
+                }else{
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                    return;
+                }
             }else{
-              displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
+                return;
             }
+         
+         
+         
         }else{
-            displayMessages('zone_global_messages');
+            logerreur({status:false,message:'erreur de reconstruction du sql'});
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+            return;
         }
-     
-     
-     
-    }else{
-       logerreur({status:false,message:'erreur de reconstruction du sql'});
-        displayMessages('zone_global_messages');
+    }catch(e){
+       debugger;
+       logerreur({status:false,message:'erreur dans le sql'});
+       if(e.hasOwnProperty('location') && e.location.hasOwnProperty('start') && e.location.start.hasOwnProperty('line') && e.location.start.line>0 ){
+           logerreur({status:false,line:e.location.start.line-1});
+       }
+       __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+       return;
     }
  
 }

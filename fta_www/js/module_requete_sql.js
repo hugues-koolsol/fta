@@ -1798,7 +1798,7 @@ class requete_sql{
       function bouton_modifier_le_rev_en_base
     */
     bouton_modifier_le_rev_en_base(id_requete){
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         async function modifier_la_requete_en_base(url="",ajax_param,that){
             return that.#recupérer_un_fetch(url,ajax_param);
         }
@@ -1830,7 +1830,7 @@ class requete_sql{
                         console.log('donnees=',donnees);
                         logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la requête'});
                     }
-                    displayMessages('zone_global_messages');
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                      
                 });
             }else{
@@ -1845,7 +1845,7 @@ class requete_sql{
     */
     bouton_ajouter_le_rev_en_base(id_courant=0){
      
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         async function enregistrer_la_requete_en_base(url="",ajax_param){
             return that.#recupérer_un_fetch(url,ajax_param,that);
         }
@@ -1875,7 +1875,7 @@ class requete_sql{
                         console.log('donnees=',donnees);
                         logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la requête'});
                     }
-                    displayMessages('zone_global_messages');
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 });
             }else{
             }
@@ -2597,8 +2597,7 @@ class requete_sql{
     */
     transform_rev_vers_sql(txtarea_source,txtarea_dest){
         raz_messages('zone_global_messages');
-        masquerLesMessage('zone_global_messages');
-//        transform_rev_de_textarea_en_sql(txtarea_source , txtarea_dest);
+        __gi1.masquer_les_messages1('zone_global_messages');
         
         var tableau1 = iterateCharacters2(document.getElementById(txtarea_source).value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
@@ -2643,7 +2642,7 @@ class requete_sql{
                 }
             }
         }
-        displayMessages('zone_global_messages');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 
     }
     /* 

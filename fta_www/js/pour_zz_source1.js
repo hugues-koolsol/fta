@@ -4,7 +4,7 @@
   =====================================================================================================================
 */
 function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cible){
-   clearMessages('zone_global_messages');
+   __gi1.raz_des_messages();
    var a = document.getElementById(chp_rev_source);
    var startMicro=performance.now();
    
@@ -52,7 +52,7 @@ function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
  }else{
    logerreur({status:false,message:'Erreur de convertion'})
  }
- displayMessages('zone_global_messages');
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 }
 
 /*
@@ -83,12 +83,11 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
                 }else{
                  logerreur({status:true,message:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
                 }
-                displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 return;
             }else{
-                display_ajax_error_in_cons(jsonRet);
                 console.log(r);
-                displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 return;
             }
         }catch(e){
@@ -169,7 +168,7 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
   =====================================================================================================================
 */
 function convertir_js_en_rev(chp_genere_source , chp_rev_source ){
-   clearMessages('zone_global_messages');
+   __gi1.raz_des_messages();
    var a = document.getElementById(chp_genere_source);
    
    
@@ -180,11 +179,10 @@ function convertir_js_en_rev(chp_genere_source , chp_rev_source ){
        if(objRev.status == true){
          dogid(chp_rev_source).value=objRev.value;
        }else{
-         displayMessages('zone_global_messages',chp_genere_source);
+         __gi1.remplir_et_afficher_les_messages1('zone_global_messages',chp_genere_source);
        }
   }else{
-   displayMessages('zone_global_messages',chp_genere_source);
-   rangeErreurSelectionne=false;
+   __gi1.remplir_et_afficher_les_messages1('zone_global_messages',chp_genere_source);
   }
    
 }
@@ -216,25 +214,25 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
              
             }else{
                logerreur({status:false,message:'erreur 0223 traitement_apres_ajax_pour_conversion_fichier_js'});
-               displayMessages('zone_global_messages');
+               __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             }
             
             
         }else{
            logerreur({status:false,message:'erreur 0223 traitement_apres_ajax_pour_conversion_fichier_js'});
-           displayMessages('zone_global_messages');
+           __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         }
         
        }else{
         logerreur({status:false,message:'erreur 0195 traitement_apres_ajax_pour_conversion_fichier_js'});
-        displayMessages('zone_global_messages');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
        }
        
        
        
   }else{
         logerreur({status:false,message:'erreur 0201 traitement_apres_ajax_pour_conversion_fichier_js'});
-        displayMessages('zone_global_messages');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
   }
   return
  
@@ -280,7 +278,7 @@ function convertir_un_source_sur_disque(id_source){
 
 // console.log(nom_de_fichier_encrypte);
  
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  
  var r = new XMLHttpRequest();
  r.open("POST",'za_ajax.php?charger_un_fichier_source_par_son_identifiant',true);
@@ -309,10 +307,8 @@ function convertir_un_source_sur_disque(id_source){
 
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
-    displayMessages('zone_global_messages');
-//    alert('Problème XMLHttpRequest, voir la console javascript !');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     return;
    }
   }catch(e){
@@ -345,7 +341,7 @@ function convertir_un_source_sur_disque(id_source){
   =====================================================================================================================
 */
 function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible){
-   clearMessages('zone_global_messages');
+   __gi1.raz_des_messages();
    var a = document.getElementById(chp_rev_source);
    var startMicro=performance.now();
    
@@ -378,7 +374,7 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible
     
    }
    
-   displayMessages('zone_global_messages' , chp_rev_source);
+   __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , chp_rev_source);
    
    
 }
@@ -388,7 +384,7 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible
 
 function convertir_texte_en_rev(nom_zone_genere, nom_zone_source){
 
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  var a=dogid(nom_zone_genere);
  var startMicro = performance.now();
  
@@ -399,7 +395,7 @@ function convertir_texte_en_rev(nom_zone_genere, nom_zone_source){
 
  }
 
- displayMessages('zone_global_messages');
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
  
  
 }
@@ -407,7 +403,7 @@ function convertir_texte_en_rev(nom_zone_genere, nom_zone_source){
   =====================================================================================================================
 */
 function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , id_cible){
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  var a=dogid(nom_zone_source);
  var startMicro = performance.now();
  var tableau1 = iterateCharacters2(a.value);
@@ -428,7 +424,7 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , 
    
   }else{
    
-   displayMessages('zone_global_messages' , nom_zone_source);
+   __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , nom_zone_source);
    
   }
   
@@ -451,7 +447,7 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , 
 */
 function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
  
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  console.log('ret=',ret.input.opt);
  try{
   var startMicro=performance.now();
@@ -463,14 +459,13 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
    document.getElementById(ret.input.opt.nom_zone_rev).value='php('+obj.value+')';
   }else{
     
-    displayMessages('zone_global_messages' , ret.input.opt.nom_zone_genere);
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.input.opt.nom_zone_genere);
   }
  }catch(e){
   astphp_logerreur({status:false,message:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
  }
  
- displayMessages('zone_global_messages' , ret.input.opt.nom_zone_genere);
- rangeErreurSelectionne=false;
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.input.opt.nom_zone_genere);
  
 }
 
@@ -481,7 +476,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
 
 function convertir_php_en_rev(nom_zone_genere, nom_zone_rev){
 
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  var a=dogid(nom_zone_genere);
  var startMicro = performance.now();
  
@@ -491,8 +486,7 @@ function convertir_php_en_rev(nom_zone_genere, nom_zone_rev){
 //    console.log('ret=',ret)
    }else{
     astphp_logerreur({status:false,message:'il y a une erreur d\'envoie du source php à convertir'})
-    displayMessages('zone_global_messages');
-    rangeErreurSelectionne=false;
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     ret=false;
    }
   }catch(e){
@@ -508,7 +502,7 @@ function convertir_php_en_rev(nom_zone_genere, nom_zone_rev){
 
 function convertir_html_en_rev(nom_zone_genere, nom_zone_source){
 
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  var a=dogid(nom_zone_genere);
  var startMicro = performance.now();
  var objRev = __module_html1.TransformHtmlEnRev(a.value,0);
@@ -518,7 +512,7 @@ function convertir_html_en_rev(nom_zone_genere, nom_zone_source){
 
  }
 
- displayMessages('zone_global_messages');
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
  
  
 }
@@ -528,7 +522,7 @@ function convertir_html_en_rev(nom_zone_genere, nom_zone_source){
 
 function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id_cible){
  
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  var a=dogid(nom_zone_source);
  var startMicro = performance.now();
  var tableau1 = iterateCharacters2(a.value);
@@ -560,7 +554,7 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id
  }else{
   
  }
- displayMessages('zone_global_messages');
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 
 }
 /*
@@ -582,7 +576,7 @@ function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev , nom_zone_g
  }else{
   console.error('TODO')
  }
- displayMessages('zone_global_messages');
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 }
 
 
@@ -593,7 +587,7 @@ function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev , nom_zone_g
 function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
 // console.log(nom_de_fichier_encrypte);
  
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  
  var r = new XMLHttpRequest();
  r.open("POST",'za_ajax.php?supprimer_un_fichier_avec_un_nom_encrypte',true);
@@ -608,10 +602,8 @@ function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
     document.location=String(document.location);
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
-    displayMessages('zone_global_messages');
-//    alert('Problème XMLHttpRequest, voir la console javascript !');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     return;
    }
   }catch(e){
@@ -639,7 +631,7 @@ function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
 function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
 // console.log(nom_de_fichier_encrypte);
  
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  
  var r = new XMLHttpRequest();
  r.open("POST",'za_ajax.php?charger_un_fichier_avec_un_nom_encrypte',true);
@@ -654,10 +646,8 @@ function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
     dogid('chp_genere_source').value=jsonRet.value;
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
-    displayMessages('zone_global_messages');
-//    alert('Problème XMLHttpRequest, voir la console javascript !');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     return;
    }
   }catch(e){

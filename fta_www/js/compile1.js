@@ -21,7 +21,6 @@ function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){
     }
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
     alert('BAD job !');
     return;
@@ -63,7 +62,6 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
     // do good stuff
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
     alert('BAD job !');
     return;
@@ -273,7 +271,6 @@ function writeRevFile(fileName, value){
    if(jsonRet.status=='OK'){
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
     alert('BAD job !');
     return;
@@ -319,7 +316,6 @@ function writeSourceFile(obj){
     }
     return;
    }else{
-    display_ajax_error_in_cons(jsonRet);
     console.log(r);
     alert('BAD job !');
     return;

@@ -62,12 +62,11 @@ class module_svg_bdd{
         'collate'
     ];
     /*
-      
       ====================================================================================================================
       function constructor
     */
     constructor(nom_de_la_variable,nom_de_la_div_contenant_le_svg,taille_bordure,id_text_area_contenant_les_id_des_bases){
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         this.#nom_de_la_variable=nom_de_la_variable;
         /*
           si on utilise ce module en dehors d'un dessin svg par exemple pour comparer des tableaux des tables/champs
@@ -1749,7 +1748,7 @@ class module_svg_bdd{
     */
     creer_la_base_a_partir_du_shema(id_bdd){
         this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd,10);
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
         if(obj.status===true){
             var texte_rev=obj.value;
@@ -1759,20 +1758,20 @@ class module_svg_bdd{
                 if(obj3.status===true){
                   var source_sql_de_la_base=obj3.value
                 }else{
-                    displayMessages('zone_global_messages');
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                     alert('Problème sur reecrire_la_base 1739 ');
                     return;
                 }
              
             }else{
-                displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 alert('Problème sur reecrire_la_base 1739 ');
                 return;
             }
 
          
         }else{
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             alert('Problème sur reecrire_la_base 1746 ');
             return;
         }
@@ -1814,7 +1813,7 @@ class module_svg_bdd{
         var liste_des_tables=[];
         
         this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd,10);
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
         if(obj.status===true){
             var texte_rev=obj.value;
@@ -1832,7 +1831,7 @@ class module_svg_bdd{
                                   if(tab[j][8]===1){
                                       liste_des_tables.push(tab[j+1][1]);
                                   }else{
-                                      displayMessages('zone_global_messages');
+                                      __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                                       alert('Problème sur reecrire_la_base 1739 ');
                                       return;
                                   }
@@ -1844,20 +1843,20 @@ class module_svg_bdd{
                   
                   
                 }else{
-                    displayMessages('zone_global_messages');
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                     alert('Problème sur reecrire_la_base 1739 ');
                     return;
                 }
              
             }else{
-                displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 alert('Problème sur reecrire_la_base 1739 ');
                 return;
             }
 
          
         }else{
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             alert('Problème sur reecrire_la_base 1746 ');
             return;
         }
@@ -3388,12 +3387,12 @@ class module_svg_bdd{
     sauvegarder_la_base(id_bdd_de_la_base){
         var t='';
         this.#id_bdd_de_la_base_en_cours=parseInt(id_bdd_de_la_base,10);
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
         if(obj.status===true){
             t=obj.value;
         }else{
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             alert('Problème sur la sauvegarde de la base ');
             return;
         }
@@ -3416,7 +3415,7 @@ class module_svg_bdd{
                }
                logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la base'});
             }
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
     }
     /*
@@ -3799,7 +3798,7 @@ class module_svg_bdd{
                                             var donnees_rev_du_champ=obj1.value;
                                         }else{
                                             logerreur({status:true,'message':('0849 problème sur les données du champ "' + nom_du_champ + '"')});
-                                            displayMessages('zone_global_messages');
+                                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                                             return;
                                         }
                                         var a = this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,id_bdd_de_la_base,donnees_rev_du_champ);
@@ -3847,7 +3846,7 @@ class module_svg_bdd{
                                         donnees_rev_de_l_index=obj1.value;
                                     }else{
                                         logerreur({status:true,'message':('0849 problème sur les données de l\'index "' + nom_de_l_index + '"')});
-                                        displayMessages('zone_global_messages');
+                                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                                     }
                                     
                                     var a =this.#ajouter_index_a_table(id_bdd_de_la_base,indice_courant,nom_de_l_index,id_svg_conteneur_table,nom_de_la_table,donnees_rev_de_l_index);
@@ -3917,7 +3916,7 @@ class module_svg_bdd{
                 console.log('donnees=',donnees)
                 logerreur({status:false,message:donnees.message});
                 logerreur({status:false,message:'0132 erreur de récupération des données de la base'});
-                displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             }else{
                 var nouvel_arbre={};
                 var i={};
@@ -3934,7 +3933,7 @@ class module_svg_bdd{
                             this.#arbre[donnees.valeurs[i]['T0.chi_id_basedd']]['matrice']=obj1.value;
                         }else{
                             logerreur({status:false,message:'0126'});
-                            displayMessages('zone_global_messages');
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                             return;
                         }
                     }

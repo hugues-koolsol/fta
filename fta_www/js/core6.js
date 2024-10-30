@@ -16,6 +16,7 @@ var global_messages={
     'tabs':[],
     'ids':[],
     'ranges':[],
+    'plages':[],
     'positions_caracteres':[],
     'calls':'',
     'data':{'matrice':[],'tableau':[],'sourceGenere':''}
@@ -38,6 +39,7 @@ function raz_messages(zone_message){
         'tabs':[],
         'ids':[],
         'ranges':[],
+        'plages':[],
         'positions_caracteres':[],
         'calls':'',
         'data':{'matrice':[],'tableau':[],'sourceGenere':''}
@@ -79,6 +81,12 @@ function logerreur(o){
     }
     if(o.hasOwnProperty('position_caractere')){
         global_messages['positions_caracteres'].push(o.tabs);
+    }
+    if(o.hasOwnProperty('range')){
+        global_messages['ranges'].push(o.range);
+    }
+    if(o.hasOwnProperty('plage')){
+        global_messages['plages'].push(o.plage);
     }
     return o;
 }

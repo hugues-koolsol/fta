@@ -1,3 +1,4 @@
+
 /*
   =====================================================================================================================
   table tbl_cibles
@@ -255,34 +256,6 @@ CREATE TABLE  tbl_bdds(
     );
 /*
   =====================================================================================================================
-  table tbl_tests
-  =====================================================================================================================
-*/
-
-
-
-CREATE TABLE  tbl_tests(
-/* meta((table,'tbl_tests'),(nom_long_de_la_table,'liste d\'enregistrements \\ de test'),(nom_court_de_la_table,'un test'),(nom_bref_de_la_table,'test'),(transform_table_sur_svg,transform(translate(638,292)))) */
-    
-            /* meta((champ,'chi_id_test'),(nom_long_du_champ,'identifiant unique \' du \\ test'),(nom_court_du_champ,'id du test'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
-             chi_id_test INTEGER PRIMARY KEY ,
-    
-            /* meta((champ,'chp_nom_test'),(nom_long_du_champ,'nom du test'),(nom_court_du_champ,'nom test'),(nom_bref_du_champ,'nom'),(typologie,'chp')) */
-             chp_nom_test VARCHAR(64) NOT NULL DEFAULT  '' ,
-    
-            /* meta((champ,'chx_test_parent_test'),(nom_long_du_champ,'à faire ...'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'chi')) */
-             chx_test_parent_test INTEGER NOT NULL DEFAULT  0  REFERENCES 'tbl_tests'('chi_id_test') ,
-    
-            /* meta((champ,'chp_texte1_test'),(nom_long_du_champ,'test'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'chp')) */
-             chp_texte1_test VARCHAR(32) DEFAULT  'hello world' 
-    );
-/*==============================*/
-
-CREATE  UNIQUE INDEX  idx_test_unique ON `tbl_tests` 
-        /* meta((index,'idx_test_unique'),(message,'ce test existe déjà')) */
-         ( `chp_nom_test` , `chx_test_parent_test` ) ;
-/*
-  =====================================================================================================================
   table tbl_requetes
   =====================================================================================================================
 */
@@ -316,3 +289,31 @@ CREATE TABLE  tbl_requetes(
             /* meta((champ,'cht_matrice_requete'),(nom_long_du_champ,'à faire ...'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'cht')) */
              cht_matrice_requete TEXT
     );
+/*
+  =====================================================================================================================
+  table tbl_tests
+  =====================================================================================================================
+*/
+
+
+
+CREATE TABLE  tbl_tests(
+/* meta((table,'tbl_tests'),(nom_long_de_la_table,'liste d\'enregistrements \\ de test'),(nom_court_de_la_table,'un test'),(nom_bref_de_la_table,'test'),(transform_table_sur_svg,transform(translate(638,292)))) */
+    
+            /* meta((champ,'chi_id_test'),(nom_long_du_champ,'identifiant unique \' du \\ test'),(nom_court_du_champ,'id du test'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
+             chi_id_test INTEGER PRIMARY KEY ,
+    
+            /* meta((champ,'chp_nom_test'),(nom_long_du_champ,'nom du test'),(nom_court_du_champ,'nom test'),(nom_bref_du_champ,'nom'),(typologie,'chp')) */
+             chp_nom_test VARCHAR(64) NOT NULL DEFAULT  '' ,
+    
+            /* meta((champ,'chx_test_parent_test'),(nom_long_du_champ,'à faire ...'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'chi')) */
+             chx_test_parent_test INTEGER NOT NULL DEFAULT  0  REFERENCES 'tbl_tests'('chi_id_test') ,
+    
+            /* meta((champ,'chp_texte1_test'),(nom_long_du_champ,'test'),(nom_court_du_champ,'à faire ...'),(nom_bref_du_champ,'à faire ...'),(typologie,'chp')) */
+             chp_texte1_test VARCHAR(32) DEFAULT  'hello world' 
+    );
+/*==============================*/
+
+CREATE  UNIQUE INDEX  idx_nom ON `tbl_tests` 
+        /* meta((index,'idx_nom'),(message,'nom unique')) */
+         ( `chp_nom_test` ) ;

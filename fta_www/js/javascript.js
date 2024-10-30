@@ -1461,6 +1461,16 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                         message:'erreur sur declaration 0803'
                                     }));
                                 }
+                            }else if((tabdeclare[1][1] === 'new') && (tabdeclare[1][2] === 'f')){
+                               var objtestLi = js_tabTojavascript1(tab,tabdeclare[1][0]+1,false,true,niveau,false);
+                               if(objtestLi.status === true){
+                                    if(tab[tabdeclare[1][0]+1][1]==='defTab'){
+                                     t+=((prefixe_declaration + tabdeclare[0][1])) + ' = ' + objtestLi.value + '' + terminateur + '';
+                                    }else{
+                                     t+=((prefixe_declaration + tabdeclare[0][1])) + ' = new ' + objtestLi.value + '' + terminateur + '';
+                                    }
+                               }
+                             
                             }else{
                                 return(logerreur({status:false,id:i,'message':'javascript.js 0957 : cas dans declare non prévu ' + tabdeclare[1][1]}));
                             }

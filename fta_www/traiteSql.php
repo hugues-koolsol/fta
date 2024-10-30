@@ -51,7 +51,7 @@ $par=array(
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   charger_le_dernier_source_sql("txtar1");
-  transform_sql_de_textarea_en_rev("txtar1" , "txtar2");
+  setTimeout(function(){transform_sql_de_textarea_en_rev("txtar1" , "txtar2");},50);
  }
 )
 </script>';

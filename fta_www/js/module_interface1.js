@@ -7,6 +7,7 @@
 */
 class interface1{
     #nom_de_la_variable='';
+    #nom_div_des_messages1='';
     /*
       à priori, les ascenseurs "thin" font 11px de large
     */
@@ -17,6 +18,7 @@ class interface1{
     */
     #programme_en_arriere_plan=null;
     
+    
     /*
       modale
     */
@@ -24,13 +26,20 @@ class interface1{
     global_modale2_contenu=null;
     global_modale2_iframe=null;
     
+    /*
+      on affiche un message quand le serveur est lent, c'est à dire que la réponse n'est pas arrivée en 1.5 secondes
+    */
+    #globale_timeout_serveur_lent=1500;
+    #globale_timeout_reference_timer_serveur_lent=null;
     
     /*
       ==============================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
     */
-    constructor(nom_de_la_variable){
+    constructor(nom_de_la_variable,nom_de_la_div_contenant_les_messages){
+     
         this.#nom_de_la_variable=nom_de_la_variable;
+        this.#nom_div_des_messages1=nom_de_la_div_contenant_les_messages;
         this.global_modale2=document.getElementById('modale1');
         this.global_modale2_contenu=document.getElementById('__contenu_modale');
         this.global_modale2_iframe=document.getElementById('iframe_modale_1');
@@ -227,7 +236,7 @@ class interface1{
         try{
             var a = document.getElementById(nom_de_la_textarea);
             var b = a.getBoundingClientRect();
-            masquerLesMessage('zone_global_messages');
+            this.masquer_les_messages1('zone_global_messages');
             
             if(a){
                 if(a.rows <= 10){
@@ -427,6 +436,156 @@ class interface1{
         this.global_modale2_contenu.innerHTML=t;
         this.global_modale2.showModal();
     }
+    
+    /*
+      =====================================================================================================================
+      on reactiver_les_boutons1
+    */
+    reactiver_les_boutons1(){
+        var i=0;
+        var refBody = document.getElementsByTagName('body')[0];
+        clearTimeout(this.#globale_timeout_reference_timer_serveur_lent);
+        var lstb1 = refBody.getElementsByTagName('button');
+        for(i=0;i < lstb1.length;i++){
+            if( !(lstb1[i].onclick)){
+                if((lstb1[i].className) && (lstb1[i].className.indexOf('noHide') >= 0)){
+                }else{
+                    lstb1[i].style.visibility="";
+                }
+            }
+        }
+        var lstb1 = refBody.getElementsByTagName('input');
+        for(i=0;i < lstb1.length;i++){
+            if( !(lstb1[i].onclick)){
+                if((lstb1[i].className) && (lstb1[i].className.indexOf('noHide') >= 0)){
+                }else{
+                    if(lstb1[i].type === 'submit'){
+                        lstb1[i].style.visibility="";
+                    }
+                }
+            }
+        }
+        var lsta1 = refBody.getElementsByTagName('a');
+        for(i=0;i < lsta1.length;i++){
+            if((lsta1[i].href) && (typeof lsta1[i].href === 'string') && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
+                if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
+                }else{
+//                    lsta1[i].addEventListener("click",clickLink1,false);
+                    lsta1[i].classList.remove("yyunset");
+                }
+            }
+        }
+        try{
+            var elem = document.getElementById('sloserver1');
+            elem.remove();
+        }catch(e){
+        }
+        var lstb1 = document.getElementsByClassName("yyunset_temporaire");
+        for(i=0;i < lstb1.length;i++){
+            lstb1[i].classList.remove('yyunset_temporaire');
+        }
+    }
+    
+    /*
+      =====================================================================================================================
+      l'affichage de la boite doit être progressif
+    */
+    #mise_a_jour_affichage_serveur_lent1(){
+        try{
+            var elem = document.getElementById('sloserver1');
+            if(elem){
+                var opa = parseInt((elem.style.opacity * 100),10);
+                if(opa < 100){
+                    var newOpa = ((opa / 100) + 0.1);
+                    if(newOpa > 1){
+                        newOpa=1;
+                    }
+                    document.getElementById('sloserver1').style.opacity=newOpa;
+                    if(newOpa<1){
+                        setTimeout(this.#mise_a_jour_affichage_serveur_lent1.bind(this),50);
+                    }
+                }
+            }
+        }catch(e){
+        }
+    }
+    
+    /*
+      =====================================================================================================================
+    */
+    #affichage_boite_serveur_lent1(){
+        
+        var divId = document.createElement('div');
+        divId.id='sloserver1';
+        divId.style.top='55px';
+        divId.style.left='0px';
+        divId.style.position='fixed';
+        divId.style.padding='8px';
+        divId.style.zIndex=10000;
+        divId.style.textAlign='center';
+        divId.style.fontSize='1.5em';
+        divId.style.width='99.99%';
+        divId.style.borderRadius='3px';
+        divId.className='yyerreur';
+        divId.style.opacity=0.0;
+        divId.innerHTML='désolé, le serveur et/ou la connexion sont lents<br /> veuillez patienter';
+        document.getElementsByTagName('body')[0].appendChild(divId);
+        setTimeout(this.#mise_a_jour_affichage_serveur_lent1.bind(this),50);
+    }
+    
+    /*
+      =====================================================================================================================
+      quand on clique sur un bouton, on affiche la boite 1.5 secondes plus tard
+      =====================================================================================================================
+    */
+    click_sur_bouton1(e){
+        try{
+            e.target.style.visibility="hidden";
+        }catch(e1){
+        }
+        this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
+    }
+    /*
+      =====================================================================================================================
+      quand on clique sur un lien, on affiche la boite 1.5 secondes plus tard
+      =====================================================================================================================
+    */
+    click_sur_lien1(e){
+        console.log('click_sur_lien1');
+        if((e.target.target) && (e.target.target.toLowerCase() === '_blank')){
+        }else{
+            try{
+                e.target.classList.add("yyunset_temporaire");
+            }catch(e1){
+            }
+            this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
+        }
+    }
+    /*
+      =====================================================================================================================
+      quand on clique sur un lien javascript, , le traitement devrait être immédiat,
+      On le réaffiche 300 ms apres
+      =====================================================================================================================
+    */
+    action_quand_click_sur_lien_javascript(e){
+        console.log('ici');
+        try{
+            e.target.classList.add("yyunset_temporaire");
+        }catch(e1){
+        }
+        setTimeout(function(){
+            /*
+             Normalement, l'affichage des messages supprime les yyunset_temporaire
+             mais on ne sait jamais
+            */
+            var lstb1 = document.getElementsByClassName("yyunset_temporaire");
+            var i=0;
+            for(i=0;i < lstb1.length;i++){
+                lstb1[i].classList.remove('yyunset_temporaire');
+            }
+        },300);
+    }
+    
     /*
       
       =============================================================================================================
@@ -445,7 +604,7 @@ class interface1{
             if( !(lstb1[i].onclick)){
                 if((lstb1[i].className) && (lstb1[i].className.indexOf('noHide') >= 0)){
                 }else{
-                    lstb1[i].addEventListener("click",clickButton1,false);
+                    lstb1[i].addEventListener("click",this.click_sur_bouton1.bind(this),false);
                 }
             }
         }
@@ -455,7 +614,7 @@ class interface1{
                 if((lstb1[i].className) && (lstb1[i].className.indexOf('noHide') >= 0)){
                 }else{
                     if(lstb1[i].type === 'submit'){
-                        lstb1[i].addEventListener("click",clickButton1,false);
+                        lstb1[i].addEventListener("click",this.click_sur_bouton1.bind(this),false);
                     }
                 }
             }
@@ -465,7 +624,7 @@ class interface1{
             if((lsta1[i].href) && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
                 if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
                 }else{
-                    lsta1[i].addEventListener("click",clickLink1,false);
+                    lsta1[i].addEventListener("click",this.click_sur_lien1.bind(this),false);
                 }
             }
         }
@@ -514,25 +673,6 @@ class interface1{
     /*
       
       =============================================================================================================
-      quand on clique sur un lien javascript, on le réaffiche 300ms plus tard
-      =============================================================================================================
-    */
-    action_quand_click_sur_lien_javascript(e){
-        try{
-            e.target.classList.add("yyunset_temporaire");
-        }catch(e1){
-        }
-        setTimeout(function(){
-            var lstb1 = document.getElementsByClassName("yyunset_temporaire");
-            var i=0;
-            for(i=0;i < lstb1.length;i++){
-                lstb1[i].classList.remove('yyunset_temporaire');
-            }
-        },300);
-    }
-    /*
-      
-      =============================================================================================================
     */
     calcul_la_largeur_des_ascenseurs(){
         var body = document.getElementsByTagName('body')[0];
@@ -560,7 +700,7 @@ class interface1{
       =============================================================================================================
     */
     convertir_textearea_rev_vers_textarea_js(chp_rev_source,chp_genere_source){
-        clearMessages('zone_global_messages');
+        this.raz_des_messages();
         var a = document.getElementById(chp_rev_source);
         var startMicro = performance.now();
         var tableau1 = iterateCharacters2(a.value);
@@ -574,10 +714,11 @@ class interface1{
             if(objJs.status === true){
                 dogid(chp_genere_source).value=objJs.value;
             }else{
-                displayMessages('zone_global_messages',chp_rev_source);
+                this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
+                return;
             }
         }
-        displayMessages('zone_global_messages',chp_rev_source);
+        this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
     }
     /*
       
@@ -586,7 +727,7 @@ class interface1{
       =============================================================================================================
     */
     convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
-        clearMessages('zone_global_messages');
+        this.raz_des_messages();
         var a = dogid(nom_zone_source_rev);
         var startMicro = performance.now();
         var tableau1 = iterateCharacters2(a.value);
@@ -606,7 +747,7 @@ class interface1{
                 return({status:true,value:matriceFonction.value});
             }
         }
-        displayMessages('zone_global_messages');
+        this.remplir_et_afficher_les_messages1('zone_global_messages');
         if(bouton_interface===true){
          /* pour firefox ! */
          return;
@@ -670,7 +811,7 @@ class interface1{
                 a.value=obj2.value;
             }
         }else{
-            displayMessages('zone_global_messages',nom_de_la_textarea);
+            this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea);
         }
     }
     /*
@@ -1116,7 +1257,7 @@ class interface1{
         var i=0;
         if(global_editeur_derniere_valeur_selecStart < 0){
             logerreur({'status':false,'message':'veuillez sélectionner une parenthèse dans la zone de texte'});
-            displayMessages('zone_global_messages',nomDeLaTextAreaContenantLeSource);
+            this.remplir_et_afficher_les_messages1('zone_global_messages',nomDeLaTextAreaContenantLeSource);
             return;
         }
         var zoneSource = document.getElementById(nomDeLaTextAreaContenantLeSource);
@@ -1385,13 +1526,13 @@ class interface1{
       =====================================================================================================================
     */
     allerAlaLigne(i,nomTextAreaSource){
-        masquerLesMessage('zone_global_messages');
+        this.masquer_les_messages1('zone_global_messages');
         this.selectionner_ligne_de_text_area1(document.getElementById(nomTextAreaSource),i);
     }
     
     /*
-      
       =============================================================================================================
+      on fixer_les_dimentions
       fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
       =============================================================================================================
     */
@@ -1480,5 +1621,161 @@ class interface1{
             }
         }
     }
+    /*
+      =============================================================================================================
+      on afficher_ou_masquer_les_messages1
+      =============================================================================================================
+    */
+    masquer_ou_afficher_les_messages1(){
+        var nomZone='zone_global_messages';
+        var zon = document.getElementById(nomZone);
+        if((zon.style.visibility === 'hidden')){
+            zon.style.visibility='visible';
+        }else{
+            zon.style.visibility='hidden';
+        }
+    }
+    /*
+      =============================================================================================================
+      on afficher_ou_masquer_les_messages1
+      =============================================================================================================
+    */
+    masquer_les_messages1(nomZone){
+        var zon = document.getElementById(nomZone);
+        zon.style.visibility='hidden';
+    }
+    
+    /*
+      
+      =====================================================================================================================
+    */
+    selectionner_une_plage1(debut,fin,nomDeZoneSource){
+        this.masquer_les_messages1('zone_global_messages');
+        var zoneSource = dogid(nomDeZoneSource);
+        zoneSource.focus();
+    //    zoneSource.select();
+        zoneSource.selectionStart=debut;
+        zoneSource.selectionEnd=fin;
+        var texteDebut = zoneSource.value.substr(0,debut);
+        var texteFin = zoneSource.value.substr(debut);
+        zoneSource.value=texteDebut;
+        zoneSource.scrollTo(0,9999999);
+        var nouveauScroll=zoneSource.scrollTop;
+        zoneSource.value=(texteDebut + texteFin);
+        if(nouveauScroll > 50){
+            zoneSource.scrollTo(0,(nouveauScroll + 50));
+        }else{
+            zoneSource.scrollTo(0,0);
+        }
+        zoneSource.selectionStart=debut;
+        zoneSource.selectionEnd=fin;
+    }
+    /*
+      =====================================================================================================================
+      supprime les messages de la zone global_messages et masque la zone de texte qui contient les message
+      remplace clearMessages
+      =====================================================================================================================
+    */
+    raz_des_messages(){
+        try{
+            document.getElementById(this.#nom_div_des_messages1).innerHTML='';
+            /* display a pu être mis à "none" ailleurs */
+            document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
+        }catch(e){
+        }
+        global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'plages':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+    }
+    /*
+     ===================================================================================================
+     on remplir_et_afficher_les_messages1
+    */
+    remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
+        this.reactiver_les_boutons1();
+        var i=0;
+        var affichagesPresents=false;
+        var zon = document.getElementById(nomZone);
+        var zone_message_est_vide=true;
+        var numero_message=0;
+        var temp='';
+        if(zon.innerHTML !== ''){
+            zone_message_est_vide=false;
+        }
+        var numLignePrecedente=-1;
+        var nombre_de_boutons_affiches=0;
+        while(global_messages.errors.length > 0){
+            if((zone_message_est_vide) && (numero_message === 0)){
+                zon.innerHTML+=('<div class="yyerreur">' + global_messages.errors[i] + '</div>');
+                numero_message++;
+            }else{
+                zon.innerHTML+=('<div class="yyerreur">' + global_messages.errors[i] + '</div>');
+            }
+            global_messages.errors.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.warnings.length > 0){
+            if((zone_message_est_vide) && (numero_message === 0)){
+                zon.innerHTML+=('<div class="yyavertissement">' + global_messages.warnings[i] + '</div>');
+                numero_message++;
+            }else{
+                zon.innerHTML+=('<div class="yyavertissement">' + global_messages.warnings[i] + '</div>');
+            }
+            global_messages.warnings.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.infos.length > 0){
+            if((zone_message_est_vide) && (numero_message === 0)){
+                zon.innerHTML+=('<div class="yysucces">' + global_messages.infos[i] + '</div>');
+                numero_message++;
+            }else{
+                zon.innerHTML+=('<div class="yysucces">' + global_messages.infos[i] + '</div>');
+            }
+            global_messages.infos.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.lines.length > 0){
+            zon.innerHTML=('<a href="javascript:'+this.#nom_de_la_variable+'.allerAlaLigne(' + ((global_messages.lines[i])) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + ((global_messages.lines[i])) + '</a>&nbsp;' + zon.innerHTML);
+            global_messages.lines.splice(0,1);
+            affichagesPresents=true;
+        }
+        if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
+            for(i=0;(i < global_messages.ids.length) && (nombre_de_boutons_affiches <= 3);i++){
+                var id=global_messages.ids[i];
+                if((global_messages.data.matrice) && (id < global_messages.data.matrice.value.length)){
+                    var ligneMatrice=global_messages.data.matrice.value[id];
+                    var caractereDebut=ligneMatrice[5];
+                    var numeroDeLigne=0;
+                    var j=caractereDebut;
+                    for(j=caractereDebut;j >= 0;j--){
+                        if(global_messages.data.tableau.out[j][0] == '\n'){
+                            numeroDeLigne=(numeroDeLigne + 1);
+                        }
+                    }
+                }
+                if(numeroDeLigne >= 0){
+                    if(numeroDeLigne != numLignePrecedente){
+                        zon.innerHTML=('<a href="javascript:'+this.#nom_de_la_variable+'.allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML);
+                        affichagesPresents=true;
+                        numLignePrecedente=numeroDeLigne;
+                        nombre_de_boutons_affiches++;
+                    }
+                }
+            }
+            global_messages.ids=[];
+        }
+        while(global_messages.ranges.length>0){
+            zon.innerHTML=('&nbsp;<a href="javascript:'+this.#nom_de_la_variable+'.selectionner_une_plage1(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML);
+            global_messages.ranges.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.plages.length>0){
+            zon.innerHTML=('&nbsp;<a href="javascript:'+this.#nom_de_la_variable+'.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML);
+            global_messages.plages.splice(0,1);
+            affichagesPresents=true;
+        }
+        if(zon.innerHTML !== ''){
+            zon.style.visibility='visible';
+        }
+    }    
+    
 }
 export{interface1};

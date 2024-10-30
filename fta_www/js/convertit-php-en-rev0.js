@@ -19,12 +19,10 @@
   
   
 */
-var rangeErreurSelectionne=false;
 function astphp_logerreur(o){
     logerreur(o);
-    if(rangeErreurSelectionne === false){
+    if(global_messages.ranges.length<=3){
         if((o.element) && (o.element.hasOwnProperty('attributes')) && (o.element.attributes.hasOwnProperty('startTokenPos')) && (o.element.attributes.hasOwnProperty('endTokenPos'))){
-            rangeErreurSelectionne=true;
             global_messages['ranges'].push([o.element.attributes.startFilePos,o.element.attributes.endFilePos]);
         }
     }
@@ -2793,22 +2791,21 @@ function traitementApresRecuperationAst(ret){
               }
             */
         }else{
-            displayMessages('zone_global_messages','txtar1');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
         }
     }catch(e){
         console.error('e=',e);
         astphp_logerreur({status:false,'message':'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')});
         une_erreur_catch=true;
-        displayMessages('zone_global_messages','txtar1');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
     }
     if(une_erreur_catch === false){
         if((ret.opt) && (ret.opt.zone_rev)){
-            displayMessages('zone_global_messages',ret.opt.zone_rev);
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.opt.zone_rev);
         }else{
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         }
     }
-    rangeErreurSelectionne=false;
     return({status:true,value:''});
 }
 function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
@@ -2832,7 +2829,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
                             global_messages['errors'].push(errors.messages[elem]);
                         }
                         global_messages['e500logged']=true;
-                        displayMessages('zone_global_messages');
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                         console.log(global_messages);
                     }catch(e){
                     }
@@ -2849,11 +2846,21 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
                 }
                 f_traitementApresRecuperationAst({status:true,value:jsonRet.value,input:jsonRet.input,opt:opt});
             }else{
+
                 var elem={};
                 for(elem in jsonRet.messages){
-                    astphp_logerreur({'status':false,'message':'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+                    if(jsonRet.messages[elem].indexOf('on line ')>=0 && isNumeric(jsonRet.messages[elem].substr(jsonRet.messages[elem].indexOf('on line ')+8)) ){
+                     var line=parseInt(jsonRet.messages[elem].substr(jsonRet.messages[elem].indexOf('on line ')+8),10);
+                     astphp_logerreur({'status':false,'message':'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>',line:line});
+                    }else{
+                     astphp_logerreur({'status':false,'message':'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+                    }
                 }
-                displayMessages('zone_global_messages');
+                if(jsonRet.input.hasOwnProperty('opt') && jsonRet.input.opt.hasOwnProperty('zone_php')){
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',jsonRet.input.opt.zone_php);
+                }else{
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                }
                 console.log(r);
                 return;
             }
@@ -2864,7 +2871,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
             for(elem in errors.messages){
                 global_messages['errors'].push(errors.messages[elem]);
             }
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
             return;
         }
@@ -2890,7 +2897,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
 }
 function transform_text_area_php_en_rev(nom_de_la_text_area){
     document.getElementById('txtar2').value='Veuillez patienter !';
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area);
     localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
     var lines = a.value.split(/\r|\r\n|\n/);
@@ -2901,8 +2908,7 @@ function transform_text_area_php_en_rev(nom_de_la_text_area){
         if(ret.status === true){
         }else{
             astphp_logerreur({status:false,message:'il y a une erreur d\'envoie du source php à convertir'});
-            displayMessages('zone_global_messages','txtar2');
-            rangeErreurSelectionne=false;
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
             ret=false;
         }
     }catch(e){

@@ -7,11 +7,9 @@
 /* =================================================================================== */
 function astjs_logerreur(o){
     logerreur(o);
-    if(rangeErreurSelectionne === false){
+    if(global_messages['ranges'].length<=3){
 
         if((o.hasOwnProperty('element')) && (o.element.hasOwnProperty('range'))){
-
-            rangeErreurSelectionne=true;
             global_messages['ranges'].push(JSON.parse(JSON.stringify(o.element.range)));
         }
     }
@@ -3105,9 +3103,9 @@ function analyse_fichier_log_acorn(jsonRet){
             caractere_incorrecte=jsonRet.input.texteSource.substr(position,1);
             logerreur({status:false,message:'erreur dans un source javascript caractere_incorrecte="'+caractere_incorrecte+'"'});
             if(position-10>0){
-             logerreur({status:false,message:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(position-10,20)+'"'});
+             logerreur({status:false,message:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(position-10,20)+'"',plage:[position,position]});
             }else{
-             logerreur({status:false,message:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(0,20)+'"'});
+             logerreur({status:false,message:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(0,20)+'"',plage:[position,position]});
             }
             return({status:true});
            }
@@ -3242,19 +3240,21 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
                             document.getElementById('txtar3').value=resJs.value;
                         }else{
                             astjs_logerreur({status:true,message:'2586 erreur de conversion de rev en javascript'});
-                            displayMessages('zone_global_messages','txtar2');
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
+                            return;
                         }
                     }
                 }
             }else{
-                displayMessages('zone_global_messages','txtar1');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                return;
             }
         }else{
         }
     }catch(e){
         console.error('e=',e);
     }
-    displayMessages('zone_global_messages');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 }
 function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apres_traitement){
     var r= new XMLHttpRequest();
@@ -3280,8 +3280,8 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
                             global_messages['errors'].push(errors.messages[elem]);
                         }
                         global_messages['e500logged']=true;
-                        displayMessages('zone_global_messages');
-                        console.log(global_messages);
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                        return;
                     }catch(e){
                     }
                 }
@@ -3316,9 +3316,9 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
                   && jsonRet.input.options.hasOwnProperty('options')
                   && jsonRet.input.options.options.hasOwnProperty('nom_de_la_text_area_source')
                 ){
-                  displayMessages('zone_global_messages',jsonRet.input.options.options.nom_de_la_text_area_source);
+                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages',jsonRet.input.options.options.nom_de_la_text_area_source);
                 }else{
-                  displayMessages('zone_global_messages','');
+                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 }
 //                console.log(r);
                 return;
@@ -3330,7 +3330,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
             for(elem in errors.messages){
                 global_messages['errors'].push(errors.messages[elem]);
             }
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
             return;
         }
@@ -3365,7 +3365,7 @@ function transform_source_js_en_rev_avec_acorn(source,options){
 
         }else{
             logerreur({status:false,message:'il y a une erreur d\'envoie du source js à convertir'});
-            displayMessages('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             ret.status=false;
         }
     }catch(e){
@@ -3378,7 +3378,7 @@ function transform_source_js_en_rev_avec_acorn(source,options){
   =====================================================================================================================
 */
 function transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev){
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area_source);
     localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
     var obj = transform_source_js_en_rev_avec_acorn(a.value,{nom_de_la_text_area_source:nom_de_la_text_area_source,nom_de_la_text_area_rev:nom_de_la_text_area_rev});

@@ -31,25 +31,21 @@ function ma_cst_pour_php(elt){
 
  return r;
 }
-var global_indice_erreur_originale_traitee=-1;
+
 //=====================================================================================================================
 function php_logerr(o){
- if(global_indice_erreur_originale_traitee===-1){
-  if(o.hasOwnProperty('id')){
-   global_indice_erreur_originale_traitee=o.id;
-   if(o.hasOwnProperty('tab')){
-    o['position_caractere']=o.tab[o.id][5];
-    if(o.status===false && o.hasOwnProperty('message')){
-     o.message+=', en position '+o.tab[o.id][5]+' du rev';
-    }
-    
-   }else{
-    console.log('Attention, le tableau(tab) n\'est pas indiqué pour cette erreur');
+ if(o.hasOwnProperty('id')){
+  if(o.hasOwnProperty('tab')){
+   o['position_caractere']=o.tab[o.id][5];
+   if(o.status===false && o.hasOwnProperty('message')){
+    o.message+=', en position '+o.tab[o.id][5]+' du rev';
    }
+   
   }else{
-   global_indice_erreur_originale_traitee=0;
-   console.log('Attention, l\'id n\'est pas indiqué pour cette erreur');
+   console.log('Attention, le tableau(tab) n\'est pas indiqué pour cette erreur');
   }
+ }else{
+  console.log('Attention, l\'id n\'est pas indiqué pour cette erreur');
  }
  return logerreur(o);
 }

@@ -114,7 +114,7 @@ function enregistrer2(){
     var conversion={'status':false};
     document.getElementById('sauvegarderLeNormalise').disabled=true;
     document.getElementById('nomDuSource').disabled=true;
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     document.getElementById('arrayed').innerHTML='';
     var zonedonneesComplementaires = document.getElementById('donneesComplementaires');
     console.clear();
@@ -235,7 +235,7 @@ function enregistrer2(){
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere2);
         voirSourceGenere();
     }
-    displayMessages('zone_global_messages' , 'zonesource');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
 }
 /*
   =====================================================================================================================
@@ -315,7 +315,7 @@ function afficherFichierSource(source){
   =====================================================================================================================
 */
 function chargerFichierRev(nomFichierSource){
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     document.getElementById('sauvegarderLeNormalise').disabled=true;
     document.getElementById('nomDuSource').disabled=true;
     document.getElementById('normalise').value='';
@@ -345,7 +345,7 @@ function chargerLaListeDesSourcesRev(){
                             global_messages['errors'].push(errors.messages[elem]);
                         }
                         global_messages['e500logged']=true;
-                        displayMessages('zone_global_messages' , 'zonesource');
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
                         console.log(global_messages);
                     }catch(e){
                     }
@@ -363,7 +363,6 @@ function chargerLaListeDesSourcesRev(){
                 }
                 document.getElementById('zoneRevFiles').innerHTML=t;
             }else{
-                display_ajax_error_in_cons(jsonRet);
                 console.log(r);
                 alert('BAD job !');
                 return;
@@ -375,7 +374,7 @@ function chargerLaListeDesSourcesRev(){
             for(elem in errors.messages){
                 global_messages['errors'].push(errors.messages[elem]);
             }
-            displayMessages('zone_global_messages' , 'zonesource');
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
             console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
             return;
         }

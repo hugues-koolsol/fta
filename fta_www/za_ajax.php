@@ -74,6 +74,7 @@ require_once('aa_include.php');
 initialiser_les_services(false,true);
 /*
 if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.'========================'.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ .CRLF.'$_POST='.var_export($_POST,true).CRLF.'$_FILES='.var_export($_FILES,true)."\r\n"); fclose($fdtoto);}
+sleep(1);
 */
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
  $ret=array('status' => 'KO','messages' => array() ); // messages must be in array

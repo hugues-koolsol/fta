@@ -217,7 +217,7 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 
     "use strict";
     function checkSubmit1(){
-        clearMessages('zone_global_messages');
+        __gi1.raz_des_messages();
         var valRet=false;
         var zone_nom_de_connexion = document.getElementById('nom_de_connexion');
         var zone_mot_de_passe = document.getElementById('mot_de_passe');
@@ -225,7 +225,7 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
             if((zone_mot_de_passe.value == '') || (zone_nom_de_connexion.value == '')){
                 valRet=false;
                 global_messages.errors.push('Veuillez indiquer votre nom de connexion et votre mot de passe.');
-                displayMessages('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             }else{
                 valRet=true;
             }

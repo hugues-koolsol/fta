@@ -3,7 +3,7 @@
 function comparer_deux_tableaux_de_bases_sqlite(par){
  
  console.log('dans comparer_deux_tableaux_de_bases_sqlite')
- clearMessages('zone_global_messages');
+ __gi1.raz_des_messages();
  
  import('./module_svg_bdd.js').then(Module =>{
         /* 
@@ -19,13 +19,13 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
  
  
 // console.log(tables);
- displayMessages('zone_global_messages');
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
  
 }
 
 function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , id_cible ){
  
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     var a=dogid(nom_zone_source);
     var startMicro = performance.now();
     var tableau1 = iterateCharacters2(a.value);
@@ -42,7 +42,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
             var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
             dogid(nom_zone_genere).value=contenu;
         }
-        displayMessages('zone_global_messages');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         
         var parametres_sauvegarde={
             'matrice'            : matriceFonction.value ,
@@ -55,7 +55,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
         
         
     }else{
-       displayMessages('zone_global_messages');
+       __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     }
 }
 
@@ -95,7 +95,7 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
        global_messages['errors'].push(errors.messages[elem]);
       }
       global_messages['e500logged']=true;
-      displayMessages('zone_global_messages');
+      __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
       console.log(global_messages);
      }catch(e){
      }
@@ -110,16 +110,14 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
     for(var elem in jsonRet.messages){
      logerreur( {'status':true,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
-    displayMessages('zone_global_messages');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 
    }else{
     for(var elem in jsonRet.messages){
      logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
-    displayMessages('zone_global_messages');
-//    display_ajax_error_in_cons(jsonRet);
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     console.log(r);
-//    alert('BAD job !');
     return;
    }
   }catch(e){
@@ -128,7 +126,7 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
    for(var elem in errors.messages){
     global_messages['errors'].push(errors.messages[elem]);
    }
-   displayMessages('zone_global_messages');
+   __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
    console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
    return;
   }

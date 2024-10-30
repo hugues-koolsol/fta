@@ -133,7 +133,17 @@ php(
                               appelf(
                                  nomf(password_verify),
                                  p(tableau(nomt($_POST) , p('mot_de_passe'))),
-                                 p(tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chp_mot_de_passe_utilisateur')))
+                                 p(
+                                    tableau(
+                                       nomt(
+                                          tableau(
+                                             nomt(tableau(nomt($sql1) , p('valeur'))),
+                                             p(0)
+                                          )
+                                       ),
+                                       p('T0.chp_mot_de_passe_utilisateur')
+                                    )
+                                 )
                               )
                            ),
                            alors(
@@ -143,17 +153,51 @@ php(
                                 et on met les données en session
                                 
                               ),
-                              affecte(tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_id_utilisateur')) , tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chi_id_utilisateur'))),
-                              affecte(tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_id_utilisateur_init')) , tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chi_id_utilisateur'))),
                               affecte(
-                                 tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_premiere_cle_chiffrement')),
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('sess_id_utilisateur')
+                                 ),
+                                 tableau(
+                                    nomt(
+                                       tableau(
+                                          nomt(tableau(nomt($sql1) , p('valeur'))),
+                                          p(0)
+                                       )
+                                    ),
+                                    p('T0.chi_id_utilisateur')
+                                 )
+                              ),
+                              affecte(
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('sess_id_utilisateur_init')
+                                 ),
+                                 tableau(
+                                    nomt(
+                                       tableau(
+                                          nomt(tableau(nomt($sql1) , p('valeur'))),
+                                          p(0)
+                                       )
+                                    ),
+                                    p('T0.chi_id_utilisateur')
+                                 )
+                              ),
+                              affecte(
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('sess_premiere_cle_chiffrement')
+                                 ),
                                  appelf(
                                     nomf(base64_encode),
                                     p(appelf(nomf(openssl_random_pseudo_bytes) , p(16)))
                                  )
                               ),
                               affecte(
-                                 tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_deuxième_cle_chiffrement')),
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('sess_deuxième_cle_chiffrement')
+                                 ),
                                  appelf(
                                     nomf(base64_encode),
                                     p(
@@ -169,20 +213,56 @@ php(
                                     )
                                  )
                               ),
-                              affecte(tableau(nomt($_SESSION) , p(APP_KEY) , p('__filtres')) , defTab()),
-                              affecte(tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_travaux_en_arriere_plan')) , defTab()),
                               affecte(
-                                 tableau(nomt($_SESSION) , p(APP_KEY) , p('__parametres_utilisateurs')),
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('__filtres')
+                                 ),
+                                 defTab()
+                              ),
+                              affecte(
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('sess_travaux_en_arriere_plan')
+                                 ),
+                                 defTab()
+                              ),
+                              affecte(
+                                 tableau(
+                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                                    p('__parametres_utilisateurs')
+                                 ),
                                  testEnLigne(
                                     condition(
                                        (
-                                          diffstricte(tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chp_parametres_utilisateur')) , '')
+                                          diffstricte(
+                                             tableau(
+                                                nomt(
+                                                   tableau(
+                                                      nomt(tableau(nomt($sql1) , p('valeur'))),
+                                                      p(0)
+                                                   )
+                                                ),
+                                                p('T0.chp_parametres_utilisateur')
+                                             ),
+                                             ''
+                                          )
                                        )
                                     ),
                                     siVrai(
                                        appelf(
                                           nomf(json_decode),
-                                          p(tableau(nomt($sql1) , p('valeur') , p(0) , p('T0.chp_parametres_utilisateur'))),
+                                          p(
+                                             tableau(
+                                                nomt(
+                                                   tableau(
+                                                      nomt(tableau(nomt($sql1) , p('valeur'))),
+                                                      p(0)
+                                                   )
+                                                ),
+                                                p('T0.chp_parametres_utilisateur')
+                                             )
+                                          ),
                                           p(vrai)
                                        )
                                     ),
@@ -195,6 +275,11 @@ php(
                         ),
                         sinon(
                            alors(
+                              #(
+                                =========================================================
+                                ... sinon on efface la session et on recharge la page
+                                
+                              ),
                               appelf(nomf(supprimerLesValeursDeSession)),
                               appelf(nomf(ajouterMessage) , p('erreur') , p(concat(__LINE__ , ' identifiant ou mot de passe incorrectes')) , p(BNF)),
                               appelf(nomf(sleep) , p(2)),
@@ -278,9 +363,20 @@ php(
             et(
                appelf(
                   nomf(isset),
-                  p(tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_id_utilisateur')))
+                  p(
+                     tableau(
+                        nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                        p('sess_id_utilisateur')
+                     )
+                  )
                ),
-               diff(0 , tableau(nomt($_SESSION) , p(APP_KEY) , p('sess_id_utilisateur')))
+               diff(
+                  0,
+                  tableau(
+                     nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
+                     p('sess_id_utilisateur')
+                  )
+               )
             )
          ),
          alors(
@@ -324,7 +420,7 @@ php(
                   fonction(
                      definition(nom(checkSubmit1)),
                      contenu(
-                        appelf(nomf(clearMessages) , p('zone_global_messages')),
+                        appelf(element(__gi1) , nomf(raz_des_messages)),
                         declare(valRet , false),
                         declare(zone_nom_de_connexion , appelf(element(document) , nomf(getElementById) , p('nom_de_connexion'))),
                         declare(zone_mot_de_passe , appelf(element(document) , nomf(getElementById) , p('mot_de_passe'))),
@@ -338,7 +434,7 @@ php(
                                           ou((egal(zone_nom_de_connexion.value , '')))
                                        )
                                     ),
-                                    alors(affecte(valRet , false) , appelf(element(global_messages.errors) , nomf(push) , p('Veuillez indiquer votre nom de connexion et votre mot de passe.')) , appelf(nomf(displayMessages) , p('zone_global_messages')))
+                                    alors(affecte(valRet , false) , appelf(element(global_messages.errors) , nomf(push) , p('Veuillez indiquer votre nom de connexion et votre mot de passe.')) , appelf(element(__gi1) , nomf(remplir_et_afficher_les_messages1) , p('zone_global_messages')))
                                  ),
                                  sinon(alors(affecte(valRet , true)))
                               )

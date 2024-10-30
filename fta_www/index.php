@@ -1,4 +1,5 @@
 <?php
+
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
 session_start();
@@ -46,3 +47,4 @@ $js_a_executer_apres_chargement=array(
 $par=array('js_a_inclure'=>array('js/pour-index_php0.js'),'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);$o1='';
+?>

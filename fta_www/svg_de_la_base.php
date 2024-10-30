@@ -60,7 +60,7 @@ print($o1);$o1='';
   
   
 <?php
-$o1.='<input type="text" id="donnees_travail" value="'.enti1($_GET['__id_des_bases']).'" />';
+$o1.='<input type="hidden" id="donnees_travail" value="'.enti1($_GET['__id_des_bases']).'" />';
 
 $js_a_executer_apres_chargement=array(
     array(

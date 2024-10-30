@@ -93,7 +93,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
 
 function transformLeRev(autoriser_constante_dans_la_racine=false){
   //"àà"
-  clearMessages('zone_global_messages');
+  __gi1.raz_des_messages();
   console.log('\n=========================\ndébut de transforme')
   document.getElementById('resultat1').innerHTML='';
 
@@ -209,7 +209,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     __gi1.construit_un_html_du_tableau_des_caracteres( t2 , a.value , tableau1 );
     document.getElementById('resultat1').appendChild(t2);
   }
-  displayMessages('zone_global_messages','txtar1');
+  __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
 
   
  

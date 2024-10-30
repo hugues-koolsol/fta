@@ -1,13 +1,11 @@
 "use strict";
-var rangeErreurSelectionne=false;
 /*
   =================================================================================== 
 */
 function asthtml_logerreur(o){
     logerreur(o);
-    if(rangeErreurSelectionne === false){
+    if(global_messages['ranges'].length<=3){
         if((o.hasOwnProperty('element')) && (o.element.hasOwnProperty('range'))){
-            rangeErreurSelectionne=true;
             global_messages['ranges'].push(o.element.range);
         }
     }
@@ -18,7 +16,7 @@ function asthtml_logerreur(o){
 */
 function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textarea_html){
 
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_textarea_rev);
     
     
@@ -35,7 +33,7 @@ function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textar
     }else{
         asthtml_logerreur({status:false,message:'erreur pour le rev'});
     }
-    displayMessages('zone_global_messages', 'nom_de_la_textarea_rev');
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages', nom_de_la_textarea_rev);
     
 }
 /*
@@ -49,7 +47,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
     document.getElementById('txtar2').value='';
     dogid('txtar3').value='';
 //    document.getElementById('resultat1').innerHTML='';
-    clearMessages('zone_global_messages');
+    __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_textarea);
     localStorage.setItem('fta_traitehtml_dernier_fichier_charge',a.value);
     var lines = a.value.split(/\r\n|\r|\n/);
@@ -76,11 +74,10 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
         }else{
             asthtml_logerreur({status:false,message:'erreur pour le rev'});
         }
-        displayMessages('zone_global_messages', 'txtar2');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages', 'txtar2');
     }else{
-        displayMessages('zone_global_messages', 'txtar1');
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages', 'txtar1');
     }
-    rangeErreurSelectionne=false;
     
     return;
     
