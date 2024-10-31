@@ -1102,7 +1102,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='  </div></div>'.CRLF;
     $o1.='</div>'.CRLF;
     $o1.='</form>'.CRLF;
-    $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => 'chp_rev_source');
+    $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'chp_rev_source' , 'mode' => 'rev' ));
 
     if((isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'])) && (count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) > 0)){
 

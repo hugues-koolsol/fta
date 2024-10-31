@@ -34,13 +34,11 @@ $o1='';?>
         </div>
         <h1>convertir un rev en js,php,html,sql...</h1>
         <div class="not menuScroller">
-         <a href="javascript:insertSource(&quot;choix&quot;);">choix</a>
-         <a href="javascript:insertSource(&quot;boucle&quot;);">Boucle</a>
-         <a href="javascript:insertSource(&quot;appelf&quot;);">appelf</a>
-         <a href="javascript:insertSource(&quot;affecte&quot;);">affecte</a>
+         <a href="javascript:__gi1.inserer_source1(&quot;choix&quot;,&quot;zonesource&quot;);">choix</a>
+         <a href="javascript:__gi1.inserer_source1(&quot;boucle&quot;,&quot;zonesource&quot;);">Boucle</a>
+         <a href="javascript:__gi1.inserer_source1(&quot;appelf&quot;,&quot;zonesource&quot;);">appelf</a>
+         <a href="javascript:__gi1.inserer_source1(&quot;affecte&quot;,&quot;zonesource&quot;);">affecte</a>
          <a href="javascript:__gi1.parentheses1(&quot;zonesource&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>
-         <a href="javascript:decaler(&quot;droite&quot;);">(|&gt;&gt;&gt;</a>
-         <a href="javascript:mettreEnCommentaire();">#()</a>
         </div>
     <table>
         <tbody>
@@ -62,13 +60,14 @@ $o1='';?>
     </table>
     <table id="arrayed"></table>
     <div id="donneesComplementaires"></div>
+    <div>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
 <?php
 /*
   ici finit le php spécifique de la page
 */
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'zonesource'
+     'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => array( 'nom' => 'zonesource' , 'mode' => 'rev' )
     )
 );
 

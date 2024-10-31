@@ -1237,9 +1237,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             quitterSiErreurNiveau:quitterSiErreurNiveau,
                             autoriserCstDansRacine:autoriserCstDansRacine
                         })));
-                        
-                        
-                        return(logerreur({'status':false,'id':i,'value':T,'message':'1148 la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 if((i + 1) < l01){

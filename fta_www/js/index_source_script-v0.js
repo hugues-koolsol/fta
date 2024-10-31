@@ -302,7 +302,6 @@ function afficherFichierSource(source){
         var zoneSource = document.getElementById(source.nomZone);
         zoneSource.value=source.value;
         ajusteTailleTextareaContenantSource(source.nomZone);
-        razEditeur();
         document.getElementById('sauvegarderLeNormalise').disabled=true;
         document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',source.nomFichierSource);
         document.getElementById('nomDuSource').value=source.nomFichierSource;
@@ -413,5 +412,4 @@ function chargerLeDernierSourceChargePrecedemment(){
 document.addEventListener('DOMContentLoaded',function(){
     chargerLaListeDesSourcesRev('source1.txt');
     chargerLeDernierSourceChargePrecedemment();
-//    initialiserEditeurPourUneTextArea('zonesource');
 });

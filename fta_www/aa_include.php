@@ -33,7 +33,7 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
         il peut y avoir plusieurs bases sqlite rattachées à une seule connexion
         On ouvre donc une connexion "neutre" et on rattache les bases
       */
-      
+
       require_once('../fta_inc/db/__liste_des_acces_bdd.php');
       /*
       'fournisseur'
@@ -45,12 +45,12 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
               $sqlite_trouve=true;
           }
       }
-      
+
       $ret=$db0->exec('PRAGMA encoding = "UTF-8";PRAGMA foreign_keys=1;');
       if($ret===false){
           echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);
       }
-      
+
 
       foreach($GLOBALS[BDD] as $k1=>$v1){
           define('BDD_'.$v1['id'],$v1['id']);
@@ -67,7 +67,7 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
               $ret0=$db0->exec($sql0);
     //          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $ret0 , true ) . '</pre>' ; exit(0);
           }
-          
+
       }
   }
   if($initialiser_session===true){
@@ -93,7 +93,7 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
     if(($ne_pas_faire_de_copie)){
 
         if(is_file($chemin_du_fichier)){
-         
+
             if((@unlink($chemin_du_fichier))){
 
                 return(true);
@@ -134,7 +134,7 @@ function sql_inclure_reference($i){
 
 /*
 =====================================================================
-quand un champ de recherche contient des id, ils sont séparés par des virgules 
+quand un champ de recherche contient des id, ils sont séparés par des virgules
 par exemple, 1,2,3  , le where doit être sous la forme WHERE id in ( 1 , 2 , 3 )
 */
 function construction_where_sql_sur_id($nom_du_champ,$critere){
@@ -151,8 +151,8 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
         if($chaine_recherche!==''){
             $chaine_recherche=substr($chaine_recherche,1);
             $champ_where.='AND '.sq0($nom_du_champ).' in ('.sq0($chaine_recherche).') ';
-        }    
-     
+        }
+
     }else{
         if($critere===null){
             $champ_where.='AND '.sq0($nom_du_champ).' IS NULL ';
@@ -203,9 +203,9 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
        $o1.='Aucun enregistrement trouvé</form>'.CRLF;
    }
 
- 
- 
- return $o1; 
+
+
+ return $o1;
 }
 
 
@@ -235,7 +235,7 @@ function recharger_la_page($a){
 
 }
 /*
-  
+
   =====================================================================================================================
   Utilitaire pour repérer les chaines de caractères qui contiennent du html quand on fait du rev
   =====================================================================================================================
@@ -254,7 +254,7 @@ function checkGroupAjaxPages(){
 
 }
 /*
-  
+
   =====================================================================================================================
 */
 
@@ -339,7 +339,7 @@ function xcleanSession1($par){
 function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     /*
-      
+
       on veut garder les paramètres de navigation des pages
     */
 
@@ -418,7 +418,7 @@ function sq1($s){
         return($s);
     }else if($s === NULL){
         return('NULL');
-    } 
+    }
     $s1=SQLite3::escapeString($s);
     $ua=array(
         'à' => 'à',
@@ -469,7 +469,7 @@ function sq0($s){
 }
 /*
   =====================================================================================================================
-  pour les programmes sources, il ne faut pas transformer les caractères "bizarres" 
+  pour les programmes sources, il ne faut pas transformer les caractères "bizarres"
   pour pouvoir intégrer la fonction sq0 çi dessus
 */
 /*
@@ -478,7 +478,7 @@ function sq1($s){
 }
 */
 /*
-  
+
   ========================================================================================
 */
 
@@ -498,7 +498,7 @@ function signaler_erreur($tab){
 
 }
 /*
-  
+
   =====================================================================================================================
 */
 
@@ -563,7 +563,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
 }
 /*
-  
+
   =====================================================================================================================
 */
 
@@ -666,9 +666,9 @@ function html_header1($parametres){
     $o1.='  <title>'.(($parametres['title']??'titre de la page à compléter')).'</title>'.CRLF;
     $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
 
-    /* 
-      attention, les variables css ajoutent un espace dans le css 
-      heigh:(var --taille)px; 
+    /*
+      attention, les variables css ajoutent un espace dans le css
+      heigh:(var --taille)px;
       donnera en réalité
       heigh:16 px; ( il y a un espace entre le 16 et le px )
       => on doit déclarer les tailles en px
@@ -683,8 +683,8 @@ function html_header1($parametres){
     $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
     $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
     $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-2*$css_taille_reference_margin-1;
-    
-    
+
+
     if(isset($_COOKIE[APP_KEY.'_biscuit'])){
 
      $json_biscuit_texte=rawurldecode($_COOKIE[APP_KEY.'_biscuit']);
@@ -693,7 +693,7 @@ function html_header1($parametres){
 
 
      if($le_biscuit!==null){
-      
+
 
          $css_taille_reference_generale=isset($le_biscuit['--yyvtrg'])?(int)str_replace('px','',$le_biscuit['--yyvtrg']):$css_taille_reference_generale;
          $css_taille_reference_textes  =isset($le_biscuit['--yyvtrt'])?(int)str_replace('px','',$le_biscuit['--yyvtrt']):$css_taille_reference_textes;
@@ -705,8 +705,8 @@ function html_header1($parametres){
          $css_hauteur_menu_defilement  =isset($le_biscuit['--yyvhmd'])?(int)str_replace('px','',$le_biscuit['--yyvhmd']):$css_hauteur_menu_defilement;
          $css_hauteur_grands_boutons   =isset($le_biscuit['--yyvhgb'])?(int)str_replace('px','',$le_biscuit['--yyvhgb']):$css_hauteur_grands_boutons;
          $css_hauteur_mini_conteneur   =isset($le_biscuit['--yyvhmc'])?(int)str_replace('px','',$le_biscuit['--yyvhmc']):$css_hauteur_mini_conteneur;
-         
-         
+
+
 
      }else{
          $le_biscuit=array(
@@ -723,7 +723,7 @@ function html_header1($parametres){
          );
      }
     }else{
-     
+
         $useragent=$_SERVER['HTTP_USER_AGENT'];
 
         if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent)||preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4))){
@@ -732,7 +732,7 @@ function html_header1($parametres){
 
 
 
-     
+
      $le_biscuit=array(
       '--yyvtrg' =>  $css_taille_reference_generale.'px',
       '--yyvtrt' =>  $css_taille_reference_textes.'px',
@@ -760,7 +760,7 @@ function html_header1($parametres){
     $GLOBALS['__le_biscuit']=$le_biscuit;
 
 
-    
+
     $texte_base_css=CRLF;
     $texte_base_css.='<style type="text/css">:root{'.CRLF;
     $texte_base_css.='--yyvtrg:'.$le_biscuit['--yyvtrg'].';'.CRLF;
@@ -775,8 +775,9 @@ function html_header1($parametres){
     $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.CRLF;
     $texte_base_css.='}</style>'.CRLF;
 
+
     $o1.=$texte_base_css;
-    
+
     $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.CRLF;
     $o1.='<script type="text/javascript">'.CRLF;
     $o1.=' var __debut_execution=performance.now();'.CRLF;
@@ -787,7 +788,7 @@ function html_header1($parametres){
     $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
-    
+
     $o1.='</script>'.CRLF;
     $o1.='  <script type="text/javascript" rel="preload" as="script" defer src="js/interface0.js"></script>'.CRLF;
     $o1.='  <script type="module" src="js/module_interface1.js"></script>'.CRLF;
@@ -849,7 +850,7 @@ function html_header1($parametres){
             $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>'.CRLF;
 
         }
-        
+
 
         $o1.='  </nav>'.CRLF;
 
@@ -924,7 +925,7 @@ function html_footer1($parametres=array()){
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p'.$GLOBALS['__le_biscuit']['--yyvtrp'].'</a>'.CRLF;
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b'.$GLOBALS['__le_biscuit']['--yyvtrb'].'</a>'.CRLF;
         $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m'.$GLOBALS['__le_biscuit']['--yyvtrm'].'</a>'.CRLF;
-        
+
         $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
     }
     $o1.='</div>'.CRLF;

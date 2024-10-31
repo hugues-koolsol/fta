@@ -38,7 +38,7 @@ print($o1);$o1='';
 <?php
 $js_a_executer_apres_chargement=array(
     array(
-     'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'txtar1'
+     'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => array( 'nom' => 'txtar1' , 'mode' => 'rev' )
     ),
     array(
      'nomDeLaFonctionAappeler' => '#ne_rien_faire1' , 'parametre' => array( 'c\'est pour' , 'l\'exemple' )

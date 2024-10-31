@@ -35,7 +35,8 @@ $o1='';?>
     <textarea class="txtar1" id="txtar3" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><?php
 $js_a_executer_apres_chargement=array(
     /* fonctions js à éxécuter un fois que tout est chargé */
-    array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => 'txtar1'),
+    array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar1' , 'mode' => 'source' )),
+    array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2' , 'mode' => 'rev' )),
     array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array(
     /* éléments à passer au pied de page */

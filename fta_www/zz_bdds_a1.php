@@ -977,7 +977,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
   $js_a_executer_apres_chargement[]=array(
-   'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => 'chp_rev_basedd'
+   'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => array( 'nom' => 'chp_rev_basedd' , 'mode' => 'rev' )
   );
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);

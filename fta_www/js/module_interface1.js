@@ -568,7 +568,6 @@ class interface1{
       =====================================================================================================================
     */
     action_quand_click_sur_lien_javascript(e){
-        console.log('ici');
         try{
             e.target.classList.add("yyunset_temporaire");
         }catch(e1){
@@ -621,10 +620,16 @@ class interface1{
         }
         var lsta1 = bod.getElementsByTagName('a');
         for(i=0;i < lsta1.length;i++){
-            if((lsta1[i].href) && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
-                if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
-                }else{
-                    lsta1[i].addEventListener("click",this.click_sur_lien1.bind(this),false);
+            if((lsta1[i].href) ){
+                try{
+                    if( ( !(lsta1[i].href.indexOf('javascript') >= 0))){
+                        if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
+                        }else{
+                            lsta1[i].addEventListener("click",this.click_sur_lien1.bind(this),false);
+                        }
+                    }
+                }catch(e){
+                   /* pour les liens dans le svg */
                 }
             }
         }
@@ -1255,34 +1260,35 @@ class interface1{
     */
     parentheses1(nomDeLaTextAreaContenantLeSource){
         var i=0;
-        if(global_editeur_derniere_valeur_selecStart < 0){
+        var zoneSource = document.getElementById(nomDeLaTextAreaContenantLeSource);
+        var position_debut=zoneSource.selectionStart;
+        var position_fin=zoneSource.selectionEnd;
+        if(position_debut < 0){
             logerreur({'status':false,'message':'veuillez sélectionner une parenthèse dans la zone de texte'});
             this.remplir_et_afficher_les_messages1('zone_global_messages',nomDeLaTextAreaContenantLeSource);
             return;
         }
-        var zoneSource = document.getElementById(nomDeLaTextAreaContenantLeSource);
         var texte=zoneSource.value;
-        if((global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart) && (texte.substr((global_editeur_derniere_valeur_selecStart - 1),1) == '(')){
+        if((position_fin === position_debut) && (texte.substr((position_debut - 1),1) == '(')){
             /*
               
               on s'est placé juste après une parenthèse ouvrante
             */
-            if(texte.substr(global_editeur_derniere_valeur_selecStart,1) == ')'){
+            if(texte.substr(position_debut,1) == ')'){
                 /*
                   
                   on est entre 2 parenthèses ouvrante et fermante consécutives,
                 */
-                if((global_editeur_derniere_valeur_selecStart - 2) > 0){
-                    for(i=(global_editeur_derniere_valeur_selecStart - 2);i >= 1;i--){
+                if((position_debut - 2) > 0){
+                    for(i=(position_debut - 2);i >= 1;i--){
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
                             var arr = functionToArray(texte,false,false,'(');
                             if(arr.status === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=(i + 1);
-                                global_editeur_derniere_valeur_selecStart=(i + 1);
-                                zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
-                                initialisationEditeur();
+                                position_debut=(i + 1);
+                                zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
                                 return;
                             }
                         }
@@ -1292,58 +1298,55 @@ class interface1{
                     zoneSource.focus();
                 }
             }else{
-                texte=texte.substr((global_editeur_derniere_valeur_selecStart - 1));
+                texte=texte.substr((position_debut - 1));
                 console.log('texte="',(texte + '"'));
                 var arr = functionToArray(texte,false,false,'(');
                 if(arr.status === true){
                     zoneSource.focus();
-                    zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
-                    zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
-                    initialisationEditeur();
+                    zoneSource.selectionStart=position_debut;
+                    zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
                     return;
                 }
             }
-        }else if((global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart) && (texte.substr(global_editeur_derniere_valeur_selecStart,1) == ')')){
+        }else if((position_fin === position_debut) && (texte.substr(position_debut,1) == ')')){
             /*
               
               on s'est placé juste avant une parenthèse fermante
             */
-            texte=texte.substr(0,(global_editeur_derniere_valeur_selecStart + 1));
+            texte=texte.substr(0,(position_debut + 1));
             var arr = functionToArray(texte,false,false,')');
             if(arr.status === true){
                 zoneSource.focus();
                 zoneSource.selectionStart=(arr.posOuvPar + 1);
-                zoneSource.selectionEnd=global_editeur_derniere_valeur_selecStart;
-                initialisationEditeur();
+                zoneSource.selectionEnd=position_debut;
                 return;
             }
         }else{
-            if(global_editeur_derniere_valeur_selectEnd === global_editeur_derniere_valeur_selecStart){
+            if(position_fin === position_debut){
                 /*
                   
                   on est placé quelquepart, on recherche la parenthèse ouvrante précédente
                 */
-                for(i=(global_editeur_derniere_valeur_selecStart - 2);i >= 1;i--){
+                for(i=(position_debut - 2);i >= 1;i--){
                     if(texte.substr(i,1) === '('){
                         texte=texte.substr(i);
                         var arr = functionToArray(texte,false,false,'(');
                         if(arr.status === true){
                             zoneSource.focus();
                             zoneSource.selectionStart=(i + 1);
-                            global_editeur_derniere_valeur_selecStart=(i + 1);
-                            zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
-                            initialisationEditeur();
+                            position_debut=(i + 1);
+                            zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
                             return;
                         }
                     }
                 }
                 zoneSource.focus();
-            }else if(global_editeur_derniere_valeur_selectEnd !== global_editeur_derniere_valeur_selecStart){
+            }else if(position_fin !== position_debut){
                 /*
                   
                   c'est une sélection de plage entre 2 parenthèses
                 */
-                if((texte.substr((global_editeur_derniere_valeur_selecStart - 1),1) == '(') && (texte.substr(global_editeur_derniere_valeur_selectEnd,1) == ')')){
+                if((texte.substr((position_debut - 1),1) == '(') && (texte.substr(position_fin,1) == ')')){
                     /*
                       
                       la plage est contenue dans 2 parenthèses, on essaie de remonter d'un niveau
@@ -1356,7 +1359,7 @@ class interface1{
                         var fait=false;
                         var repereDansTableau=-1;
                         for(i=0;i < tableau1.out.length;i++){
-                            if(tableau1.out[i][2] === global_editeur_derniere_valeur_selecStart){
+                            if(tableau1.out[i][2] === position_debut){
                                 repereDansTableau=i;
                                 break;
                             }
@@ -1370,11 +1373,10 @@ class interface1{
                                         var arr = functionToArray(texte,false,false,'(');
                                         if(arr.status === true){
                                             zoneSource.focus();
-                                            global_editeur_derniere_valeur_selecStart=(tableau1.out[positionParentheseDuParent][2] + 1);
-                                            global_editeur_derniere_valeur_selectEnd=(positionParentheseDuParent + arr.posFerPar);
-                                            zoneSource.selectionStart=global_editeur_derniere_valeur_selecStart;
-                                            zoneSource.selectionEnd=global_editeur_derniere_valeur_selectEnd;
-                                            initialisationEditeur();
+                                            position_debut=(tableau1.out[positionParentheseDuParent][2] + 1);
+                                            position_fin=(positionParentheseDuParent + arr.posFerPar);
+                                            zoneSource.selectionStart=position_debut;
+                                            zoneSource.selectionEnd=position_fin;
                                             return;
                                         }
                                     }
@@ -1391,63 +1393,21 @@ class interface1{
                       
                       on est placé quelquepart, on recherche la parenthèse ouvrante précédente
                     */
-                    for(i=(global_editeur_derniere_valeur_selecStart - 2);i >= 1;i--){
+                    for(i=(position_debut - 2);i >= 1;i--){
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
                             var arr = functionToArray(texte,false,false,'(');
                             if(arr.status === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=(i + 1);
-                                global_editeur_derniere_valeur_selecStart=(i + 1);
-                                zoneSource.selectionEnd=(((global_editeur_derniere_valeur_selecStart + arr.posFerPar)) - 1);
-                                initialisationEditeur();
+                                position_debut=(i + 1);
+                                zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
                                 return;
                             }
                         }
                     }
                     zoneSource.focus();
                 }
-            }
-        }
-    }
-    /*
-      =====================================================================================================================
-    */
-    #ne_rien_faire1(par){
-      /**
-        on ne fait rien mais on le fait bien ici
-        console.log('#ne_rien_faire1 par=',par);
-      */
-    }
-    /*
-      =====================================================================================================================
-    */
-    executerCesActionsPourLaPageLocale2(par){
-        console.log('dans executerCesActionsPourLaPageLocale2 par=',par);
-        var i=0;
-        for(i=0;i < par.length;i++){
-
-            switch (par[i].nomDeLaFonctionAappeler){
-                case '#ne_rien_faire1':
-                    this.#ne_rien_faire1(par[i].parametre);
-                    break;
-                    
-                case 'initialiserEditeurPourUneTextArea':
-                    initialiserEditeurPourUneTextArea(par[i].parametre);
-                    break;
-                    
-                case 'traite_le_tableau_de_la_base_sqlite_v2':
-                    traite_le_tableau_de_la_base_sqlite_v2(par[i].parametre);
-                    break;
-                    
-                case 'comparer_deux_tableaux_de_bases_sqlite':
-                    comparer_deux_tableaux_de_bases_sqlite(par[i].parametre);
-                    break;
-                    
-                default:
-                    console.log(('fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler));
-                    break;
-                    
             }
         }
     }
@@ -1775,7 +1735,256 @@ class interface1{
         if(zon.innerHTML !== ''){
             zon.style.visibility='visible';
         }
+    }
+    
+    
+    /*
+      =====================================================================================================================
+    */
+    #ne_rien_faire1(par){
+      /**
+        on ne fait rien mais on le fait bien ici
+        console.log('#ne_rien_faire1 par=',par);
+      */
+    }
+    #global_tableau_des_textareas={};
+    /*
+      =====================================================================================================================
+    */
+
+    /*
+      =====================================================================================================================
+    */
+    #mouse_up_sur_editeur1(e){
+        this.#global_tableau_des_textareas[e.target.id].scrolltop=e.target.scrollTop;
+//        console.log('mouse_up_sur_editeur1',this.#global_tableau_des_textareas[e.target.id].scrolltop);
+        return false;
+    }
+    
+    /*
+      =====================================================================================================================
+    */
+    #keydown_sur_editeur1(e){
+        this.#global_tableau_des_textareas[e.target.id].scrolltop=e.target.scrollTop;
+//        console.log('keydown_sur_editeur1',this.#global_tableau_des_textareas[e.target.id].scrolltop);
+        return false;
+     
+    }
+    /*
+      =====================================================================================================================
+    */
+    #analyse_key_up_editeur1(e){
+        var i=0;
+        var j=0;
+        var c='';
+        var a_inserer='';
+        var tabtext = [];
+        var elem=this.#global_tableau_des_textareas[e.target.id];
+        var zoneSource = document.getElementById(e.target.id);
+        if(e.keyCode === 36){
+            /* touche home : on décale le scroll au début et toute la page aussi */
+            zoneSource.scrollTo({left:0});
+            window.scrollTo({left:0});
+        }else if(e.keyCode == 13){
+            /* retour chariot*/
+            var startPos = zoneSource.selectionStart;
+            var endPos   = zoneSource.selectionEnd;
+            var contenu=new String(zoneSource.value);
+            if(startPos>2){
+                var ligne_precedente='';
+                for(i=startPos-2;i>=0;i--){
+                    c=contenu.substr(i,1);
+                    if(c==='\n' || c==='\r'){
+                        break;
+                    }
+                    ligne_precedente=c+ligne_precedente;
+                }
+                j=0;
+                for(i=0;i<ligne_precedente.length;i++){
+                    j=i;
+                    if(ligne_precedente.substr(i,1)!== ' '){
+                        break;
+                    }
+                    if(i===ligne_precedente.length-1){
+                        j++;
+                    }
+                }
+                if(contenu.substr(startPos-2,1)==='('){
+                    if(elem.mode==='rev'){
+                        a_inserer=' '.repeat(j+NBESPACESREV);
+                    }else{
+                        a_inserer=' '.repeat(j+NBESPACESSOURCEPRODUIT);
+                    }
+                }else{
+                 if(j>0){
+                    a_inserer=' '.repeat(j);
+                 }
+                }
+                zoneSource.value=contenu.substring(0, startPos)+a_inserer+contenu.substring(endPos);
+                zoneSource.selectionStart=startPos+a_inserer.length;
+                zoneSource.selectionEnd=startPos+a_inserer.length;
+                zoneSource.scrollTo({left:0});
+                 
+            }
+            return
+        }else if((e.keyCode == 86) && (e.ctrlKey == true)){
+         /*
+            pour une raison que je ne comprends pas, 
+            Google Chrome fait bouger le scroll vertical d'une textarea
+            quand on sélectionne une ligne y compris le retour à la ligne de fin
+            et qu'on la copie sur elle même ... dans certains cas
+         
+         */
+         if(zoneSource.scrollTop!==this.#global_tableau_des_textareas[e.target.id].scrolltop){
+          zoneSource.scrollTop=this.#global_tableau_des_textareas[e.target.id].scrolltop;
+         }
+        }
+        return false;
     }    
+    
+    /*
+      =====================================================================================================================
+    */
+    #initialiser_editeur_pour_une_textarea1(obj){
+        var id_de_la_text_area='';
+        var mode='';
+        if(obj.hasOwnProperty('nom')){
+            id_de_la_text_area=obj.nom;
+            mode=obj.mode;
+        }else{
+            id_de_la_text_area=obj;
+        }
+        this.#global_tableau_des_textareas[id_de_la_text_area]={
+            mode      : mode ,
+            scrolltop : 0    ,
+        };
+        document.getElementById(id_de_la_text_area).addEventListener('mouseup',this.#mouse_up_sur_editeur1.bind(this));
+        document.getElementById(id_de_la_text_area).addEventListener('keydown',this.#keydown_sur_editeur1.bind(this));
+        document.getElementById(id_de_la_text_area).addEventListener('keyup',this.#analyse_key_up_editeur1.bind(this));
+                
+
+    }
+    
+    
+    /*
+      =====================================================================================================================
+    */
+    inserer_source1(nomFonction,id_de_la_textarea){
+        var i=0;
+        var j=0;
+        var k=0;
+        var toAdd='';
+        var espaces='';
+        var zoneSource = document.getElementById(id_de_la_textarea);
+        if((nomFonction === 'choix') || (nomFonction === 'boucle') || (nomFonction === 'appelf') || (nomFonction === 'affecte')){
+            if(zoneSource.selectionStart !== zoneSource.selectionEnd){
+                alert('la sélection ne doit pas contenir un caractère')
+                return
+            }
+            var position_selection=zoneSource.selectionStart;
+            var texte_debut=zoneSource.value.substr(0,zoneSource.selectionStart);
+            var texte_fin=zoneSource.value.substr(zoneSource.selectionStart);
+            j=0;
+            for(i=texte_debut.length-1;i>=0;i--){
+                j++;
+                if(texte_debut.substr(i,1)==='\n'){
+                    break;
+                }
+            }
+            j--;
+            if(j>0){
+                espaces=' '.repeat(j);
+            }
+            var de1 = ' '.repeat(NBESPACESREV);
+            if(nomFonction === 'choix'){
+                toAdd='choix(';
+                toAdd+=('\n' + espaces + de1 + 'si(');
+                toAdd+=('\n' + espaces + de1 + de1 + 'condition(');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'non(');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + de1 + '( egal(vrai , vrai) ),');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + de1 + 'et( egal( vrai , vrai ) )');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + ')');
+                toAdd+=('\n' + espaces + de1 + de1 + '),');
+                toAdd+=('\n' + espaces + de1 + de1 + 'alors(');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'affecte( a , 1 )');
+                toAdd+=('\n' + espaces + de1 + de1 + ')');
+                toAdd+=('\n' + espaces + de1 + '),');
+                toAdd+=('\n' + espaces + de1 + 'sinonsi(');
+                toAdd+=('\n' + espaces + de1 + de1 + 'condition( (true) ),');
+                toAdd+=('\n' + espaces + de1 + de1 + 'alors(');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'affecte(a , 1)');
+                toAdd+=('\n' + espaces + de1 + de1 + ')');
+                toAdd+=('\n' + espaces + de1 + '),');
+                toAdd+=('\n' + espaces + de1 + 'sinon(');
+                toAdd+=('\n' + espaces + de1 + de1 + 'alors(');
+                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'affecte(a , 1)');
+                toAdd+=('\n' + espaces + de1 + de1 + ')');
+                toAdd+=('\n' + espaces + de1 + de1 + '#(finsinon)');
+                toAdd+=('\n' + espaces + de1 + '),');
+                toAdd+=('\n' + espaces + '),');
+                toAdd+=('\n' + espaces + '#(finchoix suite du source)');
+            }else if(nomFonction === 'boucle'){
+                toAdd='boucle(';
+                toAdd+=('\n' + espaces + de1 + 'initialisation(affecte(i , 0)),');
+                toAdd+=('\n' + espaces + de1 + 'condition(inf(i , tab.length)),');
+                toAdd+=('\n' + espaces + de1 + 'increment(affecte(i , i+1)),');
+                toAdd+=('\n' + espaces + de1 + 'faire(');
+                toAdd+=('\n' + espaces + de1 + de1 + 'affecte(a , 1)');
+                toAdd+=('\n' + espaces + de1 + ')');
+                toAdd+=('\n' + espaces + '),');
+                toAdd+=('\n' + espaces + '#(fin boucle, suite du source)');
+            }else if(nomFonction === 'appelf'){
+                toAdd='appelf(';
+                toAdd+=('\n' + espaces + de1 + 'r(variableDeRetour),');
+                toAdd+=('\n' + espaces + de1 + 'element(nomElement),');
+                toAdd+=('\n' + espaces + de1 + 'nomf(nomFonction),');
+                toAdd+=('\n' + espaces + de1 + 'p(parametre1),');
+                toAdd+=('\n' + espaces + de1 + 'p(parametre2)');
+                toAdd+=('\n' + espaces + '),');
+                toAdd+=('\n' + espaces + '#(fin appelf),');
+            }else if(nomFonction === 'affecte'){
+                toAdd='affecte(nomVariable , valeurVariable),';
+            }
+            zoneSource.value=(texte_debut + toAdd + texte_fin);
+            zoneSource.selectionStart = position_selection;
+            zoneSource.selectionEnd   = position_selection;
+            zoneSource.focus();
+            return;
+        }
+    }    
+    
+    /*
+      =====================================================================================================================
+    */
+    executerCesActionsPourLaPageLocale2(par){
+//        console.log('dans executerCesActionsPourLaPageLocale2 par=',par);
+        var i=0;
+        for(i=0;i < par.length;i++){
+
+            switch (par[i].nomDeLaFonctionAappeler){
+                case '#ne_rien_faire1':
+                    this.#ne_rien_faire1(par[i].parametre);
+                    break;
+                    
+                case 'initialiserEditeurPourUneTextArea':
+                    this.#initialiser_editeur_pour_une_textarea1(par[i].parametre);
+                    break;
+                    
+                case 'traite_le_tableau_de_la_base_sqlite_v2':
+                    traite_le_tableau_de_la_base_sqlite_v2(par[i].parametre);
+                    break;
+                    
+                case 'comparer_deux_tableaux_de_bases_sqlite':
+                    comparer_deux_tableaux_de_bases_sqlite(par[i].parametre);
+                    break;
+                    
+                default:
+                    console.log(('fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler));
+                    break;
+                    
+            }
+        }
+    }
     
 }
 export{interface1};
