@@ -1,11 +1,12 @@
 "use strict";
-var global_programme_en_arriere_plan=null;
+//var global_programme_en_arriere_plan=null;
 /*
   
   =====================================================================================================================
   si il y a des web workers qui ne sont pas terminés, il faut les relancer
   =====================================================================================================================
 */
+/*
 function recuperer_les_travaux_en_arriere_plan_de_la_session(){
     if(NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN > 0){
         var r= new XMLHttpRequest();
@@ -17,11 +18,6 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
                 if(r.status == 404){
                     console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
                 }else if(r.status == 500){
-                    /*
-                      
-                      normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                      au niveau du php za_ajax mais sait-on jamais
-                    */
                     if(global_messages['e500logged'] == false){
                         try{
                             console.log('r=',r);
@@ -50,7 +46,6 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
                     global_programme_en_arriere_plan.postMessage({'type_de_message':'integrer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux});
                     return;
                 }else{
-                    /* pas de travail en arrière plan' */
                     return;
                 }
             }catch(e){
@@ -60,7 +55,6 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
         };
         r.onerror=function(e){
             console.error('e=',e);
-            /* whatever(); */
             return;
         };
         r.ontimeout=function(e){
@@ -72,13 +66,12 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(){
             r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
         }catch(e){
             console.error('e=',e);
-            /* whatever(); */
             return({status:false});
         }
     }
     return({status:true});
 }
-
+*/
 
 
 
@@ -110,12 +103,7 @@ window.addEventListener('load',function(){
          500
         );
     });
- 
-/* 
-    setTimeout(function(){
-        recuperer_les_travaux_en_arriere_plan_de_la_session();
-    },1000);
-*/    
+     
     var liste_des_scripts = document.getElementsByTagName('script');
     var i=0;
     for(i=0;i < liste_des_scripts.length;i++){

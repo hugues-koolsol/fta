@@ -12,39 +12,31 @@ class interface1{
       à priori, les ascenseurs "thin" font 11px de large
     */
     #largeur_des_ascenseurs=11;
-    
     /*
-     
+      
     */
     #programme_en_arriere_plan=null;
-    
-    
     /*
       modale
     */
     global_modale2=null;
     global_modale2_contenu=null;
     global_modale2_iframe=null;
-    
     /*
       on affiche un message quand le serveur est lent, c'est à dire que la réponse n'est pas arrivée en 1.5 secondes
     */
     #globale_timeout_serveur_lent=1500;
     #globale_timeout_reference_timer_serveur_lent=null;
-    
     /*
-      ==============================================================================
+      =============================================================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
     */
     constructor(nom_de_la_variable,nom_de_la_div_contenant_les_messages){
-     
         this.#nom_de_la_variable=nom_de_la_variable;
         this.#nom_div_des_messages1=nom_de_la_div_contenant_les_messages;
         this.global_modale2=document.getElementById('modale1');
         this.global_modale2_contenu=document.getElementById('__contenu_modale');
         this.global_modale2_iframe=document.getElementById('iframe_modale_1');
-        
-        
         this.global_modale2.addEventListener('click',function(e){
             var dim = e.target.getBoundingClientRect();
             if((e.clientX < dim.left) || (e.clientX > dim.right) || (e.clientY < dim.top) || (e.clientY > dim.bottom)){
@@ -52,8 +44,6 @@ class interface1{
                 e.target.close();
             }
         });
-        
-        
     }
     /* function nom_de_la_variable */
     get nom_de_la_variable(){
@@ -63,26 +53,24 @@ class interface1{
     get largeur_des_ascenseurs(){
         return this.#largeur_des_ascenseurs;
     }
-    
     /*
-      ==============================================================================
+      =============================================================================================================
       modale
     */
     fermerModale2(){
         document.getElementById('__message_modale').innerHTML='';
         this.global_modale2.close();
     }
-    
+    /* function afficherModale2 */
     afficherModale2(parametres){
-//        console.log(('parametres=' + parametres));
         var jsn1 = JSON.parse(parametres);
         if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
             var paramatresModale={'__champs_texte_a_rapatrier':jsn1['__champs_texte_a_rapatrier'],'__nom_champ_dans_parent':jsn1['__nom_champ_dans_parent']};
-            this.global_modale2_iframe.src=(jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale)));
+            this.global_modale2_iframe.src=jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale));
             this.global_modale2.showModal();
         }
     }
-    
+    /* function annuler_champ_modale */
     annuler_champ_modale(parametres){
         var jsn1 = JSON.parse(parametres);
         document.getElementById(jsn1['__nom_champ_dans_parent']).value='';
@@ -97,7 +85,7 @@ class interface1{
             console.log(e);
         }
     }
-    
+    /* function choisir_de_iframe2 */
     choisir_de_iframe2(parametres){
         var jsn1 = JSON.parse(parametres);
         window.parent.document.getElementById(jsn1['__nom_champ_rapatrie']).value=jsn1['__valeur_champ_id_rapatrie'];
@@ -105,78 +93,25 @@ class interface1{
             if(jsn1.__champs_texte_a_rapatrier){
                 var i={};
                 for(i in jsn1.__champs_texte_a_rapatrier){
-                    window.parent.document.getElementById(i).innerHTML=(jsn1.__champs_texte_a_rapatrier[i].__libelle_avant + jsn1.__champs_texte_a_rapatrier[i].__valeur + jsn1.__champs_texte_a_rapatrier[i].__libelle_apres);
+                    window.parent.document.getElementById(i).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_avant + jsn1.__champs_texte_a_rapatrier[i].__valeur + jsn1.__champs_texte_a_rapatrier[i].__libelle_apres;
                 }
             }
         }catch(e){
             console.log(e);
         }
-        window.parent[this.#nom_de_la_variable].fermerModale2()
+        window.parent[this.#nom_de_la_variable].fermerModale2();
     }
-
     /*
-      =====================================================================================================================
+      =============================================================================================================
       function supprimer_ce_commentaire_et_recompiler
-      =====================================================================================================================
+      =============================================================================================================
     */
-    supprimer_ce_commentaire_et_recompiler(id_source , id_rev){
-        console.log( id_source + ' ' + id_rev );
-        var param={
-                'nom_du_travail_en_arriere_plan' : 'supprimer_un_commentaire1',
-                'liste_des_taches' : [{'etat':'a_faire' , id_source:id_source, id_rev : id_rev }],
-        }
+    supprimer_ce_commentaire_et_recompiler(id_source,id_rev){
+        console.log(id_source + ' ' + id_rev);
+        var param={'nom_du_travail_en_arriere_plan':'supprimer_un_commentaire1','liste_des_taches':[{'etat':'a_faire',id_source:id_source,id_rev:id_rev}]};
         this.lancer_un_travail_en_arriere_plan(JSON.stringify(param));
     }
-    /*
-      =====================================================================================================================
-      function lancer_un_travail_en_arriere_plan
-      =====================================================================================================================
-    */
-    lancer_un_travail_en_arriere_plan(parametre){
-        
-        if( !(window.Worker)){
-            return;
-        }
-        if(this.#programme_en_arriere_plan === null){
-            try{
-                this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
-            }catch(e){
-                console.log('e=',e);
-                return;
-            }
-        }
-        this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
-            console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-        };
-        var json_param = JSON.parse(parametre);
-        if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
-            var liste_des_id_des_sources='';
-            for(var ob in json_param.liste_des_taches){
-             liste_des_id_des_sources+=','+json_param.liste_des_taches[ob].id_source;
-            }
-            if(liste_des_id_des_sources!=''){
-                liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
-                var remplacer_par = prompt(('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :'));
-                if(remplacer_par !== null){
-                    json_param.remplacer_par=remplacer_par;
-                    console.log(json_param);
-                    console.log('on envoie le message');
-                    try{
-                        this.#programme_en_arriere_plan.postMessage({'type_de_message':'déclencher_un_travail','parametres':json_param});
-                    }catch(e){
-                        console.log('e=',e);
-                    }
-                    console.log('le message est envoyé sans erreur');
-                }
-            }
-            
-        }else if("supprimer_un_commentaire1" === json_param.nom_du_travail_en_arriere_plan){
-            this.#programme_en_arriere_plan.postMessage({'type_de_message':'déclencher_un_travail','parametres':json_param});
-        }else{
-            console.error('%c module_interface1 87 le travail "'+ json_param.nom_du_travail_en_arriere_plan+'" n\'est pas dans la liste ','background:yellow;')
-        }
-    }
-    
+
     /*
       =============================================================================================================
       function reduire_la_text_area
@@ -200,14 +135,13 @@ class interface1{
         var a = document.getElementById(nom_de_la_textarea);
         var b = a.getBoundingClientRect();
         if(a){
-            var c=a.value.split('\n');
-    //                    console.log(c.length);
-            if(c.length<100){
-                a.rows=c.length+1;
-                /* 
+            var c = a.value.split('\n');
+            if(c.length < 100){
+                a.rows=c.length + 1;
+                /*
                   le "line-height d'une textarea est fixé à 1.2 
                 */
-                a.style.height=(parseInt(((c.length+1)*1.2),10)+1)+'em';
+                a.style.height=((parseInt((((c.length + 1)) * 1.2),10) + 1)) + 'em';
             }else{
                 a.rows=100;
                 a.style.height='100em';
@@ -216,17 +150,14 @@ class interface1{
               on met la zone en haut
             */
             var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
-            var lst=document.getElementsByClassName('menuScroller');
-            
-            if(lst.length>=2){
-             d=d-(lst.length-1)*CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
+            var lst = document.getElementsByClassName('menuScroller');
+            if(lst.length >= 2){
+                d=d - (((lst.length - 1)) * CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV);
             }
             window.scrollTo(0,d);
             a.focus();
-
         }
     }
-    
     /*
       =============================================================================================================
       ajuste la taille d'une textarea
@@ -237,17 +168,15 @@ class interface1{
             var a = document.getElementById(nom_de_la_textarea);
             var b = a.getBoundingClientRect();
             this.masquer_les_messages1('zone_global_messages');
-            
             if(a){
                 if(a.rows <= 10){
-                    var c=a.value.split('\n');
-//                    console.log(c.length);
-                    if(c.length<100){
-                        a.rows=c.length+1;
-                        /* 
+                    var c = a.value.split('\n');
+                    if(c.length < 100){
+                        a.rows=c.length + 1;
+                        /*
                           le "line-height d'une textarea est fixé à 1.2 
                         */
-                        a.style.height=(parseInt(((c.length+1)*1.2),10)+1)+'em';
+                        a.style.height=((parseInt((((c.length + 1)) * 1.2),10) + 1)) + 'em';
                     }else{
                         a.rows=100;
                         a.style.height='100em';
@@ -256,12 +185,11 @@ class interface1{
                       on met la zone en haut
                     */
                     var d = parseInt((((b.top - 80)) + window.pageYOffset),10);
-                    var lst=document.getElementsByClassName('menuScroller');
+                    var lst = document.getElementsByClassName('menuScroller');
                     console.log(lst.length);
-                    
                     console.log('d=',d);
-                    if(lst.length>=2){
-                     d=d-(lst.length-1)*CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
+                    if(lst.length >= 2){
+                        d=d - (((lst.length - 1)) * CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV);
                     }
                     window.scrollTo(0,d);
                     a.focus();
@@ -275,7 +203,6 @@ class interface1{
             console.log('e=',e);
         }
     }
-    
     /*
       
       =============================================================================================================
@@ -325,16 +252,16 @@ class interface1{
         var position_debut=0;
         var numero_de_ligne = window.prompt('aller à la ligne n°?',1);
         if((numero_de_ligne) && (isNumeric(numero_de_ligne))){
-            numero_de_ligne=parseInt(numero_de_ligne,10)+ajouter;
+            numero_de_ligne=parseInt(numero_de_ligne,10) + ajouter;
             var a = dogid(nom_textarea);
             var lignes = a.value.split('\n');
             if(lignes.length > numero_de_ligne){
-                lignes.splice(numero_de_ligne-1,(lignes.length - numero_de_ligne)+1);
+                lignes.splice((numero_de_ligne - 1),(((lignes.length - numero_de_ligne)) + 1));
                 position_fin=0;
-                for(i=(lignes.length - 1);i >= 0;i--){
-                    position_fin+=(lignes[i].length + 1);
+                for(i=lignes.length - 1;i >= 0;i--){
+                    position_fin+=lignes[i].length + 1;
                 }
-                position_debut=position_fin-lignes[lignes.length-1].length-1;
+                position_debut=position_fin - lignes[lignes.length - 1].length - 1;
                 a.focus();
                 a.selectionStart=position_debut;
                 a.selectionEnd=position_fin;
@@ -353,7 +280,7 @@ class interface1{
             var elem = document.getElementById(id_textarea);
             elem.focus();
             elem.selectionStart=parseInt(valeur,10);
-            elem.selectionEnd=(parseInt(valeur,10) + 1);
+            elem.selectionEnd=parseInt(valeur,10) + 1;
         }
     }
     /*
@@ -411,7 +338,7 @@ class interface1{
         };
         var ajax_param={'call':{'lib':'php','file':'session','funct':'definir_le_nombre_de_lignes_a_afficher_pour_une_liste'},nom_de_la_page:nom_de_la_page,nombre_de_lignes:nombre_de_lignes};
         try{
-            r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
+            r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
         }catch(e){
             console.error('e=',e);
             /* whatever(); */
@@ -431,14 +358,13 @@ class interface1{
         t+='<h1>fixer les paramètres</h1>';
         var i=10;
         for(i=10;i <= 50;i+=10){
-            t+=('<a href="javascript:' + this.#nom_de_la_variable + '.definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&quot;' + nom_de_la_page + '&quot;,' + i + ')">afficher ' + i + ' lignes</a>');
+            t+='<a href="javascript:' + this.#nom_de_la_variable + '.definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&quot;' + nom_de_la_page + '&quot;,' + i + ')">afficher ' + i + ' lignes</a>';
         }
         this.global_modale2_contenu.innerHTML=t;
         this.global_modale2.showModal();
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       on reactiver_les_boutons1
     */
     reactiver_les_boutons1(){
@@ -470,7 +396,6 @@ class interface1{
             if((lsta1[i].href) && (typeof lsta1[i].href === 'string') && ( !(lsta1[i].href.indexOf('javascript') >= 0))){
                 if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
                 }else{
-//                    lsta1[i].addEventListener("click",clickLink1,false);
                     lsta1[i].classList.remove("yyunset");
                 }
             }
@@ -485,9 +410,8 @@ class interface1{
             lstb1[i].classList.remove('yyunset_temporaire');
         }
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       l'affichage de la boite doit être progressif
     */
     #mise_a_jour_affichage_serveur_lent1(){
@@ -501,7 +425,7 @@ class interface1{
                         newOpa=1;
                     }
                     document.getElementById('sloserver1').style.opacity=newOpa;
-                    if(newOpa<1){
+                    if(newOpa < 1){
                         setTimeout(this.#mise_a_jour_affichage_serveur_lent1.bind(this),50);
                     }
                 }
@@ -509,12 +433,10 @@ class interface1{
         }catch(e){
         }
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #affichage_boite_serveur_lent1(){
-        
         var divId = document.createElement('div');
         divId.id='sloserver1';
         divId.style.top='55px';
@@ -532,11 +454,10 @@ class interface1{
         document.getElementsByTagName('body')[0].appendChild(divId);
         setTimeout(this.#mise_a_jour_affichage_serveur_lent1.bind(this),50);
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       quand on clique sur un bouton, on affiche la boite 1.5 secondes plus tard
-      =====================================================================================================================
+      =============================================================================================================
     */
     click_sur_bouton1(e){
         try{
@@ -546,9 +467,9 @@ class interface1{
         this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       quand on clique sur un lien, on affiche la boite 1.5 secondes plus tard
-      =====================================================================================================================
+      =============================================================================================================
     */
     click_sur_lien1(e){
         console.log('click_sur_lien1');
@@ -562,10 +483,10 @@ class interface1{
         }
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       quand on clique sur un lien javascript, , le traitement devrait être immédiat,
       On le réaffiche 300 ms apres
-      =====================================================================================================================
+      =============================================================================================================
     */
     action_quand_click_sur_lien_javascript(e){
         try{
@@ -574,8 +495,8 @@ class interface1{
         }
         setTimeout(function(){
             /*
-             Normalement, l'affichage des messages supprime les yyunset_temporaire
-             mais on ne sait jamais
+              Normalement, l'affichage des messages supprime les yyunset_temporaire
+              mais on ne sait jamais
             */
             var lstb1 = document.getElementsByClassName("yyunset_temporaire");
             var i=0;
@@ -584,7 +505,6 @@ class interface1{
             }
         },300);
     }
-    
     /*
       
       =============================================================================================================
@@ -620,17 +540,17 @@ class interface1{
         }
         var lsta1 = bod.getElementsByTagName('a');
         for(i=0;i < lsta1.length;i++){
-            if((lsta1[i].href) ){
+            if(lsta1[i].href){
                 try{
-                    if( ( !(lsta1[i].href.indexOf('javascript') >= 0))){
+                    if( !(lsta1[i].href.indexOf('javascript') >= 0)){
                         if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
                         }else{
                             lsta1[i].addEventListener("click",this.click_sur_lien1.bind(this),false);
                         }
                     }
                 }catch(e){
-                   /* pour les liens dans le svg */
                 }
+                /* pour les liens dans le svg */
             }
         }
         var lsta1 = bod.getElementsByTagName('a');
@@ -694,7 +614,7 @@ class interface1{
         bag.style.overflow='auto';
         div.appendChild(bag);
         div.scrollTop=100;
-        this.#largeur_des_ascenseurs=(div.scrollTop - 1);
+        this.#largeur_des_ascenseurs=div.scrollTop - 1;
         div.removeChild(bag);
         body.removeChild(div);
     }
@@ -738,24 +658,24 @@ class interface1{
         var tableau1 = iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
         var endMicro = performance.now();
-        console.log('\n\n=============\nmise en tableau endMicro=',((parseInt((((endMicro - startMicro)) * 1000),10) / 1000) + ' ms'));
+        console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((((endMicro - startMicro)) * 1000),10) / 1000) + ' ms');
         var startMicro = performance.now();
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.status === true){
             var objPhp = parsePhp0(matriceFonction.value,0,0);
             if(objPhp.status === true){
                 dogid(nom_zone_genere_php).value=objPhp.value;
-                if(bouton_interface===true){
-                 /* pour firefox ! */
-                 return ;
+                if(bouton_interface === true){
+                    /* pour firefox ! */
+                    return;
                 }
                 return({status:true,value:matriceFonction.value});
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages');
-        if(bouton_interface===true){
-         /* pour firefox ! */
-         return;
+        if(bouton_interface === true){
+            /* pour firefox ! */
+            return;
         }
         return({status:true});
     }
@@ -797,7 +717,7 @@ class interface1{
         var a = document.getElementById(nom_de_la_textarea);
         a.focus();
         if(a.selectionStart === a.selectionEnd){
-            var nouveau_source = (a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart));
+            var nouveau_source = a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart);
             a.value=nouveau_source;
             this.formatter_le_source_rev(nom_de_la_textarea);
         }
@@ -962,8 +882,8 @@ class interface1{
                   fin des lignes contenant les positions
                   =====================================================================================
                 */
-                debut=(i + 1);
-                numeroLigne=(numeroLigne + 1);
+                debut=i + 1;
+                numeroLigne=numeroLigne + 1;
                 var tr1={};
                 var td1={};
                 tr1=document.createElement('tr');
@@ -1124,7 +1044,7 @@ class interface1{
                     td1.innerHTML=temp;
                     td1.style.whiteSpace='pre-wrap';
                     td1.style.verticalAlign='baseline';
-                    td1.style.maxWidth=(largeurColonne1EnPx + 'px');
+                    td1.style.maxWidth=largeurColonne1EnPx + 'px';
                     td1.style.overflowWrap='break-word';
                 }else if(j == 4){
                     td1.innerHTML=matriceFonction.value[i][j];
@@ -1195,7 +1115,7 @@ class interface1{
             if(lesDivs[i].className === 'menuScroller'){
                 var menuUtilisateurCalcule = getComputedStyle(lesDivs[i]);
                 var hauteurMenuUtilisateur = parseInt(menuUtilisateurCalcule['height'],10);
-                lesDivs[i].style.top=(paddingTopBody + 'px');
+                lesDivs[i].style.top=paddingTopBody + 'px';
                 lesDivs[i].style.position='fixed';
                 lesDivs[i].style.width='100vw';
                 lesDivs[i].style.backgroundImage='linear-gradient(to bottom, #B0BEC5, #607D8B)';
@@ -1203,8 +1123,8 @@ class interface1{
                 paddingTopBody+=hauteurMenuUtilisateur;
             }
         }
-        dogid('zone_global_messages').style.top=(((paddingTopBody + 2)) + 'px');
-        bod.style.paddingTop=(paddingTopBody + 'px');
+        dogid('zone_global_messages').style.top=((paddingTopBody + 2)) + 'px';
+        bod.style.paddingTop=paddingTopBody + 'px';
         /*
           
           ajustement de la position gauche des menus du haut, 
@@ -1280,15 +1200,15 @@ class interface1{
                   on est entre 2 parenthèses ouvrante et fermante consécutives,
                 */
                 if((position_debut - 2) > 0){
-                    for(i=(position_debut - 2);i >= 1;i--){
+                    for(i=position_debut - 2;i >= 1;i--){
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
                             var arr = functionToArray(texte,false,false,'(');
                             if(arr.status === true){
                                 zoneSource.focus();
-                                zoneSource.selectionStart=(i + 1);
-                                position_debut=(i + 1);
-                                zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
+                                zoneSource.selectionStart=i + 1;
+                                position_debut=i + 1;
+                                zoneSource.selectionEnd=((position_debut + arr.posFerPar)) - 1;
                                 return;
                             }
                         }
@@ -1299,12 +1219,12 @@ class interface1{
                 }
             }else{
                 texte=texte.substr((position_debut - 1));
-                console.log('texte="',(texte + '"'));
+                console.log('texte="',texte + '"');
                 var arr = functionToArray(texte,false,false,'(');
                 if(arr.status === true){
                     zoneSource.focus();
                     zoneSource.selectionStart=position_debut;
-                    zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
+                    zoneSource.selectionEnd=((position_debut + arr.posFerPar)) - 1;
                     return;
                 }
             }
@@ -1317,7 +1237,7 @@ class interface1{
             var arr = functionToArray(texte,false,false,')');
             if(arr.status === true){
                 zoneSource.focus();
-                zoneSource.selectionStart=(arr.posOuvPar + 1);
+                zoneSource.selectionStart=arr.posOuvPar + 1;
                 zoneSource.selectionEnd=position_debut;
                 return;
             }
@@ -1327,15 +1247,15 @@ class interface1{
                   
                   on est placé quelquepart, on recherche la parenthèse ouvrante précédente
                 */
-                for(i=(position_debut - 2);i >= 1;i--){
+                for(i=position_debut - 2;i >= 1;i--){
                     if(texte.substr(i,1) === '('){
                         texte=texte.substr(i);
                         var arr = functionToArray(texte,false,false,'(');
                         if(arr.status === true){
                             zoneSource.focus();
-                            zoneSource.selectionStart=(i + 1);
-                            position_debut=(i + 1);
-                            zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
+                            zoneSource.selectionStart=i + 1;
+                            position_debut=i + 1;
+                            zoneSource.selectionEnd=((position_debut + arr.posFerPar)) - 1;
                             return;
                         }
                     }
@@ -1373,8 +1293,8 @@ class interface1{
                                         var arr = functionToArray(texte,false,false,'(');
                                         if(arr.status === true){
                                             zoneSource.focus();
-                                            position_debut=(tableau1.out[positionParentheseDuParent][2] + 1);
-                                            position_fin=(positionParentheseDuParent + arr.posFerPar);
+                                            position_debut=tableau1.out[positionParentheseDuParent][2] + 1;
+                                            position_fin=positionParentheseDuParent + arr.posFerPar;
                                             zoneSource.selectionStart=position_debut;
                                             zoneSource.selectionEnd=position_fin;
                                             return;
@@ -1393,15 +1313,15 @@ class interface1{
                       
                       on est placé quelquepart, on recherche la parenthèse ouvrante précédente
                     */
-                    for(i=(position_debut - 2);i >= 1;i--){
+                    for(i=position_debut - 2;i >= 1;i--){
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
                             var arr = functionToArray(texte,false,false,'(');
                             if(arr.status === true){
                                 zoneSource.focus();
-                                zoneSource.selectionStart=(i + 1);
-                                position_debut=(i + 1);
-                                zoneSource.selectionEnd=(((position_debut + arr.posFerPar)) - 1);
+                                zoneSource.selectionStart=i + 1;
+                                position_debut=i + 1;
+                                zoneSource.selectionEnd=((position_debut + arr.posFerPar)) - 1;
                                 return;
                             }
                         }
@@ -1413,23 +1333,22 @@ class interface1{
     }
     /*
       
-      =====================================================================================================================
+      =============================================================================================================
     */
     selectionner_ligne_de_text_area1(tarea,numero_de_ligne_qui_commence_par_1){
-     
-        var lineNum=((numero_de_ligne_qui_commence_par_1 <= 0)?1:numero_de_ligne_qui_commence_par_1);
-        lineNum=(lineNum - 1);
+        var lineNum = ((numero_de_ligne_qui_commence_par_1 <= 0)?1:numero_de_ligne_qui_commence_par_1);
+        lineNum=lineNum - 1;
         var numeroLigne=0;
         var startPos=0;
         var endPos=0;
         var contenu=tarea.value;
-        var l01=contenu.length
+        var l01=contenu.length;
         var i=0;
         for(i=0;i < l01;i++){
             if(contenu.substr(i,1) === '\n'){
                 numeroLigne++;
                 if(numeroLigne === lineNum){
-                    startPos=(i + 1);
+                    startPos=i + 1;
                     break;
                 }
             }
@@ -1441,11 +1360,10 @@ class interface1{
                 break;
             }
         }
-        if(i===l01){
+        if(i === l01){
             /* c'est la dernière ligne */
             endPos=l01;
         }
-        
         if(typeof tarea.selectionStart !== 'undefined'){
             tarea.select();
             tarea.selectionStart=startPos;
@@ -1460,7 +1378,7 @@ class interface1{
             tarea.value=texteDebut;
             tarea.scrollTo(0,9999999);
             var nouveauScroll=tarea.scrollTop;
-            tarea.value=(texteDebut + texteFin);
+            tarea.value=texteDebut + texteFin;
             if(nouveauScroll > 50){
                 tarea.scrollTo(0,(nouveauScroll + 50));
             }else{
@@ -1481,15 +1399,14 @@ class interface1{
             return true;
         }
         return false;
-    }    
+    }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     allerAlaLigne(i,nomTextAreaSource){
         this.masquer_les_messages1('zone_global_messages');
         this.selectionner_ligne_de_text_area1(document.getElementById(nomTextAreaSource),i);
     }
-    
     /*
       =============================================================================================================
       on fixer_les_dimentions
@@ -1504,7 +1421,7 @@ class interface1{
         */
         var ss=document.styleSheets[0];
         var i = (ss.cssRules.length - 1);
-        for(i=(ss.cssRules.length - 1);i >= 0;i--){
+        for(i=ss.cssRules.length - 1;i >= 0;i--){
             if((ss.cssRules[i]['selectorText']) && (ss.cssRules[i].selectorText.indexOf(':root') >= 0)){
                 var a = ss.cssRules[i].cssText.split('{');
                 try{
@@ -1570,7 +1487,7 @@ class interface1{
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = (APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict');
+                    var cookieString = APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;
@@ -1589,7 +1506,7 @@ class interface1{
     masquer_ou_afficher_les_messages1(){
         var nomZone='zone_global_messages';
         var zon = document.getElementById(nomZone);
-        if((zon.style.visibility === 'hidden')){
+        if(zon.style.visibility === 'hidden'){
             zon.style.visibility='visible';
         }else{
             zon.style.visibility='hidden';
@@ -1604,16 +1521,14 @@ class interface1{
         var zon = document.getElementById(nomZone);
         zon.style.visibility='hidden';
     }
-    
     /*
       
-      =====================================================================================================================
+      =============================================================================================================
     */
     selectionner_une_plage1(debut,fin,nomDeZoneSource){
         this.masquer_les_messages1('zone_global_messages');
         var zoneSource = dogid(nomDeZoneSource);
         zoneSource.focus();
-    //    zoneSource.select();
         zoneSource.selectionStart=debut;
         zoneSource.selectionEnd=fin;
         var texteDebut = zoneSource.value.substr(0,debut);
@@ -1621,7 +1536,7 @@ class interface1{
         zoneSource.value=texteDebut;
         zoneSource.scrollTo(0,9999999);
         var nouveauScroll=zoneSource.scrollTop;
-        zoneSource.value=(texteDebut + texteFin);
+        zoneSource.value=texteDebut + texteFin;
         if(nouveauScroll > 50){
             zoneSource.scrollTo(0,(nouveauScroll + 50));
         }else{
@@ -1631,10 +1546,10 @@ class interface1{
         zoneSource.selectionEnd=fin;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       supprime les messages de la zone global_messages et masque la zone de texte qui contient les message
       remplace clearMessages
-      =====================================================================================================================
+      =============================================================================================================
     */
     raz_des_messages(){
         try{
@@ -1643,11 +1558,23 @@ class interface1{
             document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
         }catch(e){
         }
-        global_messages={'errors':[],'warnings':[],'infos':[],'lines':[],'tabs':[],'ids':[],'ranges':[],'plages':[],'positions_caracteres':[],'calls':'','data':{'matrice':[],'tableau':[],'sourceGenere':''}};
+        global_messages={
+            'errors':[],
+            'warnings':[],
+            'infos':[],
+            'lines':[],
+            'tabs':[],
+            'ids':[],
+            'ranges':[],
+            'plages':[],
+            'positions_caracteres':[],
+            'calls':'',
+            'data':{'matrice':[],'tableau':[],'sourceGenere':''}
+        };
     }
     /*
-     ===================================================================================================
-     on remplir_et_afficher_les_messages1
+      =============================================================================================================
+      on remplir_et_afficher_les_messages1
     */
     remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         this.reactiver_les_boutons1();
@@ -1664,36 +1591,36 @@ class interface1{
         var nombre_de_boutons_affiches=0;
         while(global_messages.errors.length > 0){
             if((zone_message_est_vide) && (numero_message === 0)){
-                zon.innerHTML+=('<div class="yyerreur">' + global_messages.errors[i] + '</div>');
+                zon.innerHTML+='<div class="yyerreur">' + global_messages.errors[i] + '</div>';
                 numero_message++;
             }else{
-                zon.innerHTML+=('<div class="yyerreur">' + global_messages.errors[i] + '</div>');
+                zon.innerHTML+='<div class="yyerreur">' + global_messages.errors[i] + '</div>';
             }
             global_messages.errors.splice(0,1);
             affichagesPresents=true;
         }
         while(global_messages.warnings.length > 0){
             if((zone_message_est_vide) && (numero_message === 0)){
-                zon.innerHTML+=('<div class="yyavertissement">' + global_messages.warnings[i] + '</div>');
+                zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i] + '</div>';
                 numero_message++;
             }else{
-                zon.innerHTML+=('<div class="yyavertissement">' + global_messages.warnings[i] + '</div>');
+                zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i] + '</div>';
             }
             global_messages.warnings.splice(0,1);
             affichagesPresents=true;
         }
         while(global_messages.infos.length > 0){
             if((zone_message_est_vide) && (numero_message === 0)){
-                zon.innerHTML+=('<div class="yysucces">' + global_messages.infos[i] + '</div>');
+                zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i] + '</div>';
                 numero_message++;
             }else{
-                zon.innerHTML+=('<div class="yysucces">' + global_messages.infos[i] + '</div>');
+                zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i] + '</div>';
             }
             global_messages.infos.splice(0,1);
             affichagesPresents=true;
         }
         while(global_messages.lines.length > 0){
-            zon.innerHTML=('<a href="javascript:'+this.#nom_de_la_variable+'.allerAlaLigne(' + ((global_messages.lines[i])) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + ((global_messages.lines[i])) + '</a>&nbsp;' + zon.innerHTML);
+            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
             global_messages.lines.splice(0,1);
             affichagesPresents=true;
         }
@@ -1707,13 +1634,13 @@ class interface1{
                     var j=caractereDebut;
                     for(j=caractereDebut;j >= 0;j--){
                         if(global_messages.data.tableau.out[j][0] == '\n'){
-                            numeroDeLigne=(numeroDeLigne + 1);
+                            numeroDeLigne=numeroDeLigne + 1;
                         }
                     }
                 }
                 if(numeroDeLigne >= 0){
                     if(numeroDeLigne != numLignePrecedente){
-                        zon.innerHTML=('<a href="javascript:'+this.#nom_de_la_variable+'.allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML);
+                        zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML;
                         affichagesPresents=true;
                         numLignePrecedente=numeroDeLigne;
                         nombre_de_boutons_affiches++;
@@ -1722,13 +1649,13 @@ class interface1{
             }
             global_messages.ids=[];
         }
-        while(global_messages.ranges.length>0){
-            zon.innerHTML=('&nbsp;<a href="javascript:'+this.#nom_de_la_variable+'.selectionner_une_plage1(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML);
+        while(global_messages.ranges.length > 0){
+            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML;
             global_messages.ranges.splice(0,1);
             affichagesPresents=true;
         }
-        while(global_messages.plages.length>0){
-            zon.innerHTML=('&nbsp;<a href="javascript:'+this.#nom_de_la_variable+'.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML);
+        while(global_messages.plages.length > 0){
+            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML;
             global_messages.plages.splice(0,1);
             affichagesPresents=true;
         }
@@ -1736,42 +1663,37 @@ class interface1{
             zon.style.visibility='visible';
         }
     }
-    
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #ne_rien_faire1(par){
-      /**
-        on ne fait rien mais on le fait bien ici
-        console.log('#ne_rien_faire1 par=',par);
-      */
+      // rien ici
     }
+/*#
+  on ne fait rien mais on le fait bien ici
+  console.log('#ne_rien_faire1 par=',par);
+
+*/
     #global_tableau_des_textareas={};
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
-
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #mouse_up_sur_editeur1(e){
         this.#global_tableau_des_textareas[e.target.id].scrolltop=e.target.scrollTop;
-//        console.log('mouse_up_sur_editeur1',this.#global_tableau_des_textareas[e.target.id].scrolltop);
         return false;
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #keydown_sur_editeur1(e){
         this.#global_tableau_des_textareas[e.target.id].scrolltop=e.target.scrollTop;
-//        console.log('keydown_sur_editeur1',this.#global_tableau_des_textareas[e.target.id].scrolltop);
         return false;
-     
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #analyse_key_up_editeur1(e){
         var i=0;
@@ -1787,63 +1709,61 @@ class interface1{
             window.scrollTo({left:0});
         }else if(e.keyCode == 13){
             /* retour chariot*/
-            var startPos = zoneSource.selectionStart;
-            var endPos   = zoneSource.selectionEnd;
-            var contenu=new String(zoneSource.value);
-            if(startPos>2){
+            var startPos=zoneSource.selectionStart;
+            var endPos=zoneSource.selectionEnd;
+            var contenu= new String(zoneSource.value);
+            if(startPos > 2){
                 var ligne_precedente='';
-                for(i=startPos-2;i>=0;i--){
+                for(i=startPos - 2;i >= 0;i--){
                     c=contenu.substr(i,1);
-                    if(c==='\n' || c==='\r'){
+                    if((c === '\n') || (c === '\r')){
                         break;
                     }
-                    ligne_precedente=c+ligne_precedente;
+                    ligne_precedente=c + ligne_precedente;
                 }
                 j=0;
-                for(i=0;i<ligne_precedente.length;i++){
+                for(i=0;i < ligne_precedente.length;i++){
                     j=i;
-                    if(ligne_precedente.substr(i,1)!== ' '){
+                    if(ligne_precedente.substr(i,1) !== ' '){
                         break;
                     }
-                    if(i===ligne_precedente.length-1){
+                    if(i === (ligne_precedente.length - 1)){
                         j++;
                     }
                 }
-                if(contenu.substr(startPos-2,1)==='('){
-                    if(elem.mode==='rev'){
-                        a_inserer=' '.repeat(j+NBESPACESREV);
+                if(contenu.substr((startPos - 2),1) === '('){
+                    if(elem.mode === 'rev'){
+                        a_inserer=' '.repeat((j + NBESPACESREV));
                     }else{
-                        a_inserer=' '.repeat(j+NBESPACESSOURCEPRODUIT);
+                        a_inserer=' '.repeat((j + NBESPACESSOURCEPRODUIT));
                     }
                 }else{
-                 if(j>0){
-                    a_inserer=' '.repeat(j);
-                 }
+                    if(j > 0){
+                        a_inserer=' '.repeat(j);
+                    }
                 }
-                zoneSource.value=contenu.substring(0, startPos)+a_inserer+contenu.substring(endPos);
-                zoneSource.selectionStart=startPos+a_inserer.length;
-                zoneSource.selectionEnd=startPos+a_inserer.length;
+                zoneSource.value=contenu.substring(0,startPos) + a_inserer + contenu.substring(endPos);
+                zoneSource.selectionStart=startPos + a_inserer.length;
+                zoneSource.selectionEnd=startPos + a_inserer.length;
                 zoneSource.scrollTo({left:0});
-                 
             }
-            return
+            return;
         }else if((e.keyCode == 86) && (e.ctrlKey == true)){
-         /*
-            pour une raison que je ne comprends pas, 
-            Google Chrome fait bouger le scroll vertical d'une textarea
-            quand on sélectionne une ligne y compris le retour à la ligne de fin
-            et qu'on la copie sur elle même ... dans certains cas
-         
-         */
-         if(zoneSource.scrollTop!==this.#global_tableau_des_textareas[e.target.id].scrolltop){
-          zoneSource.scrollTop=this.#global_tableau_des_textareas[e.target.id].scrolltop;
-         }
+            /*
+              pour une raison que je ne comprends pas, 
+              Google Chrome fait bouger le scroll vertical d'une textarea
+              quand on sélectionne une ligne y compris le retour à la ligne de fin
+              et qu'on la copie sur elle même ... dans certains cas
+              
+            */
+            if(zoneSource.scrollTop !== this.#global_tableau_des_textareas[e.target.id].scrolltop){
+                zoneSource.scrollTop=this.#global_tableau_des_textareas[e.target.id].scrolltop;
+            }
         }
         return false;
-    }    
-    
+    }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #initialiser_editeur_pour_une_textarea1(obj){
         var id_de_la_text_area='';
@@ -1854,20 +1774,13 @@ class interface1{
         }else{
             id_de_la_text_area=obj;
         }
-        this.#global_tableau_des_textareas[id_de_la_text_area]={
-            mode      : mode ,
-            scrolltop : 0    ,
-        };
+        this.#global_tableau_des_textareas[id_de_la_text_area]={mode:mode,scrolltop:0};
         document.getElementById(id_de_la_text_area).addEventListener('mouseup',this.#mouse_up_sur_editeur1.bind(this));
         document.getElementById(id_de_la_text_area).addEventListener('keydown',this.#keydown_sur_editeur1.bind(this));
         document.getElementById(id_de_la_text_area).addEventListener('keyup',this.#analyse_key_up_editeur1.bind(this));
-                
-
     }
-    
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     inserer_source1(nomFonction,id_de_la_textarea){
         var i=0;
@@ -1878,90 +1791,198 @@ class interface1{
         var zoneSource = document.getElementById(id_de_la_textarea);
         if((nomFonction === 'choix') || (nomFonction === 'boucle') || (nomFonction === 'appelf') || (nomFonction === 'affecte')){
             if(zoneSource.selectionStart !== zoneSource.selectionEnd){
-                alert('la sélection ne doit pas contenir un caractère')
-                return
+                alert('la sélection ne doit pas contenir un caractère');
+                return;
             }
             var position_selection=zoneSource.selectionStart;
-            var texte_debut=zoneSource.value.substr(0,zoneSource.selectionStart);
-            var texte_fin=zoneSource.value.substr(zoneSource.selectionStart);
+            var texte_debut = zoneSource.value.substr(0,zoneSource.selectionStart);
+            var texte_fin = zoneSource.value.substr(zoneSource.selectionStart);
             j=0;
-            for(i=texte_debut.length-1;i>=0;i--){
+            for(i=texte_debut.length - 1;i >= 0;i--){
                 j++;
-                if(texte_debut.substr(i,1)==='\n'){
+                if(texte_debut.substr(i,1) === '\n'){
                     break;
                 }
             }
             j--;
-            if(j>0){
+            if(j > 0){
                 espaces=' '.repeat(j);
             }
             var de1 = ' '.repeat(NBESPACESREV);
             if(nomFonction === 'choix'){
                 toAdd='choix(';
-                toAdd+=('\n' + espaces + de1 + 'si(');
-                toAdd+=('\n' + espaces + de1 + de1 + 'condition(');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'non(');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + de1 + '( egal(vrai , vrai) ),');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + de1 + 'et( egal( vrai , vrai ) )');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + ')');
-                toAdd+=('\n' + espaces + de1 + de1 + '),');
-                toAdd+=('\n' + espaces + de1 + de1 + 'alors(');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'affecte( a , 1 )');
-                toAdd+=('\n' + espaces + de1 + de1 + ')');
-                toAdd+=('\n' + espaces + de1 + '),');
-                toAdd+=('\n' + espaces + de1 + 'sinonsi(');
-                toAdd+=('\n' + espaces + de1 + de1 + 'condition( (true) ),');
-                toAdd+=('\n' + espaces + de1 + de1 + 'alors(');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'affecte(a , 1)');
-                toAdd+=('\n' + espaces + de1 + de1 + ')');
-                toAdd+=('\n' + espaces + de1 + '),');
-                toAdd+=('\n' + espaces + de1 + 'sinon(');
-                toAdd+=('\n' + espaces + de1 + de1 + 'alors(');
-                toAdd+=('\n' + espaces + de1 + de1 + de1 + 'affecte(a , 1)');
-                toAdd+=('\n' + espaces + de1 + de1 + ')');
-                toAdd+=('\n' + espaces + de1 + de1 + '#(finsinon)');
-                toAdd+=('\n' + espaces + de1 + '),');
-                toAdd+=('\n' + espaces + '),');
-                toAdd+=('\n' + espaces + '#(finchoix suite du source)');
+                toAdd+='\n' + espaces + de1 + 'si(';
+                toAdd+='\n' + espaces + de1 + de1 + 'condition(';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + 'non(';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + de1 + '( egal(vrai , vrai) ),';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + de1 + 'et( egal( vrai , vrai ) )';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + ')';
+                toAdd+='\n' + espaces + de1 + de1 + '),';
+                toAdd+='\n' + espaces + de1 + de1 + 'alors(';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + 'affecte( a , 1 )';
+                toAdd+='\n' + espaces + de1 + de1 + ')';
+                toAdd+='\n' + espaces + de1 + '),';
+                toAdd+='\n' + espaces + de1 + 'sinonsi(';
+                toAdd+='\n' + espaces + de1 + de1 + 'condition( (true) ),';
+                toAdd+='\n' + espaces + de1 + de1 + 'alors(';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + 'affecte(a , 1)';
+                toAdd+='\n' + espaces + de1 + de1 + ')';
+                toAdd+='\n' + espaces + de1 + '),';
+                toAdd+='\n' + espaces + de1 + 'sinon(';
+                toAdd+='\n' + espaces + de1 + de1 + 'alors(';
+                toAdd+='\n' + espaces + de1 + de1 + de1 + 'affecte(a , 1)';
+                toAdd+='\n' + espaces + de1 + de1 + ')';
+                toAdd+='\n' + espaces + de1 + de1 + '#(finsinon)';
+                toAdd+='\n' + espaces + de1 + '),';
+                toAdd+='\n' + espaces + '),';
+                toAdd+='\n' + espaces + '#(finchoix suite du source)';
             }else if(nomFonction === 'boucle'){
                 toAdd='boucle(';
-                toAdd+=('\n' + espaces + de1 + 'initialisation(affecte(i , 0)),');
-                toAdd+=('\n' + espaces + de1 + 'condition(inf(i , tab.length)),');
-                toAdd+=('\n' + espaces + de1 + 'increment(affecte(i , i+1)),');
-                toAdd+=('\n' + espaces + de1 + 'faire(');
-                toAdd+=('\n' + espaces + de1 + de1 + 'affecte(a , 1)');
-                toAdd+=('\n' + espaces + de1 + ')');
-                toAdd+=('\n' + espaces + '),');
-                toAdd+=('\n' + espaces + '#(fin boucle, suite du source)');
+                toAdd+='\n' + espaces + de1 + 'initialisation(affecte(i , 0)),';
+                toAdd+='\n' + espaces + de1 + 'condition(inf(i , tab.length)),';
+                toAdd+='\n' + espaces + de1 + 'increment(affecte(i , i+1)),';
+                toAdd+='\n' + espaces + de1 + 'faire(';
+                toAdd+='\n' + espaces + de1 + de1 + 'affecte(a , 1)';
+                toAdd+='\n' + espaces + de1 + ')';
+                toAdd+='\n' + espaces + '),';
+                toAdd+='\n' + espaces + '#(fin boucle, suite du source)';
             }else if(nomFonction === 'appelf'){
                 toAdd='appelf(';
-                toAdd+=('\n' + espaces + de1 + 'r(variableDeRetour),');
-                toAdd+=('\n' + espaces + de1 + 'element(nomElement),');
-                toAdd+=('\n' + espaces + de1 + 'nomf(nomFonction),');
-                toAdd+=('\n' + espaces + de1 + 'p(parametre1),');
-                toAdd+=('\n' + espaces + de1 + 'p(parametre2)');
-                toAdd+=('\n' + espaces + '),');
-                toAdd+=('\n' + espaces + '#(fin appelf),');
+                toAdd+='\n' + espaces + de1 + 'r(variableDeRetour),';
+                toAdd+='\n' + espaces + de1 + 'element(nomElement),';
+                toAdd+='\n' + espaces + de1 + 'nomf(nomFonction),';
+                toAdd+='\n' + espaces + de1 + 'p(parametre1),';
+                toAdd+='\n' + espaces + de1 + 'p(parametre2)';
+                toAdd+='\n' + espaces + '),';
+                toAdd+='\n' + espaces + '#(fin appelf),';
             }else if(nomFonction === 'affecte'){
                 toAdd='affecte(nomVariable , valeurVariable),';
             }
-            zoneSource.value=(texte_debut + toAdd + texte_fin);
-            zoneSource.selectionStart = position_selection;
-            zoneSource.selectionEnd   = position_selection;
+            zoneSource.value=texte_debut + toAdd + texte_fin;
+            zoneSource.selectionStart=position_selection;
+            zoneSource.selectionEnd=position_selection;
             zoneSource.focus();
             return;
         }
-    }    
+    }
     
     /*
-      =====================================================================================================================
+      =============================================================================================================
+      function lancer_un_travail_en_arriere_plan
+      =============================================================================================================
+    */
+    lancer_un_travail_en_arriere_plan(parametre){
+        if(!(window.Worker)){
+            return;
+        }
+        if(APP_KEY==='fta'){
+            return;
+        }
+        
+        if(this.#programme_en_arriere_plan === null){
+            try{
+                this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
+            }catch(e){
+                console.log('e=',e);
+                return;
+            }
+        }
+        this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+            console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
+            this.traite_message_recupere_du_worker(message_recu_du_worker);
+        };
+        var json_param = JSON.parse(parametre);
+        if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
+            var liste_des_id_des_sources='';
+            var ob={};
+            for(ob in json_param.liste_des_taches){
+                liste_des_id_des_sources+=',' + json_param.liste_des_taches[ob].id_source;
+            }
+            if(liste_des_id_des_sources != ''){
+                liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
+                var remplacer_par = prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :');
+                if(remplacer_par !== null){
+                    json_param.remplacer_par=remplacer_par;
+                    console.log(json_param);
+                    console.log('on envoie le message');
+                    try{
+                        this.#programme_en_arriere_plan.postMessage({'type_de_message':'déclencher_un_travail','parametres':json_param});
+                    }catch(e){
+                        console.log('e=',e);
+                    }
+                    console.log('le message est envoyé sans erreur');
+                }
+            }
+        }else if("supprimer_un_commentaire1" === json_param.nom_du_travail_en_arriere_plan){
+            this.#programme_en_arriere_plan.postMessage({'type_de_message':'déclencher_un_travail','parametres':json_param});
+        }else{
+            console.error('%c module_interface1 87 le travail "' + json_param.nom_du_travail_en_arriere_plan + '" n\'est pas dans la liste ','background:yellow;');
+        }
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    traite_message_recupere_du_worker(message_recu_du_worker){
+     
+        console.log('%cdans interface traite_message_recupere_du_worker , message_recu_du_worker=','background:yellow;' , message_recu_du_worker );
+        
+        if(message_recu_du_worker.data.hasOwnProperty('type_de_message')  ){
+            if(message_recu_du_worker.data.type_de_message==="recuperer_les_travaux_en_session"){
+                if(message_recu_du_worker.data.tableau_des_travaux.length>0){
+                    this.#programme_en_arriere_plan.postMessage({'type_de_message':'integrer_les_travaux_en_session','tableau_des_travaux':message_recu_du_worker.data.tableau_des_travaux});
+                }else{
+                    console.log('pas de travaux à intégrer')
+                }
+             }
+         
+        }else if(message_recu_du_worker.data.hasOwnProperty('donnees_recues_du_message') ){
+           console.log('%cconfirmation de la réception d\'un message=','background:green;' , message_recu_du_worker );
+        }else{
+         console.log('traitement non prévu');
+        }
+    }
+    /*
+      =============================================================================================================
+    */
+    #charger_le_module_des_taches_en_arrière_plan(par){
+        if(APP_KEY==='fta'){
+            return;
+        }
+        if(!(window.Worker)){
+            return;
+        }
+
+        console.log('#charger_le_module_des_taches_en_arrière_plan');
+        
+        if(this.#programme_en_arriere_plan === null){
+            console.log('on charge le worker')
+            this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js" ); // , { type: "module" }
+        }
+        console.log(this.#programme_en_arriere_plan);
+        var that=this;
+        this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+            console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
+            that.traite_message_recupere_du_worker(message_recu_du_worker);
+        };
+        
+        this.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
+        console.log('pas d\'erreur !');
+    }
+    /*
+      =============================================================================================================
     */
     executerCesActionsPourLaPageLocale2(par){
-//        console.log('dans executerCesActionsPourLaPageLocale2 par=',par);
         var i=0;
         for(i=0;i < par.length;i++){
-
             switch (par[i].nomDeLaFonctionAappeler){
+             
+                case '#charger_le_module_des_taches_en_arrière_plan':
+                    if(APP_KEY!=='fta'){
+                        this.#charger_le_module_des_taches_en_arrière_plan(par[i].parametre);
+                    }
+                    break;
+
                 case '#ne_rien_faire1':
                     this.#ne_rien_faire1(par[i].parametre);
                     break;
@@ -1979,12 +2000,11 @@ class interface1{
                     break;
                     
                 default:
-                    console.log(('fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler));
+                    console.log('fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler);
                     break;
                     
             }
         }
     }
-    
 }
 export{interface1};

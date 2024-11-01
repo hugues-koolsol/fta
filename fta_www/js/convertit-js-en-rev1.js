@@ -2273,6 +2273,15 @@ function traiteAssignmentExpress1(element,niveau,opt){
             }else{
                 return(astjs_logerreur({status:false,message:'erreur dans traiteAssignmentExpress1 0147 ',element:element}));
             }
+        }else if((element.right) && (element.right.type === 'TemplateLiteral')){
+         
+            var obj1 = traiteUneComposante(element.right,niveau,false,false);
+            if(obj1.status === true){
+
+                t+=valeurLeft + '' + obj1.value + ')';
+            }else{
+                return(astjs_logerreur({status:false,message:'erreur dans traiteAssignmentExpress1 1385',element:element}));
+            }
         }else{
             return(astjs_logerreur({status:false,'message':'erreur traiteAssignmentExpress1 1023 pour ' + element.right.type,element:element}));
         }
@@ -2429,35 +2438,6 @@ function traiteExpression1(element,niveau){
             }else{
                 return(astjs_logerreur({status:false,'message':'erreur pour traiteDeclaration1 928 ' + element.type,element:element}));
             }
-            /*
-              }else if('AssignmentExpression' === element.expression.type){
-              var objass = traiteAssignmentExpress1(element.expression,niveau,{});
-              if(objass.status === true){
-              t+=objass.value;
-              }else{
-              return(astjs_logerreur({status:false,'message':'erreur traiteExpression1 318 pour '+element.type,element:element}));
-              }
-              }else if('UpdateExpression' === element.expression.type){
-              var objass = traiteUpdateExpress1(element.expression,niveau,{'sansLF':true});
-              if(objass.status === true){
-              t+=objass.value+'';
-              }else{
-              return(astjs_logerreur({status:false,'message':'erreur traiteExpression1 765 pour '+element.type,element:element}));
-              }
-              }else if('CallExpression' === element.expression.type){
-              var obj1 = traiteCallExpression1(element.expression,niveau,element,{});
-              if(obj1.status === true){
-              t+=obj1.value+'';
-              }else{
-              return(astjs_logerreur({status:false,'message':'erreur pour traiteExpression1 827 '+element.type,element:element}));
-              }
-              }else if('Identifier' === element.expression.type){
-              t+=element.expression.name;
-              }else if('Literal' === element.expression.type){
-              t+=element.expression.raw;
-              
-              }else if('UnaryExpression' === element.expression.type){
-            */
         }else{
             return(astjs_logerreur({status:false,'message':'erreur traiteExpression1 1124 pour ' + element.expression.type,element:element}));
         }

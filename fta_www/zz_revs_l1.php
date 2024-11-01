@@ -4,7 +4,6 @@ require_once('aa_include.php');
 initialiser_les_services(true,true);
 /* sess,bdd*/
 
-
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
@@ -19,12 +18,9 @@ if((isset($_GET['supprimer_tout'])) && ($_GET['supprimer_tout'] === '1')){
     sql_inclure_reference(14);
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_14.php');
-    /*
-    
-    DELETE FROM b1.tbl_revs
-    WHERE `chx_cible_rev` = :chx_cible_rev ;
-
-    */
+    /* === ATTENTION === 
+Le fichier des requêtes sql js est à regénérer et/ou à intégrer 
+*/
     /*sql_inclure_fin*/
     
     $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
@@ -58,13 +54,18 @@ $o1.='<h1>Liste des revs de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_
 $__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);
+/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);*/
+
 if(isset($_GET['button_chercher'])){
- $__xpage=0;
+
+    $__xpage=0;
+
 }else{
- $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+
+    $__xpage=(int)($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']);
 }
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__xpage , true ) . '</pre>' ; exit(0);
+
+/*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__xpage , true ) . '</pre>' ; exit(0);*/
 $__nbEnregs=0;
 $chi_id_rev=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_rev',BNF);
 $chp_provenance_rev=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_provenance_rev',BNF);
@@ -134,31 +135,14 @@ $o1.='   <div>'.CRLF;
 $o1.='    <label for="chi_id_rev">id rev</label>'.CRLF;
 $o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_rev')?'autofocus="autofocus"':'').' />'.CRLF;
 $o1.='   </div>'.CRLF;
-
 $o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
-
 $o1.='</form>'.CRLF;
 $__debut=$__xpage*$__nbMax;
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_13.php');
-/*
-SELECT 
-`T0`.`chi_id_rev` , `T0`.`chp_provenance_rev` , `T0`.`chx_source_rev` , `T1`.`chp_nom_source` , `T0`.`chp_valeur_rev` , 
-`T0`.`chp_type_rev` , `T0`.`chp_niveau_rev` , `T0`.`chp_pos_premier_rev` , `T0`.`chp_commentaire_rev`
- FROM b1.tbl_revs T0
- LEFT JOIN b1.tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
-WHERE (`T0`.`chx_cible_rev` = :T0_chx_cible_rev
- AND `T0`.`chp_provenance_rev` LIKE :T0_chp_provenance_rev
- AND `T0`.`chx_source_rev` = :T0_chx_source_rev
- AND `T1`.`chp_nom_source` LIKE :T1_chp_nom_source1
- AND `T1`.`chp_nom_source` NOT LIKE :T1_chp_nom_source2
- AND `T0`.`chp_valeur_rev` LIKE :T0_chp_valeur_rev
- AND `T0`.`chp_commentaire_rev` LIKE :T0_chp_commentaire_rev
- AND `T0`.`chi_id_rev` = :T0_chi_id_rev)
- ORDER BY  `T0`.`chp_provenance_rev` ASC, `T0`.`chx_source_rev` ASC
- LIMIT :quantitee OFFSET :debut ;
-
+/* === ATTENTION === 
+Le fichier des requêtes sql js est à regénérer et/ou à intégrer 
 */
 /*sql_inclure_fin*/
 
@@ -341,22 +325,18 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
         if($chaine_a_remplacer !== ''){
 
             /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_taches=' . $liste_des_taches;*/
-         
             $__parametres_pour_travail_en_arriere_plan=array(
                 'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
-                'chaine_a_remplacer'   => $chaine_a_remplacer,
-                'liste_des_taches'     => $liste_des_taches,
+                'chaine_a_remplacer' => $chaine_a_remplacer,
+                'liste_des_taches' => $liste_des_taches,
                 'critere_de_recherche' => $tt['where0'],
-                'provenance'           => 'source'
-            );
+                'provenance' => 'source');
             $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
             $paramUrl=str_replace('\\','\\\\',$paramUrl);
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
             $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.CRLF;
-         
-
 
         }
 
@@ -369,7 +349,10 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
   
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
+$js_a_executer_apres_chargement=array( 
+ array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')),
+ array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array()),
+);
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);

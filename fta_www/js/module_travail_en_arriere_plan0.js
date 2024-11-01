@@ -1,7 +1,8 @@
+
 try{
- importScripts('./core6.js');
+    importScripts('./core6.js');
 }catch(e){
- debugger
+    debugger;
 }
 importScripts('./convertit-php-en-rev0.js');
 importScripts('./php.js');
@@ -12,7 +13,7 @@ var liste_des_taches_en_arriere_plan = [];
 var travail_en_cours=false;
 var tache_en_cours=false;
 /*
-  ====================================================================================================================
+  =====================================================================================================================
 */
 function enregistrer_les_sources_en_base(params,fonction_apres){
     var r= new XMLHttpRequest();
@@ -90,22 +91,21 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
     };
     var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'enregistrer_les_sources_en_base'},'params':params};
     try{
-        r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
+        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
         console.error('e=',e);
         /* whatever(); */
         liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
         tache_en_cours=false;
         setTimeout(function(){
-            fonction_apres(params.arg); // traitement_apres_remplacement_chaine_en_bdd
+            fonction_apres(params.arg);
         },16);
         return({status:false});
     }
     return({status:true});
 }
-
 /*
-  =======================================================================================================================================
+  =====================================================================================================================
 */
 function traite_un_remplacement(id_tache,arg){
     import('./module_html.js').then(function(Module){
@@ -117,8 +117,10 @@ function traite_un_remplacement(id_tache,arg){
                   
                   attention ci dessous, la clé est une chaine
                 */
-                if((String(id_source) === String(liste_des_taches_en_arriere_plan[j].id_source)) && (liste_des_taches_en_arriere_plan[j].etat !== 'terminée')){
-                    console.log(('liste_des_taches_en_arriere_plan[' + j + ']'),liste_des_taches_en_arriere_plan[j]);
+                if((String(id_source) === String(liste_des_taches_en_arriere_plan[j].id_source))
+                 && (liste_des_taches_en_arriere_plan[j].etat !== 'terminée')
+                ){
+                    console.log('liste_des_taches_en_arriere_plan[' + j + ']',liste_des_taches_en_arriere_plan[j]);
                     var le_source=arg[id_source];
                     if(le_source.nom_source.lastIndexOf('.') >= 0){
                         var extension = le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
@@ -128,20 +130,20 @@ function traite_un_remplacement(id_tache,arg){
                         for(k in le_source['tab']){
                             var e = le_source['tab'][k];
                             tab.push([
-                                e[(n + 0)],
-                                e[(n + 1)],
-                                e[(n + 2)],
-                                e[(n + 3)],
-                                e[(n + 4)],
-                                e[(n + 5)],
-                                e[(n + 6)],
-                                e[(n + 7)],
-                                e[(n + 8)],
-                                e[(n + 9)],
-                                e[(n + 10)],
-                                e[(n + 11)],
-                                e[(n + 12)],
-                                e[(n + 13)]
+                                e[n+0],
+                                e[n+1],
+                                e[n+2],
+                                e[n+3],
+                                e[n+4],
+                                e[n+5],
+                                e[n+6],
+                                e[n+7],
+                                e[n+8],
+                                e[n+9],
+                                e[n+10],
+                                e[n+11],
+                                e[n+12],
+                                e[n+13]
                             ]);
                         }
                         if((extension === '.html') || (extension === '.htm') || (extension === '.php')){
@@ -198,7 +200,7 @@ function traite_un_remplacement(id_tache,arg){
     return;
 }
 /*
-  =======================================================================================================================================
+  =====================================================================================================================
 */
 function traite_une_suppression(id_tache,arg){
     import('./module_html.js').then(function(Module){
@@ -210,8 +212,10 @@ function traite_une_suppression(id_tache,arg){
                   
                   attention ci dessous, la clé est une chaine
                 */
-                if((String(id_source) === String(liste_des_taches_en_arriere_plan[j].id_source)) && (liste_des_taches_en_arriere_plan[j].etat !== 'terminée')){
-                    console.log(('liste_des_taches_en_arriere_plan[' + j + ']'),liste_des_taches_en_arriere_plan[j]);
+                if((String(id_source) === String(liste_des_taches_en_arriere_plan[j].id_source))
+                 && (liste_des_taches_en_arriere_plan[j].etat !== 'terminée')
+                ){
+                    console.log('liste_des_taches_en_arriere_plan[' + j + ']',liste_des_taches_en_arriere_plan[j]);
                     var le_source=arg[id_source];
                     if(le_source.nom_source.lastIndexOf('.') >= 0){
                         var extension = le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
@@ -221,23 +225,22 @@ function traite_une_suppression(id_tache,arg){
                         for(k in le_source['tab']){
                             var e = le_source['tab'][k];
                             tab.push([
-                                e[(n + 0)],
-                                e[(n + 1)],
-                                e[(n + 2)],
-                                e[(n + 3)],
-                                e[(n + 4)],
-                                e[(n + 5)],
-                                e[(n + 6)],
-                                e[(n + 7)],
-                                e[(n + 8)],
-                                e[(n + 9)],
-                                e[(n + 10)],
-                                e[(n + 11)],
-                                e[(n + 12)],
-                                e[(n + 13)]
+                                e[n+0],
+                                e[n+1],
+                                e[n+2],
+                                e[n+3],
+                                e[n+4],
+                                e[n+5],
+                                e[n+6],
+                                e[n+7],
+                                e[n+8],
+                                e[n+9],
+                                e[n+10],
+                                e[n+11],
+                                e[n+12],
+                                e[n+13]
                             ]);
                         }
-
                         var tab1 = reIndicerLeTableau(tab);
                         if((extension === '.html') || (extension === '.htm') || (extension === '.php')){
                             tache_en_cours=true;
@@ -292,8 +295,8 @@ function traite_une_suppression(id_tache,arg){
     },16);
     return;
 }
-/*  
-  ====================================================================================================================
+/*
+  =====================================================================================================================
 */
 function traitement_apres_suppression_ligne_en_bdd(arg){
     console.log('tache_en_cours=',tache_en_cours,'liste_des_taches_en_arriere_plan = ',liste_des_taches_en_arriere_plan);
@@ -327,8 +330,8 @@ function traitement_apres_suppression_ligne_en_bdd(arg){
     }
     return;
 }
-/*  
-  ====================================================================================================================
+/*
+  =====================================================================================================================
 */
 function traitement_apres_remplacement_chaine_en_bdd(arg){
     console.log('tache_en_cours=',tache_en_cours,'liste_des_taches_en_arriere_plan = ',liste_des_taches_en_arriere_plan);
@@ -362,8 +365,8 @@ function traitement_apres_remplacement_chaine_en_bdd(arg){
     }
     return;
 }
-/*  
-  ====================================================================================================================
+/*
+  =====================================================================================================================
 */
 function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_en_cours,traitement_a_lancer_si_succes){
     var r= new XMLHttpRequest();
@@ -436,22 +439,19 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
         },100);
         return;
     };
-    var ajax_param={
-        'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'supprimer_un_commentaire1'},
-        'parametre':parametre_supprimer_un_commentaire1,'tache_en_cours':la_tache_en_cours
-    };
+    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'supprimer_un_commentaire1'},'parametre':parametre_supprimer_un_commentaire1,'tache_en_cours':la_tache_en_cours};
     try{
-        r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
+        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
         console.error('e=',e);
         /* whatever(); */
         return({status:false});
     }
-    return({status:true}); 
+    return({status:true});
 }
 /*
   
-  ==============================================================================================================
+  =====================================================================================================================
 */
 function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cours,traitement_a_lancer_si_succes){
     var r= new XMLHttpRequest();
@@ -526,7 +526,7 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
     };
     var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'remplacer_des_chaine1'},'parametre':parametre_remplacer_des_chaines1,'tache_en_cours':la_tache_en_cours};
     try{
-        r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
+        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
         console.error('e=',e);
         /* whatever(); */
@@ -536,11 +536,10 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
 }
 /*
   
-  ==============================================================================================================
+  =====================================================================================================================
 */
 function lancer_le_travail(){
     var le_timeout=null;
-    
     /*
       un travail est constitué de une ou plusieurs tâches
     */
@@ -551,28 +550,22 @@ function lancer_le_travail(){
         */
         var i={};
         for(i in liste_des_travaux_en_arriere_plan){
-            console.log('%cje traite ','background:lightblue;color:red;',liste_des_travaux_en_arriere_plan[i].etat_du_travail , liste_des_travaux_en_arriere_plan[i]);
+            console.log('%cje traite ','background:lightblue;color:red;',liste_des_travaux_en_arriere_plan[i].etat_du_travail,liste_des_travaux_en_arriere_plan[i]);
             if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_enregistré_en_session'){
                 try{
-                    if(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.nom_du_travail_en_arriere_plan === 'replacer_des_chaines1'){
+                    if(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.nom_du_travail_en_arriere_plan === 'replacer_des_chaines1'
+                    ){
                         if(tache_en_cours === true){
                             return;
                         }
                         liste_des_taches_en_arriere_plan=[];
                         var tache={};
                         for(tache in liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches){
-//                            console.log('%c liste_des_travaux_en_arriere_plan['+i+'].donnees_recues_du_message' , 'color:red;background:yellow;', liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message)
                             if(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches[tache].etat === 'a_faire'){
                                 liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches[tache].etat='maj_bdd_et_récupération_du_tableau';
                                 liste_des_taches_en_arriere_plan.push(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches[tache]);
-//                                console.log('%cje lance remplacer_des_chaine1 ','background:lightgreen;color:red;');
                                 tache_en_cours=true;
-                                remplacer_des_chaine1(
-                                    liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message,
-                                    tache,
-                                    traitement_apres_remplacement_chaine_en_bdd
-                                );
-                                
+                                remplacer_des_chaine1(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message,tache,traitement_apres_remplacement_chaine_en_bdd);
                                 clearTimeout(le_timeout);
                                 return;
                             }
@@ -584,7 +577,6 @@ function lancer_le_travail(){
                         liste_des_travaux_en_arriere_plan[i].etat_du_travail='travail_en_arriere_plan_terminé';
                         travail_en_cours=false;
                     }else if("supprimer_un_commentaire1" === liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.nom_du_travail_en_arriere_plan){
-                     
                         /*
                           un travail avec qu'une seule tache
                         */
@@ -594,18 +586,11 @@ function lancer_le_travail(){
                         liste_des_taches_en_arriere_plan=[];
                         var tache={};
                         for(tache in liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches){
-//                            console.log('%c liste_des_travaux_en_arriere_plan['+i+'].donnees_recues_du_message' , 'color:red;background:yellow;', liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message)
                             if(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches[tache].etat === 'a_faire'){
                                 liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches[tache].etat='maj_bdd_et_récupération_du_tableau';
                                 liste_des_taches_en_arriere_plan.push(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.liste_des_taches[tache]);
-//                                console.log('%cje lance remplacer_des_chaine1 ','background:lightgreen;color:red;');
                                 tache_en_cours=true;
-                                supprimer_un_commentaire1(
-                                  liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message,
-                                  tache,
-                                  traitement_apres_suppression_ligne_en_bdd
-                                );
-                                
+                                supprimer_un_commentaire1(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message,tache,traitement_apres_suppression_ligne_en_bdd);
                                 clearTimeout(le_timeout);
                                 return;
                             }
@@ -616,8 +601,6 @@ function lancer_le_travail(){
                         */
                         liste_des_travaux_en_arriere_plan[i].etat_du_travail='travail_en_arriere_plan_terminé';
                         travail_en_cours=false;
-                        
-                        
                     }
                 }catch(e){
                     console.error('e=',e);
@@ -632,7 +615,7 @@ function lancer_le_travail(){
 }
 /*
   
-  ==============================================================================================================
+  =====================================================================================================================
 */
 function supprimer_un_travail_en_arriere_plan_en_session(){
     var r= new XMLHttpRequest();
@@ -700,10 +683,12 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
     };
     var i={};
     for(i in liste_des_travaux_en_arriere_plan){
-        if(('travail_en_arriere_plan_terminé' === liste_des_travaux_en_arriere_plan[i].etat_du_travail) || ('travail_en_arriere_plan_en_erreur' === liste_des_travaux_en_arriere_plan[i].etat_du_travail)){
+        if(('travail_en_arriere_plan_terminé' === liste_des_travaux_en_arriere_plan[i].etat_du_travail)
+         || ('travail_en_arriere_plan_en_erreur' === liste_des_travaux_en_arriere_plan[i].etat_du_travail)
+        ){
             var ajax_param={'call':{'lib':'php','file':'session','funct':'supprimer_un_travail_en_arriere_plan_en_session'},'travail_en_arriere_plan':liste_des_travaux_en_arriere_plan[i]};
             try{
-                r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
+                r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
             }catch(e){
                 console.error('e=',e);
                 /* whatever(); */
@@ -716,7 +701,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
 }
 /*
   
-  ==============================================================================================================
+  =====================================================================================================================
 */
 function enregistrer_un_travail_en_arriere_plan_en_session(){
     var r= new XMLHttpRequest();
@@ -780,7 +765,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
         if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
             var ajax_param={'call':{'lib':'php','file':'session','funct':'enregistrer_un_travail_en_arriere_plan_en_session'},'travail_en_arriere_plan':liste_des_travaux_en_arriere_plan[i]};
             try{
-                r.send(('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param))));
+                r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
             }catch(e){
                 console.error('e=',e);
                 /* whatever(); */
@@ -793,7 +778,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
 }
 /*
   
-  ==============================================================================================================
+  =====================================================================================================================
 */
 function lancer_les_travaux(){
     if(travail_en_cours === false){
@@ -858,11 +843,90 @@ function lancer_les_travaux(){
         }
     }
 }
+function recuperer_les_travaux_en_session(){
+ 
+    console.log('dans le worker fonction recuperer_les_travaux_en_session') 
+    var r= new XMLHttpRequest();
+    r.open("POST",'../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
+    r.timeout=6000;
+    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+    r.onreadystatechange=function(){
+        if((r.readyState != 4) || (r.status != 200)){
+            if(r.status == 404){
+                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
+            }else if(r.status == 500){
+                /*
+                  
+                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+                  au niveau du php za_ajax mais sait-on jamais
+                */
+                if(global_messages['e500logged'] == false){
+                    try{
+                    }catch(e){
+                        console.error('e=',e);
+                    }
+                }
+            }
+            return;
+        }
+        try{
+            var jsonRet = JSON.parse(r.responseText);
+            if(jsonRet.status === 'OK'){
+//                console.log('il y a des travaux en arrière plan',jsonRet.valeur);
+                var tableau_des_travaux = [];
+                var i={};
+                for(i in jsonRet.valeur){
+                    console.log(jsonRet.valeur[i]);
+                    tableau_des_travaux.push(jsonRet.valeur[i]);
+                }
+                console.log('tableau_des_travaux=',tableau_des_travaux);
+                var message_a_retourner={type_de_message:'recuperer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux};
+                postMessage(message_a_retourner);
+/*                
+                if( !(window.Worker)){
+                    return;
+                }
+                if(global_programme_en_arriere_plan === null){
+                    global_programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
+                }
+                global_programme_en_arriere_plan.postMessage({'type_de_message':'integrer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux});
+*/                
+                return;
+            }else{
+                /* pas de travail en arrière plan' */
+                return;
+            }
+        }catch(e){
+            console.log('r=',r);
+            return;
+        }
+    };
+    r.onerror=function(e){
+        console.error('e=',e);
+        /* whatever(); */
+        return;
+    };
+    r.ontimeout=function(e){
+        console.error('e=',e);
+        return;
+    };
+    var ajax_param={'call':{'lib':'php','file':'session','funct':'recuperer_les_travaux_en_arriere_plan_de_la_session'}};
+    try{
+        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
+    }catch(e){
+        console.error('e=',e);
+        /* whatever(); */
+        return({status:false});
+    }
+ 
+ 
+}
 /*
   
-  ==============================================================================================================
+  =====================================================================================================================
 */
 onmessage=function(message_recu){
+    console.log('message_recu=' , message_recu );
     var donnees_recues_du_message = JSON.parse(JSON.stringify(message_recu.data));
     if(donnees_recues_du_message.type_de_message === "déclencher_un_travail"){
         var maintenant= new Date().getTime();
@@ -875,8 +939,10 @@ onmessage=function(message_recu){
             donnees_recues_du_message.tableau_des_travaux[i].etat_du_travail='travail_en_arriere_plan_enregistré_en_session';
             liste_des_travaux_en_arriere_plan.push(donnees_recues_du_message.tableau_des_travaux[i]);
         }
+    }else if("recuperer_les_travaux_en_session" === donnees_recues_du_message.type_de_message){
+        recuperer_les_travaux_en_session();
     }else{
-        console.error(('type de message non traité : ' + donnees_recues_du_message.type_de_message));
+        console.error('type de message non traité : ' + donnees_recues_du_message.type_de_message);
     }
     var message_a_retourner={'donnees_recues_du_message':donnees_recues_du_message,'liste_des_travaux_en_arriere_plan':liste_des_travaux_en_arriere_plan};
     postMessage(message_a_retourner);
