@@ -184,11 +184,8 @@ $consUrlRedir.=(($chp_valeur_rev !== '')?'&amp;chp_valeur_rev='.rawurlencode($ch
 $consUrlRedir.=(($chp_commentaire_rev !== '')?'&amp;chp_commentaire_rev='.rawurlencode($chp_commentaire_rev):'');
 $boutons_avant='';
 
-if(APP_KEY === 'fta'){
+$boutons_avant='<a class="yydanger" href="'.BNF.'?supprimer_tout=1">supprimer tout</a>';
 
-    $boutons_avant='<a class="yydanger" href="'.BNF.'?supprimer_tout=1">supprimer tout</a>';
-
-}
 
 $__nbEnregs=$tt['nombre'];
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
@@ -205,7 +202,8 @@ $__lsttbl.='<th>niveau(3)</th>';
 $__lsttbl.='<th>pos(5)</th>';
 $__lsttbl.='<th>comm(13)</th>';
 $__lsttbl.='</tr></thead><tbody>';
-$tableau_pour_webworker001=array();
+$tableau_pour_webworker_sources=array();
+$tableau_pour_webworker_sql=array();
 foreach($tt['valeur'] as $k0 => $v0){
     $__lsttbl.='<tr>';
     $__lsttbl.='<td data-label="" style="text-align:left!important;">';
@@ -214,7 +212,7 @@ foreach($tt['valeur'] as $k0 => $v0){
 
     if(($v0['T0.chp_valeur_rev'] === '#') && ($v0['T0.chp_type_rev'] === 'f')){
 
-        $__lsttbl.=' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler('.$v0['T0.chx_source_rev'].','.$v0['T0.chi_id_rev'].')"  title="supprimer ce commentaire et recompiler">⚙️</a>';
+        $__lsttbl.=' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler('.$v0['T0.chx_source_rev'].','.$v0['T0.chi_id_rev'].',&quot;'.$v0['T0.chp_provenance_rev'].'&quot;)"  title="supprimer ce commentaire et recompiler">⚙️</a>';
 
     }else{
 
@@ -280,21 +278,37 @@ foreach($tt['valeur'] as $k0 => $v0){
 
     if($chp_valeur_rev != ''){
 
+        if($v0['T0.chp_provenance_rev'] === 'source'){
 
-        if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']])){
+            if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']])){
 
-            $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+                $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
-        }else if(!isset($tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
+            }else if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
-            $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+                $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
-        }else{
+            }else{
 
-            $tableau_pour_webworker001[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+                $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+            }
+
+        }else if($v0['T0.chp_provenance_rev'] === 'sql'){
+         
+            if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']])){
+
+                $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+
+            }else if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
+
+                $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+
+            }else{
+
+                $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+            }
         }
-
-
+        
     }
 
     $__lsttbl.='<td style="text-align:left;">';
@@ -313,10 +327,10 @@ foreach($tt['valeur'] as $k0 => $v0){
 }
 $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
 
-if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
+if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
 
     $liste_des_taches=array();
-    foreach($tableau_pour_webworker001 as $k1 => $v1){
+    foreach($tableau_pour_webworker_sources as $k1 => $v1){
         $chaine_a_remplacer=$k1;
         foreach($v1 as $k2 => $v2){
             $liste_des_taches[]=array( 'id_source' => $k2, 'etat' => 'a_faire');
@@ -336,7 +350,37 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.CRLF;
+            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sources, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.CRLF;
+
+        }
+
+    }
+
+}
+if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
+
+    $liste_des_taches=array();
+    foreach($tableau_pour_webworker_sql as $k1 => $v1){
+        $chaine_a_remplacer=$k1;
+        foreach($v1 as $k2 => $v2){
+            $liste_des_taches[]=array( 'id_source' => $k2, 'etat' => 'a_faire');
+        }
+
+        if($chaine_a_remplacer !== ''){
+
+            /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_taches=' . $liste_des_taches;*/
+            $__parametres_pour_travail_en_arriere_plan=array(
+                'nom_du_travail_en_arriere_plan' => 'replacer_des_chaines1',
+                'chaine_a_remplacer' => $chaine_a_remplacer,
+                'liste_des_taches' => $liste_des_taches,
+                'critere_de_recherche' => $tt['where0'],
+                'provenance' => 'sql');
+            $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
+            $paramUrl=str_replace('\\','\\\\',$paramUrl);
+            $paramUrl=str_replace('\'','\\\'',$paramUrl);
+            $paramUrl=str_replace('"','\\"',$paramUrl);
+            $paramUrl=rawurlencode($paramUrl);
+            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sql, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sql</a>'.CRLF;
 
         }
 
@@ -344,15 +388,13 @@ if((count($tableau_pour_webworker001) >= 1) && (($__nbEnregs <= $__nbMax) || ($c
 
 }
 
+
 /* $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;*/
 /*
   
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( 
- array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')),
- array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array()),
-);
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')), array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array()));
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);

@@ -1,6 +1,4 @@
-
 /*
-  
   =====================================================================================================================
   classe permettant de gérer les éléments d'interface de cet ensemble de programmes
   =====================================================================================================================
@@ -106,12 +104,11 @@ class interface1{
       function supprimer_ce_commentaire_et_recompiler
       =============================================================================================================
     */
-    supprimer_ce_commentaire_et_recompiler(id_source,id_rev){
+    supprimer_ce_commentaire_et_recompiler(id_source,id_rev,provenance){
         console.log(id_source + ' ' + id_rev);
-        var param={'nom_du_travail_en_arriere_plan':'supprimer_un_commentaire1','liste_des_taches':[{'etat':'a_faire',id_source:id_source,id_rev:id_rev}]};
+        var param={'nom_du_travail_en_arriere_plan':'supprimer_un_commentaire1','liste_des_taches':[{'etat':'a_faire',id_source:id_source,id_rev:id_rev,provenance:provenance}]};
         this.lancer_un_travail_en_arriere_plan(JSON.stringify(param));
     }
-
     /*
       =============================================================================================================
       function reduire_la_text_area
@@ -555,11 +552,17 @@ class interface1{
         }
         var lsta1 = bod.getElementsByTagName('a');
         for(i=0;i < lsta1.length;i++){
-            if((lsta1[i].href) && (lsta1[i].href.indexOf('javascript') >= 0)){
-                if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
-                }else{
-                    lsta1[i].addEventListener("click",this.action_quand_click_sur_lien_javascript,false);
+            /* 
+              un try car pour les liens dans le svg, indexOf ne fonctionne pas ! 
+            */
+            try{
+                if((lsta1[i].href) && (lsta1[i].href.indexOf('javascript') >= 0)){
+                    if((lsta1[i].className) && (lsta1[i].className.indexOf('noHide') >= 0)){
+                    }else{
+                        lsta1[i].addEventListener("click",this.action_quand_click_sur_lien_javascript,false);
+                    }
                 }
+            }catch(e){
             }
         }
         /*
@@ -1487,7 +1490,7 @@ class interface1{
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
+                    var cookieString = CLE_APP + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;
@@ -1673,6 +1676,10 @@ class interface1{
   on ne fait rien mais on le fait bien ici
   console.log('#ne_rien_faire1 par=',par);
 
+
+
+      
+      
 */
     #global_tableau_des_textareas={};
     /*
@@ -1865,20 +1872,18 @@ class interface1{
             return;
         }
     }
-    
     /*
       =============================================================================================================
       function lancer_un_travail_en_arriere_plan
       =============================================================================================================
     */
     lancer_un_travail_en_arriere_plan(parametre){
-        if(!(window.Worker)){
+        if( !(window.Worker)){
             return;
         }
-        if(APP_KEY==='fta'){
+        if(CLE_APP === 'fta'){
             return;
         }
-        
         if(this.#programme_en_arriere_plan === null){
             try{
                 this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
@@ -1886,11 +1891,12 @@ class interface1{
                 console.log('e=',e);
                 return;
             }
+            that=this;
+            this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+                console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
+                that.traite_message_recupere_du_worker(message_recu_du_worker);
+            };
         }
-        this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
-            console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-            this.traite_message_recupere_du_worker(message_recu_du_worker);
-        };
         var json_param = JSON.parse(parametre);
         if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
             var liste_des_id_des_sources='';
@@ -1919,45 +1925,39 @@ class interface1{
             console.error('%c module_interface1 87 le travail "' + json_param.nom_du_travail_en_arriere_plan + '" n\'est pas dans la liste ','background:yellow;');
         }
     }
-    
     /*
       =============================================================================================================
     */
     traite_message_recupere_du_worker(message_recu_du_worker){
-     
-        console.log('%cdans interface traite_message_recupere_du_worker , message_recu_du_worker=','background:yellow;' , message_recu_du_worker );
-        
-        if(message_recu_du_worker.data.hasOwnProperty('type_de_message')  ){
-            if(message_recu_du_worker.data.type_de_message==="recuperer_les_travaux_en_session"){
-                if(message_recu_du_worker.data.tableau_des_travaux.length>0){
+        console.log('%cdans interface traite_message_recupere_du_worker , message_recu_du_worker=','background:yellow;',message_recu_du_worker);
+        if(message_recu_du_worker.data.hasOwnProperty('type_de_message')){
+            if(message_recu_du_worker.data.type_de_message === "recuperer_les_travaux_en_session"){
+                if(message_recu_du_worker.data.tableau_des_travaux.length > 0){
                     this.#programme_en_arriere_plan.postMessage({'type_de_message':'integrer_les_travaux_en_session','tableau_des_travaux':message_recu_du_worker.data.tableau_des_travaux});
                 }else{
-                    console.log('pas de travaux à intégrer')
+                    console.log('pas de travaux à intégrer');
                 }
-             }
-         
-        }else if(message_recu_du_worker.data.hasOwnProperty('donnees_recues_du_message') ){
-           console.log('%cconfirmation de la réception d\'un message=','background:green;' , message_recu_du_worker );
+            }
+        }else if(message_recu_du_worker.data.hasOwnProperty('donnees_recues_du_message')){
+            console.log('%cconfirmation de la réception d\'un message=','background:lightpink;',message_recu_du_worker);
         }else{
-         console.log('traitement non prévu');
+            console.log('traitement non prévu');
         }
     }
     /*
       =============================================================================================================
     */
     #charger_le_module_des_taches_en_arrière_plan(par){
-        if(APP_KEY==='fta'){
+        if(CLE_APP === 'fta'){
             return;
         }
-        if(!(window.Worker)){
+        if( !(window.Worker)){
             return;
         }
-
         console.log('#charger_le_module_des_taches_en_arrière_plan');
-        
         if(this.#programme_en_arriere_plan === null){
-            console.log('on charge le worker')
-            this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js" ); // , { type: "module" }
+            console.log('on charge le worker');
+            this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
         }
         console.log(this.#programme_en_arriere_plan);
         var that=this;
@@ -1965,7 +1965,6 @@ class interface1{
             console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
             that.traite_message_recupere_du_worker(message_recu_du_worker);
         };
-        
         this.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
         console.log('pas d\'erreur !');
     }
@@ -1976,13 +1975,12 @@ class interface1{
         var i=0;
         for(i=0;i < par.length;i++){
             switch (par[i].nomDeLaFonctionAappeler){
-             
                 case '#charger_le_module_des_taches_en_arrière_plan':
-                    if(APP_KEY!=='fta'){
+                    if(CLE_APP !== 'fta'){
                         this.#charger_le_module_des_taches_en_arrière_plan(par[i].parametre);
                     }
                     break;
-
+                    
                 case '#ne_rien_faire1':
                     this.#ne_rien_faire1(par[i].parametre);
                     break;

@@ -1,17 +1,109 @@
-
-try{
-    importScripts('./core6.js');
-}catch(e){
-    debugger;
-}
-importScripts('./convertit-php-en-rev0.js');
-importScripts('./php.js');
-importScripts('./convertit-js-en-rev1.js');
-importScripts('./javascript.js');
+try{importScripts('./core6.js');}catch(e){debugger;}
+try{importScripts('./convertit-php-en-rev0.js');}catch(e){debugger;}
+try{importScripts('./php.js');}catch(e){debugger;}
+try{importScripts('./convertit-js-en-rev1.js');}catch(e){debugger;}
+try{importScripts('./javascript.js');}catch(e){debugger;}
+try{importScripts('./sql.js');}catch(e){debugger;}
 var liste_des_travaux_en_arriere_plan = [];
 var liste_des_taches_en_arriere_plan = [];
 var travail_en_cours=false;
 var tache_en_cours=false;
+
+
+
+
+/*
+  =====================================================================================================================
+*/
+function enregistrer_les_sql_en_base(params,fonction_apres){
+    var r= new XMLHttpRequest();
+    r.open("POST",'../za_ajax.php?enregistrer_les_sql_en_base',true);
+    r.timeout=120000;
+    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+    r.onreadystatechange=function(){
+        if((r.readyState != 4) || (r.status != 200)){
+            if(r.status == 404){
+                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
+            }else if(r.status == 500){
+                /*
+                  
+                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
+                  au niveau du php za_ajax mais sait-on jamais
+                */
+                if(global_messages['e500logged'] == false){
+                    try{
+                    }catch(e){
+                        console.error('e=',e);
+                    }
+                }
+            }
+            return;
+        }
+        try{
+            var jsonRet = JSON.parse(r.responseText);
+            if(jsonRet.status == 'OK'){
+                console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
+                liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
+                tache_en_cours=false;
+                setTimeout(function(){
+                    fonction_apres(params.arg);
+                },16);
+                return;
+            }else{
+                console.error('r.responseText=',r.responseText);
+                liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
+                tache_en_cours=false;
+                setTimeout(function(){
+                    fonction_apres(params.arg);
+                },16);
+                return;
+            }
+        }catch(e){
+            console.error('e=',e);
+            /* whatever(); */
+            liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
+            tache_en_cours=false;
+            setTimeout(function(){
+                fonction_apres(params.arg);
+            },16);
+            return;
+        }
+    };
+    r.onerror=function(e){
+        console.error('e=',e);
+        /* whatever(); */
+        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
+        tache_en_cours=false;
+        setTimeout(function(){
+            fonction_apres(params.arg);
+        },16);
+        return;
+    };
+    r.ontimeout=function(e){
+        console.error('e=',e);
+        /* whatever(); */
+        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
+        tache_en_cours=false;
+        setTimeout(function(){
+            fonction_apres(params.arg);
+        },16);
+        return;
+    };
+    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'enregistrer_les_sql_en_base'},'params':params};
+    try{
+        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
+    }catch(e){
+        console.error('e=',e);
+        /* whatever(); */
+        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
+        tache_en_cours=false;
+        setTimeout(function(){
+            fonction_apres(params.arg);
+        },16);
+        return({status:false});
+    }
+    return({status:true});
+}
 /*
   =====================================================================================================================
 */
@@ -107,7 +199,8 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
 /*
   =====================================================================================================================
 */
-function traite_un_remplacement(id_tache,arg){
+function apres_traite_un_remplacement(id_tache,arg , provenance ){
+    console.log('%c dans apres_traite_un_remplacement, provenance = ','color:yellow;background:red;',provenance )
     import('./module_html.js').then(function(Module){
         __module_html1= new Module.traitements_sur_html('__module_html1');
         var id_source={};
@@ -146,19 +239,36 @@ function traite_un_remplacement(id_tache,arg){
                                 e[n+13]
                             ]);
                         }
-                        if((extension === '.html') || (extension === '.htm') || (extension === '.php')){
+
+                        if( 
+                           (provenance==='source' && ((extension === '.html') || (extension === '.htm') || (extension === '.php')|| (extension === '.js')))
+                          || (provenance==='sql' )
+                         
+                        ){
                             tache_en_cours=true;
-                            if((extension === '.html') || (extension === '.htm')){
-                                var objSource = __module_html1.tabToHtml1(tab,0,false,0);
-                            }else if(extension === '.php'){
-                                var objSource = parsePhp0(tab,0,0);
+                            if(provenance==='sql'){
+                               var objSource = tabToSql1(tab,0,0,false);
+                               
+                            }else if(provenance==='source'){
+                                if((extension === '.html') || (extension === '.htm')){
+                                    var objSource = __module_html1.tabToHtml1(tab,0,false,0);
+                                }else if((extension === '.js') ){
+                                    var objSource = parseJavascript0(tab,1,0);
+                                }else if(extension === '.php'){
+                                    var objSource = parsePhp0(tab,0,0);
+                                }
                             }
                             if(objSource.status === true){
                                 var obj = arrayToFunct1(tab,true,false);
-                                if(obj.status === true){
+                                if(obj.status === true && provenance==='source'){
                                     arg[id_source].tab=[];
                                     var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
                                     enregistrer_les_sources_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
+                                    return;
+                                }else if(obj.status === true && provenance==='sql'){
+                                    arg[id_source].tab=[];
+                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
+                                    enregistrer_les_sql_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
                                     return;
                                 }else{
                                     liste_des_taches_en_arriere_plan[j].etat='en_erreur';
@@ -177,6 +287,7 @@ function traite_un_remplacement(id_tache,arg){
                                 return;
                             }
                         }else{
+                            console.log('%c un traitement est à mettre en place = ','color:yellow;background:red;' )
                             liste_des_taches_en_arriere_plan[j].etat='a_mettre_en_place';
                             tache_en_cours=false;
                             setTimeout(function(){
@@ -242,18 +353,23 @@ function traite_une_suppression(id_tache,arg){
                             ]);
                         }
                         var tab1 = reIndicerLeTableau(tab);
-                        if((extension === '.html') || (extension === '.htm') || (extension === '.php')){
+                        if((extension === '.html') || (extension === '.htm') || (extension === '.php') || (extension === '.js')){
                             tache_en_cours=true;
                             if((extension === '.html') || (extension === '.htm')){
                                 var objSource = __module_html1.tabToHtml1(tab1,0,false,0);
+                                console.log('%c on traite un html ' , 'color:red;background:yellow;' , objSource.status )
+                            }else if((extension === '.js') ){
+                                var objSource = parseJavascript0(tab,1,0);
+                                console.log('%c on traite un js ' , 'color:red;background:yellow;' , objSource.status )
                             }else if(extension === '.php'){
                                 var objSource = parsePhp0(tab1,0,0);
+                                console.log('%c on traite un php ' , 'color:red;background:yellow;' , objSource.status )
                             }
                             if(objSource.status === true){
                                 var obj = arrayToFunct1(tab1,true,false);
                                 if(obj.status === true){
                                     arg[id_source].tab1=[];
-                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
+                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value,provenance:null};
                                     enregistrer_les_sources_en_base(params,traitement_apres_suppression_ligne_en_bdd);
                                     return;
                                 }else{
@@ -333,7 +449,8 @@ function traitement_apres_suppression_ligne_en_bdd(arg){
 /*
   =====================================================================================================================
 */
-function traitement_apres_remplacement_chaine_en_bdd(arg){
+function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
+
     console.log('tache_en_cours=',tache_en_cours,'liste_des_taches_en_arriere_plan = ',liste_des_taches_en_arriere_plan);
     if(tache_en_cours === false){
         var i=0;
@@ -341,7 +458,11 @@ function traitement_apres_remplacement_chaine_en_bdd(arg){
             if(liste_des_taches_en_arriere_plan[i].etat === 'maj_bdd_et_récupération_du_tableau'){
                 liste_des_taches_en_arriere_plan[i].etat='en_cours';
                 tache_en_cours=true;
-                traite_un_remplacement(i,arg);
+                if(jsonRet && jsonRet.hasOwnProperty('input') && jsonRet && jsonRet.input.hasOwnProperty('parametre') && jsonRet.input.parametre.hasOwnProperty('provenance')){
+                    apres_traite_un_remplacement(i,arg , jsonRet.input.parametre.provenance );
+                }else{
+                    apres_traite_un_remplacement(i,arg , null );
+                }
                 return;
             }
         }
@@ -352,7 +473,11 @@ function traitement_apres_remplacement_chaine_en_bdd(arg){
             if(liste_des_taches_en_arriere_plan[i].etat === 'maj_bdd_et_récupération_du_tableau'){
                 liste_des_taches_en_arriere_plan[i].etat='en_cours';
                 une_tache_en_cours=true;
-                traite_un_remplacement(i,arg);
+                if(jsonRet && jsonRet.hasOwnProperty('input') && jsonRet && jsonRet.input.hasOwnProperty('parametre') && jsonRet.input.parametre.hasOwnProperty('provenance')){
+                 apres_traite_un_remplacement(i,arg , jsonRet.input.parametre.provenance );
+                }else{
+                 apres_traite_un_remplacement(i,arg , null);
+                }
                 return;
             }
         }
@@ -481,7 +606,13 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
             var jsonRet = JSON.parse(r.responseText);
             if(jsonRet.status == 'OK'){
                 console.log('jsonRet=',jsonRet);
-                traitement_a_lancer_si_succes(jsonRet.valeurs);
+
+                traitement_a_lancer_si_succes(jsonRet.valeurs,jsonRet);
+                /*
+                peut valoir :
+                traitement_apres_remplacement_chaine_en_bdd
+                
+                */
             }else{
                 console.error('r.responseText=',r.responseText);
                 parametre_remplacer_des_chaines1.etat_du_travail='travail_en_arriere_plan_en_erreur';
@@ -844,8 +975,7 @@ function lancer_les_travaux(){
     }
 }
 function recuperer_les_travaux_en_session(){
- 
-    console.log('dans le worker fonction recuperer_les_travaux_en_session') 
+    console.log('dans le worker fonction recuperer_les_travaux_en_session');
     var r= new XMLHttpRequest();
     r.open("POST",'../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
     r.timeout=6000;
@@ -872,7 +1002,6 @@ function recuperer_les_travaux_en_session(){
         try{
             var jsonRet = JSON.parse(r.responseText);
             if(jsonRet.status === 'OK'){
-//                console.log('il y a des travaux en arrière plan',jsonRet.valeur);
                 var tableau_des_travaux = [];
                 var i={};
                 for(i in jsonRet.valeur){
@@ -882,15 +1011,6 @@ function recuperer_les_travaux_en_session(){
                 console.log('tableau_des_travaux=',tableau_des_travaux);
                 var message_a_retourner={type_de_message:'recuperer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux};
                 postMessage(message_a_retourner);
-/*                
-                if( !(window.Worker)){
-                    return;
-                }
-                if(global_programme_en_arriere_plan === null){
-                    global_programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
-                }
-                global_programme_en_arriere_plan.postMessage({'type_de_message':'integrer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux});
-*/                
                 return;
             }else{
                 /* pas de travail en arrière plan' */
@@ -918,15 +1038,13 @@ function recuperer_les_travaux_en_session(){
         /* whatever(); */
         return({status:false});
     }
- 
- 
 }
 /*
   
   =====================================================================================================================
 */
 onmessage=function(message_recu){
-    console.log('message_recu=' , message_recu );
+    console.log('message_recu=',message_recu);
     var donnees_recues_du_message = JSON.parse(JSON.stringify(message_recu.data));
     if(donnees_recues_du_message.type_de_message === "déclencher_un_travail"){
         var maintenant= new Date().getTime();

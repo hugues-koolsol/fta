@@ -2282,6 +2282,8 @@ function traiteAssignmentExpress1(element,niveau,opt){
             }else{
                 return(astjs_logerreur({status:false,message:'erreur dans traiteAssignmentExpress1 1385',element:element}));
             }
+        }else if((element.right) && (element.right.type === 'ThisExpression')){
+                t+=valeurLeft + 'this)';
         }else{
             return(astjs_logerreur({status:false,'message':'erreur traiteAssignmentExpress1 1023 pour ' + element.right.type,element:element}));
         }
