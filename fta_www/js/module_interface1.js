@@ -1121,7 +1121,7 @@ class interface1{
                 lesDivs[i].style.top=paddingTopBody + 'px';
                 lesDivs[i].style.position='fixed';
                 lesDivs[i].style.width='100vw';
-                lesDivs[i].style.backgroundImage='linear-gradient(to bottom, #B0BEC5, #607D8B)';
+//                lesDivs[i].style.backgroundImage='linear-gradient(to bottom, #B0BEC5, #607D8B)';
                 lesDivs[i].addEventListener('wheel',this.mouseWheelOnMenu,false);
                 paddingTopBody+=hauteurMenuUtilisateur;
             }
@@ -1490,7 +1490,7 @@ class interface1{
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = CLE_APP + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
+                    var cookieString = APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;
@@ -1881,7 +1881,7 @@ class interface1{
         if( !(window.Worker)){
             return;
         }
-        if(CLE_APP === 'fta'){
+        if(APP_KEY === 'fta'){
             return;
         }
         if(this.#programme_en_arriere_plan === null){
@@ -1929,7 +1929,7 @@ class interface1{
       =============================================================================================================
     */
     traite_message_recupere_du_worker(message_recu_du_worker){
-        console.log('%cdans interface traite_message_recupere_du_worker , message_recu_du_worker=','background:yellow;',message_recu_du_worker);
+//        console.log('%cdans interface traite_message_recupere_du_worker , message_recu_du_worker=','background:yellow;',message_recu_du_worker);
         if(message_recu_du_worker.data.hasOwnProperty('type_de_message')){
             if(message_recu_du_worker.data.type_de_message === "recuperer_les_travaux_en_session"){
                 if(message_recu_du_worker.data.tableau_des_travaux.length > 0){
@@ -1948,18 +1948,15 @@ class interface1{
       =============================================================================================================
     */
     #charger_le_module_des_taches_en_arrière_plan(par){
-        if(CLE_APP === 'fta'){
-            return;
-        }
         if( !(window.Worker)){
             return;
         }
-        console.log('#charger_le_module_des_taches_en_arrière_plan');
+//        console.log('#charger_le_module_des_taches_en_arrière_plan');
         if(this.#programme_en_arriere_plan === null){
             console.log('on charge le worker');
             this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
         }
-        console.log(this.#programme_en_arriere_plan);
+//        console.log(this.#programme_en_arriere_plan);
         var that=this;
         this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
             console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
@@ -1976,9 +1973,9 @@ class interface1{
         for(i=0;i < par.length;i++){
             switch (par[i].nomDeLaFonctionAappeler){
                 case '#charger_le_module_des_taches_en_arrière_plan':
-                    if(CLE_APP !== 'fta'){
+                    /* if(APP_KEY !== 'fta'){ */
                         this.#charger_le_module_des_taches_en_arrière_plan(par[i].parametre);
-                    }
+                    /* } */
                     break;
                     
                 case '#ne_rien_faire1':

@@ -468,16 +468,6 @@ function sq0($s){
 
 }
 /*
-  =====================================================================================================================
-  pour les programmes sources, il ne faut pas transformer les caractères "bizarres"
-  pour pouvoir intégrer la fonction sq0 çi dessus
-*/
-/*
-function sq1($s){
-    return(SQLite3::escapeString($s));
-}
-*/
-/*
 
   ========================================================================================
 */
@@ -782,7 +772,6 @@ function html_header1($parametres){
     $o1.='<script type="text/javascript">'.CRLF;
     $o1.=' var __debut_execution=performance.now();'.CRLF;
     $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
-    $o1.=' var NOMBRE_DE_TRAVAUX_EN_ARRIERE_PLAN='.(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])?count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']):0).';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
     $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
@@ -790,14 +779,16 @@ function html_header1($parametres){
     $o1.=' var CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
 
     $o1.='</script>'.CRLF;
-    $o1.='  <script type="text/javascript" rel="preload" as="script" defer src="js/interface0.js"></script>'.CRLF;
-    $o1.='  <script type="module" src="js/module_interface1.js"></script>'.CRLF;
+    $o1.='<script type="text/javascript" rel="preload" as="script" src="js/interface0.js"></script>'.CRLF;
+    $o1.='<script type="module" src="js/module_interface1.js"></script>'.CRLF;
     $o1.=''.CRLF;
 
     $o1.=' </head>'.CRLF;
-    $o1.=' <body data-temp="temp">'.CRLF;
-
-    $o1.='<!-- '.$texte_base_css.' -->'.CRLF;
+    $o1.=' <body>'.CRLF;
+    /*
+      pour la phase de conception
+      $o1.='<!-- '.$texte_base_css.' -->'.CRLF;
+    */
 
 
     if(( !(isset($parametres['pas_de_menu'])))){

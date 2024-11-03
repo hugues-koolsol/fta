@@ -41,6 +41,7 @@ class requete_sql{
     #globale_rev_requete='';
     #globale_type_requete='';
     #globale_commentaire_requete='';
+    #globale_debut_url='za_ajax.php';
     /*
       =============================================================================================================
       =============================================================================================================
@@ -48,7 +49,12 @@ class requete_sql{
     */
     constructor(nom_de_la_variable,nom_de_la_div_de_travail){
         this.#nom_de_la_variable=nom_de_la_variable;
-        this.#div_de_travail=document.getElementById(nom_de_la_div_de_travail);
+        if(nom_de_la_div_de_travail!==null){
+            this.#div_de_travail=document.getElementById(nom_de_la_div_de_travail);
+        }else{
+            /* dans un webworker, la référence est en amont */
+            this.#globale_debut_url='../'+this.#globale_debut_url;
+        }
         this.nouvelle(this.apres_chargement_des_bases);
     }
     /*
@@ -504,62 +510,69 @@ class requete_sql{
       function apres_chargement_des_bases
     */
     apres_chargement_des_bases(init,that){
-        if((globale_requete_en_cours.hasOwnProperty('T0.chi_id_requete')) && (globale_requete_en_cours['T0.chi_id_requete'] > 0)){
-            that.#globale_id_requete=globale_requete_en_cours['T0.chi_id_requete'];
-            that.#globale_rev_requete=globale_requete_en_cours['T0.cht_rev_requete'];
-            that.#globale_type_requete=globale_requete_en_cours['T0.chp_type_requete'];
-            that.#globale_commentaire_requete=((globale_requete_en_cours['T0.cht_commentaire_requete'] === null)?'':globale_requete_en_cours['T0.cht_commentaire_requete']);
-            that.#enrichir_tableau_des_bases_tables_champs(that,init);
-            that.convertir_rev_pour_construction(that,init);
-            that.#mettre_en_stokage_local_et_afficher();
-        }else{
-            var sauvegarde = localStorage.getItem(CLE_APP + '_derniere_requete');
-            if(sauvegarde !== null){
-                sauvegarde=JSON.parse(sauvegarde);
-                /*
-                  vérifier que init et sauvegarde correspondent
-                */
-                var correspondance=true;
-                var i={};
-                for(i in init.bases){
-                    if( !(sauvegarde.bases.hasOwnProperty(i))){
-                        correspondance=false;
-                    }
-                }
-                if(correspondance === true){
+
+        if(typeof globale_requete_en_cours==='undefined'){
+         /*
+           ne rien faire
+         */
+        }else if(typeof globale_requete_en_cours==='object'){
+            if((globale_requete_en_cours.hasOwnProperty('T0.chi_id_requete')) && (globale_requete_en_cours['T0.chi_id_requete'] > 0)){
+                that.#globale_id_requete=globale_requete_en_cours['T0.chi_id_requete'];
+                that.#globale_rev_requete=globale_requete_en_cours['T0.cht_rev_requete'];
+                that.#globale_type_requete=globale_requete_en_cours['T0.chp_type_requete'];
+                that.#globale_commentaire_requete=((globale_requete_en_cours['T0.cht_commentaire_requete'] === null)?'':globale_requete_en_cours['T0.cht_commentaire_requete']);
+                that.#enrichir_tableau_des_bases_tables_champs(that,init);
+                that.convertir_rev_pour_construction(that,init);
+                that.#mettre_en_stokage_local_et_afficher();
+            }else{
+                var sauvegarde = localStorage.getItem(APP_KEY + '_derniere_requete');
+                if(sauvegarde !== null){
+                    sauvegarde=JSON.parse(sauvegarde);
+                    /*
+                      vérifier que init et sauvegarde correspondent
+                    */
+                    var correspondance=true;
                     var i={};
-                    for(i in sauvegarde.bases){
-                        if( !(init.bases.hasOwnProperty(i))){
+                    for(i in init.bases){
+                        if( !(sauvegarde.bases.hasOwnProperty(i))){
                             correspondance=false;
                         }
                     }
-                }
-                if(correspondance === true){
-                    var i={};
-                    for(i in init.bases){
-                        var j={};
-                        for(j in init.bases[i].tables){
-                            if( !(sauvegarde.bases[i].tables.hasOwnProperty(j))){
-                                correspondance=false;
-                            }
-                        }
-                        var j={};
-                        for(j in sauvegarde.bases[i].tables){
-                            if( !(init.bases[i].tables.hasOwnProperty(j))){
+                    if(correspondance === true){
+                        var i={};
+                        for(i in sauvegarde.bases){
+                            if( !(init.bases.hasOwnProperty(i))){
                                 correspondance=false;
                             }
                         }
                     }
-                }
-                if(correspondance === true){
-                    that.#obj_webs=JSON.parse(JSON.stringify(sauvegarde));
+                    if(correspondance === true){
+                        var i={};
+                        for(i in init.bases){
+                            var j={};
+                            for(j in init.bases[i].tables){
+                                if( !(sauvegarde.bases[i].tables.hasOwnProperty(j))){
+                                    correspondance=false;
+                                }
+                            }
+                            var j={};
+                            for(j in sauvegarde.bases[i].tables){
+                                if( !(init.bases[i].tables.hasOwnProperty(j))){
+                                    correspondance=false;
+                                }
+                            }
+                        }
+                    }
+                    if(correspondance === true){
+                        that.#obj_webs=JSON.parse(JSON.stringify(sauvegarde));
+                    }else{
+                        that.#obj_webs=JSON.parse(JSON.stringify(init));
+                    }
                 }else{
                     that.#obj_webs=JSON.parse(JSON.stringify(init));
                 }
-            }else{
-                that.#obj_webs=JSON.parse(JSON.stringify(init));
+                that.#mettre_en_stokage_local_et_afficher();
             }
-            that.#mettre_en_stokage_local_et_afficher();
         }
     }
     /*
@@ -575,22 +588,8 @@ class requete_sql{
       function mettre_en_stokage_local_et_afficher
     */
     #mettre_en_stokage_local_et_afficher(){
-        localStorage.setItem(CLE_APP + '_derniere_requete',JSON.stringify(this.#obj_webs));
+        localStorage.setItem(APP_KEY + '_derniere_requete',JSON.stringify(this.#obj_webs));
         this.#afficher_les_donnees();
-    }
-    /*
-      var stokage_local_derniere_requete
-      var fta_derniere_requete=localStorage.getItem("fta_traiteSql_dernier_fichier_charge");
-      if(fta_traiteSql_dernier_fichier_charge!==null){
-      dogid(nom_de_la_textarea).value=fta_traiteSql_dernier_fichier_charge;
-      }
-    */
-    /*
-      =============================================================================================================
-      =============================================================================================================
-    */
-    initialisation(){
-      // rien ici
     }
     /*
       =============================================================================================================
@@ -1083,6 +1082,9 @@ class requete_sql{
       function afficher_les_donnees
     */
     #afficher_les_donnees(){
+        if(this.#div_de_travail===null){
+          return;
+        }
         var rev_initial = document.getElementById('txtar1');
         this.#div_de_travail.innerHTML='';
         var t='';
@@ -1579,7 +1581,7 @@ class requete_sql{
         t+='<div>';
         t+='<label style="width:90%;display:inline-block" for="cht_commentaire_requete">commentaire : <input style="width:50%" type="text" id="cht_commentaire_requete" value="' + this.#globale_commentaire_requete.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;') + '"/></label>';
         t+='<br />';
-        t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.transform_rev_vers_sql(&quot;txtar1&quot; , &quot;txtar2&quot;);" title="convertir rev en SQL">R2S</a>';
+        t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.transform_textarea_rev_vers_sql(&quot;txtar1&quot; , &quot;txtar2&quot; , '+this.#globale_id_requete+');" title="convertir rev en SQL">R2S</a>';
         t+='<a class="yysucces" href="javascript:' + this.#nom_de_la_variable + '.bouton_ajouter_le_rev_en_base(' + this.#globale_id_requete + ')" title="ajouter en base">ajouter en base</a>';
         if(this.#globale_id_requete > 0){
             t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.bouton_modifier_le_rev_en_base(' + this.#globale_id_requete + ')" title="modifier_en_base">modifier en base(' + this.#globale_id_requete + ')</a>';
@@ -1619,7 +1621,7 @@ class requete_sql{
                 logerreur({status:false,'message':'url=' + url});
                 logerreur({status:false,message:JSON.stringify(en_entree)});
                 logerreur({status:false,message:JSON.stringify(donnees)});
-                return({status:'KO',message:'le retour n\'est pas en json'});
+                return({status:'KO',message:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
             }
         }catch(e){
             debugger;
@@ -1656,7 +1658,7 @@ class requete_sql{
                     'cht_commentaire_requete':
                     document.getElementById('cht_commentaire_requete').value
                 };
-                modifier_la_requete_en_base('za_ajax.php?modifier_la_requete_en_base',ajax_param,this).then((donnees) => {
+                modifier_la_requete_en_base(this.#globale_debut_url+'?modifier_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=',donnees);
                     if(donnees.status === 'OK'){
                         logerreur({status:true,message:' requête sauvegardée'});
@@ -1701,7 +1703,7 @@ class requete_sql{
                     document.getElementById('cht_commentaire_requete').value,
                     'id_courant':id_courant
                 };
-                enregistrer_la_requete_en_base('za_ajax.php?enregistrer_la_requete_en_base',ajax_param,this).then((donnees) => {
+                enregistrer_la_requete_en_base(this.#globale_debut_url+'?enregistrer_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=',donnees);
                     if(donnees.status === 'OK'){
                         var recharger_page = 'zz_requetes_a1.php?__action=__modification&__id=' + donnees.nouvel_id;
@@ -1834,17 +1836,13 @@ class requete_sql{
     /*
       =============================================================================================================
       =============================================================================================================
-      function transform_rev_vers_sql
+      function #transformer_requete_en_fonction_php
     */
-    #transformer_requete_en_fonction_php(type_de_requete,obj3){
+    #transformer_requete_en_fonction_php(type_de_requete,obj3,id_requete_en_base){
         var t='';
         var i=0;
         var c='';
-        var id_requete_en_base=0;
         var nouvelle_chaine='';
-        if(this.#globale_id_requete > 0){
-            id_requete_en_base=this.#globale_id_requete;
-        }
         var manuelle_sans_base_de_reference=false;
         if(type_de_requete === 'requete_manuelle'){
             var text_rev = document.getElementById('txtar1').value;
@@ -2344,6 +2342,7 @@ class requete_sql{
                 }
             }
             t+='    $sql0.=$where0;' + CRLF;
+
             if(this.#obj_webs.complements.length === 0){
                 t+='    /* ATTENTION : pas de complements ( order by , limit dans cette liste */' + CRLF;
                 t+='    $order0=\'\';' + CRLF;
@@ -2381,7 +2380,7 @@ class requete_sql{
             t+='        }' + CRLF;
             t+='        $stmt0->close();' + CRLF;
             t+='        $__nbEnregs=count($donnees0);' + CRLF;
-            t+='        if(($__nbEnregs >= $par[\'quantitee\'] || $_SESSION[CLE_APP][\'__filtres\'][$par[\'page_courante\']][\'champs\'][\'__xpage\'] > 0)){' + CRLF;
+            t+='        if(($__nbEnregs >= $par[\'quantitee\'] || $_SESSION[APP_KEY][\'__filtres\'][$par[\'page_courante\']][\'champs\'][\'__xpage\'] > 0)){' + CRLF;
             t+='            $sql1=\'SELECT COUNT(*) \'.$from0.$where0;' + CRLF;
             t+='            $__nbEnregs=$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->querySingle($sql1);' + CRLF;
             t+='        }' + CRLF;
@@ -2407,12 +2406,10 @@ class requete_sql{
     /*
       =============================================================================================================
       =============================================================================================================
-      function transform_rev_vers_sql
+      function transform_source_rev_vers_sql
     */
-    transform_rev_vers_sql(txtarea_source,txtarea_dest){
-        raz_messages('zone_global_messages');
-        __gi1.masquer_les_messages1('zone_global_messages');
-        var tableau1 = iterateCharacters2(document.getElementById(txtarea_source).value);
+    transform_source_rev_vers_sql(source_rev,id_requete){
+        var tableau1 = iterateCharacters2(source_rev);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
         if(obj1.status === true){
             var obj2 = tabToSql1(obj1.value,0,0,false);
@@ -2426,11 +2423,12 @@ class requete_sql{
                         str2=str2.replace(/ORDER BY /g,CRLF + 'ORDER BY');
                     }
                     if(str2.indexOf('LIMIT ') >= 0){
-                        str2=str2.replace(/LIMIT /g,CRLF + 'LIMIT');
+                        str2=str2.replace(/LIMIT /g,CRLF + 'LIMIT ');
                     }
                     obj2.value=str1 + str2;
                 }
-                dogid(txtarea_dest).value=obj2.value;
+//                dogid(txtarea_dest).value=obj2.value;
+
                 var obj3 = tabToSql1(obj1.value,0,0,true);
                 if(obj3.status === true){
                     var i=0;
@@ -2448,14 +2446,48 @@ class requete_sql{
                             }
                         }
                     }
-                    var obj4 = this.#transformer_requete_en_fonction_php(this.#obj_webs.type_de_requete,obj3);
+                    var obj4 = this.#transformer_requete_en_fonction_php(this.#obj_webs.type_de_requete,obj3, id_requete);
                     if(obj4.status === true){
-                        document.getElementById('txtar3').value=obj4.value;
+                        return({status:true,source_sql:obj2.value , source_php:obj4.value});
+                    }else{
+                        return(logerreur({status:false,source_sql:obj2.value ,message:'module_requete erreur 2455 erreur de conversion en php '}));
                     }
+                }else{
+                    return(logerreur({status:false,source_sql:obj2.value , message:'module_requete erreur 2456 erreur de conversion en sql '}));
+                }
+            }else{
+                return(logerreur({status:false,message:'module_requete erreur 2457 erreur de conversion en sql '}));
+            }
+        }else{
+            return(logerreur({status:false,message:'module_requete erreur 2458'}));
+        }         
+     
+    }
+    /*
+      =============================================================================================================
+      =============================================================================================================
+      function transform_textarea_rev_vers_sql
+    */
+    transform_textarea_rev_vers_sql(txtarea_source,txtarea_dest,id_requete){
+        if(typeof globale_requete_en_cours==='undefined'){
+         /*
+           ne rien faire
+         */
+        }else if(typeof globale_requete_en_cours==='object'){
+            raz_messages('zone_global_messages');
+            __gi1.masquer_les_messages1('zone_global_messages');
+            
+            var obj1=this.transform_source_rev_vers_sql(document.getElementById(txtarea_source).value,id_requete);
+            if(obj1.status===true){
+                document.getElementById(txtarea_dest).value=obj1.source_sql;
+                document.getElementById('txtar3').value=obj1.source_php;
+            }else{
+                if(obj1.hasOwnProperty('source_sql')){
+                    document.getElementById(txtarea_dest).value=obj1.source_sql;
                 }
             }
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         }
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     }
     /*
       =============================================================================================================
@@ -2479,8 +2511,9 @@ class requete_sql{
             return(that.#recupérer_un_fetch(url,ajax_param,that));
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_les_bases_de_la_cible_en_cours'}};
-        recuperer_les_bases_de_la_cible_en_cours('za_ajax.php?recuperer_les_bases_de_la_cible_en_cours',ajax_param,this).then((donnees) => {
+        recuperer_les_bases_de_la_cible_en_cours(this.#globale_debut_url+'?recuperer_les_bases_de_la_cible_en_cours',ajax_param,this).then((donnees) => {
             if(donnees.status === 'OK'){
+                console.log('bases_chargées');
                 this.#obj_init['bases']={};
                 var i={};
                 for(i in donnees.valeurs){
@@ -2543,7 +2576,7 @@ class requete_sql{
                 }
                 if(fonction_appelee_apres_chargement !== null){
                     fonction_appelee_apres_chargement(this.#obj_init,this);
-                    this.transform_rev_vers_sql('txtar1','txtar2');
+                    this.transform_textarea_rev_vers_sql('txtar1','txtar2',this.#globale_id_requete);
                 }else{
                     this.#obj_webs=JSON.parse(JSON.stringify(this.#obj_init));
                     this.#mettre_en_stokage_local_et_afficher();

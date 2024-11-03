@@ -28,8 +28,7 @@ if(isset($_GET['__action']) && $_GET['__action']=='__modification' && isset($_GE
          'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
      if($tt['statut'] === true){
-      $requete_en_cours=$tt['valeur'][0];
-     }else{
+         $requete_en_cours=$tt['valeur'][0];
      }
 }
 $o1.='<script type="text/javascript">'.CRLF;
@@ -46,7 +45,9 @@ print($o1);$o1='';
       </ul>
   </div>
   <h1>Requête Sql</h1>
-  <div id="div_de_travail" style="max-width:100%;"></div>
+  
+  <div id="div_de_travail" style="max-width:100%;">Veuillez patienter</div>
+  
   <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <br />
   <h4>php</h4>

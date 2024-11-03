@@ -58,6 +58,8 @@ function recupere_une_donnees_des_cibles($id){
            
          )
       ),
+      'tictactoe.html' => array( 'dossier' => 1),
+      'fta_inc/.htaccess' => array(),
       'fta_inc/.htaccess' => array(),
       'fta_inc/ajax/core/bdd.php' => array(),
       'fta_inc/ajax/core/file.php' => array(),
@@ -144,14 +146,16 @@ function recupere_une_donnees_des_cibles($id){
    $tableau_des_dossiers=array();
    foreach( $tab as $k1 => $v1){
      $dossier_cible=$dossier_racine.'/'.substr($k1,0,strrpos($k1,'/'));
-     if(!isset($tableau_des_dossiers[$dossier_cible])){
-        $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
-        $indice_du_dossier++;
+     if($dossier_cible==='../../ftb/'){
+     }else{
+         if(!isset($tableau_des_dossiers[$dossier_cible])){
+            $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
+            $indice_du_dossier++;
+         }
+         $tab[$k1]['dossier']=$tableau_des_dossiers[$dossier_cible];
      }
-     $tab[$k1]['dossier']=$tableau_des_dossiers[$dossier_cible];
-    
-    
    }
+//   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tab , true ) . '</pre>' ; exit(0);
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tableau_des_dossiers , true ) . '</pre>' ; exit(0);
 //   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tab , true ) . '</pre>' ; exit(0);
    foreach( $tab as $k1 => $v1){
@@ -327,8 +331,10 @@ function recupere_une_donnees_des_cibles($id){
 
    $contenu_table_dossiers ='';
    foreach( $tableau_des_dossiers as $k1 => $v1 ){
-    $contenu_table_dossiers.=",('".$v1."','".substr($k1,strlen('../../ftb'))."','1')";
-    
+       /* le dossier racine est déjà créé */
+       if(substr($k1,strlen('../../ftb'))!=='/'){
+           $contenu_table_dossiers.=",('".$v1."','".substr($k1,strlen('../../ftb'))."','1')";
+       }
    }
    if($contenu_table_dossiers!==''){
     
@@ -346,13 +352,22 @@ function recupere_une_donnees_des_cibles($id){
 
    $contenu_table_sources ='';
    foreach( $tab as $k1 => $v1 ){
-    if(isset($v1['chp_type_source'])){
-     $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."' , '".$v1['chp_type_source']."')\r\n";
+    if($v1['dossier']===1){
+       if(isset($v1['chp_type_source'])){
+        $contenu_table_sources.=",('".$k1 ."','1','".$v1['dossier']."' , '".$v1['chp_type_source']."')\r\n";
+       }else{
+        $contenu_table_sources.=",('".$k1 ."','1','".$v1['dossier']."' , 'normal')\r\n";
+       }
     }else{
-     $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."' , 'normal')\r\n";
+       if(isset($v1['chp_type_source'])){
+        $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."' , '".$v1['chp_type_source']."')\r\n";
+       }else{
+        $contenu_table_sources.=",('".substr($k1,strrpos( $k1 , '/' )+1) ."','1','".$v1['dossier']."' , 'normal')\r\n";
+       }
     }
     
    }
+//   echo __FILE__ . ' ' . __LINE__ . ' $contenu_table_sources = <pre>' . var_export( $contenu_table_sources , true ) . '</pre>' ; exit(0);
    if($contenu_table_sources!==''){
     
        $contenu_table_sources=substr($contenu_table_sources,1);

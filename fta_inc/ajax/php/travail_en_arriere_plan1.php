@@ -4,9 +4,14 @@
   =====================================================================================================================
 */
 function enregistrer_les_sql_en_base(&$data){
-/* 
+/*
     if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).CRLF.CRLF); fclose($fdtoto);}
-*/    
+    $data['input']['params']['id_source']
+    $data['input']['params']['source_rev']
+    $data['input']['params']['source_sql']
+    $data['input']['params']['source_php']
+    
+*/
     $data['status']='OK';
 }
 /*
@@ -31,7 +36,7 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
 */
     /*sql_inclure_fin*/
     
-    $tt=sql_62(array( 'T0_chi_id_source' => $data['input']['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[CLE_APP]['cible_courante']['chi_id_cible']));
+    $tt=sql_62(array( 'T0_chi_id_source' => $data['input']['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
 
@@ -109,7 +114,7 @@ function supprimer_un_commentaire1(&$data){
         $sql0='DELETE FROM tbl_revs WHERE  
          `chi_id_rev` IN ('.$liste_des_suppressions.')
           AND `chp_provenance_rev` =\''.$provenance.'\'
-          AND `chx_cible_rev` ='.$_SESSION[CLE_APP]['cible_courante']['chi_id_cible'].'
+          AND `chx_cible_rev` ='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
          ';
 /*
          if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql0='.$sql0.CRLF.CRLF); fclose($fdtoto);} 
@@ -128,7 +133,7 @@ function supprimer_un_commentaire1(&$data){
             LEFT JOIN tbl_sources T1 ON T1.chi_id_source = chx_source_rev
             WHERE `chx_source_rev` IN ('.sq0($liste_des_id_des_sources).')
               AND `chp_provenance_rev` =\''.$provenance.'\'
-              AND `chx_cible_rev` ='.$_SESSION[CLE_APP]['cible_courante']['chi_id_cible'].'
+              AND `chx_cible_rev` ='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
             ';
 /*
             if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ .CRLF.'$sql1='.CRLF.$sql1.CRLF.CRLF); fclose($fdtoto);} 
@@ -208,7 +213,7 @@ function remplacer_des_chaine1(&$data){
      `chp_valeur_rev` = \''.sq0($data['input']['parametre']['chaine_a_remplacer']).'\''.' 
       AND `chx_source_rev` IN ('.sq0($liste_des_id_des_sources).')  
       AND `chp_provenance_rev` =\''.$data['input']['parametre']['provenance'].'\'
-      AND `chx_cible_rev` ='.$_SESSION[CLE_APP]['cible_courante']['chi_id_cible'].'
+      AND `chx_cible_rev` ='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
     ';
 
 /*
@@ -229,7 +234,7 @@ function remplacer_des_chaine1(&$data){
         LEFT JOIN tbl_sources T1 ON T1.chi_id_source = chx_source_rev
         WHERE  `chx_source_rev` IN ('.sq0($liste_des_id_des_sources).') 
           AND `chp_provenance_rev` =\''.$data['input']['parametre']['provenance'].'\'
-          AND `chx_cible_rev` ='.$_SESSION[CLE_APP]['cible_courante']['chi_id_cible'].'
+          AND `chx_cible_rev` ='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
         ';
 /*
         if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql1'.$sql1.CRLF.CRLF); fclose($fdtoto);} 

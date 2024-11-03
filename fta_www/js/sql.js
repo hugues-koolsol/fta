@@ -205,7 +205,8 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                 if(operateur === 'concat'){
                     t+=',';
                 }else if(operateur === 'LIMIT'){
-                    t='LIMIT ' + t;
+
+                    t=' LIMIT ' + t;
                 }else if(operateur === '' && tab[tab[i][7]][1]==='' && tab[tab[i][7]][2]==='f'  && tab[tab[id][7]][1]==='dans' ){
                   /* suite d'éléments comme dans un IN () */
                     t+=',';
@@ -660,28 +661,35 @@ function tabToSql0(tab,id,niveau,options){
                 var liste_des_tris='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if(tab[j][7] === i){
-                        if((tab[j][1] === 'trier_par') && (tab[j][8] >= 1)){
-                            for(l=j + 1;(l < l01) && (tab[l][3] > tab[j][3]);l++){
-                                if(tab[l][7] === j){
-    //                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
-                                    options.tableau_des_alias=tableau_des_alias;
+                        if((tab[j][1] === 'complements')){
+                         
+                           for(k=j + 1;(k < l01) && (tab[k][3] > tab[j][3]);k++){
+                            
+                               if((tab[k][1] === 'trier_par') && (tab[k][8] >= 1)){
+                                   for(l=k + 1;(l < l01) && (tab[l][3] > tab[j][3]);l++){
+                                       if(tab[l][7] === k){
+           //                                var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
+                                           options.tableau_des_alias=tableau_des_alias;
 
-                                    var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
-                                    if(obj.status === true){
+                                           var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
+                                           if(obj.status === true){
 
-                                        if(obj.operateur && ( obj.operateur==='ASC' || obj.operateur==='DESC'  )){
-                                            liste_des_tris+=' ' + obj.value;
-                                        }else{
-                                            liste_des_tris+=', ' + obj.value;
-                                        }
-                                    }else{
-                                        return(logerreur({status:false,message:'0354 erreur sur conditions dans select '}));
-                                    }
-                                }
-                            }
+                                               if(obj.operateur && ( obj.operateur==='ASC' || obj.operateur==='DESC'  )){
+                                                   liste_des_tris+=' ' + obj.value;
+                                               }else{
+                                                   liste_des_tris+=', ' + obj.value;
+                                               }
+                                           }else{
+                                               return(logerreur({status:false,message:'0354 erreur sur conditions dans select '}));
+                                           }
+                                       }
+                                   }
+                               }
+                           }
                         }
                     }
                 }
+
                 if(liste_des_tris !== ''){
                     liste_des_tris=' ORDER BY ' + liste_des_tris.substr(1);
                     if(options.au_format_php===true){
@@ -692,19 +700,23 @@ function tabToSql0(tab,id,niveau,options){
                 var liste_des_limites='';
                 for(j=i + 1;(j < l01) && (tab[j][3] > tab[i][3]);j++){
                     if(tab[j][7] === i){
-                        if((tab[j][1] === 'limité_à') && (tab[j][8] >= 1)){
-    //                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
-                            options.tableau_des_alias=tableau_des_alias;
-                            var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,options);
-                            if(obj.status === true){
-                                liste_des_limites+=',' + obj.value;
-                            }else{
-                                return(logerreur({status:false,message:'0354 erreur sur conditions dans select '}));
-                            }
-                            for(l=j + 1;(l < l01) && (tab[l][3] > tab[j][3]);l++){
-                                if(tab[l][7] === j){
-                                }
-                            }
+                     
+                        if((tab[j][1] === 'complements')){
+                           for(k=j + 1;(k < l01) && (tab[k][3] > tab[j][3]);k++){
+                            
+                               if((tab[k][1] === 'limité_à') && (tab[k][8] >= 1)){
+                     
+                     
+           //                        var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,{tableau_des_alias:tableau_des_alias});
+                                   options.tableau_des_alias=tableau_des_alias;
+                                   var obj = traite_sqlite_fonction_de_champ(tab,k,niveau,options);
+                                   if(obj.status === true){
+                                       liste_des_limites+=',' + obj.value;
+                                   }else{
+                                       return(logerreur({status:false,message:'0354 erreur sur conditions dans select '}));
+                                   }
+                               }
+                           }
                         }
                     }
                 }

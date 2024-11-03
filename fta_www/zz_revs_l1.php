@@ -295,20 +295,23 @@ foreach($tt['valeur'] as $k0 => $v0){
 
         }else if($v0['T0.chp_provenance_rev'] === 'sql'){
          
-            if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']])){
+            if('requete_manuelle' !== $v0['T2.chp_type_requete']){
+         
+                if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']])){
 
-                $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+                    $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
-            }else if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
+                }else if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
-                $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+                    $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
-            }else{
+                }else{
 
-                $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+                    $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+                    
+                }
             }
         }
-        
     }
 
     $__lsttbl.='<td style="text-align:left;">';
@@ -394,7 +397,10 @@ if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($
   
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')), array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array()));
+$js_a_executer_apres_chargement=array( 
+ array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')), 
+ array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array())
+);
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);

@@ -8,6 +8,15 @@ var liste_des_travaux_en_arriere_plan = [];
 var liste_des_taches_en_arriere_plan = [];
 var travail_en_cours=false;
 var tache_en_cours=false;
+var __module_html1=null;
+var __module_requete_sql1=null;
+import('./module_html.js').then(function(Module){
+     __module_html1= new Module.traitements_sur_html('__module_html1');
+});
+
+import('./module_requete_sql.js').then(function(Module){
+     __module_requete_sql1= new Module.requete_sql('__module_requete_sql1' , null);
+});
 
 
 
@@ -18,7 +27,7 @@ var tache_en_cours=false;
 function enregistrer_les_sql_en_base(params,fonction_apres){
     var r= new XMLHttpRequest();
     r.open("POST",'../za_ajax.php?enregistrer_les_sql_en_base',true);
-    r.timeout=120000;
+    r.timeout=6000;
     r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
     r.onreadystatechange=function(){
         if((r.readyState != 4) || (r.status != 200)){
@@ -200,9 +209,6 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
   =====================================================================================================================
 */
 function apres_traite_un_remplacement(id_tache,arg , provenance ){
-    console.log('%c dans apres_traite_un_remplacement, provenance = ','color:yellow;background:red;',provenance )
-    import('./module_html.js').then(function(Module){
-        __module_html1= new Module.traitements_sur_html('__module_html1');
         var id_source={};
         for(id_source in arg){
             for(j=0;j < liste_des_taches_en_arriere_plan.length;j++){
@@ -246,8 +252,43 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                          
                         ){
                             tache_en_cours=true;
+                            
                             if(provenance==='sql'){
                                var objSource = tabToSql1(tab,0,0,false);
+                               if(objSource.status===true){
+                                var obj1=a2F1(tab,0,true,1,false);
+                                if(obj1.status===true){
+                                    var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.value,id_source);
+                                    if(obj2.status===true){
+                                        arg[id_source].tab=[];
+                                        var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj1.value,'source_sql':obj2.source_sql,source_php:obj2.source_php};
+                                        enregistrer_les_sql_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
+                                        return;
+                                    }else{
+                                        liste_des_taches_en_arriere_plan[j].etat='en_erreur';
+                                        tache_en_cours=false;
+                                        setTimeout(function(){
+                                            traitement_apres_remplacement_chaine_en_bdd(arg);
+                                        },16);
+                                        return;
+                                    }                                   
+                                  
+                                }else{
+                                    liste_des_taches_en_arriere_plan[j].etat='en_erreur';
+                                    tache_en_cours=false;
+                                    setTimeout(function(){
+                                        traitement_apres_remplacement_chaine_en_bdd(arg);
+                                    },16);
+                                    return;
+                                }
+                               }else{
+                                   liste_des_taches_en_arriere_plan[j].etat='en_erreur';
+                                   tache_en_cours=false;
+                                   setTimeout(function(){
+                                       traitement_apres_remplacement_chaine_en_bdd(arg);
+                                   },16);
+                                   return;
+                               }
                                
                             }else if(provenance==='source'){
                                 if((extension === '.html') || (extension === '.htm')){
@@ -257,19 +298,22 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                                 }else if(extension === '.php'){
                                     var objSource = parsePhp0(tab,0,0);
                                 }
-                            }
-                            if(objSource.status === true){
-                                var obj = arrayToFunct1(tab,true,false);
-                                if(obj.status === true && provenance==='source'){
-                                    arg[id_source].tab=[];
-                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
-                                    enregistrer_les_sources_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
-                                    return;
-                                }else if(obj.status === true && provenance==='sql'){
-                                    arg[id_source].tab=[];
-                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
-                                    enregistrer_les_sql_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
-                                    return;
+                                
+                                if(objSource.status === true){
+                                    var obj = arrayToFunct1(tab,true,false);
+                                    if(obj.status === true ){
+                                        arg[id_source].tab=[];
+                                        var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
+                                        enregistrer_les_sources_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
+                                        return;
+                                    }else{
+                                        liste_des_taches_en_arriere_plan[j].etat='en_erreur';
+                                        tache_en_cours=false;
+                                        setTimeout(function(){
+                                            traitement_apres_remplacement_chaine_en_bdd(arg);
+                                        },16);
+                                        return;
+                                    }
                                 }else{
                                     liste_des_taches_en_arriere_plan[j].etat='en_erreur';
                                     tache_en_cours=false;
@@ -278,14 +322,10 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                                     },16);
                                     return;
                                 }
-                            }else{
-                                liste_des_taches_en_arriere_plan[j].etat='en_erreur';
-                                tache_en_cours=false;
-                                setTimeout(function(){
-                                    traitement_apres_remplacement_chaine_en_bdd(arg);
-                                },16);
-                                return;
+                                
+                                
                             }
+
                         }else{
                             console.log('%c un traitement est à mettre en place = ','color:yellow;background:red;' )
                             liste_des_taches_en_arriere_plan[j].etat='a_mettre_en_place';
@@ -304,18 +344,11 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
             traitement_apres_remplacement_chaine_en_bdd(arg);
         },16);
         return;
-    });
-    setTimeout(function(){
-        traitement_apres_remplacement_chaine_en_bdd(arg);
-    },16);
-    return;
 }
 /*
   =====================================================================================================================
 */
 function traite_une_suppression(id_tache,arg){
-    import('./module_html.js').then(function(Module){
-        __module_html1= new Module.traitements_sur_html('__module_html1');
         var id_source={};
         for(id_source in arg){
             for(j=0;j < liste_des_taches_en_arriere_plan.length;j++){
@@ -405,11 +438,6 @@ function traite_une_suppression(id_tache,arg){
             traitement_apres_suppression_ligne_en_bdd(arg);
         },16);
         return;
-    });
-    setTimeout(function(){
-        traitement_apres_suppression_ligne_en_bdd(arg);
-    },16);
-    return;
 }
 /*
   =====================================================================================================================
@@ -975,7 +1003,7 @@ function lancer_les_travaux(){
     }
 }
 function recuperer_les_travaux_en_session(){
-    console.log('dans le worker fonction recuperer_les_travaux_en_session');
+//    console.log('dans le worker fonction recuperer_les_travaux_en_session');
     var r= new XMLHttpRequest();
     r.open("POST",'../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
     r.timeout=6000;
@@ -1044,7 +1072,7 @@ function recuperer_les_travaux_en_session(){
   =====================================================================================================================
 */
 onmessage=function(message_recu){
-    console.log('message_recu=',message_recu);
+    console.log('dans le worker, message_recu=',message_recu.data);
     var donnees_recues_du_message = JSON.parse(JSON.stringify(message_recu.data));
     if(donnees_recues_du_message.type_de_message === "déclencher_un_travail"){
         var maintenant= new Date().getTime();

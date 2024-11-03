@@ -40,6 +40,7 @@ $o1='';?>
          <a href="javascript:__gi1.inserer_source1(&quot;affecte&quot;,&quot;zonesource&quot;);">affecte</a>
          <a href="javascript:__gi1.parentheses1(&quot;zonesource&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>
         </div>
+    <div class="yy_div_limitee">abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_</div>
     <table>
         <tbody>
             <tr>
@@ -60,7 +61,6 @@ $o1='';?>
     </table>
     <table id="arrayed"></table>
     <div id="donneesComplementaires"></div>
-    <div>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
 <?php
 /*
   ici finit le php spécifique de la page
