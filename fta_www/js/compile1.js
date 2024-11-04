@@ -10,8 +10,8 @@ function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.status=='OK'){
-    fntSiOk({status:true,value:jsonRet.value,nomZone:nomZone,nomFichierSource:nomFichierSource});
+   if(jsonRet.__xst=='OK'){
+    fntSiOk({__xst:true,value:jsonRet.value,nomZone:nomZone,nomFichierSource:nomFichierSource});
     try{
      localStorage.setItem("fta_dernier_fichier_charge", nomFichierSource);
     }catch(e){}
@@ -54,7 +54,7 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.status=='OK'){
+   if(jsonRet.__xst=='OK'){
 //    console.log(tabConcatFichier);
     if(tabConcatFichier.length>0){
      concateneFichiers(tabConcatFichier,file_name,file_extension,file_path)
@@ -119,7 +119,7 @@ function convertSource(objMatSrc){
   }
  }
  if(type_source==''){
-  return logerreur({status:false,message:'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '});
+  return logerreur({__xst:false,__xme:'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '});
  }
  
  
@@ -146,7 +146,7 @@ function convertSource(objMatSrc){
      position_de_la_balise_source=i;
     }else if(objMatSrc.value[i][1]=='concatFichier'){
     }else{
-     return logerreur({status:false,id:i,message:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.value[i])});
+     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.value[i])});
     }
    }
 
@@ -172,20 +172,20 @@ function convertSource(objMatSrc){
      baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=false;
      retProgrammeSource=parsePhp0(objMatSrc.value , i , 0 );
-     if(retProgrammeSource.status==true){
+     if(retProgrammeSource.__xst==true){
       t+='<?php'+CRLF+retProgrammeSource.value+CRLF+'?>';
      }else{
-      return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+      return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
      }
     }else if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='html'){
      baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=true;
      //                             tab             , id , noHead , niveau
      retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.value , i  , true   , 0      );
-     if(retProgrammeSource.status==true){
+     if(retProgrammeSource.__xst==true){
       t+='\n'+retProgrammeSource.value+'\n';
      }else{
-      return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+      return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
      }
     }
    }
@@ -196,10 +196,10 @@ function convertSource(objMatSrc){
     */
     php_contexte_commentaire_html=false;
     retProgrammeSource=parsePhp0(objMatSrc.value , position_de_la_balise_source , 0 );
-    if(retProgrammeSource.status==true){
+    if(retProgrammeSource.__xst==true){
      t+='<?php'+CRLF+retProgrammeSource.value+CRLF+'?>';
     }else{
-     return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un php'});
+     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
     }
     
    }
@@ -217,37 +217,37 @@ function convertSource(objMatSrc){
     }
    }
    
-   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){
    retProgrammeSource=parseJavascript0(objMatSrc.value ,idJs+1 , 0 );
-   if(retProgrammeSource.status==true){
+   if(retProgrammeSource.__xst==true){
     t+=retProgrammeSource.value;
    }else{
-    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un javascript'});
+    return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un javascript'});
    }
-   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_html'  && (file_extension=='html')){
    //                             tab             , id     , noHead , niveau
    retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.value , idJs+1 , false  , 0      );
-   if(retProgrammeSource.status==true){
+   if(retProgrammeSource.__xst==true){
     t+=retProgrammeSource.value;
    }else{
-    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un html'});
+    return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un html'});
    }
-   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_sql'  && (file_extension=='sql')){
    //                             tab             , id    , niveau , format php
    retProgrammeSource=tabToSql1( objMatSrc.value , idJs+1 , 0      , false );
-   if(retProgrammeSource.status==true){
+   if(retProgrammeSource.__xst==true){
     t+=retProgrammeSource.value;
    }else{
-    return logerreur({status:false,id:i,message:'file core , fonction convertSource : erreur dans un sql'});
+    return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un sql'});
    }
-   return logerreur({status:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }
 //console.log('t=',t);
  }else{
-  return logerreur({status:false,id:0,message:'file_name, file_path and source must be filled'});
+  return logerreur({__xst:false,id:0,__xme:'file_name, file_path and source must be filled'});
  }
  
 }
@@ -268,7 +268,7 @@ function writeRevFile(fileName, value){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.status=='OK'){
+   if(jsonRet.__xst=='OK'){
     return;
    }else{
     console.log(r);
@@ -292,7 +292,7 @@ function writeRevFile(fileName, value){
   file_name                 : fileName       ,
  }
  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
- return logerreur({status:true});  
+ return logerreur({__xst:true});  
 }
 //=====================================================================================================================
 function writeSourceFile(obj){
@@ -310,7 +310,7 @@ function writeSourceFile(obj){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.status=='OK'){
+   if(jsonRet.__xst=='OK'){
     if(obj.tabConcatFichier.length>0){
      concateneFichiers(obj.tabConcatFichier,obj.file_name,obj.file_extension,obj.file_path)
     }
@@ -339,5 +339,5 @@ function writeSourceFile(obj){
   file_path                 : obj.file_path       ,
  }
  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
- return logerreur({status:true});  
+ return logerreur({__xst:true});  
 }

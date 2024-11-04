@@ -1,4 +1,3 @@
-
 /*
   =====================================================================================================================
   table tbl_cibles
@@ -25,7 +24,7 @@ CREATE TABLE  tbl_cibles(
 /*==============================*/
 
 CREATE  UNIQUE INDEX  idx_dossier_cible ON `tbl_cibles` 
-        /* meta((index,'idx_dossier_cible'),(message,'à faire idx_dossier_cible')) */
+        /* meta((index,'idx_dossier_cible'),(__xme,'à faire idx_dossier_cible')) */
          ( `chp_dossier_cible` ) ;
 /*
   =====================================================================================================================
@@ -50,7 +49,7 @@ CREATE TABLE  tbl_dossiers(
 /*==============================*/
 
 CREATE  UNIQUE INDEX  idx_cible_et_nom ON `tbl_dossiers` 
-        /* meta((index,'idx_cible_et_nom'),(message,'à faire idx_cible_et_nom')) */
+        /* meta((index,'idx_cible_et_nom'),(__xme,'à faire idx_cible_et_nom')) */
          ( `chx_cible_dossier` , `chp_nom_dossier` ) ;
 /*
   =====================================================================================================================
@@ -90,7 +89,7 @@ CREATE TABLE  tbl_sources(
 /*==============================*/
 
 CREATE  UNIQUE INDEX  idx_nom_et_dossier ON `tbl_sources` 
-        /* meta((index,'idx_nom_et_dossier'),(message,'à faire idx_nom_et_dossier')) */
+        /* meta((index,'idx_nom_et_dossier'),(__xme,'à faire idx_nom_et_dossier')) */
          ( `chx_dossier_id_source` , `chp_nom_source` ) ;
 /*
   =====================================================================================================================
@@ -121,7 +120,7 @@ CREATE TABLE  tbl_utilisateurs(
 /*==============================*/
 
 CREATE  UNIQUE INDEX  idxNomUtilisateur ON `tbl_utilisateurs` 
-        /* meta((index,'idxNomUtilisateur'),(message,'à faire idxNomUtilisateur')) */
+        /* meta((index,'idxNomUtilisateur'),(__xme,'à faire idxNomUtilisateur')) */
          ( `chp_nom_de_connexion_utilisateur` ) ;
 /*
   =====================================================================================================================
@@ -214,7 +213,7 @@ CREATE TABLE  tbl_revs(
 /*==============================*/
 
 CREATE  UNIQUE INDEX  idx_ligne_rev ON `tbl_revs` 
-        /* meta((index,'idx_ligne_rev'),(message,'à faire idx_ligne_rev')) */
+        /* meta((index,'idx_ligne_rev'),(__xme,'à faire idx_ligne_rev')) */
          ( `chx_cible_rev` , `chp_provenance_rev` , `chx_source_rev` , `chp_id_rev` ) ;
 /*
   =====================================================================================================================
@@ -298,7 +297,7 @@ CREATE TABLE  tbl_requetes(
 
 
 CREATE TABLE  tbl_tests(
-/* meta((table,'tbl_tests'),(nom_long_de_la_table,'liste d\'enregistrements \\ de test'),(nom_court_de_la_table,'un test'),(nom_bref_de_la_table,'test'),(transform_table_sur_svg,transform(translate(638,292)))) */
+/* meta((table,'tbl_tests'),(nom_long_de_la_table,'liste d\'enregistrements \\ de test'),(nom_court_de_la_table,'un test'),(nom_bref_de_la_table,'test'),(transform_table_sur_svg,transform(translate(645,268)))) */
     
             /* meta((champ,'chi_id_test'),(nom_long_du_champ,'identifiant unique \' du \\ test'),(nom_court_du_champ,'id du test'),(nom_bref_du_champ,'id'),(typologie,'chi')) */
              chi_id_test INTEGER PRIMARY KEY ,
@@ -315,5 +314,5 @@ CREATE TABLE  tbl_tests(
 /*==============================*/
 
 CREATE  UNIQUE INDEX  idx_nom ON `tbl_tests` 
-        /* meta((index,'idx_nom'),(message,'nom unique')) */
+        /* meta((index,'idx_nom'),(__xme,'à faire idx_nom')) */
          ( `chp_nom_test` ) ;

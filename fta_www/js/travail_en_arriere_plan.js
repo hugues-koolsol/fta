@@ -104,7 +104,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
      }
      try{
       var jsonRet=JSON.parse(r.responseText);
-      if(jsonRet.status=='OK'){
+      if(jsonRet.__xst=='OK'){
 //          console.log('jsonRet=' , jsonRet );
 //          console.log('dans supprimer_un_travail_en_arriere_plan_en_session , liste_des_travaux_en_arriere_plan=',liste_des_travaux_en_arriere_plan);
           for(var i in liste_des_travaux_en_arriere_plan){           
@@ -160,7 +160,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
           r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
          }catch(e){
           console.error('e=',e); /* whatever(); */
-          return {status:false};  
+          return {__xst:false};  
          }
          
          
@@ -168,7 +168,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
      }
     }     
     
-    return {status:true};   
+    return {__xst:true};   
  
 }
 /*
@@ -206,7 +206,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
       }
       try{
        var jsonRet=JSON.parse(r.responseText);
-       if(jsonRet.status=='OK'){
+       if(jsonRet.__xst=='OK'){
         
            for(var i in liste_des_travaux_en_arriere_plan){
            
@@ -256,7 +256,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
              }catch(e){
               
               console.error('e=',e); /* whatever(); */
-              return {status:false};  
+              return {__xst:false};  
               
              }
 
@@ -264,7 +264,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
              break;
          }
      }
-     return {status:true};  
+     return {__xst:true};  
 }
 
 /*

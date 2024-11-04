@@ -86,7 +86,7 @@ $tt=sql_15(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -112,7 +112,7 @@ $lsttbl.='<th>id</th>';
 $lsttbl.='<th>nom</th>';
 $lsttbl.='<th>commentaire</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';

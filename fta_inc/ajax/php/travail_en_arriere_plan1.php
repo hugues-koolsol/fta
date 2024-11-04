@@ -12,7 +12,42 @@ function enregistrer_les_sql_en_base(&$data){
     $data['input']['params']['source_php']
     
 */
-    $data['status']='OK';
+    sql_inclure_reference(66);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_66.php');
+    /*
+      UPDATE b1.tbl_requetes SET 
+      `cht_rev_requete` = :n_cht_rev_requete , 
+      `cht_sql_requete` = :n_cht_sql_requete , 
+      `cht_php_requete` = :n_cht_php_requete 
+      WHERE (
+           `chi_id_requete` = :c_chi_id_requete 
+       AND `chx_cible_requete` = :c_chx_cible_requete
+      ) ;
+    /*sql_inclure_fin*/
+
+    $tt=sql_66(array(
+        'c_chi_id_requete'        => $data['input']['params']['id_source']         ,
+        'c_chx_cible_requete'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']  ,
+        'n_cht_rev_requete'       => $data['input']['params']['source_rev']        ,
+        'n_cht_sql_requete'       => $data['input']['params']['source_sql']   ,
+        'n_cht_php_requete'       => $data['input']['params']['source_php'] ,
+    ));
+
+    if($tt[__xst] === true && $tt['changements']===1){
+     
+        require_once(INCLUDE_PATH.DIRECTORY_SEPARATOR.'ajax/core/bdd.php');
+        $ret=ecrire_le_php_de_la_requete_sur_disque( $data['input']['params']['id_source'] , $data['input']['params']['source_php']);
+        if($ret[__xst]===true){
+            $data[__xst]='OK';
+        }else{
+            $data['messages'][]=$ret[__xme];
+        }
+     
+    }else{
+            $data['messages'][]=$ret[__xme];
+    }
+
 }
 /*
   =====================================================================================================================
@@ -38,15 +73,15 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
     
     $tt=sql_62(array( 'T0_chi_id_source' => $data['input']['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-    if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
 
-        $data['status']='KO';
+        $data[__xst]='KO';
         $data['messages'][]=__LINE__.' '.__FILE__.' KO';
         return;
 
     }
 
-    $__valeurs=$tt['valeur'][0];
+    $__valeurs=$tt[__xva][0];
     $chemin_fichier=realpath(dirname(__FILE__,5).DIRECTORY_SEPARATOR.$__valeurs['T1.chp_dossier_cible'].DIRECTORY_SEPARATOR.$__valeurs['T2.chp_nom_dossier'].DIRECTORY_SEPARATOR.$__valeurs['T0.chp_nom_source']);
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$chemin_fichier='.var_export($chemin_fichier,true).CRLF.CRLF); fclose($fd);} */
 
@@ -56,7 +91,7 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
         if(fwrite($fd,$data['input']['params']['source_genere'])){
 
             fclose($fd);
-            $data['status']='OK';
+            $data[__xst]='OK';
 
         }
 
@@ -166,7 +201,7 @@ function supprimer_un_commentaire1(&$data){
                 }
                 $stmt->close();
 
-                $data['status']='OK';
+                $data[__xst]='OK';
                 $data['valeurs']=$data0;
 
 
@@ -266,7 +301,7 @@ function remplacer_des_chaine1(&$data){
                 $data0[$arr[1]]['nom_source']=$arr[0];
             }
             $stmt->close();
-            $data['status']='OK';
+            $data[__xst]='OK';
             $data['provenance']=$data['input']['parametre']['provenance'];
             $data['valeurs']=$data0;
 
@@ -275,7 +310,7 @@ function remplacer_des_chaine1(&$data){
         }
     }else{
 
-        $data['status']='OK';
+        $data[__xst]='OK';
     }
 }
 ?>

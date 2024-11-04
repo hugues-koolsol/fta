@@ -101,15 +101,9 @@ function integrer_la_requete_dans_la_table_rev( $id_requete , $matrice_requete )
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);
  
 }
-/*
-  =====================================================================================================================
-*/
-if((isset($_POST)) && (count($_POST) > 0)){
 
-
-    if((isset($_POST['__action'])) && ($_POST['__action'] === '__gererer_les_fichiers_des_requetes')){
-
-        $time_start=microtime(true);
+function gererer_le_fichier_des_requetes($chi_id_cible){
+ 
         sql_inclure_reference(6);
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_6.php');
@@ -123,10 +117,10 @@ if((isset($_POST)) && (count($_POST) > 0)){
         */
         /*sql_inclure_fin*/
         
-        $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
+        $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $chi_id_cible));
         /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
 
-        if($retour_sql['statut'] === true){
+        if($retour_sql[__xst] === true){
 
             $chaine_js='';
             $repertoire_destination=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql';
@@ -140,12 +134,11 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
             if(!mkdir($repertoire_destination,511)){
 
-                ajouterMessage('erreur',__LINE__.' erreur création du répertoire inc/sql',BNF);
-                recharger_la_page(BNF);
+                return array(__xst=>false,__xme=>__LINE__.' erreur création du répertoire inc/sql');
 
             }
 
-            foreach($retour_sql['valeur'] as $k1 => $v1){
+            foreach($retour_sql[__xva] as $k1 => $v1){
                 $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'sql_'.$v1['T0.chi_id_requete'].'.php';
 
                 if($fd=fopen($nom_fichier,'w')){
@@ -157,16 +150,13 @@ if((isset($_POST)) && (count($_POST) > 0)){
                         $chaine_js.=CRLF.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
 
                     }else{
-
-                        ajouterMessage('erreur',__LINE__.' erreur ecriture fichier sql_'.$v1['T0.chi_id_requete'].'.php',BNF);
-                        recharger_la_page(BNF);
+                        return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier sql_'.$v1['T0.chi_id_requete'].'.php');
                     }
 
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__.' erreur ouverture fichier sql_'.$v1['T0.chi_id_requete'].'.php',BNF);
-                    recharger_la_page(BNF);
+                    return array(__xst=>false,__xme=>__LINE__.' erreur ouverture fichier sql_'.$v1['T0.chi_id_requete'].'.php');
                 }
 
             }
@@ -180,61 +170,75 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__.' erreur ecriture fichier saa_js_sql',BNF);
-                    recharger_la_page(BNF);
+                    return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier aa_js_sql' );
                 }
 
 
             }else{
 
-                ajouterMessage('erreur',__LINE__.' erreur ouverture fichier saa_js_sql',BNF);
-                recharger_la_page(BNF);
+                return array(__xst=>false,__xme=> __LINE__.' erreur ouverture fichier saa_js_sql' );
             }
 
             $zip=new ZipArchive();
 
             if($zip->open($repertoire_destination.DIRECTORY_SEPARATOR.'sql.zip',ZIPARCHIVE::CREATE) !== TRUE){
 
-                ajouterMessage('erreur',__LINE__.' erreur ouverture fichier zip',BNF);
-                recharger_la_page(BNF);
+                return array(__xst=>false,__xme=> __LINE__.' erreur ouverture fichier zip' );
 
             }
 
-            foreach($retour_sql['valeur'] as $k1 => $v1){
+            foreach($retour_sql[__xva] as $k1 => $v1){
                 $chemin_fichier=realpath($repertoire_destination.DIRECTORY_SEPARATOR.'sql_'.$v1['T0.chi_id_requete'].'.php');
                 $nom_fichier='sql_'.$v1['T0.chi_id_requete'].'.php';
 
                 if(!$zip->addFile($chemin_fichier,$nom_fichier)){
 
                     $zip->close();
-                    ajouterMessage('erreur',__LINE__.' ajout du fichier "'.$nom_fichier.'" au zip impossible ',BNF);
-                    recharger_la_page(BNF);
+                    return array(__xst=>false,__xme=> __LINE__.' ajout du fichier "'.$nom_fichier.'" au zip impossible ' );
 
                 }
 
             }
             $zip->close();
-            /*          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql['valeur'] , true ) . '</pre>' ; exit(0);*/
+            /*          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql[__xva] , true ) . '</pre>' ; exit(0);*/
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' erreur sql '.$retour_sql['message'],BNF);
-            recharger_la_page(BNF);
+            return array(__xst=>false,__xme=> __LINE__.' erreur sql '.$retour_sql[__xme] );
         }
         
         
-        if($retour_sql['statut'] === true){
-            foreach($retour_sql['valeur'] as $k1 => $v1){
+        if($retour_sql[__xst] === true){
+            foreach($retour_sql[__xva] as $k1 => $v1){
                 if($v1['T0.cht_matrice_requete']!==null){
                      integrer_la_requete_dans_la_table_rev( $v1['T0.chi_id_requete'] , $v1['T0.cht_matrice_requete']);
                 }
             }
-        }
-        
+        } 
 
-        $time_end=microtime(true);
-        $time=(int)(($time_end-$time_start)*1000*1000)/1000;
-        ajouterMessage('succes',__LINE__.' les fichiers sql ont bien été générés ('.$time.' ms)',BNF);
+        return array(__xst=>true );
+ 
+}
+
+/*
+  =====================================================================================================================
+*/
+if((isset($_POST)) && (count($_POST) > 0)){
+
+
+    if((isset($_POST['__action'])) && ($_POST['__action'] === '__gererer_les_fichiers_des_requetes')){
+     
+        $time_start=microtime(true);
+        $gen=gererer_le_fichier_des_requetes($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']);
+        if($gen[__xst]===true){
+            $time_end=microtime(true);
+            $time=(int)(($time_end-$time_start)*1000*1000)/1000;
+            ajouterMessage('succes',__LINE__.' les fichiers sql ont bien été générés ('.$time.' ms)',BNF);
+            recharger_la_page(BNF);
+        }else{
+            ajouterMessage('erreur',__LINE__.' '.$gen[__xme],BNF);
+            recharger_la_page(BNF);
+        }
 
     }
 
@@ -255,9 +259,9 @@ if((isset($_POST)) && (count($_POST) > 0)){
         
         $tt=sql_4(array( 'chi_id_requete' => $_POST['supprimer_une_requete'], 'chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if($tt['statut'] !== true){
+        if($tt[__xst] !== true){
 
-            ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' '.$tt[__xme],BNF);
             recharger_la_page(BNF);
 
         }
@@ -277,9 +281,9 @@ if((isset($_POST)) && (count($_POST) > 0)){
         
         $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' => $_POST['supprimer_une_requete']));
 
-        if($tt['statut'] !== true){
+        if($tt[__xst] !== true){
 
-            ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' '.$tt[__xme],BNF);
             recharger_la_page(BNF);
 
         }else{
@@ -313,13 +317,13 @@ if((isset($_POST)) && (count($_POST) > 0)){
          'n_chi_id_requete' => $_POST['__nouveau_numéro']
         ));
 
-        if($tt['statut'] === true){
+        if($tt[__xst] === true){
 
             ajouterMessage('info',__LINE__.' requête renumérotée dans requetes de '.$_POST['renuméroter_une_requete'].' à '.$_POST['__nouveau_numéro'].'',BNF);
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' '.$tt[__xme],BNF);
             recharger_la_page(BNF);
         }
 
@@ -342,9 +346,9 @@ if((isset($_POST)) && (count($_POST) > 0)){
             'c_chp_provenance_rev' => 'sql',
             'c_chx_source_rev' => $_POST['renuméroter_une_requete']));
 
-        if($tt['statut'] !== true){
+        if($tt[__xst] !== true){
 
-            ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' '.$tt[__xme],BNF);
             recharger_la_page(BNF);
 
         }else{
@@ -369,7 +373,7 @@ function obtenir_entete_de_la_page(){
     $o1='';
     $o1=html_header1(array( 'title' => 'Requetes', 'description' => 'Requetes'));
     $o1.='<h1>Liste des Requetes </h1>';
-    return(array( 'status' => true, 'value' => $o1));
+    return(array( __xst => true, 'value' => $o1));
 
 }
 /*
@@ -485,7 +489,7 @@ $tt=sql_2(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -520,7 +524,7 @@ $lsttbl.='<th>commentaire</th>';
 $lsttbl.='<th>rev</th>';
 $lsttbl.='<th>sql</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';

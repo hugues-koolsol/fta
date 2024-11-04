@@ -111,14 +111,14 @@ php(
                      choix(
                         si(
                            condition(
-                              diffstricte(tableau(nomt($sql1) , p('statut')) , vrai)
+                              diffstricte(tableau(nomt($sql1) , p(__xst)) , vrai)
                            ),
                            alors(
                               appelf(
                                  nomf(ajouterMessage),
                                  p('erreur'),
                                  p(
-                                    concat(__LINE__ , ' ' , tableau(nomt($sql1) , p('message')))
+                                    concat(__LINE__ , ' ' , tableau(nomt($sql1) , p(__xme)))
                                  ),
                                  p(BNF)
                               ),
@@ -137,7 +137,7 @@ php(
                                     tableau(
                                        nomt(
                                           tableau(
-                                             nomt(tableau(nomt($sql1) , p('valeur'))),
+                                             nomt(tableau(nomt($sql1) , p(__xva))),
                                              p(0)
                                           )
                                        ),
@@ -161,7 +161,7 @@ php(
                                  tableau(
                                     nomt(
                                        tableau(
-                                          nomt(tableau(nomt($sql1) , p('valeur'))),
+                                          nomt(tableau(nomt($sql1) , p(__xva))),
                                           p(0)
                                        )
                                     ),
@@ -176,7 +176,7 @@ php(
                                  tableau(
                                     nomt(
                                        tableau(
-                                          nomt(tableau(nomt($sql1) , p('valeur'))),
+                                          nomt(tableau(nomt($sql1) , p(__xva))),
                                           p(0)
                                        )
                                     ),
@@ -239,7 +239,7 @@ php(
                                              tableau(
                                                 nomt(
                                                    tableau(
-                                                      nomt(tableau(nomt($sql1) , p('valeur'))),
+                                                      nomt(tableau(nomt($sql1) , p(__xva))),
                                                       p(0)
                                                    )
                                                 ),
@@ -256,7 +256,7 @@ php(
                                              tableau(
                                                 nomt(
                                                    tableau(
-                                                      nomt(tableau(nomt($sql1) , p('valeur'))),
+                                                      nomt(tableau(nomt($sql1) , p(__xva))),
                                                       p(0)
                                                    )
                                                 ),

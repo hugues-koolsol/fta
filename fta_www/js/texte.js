@@ -24,7 +24,7 @@ var global_enteteTableau=[
 */
 function js_texte_convertit_texte_en_rev_racine(le_texte,niveau){
  var t='texte(`'+le_texte.replace(/`/g,'\\`')+'`)';
- return({status:true,value:t});
+ return({__xst:true,value:t});
 }
 
 /*
@@ -36,7 +36,7 @@ function convertir_tableau_rev_vers_texte_racine(tab,id,niveau){
   appel à la fonction récursive
  */ 
  var ob=convertir_tableau_rev_vers_texte1(tab,id,niveau);
- if(ob.status===true){
+ if(ob.__xst===true){
   if(ob.value.substr(0,2)===CRLF){
    ob.value=ob.value.substr(2);
   }
@@ -74,13 +74,13 @@ function convertir_tableau_rev_vers_texte1( tab ,id ,niveau){
        ... la fonction texte pour laquelle on appelle le récursif 
      */
      var objTexte=convertir_tableau_rev_vers_texte1( tab ,i ,niveau);
-     if(objTexte.status===true){
+     if(objTexte.__xst===true){
       t+=objTexte.value;
      }else{
-      return logerreur({status:false,id:i,message:'0070 erreur dans un texte'});  
+      return logerreur({__xst:false,id:i,__xme:'0070 erreur dans un texte'});  
      }
     }else{
-     return logerreur({status:false,id:i,message:'0067seules les fonctions texte et # sont admises dans un texte'});  
+     return logerreur({__xst:false,id:i,__xme:'0067seules les fonctions texte et # sont admises dans un texte'});  
     }
    }else if(tab[i][2]==='c'){
     /*
@@ -111,6 +111,6 @@ function convertir_tableau_rev_vers_texte1( tab ,id ,niveau){
    }
   }
  }
- return {status:true,value:t};  
+ return {__xst:true,value:t};  
 
 }

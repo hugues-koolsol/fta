@@ -27,8 +27,8 @@ if(isset($_GET['__action']) && $_GET['__action']=='__modification' && isset($_GE
          'T0_chi_id_requete' => $id_requete, 
          'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
-     if($tt['statut'] === true){
-         $requete_en_cours=$tt['valeur'][0];
+     if($tt[__xst] === true){
+         $requete_en_cours=$tt[__xva][0];
      }
 }
 $o1.='<script type="text/javascript">'.CRLF;

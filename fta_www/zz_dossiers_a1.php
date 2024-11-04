@@ -127,7 +127,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         ));
 
         $tt=sql_54($a_inserer);
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
               ajouterMessage('erreur' , __LINE__ .' : le fichier n\'a pas été créé en base' , BNF );
         }else{
           ajouterMessage('succes' , __LINE__ .' : le fichier a bien été créé en base' , BNF );
@@ -242,13 +242,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
         );
 
         $tt=sql_55($a_modifier);
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
             if($tt['code_erreur']===19){
                 ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
                 recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
             }else{
 
-                ajouterMessage('erreur' , __LINE__ .' '. $tt['message'] , BNF );
+                ajouterMessage('erreur' , __LINE__ .' '. $tt[__xme] , BNF );
                 recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']); 
             }
         }else{
@@ -259,7 +259,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
              
             }else{
              
-                ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] , BNF );
+                ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] , BNF );
                 recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
              
             }
@@ -301,12 +301,12 @@ if(isset($_POST)&&sizeof($_POST)>=1){
              'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
             ));
 //            echo __FILE__ . ' ' . __LINE__ . ' $tt = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);
-            if($tt['statut'] === false || count($tt['valeur'])!==1 ){
+            if($tt[__xst] === false || count($tt[__xva])!==1 ){
                 ajouterMessage('erreur' ,  __LINE__ .' : dossier non trouvé ' , BNF );
                 recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
             }
          
-            $__valeurs=$tt['valeur'][0];
+            $__valeurs=$tt[__xva][0];
 
             if($__valeurs['T0.chp_nom_dossier']=='/'){
              
@@ -335,12 +335,12 @@ if(isset($_POST)&&sizeof($_POST)>=1){
                 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
             ));
 
-            if($tt['statut'] === false || count($tt['valeur'])!==1 ){
+            if($tt[__xst] === false || count($tt[__xva])!==1 ){
                 ajouterMessage('erreur' ,  __LINE__ .' : dossier non trouvé ' , BNF );
                 recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
             }
             
-            $nombre_de_sources=$tt['valeur'][0]['0'];
+            $nombre_de_sources=$tt[__xva][0]['0'];
 
             if($nombre_de_sources>0){
 
@@ -364,13 +364,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
              'T0_chx_dossier_id_basedd' => $__id ,
              'T0_chx_cible_id_basedd'    => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
             ));
-            if($tt['statut'] === false || count($tt['valeur'])!==1 ){
+            if($tt[__xst] === false || count($tt[__xva])!==1 ){
                 ajouterMessage('erreur' ,  __LINE__ .' : bdd non trouvé ' , BNF );
                 recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
             }
             
             
-            $nombre_de_bases=$tt['valeur'][0]['0'];
+            $nombre_de_bases=$tt[__xva][0]['0'];
 
             if($nombre_de_bases>0){
 
@@ -394,8 +394,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
              'chi_id_dossier'     => $__id ,
              'chx_cible_dossier'  => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
             ));
-            if($tt['statut'] === false ){
-                ajouterMessage('erreur' ,  __LINE__ .' : ' . $tt['message'] , BNF );
+            if($tt[__xst] === false ){
+                ajouterMessage('erreur' ,  __LINE__ .' : ' . $tt[__xme] , BNF );
                 recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
             }else{
                ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
@@ -443,8 +443,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'chp_nom_dossier'    => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'] ,
          'chx_cible_dossier'  => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
         )));
-        if($tt['statut'] === false ){
-            ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] , BNF );
+        if($tt[__xst] === false ){
+            ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] , BNF );
             recharger_la_page(BNF.'?__action=__creation'); 
         }else{
             ajouterMessage('info' , __LINE__ .' : l\'enregistrement ('.$tt['nouvel_id'].') a bien été créé' , BNF );
@@ -507,14 +507,14 @@ if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_
         
         $tt=sql_50(array( 'T0_chi_id_dossier' => $__id, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
 
             ajouterMessage('erreur',__LINE__.' valeurs non trouvées pour cet id');
             recharger_la_page('zz_dossiers_l1.php');
 
         }
 
-        $__valeurs=$tt['valeur'][0];
+        $__valeurs=$tt[__xva][0];
         
     }
 }
@@ -735,10 +735,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                            'T0_chx_dossier_id_source' => $__id                                                ,
                         ));
 
-                        if(($tt['statut'] === false) ){
-                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['message'] , true ) . '</pre>' ; exit(0);
+                        if(($tt[__xst] === false) ){
+                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt[__xme] , true ) . '</pre>' ; exit(0);
                         }
-                        foreach($tt['valeur'] as $k1 => $v1){
+                        foreach($tt[__xva] as $k1 => $v1){
                             $tabl[$v1['T0.chp_nom_source']]['en_base']=$v1['T0.chi_id_source'];
                         }
                     }
@@ -766,10 +766,10 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
                         ));
 
 
-                        if( $tt['statut'] === false ){
-                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['message'] , true ) . '</pre>' ; exit(0);
+                        if( $tt[__xst] === false ){
+                            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt[__xme] , true ) . '</pre>' ; exit(0);
                         }
-                        foreach($tt['valeur'] as $k1 => $v1){
+                        foreach($tt[__xva] as $k1 => $v1){
                             $cle=substr($v1['T0.chp_nom_dossier'],strlen($__valeurs['T0.chp_nom_dossier'])+1);
                             $tabl[$cle]['en_base']=$v1['T0.chi_id_dossier'];
                         }

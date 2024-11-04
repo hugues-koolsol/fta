@@ -120,13 +120,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
 
-     if($tt['statut'] === false || count($tt['valeur'])!==1){
+     if($tt[__xst] === false || count($tt[__xva])!==1){
          ajouterMessage('erreur' , __LINE__ .' on ne peut pas écrire la structure sur disque'  );
          recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
      }  
 
 
-     $__valeurs=$tt['valeur'][0];
+     $__valeurs=$tt[__xva][0];
 
      if($__valeurs['T2.chp_dossier_cible']!==null && $__valeurs['T1.chp_nom_dossier']!==null ){
       
@@ -218,7 +218,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
              $temp_db->close();
              require_once('../fta_inc/phplib/sqlite.php');
              $ret=obtenir_la_structure_de_la_base_sqlite($base_temporaire, true);
-             if($ret['status']===true){
+             if($ret[__xst]===true){
               $tableauDesTables=$ret['value'];
               $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
               $_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables']='__convertir_sql_sqlite_en_rev';
@@ -261,13 +261,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
 
-     if($tt['statut'] === false || count($tt['valeur'])!==1){
+     if($tt[__xst] === false || count($tt[__xva])!==1){
          ajouterMessage('erreur' , __LINE__ .' on ne peut pas écrire la structure sur disque'  );
          recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
      }  
 
 
-     $__valeurs=$tt['valeur'][0];
+     $__valeurs=$tt[__xva][0];
 
 
      
@@ -276,14 +276,14 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      if( is_file($chemin_fichier)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
          $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
-         if($ret['status']===true){
+         if($ret[__xst]===true){
           
           
           $nom_du_fichier_dump   ='../../'.$__valeurs['T2.chp_dossier_cible'].$__valeurs['T1.chp_nom_dossier'].'/'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'_donnees.'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'].'.sql';
           
           
           $retour_ecriture=ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier,$nom_du_fichier_dump,$ret['value']);
-          if($retour_ecriture['status']===true){
+          if($retour_ecriture[__xst]===true){
              ajouterMessage('info' , __LINE__ .' le fichier dump a bien été produit ' , BNF );
           }else{
              ajouterMessage('erreur' , __LINE__ .' problème pour produire le dump ' , BNF );
@@ -315,7 +315,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      
      $obj=comparer_une_base_physique_et_une_base_virtuelle($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'] , $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']);
      
-     if($obj['status']===true){
+     if($obj[__xst]===true){
       
          $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=$obj['value']; //array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
 
@@ -341,13 +341,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
 
-     if($tt['statut'] === false || count($tt['valeur'])!==1){
+     if($tt[__xst] === false || count($tt[__xva])!==1){
          ajouterMessage('erreur' , __LINE__ .' on ne peut pas écrire la structure sur disque'  );
          recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
      }  
 
 
-     $__valeurs=$tt['valeur'][0];
+     $__valeurs=$tt[__xva][0];
 
 
   
@@ -360,7 +360,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
       
          $ret=obtenir_la_structure_de_la_base_sqlite_v2($chemin_fichier,true);
 
-         if($ret['status']===true){
+         if($ret[__xst]===true){
 
           /* 
             on testera plus bas que la variable de session __contexte_tableauDesTables existe pour produire le rev
@@ -420,13 +420,13 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          
      ));
 
-     if($tt['statut'] === false){
+     if($tt[__xst] === false){
          error_reporting(E_ALL);
          if($tt['code_erreur']===19){
           ajouterMessage('erreur' , __LINE__ .' ce nom existe déjà en bdd ' , BNF );
           recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
          }else{
-          ajouterMessage('erreur' , __LINE__ .' '. $tt['message'] , BNF );
+          ajouterMessage('erreur' , __LINE__ .' '. $tt[__xme] , BNF );
           recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']); 
          }
      }else{
@@ -439,7 +439,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
           
          }else{
           
-             ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] , BNF );
+             ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] , BNF );
              recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
           
          }
@@ -465,7 +465,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
 
-     if($tt['statut'] === false || count($tt['valeur'])!==1){
+     if($tt[__xst] === false || count($tt[__xva])!==1){
          ajouterMessage('erreur' ,  __LINE__ .' on ne peut pas supprimer cet enregistrement ' , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
      }  
@@ -481,8 +481,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
      ));
 
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' ,  __LINE__ .' : ' . $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' ,  __LINE__ .' : ' . $tt[__xme] , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
      }else{
         ajouterMessage('info' ,  'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11) );
@@ -518,8 +518,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          'chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
      )));
 
-     if($tt['statut'] === false){
-       ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] , BNF );
+     if($tt[__xst] === false){
+       ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] , BNF );
        recharger_la_page(BNF.'?__action=__creation'); 
       
      }else{
@@ -537,8 +537,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
 
      unset($_SESSION[APP_KEY][NAV][BNF]);
      
-     $__message=' cas à étudier ' . (isset($_POST['__action'])?' : "'.$_POST['__action'].'" ':' ').substr($GLOBALS['__date'],11);
-     ajouterMessage('avertissement' , __LINE__ . $__message  , BNF );
+     ajouterMessage('avertissement' , __LINE__ . ' cas à étudier ' . (isset($_POST['__action'])?' : "'.$_POST['__action'].'" ':' ').substr($GLOBALS['__date'],11)  , BNF );
      recharger_la_page($_SERVER['REQUEST_URI']);
 
  }
@@ -584,13 +583,13 @@ if(isset($_GET['__action'])&&( $_GET['__action']=='__suppression' || $_GET['__ac
             'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
         ));
 
-        if($tt['statut'] === false || count($tt['valeur'])!==1){
+        if($tt[__xst] === false || count($tt[__xva])!==1){
             ajouterMessage('erreur' , __LINE__ .' on ne peut pas supprimer cette base'  );
             recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
         }  
 
 
-        $__valeurs=$tt['valeur'][0];
+        $__valeurs=$tt[__xva][0];
 
     }
 }  
@@ -721,8 +720,8 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
         ));
 
         $nom_dossier='';
-        if($tt['statut'] === true && count($tt['valeur'])===1){
-            $nom_dossier=$tt['valeur'][0]['T0.chp_nom_dossier'];
+        if($tt[__xst] === true && count($tt[__xva])===1){
+            $nom_dossier=$tt[__xva][0]['T0.chp_nom_dossier'];
         }else{
             $nom_dossier='<span class="yyerreur">il y a eu une erreur sur la récupération du dossier</span>';
         }

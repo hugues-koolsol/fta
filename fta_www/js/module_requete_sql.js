@@ -141,7 +141,7 @@ class requete_sql{
         console.log('that.#obj_webs.tableau_des_bases_tables_champs=',that.#obj_webs.tableau_des_bases_tables_champs);
         var tableau1 = iterateCharacters2(that.#globale_rev_requete);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
-        if(obj1.status !== true){
+        if(obj1.__xst !== true){
             return;
         }
         var tab=obj1.value;
@@ -464,7 +464,7 @@ class requete_sql{
                                           c'est une formule
                                         */
                                         var obj = a2F1(tab,tab[j][7],true,j,false);
-                                        if(obj.status === true){
+                                        if(obj.__xst === true){
                                             this.#obj_webs['champs_sortie'].push({type_d_element:'formule',formule:obj.value});
                                         }
                                     }
@@ -473,7 +473,7 @@ class requete_sql{
                                       c'est une formule
                                     */
                                     var obj = a2F1(tab,tab[j][7],true,j,false);
-                                    if(obj.status === true){
+                                    if(obj.__xst === true){
                                         this.#obj_webs['champs_sortie'].push({type_d_element:'formule',formule:obj.value});
                                     }
                                 }
@@ -481,7 +481,7 @@ class requete_sql{
                                 if(tab[j][1] === 'alias_champ'){
                                 }else{
                                     var obj = a2F1(tab,j,true,(j + 1),false);
-                                    if(obj.status === true){
+                                    if(obj.__xst === true){
                                         this.#obj_webs['champs_sortie'].push({type_d_element:'formule','formule':tab[j][1] + '(' + obj.value + ')'});
                                     }
                                 }
@@ -493,12 +493,12 @@ class requete_sql{
                 }
             }else if((tab[i][2] === 'f') && ('conditions' === tab[i][1])){
                 var obj = a2F1(tab,tab[i+1][7],true,(i + 1),false);
-                if(obj.status === true){
+                if(obj.__xst === true){
                     this.#obj_webs['conditions'].push({type_d_element:'formule',formule:obj.value});
                 }
             }else if((tab[i][2] === 'f') && ('complements' === tab[i][1])){
                 var obj = a2F1(tab,tab[i+1][7],true,(i + 1),false);
-                if(obj.status === true){
+                if(obj.__xst === true){
                     this.#obj_webs['complements'].push({type_d_element:'formule',formule:obj.value});
                 }
             }
@@ -856,7 +856,7 @@ class requete_sql{
         var zone_formule = document.getElementById('zone_formule');
         var rev_de_la_formule=zone_formule.value;
         var obj = functionToArray(rev_de_la_formule,true,true,'');
-        if(obj.status === true){
+        if(obj.__xst === true){
             if( !(this.#obj_webs[destination])){
                 this.#obj_webs[destination]=[];
             }
@@ -1060,7 +1060,7 @@ class requete_sql{
         var zone_formule = document.getElementById('zone_formule');
         var rev_de_la_formule=zone_formule.value;
         var obj = functionToArray(rev_de_la_formule,true,true,'');
-        if(obj.status === true){
+        if(obj.__xst === true){
             if(((this.#obj_webs.type_de_requete === 'select')
              || (this.#obj_webs.type_de_requete === 'select_liste'))
              && (destination === 'champs_sortie')
@@ -1466,9 +1466,9 @@ class requete_sql{
         rev_texte+=CRLF + ')';
         var tableau1 = iterateCharacters2(rev_texte);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-        if(matriceFonction.status === true){
+        if(matriceFonction.__xst === true){
             var obj2 = arrayToFunct1(matriceFonction.value,true,false);
-            if(obj2.status === true){
+            if(obj2.__xst === true){
                 rev_texte=obj2.value;
             }
         }
@@ -1617,16 +1617,16 @@ class requete_sql{
                 var le_json = JSON.parse(t);
                 return le_json;
             }catch(e){
-                logerreur({status:false,'message':'erreur sur convertion json, texte non json=' + t});
-                logerreur({status:false,'message':'url=' + url});
-                logerreur({status:false,message:JSON.stringify(en_entree)});
-                logerreur({status:false,message:JSON.stringify(donnees)});
-                return({status:'KO',message:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
+                logerreur({__xst:false,__xme:'erreur sur convertion json, texte non json=' + t});
+                logerreur({__xst:false,__xme:'url=' + url});
+                logerreur({__xst:false,__xme:JSON.stringify(en_entree)});
+                logerreur({__xst:false,__xme:JSON.stringify(donnees)});
+                return({__xst:'KO',__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
             }
         }catch(e){
             debugger;
             console.log('e=',e);
-            return({status:'KO',message:e.message});
+            return({__xst:'KO',__xme:e.message});
         }
     }
     /*
@@ -1641,9 +1641,9 @@ class requete_sql{
         }
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
-        if(obj1.status === true){
+        if(obj1.__xst === true){
             var obj2 = tabToSql1(obj1.value,0,0,false);
-            if(obj2.status === true){
+            if(obj2.__xst === true){
                 var ajax_param={
                     'call':{'lib':'core','file':'bdd','funct':'modifier_la_requete_en_base'},
                     'rev':
@@ -1660,12 +1660,12 @@ class requete_sql{
                 };
                 modifier_la_requete_en_base(this.#globale_debut_url+'?modifier_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=',donnees);
-                    if(donnees.status === 'OK'){
-                        logerreur({status:true,message:' requête sauvegardée'});
+                    if(donnees.__xst === 'OK'){
+                        logerreur({__xst:true,__xme:' requête sauvegardée'});
                         console.log('OK');
                     }else{
                         console.log('donnees=',donnees);
-                        logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la requête'});
+                        logerreur({__xst:false,__xme:' il y a eu un problème lors de la sauvegarde de la requête'});
                     }
                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 });
@@ -1686,9 +1686,9 @@ class requete_sql{
         }
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
-        if(obj1.status === true){
+        if(obj1.__xst === true){
             var obj2 = tabToSql1(obj1.value,0,0,false);
-            if(obj2.status === true){
+            if(obj2.__xst === true){
                 var ajax_param={
                     'call':{'lib':'core','file':'bdd','funct':'enregistrer_la_requete_en_base'},
                     'rev':
@@ -1705,13 +1705,13 @@ class requete_sql{
                 };
                 enregistrer_la_requete_en_base(this.#globale_debut_url+'?enregistrer_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=',donnees);
-                    if(donnees.status === 'OK'){
+                    if(donnees.__xst === 'OK'){
                         var recharger_page = 'zz_requetes_a1.php?__action=__modification&__id=' + donnees.nouvel_id;
                         window.location=recharger_page;
                         return;
                     }else{
                         console.log('donnees=',donnees);
-                        logerreur({status:false,message:' il y a eu un problème lors de la sauvegarde de la requête'});
+                        logerreur({__xst:false,__xme:' il y a eu un problème lors de la sauvegarde de la requête'});
                     }
                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                 });
@@ -1783,7 +1783,7 @@ class requete_sql{
                                  || (tab[j][1] === 'dans'))
                                 ){
                                     var obj = traite_sqlite_fonction_de_champ(tab,j,0,options);
-                                    if(obj.status === true){
+                                    if(obj.__xst === true){
                                         var parametre = obj.value.match(/\$par\[(.*)\]/);
                                         if(parametre === null){
                                             tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
@@ -1808,7 +1808,7 @@ class requete_sql{
                         }
                     }else if((tab[i][2] === 'f') && ((tab[i][1] === 'egal') || (tab[i][1] === 'diff') || (tab[i][1] === 'comme') || (tab[i][1] === 'sup') || (tab[i][1] === 'supegal') || (tab[i][1] === 'inf') || (tab[i][1] === 'infegal') || (tab[i][1] === 'dans'))){
                         var obj = traite_sqlite_fonction_de_champ(tab,i,0,options);
-                        if(obj.status === true){
+                        if(obj.__xst === true){
                             var parametre = obj.value.match(/\$par\[(.*)\]/);
                             if(parametre === null){
                                 tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
@@ -1884,16 +1884,16 @@ class requete_sql{
             t+='    error_reporting($err);' + CRLF;
             t+='    if(false === $ret){' + CRLF;
             t+='        return(array( ';
-            t+='\'statut\' => false, ';
+            t+='__xst => false, ';
             if(manuelle_sans_base_de_reference === true){
                 t+='\'code_erreur\' => $db->lastErrorCode() ,';
-                t+='\'message\' => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$db->lastErrorMsg()));' + CRLF;
+                t+='__xme => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$db->lastErrorMsg()));' + CRLF;
             }else{
                 t+='\'code_erreur\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorCode() ,';
-                t+='\'message\' => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()));' + CRLF;
+                t+='__xme => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()));' + CRLF;
             }
             t+='    }else{' + CRLF;
-            t+='        return(array( \'statut\' => true ));' + CRLF;
+            t+='        return(array( __xst => true ));' + CRLF;
             t+='    }' + CRLF;
         }else if(type_de_requete === 'delete'){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
@@ -1906,11 +1906,11 @@ class requete_sql{
             t+='    error_reporting($err);' + CRLF;
             t+='    if(false === $ret){' + CRLF;
             t+='        return(array( ';
-            t+='\'statut\' => false, ';
+            t+='__xst => false, ';
             t+='\'code_erreur\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorCode() ,';
-            t+='\'message\' => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()));' + CRLF;
+            t+='__xme => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()));' + CRLF;
             t+='    }else{' + CRLF;
-            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->changes()));' + CRLF;
+            t+='        return(array( __xst => true, \'changements\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->changes()));' + CRLF;
             t+='    }' + CRLF;
         }else if(type_de_requete === 'insert'){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.debut_sql_pour_insert);
@@ -1941,13 +1941,13 @@ class requete_sql{
             t+='    error_reporting($err);' + CRLF;
             t+='    if(false === $ret){' + CRLF;
             t+='        return(array(' + CRLF;
-            t+='            \'statut\'      => false, ' + CRLF;
+            t+='            __xst      => false, ' + CRLF;
             t+='            \'code_erreur\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorCode(), ' + CRLF;
-            t+='            \'message\' => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()' + CRLF;
+            t+='            __xme => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()' + CRLF;
             t+='        ));' + CRLF;
             t+='    }else{' + CRLF;
             t+='        return(array( ' + CRLF;
-            t+='            \'statut\'      => true,' + CRLF;
+            t+='            __xst      => true,' + CRLF;
             t+='            \'changements\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->changes(),' + CRLF;
             t+='            \'nouvel_id\'   => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastInsertRowID(),' + CRLF;
             t+='        ));' + CRLF;
@@ -1995,10 +1995,10 @@ class requete_sql{
                                         }else{
                                             if(tab[m][2] === 'f'){
                                                 var obj = traite_sqlite_fonction_de_champ(tab,m,0,options);
-                                                if(obj.status === true){
+                                                if(obj.__xst === true){
                                                     valeur_du_champ=obj.value;
                                                 }else{
-                                                    return(logerreur({status:false,'message':'0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
+                                                    return(logerreur({__xst:false,__xme:'0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
                                                 }
                                             }else{
                                                 if((tab[m][1].toLowerCase() === 'null') && (tab[m][4] === 0)){
@@ -2093,11 +2093,11 @@ class requete_sql{
             t+='    error_reporting($err);' + CRLF;
             t+='    if(false === $ret){' + CRLF;
             t+='        return(array( ';
-            t+='\'statut\' => false, ';
+            t+='__xst => false, ';
             t+='\'code_erreur\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorCode() ,';
-            t+='\'message\' => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()));' + CRLF;
+            t+='__xme => \'erreur sql_' + id_requete_en_base + '()\'.\' \'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg()));' + CRLF;
             t+='    }else{' + CRLF;
-            t+='        return(array( \'statut\' => true, \'changements\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->changes()));' + CRLF;
+            t+='        return(array( __xst => true, \'changements\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->changes()));' + CRLF;
             t+='    }' + CRLF;
         }else if(type_de_requete === 'select'){
             var champs0='';
@@ -2197,15 +2197,15 @@ class requete_sql{
             t+='            );' + CRLF;
             t+='        }' + CRLF;
             t+='        return array(' + CRLF;
-            t+='           \'statut\'  => true       ,' + CRLF;
-            t+='           \'valeur\'  => $donnees0   ,' + CRLF;
+            t+='           __xst  => true       ,' + CRLF;
+            t+='           __xva  => $donnees0   ,' + CRLF;
             t+='           \'sql0\'    => $sql0          ,' + CRLF;
             t+='           \'where0\'  => $where0     ,' + CRLF;
             t+='        );' + CRLF;
             t+='    }else{' + CRLF;
             t+='        return array(' + CRLF;
-            t+='           \'statut\'  => false ,' + CRLF;
-            t+='           \'message\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg(),' + CRLF;
+            t+='           __xst  => false ,' + CRLF;
+            t+='           __xme => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg(),' + CRLF;
             t+='           \'sql0\'    => $sql0,' + CRLF;
             t+='           \'where0\'  => $where0     ,' + CRLF;
             t+='        );' + CRLF;
@@ -2277,7 +2277,7 @@ class requete_sql{
                                          || (tab[j][1] === 'pas_comme'))
                                         ){
                                             var obj = traite_sqlite_fonction_de_champ(tab,j,0,options);
-                                            if(obj.status === true){
+                                            if(obj.__xst === true){
                                                 var parametre = obj.value.match(/\$par\[(.*)\]/);
                                                 if(parametre === null){
                                                     tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
@@ -2302,7 +2302,7 @@ class requete_sql{
                                 }
                             }else if((tab[i][2] === 'f') && ((tab[i][1] === 'egal') || (tab[i][1] === 'diff') || (tab[i][1] === 'comme') || (tab[i][1] === 'sup') || (tab[i][1] === 'inf') || (tab[i][1] === 'dans') || (tab[i][1] === 'pas_comme'))){
                                 var obj = traite_sqlite_fonction_de_champ(tab,i,0,options);
-                                if(obj.status === true){
+                                if(obj.__xst === true){
                                     var parametre = obj.value.match(/\$par\[(.*)\]/);
                                     if(parametre === null){
                                         tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
@@ -2385,23 +2385,23 @@ class requete_sql{
             t+='            $__nbEnregs=$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->querySingle($sql1);' + CRLF;
             t+='        }' + CRLF;
             t+='        return array(' + CRLF;
-            t+='           \'statut\'  => true       ,' + CRLF;
-            t+='           \'valeur\'  => $donnees0   ,' + CRLF;
+            t+='           __xst  => true       ,' + CRLF;
+            t+='           __xva  => $donnees0   ,' + CRLF;
             t+='           \'nombre\'  => $__nbEnregs ,' + CRLF;
             t+='           \'sql0\'    => $sql0          ,' + CRLF;
             t+='           \'where0\'  => $where0     ,' + CRLF;
             t+='        );' + CRLF;
             t+='    }else{' + CRLF;
             t+='        return array(' + CRLF;
-            t+='         \'statut\'  => false ,' + CRLF;
-            t+='         \'message\' => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg(),' + CRLF;
+            t+='         __xst  => false ,' + CRLF;
+            t+='         __xme => $GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][LIEN_BDD]->lastErrorMsg(),' + CRLF;
             t+='         \'sql0\'    => $sql0,' + CRLF;
             t+='         \'where0\'  => $where0     ,' + CRLF;
             t+='        );' + CRLF;
             t+='    }' + CRLF;
         }
         t+='}' + CRLF;
-        return({'status':true,value:t});
+        return({__xst:true,value:t});
     }
     /*
       =============================================================================================================
@@ -2411,9 +2411,9 @@ class requete_sql{
     transform_source_rev_vers_sql(source_rev,id_requete){
         var tableau1 = iterateCharacters2(source_rev);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
-        if(obj1.status === true){
+        if(obj1.__xst === true){
             var obj2 = tabToSql1(obj1.value,0,0,false);
-            if(obj2.status === true){
+            if(obj2.__xst === true){
                 obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
                 if(obj2.value.indexOf('WHERE ') >= 0){
                     var str1 = obj2.value.substr(0,obj2.value.indexOf('WHERE '));
@@ -2430,7 +2430,7 @@ class requete_sql{
 //                dogid(txtarea_dest).value=obj2.value;
 
                 var obj3 = tabToSql1(obj1.value,0,0,true);
-                if(obj3.status === true){
+                if(obj3.__xst === true){
                     var i=0;
                     for(i=0;i < obj3.tableau_des_tables_utilisees.length;i++){
                         var base={};
@@ -2447,19 +2447,19 @@ class requete_sql{
                         }
                     }
                     var obj4 = this.#transformer_requete_en_fonction_php(this.#obj_webs.type_de_requete,obj3, id_requete);
-                    if(obj4.status === true){
-                        return({status:true,source_sql:obj2.value , source_php:obj4.value});
+                    if(obj4.__xst === true){
+                        return({__xst:true,source_sql:obj2.value , source_php:obj4.value});
                     }else{
-                        return(logerreur({status:false,source_sql:obj2.value ,message:'module_requete erreur 2455 erreur de conversion en php '}));
+                        return(logerreur({__xst:false,source_sql:obj2.value ,__xme:'module_requete erreur 2455 erreur de conversion en php '}));
                     }
                 }else{
-                    return(logerreur({status:false,source_sql:obj2.value , message:'module_requete erreur 2456 erreur de conversion en sql '}));
+                    return(logerreur({__xst:false,source_sql:obj2.value , message:'module_requete erreur 2456 erreur de conversion en sql '}));
                 }
             }else{
-                return(logerreur({status:false,message:'module_requete erreur 2457 erreur de conversion en sql '}));
+                return(logerreur({__xst:false,__xme:'module_requete erreur 2457 erreur de conversion en sql '}));
             }
         }else{
-            return(logerreur({status:false,message:'module_requete erreur 2458'}));
+            return(logerreur({__xst:false,__xme:'module_requete erreur 2458'}));
         }         
      
     }
@@ -2478,7 +2478,7 @@ class requete_sql{
             __gi1.masquer_les_messages1('zone_global_messages');
             
             var obj1=this.transform_source_rev_vers_sql(document.getElementById(txtarea_source).value,id_requete);
-            if(obj1.status===true){
+            if(obj1.__xst===true){
                 document.getElementById(txtarea_dest).value=obj1.source_sql;
                 document.getElementById('txtar3').value=obj1.source_php;
             }else{
@@ -2512,13 +2512,13 @@ class requete_sql{
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_les_bases_de_la_cible_en_cours'}};
         recuperer_les_bases_de_la_cible_en_cours(this.#globale_debut_url+'?recuperer_les_bases_de_la_cible_en_cours',ajax_param,this).then((donnees) => {
-            if(donnees.status === 'OK'){
+            if(donnees.__xst === 'OK'){
                 console.log('bases_chargées');
                 this.#obj_init['bases']={};
                 var i={};
                 for(i in donnees.valeurs){
                     var obj2 = rev_texte_vers_matrice(donnees.valeurs[i]['T0.chp_rev_travail_basedd']);
-                    if(obj2.status === true){
+                    if(obj2.__xst === true){
                         this.#obj_init['bases'][donnees.valeurs[i]['T0.chi_id_basedd']]={
                             'chi_id_basedd':donnees.valeurs[i]['T0.chi_id_basedd'],
                             'chp_nom_basedd':donnees.valeurs[i]['T0.chp_nom_basedd'],

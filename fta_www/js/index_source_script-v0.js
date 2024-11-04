@@ -111,7 +111,7 @@ function ajusteTailleTextareaContenantSource(normalise){
 function enregistrer2(){
     var sourcesCompactesIdentiques=false;
     var sourcesIdentiques=false;
-    var conversion={'status':false};
+    var conversion={__xst:false};
     document.getElementById('sauvegarderLeNormalise').disabled=true;
     document.getElementById('nomDuSource').disabled=true;
     __gi1.raz_des_messages();
@@ -136,13 +136,13 @@ function enregistrer2(){
     
     
     console.log('matriceFonction=',matriceFonction);
-    if(matriceFonction.status === true){
+    if(matriceFonction.__xst === true){
         var startMicro = performance.now();
         var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.value,true,false);
         var endMicro = performance.now();
         console.log('reconstitution du source endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
         var diResultatsCompactes = document.createElement('pre');
-        if(fonctionReecriteAvecRetour1.status === true){
+        if(fonctionReecriteAvecRetour1.__xst === true){
             document.getElementById('normalise').value=fonctionReecriteAvecRetour1.value;
             ajusteTailleTextareaContenantSource('normalise');
             memeHauteur('normalise','zonesource');
@@ -153,13 +153,13 @@ function enregistrer2(){
             var compacteReecrit = arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
             var endMicro = performance.now();
             console.log('comparaison des compactés=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
-            if((compacteOriginal.status == true) && (compacteReecrit.status === true)){
+            if((compacteOriginal.__xst == true) && (compacteReecrit.__xst === true)){
                 if(compacteOriginal.value == compacteReecrit.value){
                     sourcesCompactesIdentiques=true;
-                    logerreur({status:true,message:'<b>👍 sources compactés Egaux</b>'});
+                    logerreur({__xst:true,__xme:'<b>👍 sources compactés Egaux</b>'});
                     var conversion = convertSource(matriceFonction);
                 }else{
-                    logerreur({status:false,message:'sources compactés différents'});
+                    logerreur({__xst:false,__xme:'sources compactés différents'});
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.value;
@@ -175,23 +175,23 @@ function enregistrer2(){
         zonedonneesComplementaires.appendChild(diResultatsCompactes);
         if(sourcesCompactesIdentiques){
             if(a.value == fonctionReecriteAvecRetour1.value.replace(/\r\n/g,'\n')){
-                logerreur({status:true,message:'<b>👍👍 sources Egaux</b>'});
+                logerreur({__xst:true,__xme:'<b>👍👍 sources Egaux</b>'});
                 document.getElementById('sauvegarderLeNormalise').disabled=false;
                 document.getElementById('nomDuSource').disabled=false;
-                if(conversion.status == true){
+                if(conversion.__xst == true){
                     global_messages.data.sourceGenere=conversion.value;
                     var arr = writeSourceFile(conversion);
-                    if(arr.status == false){
-                        logerreur({status:false,message:'il y a eu un problème d\'écriture sur disque'});
+                    if(arr.__xst == false){
+                        logerreur({__xst:false,__xme:'il y a eu un problème d\'écriture sur disque'});
                         console.log(arr);
                     }else{
-                        logerreur({status:true,message:'<b>👍👍👍 programme écrit sur disque</b>'});
+                        logerreur({__xst:true,__xme:'<b>👍👍👍 programme écrit sur disque</b>'});
                         document.getElementById('sauvegarderLeNormalise').disabled=false;
                         document.getElementById('nomDuSource').disabled=false;
                     }
                 }
             }else{
-                logerreur({status:false,message:'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '});
+                logerreur({__xst:false,__xme:'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '});
             }
         }
     }
@@ -205,7 +205,7 @@ function enregistrer2(){
     lienVoitMatrice.href='javascript:voirMatrice1(0)';
     lienVoitMatrice.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
     zonedonneesComplementaires.appendChild(lienVoitMatrice);
-    if(conversion.status == true){
+    if(conversion.__xst == true){
         var lienVoitSourceGenere = document.createElement('a');
         lienVoitSourceGenere.innerHTML='Voir source généré';
         lienVoitSourceGenere.href='javascript:voirSourceGenere(0)';
@@ -221,7 +221,7 @@ function enregistrer2(){
     zoneContenantLaMatrice.id='zoneContenantLaMatrice';
     zoneContenantLaMatrice.className='tableau1';
     zonedonneesComplementaires.appendChild(zoneContenantLaMatrice);
-    if(conversion.status == true){
+    if(conversion.__xst == true){
         var zoneContenantLeSourceGenere = document.createElement('div');
         zoneContenantLeSourceGenere.style.display='none';
         zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
@@ -298,7 +298,7 @@ function voirTableau1(){
   =====================================================================================================================
 */
 function afficherFichierSource(source){
-    if(source.status == true){
+    if(source.__xst == true){
         var zoneSource = document.getElementById(source.nomZone);
         zoneSource.value=source.value;
         ajusteTailleTextareaContenantSource(source.nomZone);
@@ -354,7 +354,7 @@ function chargerLaListeDesSourcesRev(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 var t='';
                 var idFile={};
                 for(idFile in jsonRet.files){
@@ -395,7 +395,7 @@ function chargerLaListeDesSourcesRev(){
         console.error('e=',e);
     }
     /* whatever(); */
-    return(logerreur({status:true}));
+    return(logerreur({__xst:true}));
 }
 /*
   =====================================================================================================================

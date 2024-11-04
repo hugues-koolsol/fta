@@ -35,10 +35,10 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
     var startMicro = performance.now();
     var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
     
-    if(matriceFonction.status===true){
+    if(matriceFonction.__xst===true){
 
         var objSql=tabToSql1(matriceFonction.value,0,0,false);
-        if(objSql.status===true){
+        if(objSql.__xst===true){
             var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
             dogid(nom_zone_genere).value=contenu;
         }
@@ -105,16 +105,16 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
   }
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.status=='OK'){
+   if(jsonRet.__xst=='OK'){
     console.log('jsonRet=',jsonRet);
     for(var elem in jsonRet.messages){
-     logerreur( {'status':true,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
+     logerreur( {__xst:true,__xme:'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 
    }else{
     for(var elem in jsonRet.messages){
-     logerreur( {'status':false,'message':'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
+     logerreur( {__xst:false,__xme:'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     console.log(r);
@@ -152,9 +152,9 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
   r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
  }catch(e){
   console.error('e=',e); /* whatever(); */
-  return {status:false};  
+  return {__xst:false};  
  }
- return {status:true};  
+ return {__xst:true};  
  
  
  

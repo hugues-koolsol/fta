@@ -14,13 +14,13 @@ function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
-    if($tt['statut'] === false || count($tt['valeur'])!==1){
+    if($tt[__xst] === false || count($tt[__xva])!==1){
         ajouterMessage('erreur' , __LINE__ . ' erreur de récupération de la base ' , BNF  );
-        return array('status'=> false  );
+        return array(__xst=> false  );
     }  
 
 
-    $__valeurs=$tt['valeur'][0];
+    $__valeurs=$tt[__xva][0];
 
 
 
@@ -29,17 +29,17 @@ function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_
     if( is_file($chemin_bdd)  && strpos($__valeurs['T0.chp_nom_basedd'],'.db')!==false && strpos( $__valeurs['T1.chp_nom_dossier'] , 'sqlite' ) !==false  ){
 
         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_bdd,true);
-        if($ret['status']===true){
+        if($ret[__xst]===true){
             $tableauDesTables=$ret['value'];
             $ret2=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($source_base_virtuelle);
-            if($ret2['status']===true){
+            if($ret2[__xst]===true){
 
                 $tableaux_retournes=array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );
 
             }else{
 
                 ajouterMessage('erreur' , __LINE__ . ' erreur sur la structure de la base 2 de la zone "genere" ' , BNF  );
-                return array('status'=> false  );
+                return array(__xst=> false  );
 
             }
 
@@ -47,18 +47,18 @@ function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_
         }else{
 
             ajouterMessage('erreur' , ' erreur sur la structure de la base "'.$__valeurs['T0.chp_nom_basedd'].'"' , BNF  );
-            return array('status'=> false  );
+            return array(__xst=> false  );
 
         }
 
     }else{
 
         ajouterMessage('erreur' , __LINE__ .' fichier de la base de donnée sqlite introuvable ' , BNF );
-        return array('status'=> false  );
+        return array(__xst=> false  );
         
     }
     
-    return array('status'=> true , 'value' => $tableaux_retournes );
+    return array(__xst=> true , 'value' => $tableaux_retournes );
 }
 /*
   ========================================================================================
@@ -70,7 +70,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
  
  if($fd=fopen($nom_du_fichier_dump,'w')){
  }else{
-  return array('status' => true , 'message' => __LINE__ . ' le fichier '.$nom_du_fichier_dump.' ne peut être ouvert' );
+  return array(__xst => true , __xme => __LINE__ . ' le fichier '.$nom_du_fichier_dump.' ne peut être ouvert' );
  }
  
  $db0 = new SQLite3($chemin_fichier_sqlite);
@@ -220,7 +220,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
 
  if($zip->open($nom_du_fichier_dump.'.zip',ZIPARCHIVE::CREATE) !== TRUE){
 
-     return array('status' => true , 'message' => __LINE__ . ' le fichier zip de '.$nom_du_fichier_dump.' ne peut être ouvert' );
+     return array(__xst => true , __xme => __LINE__ . ' le fichier zip de '.$nom_du_fichier_dump.' ne peut être ouvert' );
 
  }
 
@@ -230,14 +230,14 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
  if(!$zip->addFile($chemin_fichier,$nom_fichier)){
 
      $zip->close();
-     return array('status' => true , 'message' => __LINE__ . ' ajout du fichier au zip impossible' );
+     return array(__xst => true , __xme => __LINE__ . ' ajout du fichier au zip impossible' );
 
  }
 
  $zip->close();
  
  
- return array('status' => true , 'value' => $nom_du_fichier_dump );
+ return array(__xst => true , 'value' => $nom_du_fichier_dump );
 }
 
 /*
@@ -251,7 +251,7 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
     $continuer=true;
     if(!is_dir($chemin_fichier_temporaire)){
         if(!mkdir($chemin_fichier_temporaire,0777,true)){
-            return array('status' => false , 'message' => 'impossible de créer le répertoire temporaire' );
+            return array(__xst => false , __xme => 'impossible de créer le répertoire temporaire' );
             $continuer=false;
         }
     }
@@ -280,7 +280,7 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
                 $dbtemp->close();
                 $ret=obtenir_la_structure_de_la_base_sqlite($fichier_temporaire,true);
                 
-                if($ret['status']===true){
+                if($ret[__xst]===true){
                  
                     $tableauDesTables=$ret['value'];
                  
@@ -288,7 +288,7 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
 
                     /* ne pas créer une copie de sauvegarde d'un fichier temporaire */
                     sauvegarder_et_supprimer_fichier($fichier_temporaire,true); 
-                    return array('status' => false , 'message' => 'erreur sur la création des tables de la base' );
+                    return array(__xst => false , __xme => 'erreur sur la création des tables de la base' );
 
                 }
 
@@ -299,13 +299,13 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
      
         }else{
          
-            return array('status' => false , 'message' => 'erreur sur la création de la base' );
+            return array(__xst => false , __xme => 'erreur sur la création de la base' );
              
         }
         
           
     }
-    return array('status' => true , 'value' => $tableauDesTables );
+    return array(__xst => true , 'value' => $tableauDesTables );
 }
 
 /*
@@ -426,7 +426,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
         }
         
     }else{
-      return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des champs de la table '.$nom_de_la_table.'  ' ,  'provenance' => BNF) );
+      return signaler_erreur( array(__xst=>true,__xme=> __LINE__ . ' erreur sur la liste des champs de la table '.$nom_de_la_table.'  ' ,  'provenance' => BNF) );
     }
 
     $liste_des_cles_etrangeres=array();
@@ -449,7 +449,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
         }
         $stmt->close(); 
     }else{
-      return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des clés étrangères de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
+      return signaler_erreur( array(__xst=>true,__xme=> __LINE__ . ' erreur sur la liste des clés étrangères de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
     }
 
     
@@ -489,13 +489,13 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
                     }
                     $stmt1->close(); 
                 }else{
-                  return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
+                  return signaler_erreur( array(__xst=>true,__xme=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
                 }
             }
         }
         $stmt->close(); 
     }else{
-      return signaler_erreur( array('status'=>true,'message'=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
+      return signaler_erreur( array(__xst=>true,__xme=> __LINE__ . ' erreur sur la liste des indexes de la table '.$nom_de_la_table.' ' ,  'provenance' => BNF) );
     }
 
    
@@ -505,7 +505,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table , $db , $essayer_au
     );
 
 
-    return array('status'=>true,'value'=>$tableau);
+    return array(__xst=>true,'value'=>$tableau);
 }
 
 /*
@@ -537,7 +537,7 @@ function obtenir_la_structure_de_la_base_sqlite_v2($chemin_base){
       
          $obj=obtenir_tableau_sqlite_de_la_table($v1 , $db1 , true);
 
-         if($obj['status']===true){
+         if($obj[__xst]===true){
           
           $tableauDesTables[$v1]['structure']=$obj['value'];
 //          echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $obj['value']['liste_des_indexes'] , true ) . '</pre>' ; exit(0);
@@ -592,7 +592,7 @@ function obtenir_la_structure_de_la_base_sqlite_v2($chemin_base){
    }
 //   echo __FILE__ . ' ' . __LINE__ . ' $tableauDesTables = <pre>' . var_export( $tableauDesTables , true ) . '</pre>' ; exit(0);
  
-    return array('status'=>true,'value'=>$tableauDesTables);
+    return array(__xst=>true,'value'=>$tableauDesTables);
  
 }
 
@@ -628,7 +628,7 @@ function obtenir_la_structure_de_la_base_sqlite($chemin_base , $essayer_auto_inc
       
          $obj=obtenir_tableau_sqlite_de_la_table($v1 , $db1 , $essayer_auto_increment);
 
-         if($obj['status']===true){
+         if($obj[__xst]===true){
           
           $tableauDesTables[$v1]=$obj['value'];
           
@@ -647,6 +647,6 @@ function obtenir_la_structure_de_la_base_sqlite($chemin_base , $essayer_auto_inc
     
    }
  
-    return array('status'=>true,'value'=>$tableauDesTables);
+    return array(__xst=>true,'value'=>$tableauDesTables);
  
 }

@@ -312,7 +312,7 @@ class interface1{
             }
             try{
                 var jsonRet = JSON.parse(r.responseText);
-                if(jsonRet.status == 'OK'){
+                if(jsonRet.__xst == 'OK'){
                     window.location.reload(true);
                     return;
                 }else{
@@ -339,9 +339,9 @@ class interface1{
         }catch(e){
             console.error('e=',e);
             /* whatever(); */
-            return({status:false});
+            return({__xst:false});
         }
-        return({'status':true});
+        return({__xst:true});
     }
     /*
       
@@ -637,9 +637,9 @@ class interface1{
         var startMicro = performance.now();
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         global_messages.data.matrice=matriceFonction;
-        if(matriceFonction.status === true){
+        if(matriceFonction.__xst === true){
             var objJs = parseJavascript0(matriceFonction.value,1,0);
-            if(objJs.status === true){
+            if(objJs.__xst === true){
                 dogid(chp_genere_source).value=objJs.value;
             }else{
                 this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
@@ -664,15 +664,15 @@ class interface1{
         console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((((endMicro - startMicro)) * 1000),10) / 1000) + ' ms');
         var startMicro = performance.now();
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-        if(matriceFonction.status === true){
+        if(matriceFonction.__xst === true){
             var objPhp = parsePhp0(matriceFonction.value,0,0);
-            if(objPhp.status === true){
+            if(objPhp.__xst === true){
                 dogid(nom_zone_genere_php).value=objPhp.value;
                 if(bouton_interface === true){
                     /* pour firefox ! */
                     return;
                 }
-                return({status:true,value:matriceFonction.value});
+                return({__xst:true,value:matriceFonction.value});
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages');
@@ -680,7 +680,7 @@ class interface1{
             /* pour firefox ! */
             return;
         }
-        return({status:true});
+        return({__xst:true});
     }
     /* function mouseWheelOnMenu */
     mouseWheelOnMenu(event){
@@ -733,9 +733,9 @@ class interface1{
         var a = document.getElementById(nom_de_la_textarea);
         var tableau1 = iterateCharacters2(a.value);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-        if(matriceFonction.status === true){
+        if(matriceFonction.__xst === true){
             var obj2 = arrayToFunct1(matriceFonction.value,true,false);
-            if(obj2.status === true){
+            if(obj2.__xst === true){
                 a.value=obj2.value;
             }
         }else{
@@ -1187,7 +1187,7 @@ class interface1{
         var position_debut=zoneSource.selectionStart;
         var position_fin=zoneSource.selectionEnd;
         if(position_debut < 0){
-            logerreur({'status':false,'message':'veuillez sélectionner une parenthèse dans la zone de texte'});
+            logerreur({__xst:false,__xme:'veuillez sélectionner une parenthèse dans la zone de texte'});
             this.remplir_et_afficher_les_messages1('zone_global_messages',nomDeLaTextAreaContenantLeSource);
             return;
         }
@@ -1207,7 +1207,7 @@ class interface1{
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
                             var arr = functionToArray(texte,false,false,'(');
-                            if(arr.status === true){
+                            if(arr.__xst === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
                                 position_debut=i + 1;
@@ -1224,7 +1224,7 @@ class interface1{
                 texte=texte.substr((position_debut - 1));
                 console.log('texte="',texte + '"');
                 var arr = functionToArray(texte,false,false,'(');
-                if(arr.status === true){
+                if(arr.__xst === true){
                     zoneSource.focus();
                     zoneSource.selectionStart=position_debut;
                     zoneSource.selectionEnd=((position_debut + arr.posFerPar)) - 1;
@@ -1238,7 +1238,7 @@ class interface1{
             */
             texte=texte.substr(0,(position_debut + 1));
             var arr = functionToArray(texte,false,false,')');
-            if(arr.status === true){
+            if(arr.__xst === true){
                 zoneSource.focus();
                 zoneSource.selectionStart=arr.posOuvPar + 1;
                 zoneSource.selectionEnd=position_debut;
@@ -1254,7 +1254,7 @@ class interface1{
                     if(texte.substr(i,1) === '('){
                         texte=texte.substr(i);
                         var arr = functionToArray(texte,false,false,'(');
-                        if(arr.status === true){
+                        if(arr.__xst === true){
                             zoneSource.focus();
                             zoneSource.selectionStart=i + 1;
                             position_debut=i + 1;
@@ -1277,7 +1277,7 @@ class interface1{
                     */
                     var tableau1 = iterateCharacters2(texte);
                     var matriceFonction = functionToArray2(tableau1.out,false,true,'');
-                    if(matriceFonction.status === true){
+                    if(matriceFonction.__xst === true){
                         var l01=matriceFonction.value.length;
                         var fait=false;
                         var repereDansTableau=-1;
@@ -1294,7 +1294,7 @@ class interface1{
                                         var positionParentheseDuParent=matriceFonction.value[matriceFonction.value[i][7]][11];
                                         texte=texte.substr(positionParentheseDuParent);
                                         var arr = functionToArray(texte,false,false,'(');
-                                        if(arr.status === true){
+                                        if(arr.__xst === true){
                                             zoneSource.focus();
                                             position_debut=tableau1.out[positionParentheseDuParent][2] + 1;
                                             position_fin=positionParentheseDuParent + arr.posFerPar;
@@ -1320,7 +1320,7 @@ class interface1{
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
                             var arr = functionToArray(texte,false,false,'(');
-                            if(arr.status === true){
+                            if(arr.__xst === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
                                 position_debut=i + 1;

@@ -50,7 +50,7 @@ function enregistrer_les_sql_en_base(params,fonction_apres){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
@@ -109,9 +109,9 @@ function enregistrer_les_sql_en_base(params,fonction_apres){
         setTimeout(function(){
             fonction_apres(params.arg);
         },16);
-        return({status:false});
+        return({__xst:false});
     }
-    return({status:true});
+    return({__xst:true});
 }
 /*
   =====================================================================================================================
@@ -142,7 +142,7 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
@@ -201,9 +201,9 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
         setTimeout(function(){
             fonction_apres(params.arg);
         },16);
-        return({status:false});
+        return({__xst:false});
     }
-    return({status:true});
+    return({__xst:true});
 }
 /*
   =====================================================================================================================
@@ -255,11 +255,11 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                             
                             if(provenance==='sql'){
                                var objSource = tabToSql1(tab,0,0,false);
-                               if(objSource.status===true){
+                               if(objSource.__xst===true){
                                 var obj1=a2F1(tab,0,true,1,false);
-                                if(obj1.status===true){
+                                if(obj1.__xst===true){
                                     var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.value,id_source);
-                                    if(obj2.status===true){
+                                    if(obj2.__xst===true){
                                         arg[id_source].tab=[];
                                         var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj1.value,'source_sql':obj2.source_sql,source_php:obj2.source_php};
                                         enregistrer_les_sql_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
@@ -299,9 +299,9 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                                     var objSource = parsePhp0(tab,0,0);
                                 }
                                 
-                                if(objSource.status === true){
+                                if(objSource.__xst === true){
                                     var obj = arrayToFunct1(tab,true,false);
-                                    if(obj.status === true ){
+                                    if(obj.__xst === true ){
                                         arg[id_source].tab=[];
                                         var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
                                         enregistrer_les_sources_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
@@ -390,17 +390,17 @@ function traite_une_suppression(id_tache,arg){
                             tache_en_cours=true;
                             if((extension === '.html') || (extension === '.htm')){
                                 var objSource = __module_html1.tabToHtml1(tab1,0,false,0);
-                                console.log('%c on traite un html ' , 'color:red;background:yellow;' , objSource.status )
+                                console.log('%c on traite un html ' , 'color:red;background:yellow;' , objSource.__xst )
                             }else if((extension === '.js') ){
                                 var objSource = parseJavascript0(tab,1,0);
-                                console.log('%c on traite un js ' , 'color:red;background:yellow;' , objSource.status )
+                                console.log('%c on traite un js ' , 'color:red;background:yellow;' , objSource.__xst )
                             }else if(extension === '.php'){
                                 var objSource = parsePhp0(tab1,0,0);
-                                console.log('%c on traite un php ' , 'color:red;background:yellow;' , objSource.status )
+                                console.log('%c on traite un php ' , 'color:red;background:yellow;' , objSource.__xst )
                             }
-                            if(objSource.status === true){
+                            if(objSource.__xst === true){
                                 var obj = arrayToFunct1(tab1,true,false);
-                                if(obj.status === true){
+                                if(obj.__xst === true){
                                     arg[id_source].tab1=[];
                                     var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value,provenance:null};
                                     enregistrer_les_sources_en_base(params,traitement_apres_suppression_ligne_en_bdd);
@@ -547,7 +547,7 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 console.log('jsonRet=',jsonRet);
                 traitement_a_lancer_si_succes(jsonRet.valeurs);
             }else{
@@ -598,9 +598,9 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
     }catch(e){
         console.error('e=',e);
         /* whatever(); */
-        return({status:false});
+        return({__xst:false});
     }
-    return({status:true});
+    return({__xst:true});
 }
 /*
   
@@ -632,7 +632,7 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 console.log('jsonRet=',jsonRet);
 
                 traitement_a_lancer_si_succes(jsonRet.valeurs,jsonRet);
@@ -689,9 +689,9 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
     }catch(e){
         console.error('e=',e);
         /* whatever(); */
-        return({status:false});
+        return({__xst:false});
     }
-    return({status:true});
+    return({__xst:true});
 }
 /*
   
@@ -802,7 +802,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 var i={};
                 for(i in liste_des_travaux_en_arriere_plan){
                     if(liste_des_travaux_en_arriere_plan[i].etat_du_travail == 'travail_en_arriere_plan_terminé'){
@@ -851,12 +851,12 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
             }catch(e){
                 console.error('e=',e);
                 /* whatever(); */
-                return({status:false});
+                return({__xst:false});
             }
             break;
         }
     }
-    return({status:true});
+    return({__xst:true});
 }
 /*
   
@@ -888,7 +888,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status == 'OK'){
+            if(jsonRet.__xst == 'OK'){
                 var i={};
                 for(i in liste_des_travaux_en_arriere_plan){
                     if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
@@ -928,12 +928,12 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
             }catch(e){
                 console.error('e=',e);
                 /* whatever(); */
-                return({status:false});
+                return({__xst:false});
             }
             break;
         }
     }
-    return({status:true});
+    return({__xst:true});
 }
 /*
   
@@ -1029,7 +1029,7 @@ function recuperer_les_travaux_en_session(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.status === 'OK'){
+            if(jsonRet.__xst === 'OK'){
                 var tableau_des_travaux = [];
                 var i={};
                 for(i in jsonRet.valeur){
@@ -1064,7 +1064,7 @@ function recuperer_les_travaux_en_session(){
     }catch(e){
         console.error('e=',e);
         /* whatever(); */
-        return({status:false});
+        return({__xst:false});
     }
 }
 /*

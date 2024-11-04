@@ -1,7 +1,4 @@
 <?php
-
-
-
 /*
   =====================================================================================================================
 */
@@ -17,7 +14,11 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
 
             fclose($fd);
 
-        }
+        }else{
+           return(array(__xst => false , __xme => 'erreur ecriture fichier sql_'.$id_requete.'.php' ) );
+        }         
+    }else{
+        return(array(__xst => false , __xme => 'erreur ouverture fichier sql_'.$id_requete.'.php' ) );
     }
     sql_inclure_reference(6);
     /*sql_inclure_deb*/
@@ -35,9 +36,9 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
     $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
 
-    if($retour_sql['statut'] === true){
+    if($retour_sql[__xst] === true){
         $chaine_js='';
-        foreach($retour_sql['valeur'] as $k1 => $v1){
+        foreach($retour_sql[__xva] as $k1 => $v1){
             $chaine_js.=CRLF.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
         }
         $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'aa_js_sql.js';
@@ -45,11 +46,17 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
         if($fd=fopen($nom_fichier,'w')){
             if(fwrite($fd,'//<![CDATA['.CRLF.'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};'.CRLF.'//]]>')){
                 fclose($fd);
+            }else{
+               @fclose($fd);
+               return(array(__xst => false , __xme => 'erreur ecriture fichier aa_js_sql.js' ) );
             }
+        }else{
+            return(array(__xst => false , __xme => 'erreur ouverture fichier aa_js_sql.js' ) );
         }
+    }else{
+        return(array(__xst => false , __xme => $retour_sql[__xme] ) );
     }
-            
-    
+    return(array(__xst => true) );
  
 }
 /*
@@ -73,15 +80,15 @@ function modifier_la_requete_en_base(&$data){
     );
     
     $tt=sql_9($a_modifier);
-    if($tt['statut']===true){
-        $data['status']='OK';
+    if($tt[__xst]===true){
+        $data[__xst]='OK';
         ecrire_le_php_de_la_requete_sur_disque($data['input']['id_requete'],$data['input']['php']);
             
         
         
     }else{
-        $data['messages'][]=__FILE__.' '.__LINE__.' erreur modifier_la_requete_en_base '.$tt['message'];
-        $data['status']='KO';
+        $data['messages'][]=__FILE__.' '.__LINE__.' erreur modifier_la_requete_en_base '.$tt[__xme];
+        $data[__xst]='KO';
     }
     
     $data['input']['parametres_sauvegarde']=array(
@@ -118,8 +125,8 @@ function enregistrer_la_requete_en_base(&$data){
          )
     );
     $tt=sql_7($a_inserer);
-    if($tt['statut']===true){
-        $data['status']='OK';
+    if($tt[__xst]===true){
+        $data[__xst]='OK';
         $data['nouvel_id']=$tt['nouvel_id'];
         /*
          lors de la création dans l'interface, l'id est égal à 0 ou bien nnn si on part d'une requête existante
@@ -134,13 +141,13 @@ function enregistrer_la_requete_en_base(&$data){
               'c_chi_id_requete' => $data['nouvel_id'],
               'n_cht_php_requete' => $nouveau_php,
         ));
-        if($tt35['statut']===true){
+        if($tt35[__xst]===true){
          
             ecrire_le_php_de_la_requete_sur_disque($data['nouvel_id'],$nouveau_php);
          
         }
     }else{
-     $data['status']='KO';
+     $data[__xst]='KO';
     }
 
     $data['input']['parametres_sauvegarde']=array(
@@ -173,14 +180,14 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
-    if($tt['statut'] === false || count($tt['valeur'])!==1){
+    if($tt[__xst] === false || count($tt[__xva])!==1){
         $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
      
     }  
 
 
-    $ret0=$tt['valeur'][0];
+    $ret0=$tt[__xva][0];
     
     
     /*
@@ -219,7 +226,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     }
 
     $ret1=$db1temp->exec('COMMIT;');
-    $data['status']='OK';
+    $data[__xst]='OK';
 
 }
 /*
@@ -241,14 +248,14 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
-    if($tt['statut'] === false || count($tt['valeur'])!==1){
+    if($tt[__xst] === false || count($tt[__xva])!==1){
         $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
      
     }  
 
 
-    $ret0=$tt['valeur'][0];
+    $ret0=$tt[__xva][0];
 
 
 
@@ -329,7 +336,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
         if(@rename($chemin_bdd_base_temporaire,$chemin_bdd)){
 
-            $data['status']='OK';
+            $data[__xst]='OK';
 
         }
     }
@@ -351,18 +358,18 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
         'T0_chx_cible_id_basedd'   => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
     ));
 
-    if($tt['statut'] === false){
+    if($tt[__xst] === false){
         $data['messages'][]=__FILE__.' '.__LINE__.' recuperer_les_bases bdd non trouvée';
         return;
      
     }  
 
 
-    $data['valeurs']=$tt['valeur'];
+    $data['valeurs']=$tt[__xva];
     
     
     
-    $data['status']='OK';
+    $data[__xst]='OK';
 
 }
 /*
@@ -372,21 +379,21 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
 function recuperer_les_tableaux_des_bases(&$data){
 
     /*
-      source_base_sql        : obj3.status,
+      source_base_sql        : obj3.__xst,
       id_bdd_de_la_base      : id_bdd_de_la_base_en_cours,
     */
     require_once(INCLUDE_PATH.'/phplib/sqlite.php');
     $obj=comparer_une_base_physique_et_une_base_virtuelle($data['input']['id_bdd_de_la_base'],$data['input']['source_base_sql']);
 
-    if($obj['status'] === true){
+    if($obj[__xst] === true){
 
         $data['value']=$obj['value'];
         $id_bdd_de_la_base=$data['input']['id_bdd_de_la_base'];
-        $data['status']='OK';
+        $data[__xst]='OK';
 
     }else{
 
-        $data['message']='erreur sur recuperer_les_tableaux_des_bases';
+        $data[__xme]='erreur sur recuperer_les_tableaux_des_bases';
     }
 
 
@@ -446,14 +453,14 @@ function operation_sur_base(&$data,$nom_operation){
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
-    if($tt['statut'] === false || count($tt['valeur'])!==1){
+    if($tt[__xst] === false || count($tt[__xva])!==1){
         $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
      
     }  
 
 
-    $ret0=$tt['valeur'][0];
+    $ret0=$tt[__xva][0];
     
     
     $chemin_bdd='../../'.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].'/'.$ret0['T0.chp_nom_basedd'];
@@ -498,7 +505,7 @@ function operation_sur_base(&$data,$nom_operation){
 
     }
 
-    $data['status']='OK';
+    $data[__xst]='OK';
 
 }
 /*
@@ -522,14 +529,14 @@ function creer_table_dans_base(&$data){
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
-    if($tt['statut'] === false || count($tt['valeur'])!==1){
+    if($tt[__xst] === false || count($tt[__xva])!==1){
         $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base bdd non trouvée';
         return;
      
     }  
 
 
-    $ret0=$tt['valeur'][0];
+    $ret0=$tt[__xva][0];
 
     
     
@@ -573,7 +580,7 @@ function creer_table_dans_base(&$data){
 
     }
 
-    $data['status']='OK';
+    $data[__xst]='OK';
 
 }
 /*
@@ -596,14 +603,14 @@ function ordonner_les_champs_de_table(&$data){
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
-    if($tt['statut'] === false || count($tt['valeur'])!==1){
+    if($tt[__xst] === false || count($tt[__xva])!==1){
         $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table bdd non trouvée';
         return;
      
     }  
 
 
-    $ret0=$tt['valeur'][0];
+    $ret0=$tt[__xva][0];
 
     
     
@@ -696,7 +703,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    $data['status']='OK';
+    $data[__xst]='OK';
 
 }
 /*
@@ -719,11 +726,11 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
     );
     
     $tt=sql_10($a_modifier);
-    if($tt['statut']===true){
-        $data['status']='OK';
+    if($tt[__xst]===true){
+        $data[__xst]='OK';
     }else{
         $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur la sauvegarde de la base';
-        $data['status']='KO';
+        $data[__xst]='KO';
     }
 }
 /*
@@ -743,16 +750,16 @@ function recuperer_zone_travail_pour_les_bases(&$data){
     );
     
     $tt=sql_11($a_selectionner);
-    if($tt['statut']===true){
+    if($tt[__xst]===true){
 /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt['valeur'] , true ).CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt[__xva] , true ).CRLF.CRLF); fclose($fd);}
 */
      
-        $data['valeurs']=$tt['valeur'];
-        $data['status']='OK';
+        $data['valeurs']=$tt[__xva];
+        $data[__xst]='OK';
     }else{
         $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur select '.$db->lastErrorMsg();
-        $data['status']='KO';
+        $data[__xst]='KO';
     }
 
 }
@@ -786,9 +793,9 @@ function sauvegarder_format_rev_en_dbb(&$data){
     );
     
     $tt=sql_5($a_supprimer);
-    if($tt['statut']!==true){
+    if($tt[__xst]!==true){
        $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur suppression dans la table rev ';
-       $data['status']='KO';
+       $data[__xst]='KO';
     }
     
     
@@ -825,11 +832,11 @@ function sauvegarder_format_rev_en_dbb(&$data){
     // sql_inclure_fin
     
     $tt=sql_12($a_sauvegarder);
-    if($tt['statut']!==true){
+    if($tt[__xst]!==true){
        $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur insertion';
     }else{
         $data['messages'][]=basename(__FILE__).' '.__LINE__.' la matrice est en bdd';
-        $data['status']='OK';
+        $data[__xst]='OK';
     }
 }
 ?>

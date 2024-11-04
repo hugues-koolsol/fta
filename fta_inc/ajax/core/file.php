@@ -27,12 +27,12 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
          'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
-        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
-                $data['status']='KO';
+        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+                $data[__xst]='KO';
                 $data['messages'][]=__LINE__. ' ' . __FILE__ . ' KO';
                 return;
         }
-        $__valeurs=$tt['valeur'][0];
+        $__valeurs=$tt[__xva][0];
 
         
         
@@ -43,7 +43,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         if($fd=fopen($chemin_fichier,'w')){
             fwrite($fd,$data['input']['source']);
             fclose($fd);
-            $data['status']='OK';
+            $data[__xst]='OK';
             
             $data['input']['parametres_sauvegarde'] = array(
                   'id_cible'                => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
@@ -88,12 +88,12 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
          'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
-        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
-                $data['status']='KO';
+        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+                $data[__xst]='KO';
                 $data['messages'][]=__LINE__. ' ' . __FILE__ . ' KO';
                 return;
         }
-        $__valeurs=$tt['valeur'][0];
+        $__valeurs=$tt[__xva][0];
 
 
 
@@ -105,7 +105,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
           if($contenu_du_fichier!==false){
               $data['contenu_du_fichier']=$contenu_du_fichier;
               $data['db']=$__valeurs;
-              $data['status']='OK';
+              $data[__xst]='OK';
           }
       
       
@@ -127,7 +127,7 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
   $nomFichierDecripte=decrypter($data['input']['file_name']);
   
   if(sauvegarder_et_supprimer_fichier($nomFichierDecripte)){
-    $data['status']='OK';
+    $data[__xst]='OK';
   }else{
     $data['messages'][]='la copie du fichier dans le répertoire de sauvegarde est impossible';
   }
@@ -155,7 +155,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
    }else{
      
        $data['value']=$contenu;
-       $data['status']='OK';
+       $data[__xst]='OK';
     
    }
    
@@ -181,7 +181,7 @@ function loadRevFile(&$data){
   $contenu=file_get_contents($filefullpath);
   if($contenu!==false){
    $data['value']=$contenu;
-   $data['status']='OK';
+   $data[__xst]='OK';
   }else{
    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot read the file';
   }
@@ -196,7 +196,7 @@ function getRevFiles(&$data){
  foreach (glob($dir.'*.rev') as $filename) {
   $data['files'][]=basename($filename);
  } 
- $data['status']='OK';
+ $data[__xst]='OK';
 }
 //==========================================================================================================
 function writeRevFile(&$data){
@@ -231,7 +231,7 @@ function writeRevFile(&$data){
  if($fd=fopen($filefullpath,'w')){
   if(fwrite($fd,$data['input']['value'])){
    if(fclose($fd)){
-    $data['status']='OK';
+    $data[__xst]='OK';
    }else{
     $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
    }
@@ -261,7 +261,7 @@ function writeFile(&$data){
   if($fd=fopen($filefullpath,'w')){
    if(fwrite($fd,$data['input']['value'])){
     if(fclose($fd)){
-     $data['status']='OK';
+     $data[__xst]='OK';
     }else{
      $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
     }
@@ -286,7 +286,7 @@ function concatFile(&$data){
    if($contenu!==false){
     if(fwrite($fd,"\r\n".$contenu)){
      if(fclose($fd)){
-      $data['status']='OK';
+      $data[__xst]='OK';
      }else{
       $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
      }

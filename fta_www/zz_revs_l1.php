@@ -25,7 +25,7 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
     
     $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-    if($tt['statut'] === false){
+    if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__.' problème ',BNF);
 
@@ -159,7 +159,7 @@ $tt=sql_13(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -204,7 +204,7 @@ $__lsttbl.='<th>comm(13)</th>';
 $__lsttbl.='</tr></thead><tbody>';
 $tableau_pour_webworker_sources=array();
 $tableau_pour_webworker_sql=array();
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl.='<tr>';
     $__lsttbl.='<td data-label="" style="text-align:left!important;">';
     $__lsttbl.='<div class="yyflex1">';

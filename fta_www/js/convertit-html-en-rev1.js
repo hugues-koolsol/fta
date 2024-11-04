@@ -21,17 +21,17 @@ function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textar
     
     
     var obj1 = functionToArray2(a.value,false,true,'');
-    if(obj1.status === true){
+    if(obj1.__xst === true){
         
         var obj2=__module_html1.tabToHtml1(obj1.value,0,false,0);
-        if(obj2.status===true){
+        if(obj2.__xst===true){
          dogid(nom_de_la_textarea_html).value=obj2.value;
-         asthtml_logerreur({status:true,message:'html produit'});
+         asthtml_logerreur({__xst:true,__xme:'html produit'});
         }else{
-         asthtml_logerreur({status:false,message:'erreur de reconstruction du html'});
+         asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
         }
     }else{
-        asthtml_logerreur({status:false,message:'erreur pour le rev'});
+        asthtml_logerreur({__xst:false,__xme:'erreur pour le rev'});
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages', nom_de_la_textarea_rev);
     
@@ -56,23 +56,23 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
     var startMicro=performance.now();
     var obj=__module_html1.TransformHtmlEnRev(a.value,0);
 
-    if(obj.status == true){
+    if(obj.__xst == true){
         var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
 //                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
         document.getElementById('txtar2').value=obj.value;
         var obj1 = functionToArray2(obj.value,false,true,'');
-        if(obj1.status === true){
-            asthtml_logerreur({status:true,message:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
+        if(obj1.__xst === true){
+            asthtml_logerreur({__xst:true,__xme:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
             
             var obj2=__module_html1.tabToHtml1(obj1.value,0,false,0);
-            if(obj2.status===true){
+            if(obj2.__xst===true){
              dogid('txtar3').value=obj2.value;
-             asthtml_logerreur({status:true,message:'html produit'});
+             asthtml_logerreur({__xst:true,__xme:'html produit'});
             }else{
-             asthtml_logerreur({status:false,message:'erreur de reconstruction du html'});
+             asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
             }
         }else{
-            asthtml_logerreur({status:false,message:'erreur pour le rev'});
+            asthtml_logerreur({__xst:false,__xme:'erreur pour le rev'});
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages', 'txtar2');
     }else{

@@ -13,7 +13,7 @@ function sql_1($par){
     $order0='';
     $sql0.=$order0;
     $plage0='
-       LIMIT 1 OFFSET 0 ';
+        LIMIT 1 OFFSET 0 ';
     $sql0.=$plage0;
     $donnees0=array();
     //echo __FILE__ . ' ' . __LINE__ . ' $sql0 = <pre>' .  $sql0  . '</pre>' ; exit(0);
@@ -30,15 +30,15 @@ function sql_1($par){
             );
         }
         return array(
-           'statut'  => true       ,
-           'valeur'  => $donnees0   ,
+           __xst  => true       ,
+           __xva  => $donnees0   ,
            'sql0'    => $sql0          ,
            'where0'  => $where0     ,
         );
     }else{
         return array(
-           'statut'  => false ,
-           'message' => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
+           __xst  => false ,
+           __xme => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
            'sql0'    => $sql0,
            'where0'  => $where0     ,
         );

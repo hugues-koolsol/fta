@@ -17,7 +17,7 @@ function recupererAstDePhp(&$data){
 
         $ast=$parser->parse($contenu);
         $data['value']=json_encode($ast);
-        $data['status']='OK';
+        $data[__xst]='OK';
     }catch(Error $error){
         $data['messages'][]=$error->getMessage();
         return;

@@ -101,7 +101,7 @@ $tt=sql_53(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -132,7 +132,7 @@ $__lsttbl.='<th>action</th>';
 $__lsttbl.='<th>id</th>';
 $__lsttbl.='<th>nom</th>';
 $__lsttbl.='</tr></thead>'.CRLF.'  <tbody>'.CRLF;
-foreach($tt['valeur'] as $k0=>$v0){
+foreach($tt[__xva] as $k0=>$v0){
  
  $__lsttbl.='<tr>';
  $__lsttbl.='<td data-label="" style="text-align:left!important;">';

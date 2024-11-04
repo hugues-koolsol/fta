@@ -19,12 +19,12 @@ function recupere_une_donnees_des_cibles($id){
         
         $tt=sql_34(array( 'T0_chi_id_cible' => $id));
 
-        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
 
             return false;
 
         }
-        $__valeurs=$tt['valeur'][0];
+        $__valeurs=$tt[__xva][0];
         return $__valeurs;
  
 }
@@ -286,10 +286,10 @@ function recupere_une_donnees_des_cibles($id){
        'T0_chi_id_basedd'       => 1,
        'T0_chx_cible_id_basedd' => 1,
    ));
-   if($tt['statut']===false || count($tt['valeur']) !== 1 ){
-      echo __FILE__ . ' ' . __LINE__ . ' erreur de récupération du rev de la base = <pre>' . $tt['message'] . '</pre>' ; exit(0);
+   if($tt[__xst]===false || count($tt[__xva]) !== 1 ){
+      echo __FILE__ . ' ' . __LINE__ . ' erreur de récupération du rev de la base = <pre>' . $tt[__xme] . '</pre>' ; exit(0);
    }
-   $chp_rev_travail_basedd=$tt['valeur'][0]['T0.chp_rev_travail_basedd'];
+   $chp_rev_travail_basedd=$tt[__xva][0]['T0.chp_rev_travail_basedd'];
    
    
    $contenu_initialisation="
@@ -553,8 +553,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          ));
      }
      
-     if($tt['statut'] === false){
-             ajouterMessage('erreur' , __LINE__ .' '. $tt['message'] , BNF );
+     if($tt[__xst] === false){
+             ajouterMessage('erreur' , __LINE__ .' '. $tt[__xme] , BNF );
              recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']); 
      }else{
          if($tt['changements']===1){
@@ -604,8 +604,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      /*sql_inclure_fin*/
      
      $tt=sql_38(array());
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          recharger_la_page(BNF.'?__action=__suppression&__id='.$__id); 
      }
      
@@ -626,8 +626,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $tt=sql_14(array(
          'chx_cible_rev' => $__id,
      ));
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          
          sql_inclure_reference(40);
          /*sql_inclure_deb*/
@@ -661,8 +661,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $tt=sql_41(array(
          'chx_cible_id_source' => $__id,
      ));
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          
          sql_inclure_reference(40);
          /*sql_inclure_deb*/
@@ -696,8 +696,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $tt=sql_42(array(
          'chx_cible_requete' => $__id,
      ));
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          
          sql_inclure_reference(40);
          /*sql_inclure_deb*/
@@ -724,8 +724,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $tt=sql_43(array(
          'chx_cible_id_basedd' => $__id,
      ));
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          
          sql_inclure_reference(40);
          /*sql_inclure_deb*/
@@ -752,8 +752,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $tt=sql_44(array(
          'chx_cible_dossier' => $__id,
      ));
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          
          sql_inclure_reference(40);
          /*sql_inclure_deb*/
@@ -782,8 +782,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
      $tt=sql_45(array(
          'chi_id_cible' => $__id,
      ));
-     if($tt['statut'] === false){
-         ajouterMessage('erreur' , $tt['message'] , BNF );
+     if($tt[__xst] === false){
+         ajouterMessage('erreur' , $tt[__xme] , BNF );
          
          sql_inclure_reference(40);
          /*sql_inclure_deb*/
@@ -859,9 +859,9 @@ if(isset($_POST)&&sizeof($_POST)>=1){
          )
      ));
 
-     if($tt['statut'] === false){
+     if($tt[__xst] === false){
 
-         ajouterMessage('erreur',__LINE__.' : '.$tt['message'],BNF);
+         ajouterMessage('erreur',__LINE__.' : '.$tt[__xme],BNF);
          recharger_la_page(BNF.'?__action=__creation');
 
      }else{
@@ -887,8 +887,8 @@ if(isset($_POST)&&sizeof($_POST)>=1){
               'chp_nom_dossier' => '/', 
              )
          ));
-         if($tt37['statut'] === false){
-             ajouterMessage('erreur' , __LINE__ .' : ' . $tt37['message'] , BNF );
+         if($tt37[__xst] === false){
+             ajouterMessage('erreur' , __LINE__ .' : ' . $tt37[__xme] , BNF );
              recharger_la_page(BNF.'?__action=__creation'); 
          }else{
              $nom_du_dossier='../../'.$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'];

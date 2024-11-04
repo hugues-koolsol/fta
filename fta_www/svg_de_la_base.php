@@ -21,8 +21,8 @@ $tt=sql_49(array(
 $tableau_en_entree=explode(',',$_GET['__id_des_bases']);
 
 $__nbEnregs=0;
-if($tt['statut'] === true  ){
-    $__nbEnregs=$tt['valeur'][0][0];
+if($tt[__xst] === true  ){
+    $__nbEnregs=$tt[__xva][0][0];
  
 }
 

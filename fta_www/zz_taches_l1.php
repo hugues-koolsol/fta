@@ -14,7 +14,7 @@ function obtenir_entete_de_la_page(){
     $o1='';
     $o1=html_header1(array( 'title' => 'Taches', 'description' => 'Taches'));
     $o1.='<h1>Liste des tâches </h1>';
-    return(array( 'status' => true, 'value' => $o1));
+    return(array( __xst => true, 'value' => $o1));
 
 }
 
@@ -39,13 +39,13 @@ if(isset($_POST['__ordonner_les_taches'])){
       'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
       'T0_chp_priorite_tache' => 50
     ));
-    if($tt['statut'] === false){
-        ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
+    if($tt[__xst] === false){
+        ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] );
         recharger_la_page(BNF);
     }
     $nouvelle_priorite=1;
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['valeur'] , true ) . '</pre>' ; exit(0);
-    foreach($tt['valeur'] as $k1 => $v1){
+//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt[__xva] , true ) . '</pre>' ; exit(0);
+    foreach($tt[__xva] as $k1 => $v1){
         if($nouvelle_priorite<50){
          
             sql_inclure_reference(65);
@@ -64,8 +64,8 @@ if(isset($_POST['__ordonner_les_taches'])){
               'c_chi_id_tache'          => $v1['T0.chi_id_tache'],
               'n_chp_priorite_tache'    => $nouvelle_priorite
             ));
-            if($tt2['statut'] === false){
-                ajouterMessage('erreur' , __LINE__ .' : ' . $tt2['message'] );
+            if($tt2[__xst] === false){
+                ajouterMessage('erreur' , __LINE__ .' : ' . $tt2[__xme] );
                 recharger_la_page(BNF);
             }
         }
@@ -92,8 +92,8 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
     'n_chp_priorite_tache' => 50
   ));
 
-  if($tt['statut'] === false){
-    ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
+  if($tt[__xst] === false){
+    ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] );
     recharger_la_page(BNF);
   }
 
@@ -109,8 +109,8 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
     'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
   ));
 
-  if($tt['statut'] === false){
-      ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
+  if($tt[__xst] === false){
+      ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] );
       recharger_la_page(BNF);
   }else{
       ajouterMessage('info' , __LINE__ .' : les priorités ont été diminuées' );
@@ -138,8 +138,8 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
     'n_chp_priorite_tache' => 50
   ));
 
-  if($tt['statut'] === false){
-    ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
+  if($tt[__xst] === false){
+    ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] );
     recharger_la_page(BNF);
   }
   
@@ -155,8 +155,8 @@ UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((ch
     'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
   ));
 
-  if($tt['statut'] === false){
-      ajouterMessage('erreur' , __LINE__ .' : ' . $tt['message'] );
+  if($tt[__xst] === false){
+      ajouterMessage('erreur' , __LINE__ .' : ' . $tt[__xme] );
       recharger_la_page(BNF);
   }else{
       ajouterMessage('info' , __LINE__ .' : les priorités ont été augmentées' );
@@ -184,9 +184,9 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
           'n_chp_priorite_tache' => 99
         ));
 
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
+            ajouterMessage('erreur',__LINE__.' : '.$tt[__xme]);
 
         }else{
 
@@ -217,9 +217,9 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
           'n_chp_priorite_tache' => 0
         ));
 
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
+            ajouterMessage('erreur',__LINE__.' : '.$tt[__xme]);
 
         }else{
 
@@ -257,9 +257,9 @@ if((isset($_GET['__action'])) && ('__mettre_a_plus_1' === $_GET['__action'])){
         
         $tt=sql_21(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
+            ajouterMessage('erreur',__LINE__.' : '.$tt[__xme]);
 
         }else{
 
@@ -297,9 +297,9 @@ if((isset($_GET['__action'])) && ('__mettre_a_moins_1' === $_GET['__action'])){
         
         $tt=sql_20(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$tt['message']);
+            ajouterMessage('erreur',__LINE__.' : '.$tt[__xme]);
 
         }else{
 
@@ -407,7 +407,7 @@ $tt=sql_19(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -446,7 +446,7 @@ $lsttbl.='<th>id</th>';
 $lsttbl.='<th>tâche</th>';
 $lsttbl.='<th>priorite</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';

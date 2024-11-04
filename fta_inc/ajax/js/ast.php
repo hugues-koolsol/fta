@@ -9,6 +9,10 @@ Fait un appel à acorn.js pour récupérer l'ast d'un javascript ou d'un module
 ===================================================================================
 */
 function recupererAstDeJs(&$data){
+
+/*
+    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.'========================'.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ .CRLF.'$data='.var_export($data,true).CRLF);  fclose($fdtoto); }
+*/
  
     $nom_de_repertoire_temporaire=realpath(RACINE_FICHIERS_PROVISOIRES.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.date('Y/m/d');
     $nom_de_repertoire_temporaire=str_replace('/',DIRECTORY_SEPARATOR,$nom_de_repertoire_temporaire);
@@ -16,6 +20,8 @@ function recupererAstDeJs(&$data){
     $nom_de_fichier_contenant_l_ast=$nom_de_repertoire_temporaire.DIRECTORY_SEPARATOR.uniqid().'.txt';
     $nom_de_fichier_console=$nom_de_repertoire_temporaire.DIRECTORY_SEPARATOR.uniqid().'.txt';
     $nom_de_fichier_commentaires=$nom_de_repertoire_temporaire.DIRECTORY_SEPARATOR.uniqid().'.txt';
+    
+    
     
     if(is_dir($nom_de_repertoire_temporaire)){
     }else{
@@ -69,7 +75,7 @@ function recupererAstDeJs(&$data){
         }else{
             $data['commentaires']=@file_get_contents($nom_de_fichier_commentaires);
             $data['value']=$ast_texte;
-            $data['status']='OK';
+            $data[__xst]='OK';
         }
     }
     sauvegarder_et_supprimer_fichier($nom_de_fichier_contenant_le_source,true);

@@ -34,9 +34,9 @@ if((isset($_GET['__action'])) && ('__selectionner_cette_cible' === $_GET['__acti
         
         $tt=sql_34(array( 'T0_chi_id_cible' => $__id));
 
-        if(($tt['statut'] === true) && (count($tt['valeur']) === 1)){
+        if(($tt[__xst] === true) && (count($tt[__xva]) === 1)){
 
-            $_SESSION[APP_KEY]['cible_courante']=array( 'chi_id_cible' => $tt['valeur'][0]['T0.chi_id_cible'], 'chp_nom_cible' => $tt['valeur'][0]['T0.chp_nom_cible'], 'chp_dossier_cible' => $tt['valeur'][0]['T0.chp_dossier_cible']);
+            $_SESSION[APP_KEY]['cible_courante']=array( 'chi_id_cible' => $tt[__xva][0]['T0.chi_id_cible'], 'chp_nom_cible' => $tt[__xva][0]['T0.chp_nom_cible'], 'chp_dossier_cible' => $tt[__xva][0]['T0.chp_dossier_cible']);
             ajouterMessage('info',__LINE__.' : une nouvelle cible a été sélectionnée '.date('H:i:s'),BNF);
 
         }
@@ -148,7 +148,7 @@ $tt=sql_33(array(
     
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['sql0'] , true ) . '</pre>' ; exit(0);
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -178,7 +178,7 @@ $lsttbl.='<th>nom</th>';
 $lsttbl.='<th>dossier</th>';
 $lsttbl.='<th>commentaire</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $dossier='../../'.$v0['T0.chp_dossier_cible'];
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';

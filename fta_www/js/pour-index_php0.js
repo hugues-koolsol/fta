@@ -128,7 +128,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
   document.getElementById('resultat1').innerHTML='';
 
 
-  if(matriceFonction1.status===true){
+  if(matriceFonction1.__xst===true){
   
   
     var parent=document.getElementById('resultat1');
@@ -138,7 +138,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.value,true,false);
     var diResultatsCompactes=document.createElement('pre');
     
-    if(fonctionReecriteAvecRetour1.status===true){
+    if(fonctionReecriteAvecRetour1.__xst===true){
     
      var compacteOriginal=arrayToFunct1(matriceFonction1.value,false,false);
      
@@ -147,17 +147,17 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
      var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
      
-     if(compacteOriginal.status==true && compacteReecrit.status===true){
+     if(compacteOriginal.__xst==true && compacteReecrit.__xst===true){
       if(compacteOriginal.value == compacteReecrit.value){
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">'+strToHtml(compacteOriginal.value)+'</textarea>';
        
-        logerreur({'status':true,'message':'👍 sources compactés Egaux : ' + tempsTraitement});
+        logerreur({__xst:true,__xme:'👍 sources compactés Egaux : ' + tempsTraitement});
        
        
       }else{
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
-       logerreur({'status':false,'message':'💥sources compactés différents'});
+       logerreur({__xst:false,__xme:'💥sources compactés différents'});
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.value;
       }
@@ -178,7 +178,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.value,true,true);
     var difonctionReecriteAvecRetour1=document.createElement('pre');
     difonctionReecriteAvecRetour1.style.fontSize='0.9em';
-    if(fonctionReecriteAvecEtColoration1.status===true){
+    if(fonctionReecriteAvecEtColoration1.__xst===true){
      difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr />'+fonctionReecriteAvecEtColoration1.value;
     }else{
      difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:'+fonctionReecriteAvecRetour1.message;

@@ -20,7 +20,7 @@ function obtenir_entete_de_la_page(){
     $o1='';
     $o1=html_header1(array( 'title' => 'Sources', 'description' => 'Sources'));
     $o1.='<h1>Liste des sources de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>';
-    return(array( 'status' => true, 'value' => $o1));
+    return(array( __xst => true, 'value' => $o1));
 
 }
 /*
@@ -136,7 +136,7 @@ $tt=sql_61(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -173,7 +173,7 @@ $lsttbl.='<th>type</th>';
 $lsttbl.='<th>dossier</th>';
 $lsttbl.='<th>commentaire</th>';
 $lsttbl.='</tr></thead><tbody>';
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='<tr>';
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';

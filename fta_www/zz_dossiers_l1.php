@@ -43,18 +43,18 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
     
     $tt=sql_51(array( 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-    if($tt['statut'] === false){
+    if($tt[__xst] === false){
 
-        ajouterMessage('erreur',__LINE__.' : erreur de récupération des dossiers actuels '.$tt['message'],BNF);
+        ajouterMessage('erreur',__LINE__.' : erreur de récupération des dossiers actuels '.$tt[__xme],BNF);
         recharger_la_page(BNF);
 
     }
 
-    for($i=0;($i < count($tt['valeur']));$i++){
+    for($i=0;($i < count($tt[__xva]));$i++){
 
-        if($tt['valeur'][$i]['T0.chp_nom_dossier'] !== '/'){
+        if($tt[__xva][$i]['T0.chp_nom_dossier'] !== '/'){
 
-            $listeDesDossiersactuels[$tt['valeur'][$i]['T0.chp_nom_dossier']]='present';
+            $listeDesDossiersactuels[$tt[__xva][$i]['T0.chp_nom_dossier']]='present';
 
         }
 
@@ -101,13 +101,13 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
         
         $tt=sql_52($tableau_a_inserer);
 
-        if($tt['statut'] === true){
+        if($tt[__xst] === true){
 
             ajouterMessage('succes',__LINE__.' : les dossiers ont été importés',BNF);
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' : erreur d\'importation des dossiers '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' : erreur d\'importation des dossiers '.$tt[__xme],BNF);
         }
 
 
@@ -304,7 +304,7 @@ $tt=sql_53(array(
     'debut' => $__debut,
     'page_courante' => BNF));
 
-if($tt['statut'] === false){
+if($tt[__xst] === false){
 
     $o1.='<div>';
     $o1.='<div class="yydanger">Erreur sql</div>';
@@ -329,7 +329,7 @@ $__lsttbl.='<th>action</th>';
 $__lsttbl.='<th>id</th>';
 $__lsttbl.='<th>nom</th>';
 $__lsttbl.='</tr></thead>'.CRLF.'  <tbody>'.CRLF;
-foreach($tt['valeur'] as $k0 => $v0){
+foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl.='<tr>'.CRLF;
     $__lsttbl.='<td data-label="" style="text-align:left!important;">';
     $__lsttbl.='<div class="yyflex1">';

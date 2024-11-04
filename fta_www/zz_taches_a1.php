@@ -78,9 +78,9 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             'n_chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'],
             'n_chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']));
 
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
 
-            ajouterMessage('erreur',__LINE__.' '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' '.$tt[__xme],BNF);
             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
 
         }else if($tt['changements'] === 1){
@@ -100,7 +100,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' : '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' : '.$tt[__xme],BNF);
             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
         }
 
@@ -131,9 +131,9 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             
             $tt=sql_31(array( 'chi_id_tache' => $__id, 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
-            if($tt['statut'] === false){
+            if($tt[__xst] === false){
 
-                ajouterMessage('erreur',__LINE__.' : '.$tt['message'],BNF);
+                ajouterMessage('erreur',__LINE__.' : '.$tt[__xme],BNF);
                 recharger_la_page(BNF.'?__action=__suppression&__id='.$__id);
 
             }else{
@@ -184,9 +184,9 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         
         $tt=sql_30(array( array( 'chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'], 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'])));
 
-        if($tt['statut'] === false){
+        if($tt[__xst] === false){
 
-            ajouterMessage('erreur',__LINE__.' : '.$tt['message'],BNF);
+            ajouterMessage('erreur',__LINE__.' : '.$tt[__xme],BNF);
             recharger_la_page(BNF.'?__action=__creation');
 
         }else{
@@ -253,14 +253,14 @@ if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_
         
         $tt=sql_28(array( 'T0_chi_id_tache' => $__id, 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
-        if(($tt['statut'] === false) || (count($tt['valeur']) !== 1)){
+        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
 
             ajouterMessage('erreur',__LINE__.' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
         }
 
-        $__valeurs=$tt['valeur'][0];
+        $__valeurs=$tt[__xva][0];
     }
 
 

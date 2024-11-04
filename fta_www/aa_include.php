@@ -18,10 +18,18 @@ define('OK','OK');
 define('MESSAGES','messages');
 define('INPUT','input');
 define('VALUE','value');
-define('STATUS','status');
 define('TAILLE_MAXI_SOURCE',512000);
 define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_et_"suffisament"_longue'));
 define('ENCRYPTION_METHODE','aes-256-cbc');
+/*statut*/
+define('__xst','__xst');
+/*message*/
+define('__xme','__xme');
+/*messageS*/
+define('__xms','__xms');
+/*valeur*/
+define('__xva','__xva');
+
 $GLOBALS['__date']=date('Y-m-d H:i:s');
 $GLOBALS['__le_biscuit']=array();
 
@@ -477,11 +485,11 @@ function signaler_erreur($tab){
 
     if((isset($tab['provenance']) && $tab['provenance'] !== '')){
 
-        ajouterMessage('erreur',$tab['message'],$tab['provenance']);
+        ajouterMessage('erreur',$tab[__xme],$tab['provenance']);
 
     }else{
 
-        ajouterMessage('erreur',$tab['message']);
+        ajouterMessage('erreur',$tab[__xme]);
     }
 
     return($tab);
@@ -770,13 +778,19 @@ function html_header1($parametres){
 
     $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.CRLF;
     $o1.='<script type="text/javascript">'.CRLF;
-    $o1.=' var __debut_execution=performance.now();'.CRLF;
-    $o1.=' var APP_KEY=\''.APP_KEY.'\';'.CRLF;
-    $o1.=' var CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
-    $o1.=' var CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
-    $o1.=' var CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
-    $o1.=' var CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
-    $o1.=' var CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
+    $o1.=' const __debut_execution=performance.now();'.CRLF;
+    $o1.=' const APP_KEY=\''.APP_KEY.'\';'.CRLF;
+    $o1.=' const __xst=\'__xst\';'.CRLF;
+    $o1.=' const __xme=\'__xme\';'.CRLF;
+    $o1.=' const __xms=\'__xms\';'.CRLF;
+    $o1.=' const __xva=\'__xva\';'.CRLF;
+    
+    
+    $o1.=' const CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
+    $o1.=' const CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
+    $o1.=' const CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
+    $o1.=' const CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
+    $o1.=' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
 
     $o1.='</script>'.CRLF;
     $o1.='<script type="text/javascript" rel="preload" as="script" src="js/interface0.js"></script>'.CRLF;
