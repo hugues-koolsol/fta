@@ -23,9 +23,9 @@ function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textar
     var obj1 = functionToArray2(a.value,false,true,'');
     if(obj1.__xst === true){
         
-        var obj2=__module_html1.tabToHtml1(obj1.value,0,false,0);
+        var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
         if(obj2.__xst===true){
-         dogid(nom_de_la_textarea_html).value=obj2.value;
+         dogid(nom_de_la_textarea_html).value=obj2.__xva;
          asthtml_logerreur({__xst:true,__xme:'html produit'});
         }else{
          asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
@@ -59,14 +59,14 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
     if(obj.__xst == true){
         var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
 //                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
-        document.getElementById('txtar2').value=obj.value;
-        var obj1 = functionToArray2(obj.value,false,true,'');
+        document.getElementById('txtar2').value=obj.__xva;
+        var obj1 = functionToArray2(obj.__xva,false,true,'');
         if(obj1.__xst === true){
             asthtml_logerreur({__xst:true,__xme:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
             
-            var obj2=__module_html1.tabToHtml1(obj1.value,0,false,0);
+            var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
             if(obj2.__xst===true){
-             dogid('txtar3').value=obj2.value;
+             dogid('txtar3').value=obj2.__xva;
              asthtml_logerreur({__xst:true,__xme:'html produit'});
             }else{
              asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});

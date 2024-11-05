@@ -135,22 +135,22 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     
 
     var startMicro=performance.now();
-    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.value,true,false);
+    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.__xva,true,false);
     var diResultatsCompactes=document.createElement('pre');
     
     if(fonctionReecriteAvecRetour1.__xst===true){
     
-     var compacteOriginal=arrayToFunct1(matriceFonction1.value,false,false);
+     var compacteOriginal=arrayToFunct1(matriceFonction1.__xva,false,false);
      
      
-     var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.value);
+     var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
      var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
-     var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
+     var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
      
      if(compacteOriginal.__xst==true && compacteReecrit.__xst===true){
-      if(compacteOriginal.value == compacteReecrit.value){
+      if(compacteOriginal.__xva == compacteReecrit.__xva){
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">'+strToHtml(compacteOriginal.value)+'</textarea>';
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">'+strToHtml(compacteOriginal.__xva)+'</textarea>';
        
         logerreur({__xst:true,__xme:'👍 sources compactés Egaux : ' + tempsTraitement});
        
@@ -158,8 +158,8 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
       }else{
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
        logerreur({__xst:false,__xme:'💥sources compactés différents'});
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
-       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.value;
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.__xva;
+       diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.__xva;
       }
      
      }else{
@@ -175,11 +175,11 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     
     
     
-    var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.value,true,true);
+    var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true,true);
     var difonctionReecriteAvecRetour1=document.createElement('pre');
     difonctionReecriteAvecRetour1.style.fontSize='0.9em';
     if(fonctionReecriteAvecEtColoration1.__xst===true){
-     difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr />'+fonctionReecriteAvecEtColoration1.value;
+     difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr />'+fonctionReecriteAvecEtColoration1.__xva;
     }else{
      difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:'+fonctionReecriteAvecRetour1.message;
     }

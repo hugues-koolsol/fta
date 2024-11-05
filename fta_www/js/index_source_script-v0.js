@@ -138,48 +138,48 @@ function enregistrer2(){
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.__xst === true){
         var startMicro = performance.now();
-        var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.value,true,false);
+        var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true,false);
         var endMicro = performance.now();
         console.log('reconstitution du source endMicro=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
         var diResultatsCompactes = document.createElement('pre');
         if(fonctionReecriteAvecRetour1.__xst === true){
-            document.getElementById('normalise').value=fonctionReecriteAvecRetour1.value;
+            document.getElementById('normalise').value=fonctionReecriteAvecRetour1.__xva;
             ajusteTailleTextareaContenantSource('normalise');
             memeHauteur('normalise','zonesource');
             var startMicro = performance.now();
-            var compacteOriginal = arrayToFunct1(matriceFonction.value,false,false);
-            var tableau2 = iterateCharacters2(fonctionReecriteAvecRetour1.value);
+            var compacteOriginal = arrayToFunct1(matriceFonction.__xva,false,false);
+            var tableau2 = iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
             var matriceDeLaFonctionReecrite = functionToArray2(tableau2.out,true,false,'');
-            var compacteReecrit = arrayToFunct1(matriceDeLaFonctionReecrite.value,false,false);
+            var compacteReecrit = arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
             var endMicro = performance.now();
             console.log('comparaison des compactés=',parseInt((endMicro-startMicro)*(1000),10)/(1000)+' ms');
             if((compacteOriginal.__xst == true) && (compacteReecrit.__xst === true)){
-                if(compacteOriginal.value == compacteReecrit.value){
+                if(compacteOriginal.__xva == compacteReecrit.__xva){
                     sourcesCompactesIdentiques=true;
                     logerreur({__xst:true,__xme:'<b>👍 sources compactés Egaux</b>'});
                     var conversion = convertSource(matriceFonction);
                 }else{
                     logerreur({__xst:false,__xme:'sources compactés différents'});
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">💥sources compactés différents</b>';
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.value;
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.value;
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />o='+compacteOriginal.__xva;
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br />r='+compacteReecrit.__xva;
                 }
             }else{
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">compacteOriginal='+JSON.stringify(compacteOriginal)+'</b>';
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<br /><b style="color:red;">compacteReecrit='+JSON.stringify(compacteReecrit)+'</b>';
             }
-            var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.value,true,false);
+            var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true,false);
         }else{
             diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:red;">Erreur de réécriture du source original</b>';
         }
         zonedonneesComplementaires.appendChild(diResultatsCompactes);
         if(sourcesCompactesIdentiques){
-            if(a.value == fonctionReecriteAvecRetour1.value.replace(/\r\n/g,'\n')){
+            if(a.value == fonctionReecriteAvecRetour1.__xva.replace(/\r\n/g,'\n')){
                 logerreur({__xst:true,__xme:'<b>👍👍 sources Egaux</b>'});
                 document.getElementById('sauvegarderLeNormalise').disabled=false;
                 document.getElementById('nomDuSource').disabled=false;
                 if(conversion.__xst == true){
-                    global_messages.data.sourceGenere=conversion.value;
+                    global_messages.data.sourceGenere=conversion.__xva;
                     var arr = writeSourceFile(conversion);
                     if(arr.__xst == false){
                         logerreur({__xst:false,__xme:'il y a eu un problème d\'écriture sur disque'});
@@ -300,7 +300,7 @@ function voirTableau1(){
 function afficherFichierSource(source){
     if(source.__xst == true){
         var zoneSource = document.getElementById(source.nomZone);
-        zoneSource.value=source.value;
+        zoneSource.value=source.__xva;
         ajusteTailleTextareaContenantSource(source.nomZone);
         document.getElementById('sauvegarderLeNormalise').disabled=true;
         document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',source.nomFichierSource);

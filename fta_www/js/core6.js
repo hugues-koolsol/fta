@@ -53,7 +53,10 @@ function raz_messages(zone_message){
 function logerreur(o){
     if(o.hasOwnProperty(__xst)){
         if(o.__xst === false){
-            if(o.hasOwnProperty(__xme)){
+            if(o.hasOwnProperty('__xme')){
+                global_messages['errors'].push(o.__xme);
+            }
+            if(o.hasOwnProperty('message')){
                 global_messages['errors'].push(o.message);
             }
             if(o.hasOwnProperty('id')){
@@ -827,7 +830,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
               on ajoute le contenu récursif de la fonction
               =============================================================================================
             */
-            t+=obj.value;
+            t+=obj.__xva;
             /*
               on met les retours de ligne
             */
@@ -846,7 +849,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
             return({__xst:false,__xme:'erreur','id':i});
         }
     }
-    return({__xst:true,'value':t,'forcerRetourLigne':forcerRetourLigne});
+    return({__xst:true,'__xva':t,'forcerRetourLigne':forcerRetourLigne});
 }
 /*
   =====================================================================================================================
@@ -923,7 +926,7 @@ function formaterErreurRev(obj){
       type:'rev',
       __xst:false,
       ind:i,
-      message : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+      __xme : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
       texte:texte,
       chaineTableau:chaineTableau,
       tabComment:tabCommentaireEtFinParentheses,
@@ -966,7 +969,7 @@ function formaterErreurRev(obj){
                 }
             }
         }
-        return({__xst:obj.__xst,'value':T,'id':obj.ind,__xme:obj.message + ' ' + message_ajoute});
+        return({__xst:obj.__xst,'__xva':T,'id':obj.ind,__xme:obj.__xme + ' ' + message_ajoute});
     }
     var chaineTableau = '[' + obj.chaineTableau + ']';
     var T = JSON.parse(chaineTableau);
@@ -1009,7 +1012,7 @@ function formaterErreurRev(obj){
             }
         }
     }
-    return({__xst:obj.__xst,'value':T,'id':obj.ind,__xme:(obj.message + message_ajoute),'line':line});
+    return({__xst:obj.__xst,'__xva':T,'id':obj.ind,__xme:(obj.message + message_ajoute),'line':line});
 }
 /*
   =====================================================================================================================
@@ -1023,7 +1026,7 @@ function formaterErreurRev(obj){
 */
 var global_enteteTableau = [
     ['id','id'],
-    ['val','value'],
+    ['val','valeur'],
     ['typ','type'],
     ['niv','niveau'],
     ['coQ','constante quotée'],
@@ -1228,7 +1231,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         return(logerreur(formaterErreurRev({
                             __xst:false,
                             ind:i,
-                            message:'1148 la racine ne peut pas contenir des constantes',
+                            __xme:'1148 la racine ne peut pas contenir des constantes',
                             type:'rev',
                             texte:texte,
                             chaineTableau:chaineTableau,
@@ -1254,7 +1257,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         return(logerreur(formaterErreurRev({
                             __xst:false,
                             ind:i,
-                            message:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',
+                            __xme:'core 1176 functionToArray2 une constante encadrée par des guillemets est incorrecte ',
                             type:'rev',
                             texte:texte,
                             chaineTableau:chaineTableau,
@@ -1271,7 +1274,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={__xst:false,'id':i,'value':T,__xme:'1172 la racine ne peut pas contenir des constantes près de ' + presDe};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1172 la racine ne peut pas contenir des constantes près de ' + presDe};
                         return(logerreur(temp));
                     }
                 }
@@ -1282,7 +1285,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         return(logerreur(formaterErreurRev({
                             __xst:false,
                             ind:i,
-                            message:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',
+                            __xme:'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',
                             type:'rev',
                             texte:texte,
                             chaineTableau:chaineTableau,
@@ -1314,7 +1317,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === (l01 - 1)){
-                    return(logerreur({__xst:false,'value':T,'id':i,__xme:'un antislash ne doit pas terminer une constante en i=' + i}));
+                    return(logerreur({__xst:false,'__xva':T,'id':i,__xme:'un antislash ne doit pas terminer une constante en i=' + i}));
                 }
                 /**/
                 c1=tableauEntree[i + 1][0];
@@ -1345,7 +1348,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur(formaterErreurRev({
                         __xst:false,
                         ind:i,
-                        message:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',
+                        __xme:'1215 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ',
                         type:'rev',
                         texte:texte,
                         chaineTableau:chaineTableau,
@@ -1378,7 +1381,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '/'){
                 if(autoriserCstDansRacine !== true){
                     if(i === (l01 - 1)){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1656 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1656 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1413,7 +1416,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }else{
                     if( !(autoriserCstDansRacine === true)){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1258 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1258 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1422,7 +1425,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuoteePrecedente=4;
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1305 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1305 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1432,7 +1435,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur(formaterErreurRev({
                         __xst:false,
                         ind:premier,
-                        message:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',
+                        __xme:'1839 il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ',
                         type:'rev',
                         texte:texte,
                         chaineTableau:chaineTableau,
@@ -1460,7 +1463,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === (l01 - 1)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'un antislash ne doit pas terminer une fonction'};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
                 /**/
@@ -1474,7 +1477,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 return(logerreur(formaterErreurRev({
                     __xst:false,
                     ind:premier,
-                    message:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+                    __xme:'1251 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
                     type:'rev',
                     texte:texte,
                     chaineTableau:chaineTableau,
@@ -1510,7 +1513,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '`'){
                 if(autoriserCstDansRacine !== true){
                     if(i === (l01 - 1)){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1239 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1239 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1530,12 +1533,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={__xst:false,'value':T,'id':i,__xme:'1394 apres une constante, il doit y avoir un caractère d\'echappement près de ' + presDe};
+                        temp={__xst:false,'__xva':T,'id':i,__xme:'1394 apres une constante, il doit y avoir un caractère d\'echappement près de ' + presDe};
                         return(logerreur(temp));
                     }
                 }else{
                     if( !(autoriserCstDansRacine === true)){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1258 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1258 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1544,7 +1547,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuoteePrecedente=2;
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1398 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1398 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1567,7 +1570,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === (l01 - 1)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'un antislash ne doit pas terminer une fonction'};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
                 /**/
@@ -1603,7 +1606,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '\''){
                 if(autoriserCstDansRacine !== true){
                     if(i === (l01 - 1)){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1317 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1317 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1623,18 +1626,18 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,(i + 10));
                         }
-                        temp={__xst:false,'value':T,'id':i,__xme:'1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe};
+                        temp={__xst:false,'__xva':T,'id':i,__xme:'1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe};
                         return(logerreur(temp));
                     }
                 }else{
                     if( !(autoriserCstDansRacine === true)){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1336 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1336 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                        temp={__xst:false,'id':i,'value':T,__xme:'1345 la racine ne peut pas contenir des constantes'};
+                        temp={__xst:false,'id':i,'__xva':T,__xme:'1345 la racine ne peut pas contenir des constantes'};
                         return(logerreur(temp));
                     }
                 }
@@ -1660,7 +1663,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === (l01 - 1)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'un antislash ne doit pas terminer une fonction'};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'un antislash ne doit pas terminer une fonction'};
                     return(logerreur(temp));
                 }
                 /**/
@@ -1693,7 +1696,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur(formaterErreurRev({
                         __xst:false,
                         ind:i,
-                        message:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',
+                        __xme:'1371 un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u',
                         type:'rev',
                         texte:texte,
                         chaineTableau:chaineTableau,
@@ -1789,7 +1792,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             'erreur_conversion_chaineTableau_en_json':true,
                             __xst:false,
                             ind:i,
-                            message:'1786 une fermeture de parenthése ne doit pas être au niveau 0',
+                            __xme:'1786 une fermeture de parenthése ne doit pas être au niveau 0',
                             type:'rev',
                             chaineTableau:chaineTableau,
                             tabComment:tabCommentaireEtFinParentheses,
@@ -1815,7 +1818,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         return(logerreur(formaterErreurRev({
                             __xst:false,
                             ind:premier,
-                            message:'1803 une virgule ne doit terminer une fonction ',
+                            __xme:'1803 une virgule ne doit terminer une fonction ',
                             type:'rev',
                             texte:texte,
                             chaineTableau:chaineTableau,
@@ -1843,7 +1846,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 'erreur_conversion_chaineTableau_en_json':true,
                                 __xst:false,
                                 ind:i,
-                                message:'1555 erreur de conversion de tableau',
+                                __xme:'1555 erreur de conversion de tableau',
                                 type:'rev',
                                 chaineTableau:chaineTableau,
                                 tabComment:tabCommentaireEtFinParentheses,
@@ -1893,19 +1896,19 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   =====================================================================================
                 */
                 if( !(dansCstSimple)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'1474 un antislash doit être dans une constante en i=' + i};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'1474 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 if( !(dansCstDouble)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'1478 un antislash doit être dans une constante en i=' + i};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'1478 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 if( !(dansCstModele)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'1482 un antislash doit être dans une constante en i=' + i};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'1482 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 if( !(dansCstRegex)){
-                    temp={__xst:false,'value':T,'id':i,__xme:'1482 un antislash doit être dans une constante en i=' + i};
+                    temp={__xst:false,'__xva':T,'id':i,__xme:'1482 un antislash doit être dans une constante en i=' + i};
                     return(logerreur(temp));
                 }
                 /*
@@ -2048,7 +2051,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte !== ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            temp={__xst:false,'value':T,'id':i,__xme:'1563 la racine ne peut pas contenir des constantes'};
+                            temp={__xst:false,'__xva':T,'id':i,__xme:'1563 la racine ne peut pas contenir des constantes'};
                             return(logerreur(temp));
                         }
                     }
@@ -2075,7 +2078,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 return(logerreur(formaterErreurRev({
                                     __xst:false,
                                     ind:premier,
-                                    message:'2023 une virgule ne doit pas être précédée d\'un vide',
+                                    __xme:'2023 une virgule ne doit pas être précédée d\'un vide',
                                     type:'rev',
                                     texte:texte,
                                     chaineTableau:chaineTableau,
@@ -2092,7 +2095,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             return(logerreur(formaterErreurRev({
                                 __xst:false,
                                 ind:premier,
-                                message:'2041 une virgule ne doit pas être précédée d\'un vide',
+                                __xme:'2041 une virgule ne doit pas être précédée d\'un vide',
                                 type:'rev',
                                 texte:texte,
                                 chaineTableau:chaineTableau,
@@ -2107,7 +2110,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             return(logerreur(formaterErreurRev({
                                 __xst:false,
                                 ind:premier,
-                                message:'2067 une virgule ne doit pas être précédée d\'un vide ',
+                                __xme:'2067 une virgule ne doit pas être précédée d\'un vide ',
                                 type:'rev',
                                 texte:texte,
                                 chaineTableau:chaineTableau,
@@ -2142,7 +2145,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             return(logerreur(formaterErreurRev({
                                 __xst:false,
                                 ind:premier,
-                                message:'1602 la racine ne peut pas contenir des constantes',
+                                __xme:'1602 la racine ne peut pas contenir des constantes',
                                 type:'rev',
                                 texte:texte,
                                 chaineTableau:chaineTableau,
@@ -2212,7 +2215,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 return(logerreur(formaterErreurRev({
                     __xst:false,
                     'ind':(l01 - 1),
-                    message:'1641 la racine ne peut pas contenir des constantes ',
+                    __xme:'1641 la racine ne peut pas contenir des constantes ',
                     type:'rev',
                     texte:texte,
                     chaineTableau:chaineTableau,
@@ -2243,7 +2246,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             ejson:ejson,
             'erreur_conversion_chaineTableau_en_json':true,
             __xst:false,
-            message:'1836 erreur de conversion de tableau',
+            __xme:'1836 erreur de conversion de tableau',
             type:'rev',
             chaineTableau:chaineTableau,
             tabComment:tabCommentaireEtFinParentheses,
@@ -2331,6 +2334,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             }
         }
     }
-    temp={__xst:true,'value':T};
+    temp={__xst:true,'__xva':T};
     return temp;
 }

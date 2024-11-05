@@ -638,9 +638,9 @@ class interface1{
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         global_messages.data.matrice=matriceFonction;
         if(matriceFonction.__xst === true){
-            var objJs = parseJavascript0(matriceFonction.value,1,0);
+            var objJs = parseJavascript0(matriceFonction.__xva,1,0);
             if(objJs.__xst === true){
-                dogid(chp_genere_source).value=objJs.value;
+                dogid(chp_genere_source).value=objJs.__xva;
             }else{
                 this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
                 return;
@@ -665,14 +665,14 @@ class interface1{
         var startMicro = performance.now();
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var objPhp = parsePhp0(matriceFonction.value,0,0);
+            var objPhp = parsePhp0(matriceFonction.__xva,0,0);
             if(objPhp.__xst === true){
-                dogid(nom_zone_genere_php).value=objPhp.value;
+                dogid(nom_zone_genere_php).value=objPhp.__xva;
                 if(bouton_interface === true){
                     /* pour firefox ! */
                     return;
                 }
-                return({__xst:true,value:matriceFonction.value});
+                return({__xst:true,__xva:matriceFonction.__xva});
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages');
@@ -734,9 +734,9 @@ class interface1{
         var tableau1 = iterateCharacters2(a.value);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2 = arrayToFunct1(matriceFonction.value,true,false);
+            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
             if(obj2.__xst === true){
-                a.value=obj2.value;
+                a.value=obj2.__xva;
             }
         }else{
             this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea);
@@ -1025,23 +1025,23 @@ class interface1{
           éléments du tableau
           =====================================================================================================
         */
-        l01=matriceFonction.value.length;
+        l01=matriceFonction.__xva.length;
         for(i=0;i < l01;i++){
             var tr1={};
             tr1=document.createElement('tr');
-            for(j=0;j < matriceFonction.value[i].length;j++){
+            for(j=0;j < matriceFonction.__xva[i].length;j++){
                 var td1={};
                 td1=document.createElement('td');
                 if((j == 1) || (j == 13)){
                     /*Pour la valeur ou les commentaires*/
-                    temp=String(matriceFonction.value[i][j]);
+                    temp=String(matriceFonction.__xva[i][j]);
                     temp=temp.replace(r1,'░');
                     temp=temp.replace(r2,'¶');
                     temp=temp.replace(r3,'&amp;');
                     temp=temp.replace(r4,'&lt;');
                     temp=temp.replace(r5,'&gt;');
                     temp=temp.replace(r7,'r');
-                    if(matriceFonction.value[i][4] === 3){
+                    if(matriceFonction.__xva[i][4] === 3){
                         temp=temp.replace(r6,"'");
                     }
                     td1.innerHTML=temp;
@@ -1050,13 +1050,13 @@ class interface1{
                     td1.style.maxWidth=largeurColonne1EnPx + 'px';
                     td1.style.overflowWrap='break-word';
                 }else if(j == 4){
-                    td1.innerHTML=matriceFonction.value[i][j];
-                    if(matriceFonction.value[i][j] === 1){
-                    }else if(matriceFonction.value[i][j] === 2){
+                    td1.innerHTML=matriceFonction.__xva[i][j];
+                    if(matriceFonction.__xva[i][j] === 1){
+                    }else if(matriceFonction.__xva[i][j] === 2){
                         td1.style.background='lightgrey';
                     }
                 }else{
-                    td1.innerHTML=String(matriceFonction.value[i][j]);
+                    td1.innerHTML=String(matriceFonction.__xva[i][j]);
                 }
                 temp=concat(global_enteteTableau[j][1],'(',j,')');
                 td1.setAttribute('title',temp);

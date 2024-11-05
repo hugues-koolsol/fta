@@ -363,12 +363,7 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
         return;
      
     }  
-
-
-    $data['valeurs']=$tt[__xva];
-    
-    
-    
+    $data[__xva]=$tt[__xva];
     $data[__xst]='OK';
 
 }
@@ -387,7 +382,7 @@ function recuperer_les_tableaux_des_bases(&$data){
 
     if($obj[__xst] === true){
 
-        $data['value']=$obj['value'];
+        $data[__xva]=$obj[__xva];
         $id_bdd_de_la_base=$data['input']['id_bdd_de_la_base'];
         $data[__xst]='OK';
 
@@ -755,7 +750,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
       if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt[__xva] , true ).CRLF.CRLF); fclose($fd);}
 */
      
-        $data['valeurs']=$tt[__xva];
+        $data[__xva]=$tt[__xva];
         $data[__xst]='OK';
     }else{
         $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur select '.$db->lastErrorMsg();

@@ -58,7 +58,7 @@ function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_
         
     }
     
-    return array(__xst=> true , 'value' => $tableaux_retournes );
+    return array(__xst=> true , __xva => $tableaux_retournes );
 }
 /*
   ========================================================================================

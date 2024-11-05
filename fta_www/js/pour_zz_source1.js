@@ -8,7 +8,7 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
    var a = document.getElementById(chp_rev_source);
    var startMicro=performance.now();
    
-   var tableau1 = iterateCharacters2(a.value);
+   var tableau1 = iterateCharacters2(a.__xva);
    global_messages.data.tableau=tableau1;
    var endMicro = performance.now();
    var startMicro = performance.now();
@@ -16,17 +16,17 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
    global_messages.data.matrice=matriceFonction;
    if(matriceFonction.__xst===true){
 
-    var objSql=tabToSql1(matriceFonction.value,0,0,false);
+    var objSql=tabToSql1(matriceFonction.__xva,0,0,false);
     
     if(objSql.__xst===true){
      
-        dogid(chp_genere_source).value=objSql.value;
+        dogid(chp_genere_source).value=objSql.__xva;
      
     }
     
     
     var parametres_sauvegarde={
-     'matrice': matriceFonction.value,
+     'matrice': matriceFonction.__xva,
      'chp_provenance_rev' : 'source',
      'chx_source_rev' : id_source,
      'id_cible' : id_cible
@@ -48,7 +48,7 @@ function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
  
  var obj=convertion_texte_sql_en_rev(source_sqlite);
  if(obj.__xst===true){
-  dogid(chp_rev_source).value=obj.value;
+  dogid(chp_rev_source).value=obj.__xva;
  }else{
    logerreur({__xst:false,__xme:'Erreur de convertion'})
  }
@@ -121,17 +121,17 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
     
     if(objRev.__xst===true){
 
-       var tableau1 = iterateCharacters2(objRev.value);
+       var tableau1 = iterateCharacters2(objRev.__xva);
        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
        
        if(matriceFonction.__xst===true){
         
-           var objSql=tabToSql1(matriceFonction.value,0,0,false);
+           var objSql=tabToSql1(matriceFonction.__xva,0,0,false);
            if(objSql.__xst===true){
             
-                var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');            
-//                console.log(objSql.value);
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , contenu , par.input.date_de_debut_traitement , matriceFonction.value);
+                var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');            
+//                console.log(objSql.__xva);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.__xva , contenu , par.input.date_de_debut_traitement , matriceFonction.__xva);
                
            }
 
@@ -146,17 +146,17 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
     var objRev = __module_html1.TransformHtmlEnRev(par.contenu_du_fichier,0);
     if(objRev.__xst===true){
 
-       var tableau1 = iterateCharacters2(objRev.value);
+       var tableau1 = iterateCharacters2(objRev.__xva);
        var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
        
        if(matriceFonction.__xst===true){
         
-           var objHtml=__module_html1.tabToHtml1(matriceFonction.value,0,false,0);
+           var objHtml=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
            
            if(objHtml.__xst===true){
           
-                console.log(objHtml.value);
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objHtml.value , par.input.date_de_debut_traitement , matriceFonction.value);
+                console.log(objHtml.__xva);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.__xva , objHtml.__xva , par.input.date_de_debut_traitement , matriceFonction.__xva);
                
            }
        }
@@ -175,9 +175,9 @@ function convertir_js_en_rev(chp_genere_source , chp_rev_source ){
   var obj1=recupere_ast_de_source_js_en_synchrone(a.value);
   if(obj1.__xst===true){
        tabComment=obj1.commentaires;
-       var objRev = TransformAstEnRev(obj1.value.body,0);
+       var objRev = TransformAstEnRev(obj1.__xva.body,0);
        if(objRev.__xst == true){
-         dogid(chp_rev_source).value=objRev.value;
+         dogid(chp_rev_source).value=objRev.__xva;
        }else{
          __gi1.remplir_et_afficher_les_messages1('zone_global_messages',chp_genere_source);
        }
@@ -198,19 +198,19 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
 //       console.log('obj1=' , obj1 );
        tabComment=obj1.commentaires;
        
-       var objRev = TransformAstEnRev(obj1.value.body,0);
+       var objRev = TransformAstEnRev(obj1.__xva.body,0);
        if(objRev.__xst == true){
         
-        var tableau1 = iterateCharacters2(objRev.value);
+        var tableau1 = iterateCharacters2(objRev.__xva);
         var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
         if(matriceFonction.__xst===true){
 //            console.log(matriceFonction);
             
-            var objJs=parseJavascript0(matriceFonction.value,1,0);
+            var objJs=parseJavascript0(matriceFonction.__xva,1,0);
             
             if(objJs.__xst===true){           
-//              console.log(objJs.value);
-              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.value , objJs.value , par.input.date_de_debut_traitement , matriceFonction.value);
+//              console.log(objJs.__xva);
+              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.__xva , objJs.__xva , par.input.date_de_debut_traitement , matriceFonction.__xva);
              
             }else{
                logerreur({__xst:false,__xme:'erreur 0223 traitement_apres_ajax_pour_conversion_fichier_js'});
@@ -241,7 +241,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
 function traitement_apres_ajax_pour_conversion_fichier_php(par){
 //    console.log('par=',par);
 
-    var ast=JSON.parse(par.value);
+    var ast=JSON.parse(par.__xva);
    
     var objRev=TransformAstPhpEnRev(ast,0,false);
     if(objRev.__xst===true){
@@ -249,23 +249,23 @@ function traitement_apres_ajax_pour_conversion_fichier_php(par){
         on a obtenu le format rev du php,
         on peut le convertir en php
         */
-//        console.log(objRev.value)
+//        console.log(objRev.__xva)
         
-        var tableau1 = iterateCharacters2('php('+objRev.value+')');
+        var tableau1 = iterateCharacters2('php('+objRev.__xva+')');
         var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
         if(matriceFonction.__xst===true){
-            var objPhp=parsePhp0(matriceFonction.value,0,0);
+            var objPhp=parsePhp0(matriceFonction.__xva,0,0);
             
             if(objPhp.__xst===true){
                 /*
                 on a obtenu le php à partir du rev,
                 on peut tout enregistrer
                 */
-//                console.log(objPhp.value)
+//                console.log(objPhp.__xva)
                 
 //                console.log(par.input.opt.jsonRet.input.id_source);
                 
-               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.jsonRet.input.id_source , objRev.value , objPhp.value , par.input.opt.jsonRet.input.date_de_debut_traitement , matriceFonction.value) ;
+               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.jsonRet.input.id_source , objRev.__xva , objPhp.__xva , par.input.opt.jsonRet.input.date_de_debut_traitement , matriceFonction.__xva) ;
                 
             }
         }
@@ -290,7 +290,7 @@ function convertir_un_source_sur_disque(id_source){
    var jsonRet=JSON.parse(r.responseText);
    if(jsonRet.__xst=='OK'){
 //    console.log('jsonRet=',jsonRet);
-//    dogid('chp_genere_source').value=jsonRet.value;
+//    dogid('chp_genere_source').value=jsonRet.__xva;
     var nom_source=jsonRet.db['T0.chp_nom_source'];
     var type_source=jsonRet.db['T0.chp_type_source'];
     if(nom_source.substr(nom_source.length-4)==='.php'){
@@ -353,17 +353,17 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible
    global_messages.data.matrice=matriceFonction;
    if(matriceFonction.__xst===true){
     
-    var objJs=parseJavascript0(matriceFonction.value,1,0);
+    var objJs=parseJavascript0(matriceFonction.__xva,1,0);
     
     if(objJs.__xst===true){
      
-     dogid(chp_genere_source).value=objJs.value;
+     dogid(chp_genere_source).value=objJs.__xva;
      
     }
     
     
     var parametres_sauvegarde={
-     'matrice': matriceFonction.value,
+     'matrice': matriceFonction.__xva,
      'chp_provenance_rev' : 'source',
      'chx_source_rev' : id_source,
      'id_cible' : id_cible
@@ -391,7 +391,7 @@ function convertir_texte_en_rev(nom_zone_genere, nom_zone_source){
  var obj_texte=js_texte_convertit_texte_en_rev_racine(a.value,0);
  if(obj_texte.__xst===true){
 
-   dogid(nom_zone_source).value=obj_texte.value;
+   dogid(nom_zone_source).value=obj_texte.__xva;
 
  }
 
@@ -416,11 +416,11 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , 
  
  if(matriceFonction.__xst===true){
   
-  var objTexte=convertir_tableau_rev_vers_texte_racine(matriceFonction.value,0,0);
+  var objTexte=convertir_tableau_rev_vers_texte_racine(matriceFonction.__xva,0,0);
   
   if(objTexte.__xst===true){
    
-   dogid(nom_zone_genere).value=objTexte.value;
+   dogid(nom_zone_genere).value=objTexte.__xva;
    
   }else{
    
@@ -429,7 +429,7 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , 
   }
   
   var parametres_sauvegarde={
-   'matrice': matriceFonction.value,
+   'matrice': matriceFonction.__xva,
    'chp_provenance_rev' : 'source',
    'chx_source_rev' : id_source,
    'id_cible' : id_cible
@@ -451,12 +451,12 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
  console.log('ret=',ret.input.opt);
  try{
   var startMicro=performance.now();
-  var ast=JSON.parse(ret.value);
+  var ast=JSON.parse(ret.__xva);
 //  console.log('ast=',ast);
   var obj=TransformAstPhpEnRev(ast,0,false);
   if(obj.__xst===true){
 //   console.log( ret.input.opt.nom_zone_rev )
-   document.getElementById(ret.input.opt.nom_zone_rev).value='php('+obj.value+')';
+   document.getElementById(ret.input.opt.nom_zone_rev).value='php('+obj.__xva+')';
   }else{
     
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.input.opt.nom_zone_genere);
@@ -508,7 +508,7 @@ function convertir_html_en_rev(nom_zone_genere, nom_zone_source){
  var objRev = __module_html1.TransformHtmlEnRev(a.value,0);
  if(objRev.__xst===true){
 
-   dogid(nom_zone_source).value=objRev.value;
+   dogid(nom_zone_source).value=objRev.__xva;
 
  }
 
@@ -534,16 +534,16 @@ function convertir_rev_en_html(nom_zone_source , nom_zone_genere, id_source , id
  
  if(matriceFonction.__xst===true){
   
-  var objHtml=__module_html1.tabToHtml1(matriceFonction.value,0,false,0);
+  var objHtml=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
   
   if(objHtml.__xst===true){
    
-   dogid(nom_zone_genere).value=objHtml.value
+   dogid(nom_zone_genere).value=objHtml.__xva;
    
   }
   
   var parametres_sauvegarde={
-   'matrice': matriceFonction.value,
+   'matrice': matriceFonction.__xva,
    'chp_provenance_rev' : 'source',
    'chx_source_rev' : id_source,
    'id_cible' : id_cible
@@ -566,7 +566,7 @@ function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev , nom_zone_g
  var obj=__gi1.convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev , nom_zone_genere_php);
  if(obj.__xst===true){
   var parametres_sauvegarde={
-   'matrice': obj.value,
+   'matrice': obj.__xva,
    'chp_provenance_rev' : 'source',
    'chx_source_rev' : id_source,
    'id_cible' : id_cible
@@ -643,7 +643,7 @@ function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
    var jsonRet=JSON.parse(r.responseText);
    if(jsonRet.__xst=='OK'){
     console.log('jsonRet=',jsonRet);
-    dogid('chp_genere_source').value=jsonRet.value;
+    dogid('chp_genere_source').value=jsonRet.__xva;
     return;
    }else{
     console.log(r);

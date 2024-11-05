@@ -9,7 +9,7 @@
   
   var global_enteteTableau=[
   ['id','id'                                 ,''], // 00
-  ['val','value'                             ,''],
+  ['val','valeur'                            ,''],
   ['typ','type'                              ,''],
   ['niv','niveau'                            ,''],
   ['coQ','constante quotee'                  ,''], 
@@ -149,7 +149,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
 
         if((tab[id][8] === 1) && (tab[id + 1][2] === 'c')){
             t+=maConstante(tab[id + 1]);
-            return({__xst:true,value:t});
+            return({__xst:true,__xva:t});
         }else if((tab[id][8] === 2) && (tab[id + 1][2] === 'c') && (tab[id + 2][2] === 'c')){
             t+=maConstante(tab[id + 1]) + '.' + maConstante(tab[id + 2]);
             if(
@@ -171,7 +171,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                     }
                 }
             }
-            return({__xst:true,value:t});
+            return({__xst:true,__xva:t});
         }else{
             return(logerreur({__xst:false,__xme:'0114 traite_sqlite_fonction_de_champ'}));
         }
@@ -182,15 +182,15 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
         /* un sql dans un autre sql , par exemple select * from a where id in (select id from b); */
         var obj=tabToSql0(tab,id,niveau,options);
         if(obj.__xst===true){
-            if(obj.value.substr(obj.value.length-1,1)===';'){
-             obj.value=obj.value.substr(0,obj.value.length-1);
+            if(obj.__xva.substr(obj.__xva.length-1,1)===';'){
+             obj.__xva=obj.__xva.substr(0,obj.__xva.length-1);
             }
-            t+=obj.value
+            t+=obj.__xva
         }else{
             return(logerreur({__xst:false,__xme:'sql.js 0186 traite_sqlite_fonction_de_champ'}));
         }
 
-        return({__xst:true,value:t,operateur:operateur_rev});
+        return({__xst:true,__xva:t,operateur:operateur_rev});
 
     }
     var operateur = recuperer_operateur_sqlite(tab[id][1]);
@@ -256,9 +256,9 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                 var obj = traite_sqlite_fonction_de_champ(tab,i,niveau,options);
                 if(obj.__xst === true){
                     if(premierChamp===false && tab[i][1]==='sql' && tab[i][2]==='f'){
-                        t+='('+ obj.value +')';
+                        t+='('+ obj.__xva +')';
                     }else{
-                        t+=obj.value;
+                        t+=obj.__xva;
                     }
                     if(obj.operateur && obj.operateur==='#' && premierChamp===true){
                      /*
@@ -305,7 +305,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
      || (operateur === ' OR ')){
         t='(' + t + ')';
     }
-    return({__xst:true,value:t,operateur:operateur});
+    return({__xst:true,__xva:t,operateur:operateur});
 }
 /*
   =====================================================================================================================
@@ -335,7 +335,7 @@ function tabToSql0(tab,id,niveau,options){
     var meta='';
     var l01=tab.length;
     if(tab[id][1]==='bases' && tab[id][2]==='f'){
-        return{__xst:true,value:''};
+        return{__xst:true,__xva:''};
     }
     
     for(i=id + 1;i < l01;i++){
@@ -343,7 +343,7 @@ function tabToSql0(tab,id,niveau,options){
             if(tab[i][1] === 'sql' || tab[i][1] === 'requete_manuelle' ){
                 var obj = tabToSql0(tab,i,niveau,options);
                 if(obj.__xst === true){
-                    t+=obj.value;
+                    t+=obj.__xva;
                 }else{
                     return(logerreur({__xst:false,__xme:'erreur 0062'}));
                 }
@@ -460,7 +460,7 @@ function tabToSql0(tab,id,niveau,options){
     //                                                var obj = traite_sqlite_fonction_de_champ(tab,(m + 1),niveau,{tableau_des_alias:tableau_des_alias});
                                                     var obj = traite_sqlite_fonction_de_champ(tab,(m + 1),niveau,options);
                                                     if(obj.__xst === true){
-                                                        liste_des_tables+=' ON ' + obj.value + '\n';
+                                                        liste_des_tables+=' ON ' + obj.__xva + '\n';
                                                     }else{
                                                         return(logerreur({__xst:false,__xme:'0198 erreur sur fonction dans select "' + tab[l][1] + '"'}));
                                                     }
@@ -578,7 +578,7 @@ function tabToSql0(tab,id,niveau,options){
     //                                        var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,{tableau_des_alias:tableau_des_alias});
                                             var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                             if(obj.__xst === true){
-                                                nom_du_champ=obj.value;
+                                                nom_du_champ=obj.__xva;
                                                 
                                                 if(options.au_format_php===true){
                                                     tableau_des_champs_pour_select_php.push({type:'formule',formule:nom_du_champ});
@@ -647,7 +647,7 @@ function tabToSql0(tab,id,niveau,options){
                             options.tableau_des_alias=tableau_des_alias;
                             var obj = traite_sqlite_fonction_de_champ(tab,j,niveau,options);
                             if(obj.__xst === true){
-                                liste_des_conditions=obj.value;
+                                liste_des_conditions=obj.__xva;
                             }else{
                                 return(logerreur({__xst:false,__xme:'0354 erreur sur conditions dans select '}));
                             }
@@ -675,9 +675,9 @@ function tabToSql0(tab,id,niveau,options){
                                            if(obj.__xst === true){
 
                                                if(obj.operateur && ( obj.operateur==='ASC' || obj.operateur==='DESC'  )){
-                                                   liste_des_tris+=' ' + obj.value;
+                                                   liste_des_tris+=' ' + obj.__xva;
                                                }else{
-                                                   liste_des_tris+=', ' + obj.value;
+                                                   liste_des_tris+=', ' + obj.__xva;
                                                }
                                            }else{
                                                return(logerreur({__xst:false,__xme:'0354 erreur sur conditions dans select '}));
@@ -711,7 +711,7 @@ function tabToSql0(tab,id,niveau,options){
                                    options.tableau_des_alias=tableau_des_alias;
                                    var obj = traite_sqlite_fonction_de_champ(tab,k,niveau,options);
                                    if(obj.__xst === true){
-                                       liste_des_limites+=',' + obj.value;
+                                       liste_des_limites+=',' + obj.__xva;
                                    }else{
                                        return(logerreur({__xst:false,__xme:'0354 erreur sur conditions dans select '}));
                                    }
@@ -833,10 +833,10 @@ function tabToSql0(tab,id,niveau,options){
                             la_valeur='';
                             var obj=tabToSql0(tab,j,niveau,options);
                             if(obj.__xst===true){
-                                if(obj.value.substr(obj.value.length-1,1)===';'){
-                                 obj.value=obj.value.substr(0,obj.value.length-1);
+                                if(obj.__xva.substr(obj.__xva.length-1,1)===';'){
+                                 obj.__xva=obj.__xva.substr(0,obj.__xva.length-1);
                                 }
-                                la_valeur+=obj.value
+                                la_valeur+=obj.__xva
                             }else{
                                 return(logerreur({__xst:false,__xme:'sql.js 828 insert update delete '}));
                             }
@@ -867,7 +867,7 @@ function tabToSql0(tab,id,niveau,options){
 //                                                        var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,{});
                                                         var obj = traite_sqlite_fonction_de_champ(tab,m,niveau,options);
                                                         if(obj.__xst === true){
-                                                            valeur_du_champ=obj.value;
+                                                            valeur_du_champ=obj.__xva;
                                                         }else{
                                                             return(logerreur({__xst:false,__xme:'0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
                                                         }
@@ -950,7 +950,7 @@ function tabToSql0(tab,id,niveau,options){
 
                                         var obj = traite_sqlite_fonction_de_champ(tab,l,niveau,options);
                                         if(obj.__xst === true){
-                                            conditions+=obj.value;
+                                            conditions+=obj.__xva;
                                         }else{
                                             return(logerreur({__xst:false,__xme:'0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
                                         }
@@ -1065,10 +1065,10 @@ function tabToSql0(tab,id,niveau,options){
                             var obj = a2F1(tab,j,false,(j + 1),false);
                             if(obj.__xst === true){
                                 meta=espacesn(true,(niveau + 2));
-                                meta+='/* meta(' + obj.value + ') */';
+                                meta+='/* meta(' + obj.__xva + ') */';
                                 meta+=espacesn(true,(niveau + 2));
                             }else{
-                                return(logerreur({__xst:false,value:t,id:i,__xme:'0930 sql.js erreur dans un meta'}));
+                                return(logerreur({__xst:false,__xva:t,id:i,__xme:'0930 sql.js erreur dans un meta'}));
                             }
                         }
                     }
@@ -1097,15 +1097,15 @@ function tabToSql0(tab,id,niveau,options){
                             obj=tabToSql0(tab,j,niveau,options);
                             options.dans_definition_de_champ=false;
                             if(obj.__xst === true){
-                                for(k=obj.value.length - 1;k >= 0;k--){
-                                    c=obj.value.substr(k,1);
+                                for(k=obj.__xva.length - 1;k >= 0;k--){
+                                    c=obj.__xva.substr(k,1);
                                     if(c === ','){
-                                        def=obj.value.substr(0,k);
+                                        def=obj.__xva.substr(0,k);
                                         break;
                                     }
                                 }
                             }else{
-                                return(logerreur({__xst:false,value:t,id:i,__xme:'sql.js erreur dans un sql définit dans un php'}));
+                                return(logerreur({__xst:false,__xva:t,id:i,__xme:'sql.js erreur dans un sql définit dans un php'}));
                             }
                         }
                     }
@@ -1142,7 +1142,7 @@ function tabToSql0(tab,id,niveau,options){
                     t+='use ' + tab[i + 1][1] + ';';
                     j++;
                 }else{
-                    return(logerreur({__xst:false,value:t,id:i,__xme:'sql.js erreur dans un sql(use) définit dans un php'}));
+                    return(logerreur({__xst:false,__xva:t,id:i,__xme:'sql.js erreur dans un sql(use) définit dans un php'}));
                 }
             }else if(tab[i][1] === 'set'){
                 if((tab[i][8] === 2) && (tab[i + 1][2] === 'c') && (tab[i + 2][2] === 'c')){
@@ -1159,7 +1159,7 @@ function tabToSql0(tab,id,niveau,options){
                     }
                     t+=';';
                 }else{
-                    return(logerreur({__xst:false,value:t,id:i,__xme:'sql.js cas non prévu dans un SET()'}));
+                    return(logerreur({__xst:false,__xva:t,id:i,__xme:'sql.js cas non prévu dans un SET()'}));
                 }
             }else if(tab[i][1] === 'field'){
                 /*
@@ -1237,7 +1237,7 @@ function tabToSql0(tab,id,niveau,options){
                                     variables_pour_tableau_tables.defaut.est_defini=true;
                                     variables_pour_tableau_tables.defaut.valeur=maConstante(tab[j + 1]);
                                 }else{
-                                     return(logerreur({__xst:false,value:t,id:i,__xme:'0914 sql.js on admet que les constantes quotées par des apostrophes pour les valeurs de texte par défaut'}));
+                                     return(logerreur({__xst:false,__xva:t,id:i,__xme:'0914 sql.js on admet que les constantes quotées par des apostrophes pour les valeurs de texte par défaut'}));
                                 }
                             }
                             j++;
@@ -1260,7 +1260,7 @@ function tabToSql0(tab,id,niveau,options){
                                     if(tab[j + 2][2] === 'c'){
                                         definition_sql_du_champ+=' ' + tab[j + 1][1] + '(' + tab[j + 2][1] + ')';
                                     }else{
-                                        return(logerreur({__xst:false,value:t,id:i,__xme:'0732 sql.js erreur dans un type'}));
+                                        return(logerreur({__xst:false,__xva:t,id:i,__xme:'0732 sql.js erreur dans un type'}));
                                     }
                                 }
                             }else if(tab[j][8] === 2){
@@ -1275,8 +1275,8 @@ function tabToSql0(tab,id,niveau,options){
                             var obj = a2F1(tab,j,false,(j + 1),false);
                             if(obj.__xst === true){
                                 meta_du_champ+=espacesn(true,(niveau + 2));
-                                meta_du_champ+='/* meta(' + obj.value + ') */';
-                                variables_pour_tableau_tables.meta=obj.value;
+                                meta_du_champ+='/* meta(' + obj.__xva + ') */';
+                                variables_pour_tableau_tables.meta=obj.__xva;
                                 meta_du_champ+=espacesn(true,(niveau + 2));
                                 for(k=j + 1;(k < l01) && (tab[k][3] > tab[j][3]);k++){
                                     if(tab[k][7] === j){
@@ -1286,7 +1286,7 @@ function tabToSql0(tab,id,niveau,options){
                                     }
                                 }
                             }else{
-                                return(logerreur({__xst:false,value:t,id:i,__xme:'0930 sql.js erreur dans un meta'}));
+                                return(logerreur({__xst:false,__xva:t,id:i,__xme:'0930 sql.js erreur dans un meta'}));
                             }
                         }else{
                             return(logerreur({__xst:false,id:i,__xme:'0275 sql.js erreur dans un field pour ' + tab[j][1]}));
@@ -1376,9 +1376,9 @@ function tabToSql0(tab,id,niveau,options){
                                     /*
                                       on supprime la virgule
                                     */
-                                    definitions_des_champs=obj.value.substr(1);
+                                    definitions_des_champs=obj.__xva.substr(1);
                                 }else{
-                                    return(logerreur({__xst:false,value:t,id:i,__xme:'sql.js erreur dans un sql définit dans un php'}));
+                                    return(logerreur({__xst:false,__xva:t,id:i,__xme:'sql.js erreur dans un sql définit dans un php'}));
                                 }
 
 //                                t+='' + ((engine === '')?'':(' ' + engine)) + ((auto_increment === '')?'':(' ' + auto_increment)) + ((charset === '')?'':(' ' + charset)) + ((collate === '')?'':(' ' + collate));
@@ -1395,8 +1395,8 @@ function tabToSql0(tab,id,niveau,options){
                                 var obj = a2F1(tab,j,false,(j + 1),false);
                                 if(obj.__xst === true){
 //                                    t+=espacesn(true,(niveau + 1));
-//                                    donnees_table.chaine_meta='/* meta(' + obj.value + ') */';
-                                    chaine_meta_table='/* meta(' + obj.value + ') */';
+//                                    donnees_table.chaine_meta='/* meta(' + obj.__xva + ') */';
+                                    chaine_meta_table='/* meta(' + obj.__xva + ') */';
 //                                    t+=espacesn(true,(niveau + 1));
                                     for(k=j + 1;(k < l01) && (tab[k][3] > tab[j][3]);k++){
                                         if(tab[k][7] === j){
@@ -1406,7 +1406,7 @@ function tabToSql0(tab,id,niveau,options){
                                         }
                                     }
                                 }else{
-                                    return(logerreur({__xst:false,value:t,id:i,__xme:'0930 sql.js erreur dans un meta'}));
+                                    return(logerreur({__xst:false,__xva:t,id:i,__xme:'0930 sql.js erreur dans un meta'}));
                                 }
                             }else{
                                 t+=' todo sql.js repere 0350 ' + tab[j][1];
@@ -1487,10 +1487,10 @@ function tabToSql0(tab,id,niveau,options){
                 if(obj.__xst === true){
                     t+=espacesn(true,niveau);
                     t+='BEGIN TRANSACTION;';
-                    t+=obj.value;
+                    t+=obj.__xva;
                     t+=espacesn(true,niveau);
                 }else{
-                    return(logerreur({__xst:false,value:t,id:i,__xme:'sql.js erreur dans un sql définit dans un php'}));
+                    return(logerreur({__xst:false,__xva:t,id:i,__xme:'sql.js erreur dans un sql définit dans un php'}));
                 }
             }else if(tab[i][1] === '#'){
                 if(tab[i][13] === ''){
@@ -1504,10 +1504,10 @@ function tabToSql0(tab,id,niveau,options){
                 var obj = a2F1(tab,i,false,(i + 1),false);
                 if(obj.__xst === true){
                     t+=espacesn(true,niveau);
-                    t+='/* meta(' + obj.value + ') */';
+                    t+='/* meta(' + obj.__xva + ') */';
                     t+=espacesn(true,niveau);
                 }else{
-                    return(logerreur({__xst:false,value:t,id:i,__xme:'1057 sql.js erreur dans un meta'}));
+                    return(logerreur({__xst:false,__xva:t,id:i,__xme:'1057 sql.js erreur dans un meta'}));
                 }
             }else{
                 t+=espacesn(true,niveau);
@@ -1515,7 +1515,7 @@ function tabToSql0(tab,id,niveau,options){
             }
         }
     }
-    return({__xst:true,value:t});
+    return({__xst:true,__xva:t});
 }
 /*
   =====================================================================================================================
@@ -1631,7 +1631,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                 obj=functionToArray(tab_meta[i].txt_meta,true,false,'');
                 if(obj.__xst === true){
                     tab_meta[i].__xst=true;
-                    tab_meta[i].matrice=obj.value;
+                    tab_meta[i].matrice=obj.__xva;
                     for(j=1;j < tab_meta[i].matrice.length;j++){
                         if((tab_meta[i].matrice[j][3] === 2) 
                            && (tab_meta[i].matrice[j][9] === 1) 
@@ -1692,7 +1692,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                             if(tab[j][1] === 'transform_table_sur_svg'){
                                 var obj = a2F1(tab,(j + 1),false,(j + 2),false);
                                 if(obj.__xst === true){
-                                    liste_meta_table[elt_meta]='transform(' + obj.value + ')';
+                                    liste_meta_table[elt_meta]='transform(' + obj.__xva + ')';
                                     break;
                                 }else{
                                     debugger;
@@ -1745,23 +1745,23 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             /*
               
               <select id="type_du_champ">
-              <option value="">choisissez un type</option>
-              <option value="chi">index entier (chi) integer[n]</option>
-              <option value="chx">référence croisée (chx) integer[n]</option>
-              <option value="che">entier (che) integer[n]</option>
+              <option __xva="">choisissez un type</option>
+              <option __xva="chi">index entier (chi) integer[n]</option>
+              <option __xva="chx">référence croisée (chx) integer[n]</option>
+              <option __xva="che">entier (che) integer[n]</option>
               
-              <option value="chn">numérique (chn) float</option>
+              <option __xva="chn">numérique (chn) float</option>
               
-              <option value="chu">choix unique (chu) integer(n)</option>
+              <option __xva="chu">choix unique (chu) integer(n)</option>
               
-              <option value="chm">choix multiple (chm) text</option>
-              <option value="cht">texte (cht) text</option>
-              <option value="chp">phrase (chp) varchar(n)</option>
-              <option value="cho">mot (cho) character(n)</option>
-              <option value="chd">date heure (chd) text(23) YYYY-MM-DD HH:MM:SS.SSS</option>
-              <option value="cha">date character(10)</option>
-              <option value="chh">heure character(8)</option>
-              <option value="chb">blob (chb) blob</option></select>
+              <option __xva="chm">choix multiple (chm) text</option>
+              <option __xva="cht">texte (cht) text</option>
+              <option __xva="chp">phrase (chp) varchar(n)</option>
+              <option __xva="cho">mot (cho) character(n)</option>
+              <option __xva="chd">date heure (chd) text(23) YYYY-MM-DD HH:MM:SS.SSS</option>
+              <option __xva="cha">date character(10)</option>
+              <option __xva="chh">heure character(8)</option>
+              <option __xva="chb">blob (chb) blob</option></select>
             */
             var typologie='ch?';
             var types_entiers = [
@@ -1860,17 +1860,17 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             if(pc['notnull'] === 1){
                 t+='\n' + '   non_nulle()';
             }
-            if(pc['dflt_value']){
+            if(pc['dflt___xva']){
                 
-                  if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==="'"){
-                      t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt_value'].substr(1,pc['dflt_value'].length-2).replace(/\'\'/g,'\\\'') + '\')');
-                  }else if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==='"'){
-                      t+=('\n' + '   valeur_par_defaut("' + pc['dflt_value'].substr(1,pc['dflt_value'].length-2) + '")');
+                  if(pc['dflt___xva']!=='' && pc['dflt___xva'].substr(0,1)==="'"){
+                      t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt___xva'].substr(1,pc['dflt___xva'].length-2).replace(/\'\'/g,'\\\'') + '\')');
+                  }else if(pc['dflt___xva']!=='' && pc['dflt___xva'].substr(0,1)==='"'){
+                      t+=('\n' + '   valeur_par_defaut("' + pc['dflt___xva'].substr(1,pc['dflt___xva'].length-2) + '")');
                   }else{
-                      t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
+                      t+=('\n' + '   valeur_par_defaut(' + pc['dflt___xva'] + ')');
                   }
                 
-//                t+='\n' + '   valeur_par_defaut(' + pc['dflt_value'].replace(/\'\'/g,'\\\'') + ')';
+//                t+='\n' + '   valeur_par_defaut(' + pc['dflt___xva'].replace(/\'\'/g,'\\\'') + ')';
             }
             if(cle_etrangere === true){
                 t+='\n' + '   references(\'' + pc['cle_etrangere']['table'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + pc['cle_etrangere']['to'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' )';
@@ -1968,5 +1968,5 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             debugger;
         }
     }
-    return({__xst:true,value:t});
+    return({__xst:true,__xva:t});
 }

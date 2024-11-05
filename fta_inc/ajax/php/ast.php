@@ -16,7 +16,7 @@ function recupererAstDePhp(&$data){
         $contenu=preg_replace('/\\/\\*sql_'.'inclure_deb\\*\\/(.*?)\\/\\*sql_'.'inclure_fin\\*\\//us','', $data['input']['texteSource']);
 
         $ast=$parser->parse($contenu);
-        $data['value']=json_encode($ast);
+        $data[__xva]=json_encode($ast);
         $data[__xst]='OK';
     }catch(Error $error){
         $data['messages'][]=$error->getMessage();

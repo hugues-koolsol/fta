@@ -74,7 +74,7 @@ function recupererAstDeJs(&$data){
             $data['messages'][]=basename(__FILE__) . __LINE__ .' erreur sur file_get_contents';     
         }else{
             $data['commentaires']=@file_get_contents($nom_de_fichier_commentaires);
-            $data['value']=$ast_texte;
+            $data[__xva]=$ast_texte;
             $data[__xst]='OK';
         }
     }

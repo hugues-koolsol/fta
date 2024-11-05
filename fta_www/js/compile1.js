@@ -11,7 +11,7 @@ function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){
   try{
    var jsonRet=JSON.parse(r.responseText);
    if(jsonRet.__xst=='OK'){
-    fntSiOk({__xst:true,value:jsonRet.value,nomZone:nomZone,nomFichierSource:nomFichierSource});
+    fntSiOk({__xst:true,__xva:jsonRet.__xva,nomZone:nomZone,nomFichierSource:nomFichierSource});
     try{
      localStorage.setItem("fta_dernier_fichier_charge", nomFichierSource);
     }catch(e){}
@@ -98,22 +98,22 @@ function convertSource(objMatSrc){
  var tabConcatFichier=[];
  var retProgrammeSource={};
  var obj={};
- var l01=objMatSrc.value.length;
+ var l01=objMatSrc.__xva.length;
  var position_de_la_balise_source=-1;
  for(var i=1;i<l01;i++){
-  if(objMatSrc.value[i][3]==0){
-   if(objMatSrc.value[i][1]=='#'){
-   }else if(objMatSrc.value[i][1]=='src_javascript' ){
-    type_source=objMatSrc.value[i][1];
+  if(objMatSrc.__xva[i][3]==0){
+   if(objMatSrc.__xva[i][1]=='#'){
+   }else if(objMatSrc.__xva[i][1]=='src_javascript' ){
+    type_source=objMatSrc.__xva[i][1];
     break;
-   }else if(objMatSrc.value[i][1]=='src_html'){
-    type_source=objMatSrc.value[i][1];
+   }else if(objMatSrc.__xva[i][1]=='src_html'){
+    type_source=objMatSrc.__xva[i][1];
     break;
-   }else if(objMatSrc.value[i][1]=='src_php'){
-    type_source=objMatSrc.value[i][1];
+   }else if(objMatSrc.__xva[i][1]=='src_php'){
+    type_source=objMatSrc.__xva[i][1];
     break;
-   }else if(objMatSrc.value[i][1]=='src_sql'){
-    type_source=objMatSrc.value[i][1];
+   }else if(objMatSrc.__xva[i][1]=='src_sql'){
+    type_source=objMatSrc.__xva[i][1];
     break;
    }
   }
@@ -124,42 +124,42 @@ function convertSource(objMatSrc){
  
  
  for(var i=0;i<l01;i++){
-  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1){
-   if( objMatSrc.value[i][1]==''){ //fonctions de niveau 1 vides
-    for(var j=i;j<objMatSrc.value.length;j++){
-     if(objMatSrc.value[j][7]==objMatSrc.value[i][0] && objMatSrc.value[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
- //       console.log(JSON.stringify(objMatSrc.value[j]));
-      if(objMatSrc.value[j][1]=='file_name' && objMatSrc.value[j+1][1]!=''){
-       file_name=objMatSrc.value[j+1][1];
+  if(objMatSrc.__xva[i][2]=='f' && objMatSrc.__xva[i][3]==1){
+   if( objMatSrc.__xva[i][1]==''){ //fonctions de niveau 1 vides
+    for(var j=i;j<objMatSrc.__xva.length;j++){
+     if(objMatSrc.__xva[j][7]==objMatSrc.__xva[i][0] && objMatSrc.__xva[i][8]>=2 ){ // si id de la fonction de niveau1 vide == idParent et qu'il y a au moins 2 enfants (file_name,nomFichier)
+ //       console.log(JSON.stringify(objMatSrc.__xva[j]));
+      if(objMatSrc.__xva[j][1]=='file_name' && objMatSrc.__xva[j+1][1]!=''){
+       file_name=objMatSrc.__xva[j+1][1];
       }
-      if(objMatSrc.value[j][1]=='file_extension' && objMatSrc.value[j+1][1]!=''){
-       file_extension=objMatSrc.value[j+1][1];
+      if(objMatSrc.__xva[j][1]=='file_extension' && objMatSrc.__xva[j+1][1]!=''){
+       file_extension=objMatSrc.__xva[j+1][1];
       }
-      if(objMatSrc.value[j][1]=='file_path' && objMatSrc.value[j+1][1]!=''){
-       file_path=objMatSrc.value[j+1][1];
+      if(objMatSrc.__xva[j][1]=='file_path' && objMatSrc.__xva[j+1][1]!=''){
+       file_path=objMatSrc.__xva[j+1][1];
       }
      }
     }
-   }else if( objMatSrc.value[i][1]!=''){ //fonctions de niveau 1 NON vides
-    if(objMatSrc.value[i][1]=='#'){
-    }else if(objMatSrc.value[i][1]=='source'){
+   }else if( objMatSrc.__xva[i][1]!=''){ //fonctions de niveau 1 NON vides
+    if(objMatSrc.__xva[i][1]=='#'){
+    }else if(objMatSrc.__xva[i][1]=='source'){
      position_de_la_balise_source=i;
-    }else if(objMatSrc.value[i][1]=='concatFichier'){
+    }else if(objMatSrc.__xva[i][1]=='concatFichier'){
     }else{
-     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.value[i])});
+     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : l\'élément ne doit pas se trouver là '+JSON.stringify(objMatSrc.__xva[i])});
     }
    }
 
   }
-  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]=='source'){ // fonction de niveau 1 = source
+  if(objMatSrc.__xva[i][2]=='f' && objMatSrc.__xva[i][3]==1 && objMatSrc.__xva[i][1]=='source'){ // fonction de niveau 1 = source
    if(idJs==-1){
     idJs=i;
    }else{
     idJs=-2;
    }
   }
-  if(objMatSrc.value[i][2]=='f' && objMatSrc.value[i][3]==1 && objMatSrc.value[i][1]=='concatFichier' && objMatSrc.value[i][8]==1){
-   tabConcatFichier.push(objMatSrc.value[i+1][1])
+  if(objMatSrc.__xva[i][2]=='f' && objMatSrc.__xva[i][3]==1 && objMatSrc.__xva[i][1]=='concatFichier' && objMatSrc.__xva[i][8]==1){
+   tabConcatFichier.push(objMatSrc.__xva[i+1][1])
   }
  }
  var t='';
@@ -167,23 +167,23 @@ function convertSource(objMatSrc){
   
   if(type_source=='src_php'  && (file_extension=='php')){
    var baliseHtmlOuPhpTrouvee=false;
-   for(var i=idJs+1;i<objMatSrc.value.length;i++){
-    if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='php'){
+   for(var i=idJs+1;i<objMatSrc.__xva.length;i++){
+    if(objMatSrc.__xva[i][7]==idJs && objMatSrc.__xva[i][1]=='php'){
      baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=false;
-     retProgrammeSource=parsePhp0(objMatSrc.value , i , 0 );
+     retProgrammeSource=parsePhp0(objMatSrc.__xva , i , 0 );
      if(retProgrammeSource.__xst==true){
-      t+='<?php'+CRLF+retProgrammeSource.value+CRLF+'?>';
+      t+='<?php'+CRLF+retProgrammeSource.__xva+CRLF+'?>';
      }else{
       return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
      }
-    }else if(objMatSrc.value[i][7]==idJs && objMatSrc.value[i][1]=='html'){
+    }else if(objMatSrc.__xva[i][7]==idJs && objMatSrc.__xva[i][1]=='html'){
      baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=true;
      //                             tab             , id , noHead , niveau
-     retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.value , i  , true   , 0      );
+     retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.__xva , i  , true   , 0      );
      if(retProgrammeSource.__xst==true){
-      t+='\n'+retProgrammeSource.value+'\n';
+      t+='\n'+retProgrammeSource.__xva+'\n';
      }else{
       return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
      }
@@ -195,9 +195,9 @@ function convertSource(objMatSrc){
     
     */
     php_contexte_commentaire_html=false;
-    retProgrammeSource=parsePhp0(objMatSrc.value , position_de_la_balise_source , 0 );
+    retProgrammeSource=parsePhp0(objMatSrc.__xva , position_de_la_balise_source , 0 );
     if(retProgrammeSource.__xst==true){
-     t+='<?php'+CRLF+retProgrammeSource.value+CRLF+'?>';
+     t+='<?php'+CRLF+retProgrammeSource.__xva+CRLF+'?>';
     }else{
      return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
     }
@@ -217,33 +217,33 @@ function convertSource(objMatSrc){
     }
    }
    
-   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,__xva:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){
-   retProgrammeSource=parseJavascript0(objMatSrc.value ,idJs+1 , 0 );
+   retProgrammeSource=parseJavascript0(objMatSrc.__xva ,idJs+1 , 0 );
    if(retProgrammeSource.__xst==true){
-    t+=retProgrammeSource.value;
+    t+=retProgrammeSource.__xva;
    }else{
     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un javascript'});
    }
-   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,__xva:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_html'  && (file_extension=='html')){
    //                             tab             , id     , noHead , niveau
-   retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.value , idJs+1 , false  , 0      );
+   retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.__xva , idJs+1 , false  , 0      );
    if(retProgrammeSource.__xst==true){
-    t+=retProgrammeSource.value;
+    t+=retProgrammeSource.__xva;
    }else{
     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un html'});
    }
-   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,__xva:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_sql'  && (file_extension=='sql')){
    //                             tab             , id    , niveau , format php
-   retProgrammeSource=tabToSql1( objMatSrc.value , idJs+1 , 0      , false );
+   retProgrammeSource=tabToSql1( objMatSrc.__xva , idJs+1 , 0      , false );
    if(retProgrammeSource.__xst==true){
-    t+=retProgrammeSource.value;
+    t+=retProgrammeSource.__xva;
    }else{
     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un sql'});
    }
-   return logerreur({__xst:true,value:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
+   return logerreur({__xst:true,__xva:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }
 //console.log('t=',t);
  }else{
@@ -282,13 +282,14 @@ function writeRevFile(fileName, value){
  };
  r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
  r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
+ debugger
  var ajax_param={
   call:{
    lib                       : 'core'   ,
    file                      : 'file'  ,
    funct                     : 'writeRevFile' ,
   },
-  value                     : value     ,
+  contenu_du_fichier        : value     ,
   file_name                 : fileName       ,
  }
  r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
@@ -327,13 +328,14 @@ function writeSourceFile(obj){
  };
  r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
  r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
+ debugger
  var ajax_param={
   call:{
    lib                       : 'core'   ,
    file                      : 'file'  ,
    funct                     : 'writeFile' ,
   },
-  value                     : obj.value     ,
+  contenu_du_fichier        : obj.__xva     ,
   file_name                 : obj.file_name       ,
   file_extension            : obj.file_extension  ,
   file_path                 : obj.file_path       ,

@@ -37,15 +37,15 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
     
     if(matriceFonction.__xst===true){
 
-        var objSql=tabToSql1(matriceFonction.value,0,0,false);
+        var objSql=tabToSql1(matriceFonction.__xva,0,0,false);
         if(objSql.__xst===true){
-            var contenu=objSql.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
+            var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
             dogid(nom_zone_genere).value=contenu;
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         
         var parametres_sauvegarde={
-            'matrice'            : matriceFonction.value ,
+            'matrice'            : matriceFonction.__xva ,
             'chp_provenance_rev' : 'bdd'                 ,
             'id_cible'           : id_cible              ,
             'chx_source_rev'     : id_bdd                ,
@@ -63,7 +63,7 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
  /*
  Exemple :
   var parametres_sauvegarde={
-   'matrice': matriceFonction.value,
+   'matrice': matriceFonction.__xva,
    'chp_provenance_rev' : 'bdd',
    'id_cible' : id_cible
   }

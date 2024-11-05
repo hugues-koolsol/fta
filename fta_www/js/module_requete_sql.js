@@ -144,7 +144,7 @@ class requete_sql{
         if(obj1.__xst !== true){
             return;
         }
-        var tab=obj1.value;
+        var tab=obj1.__xva;
         var l01=tab.length;
         var indice_table=0;
         var jointure='';
@@ -465,7 +465,7 @@ class requete_sql{
                                         */
                                         var obj = a2F1(tab,tab[j][7],true,j,false);
                                         if(obj.__xst === true){
-                                            this.#obj_webs['champs_sortie'].push({type_d_element:'formule',formule:obj.value});
+                                            this.#obj_webs['champs_sortie'].push({type_d_element:'formule',formule:obj.__xva});
                                         }
                                     }
                                 }else{
@@ -474,7 +474,7 @@ class requete_sql{
                                     */
                                     var obj = a2F1(tab,tab[j][7],true,j,false);
                                     if(obj.__xst === true){
-                                        this.#obj_webs['champs_sortie'].push({type_d_element:'formule',formule:obj.value});
+                                        this.#obj_webs['champs_sortie'].push({type_d_element:'formule',formule:obj.__xva});
                                     }
                                 }
                             }else{
@@ -482,7 +482,7 @@ class requete_sql{
                                 }else{
                                     var obj = a2F1(tab,j,true,(j + 1),false);
                                     if(obj.__xst === true){
-                                        this.#obj_webs['champs_sortie'].push({type_d_element:'formule','formule':tab[j][1] + '(' + obj.value + ')'});
+                                        this.#obj_webs['champs_sortie'].push({type_d_element:'formule','formule':tab[j][1] + '(' + obj.__xva + ')'});
                                     }
                                 }
                             }
@@ -494,12 +494,12 @@ class requete_sql{
             }else if((tab[i][2] === 'f') && ('conditions' === tab[i][1])){
                 var obj = a2F1(tab,tab[i+1][7],true,(i + 1),false);
                 if(obj.__xst === true){
-                    this.#obj_webs['conditions'].push({type_d_element:'formule',formule:obj.value});
+                    this.#obj_webs['conditions'].push({type_d_element:'formule',formule:obj.__xva});
                 }
             }else if((tab[i][2] === 'f') && ('complements' === tab[i][1])){
                 var obj = a2F1(tab,tab[i+1][7],true,(i + 1),false);
                 if(obj.__xst === true){
-                    this.#obj_webs['complements'].push({type_d_element:'formule',formule:obj.value});
+                    this.#obj_webs['complements'].push({type_d_element:'formule',formule:obj.__xva});
                 }
             }
         }
@@ -1467,9 +1467,9 @@ class requete_sql{
         var tableau1 = iterateCharacters2(rev_texte);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2 = arrayToFunct1(matriceFonction.value,true,false);
+            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
             if(obj2.__xst === true){
-                rev_texte=obj2.value;
+                rev_texte=obj2.__xva;
             }
         }
         var requete_manuelle_avec_base=0;
@@ -1642,19 +1642,16 @@ class requete_sql{
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            var obj2 = tabToSql1(obj1.value,0,0,false);
+            var obj2 = tabToSql1(obj1.__xva,0,0,false);
             if(obj2.__xst === true){
                 var ajax_param={
                     'call':{'lib':'core','file':'bdd','funct':'modifier_la_requete_en_base'},
-                    'rev':
-                    document.getElementById('txtar1').value,
-                    'sql':
-                    document.getElementById('txtar2').value,
-                    'php':
-                    document.getElementById('txtar3').value,
+                    'rev':            document.getElementById('txtar1').value,
+                    'sql':            document.getElementById('txtar2').value,
+                    'php':            document.getElementById('txtar3').value,
                     'type':this.#obj_webs.type_de_requete,
                     'id_requete':id_requete,
-                    'tableau_rev_requete':obj1.value,
+                    'tableau_rev_requete':obj1.__xva,
                     'cht_commentaire_requete':
                     document.getElementById('cht_commentaire_requete').value
                 };
@@ -1687,7 +1684,7 @@ class requete_sql{
         var tableau1 = iterateCharacters2(document.getElementById('txtar1').value);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            var obj2 = tabToSql1(obj1.value,0,0,false);
+            var obj2 = tabToSql1(obj1.__xva,0,0,false);
             if(obj2.__xst === true){
                 var ajax_param={
                     'call':{'lib':'core','file':'bdd','funct':'enregistrer_la_requete_en_base'},
@@ -1698,7 +1695,7 @@ class requete_sql{
                     'php':
                     document.getElementById('txtar3').value,
                     'type':this.#obj_webs.type_de_requete,
-                    'tableau_rev_requete':obj1.value,
+                    'tableau_rev_requete':obj1.__xva,
                     'cht_commentaire_requete':
                     document.getElementById('cht_commentaire_requete').value,
                     'id_courant':id_courant
@@ -1759,7 +1756,7 @@ class requete_sql{
         var tableau_des_conditions = [];
         var tableau1 = iterateCharacters2(formule);
         var matriceFonction = functionToArray2(tableau1.out,true,true,'');
-        var tab=matriceFonction.value;
+        var tab=matriceFonction.__xva;
         var l01=tab.length;
         var options={au_format_php:true,tableau_des_tables_utilisees:obj3.tableau_des_tables_utilisees,pour_where:true,type_de_champ_pour_where:'',nom_du_champ_pour_where:''};
         var i=1;
@@ -1784,13 +1781,13 @@ class requete_sql{
                                 ){
                                     var obj = traite_sqlite_fonction_de_champ(tab,j,0,options);
                                     if(obj.__xst === true){
-                                        var parametre = obj.value.match(/\$par\[(.*)\]/);
+                                        var parametre = obj.__xva.match(/\$par\[(.*)\]/);
                                         if(parametre === null){
-                                            tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
+                                            tableau_des_conditions.push({type_condition:'constante',valeur:obj.__xva,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
                                         }else{
                                             tableau_des_conditions.push({
                                                 type_condition:'variable',
-                                                valeur:obj.value,
+                                                valeur:obj.__xva,
                                                 condition:parametre[0],
                                                 operation:tab[j][1],
                                                 type:options.type_de_champ_pour_where,
@@ -1809,13 +1806,13 @@ class requete_sql{
                     }else if((tab[i][2] === 'f') && ((tab[i][1] === 'egal') || (tab[i][1] === 'diff') || (tab[i][1] === 'comme') || (tab[i][1] === 'sup') || (tab[i][1] === 'supegal') || (tab[i][1] === 'inf') || (tab[i][1] === 'infegal') || (tab[i][1] === 'dans'))){
                         var obj = traite_sqlite_fonction_de_champ(tab,i,0,options);
                         if(obj.__xst === true){
-                            var parametre = obj.value.match(/\$par\[(.*)\]/);
+                            var parametre = obj.__xva.match(/\$par\[(.*)\]/);
                             if(parametre === null){
-                                tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
+                                tableau_des_conditions.push({type_condition:'constante',valeur:obj.__xva,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
                             }else{
                                 tableau_des_conditions.push({
                                     type_condition:'variable',
-                                    valeur:obj.value,
+                                    valeur:obj.__xva,
                                     condition:parametre[0],
                                     operation:tab[i][1],
                                     type:options.type_de_champ_pour_where,
@@ -1870,7 +1867,7 @@ class requete_sql{
             }
         }
         if(type_de_requete === 'requete_manuelle'){
-            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.__xva);
             t+='    $texte_sql_' + id_requete_en_base + '=\'' + CRLF;
             t+='      ' + nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ') + CRLF;
             t+='    \';' + CRLF;
@@ -1896,7 +1893,7 @@ class requete_sql{
             t+='        return(array( __xst => true ));' + CRLF;
             t+='    }' + CRLF;
         }else if(type_de_requete === 'delete'){
-            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.__xva);
             t+='    $texte_sql_' + id_requete_en_base + '=\'' + CRLF;
             t+='      ' + nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ') + CRLF;
             t+='    \';' + CRLF;
@@ -1953,7 +1950,7 @@ class requete_sql{
             t+='        ));' + CRLF;
             t+='    }' + CRLF;
         }else if(type_de_requete === 'update'){
-            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.value);
+            nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.__xva);
             var nom_de_la_table = this.#obj_webs['ordre_des_tables'][0]['nom_de_la_table'];
             var champs_bdd = this.#obj_webs['tableau_des_bases_tables_champs'][obj3.id_base_principale][nom_de_la_table].champs;
             t+='    $texte_sql_' + id_requete_en_base + '=\'UPDATE `\'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][\'nom_bdd\'].\'`.`' + nom_de_la_table + '` SET \'.CRLF;' + CRLF;
@@ -1975,7 +1972,7 @@ class requete_sql{
                     var formule = this.#obj_webs['champs_sortie'][champ_sortie].formule;
                     var tableau1 = iterateCharacters2(formule);
                     var matriceFonction = functionToArray2(tableau1.out,true,true,'');
-                    var tab=matriceFonction.value;
+                    var tab=matriceFonction.__xva;
                     var l01=tab.length;
                     var nom_du_champ='';
                     var valeur_du_champ='';
@@ -1996,7 +1993,7 @@ class requete_sql{
                                             if(tab[m][2] === 'f'){
                                                 var obj = traite_sqlite_fonction_de_champ(tab,m,0,options);
                                                 if(obj.__xst === true){
-                                                    valeur_du_champ=obj.value;
+                                                    valeur_du_champ=obj.__xva;
                                                 }else{
                                                     return(logerreur({__xst:false,__xme:'0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
                                                 }
@@ -2255,7 +2252,7 @@ class requete_sql{
                 var formule=this.#obj_webs.conditions[0].formule;
                 var tableau1 = iterateCharacters2(formule);
                 var matriceFonction = functionToArray2(tableau1.out,true,true,'');
-                var tab=matriceFonction.value;
+                var tab=matriceFonction.__xva;
                 var l01=tab.length;
                 var options={au_format_php:true,tableau_des_tables_utilisees:obj3.tableau_des_tables_utilisees,pour_where:true,type_de_champ_pour_where:'',nom_du_champ_pour_where:''};
                 var i=1;
@@ -2278,13 +2275,13 @@ class requete_sql{
                                         ){
                                             var obj = traite_sqlite_fonction_de_champ(tab,j,0,options);
                                             if(obj.__xst === true){
-                                                var parametre = obj.value.match(/\$par\[(.*)\]/);
+                                                var parametre = obj.__xva.match(/\$par\[(.*)\]/);
                                                 if(parametre === null){
-                                                    tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
+                                                    tableau_des_conditions.push({type_condition:'constante',valeur:obj.__xva,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
                                                 }else{
                                                     tableau_des_conditions.push({
                                                         type_condition:'variable',
-                                                        valeur:obj.value,
+                                                        valeur:obj.__xva,
                                                         condition:parametre[0],
                                                         operation:tab[j][1],
                                                         type:options.type_de_champ_pour_where,
@@ -2303,13 +2300,13 @@ class requete_sql{
                             }else if((tab[i][2] === 'f') && ((tab[i][1] === 'egal') || (tab[i][1] === 'diff') || (tab[i][1] === 'comme') || (tab[i][1] === 'sup') || (tab[i][1] === 'inf') || (tab[i][1] === 'dans') || (tab[i][1] === 'pas_comme'))){
                                 var obj = traite_sqlite_fonction_de_champ(tab,i,0,options);
                                 if(obj.__xst === true){
-                                    var parametre = obj.value.match(/\$par\[(.*)\]/);
+                                    var parametre = obj.__xva.match(/\$par\[(.*)\]/);
                                     if(parametre === null){
-                                        tableau_des_conditions.push({type_condition:'constante',valeur:obj.value,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
+                                        tableau_des_conditions.push({type_condition:'constante',valeur:obj.__xva,type:options.type_de_champ_pour_where,nom_du_champ_pour_where:options.nom_du_champ_pour_where});
                                     }else{
                                         tableau_des_conditions.push({
                                             type_condition:'variable',
-                                            valeur:obj.value,
+                                            valeur:obj.__xva,
                                             condition:parametre[0],
                                             operation:tab[i][1],
                                             type:options.type_de_champ_pour_where,
@@ -2401,7 +2398,7 @@ class requete_sql{
             t+='    }' + CRLF;
         }
         t+='}' + CRLF;
-        return({__xst:true,value:t});
+        return({__xst:true,__xva:t});
     }
     /*
       =============================================================================================================
@@ -2412,12 +2409,12 @@ class requete_sql{
         var tableau1 = iterateCharacters2(source_rev);
         var obj1 = functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            var obj2 = tabToSql1(obj1.value,0,0,false);
+            var obj2 = tabToSql1(obj1.__xva,0,0,false);
             if(obj2.__xst === true){
-                obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-                if(obj2.value.indexOf('WHERE ') >= 0){
-                    var str1 = obj2.value.substr(0,obj2.value.indexOf('WHERE '));
-                    var str2 = obj2.value.substr(obj2.value.indexOf('WHERE '));
+                obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                if(obj2.__xva.indexOf('WHERE ') >= 0){
+                    var str1 = obj2.__xva.substr(0,obj2.__xva.indexOf('WHERE '));
+                    var str2 = obj2.__xva.substr(obj2.__xva.indexOf('WHERE '));
                     str2=str2.replace(/ AND/g,CRLF + '   AND');
                     if(str2.indexOf('ORDER BY ') >= 0){
                         str2=str2.replace(/ORDER BY /g,CRLF + 'ORDER BY');
@@ -2425,11 +2422,11 @@ class requete_sql{
                     if(str2.indexOf('LIMIT ') >= 0){
                         str2=str2.replace(/LIMIT /g,CRLF + 'LIMIT ');
                     }
-                    obj2.value=str1 + str2;
+                    obj2.__xva=str1 + str2;
                 }
-//                dogid(txtarea_dest).value=obj2.value;
+//                dogid(txtarea_dest).value=obj2.__xva;
 
-                var obj3 = tabToSql1(obj1.value,0,0,true);
+                var obj3 = tabToSql1(obj1.__xva,0,0,true);
                 if(obj3.__xst === true){
                     var i=0;
                     for(i=0;i < obj3.tableau_des_tables_utilisees.length;i++){
@@ -2448,12 +2445,12 @@ class requete_sql{
                     }
                     var obj4 = this.#transformer_requete_en_fonction_php(this.#obj_webs.type_de_requete,obj3, id_requete);
                     if(obj4.__xst === true){
-                        return({__xst:true,source_sql:obj2.value , source_php:obj4.value});
+                        return({__xst:true,source_sql:obj2.__xva , source_php:obj4.__xva});
                     }else{
-                        return(logerreur({__xst:false,source_sql:obj2.value ,__xme:'module_requete erreur 2455 erreur de conversion en php '}));
+                        return(logerreur({__xst:false,source_sql:obj2.__xva ,__xme:'module_requete erreur 2455 erreur de conversion en php '}));
                     }
                 }else{
-                    return(logerreur({__xst:false,source_sql:obj2.value , message:'module_requete erreur 2456 erreur de conversion en sql '}));
+                    return(logerreur({__xst:false,source_sql:obj2.__xva , message:'module_requete erreur 2456 erreur de conversion en sql '}));
                 }
             }else{
                 return(logerreur({__xst:false,__xme:'module_requete erreur 2457 erreur de conversion en sql '}));
@@ -2516,14 +2513,14 @@ class requete_sql{
                 console.log('bases_chargées');
                 this.#obj_init['bases']={};
                 var i={};
-                for(i in donnees.valeurs){
-                    var obj2 = rev_texte_vers_matrice(donnees.valeurs[i]['T0.chp_rev_travail_basedd']);
+                for(i in donnees.__xva){
+                    var obj2 = rev_texte_vers_matrice(donnees.__xva[i]['T0.chp_rev_travail_basedd']);
                     if(obj2.__xst === true){
-                        this.#obj_init['bases'][donnees.valeurs[i]['T0.chi_id_basedd']]={
-                            'chi_id_basedd':donnees.valeurs[i]['T0.chi_id_basedd'],
-                            'chp_nom_basedd':donnees.valeurs[i]['T0.chp_nom_basedd'],
-                            'chp_rev_travail_basedd':donnees.valeurs[i]['T0.chp_rev_travail_basedd'],
-                            'matrice':obj2.value,
+                        this.#obj_init['bases'][donnees.__xva[i]['T0.chi_id_basedd']]={
+                            'chi_id_basedd':donnees.__xva[i]['T0.chi_id_basedd'],
+                            'chp_nom_basedd':donnees.__xva[i]['T0.chp_nom_basedd'],
+                            'chp_rev_travail_basedd':donnees.__xva[i]['T0.chp_rev_travail_basedd'],
+                            'matrice':obj2.__xva,
                             'tables':{},
                             'selectionne':false
                         };

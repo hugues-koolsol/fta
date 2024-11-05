@@ -549,7 +549,7 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
             var jsonRet = JSON.parse(r.responseText);
             if(jsonRet.__xst == 'OK'){
                 console.log('jsonRet=',jsonRet);
-                traitement_a_lancer_si_succes(jsonRet.valeurs);
+                traitement_a_lancer_si_succes(jsonRet.__xva);
             }else{
                 console.error('r.responseText=',r.responseText);
                 parametre_supprimer_un_commentaire1.etat_du_travail='travail_en_arriere_plan_en_erreur';
@@ -635,7 +635,7 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
             if(jsonRet.__xst == 'OK'){
                 console.log('jsonRet=',jsonRet);
 
-                traitement_a_lancer_si_succes(jsonRet.valeurs,jsonRet);
+                traitement_a_lancer_si_succes(jsonRet.__xva,jsonRet);
                 /*
                 peut valoir :
                 traitement_apres_remplacement_chaine_en_bdd

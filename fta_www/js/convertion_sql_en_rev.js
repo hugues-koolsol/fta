@@ -35,7 +35,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
       
         var obj1=recupere_element_de_ast_sql(element.source,niveau+1,parent,options);
         if(obj1.__xst===true){
-            t+='\n'+esp0+esp1+esp1+esp1+'source('+obj1.value;
+            t+='\n'+esp0+esp1+esp1+esp1+'source('+obj1.__xva;
             t+='\n'+esp0+esp1+esp1+esp1+')';
         }else{
           t+='#(TODO 0034 "'+JSON.stringify(json_partiel(element.source))+'")';
@@ -50,7 +50,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
        if(element.constraint.format && element.constraint.format ==="on" && element.constraint.on){
            var obj1=recupere_element_de_ast_sql( element.constraint.on,niveau,parent,options);
            if(obj1.__xst===true){
-               t+=',contrainte('+obj1.value+')';
+               t+=',contrainte('+obj1.__xva+')';
            }else{
                return(logerreur({__xst:false,__xme:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element.constraint))+'"'}));
            }
@@ -139,7 +139,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
 
      var obj1=recupere_element_de_ast_sql(element.expression,niveau,parent,options);
      if(obj1.__xst===true){
-        t+='('+obj1.value;
+        t+='('+obj1.__xva;
         if(element.direction){
          if(element.direction==='desc'){
            t+=',décroissant()';
@@ -159,7 +159,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
 
      var obj1=traite_operation_dans_ast_sql(element,niveau,parent,options);
      if(obj1.__xst===true){
-        t+=obj1.value;
+        t+=obj1.__xva;
      }else{
        return(logerreur({__xst:false,__xme:'0042 recupere_element_de_ast_sql  : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
@@ -173,7 +173,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
               }
               var obj1=recupere_element_de_ast_sql(element.expression[i],niveau,parent,options)
               if(obj1.__xst===true){
-                  t+=obj1.value;
+                  t+=obj1.__xva;
               }else{
                   return(logerreur({__xst:false,__xme:'0142 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.expression[i]))}));
               }
@@ -186,7 +186,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
  }else if(element.type && 'function'===element.type ){
      var obj1=traite_fonction_dans_ast_sql(element,niveau,null,options);
      if(obj1.__xst===true){
-         t+=obj1.value;
+         t+=obj1.__xva;
      }else{
          return(logerreur({__xst:false,__xme:'0051 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element))}));
      }
@@ -198,7 +198,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
   if(element.target){
       var obj1=recupere_element_de_ast_sql(element.target,niveau,parent,options)
       if(obj1.__xst===true){
-          cible=obj1.value;
+          cible=obj1.__xva;
       }else{
           return(logerreur({__xst:false,__xme:'0165 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.target))}));
       }
@@ -208,7 +208,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
   if(element.value){
       var obj1=recupere_element_de_ast_sql(element.value,niveau,parent,options)
       if(obj1.__xst===true){
-          valeur=obj1.value;
+          valeur=obj1.__xva;
       }else{
           return(logerreur({__xst:false,__xme:'0180 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.value))}));
       }
@@ -232,14 +232,14 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
   
   var obj=conversion_de_ast_vers_sql(element,niveau,parent,options);
   if(obj.__xst===true){
-      t+='sql('+obj.value+')';
+      t+='sql('+obj.__xva+')';
   }else{
       return(logerreur({__xst:false,__xme:'0141 convertion_sql "'+JSON.stringify(json_partiel(element))+'"'}));
   }
  }else{
      return(logerreur({__xst:false,__xme:'0141 convertion_sql recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
  }
- return {__xst:true,value:t};
+ return {__xst:true,__xva:t};
 
 }
 
@@ -299,7 +299,7 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
  if(element.name){
      var obj1=recupere_element_de_ast_sql(element.name,niveau,parent,options);
      if(obj1.__xst===true){
-        nom_de_la_fonction=obj1.value;
+        nom_de_la_fonction=obj1.__xva;
      }else{
        return(logerreur({__xst:false,__xme:'0069 traite_fonction_dans_ast_sql nom de fonction : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
@@ -316,7 +316,7 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
         for(var i=0;i<element.args.expression.length;i++){
           var obj1=recupere_element_de_ast_sql(element.args.expression[i],niveau,parent,options);
           if(obj1.__xst===true){
-              les_arguments+=','+obj1.value;
+              les_arguments+=','+obj1.__xva;
           }else{
               return(logerreur({__xst:false,__xme:'0075 traite_fonction_dans_ast_sql type argument non traité : "'+JSON.stringify(json_partiel(element.args))+'"'}));
           }
@@ -327,7 +327,7 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
       
         var obj1=traite_fonction_dans_ast_sql(element.args,niveau,null,options);
         if(obj1.__xst===true){
-            les_arguments+=','+obj1.value;
+            les_arguments+=','+obj1.__xva;
         }else{
             return(logerreur({__xst:false,__xme:'0134 convertit_sql_select_de_ast_vers_rev : '+JSON.stringify(json_partiel(element.args))}));
         }
@@ -335,7 +335,7 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
      }else if(element.args.type==='identifier' ){
         var obj1=recupere_element_de_ast_sql(element.args,niveau,parent,options);
         if(obj1.__xst===true){
-            les_arguments+=','+obj1.value;
+            les_arguments+=','+obj1.__xva;
         }else{
             return(logerreur({__xst:false,__xme:'0109 traite_fonction_dans_ast_sql  : "'+JSON.stringify(json_partiel(element.args))+'"'}));
         }
@@ -352,7 +352,7 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
 
  
 
- return {__xst:true,value:t};
+ return {__xst:true,__xva:t};
 
 }
 
@@ -394,14 +394,14 @@ function traite_operation_dans_ast_sql(element,niveau,parent,options){
      return(logerreur({__xst:false,__xme:'0032 pas de right trouve : '+JSON.stringify(json_partiel(element))}));
   }
   
-  t+=operation+'('+obj_gauche.value + ' , '+obj_droite.value+')';
+  t+=operation+'('+obj_gauche.__xva + ' , '+obj_droite.__xva+')';
   
  }else{
      return(logerreur({__xst:false,__xme:'0043 operation non binaire : '+JSON.stringify(json_partiel(element))}));
  }
 
  
- return {__xst:true,value:t};
+ return {__xst:true,__xva:t};
  
  
 }
@@ -423,7 +423,7 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
   
     var obj1=recupere_element_de_ast_sql(element.into,niveau,parent,options);
     if(obj1.__xst===true){
-        t+='\n'+esp0+esp1+esp1+obj1.value+'';
+        t+='\n'+esp0+esp1+esp1+obj1.__xva+'';
     }else{
       return(logerreur({__xst:false,__xme:'0279 convertit_sql_update_sqlite_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.into))+'"'}));
     }
@@ -441,7 +441,7 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
          }
          var obj1=recupere_element_de_ast_sql(element.set[i],niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+esp1+obj1.value+'';
+             t+='\n'+esp0+esp1+esp1+esp1+obj1.__xva+'';
          }else{
              return(logerreur({__xst:false,__xme:'0347 convertit_sql_update_sqlite_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.set[i]))+'"'}));
          }
@@ -460,7 +460,7 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      for(var i=0;i<element.where.length;i++){
          var obj1=recupere_element_de_ast_sql(element.where[i],niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+''+obj1.value+',';
+             t+='\n'+esp0+esp1+esp1+''+obj1.__xva+',';
          }else{
            return(logerreur({__xst:false,__xme:'0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.where[i]))+'"'}));
          }
@@ -477,7 +477,7 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
  console.log('modifier element=',element);
 
  
- return {__xst:true,value:t};
+ return {__xst:true,__xva:t};
 
 
 
@@ -514,7 +514,7 @@ function convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,parent,optio
         for(var i=0;i<element.where.length;i++){
             var obj1=recupere_element_de_ast_sql(element.where[i],niveau,parent,options);
             if(obj1.__xst===true){
-                t+='\n'+esp0+esp1+esp1+''+obj1.value+',';
+                t+='\n'+esp0+esp1+esp1+''+obj1.__xva+',';
             }else{
               return(logerreur({__xst:false,__xme:'0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.where[i]))+'"'}));
             }
@@ -524,7 +524,7 @@ function convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,parent,optio
     
     t+=CRLF+esp0+')';
 
-    return {__xst:true,value:t};
+    return {__xst:true,__xva:t};
 }    
 /*
   =================================================================================== 
@@ -588,7 +588,7 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
                      }
                      var obj1=recupere_element_de_ast_sql(element.result[0].expression[i],niveau,parent,options)
                      if(obj1.__xst===true){
-                         t+=CRLF+'        affecte(champ(`'+tableau_des_champs[i]+'`) , '+obj1.value+')';
+                         t+=CRLF+'        affecte(champ(`'+tableau_des_champs[i]+'`) , '+obj1.__xva+')';
                      }else{
                          return(logerreur({__xst:false,__xme:'0142 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element.result[0].expression[i]))}));
                      }
@@ -616,7 +616,7 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      
         var obj=conversion_de_ast_vers_sql(element.result,niveau,parent,options);
         if(obj.__xst===true){
-            t+=',sql('+obj.value+')';
+            t+=',sql('+obj.__xva+')';
         }else{
             return(logerreur({__xst:false,__xme:'0141 convertion_sql "'+JSON.stringify(json_partiel(element))+'"'}));
         }
@@ -625,7 +625,7 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
 
     t+='\n'+esp0+')';
     
-    return {__xst:true,value:t};
+    return {__xst:true,__xva:t};
 }
 
 /*
@@ -648,7 +648,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
 //         console.log(element.result[i])
          var obj1=recupere_element_de_ast_sql(element.result[i],niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+obj1.value+',';
+             t+='\n'+esp0+esp1+esp1+obj1.__xva+',';
          }else{
            return(logerreur({__xst:false,__xme:'0226 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element))+'"'}));
          }
@@ -664,7 +664,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      if(element.from.source){
          var obj1=recupere_element_de_ast_sql(element.from.source,niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.value+')),';
+             t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.__xva+')),';
          }else{
            return(logerreur({__xst:false,__xme:'0240 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'}));
          }
@@ -672,7 +672,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      }else{
          var obj1=recupere_element_de_ast_sql(element.from,niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.value+')),';
+             t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.__xva+')),';
          }else{
            return(logerreur({__xst:false,__xme:'0240 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'}));
          }
@@ -682,7 +682,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
       for(var i=0;i<element.from.map.length;i++){
          var obj1=recupere_element_de_ast_sql(element.from.map[i],niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+''+obj1.value+',';
+             t+='\n'+esp0+esp1+esp1+''+obj1.__xva+',';
          }else{
            return(logerreur({__xst:false,__xme:'0257 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.map[i]))+'"'}));
          }
@@ -698,7 +698,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      for(var i=0;i<element.where.length;i++){
          var obj1=recupere_element_de_ast_sql(element.where[i],niveau,parent,options);
          if(obj1.__xst===true){
-             t+='\n'+esp0+esp1+esp1+''+obj1.value+',';
+             t+='\n'+esp0+esp1+esp1+''+obj1.__xva+',';
          }else{
            return(logerreur({__xst:false,__xme:'0325 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.where[i]))+'"'}));
          }
@@ -710,7 +710,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      for(var i=0;i<element.order.length;i++){
         var obj1=recupere_element_de_ast_sql(element.order[i],niveau,parent,options);
         if(obj1.__xst===true){
-            t+=obj1.value+',';
+            t+=obj1.__xva+',';
         }else{
           return(logerreur({__xst:false,__xme:'0340 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.order[i]))+'"'}));
         }
@@ -723,7 +723,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      if(element.limit.start){
         var obj1=recupere_element_de_ast_sql(element.limit.start,niveau,parent,options);
         if(obj1.__xst===true){
-            t+='quantité('+obj1.value+'),';
+            t+='quantité('+obj1.__xva+'),';
         }else{
           return(logerreur({__xst:false,__xme:'0340 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.limit.start))+'"'}));
         }
@@ -731,7 +731,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
      if(element.limit.offset){
         var obj1=recupere_element_de_ast_sql(element.limit.offset,niveau,parent,options);
         if(obj1.__xst===true){
-            t+='début('+obj1.value+')';
+            t+='début('+obj1.__xva+')';
         }else{
           return(logerreur({__xst:false,__xme:'0349 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.limit.offset))+'"'}));
         }
@@ -743,7 +743,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
  t+='\n'+esp0+'),';
 
 
- return {__xst:true,value:t};
+ return {__xst:true,__xva:t};
  
  
 }
@@ -759,7 +759,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
  var esp1 = ' '.repeat(NBESPACESREV);
  element.en_cours_de_traitement=true;
  if(element.traite && element.traite===true){
-     return {__xst:true,value:''};
+     return {__xst:true,__xva:''};
  }
  element.traite=false;
 
@@ -770,7 +770,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
          var obj1=conversion_de_ast_vers_sql(element.statement[i],niveau,element,{});
          if(obj1.__xst===true){
           
-             t+=obj1.value;
+             t+=obj1.__xva;
              
          }else{
           
@@ -794,7 +794,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
      
      var obj=convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,null,options);
      if(obj.__xst===true){
-         t+=obj.value;
+         t+=obj.__xva;
      }else{
          return(logerreur({__xst:false,__xme:'0516 erreur conversion_de_ast_vers_sql dans un update  : '+JSON.stringify(json_partiel(element))}));
      }
@@ -811,7 +811,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
      
      var obj=convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,null,options);
      if(obj.__xst===true){
-         t+=obj.value;
+         t+=obj.__xva;
      }else{
          return(logerreur({__xst:false,__xme:'0054 erreur conversion_de_ast_vers_sql dans un insert  : '+JSON.stringify(json_partiel(element))}));
      }
@@ -828,7 +828,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
      
      var obj=convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,null,options);
      if(obj.__xst===true){
-         t+=obj.value;
+         t+=obj.__xva;
      }else{
          return(logerreur({__xst:false,__xme:'0054 erreur conversion_de_ast_vers_sql dans un insert  : '+JSON.stringify(json_partiel(element))}));
      }
@@ -845,7 +845,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
      
      var obj=convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,null,options);
      if(obj.__xst===true){
-         t+=obj.value;
+         t+=obj.__xva;
      }else{
          return(logerreur({__xst:false,__xme:'0054 erreur conversion_de_ast_vers_sql dans un select  : '+JSON.stringify(json_partiel(element))}));
      }
@@ -934,7 +934,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                           t+=',';
                       }
                       if(element.definition[i].datatype.args.expression[j].type==='literal'){
-                          t+=element.definition[i].datatype.args.expression[j].value
+                          t+=element.definition[i].datatype.args.expression[j].value;
                       }else{
                           return(logerreur({__xst:false,__xme:'0077 problème sur un argument : '+JSON.stringify(json_partiel(element.definition[i]))}));
                       }
@@ -1018,7 +1018,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                  parent.statement[i].traite=true;
                  
                  
-                 return({__xst:true,value:t});
+                 return({__xst:true,__xva:t});
              }else if(parent.statement[i].type==='statement' && parent.statement[i].variant==='transaction' && parent.statement[i].action==='rollback' ){
                  /*
                  fin de transaction par un rollback
@@ -1029,7 +1029,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                  parent.statement[i].en_cours_de_traitement=false;
                  parent.statement[i].traite=true;
                  
-                 return({__xst:true,value:t});
+                 return({__xst:true,__xva:t});
              }else{
                  /*
                  autres éléments, on continue
@@ -1038,7 +1038,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                  parent.statement[i].en_cours_de_traitement=false;
                  parent.statement[i].traite=true;
                  if(obj1.__xst===true){
-                     t+=obj1.value;
+                     t+=obj1.__xva;
                  }else{
                      return(logerreur({__xst:false,__xme:'0070 conversion_de_ast_vers_sql : '+JSON.stringify(json_partiel(parent.statement[i]))}));
                  }
@@ -1056,7 +1056,7 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
  element.traite=true;
 
 
- return {__xst:true,value:t};
+ return {__xst:true,__xva:t};
 
 }
 
@@ -1117,7 +1117,7 @@ function convertion_texte_sql_en_rev(texte_du_sql){
  var obj1=conversion_de_ast_vers_sql(ast,0,null,{});
  
  if(obj1.__xst===true){
-    return {__xst:true,value:obj1.value};
+    return {__xst:true,__xva:obj1.__xva};
  }else{
     return(logerreur({__xst:false,__xme:'0026 erreur de conversion de ast vers rev'}));
  }
@@ -1199,10 +1199,10 @@ function transform_rev_de_textarea_en_sql( nom_de_la_textarea_rev , nom_de_la_te
     var tableau1 = iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
     var obj1=functionToArray2(tableau1.out,false,true,'');
     if(obj1.__xst===true){
-        var obj2=tabToSql1(obj1.value,0 , 0 , false);
+        var obj2=tabToSql1(obj1.__xva,0 , 0 , false);
         if(obj2.__xst===true){
-          obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-          document.getElementById(nom_de_la_textarea_sql).value=obj2.value;
+          obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+          document.getElementById(nom_de_la_textarea_sql).value=obj2.__xva;
           __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
           return;
         }
@@ -1220,17 +1220,17 @@ function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql , nom_de_la_tex
     try{
         var obj=convertion_texte_sql_en_rev(texte);
         if(obj.__xst===true){
-            document.getElementById(nom_de_la_textarea_rev).value=obj.value;
+            document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
             
-            var tableau1 = iterateCharacters2(obj.value);
+            var tableau1 = iterateCharacters2(obj.__xva);
             var obj1=functionToArray2(tableau1.out,false,true,'');
             if(obj1.__xst===true){
-                var obj2=tabToSql1(obj1.value,0 , 0 , false);
+                var obj2=tabToSql1(obj1.__xva,0 , 0 , false);
                 if(obj2.__xst===true){
                       logerreur({__xst:true,__xme:'sql => rev ok et rev => sql  OK'});
                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                    obj2.value=obj2.value.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-                    document.getElementById('txtar3').value=obj2.value;
+                    obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                    document.getElementById('txtar3').value=obj2.__xva;
                 }else{
                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                     return;
@@ -1248,10 +1248,11 @@ function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql , nom_de_la_tex
             return;
         }
     }catch(e){
-       debugger;
+       debugger
+       console.error('e=',e);
        logerreur({__xst:false,__xme:'erreur dans le sql'});
        if(e.hasOwnProperty('location') && e.location.hasOwnProperty('start') && e.location.start.hasOwnProperty('line') && e.location.start.line>0 ){
-           logerreur({__xst:false,line:e.location.start.line-1});
+           logerreur({__xst:false,line:e.location.start.line});
        }
        __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
        return;

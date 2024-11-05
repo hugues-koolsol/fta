@@ -154,7 +154,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
     
    }else{
      
-       $data['value']=$contenu;
+       $data[__xva]=$contenu;
        $data[__xst]='OK';
     
    }
@@ -180,7 +180,7 @@ function loadRevFile(&$data){
   $filefullpath=INCLUDE_PATH.DIRECTORY_SEPARATOR.'rev'.DIRECTORY_SEPARATOR.$data['input']['file_name'];
   $contenu=file_get_contents($filefullpath);
   if($contenu!==false){
-   $data['value']=$contenu;
+   $data[__xva]=$contenu;
    $data[__xst]='OK';
   }else{
    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot read the file';
@@ -229,7 +229,7 @@ function writeRevFile(&$data){
   copy($filefullpath,$backupName);
  }
  if($fd=fopen($filefullpath,'w')){
-  if(fwrite($fd,$data['input']['value'])){
+  if(fwrite($fd,$data['input']['contenu_du_fichier'])){
    if(fclose($fd)){
     $data[__xst]='OK';
    }else{
@@ -259,7 +259,7 @@ function writeFile(&$data){
    copy($filefullpath,$backupName);
   }
   if($fd=fopen($filefullpath,'w')){
-   if(fwrite($fd,$data['input']['value'])){
+   if(fwrite($fd,$data['input']['contenu_du_fichier'])){
     if(fclose($fd)){
      $data[__xst]='OK';
     }else{

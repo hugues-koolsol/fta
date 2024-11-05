@@ -1,7 +1,7 @@
 /*
 var global_enteteTableau=[
  ['id','id'                                 ,''], // 00
- ['val','value'                             ,''],
+ ['val','__xva'                             ,''],
  ['typ','type'                              ,''],
  ['niv','niveau'                            ,''],
  ['coQ','constante quotee'                  ,''],
@@ -38,8 +38,8 @@ class traitements_sur_html{
          
          var ob=this.tabToHtml0(tab,startId,false,false,false,noHead,false,false,niveau);
          if(ob.__xst===true){
-          if(ob.value.substr(0,2)===CRLF){
-           ob.value=ob.value.substr(2);
+          if(ob.__xva.substr(0,2)===CRLF){
+           ob.__xva=ob.__xva.substr(2);
           }
          }
          return ob;
@@ -170,7 +170,7 @@ class traitements_sur_html{
              }
              var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
              if(obj.__xst===true){
-                 t+=''+obj.value+'';
+                 t+=''+obj.__xva+'';
              }else{
                  return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0142 '+jsonDeHtml.type}));
              }
@@ -183,7 +183,7 @@ class traitements_sur_html{
                    if(jsonDeHtml.content[i].type && jsonDeHtml.content[i].type==='#text' || jsonDeHtml.content[i].type==='#cdata-section' ){
                        var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].content);
                        if(obj.__xst===true){
-                           contenu+=obj.value;
+                           contenu+=obj.__xva;
                        }else{
                            return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
                        }
@@ -194,9 +194,9 @@ class traitements_sur_html{
                        var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].replace(/&amp;/g,'&'));
                        if(obj.__xst===true){
                            if(t.indexOf('text/javascript')>=0){
-                               contenu+=obj.value;
+                               contenu+=obj.__xva;
                            }else{
-                               contenu+='(\'type\' , "text/javascript")'+obj.value;
+                               contenu+='(\'type\' , "text/javascript")'+obj.__xva;
                            }
                        }else{
                            return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
@@ -209,7 +209,7 @@ class traitements_sur_html{
              }else{
                   var obj=convertit_source_javascript_en_rev(jsonDeHtml.content);
                   if(obj.__xst===true){
-                      contenu+='<![CDATA['+obj.value+']]>';
+                      contenu+='<![CDATA['+obj.__xva+']]>';
                   }else{
                       return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0198 '+jsonDeHtml.type}));
                   }
@@ -227,10 +227,10 @@ class traitements_sur_html{
                      */
                      obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau+1,retirerHtmlHeadEtBody,type);
                      if(obj.__xst===true){
-                         if((attributs!=='' || contenu!=='') && obj.value!==''){
+                         if((attributs!=='' || contenu!=='') && obj.__xva!==''){
                           contenu+=',';
                          }
-                         contenu+=obj.value;
+                         contenu+=obj.__xva;
                      }else{
                          return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
                      }
@@ -311,7 +311,7 @@ class traitements_sur_html{
          }else if(typeParent==='script'){
              var obj=convertit_source_javascript_en_rev(jsonDeHtml);
              if(obj.__xst===true){
-                 t+=''+obj.value+'';
+                 t+=''+obj.__xva+'';
              }else{
                  t+='#(Erreur de conversion du javascript 0113 )';
              }
@@ -356,25 +356,25 @@ class traitements_sur_html{
          var tableau1 = iterateCharacters2(t);
          var matriceFonction = functionToArray2(tableau1.out,false,true,'');
          if(matriceFonction.__xst===true){
-            // console.log('matriceFonction.value=',JSON.stringify(matriceFonction.value).replace(/\],/g,'],\n'));
+            // console.log('matriceFonction.__xva=',JSON.stringify(matriceFonction.__xva).replace(/\],/g,'],\n'));
 
-            if(matriceFonction.value[1][1]==='html' && matriceFonction.value[1][8]<=2){
+            if(matriceFonction.__xva[1][1]==='html' && matriceFonction.__xva[1][8]<=2){
                 
                 /* 
                   l'élément html est en première position
                   si il n'a aucune propriété, on peut le supprimer
                 */
                 var aDesProps=false;
-                for(var i=0;i<matriceFonction.value.length && aDesProps===false;i++){
-                    if(matriceFonction.value[i][7]===1){
-                        if(matriceFonction.value[i][1]===''){
+                for(var i=0;i<matriceFonction.__xva.length && aDesProps===false;i++){
+                    if(matriceFonction.__xva[i][7]===1){
+                        if(matriceFonction.__xva[i][1]===''){
                             aDesProps=true;
                             break;
                         }
                     }
                 }
                 if(aDesProps===false){
-                    var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.value,1,0);
+                    var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.__xva,1,0);
                     /*
                      si le head n'a aucun enfant
                     */
@@ -403,9 +403,9 @@ class traitements_sur_html{
 
                                 var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
                                 if(nouveauJsonDeHtml.__xst===true){
-                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
                                     if(obj1.__xst===true){
-                                     t=obj1.value;
+                                     t=obj1.__xva;
                                     }else{
                                      return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0314 '}));
                                     }
@@ -416,9 +416,9 @@ class traitements_sur_html{
                             }else{
                                 var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
                                 if(nouveauJsonDeHtml.__xst===true){
-                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
                                     if(obj.__xst===true){
-                                        t=obj.value;
+                                        t=obj.__xva;
                                     }else{
                                         return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
                                     }
@@ -429,9 +429,9 @@ class traitements_sur_html{
                         }else{
                             var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
                             if(nouveauJsonDeHtml===true){
-                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
                                 if(obj1.__xst===true){
-                                    t=obj1.value;
+                                    t=obj1.__xva;
                                 }else{
                                     return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0340 '}));
                                 }
@@ -455,7 +455,7 @@ class traitements_sur_html{
                                        if(nouveauTableau1[j][7]===1){
                                            var obj=a2F1(nouveauTableau1,1,true,j,false);
                                            if(obj.__xst===true){
-                                               t+=','+obj.value+'\n';
+                                               t+=','+obj.__xva+'\n';
                                            }else{
                                                return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
                                            }
@@ -470,15 +470,15 @@ class traitements_sur_html{
                            if(body_est_vide===true){
                            }else{
                            
-                               /*on reconstruit le source à partir de matriceFonction.value
+                               /*on reconstruit le source à partir de matriceFonction.__xva
                                  avec des retours de lignes et sans coloration
                                */
                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
-                               var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.value,0,false,'');
+                               var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
                                
                                
                                if(obj1.__xst===true){
-                                t=obj1.value;
+                                t=obj1.__xva;
                                }else{
                                 return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
                                }
@@ -502,7 +502,7 @@ class traitements_sur_html{
      /*
      on retourne du html "pur"
      */
-     return({__xst:true,value:t,'dernierEstTexte':dernierEstTexte});
+     return({__xst:true,__xva:t,'dernierEstTexte':dernierEstTexte});
     }
     /*
       =======================================================================================
@@ -575,7 +575,7 @@ class traitements_sur_html{
                 }
 
                 treeHTML(elementNoeud,treeObject);
-                return {__xst:true, value:treeObject,parfait:false};
+                return {__xst:true, __xva:treeObject,parfait:false};
                 
                 
                 
@@ -594,10 +594,7 @@ class traitements_sur_html{
                             le_noeud['type']=elements[i].nodeName;
                             if(elements[i].attributes && elements[i].attributes.length>0){
                                 for(var j=0;j<elements[i].attributes.length;j++){
-//                                    var l_attribut={};
-//                                    l_attribut[elements[i].attributes[j].name]=elements[i].attributes[j].value;
-                                    les_attributs[elements[i].attributes[j].name]=elements[i].attributes[j].value;
-//                                    les_attributs.push(l_attribut);
+                                    les_attributs[elements[i].attributes[j].name]=elements[i].attributes[j].value; // garder
                                 }
                                 le_noeud['attributes']=les_attributs;
                             }
@@ -620,7 +617,7 @@ class traitements_sur_html{
                 }
                 treeObject['type']='';
                 treeXML(elementNoeud,treeObject,0);
-                return {__xst:true, value:treeObject,parfait:true};
+                return {__xst:true, __xva:treeObject,parfait:true};
                 
             }
         }
@@ -748,7 +745,7 @@ class traitements_sur_html{
                                           var objContenuJs=parseJavascript0(tab,debut,0);
 
                                           if(objContenuJs.__xst===true){
-                                              le_contenu.push(JSON.parse(JSON.stringify({type:'javascriptdanshtml',content:objContenuJs.value,attributes:attrib})));
+                                              le_contenu.push(JSON.parse(JSON.stringify({type:'javascriptdanshtml',content:objContenuJs.__xva,attributes:attrib})));
                                           }else{
                                               return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0635 '}));
                                           }
@@ -769,7 +766,7 @@ class traitements_sur_html{
 
                                           var objContenuJs=parseJavascript0(tab,debut,0);
                                           if(objContenuJs.__xst===true){
-                                           var contenu=objContenuJs.value.substr(objContenuJs.value.indexOf('=')+1);
+                                           var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=')+1);
                                            if(contenu.substr(contenu.length-1,1)===';'){
                                             contenu=contenu.substr(0,contenu.length-1);
                                            }
@@ -860,7 +857,7 @@ class traitements_sur_html{
 
              var objContenuJs=parseJavascript0(tab,debut,0);
              if(objContenuJs.__xst===true){
-              var contenu=objContenuJs.value.substr(objContenuJs.value.indexOf('=')+1);
+              var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=')+1);
               if(contenu.substr(contenu.length-1,1)===';'){
                contenu=contenu.substr(0,contenu.length-1);
               }
@@ -890,7 +887,7 @@ class traitements_sur_html{
                if(objContenuJs.__xst===true){
                 
                 
-                content.push(objContenuJs.value);
+                content.push(objContenuJs.__xva);
                }else{
                    return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0503 '}));
                }
@@ -933,7 +930,7 @@ class traitements_sur_html{
 
                                     var obj=reconstruit(tab,indice);
                                     if(obj.__xst===true){
-                                      content.push(obj.value);
+                                      content.push(obj.__xva);
                                     }else{
                                       return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0541 '}));
                                     }
@@ -951,7 +948,7 @@ class traitements_sur_html{
 
                                     var obj=reconstruit(tab,indice);
                                     if(obj.__xst===true){
-                                      content.push(obj.value);
+                                      content.push(obj.__xva);
                                     }else{
                                       return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0559 '}));
                                     }
@@ -969,7 +966,7 @@ class traitements_sur_html{
                                }else{
                                    var obj=reconstruit(tab,indice);
                                    if(obj.__xst===true){
-                                     content.push(obj.value);
+                                     content.push(obj.__xva);
                                    }else{
                                      return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0559 '}));
                                    }
@@ -987,7 +984,7 @@ class traitements_sur_html{
                            }else{
                                var obj=reconstruit(tab,indice);
                                if(obj.__xst===true){
-                                 content.push(obj.value);
+                                 content.push(obj.__xva);
                                }else{
                                  return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0559 '}));
                                }
@@ -1020,7 +1017,7 @@ class traitements_sur_html{
            if(aDesAttributs){
             leJson['attributes']=attributes;
            }
-           return({__xst:true,value:leJson});
+           return({__xst:true,__xva:leJson});
         }
         /* 
          =======================================================================================
@@ -1030,7 +1027,7 @@ class traitements_sur_html{
         
         var obj=reconstruit(matrice,0);
         if(obj.__xst===true){
-            return {__xst:true,value:obj.content};
+            return {__xst:true,__xva:obj.content};
         }else{
             return(asthtml_logerreur({__xst:false,__xme:'module_html erreur 0606 '}));
         }
@@ -1077,16 +1074,16 @@ class traitements_sur_html{
                     
                 }
                 try{
-                    var obj=this.traiteAstDeHtml(elementsJson.value,0,supprimer_le_tag_html_et_head,'');
+                    var obj=this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'');
                     if(obj.__xst===true){
-                        if(obj.value.trim().indexOf('html(')==0){
+                        if(obj.__xva.trim().indexOf('html(')==0){
                          if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
-                            obj.value=obj.value.replace(/html\(/,'html((doctype)');
+                            obj.__xva=obj.__xva.replace(/html\(/,'html((doctype)');
                          }else{
-                            obj.value=obj.value.replace(/html\(/,'html(#(?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                            obj.__xva=obj.__xva.replace(/html\(/,'html(#(?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
                          }
                         }
-                        t=obj.value;
+                        t=obj.__xva;
                     }else{
                         return(asthtml_logerreur({__xst:false,__xme:'erreur module_html 0667 '}));
                     }
@@ -1097,7 +1094,7 @@ class traitements_sur_html{
                 
                 
             }
-            return({__xst:true,value:t});
+            return({__xst:true,__xva:t});
 
         }catch(e){
             console.log('e=',e);
@@ -1164,7 +1161,7 @@ class traitements_sur_html{
                 t+='<script'+lesProprietes+'>'+CRLF;
                 t+='//<![CDATA['+CRLF;
                 t+='//<source_javascript_rev>'+CRLF;
-                t+=ob.value+CRLF;
+                t+=ob.__xva+CRLF;
                 t+='//</source_javascript_rev>'+CRLF;
                 t+='//]]>'+CRLF
                 t+='</script>'+CRLF;
@@ -1175,7 +1172,7 @@ class traitements_sur_html{
             }
          
         }
-        return {__xst : true, value : t};
+        return {__xst : true, __xva : t};
      
     }
 
@@ -1217,13 +1214,13 @@ class traitements_sur_html{
       ob=parseJavascript0(tab,id,0);
       parsePhp0(tab,id,0);
       if(ob.__xst===true){
-       t+=ob.value;
+       t+=ob.__xva;
       }else{
-       return logerreur({__xst:false,value:t,__xme:'erreur de script dans un html'});
+       return logerreur({__xst:false,__xva:t,__xme:'erreur de script dans un html'});
       }
       t+=' ?>';
       
-      return {__xst:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
+      return {__xst:true,__xva:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
 
      }else if(dansJs&&tab[id][1]=='source'){ // i18
       // analyse de source javascript
@@ -1236,18 +1233,18 @@ class traitements_sur_html{
        t+=CRLF;
        t+='//<![CDATA['+CRLF;
        t+='// = = = = <source javascript = = = ='+CRLF;
-       if(ob.value.indexOf('use strict')>=0){
+       if(ob.__xva.indexOf('use strict')>=0){
        }else{
            t+='"use strict";'+CRLF;
        }
-       t+=ob.value;
+       t+=ob.__xva;
        t+=CRLF+'// = = = = source javascript> = = = ='+CRLF;
        t+='//]]>'+CRLF;
       }else{
-       return logerreur({__xst:false,value:t,__xme:'erreur de script dans un html'});
+       return logerreur({__xst:false,__xva:t,__xme:'erreur de script dans un html'});
       }
       
-      return {__xst:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
+      return {__xst:true,__xva:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
 
      }else{
       temp='';
@@ -1305,10 +1302,10 @@ class traitements_sur_html{
             temp+=' '+tab[i+1][1]+''; // contenteditable , selected
            }
           }else{
-           return logerreur({__xst:false,id:i,value:t,__xme:'1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'});  
+           return logerreur({__xst:false,id:i,__xva:t,__xme:'1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'});  
           }
          }else{
-          return logerreur({__xst:false,id:i,value:t,__xme:'2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599'});  
+          return logerreur({__xst:false,id:i,__xva:t,__xme:'2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599'});  
          }
         }
         if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...)
@@ -1404,7 +1401,7 @@ class traitements_sur_html{
              t+=CRLF;
              t+='<script'+lesProprietes+'>'
     //         debugger
-             var contenu=ob.value.substr(ob.value.indexOf('=')+1);
+             var contenu=ob.__xva.substr(ob.__xva.indexOf('=')+1);
              if(contenu.substr(contenu.length-1,1)===';'){
               contenu=contenu.substr(0,contenu.length-1);
              }
@@ -1434,7 +1431,7 @@ class traitements_sur_html{
            
            var obj=this.insere_javascript_dans_html(tab,i,niveau);
            if(obj.__xst===true){
-               t+=obj.value;
+               t+=obj.__xva;
            }else{
                return logerreur({__xst:false,__xme:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'});  
            }
@@ -1473,7 +1470,7 @@ class traitements_sur_html{
              ecriture de la valeur dans le cas d'un tag html normal
              ===========================================================================================
             */
-            t+=ob.value;
+            t+=ob.__xva;
             dansBody=ob.dansBody;
             dansHead=ob.dansHead;
             dansJs=ob.dansJs;
@@ -1569,7 +1566,7 @@ class traitements_sur_html{
         }
        }
       }
-      return {__xst:true,value:t,dansHead:dansHead,dansBody:dansBody,dansJs};  
+      return {__xst:true,__xva:t,dansHead:dansHead,dansBody:dansBody,dansJs};  
      }
     }
 }

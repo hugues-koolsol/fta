@@ -124,7 +124,7 @@ function supprimer_un_commentaire1(&$data){
       
       
     */
-    $data['valeurs']=array();
+    $data[__xva]=array();
     $liste_des_id_des_sources='';
     $liste_des_suppressions='';
     $provenance='';
@@ -202,7 +202,7 @@ function supprimer_un_commentaire1(&$data){
                 $stmt->close();
 
                 $data[__xst]='OK';
-                $data['valeurs']=$data0;
+                $data[__xva]=$data0;
 
 
             }
@@ -219,7 +219,7 @@ function remplacer_des_chaine1(&$data){
 /*    
       if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).CRLF.CRLF); fclose($fdtoto);} 
 */    
-    $data['valeurs']=array();
+    $data[__xva]=array();
     $liste_des_id_des_sources='';
     foreach($data['input']['parametre']['liste_des_taches'] as $k1 => $v1){
         /* ['donnees_recues_du_message']*/
@@ -303,7 +303,7 @@ function remplacer_des_chaine1(&$data){
             $stmt->close();
             $data[__xst]='OK';
             $data['provenance']=$data['input']['parametre']['provenance'];
-            $data['valeurs']=$data0;
+            $data[__xva]=$data0;
 
         }else{
 
