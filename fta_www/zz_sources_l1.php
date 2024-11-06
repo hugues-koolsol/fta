@@ -68,35 +68,35 @@ if(($chp_nom_source != '')){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_nom_source">nom</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_source" id="chp_nom_source"   value="'.enti1($chp_nom_source).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_nom_source">nom</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_source" id="chp_nom_source"   value="'.enti1($chp_nom_source).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_type_source">type</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_type_source" id="chp_type_source"   value="'.enti1($chp_type_source).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_type_source')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_type_source">type</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_type_source" id="chp_type_source"   value="'.enti1($chp_type_source).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_type_source')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_nom_dossier">dossier</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_nom_dossier">dossier</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_source">id</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_source" id="chi_id_source"   value="'.enti1($chi_id_source).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_source')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_source">id</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_source" id="chi_id_source"   value="'.enti1($chi_id_source).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_source')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_dossier">id dossier</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 
-$o1.='</form>'.CRLF;
+$o1.='</form>'.PHP_EOL;
 
 //echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $o1 , true ) . '</pre>' ; exit(0);
 
@@ -219,7 +219,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='</td>';
     $lsttbl.='<tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$lsttbl.'</tbody></table></div>'.PHP_EOL;
 /*
   ============================================================================
 */
@@ -232,7 +232,7 @@ $par=array(
   'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js' ), 
  'module_a_inclure' => array('js/module_html.js'), 
  'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
+$o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

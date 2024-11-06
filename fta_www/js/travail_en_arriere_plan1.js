@@ -100,7 +100,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
      }
      try{
       var jsonRet=JSON.parse(r.responseText);
-      if(jsonRet.__xst=='OK'){
+      if(jsonRet.__xst === true){
           console.log('jsonRet=' , jsonRet );
           console.log('dans supprimer_un_travail_en_arriere_plan_en_session , liste_des_travaux_en_arriere_plan=',liste_des_travaux_en_arriere_plan);
           for(var i in liste_des_travaux_en_arriere_plan){           
@@ -202,7 +202,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
       }
       try{
        var jsonRet=JSON.parse(r.responseText);
-       if(jsonRet.__xst=='OK'){
+       if(jsonRet.__xst === true){
         
            for(var i in liste_des_travaux_en_arriere_plan){
            

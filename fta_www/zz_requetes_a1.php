@@ -31,9 +31,9 @@ if(isset($_GET['__action']) && $_GET['__action']=='__modification' && isset($_GE
          $requete_en_cours=$tt[__xva][0];
      }
 }
-$o1.='<script type="text/javascript">'.CRLF;
-$o1.='var globale_requete_en_cours='.json_encode($requete_en_cours,JSON_FORCE_OBJECT).';'.CRLF;
-$o1.='</script>'.CRLF;
+$o1.='<script type="text/javascript">'.PHP_EOL;
+$o1.='var globale_requete_en_cours='.json_encode($requete_en_cours,JSON_FORCE_OBJECT).';'.PHP_EOL;
+$o1.='</script>'.PHP_EOL;
 print($o1);$o1='';
 
 

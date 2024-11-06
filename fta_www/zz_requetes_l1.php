@@ -147,7 +147,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
                     if(fwrite($fd,'<?'.'php'.PHP_EOL.$v1['T0.cht_php_requete'])){
 
                         fclose($fd);
-                        $chaine_js.=CRLF.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
+                        $chaine_js.=PHP_EOL.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
 
                     }else{
                         return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier sql_'.$v1['T0.chi_id_requete'].'.php');
@@ -164,7 +164,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
             if($fd=fopen($nom_fichier,'w')){
 
-                if(fwrite($fd,'//<![CDATA['.CRLF.'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};'.CRLF.'//]]>')){
+                if(fwrite($fd,'//<![CDATA['.PHP_EOL.'aa_js_sql={'.PHP_EOL.$chaine_js.PHP_EOL.'};'.PHP_EOL.'//]]>')){
 
                     fclose($fd);
 
@@ -443,23 +443,23 @@ if($cht_rev_requete != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_requete">id</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_requete" id="chi_id_requete"   value="'.enti1($chi_id_requete).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_requete')?' autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="cht_rev_requete">rev</label>'.CRLF;
-$o1.='    <input  type="text" name="cht_rev_requete" id="cht_rev_requete"   value="'.enti1($cht_rev_requete).'"  size="8" maxlength="64"  '.(($autofocus == 'cht_rev_requete')?' autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_type_requete">type</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_type_requete" id="chp_type_requete"   value="'.enti1($chp_type_requete).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_type_requete')?' autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_requete">id</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_requete" id="chi_id_requete"   value="'.enti1($chi_id_requete).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_requete')?' autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="cht_rev_requete">rev</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="cht_rev_requete" id="cht_rev_requete"   value="'.enti1($cht_rev_requete).'"  size="8" maxlength="64"  '.(($autofocus == 'cht_rev_requete')?' autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_type_requete">type</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_type_requete" id="chp_type_requete"   value="'.enti1($chp_type_requete).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_type_requete')?' autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 
-$o1.='</form>'.CRLF;
+$o1.='</form>'.PHP_EOL;
 $__debut=$__xpage*($__nbMax);
 
 sql_inclure_reference(2);
@@ -513,7 +513,7 @@ $consUrlRedir.=(($chp_type_requete !== '')?'&amp;chp_type_requete='.rawurlencode
 
 
 $boutons_avant='<a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>';
-$boutons_avant.=' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>'.CRLF;
+$boutons_avant.=' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>'.PHP_EOL;
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
 $lsttbl='';
 $lsttbl.='<thead><tr>';
@@ -556,7 +556,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='</td>';
     $lsttbl.='</tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$lsttbl.'</tbody></table></div>'.PHP_EOL;
 /* $o1.= __FILE__ . ' ' . __LINE__ . ' $tab0 = <pre>' . var_export( $data0 , true ) . '</pre>' ;*/
 /*
   =====================================================================================================================

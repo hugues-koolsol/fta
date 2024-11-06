@@ -285,14 +285,14 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       =============================================================================================================
     */
     $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
-    $o1.=' <form method="post" class="yyformDelete">'.CRLF;
-    $o1.='   veuillez confirmer le suppression de  : '.CRLF;
-    $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_tache'].')  nom : '.enti1($__valeurs['T0.chp_texte_tache']).'    <br /> '.'</b><br />'.CRLF;
-    $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.CRLF;
-    $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
-    $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.CRLF;
-    $o1.=''.CRLF;
-    $o1.=' </form>'.CRLF;
+    $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
+    $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
+    $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_tache'].')  nom : '.enti1($__valeurs['T0.chp_texte_tache']).'    <br /> '.'</b><br />'.PHP_EOL;
+    $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.PHP_EOL;
+    $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
+    $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
+    $o1.=''.PHP_EOL;
+    $o1.=' </form>'.PHP_EOL;
 
 }else if((isset($_GET['__action'])) && ($_GET['__action'] == '__creation')){
 
@@ -301,31 +301,31 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       ==== __creation ============================================================
       =============================================================================================================
     */
-    $o1.='<h2>ajouter une tâche</h2>'.CRLF;
-    $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.CRLF;
+    $o1.='<h2>ajouter une tâche</h2>'.PHP_EOL;
+    $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.PHP_EOL;
     $chp_texte_tache=((isset($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']))?$_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']:'');
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache" autocorrect="off" autocapitalize="off" spellcheck="false">'.enti1($chp_texte_tache).'</textarea>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache" autocorrect="off" autocapitalize="off" spellcheck="false">'.enti1($chp_texte_tache).'</textarea>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
     $chp_priorite_tache=((isset($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']))?$_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']:'0');
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">priorité</div></div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <input type="text" value="'.enti1($chp_priorite_tache).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="max-width:4em;" />'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <button type="submit">enregistrer</button>'.CRLF;
-    $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.CRLF;
-    $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.CRLF;
-    $o1.='   <button type="submit" name="option" value="enregistrer_et_revenir_a_la_liste">enregistrer et revenir à la liste</button>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">priorité</div></div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <input type="text" value="'.enti1($chp_priorite_tache).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="max-width:4em;" />'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <button type="submit">enregistrer</button>'.PHP_EOL;
+    $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.PHP_EOL;
+    $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.PHP_EOL;
+    $o1.='   <button type="submit" name="option" value="enregistrer_et_revenir_a_la_liste">enregistrer et revenir à la liste</button>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
 
 }else if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
 
@@ -335,41 +335,41 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       =============================================================================================================
     */
     /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
-    $o1.='<h2>modifier une tâche</h2>'.CRLF;
+    $o1.='<h2>modifier une tâche</h2>'.PHP_EOL;
     $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $__valeurs['T0.chp_texte_tache']=$_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']??$__valeurs['T0.chp_texte_tache'];
     $__valeurs['T0.chp_priorite_tache']=$_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']??$__valeurs['T0.chp_priorite_tache'];
-    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
-    $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.CRLF;
-    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">id, priorité</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <span>'.$__id.'</span>'.CRLF;
-    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_priorite_tache']).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="width:100%;max-width:4em;" />'.CRLF;
-    $o1.='   <a href="javascript:document.getElementById(\'chp_priorite_tache\').value=99;">99</a>'.CRLF;
+    $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
+    $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
+    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">id, priorité</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <span>'.$__id.'</span>'.PHP_EOL;
+    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_priorite_tache']).'" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="width:100%;max-width:4em;" />'.PHP_EOL;
+    $o1.='   <a href="javascript:document.getElementById(\'chp_priorite_tache\').value=99;">99</a>'.PHP_EOL;
     
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">tâche</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <span>'.$__id.'</span>'.CRLF;
-    $o1.='   <textarea rows="20"  cols="20" name="chp_texte_tache" id="chp_texte_tache" style="width:80%;max-width:80%;" autocorrect="off" autocapitalize="off" spellcheck="false">'.enti1($__valeurs['T0.chp_texte_tache']).'</textarea>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.='<div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications" class="">enregistrer les modifications</button>'.CRLF;
-    $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications_et_retour" class="">enregistrer les modifications et retour</button>'.CRLF;
-    $o1.='   <a class="yydanger" href="?__action=__suppression&__id='.$__id.'">supprimer</a>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.='</div>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">tâche</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <span>'.$__id.'</span>'.PHP_EOL;
+    $o1.='   <textarea rows="20"  cols="20" name="chp_texte_tache" id="chp_texte_tache" style="width:80%;max-width:80%;" autocorrect="off" autocapitalize="off" spellcheck="false">'.enti1($__valeurs['T0.chp_texte_tache']).'</textarea>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.='<div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications" class="">enregistrer les modifications</button>'.PHP_EOL;
+    $o1.='   <button class="yyinfo" type="submit" name="__enregistrer_les_modifications_et_retour" class="">enregistrer les modifications et retour</button>'.PHP_EOL;
+    $o1.='   <a class="yydanger" href="?__action=__suppression&__id='.$__id.'">supprimer</a>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.='</div>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
 
 }else{
 

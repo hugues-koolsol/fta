@@ -1860,17 +1860,17 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
             if(pc['notnull'] === 1){
                 t+='\n' + '   non_nulle()';
             }
-            if(pc['dflt___xva']){
+            if(pc['dflt_value']){
                 
-                  if(pc['dflt___xva']!=='' && pc['dflt___xva'].substr(0,1)==="'"){
-                      t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt___xva'].substr(1,pc['dflt___xva'].length-2).replace(/\'\'/g,'\\\'') + '\')');
-                  }else if(pc['dflt___xva']!=='' && pc['dflt___xva'].substr(0,1)==='"'){
-                      t+=('\n' + '   valeur_par_defaut("' + pc['dflt___xva'].substr(1,pc['dflt___xva'].length-2) + '")');
+                  if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==="'"){
+                      t+=('\n' + '   valeur_par_defaut(\'' + pc['dflt_value'].substr(1,pc['dflt_value'].length-2).replace(/\'\'/g,'\\\'') + '\')');
+                  }else if(pc['dflt_value']!=='' && pc['dflt_value'].substr(0,1)==='"'){
+                      t+=('\n' + '   valeur_par_defaut("' + pc['dflt_value'].substr(1,pc['dflt_value'].length-2) + '")');
                   }else{
-                      t+=('\n' + '   valeur_par_defaut(' + pc['dflt___xva'] + ')');
+                      t+=('\n' + '   valeur_par_defaut(' + pc['dflt_value'] + ')');
                   }
                 
-//                t+='\n' + '   valeur_par_defaut(' + pc['dflt___xva'].replace(/\'\'/g,'\\\'') + ')';
+//                t+='\n' + '   valeur_par_defaut(' + pc['dflt_value'].replace(/\'\'/g,'\\\'') + ')';
             }
             if(cle_etrangere === true){
                 t+='\n' + '   references(\'' + pc['cle_etrangere']['table'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + pc['cle_etrangere']['to'].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' )';

@@ -52,27 +52,27 @@ $autofocus='chi_id_dossier';
 else if($chp_nom_dossier!=''){         $autofocus='chp_nom_dossier';         }
 
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.($autofocus=='chi_id_dossier'?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_dossier">id dossier</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.($autofocus=='chi_id_dossier'?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="xsrch_chp_nom_dossier">nom</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.($autofocus=='chp_nom_dossier'?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-
-
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="xsrch_chp_nom_dossier">nom</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.($autofocus=='chp_nom_dossier'?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
 
-
-$o1.='   <input type="hidden" value="'.enti1($_SESSION[APP_KEY][BNF]['__parametres_choix']['__nom_champ_dans_parent']).'"    name="__nom_champ_dans_parent"    id="__nom_champ_dans_parent" >'.CRLF;
-$o1.='   <input type="hidden" value="'.enti1(json_encode($_SESSION[APP_KEY][BNF]['__parametres_choix']['__champs_texte_a_rapatrier'])).'" name="__champs_texte_a_rapatrier" id="__champs_texte_a_rapatrier" >'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 
 
-$o1.='</form>'.CRLF;
+
+$o1.='   <input type="hidden" value="'.enti1($_SESSION[APP_KEY][BNF]['__parametres_choix']['__nom_champ_dans_parent']).'"    name="__nom_champ_dans_parent"    id="__nom_champ_dans_parent" >'.PHP_EOL;
+$o1.='   <input type="hidden" value="'.enti1(json_encode($_SESSION[APP_KEY][BNF]['__parametres_choix']['__champs_texte_a_rapatrier'])).'" name="__champs_texte_a_rapatrier" id="__champs_texte_a_rapatrier" >'.PHP_EOL;
+
+
+$o1.='</form>'.PHP_EOL;
 
 $__debut=$__xpage*($__nbMax);
 
@@ -131,7 +131,7 @@ $__lsttbl.='  <thead><tr>';
 $__lsttbl.='<th>action</th>';
 $__lsttbl.='<th>id</th>';
 $__lsttbl.='<th>nom</th>';
-$__lsttbl.='</tr></thead>'.CRLF.'  <tbody>'.CRLF;
+$__lsttbl.='</tr></thead>'.PHP_EOL.'  <tbody>'.PHP_EOL;
 foreach($tt[__xva] as $k0=>$v0){
  
  $__lsttbl.='<tr>';
@@ -177,7 +177,7 @@ foreach($tt[__xva] as $k0=>$v0){
  $__lsttbl.='<tr>';
 }
 
-$o1.='<table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table>'.CRLF;
+$o1.='<table class="yytableResult1">'.PHP_EOL.$__lsttbl.'</tbody></table>'.PHP_EOL;
 
 
 

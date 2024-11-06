@@ -556,16 +556,16 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 
 
  $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
- $o1.=' <form method="post" class="yyformDelete">'.CRLF;
- $o1.='   veuillez confirmer le suppression de  : '.CRLF;
+ $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
+ $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
  $o1.='   <br /><br /><b>'.
        '('.$__valeurs['T0.chi_id_dossier'].')  nom : ' .$__valeurs['T0.chp_nom_dossier'].'    <br /> '.
-       '</b><br />'.CRLF;
- $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.CRLF;
- $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
- $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.CRLF;
- $o1.=''.CRLF;
- $o1.=' </form>'.CRLF;
+       '</b><br />'.PHP_EOL;
+ $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.PHP_EOL;
+ $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
+ $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
+ $o1.=''.PHP_EOL;
+ $o1.=' </form>'.PHP_EOL;
 
 }else if(isset($_GET['__action'])&&$_GET['__action']=='__creation'){
 
@@ -576,29 +576,29 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
 
-  $o1.='<h2>ajouter un dossier</h2>'.CRLF;
+  $o1.='<h2>ajouter un dossier</h2>'.PHP_EOL;
 
-  $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.CRLF;
+  $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.PHP_EOL;
 
   $chp_nom_dossier =isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']:'';
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_dossier).'" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="max-width:64em;" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_dossier).'" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="max-width:64em;" />'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
 
 
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <button type="submit">enregistrer</button>'.CRLF;
-  $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.CRLF;
-  $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <button type="submit">enregistrer</button>'.PHP_EOL;
+  $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.PHP_EOL;
+  $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
-  $o1.='</form>'.CRLF;
+  $o1.='</form>'.PHP_EOL;
 
 }else if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
 
@@ -610,7 +610,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
-  $o1.='<h2>modifier un dossier</h2>'.CRLF;
+  $o1.='<h2>modifier un dossier</h2>'.PHP_EOL;
 
   $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
   $__valeurs['T0.chp_nom_dossier']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']         ??$__valeurs['T0.chp_nom_dossier']        ;
@@ -619,29 +619,29 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
   
-  $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
+  $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
 
-  $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.CRLF;
-  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.CRLF;
+  $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
+  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.PHP_EOL;
   
 
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">id, nom , type , dossier</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <span>'.$__id.'</span>'.CRLF;
-  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_dossier']).'" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="width:100%;max-width:20em;" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1">'.PHP_EOL;
+  $o1.='   <div style="word-break:break-word;">id, nom , type , dossier</div>'.PHP_EOL;
+  $o1.='  </div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <span>'.$__id.'</span>'.PHP_EOL;
+  $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_dossier']).'" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="width:100%;max-width:20em;" />'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
   
 
 
-  $o1.='<div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.='</div>'.CRLF;
+  $o1.='<div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.='</div>'.PHP_EOL;
 
 
 
@@ -934,7 +934,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   
 
-  $o1.='</form>'.CRLF;
+  $o1.='</form>'.PHP_EOL;
 
   
 

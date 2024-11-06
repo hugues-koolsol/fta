@@ -312,7 +312,7 @@ class interface1{
             }
             try{
                 var jsonRet = JSON.parse(r.responseText);
-                if(jsonRet.__xst == 'OK'){
+                if(jsonRet.__xst == true){
                     window.location.reload(true);
                     return;
                 }else{

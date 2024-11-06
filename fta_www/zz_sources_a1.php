@@ -791,14 +791,14 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       http://localhost/functToArray/fta/fta_www/zz_sources_a1.php?__id=2&__action=__suppression
     */
     $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
-    $o1.=' <form method="post" class="yyformDelete">'.CRLF;
-    $o1.='   veuillez confirmer le suppression de  : '.CRLF;
-    $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_source'].')  nom : '.$__valeurs['T0.chp_nom_source'].' <br /> '.'</b><br />'.CRLF;
-    $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_source" id="chi_id_source" />'.CRLF;
-    $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
-    $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.CRLF;
-    $o1.=''.CRLF;
-    $o1.=' </form>'.CRLF;
+    $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
+    $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
+    $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_source'].')  nom : '.$__valeurs['T0.chp_nom_source'].' <br /> '.'</b><br />'.PHP_EOL;
+    $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_source" id="chi_id_source" />'.PHP_EOL;
+    $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
+    $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
+    $o1.=''.PHP_EOL;
+    $o1.=' </form>'.PHP_EOL;
 
 }else if((isset($_GET['__action'])) && ($_GET['__action'] == '__creation')){
 
@@ -808,30 +808,30 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       ==== __creation ============================================================
       =============================================================================================================
     */
-    $o1.='<h2>ajouter un source</h2>'.CRLF;
-    $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.CRLF;
+    $o1.='<h2>ajouter un source</h2>'.PHP_EOL;
+    $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.PHP_EOL;
     $chp_nom_source=((isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']))?$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']:'');
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_source).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="max-width:64em;" />'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_source).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="max-width:64em;" />'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
     $chp_type_source=((isset($_SESSION[APP_KEY][NAV][BNF]['chp_type_source']))?$_SESSION[APP_KEY][NAV][BNF]['chp_type_source']:'normal');
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">type</div></div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_type_source).'" name="chp_type_source" id="chp_type_source" maxlength="32" style="max-width:32em;" />'.CRLF;
-    $o1.='   <button onclick="document.getElementById(\'chp_type_source\').value=&quot;bibliotheque&quot;;return false;">bibliotheque</button>'.CRLF;
-    $o1.='   <button onclick="document.getElementById(\'chp_type_source\').value=&quot;normal&quot;;return false;">normal</button>'.CRLF;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">type</div></div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_type_source).'" name="chp_type_source" id="chp_type_source" maxlength="32" style="max-width:32em;" />'.PHP_EOL;
+    $o1.='   <button onclick="document.getElementById(\'chp_type_source\').value=&quot;bibliotheque&quot;;return false;">bibliotheque</button>'.PHP_EOL;
+    $o1.='   <button onclick="document.getElementById(\'chp_type_source\').value=&quot;normal&quot;;return false;">normal</button>'.PHP_EOL;
     
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
     $chx_dossier_id_source=((isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']))?$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']:'');
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <input type="hidden" value="'.encrypter($chx_dossier_id_source).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:9em;" />'.CRLF;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <input type="hidden" value="'.encrypter($chx_dossier_id_source).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:9em;" />'.PHP_EOL;
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chx_dossier_id_source , true ) . '</pre>' ; exit(0);
     $__parametres_pour_la_modale=array(
         '__fonction' => 'recupérer_un_element_parent_en_bdd',
@@ -843,12 +843,12 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $paramUrl=str_replace('\'','\\\'',$paramUrl);
     $paramUrl=str_replace('"','\\"',$paramUrl);
     $paramUrl=rawurlencode($paramUrl);
-    $o1.='   <a href="javascript:__gi1.afficherModale2(\''.enti1($paramUrl).'\')" title="selectionner">📁</a>'.CRLF;
-    $o1.='   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.CRLF;
+    $o1.='   <a href="javascript:__gi1.afficherModale2(\''.enti1($paramUrl).'\')" title="selectionner">📁</a>'.PHP_EOL;
+    $o1.='   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.PHP_EOL;
     
     if(($chx_dossier_id_source === '') || ($chx_dossier_id_source === false)){
 
-        $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.CRLF;
+        $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.PHP_EOL;
 
     }else{
 
@@ -870,9 +870,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
             ));
 //            echo __FILE__ . ' ' . __LINE__ . ' $tt50 = <pre>' . var_export( $tt50 , true ) . '</pre>' ; exit(0);
             if($tt50[__xst] === false || count($tt50[__xva])!==1 ){
-                $o1.='<span class="yydanger">Problème sur récupération du dossier</span>'.CRLF;
+                $o1.='<span class="yydanger">Problème sur récupération du dossier</span>'.PHP_EOL;
             }else{
-                $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$tt50[__xva][0]['T0.chp_nom_dossier'].'</b>" </span>'.CRLF;
+                $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$tt50[__xva][0]['T0.chp_nom_dossier'].'</b>" </span>'.PHP_EOL;
             }
          
 
@@ -880,23 +880,23 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     }
     
     
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
     $chp_commentaire_source=((isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']))?$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']:'');
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="15" >'.enti1($chp_commentaire_source,ENT_COMPAT).'</textarea>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <button type="submit">enregistrer</button>'.CRLF;
-    $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.CRLF;
-    $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="15" >'.enti1($chp_commentaire_source,ENT_COMPAT).'</textarea>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <button type="submit">enregistrer</button>'.PHP_EOL;
+    $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.PHP_EOL;
+    $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
 
 }else if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
 
@@ -907,7 +907,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       =============================================================================================================
     */
     /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
-    $o1.='<h2>modifier un source</h2>'.CRLF;
+    $o1.='<h2>modifier un source</h2>'.PHP_EOL;
     $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $__valeurs['T0.chp_nom_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']??$__valeurs['T0.chp_nom_source'];
     $__valeurs['T0.chp_type_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_type_source']??$__valeurs['T0.chp_type_source'];
@@ -916,18 +916,18 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $__valeurs['T0.chp_commentaire_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']??$__valeurs['T0.chp_commentaire_source'];
     $__valeurs['T0.chp_rev_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']??$__valeurs['T0.chp_rev_source'];
     $__valeurs['T0.chp_genere_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']??$__valeurs['T0.chp_genere_source'];
-    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
-    $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.CRLF;
-    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_source" id="chi_id_source" />'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">id, nom , dossier</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <span>'.$__id.'</span>'.CRLF;
-    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_source']).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="width:100%;max-width:20em;" />'.CRLF;
-    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_type_source']).'" name="chp_type_source" id="chp_type_source" maxlength="64" style="width:100%;max-width:8em;" />'.CRLF;
-    $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.CRLF;
+    $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
+    $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
+    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_source" id="chi_id_source" />'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">id, nom , dossier</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <span>'.$__id.'</span>'.PHP_EOL;
+    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_source']).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="width:100%;max-width:20em;" />'.PHP_EOL;
+    $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_type_source']).'" name="chp_type_source" id="chp_type_source" maxlength="64" style="width:100%;max-width:8em;" />'.PHP_EOL;
+    $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.PHP_EOL;
     $__parametres_pour_la_modale=array(
         '__fonction' => 'recupérer_un_element_parent_en_bdd',
         '__url' => 'zz_dossiers_c1.php',
@@ -938,106 +938,106 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $paramUrl=str_replace('\'','\\\'',$paramUrl);
     $paramUrl=str_replace('"','\\"',$paramUrl);
     $paramUrl=rawurlencode($paramUrl);
-    $o1.='   <a href="javascript:__gi1.afficherModale2(\''.enti1($paramUrl).'\')" title="selectionner">📁</a>'.CRLF;
-    $o1.='   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.CRLF;
+    $o1.='   <a href="javascript:__gi1.afficherModale2(\''.enti1($paramUrl).'\')" title="selectionner">📁</a>'.PHP_EOL;
+    $o1.='   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\''.enti1($paramUrl).'\')" title="annuler">🚫</a>'.PHP_EOL;
 
     if(($__valeurs['T0.chx_dossier_id_source'] === NULL) || ($__valeurs['T0.chx_dossier_id_source'] === false)){
 
-        $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.CRLF;
+        $o1.='<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> '.PHP_EOL;
 
     }else{
 
         /*   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
-        $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T2.chp_nom_dossier'].'</b>" </span>'.CRLF;
+        $o1.='<span id="T0.chp_nom_dossier">rattaché à "<b style="color:red;">'.$__valeurs['T2.chp_nom_dossier'].'</b>" </span>'.PHP_EOL;
     }
 
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">outils sur rev</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.parentheses1(&quot;chp_rev_source&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>'.CRLF;
-    $o1.='   <a class="yysucces" href="javascript:__gi1.aller_a_la_position(&quot;chp_rev_source&quot;)">aller à la position</a>'.CRLF;
-    $o1.='   <a class="yyinfo" href="javascript:__gi1.remplacer_la_selection_par(&quot;chp_rev_source&quot;)">remplacer la sélection</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_rev_source&quot;);" title="agrandir la zone">🖐</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_source&quot;);" title="réduire la zone">👊</a>'.CRLF;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">outils sur rev</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.parentheses1(&quot;chp_rev_source&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>'.PHP_EOL;
+    $o1.='   <a class="yysucces" href="javascript:__gi1.aller_a_la_position(&quot;chp_rev_source&quot;)">aller à la position</a>'.PHP_EOL;
+    $o1.='   <a class="yyinfo" href="javascript:__gi1.remplacer_la_selection_par(&quot;chp_rev_source&quot;)">remplacer la sélection</a>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_rev_source&quot;);" title="agrandir la zone">🖐</a>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_source&quot;);" title="réduire la zone">👊</a>'.PHP_EOL;
     
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">rev</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_rev_source" id="chp_rev_source"  rows="15" spellcheck="false" >'.enti1($__valeurs['T0.chp_rev_source'],ENT_COMPAT).'</textarea>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">outils de convertion</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   &nbsp; &nbsp; &nbsp;'.CRLF;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">rev</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <textarea  name="chp_rev_source" id="chp_rev_source"  rows="15" spellcheck="false" >'.enti1($__valeurs['T0.chp_rev_source'],ENT_COMPAT).'</textarea>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">outils de convertion</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   &nbsp; &nbsp; &nbsp;'.PHP_EOL;
 
     if($__valeurs['T0.chp_type_source'] === 'normal'){
 
 
         if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
 
-            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.CRLF;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;script&quot;)">&#8613;J-&gt;R</a>'.CRLF;
+            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;script&quot;)">&#8613;J-&gt;R</a>'.PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm') !== false){
 
-            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2H&#8615;</a>'.CRLF;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.CRLF;
+            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2H&#8615;</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
-            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php_et_sauvegarde_rev(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.CRLF;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.CRLF;
+            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php_et_sauvegarde_rev(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql') !== false){
 
-            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; sql &#8615;</a>'.CRLF;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_sqlite_en_rev(\'chp_rev_source\',\'chp_genere_source\')">&#8613; sql =&gt; rev &#8613;</a>'.CRLF;
-            /*       $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" ></button>'.CRLF;*/
+            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; sql &#8615;</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:convertir_sqlite_en_rev(\'chp_rev_source\',\'chp_genere_source\')">&#8613; sql =&gt; rev &#8613;</a>'.PHP_EOL;
+            /*       $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" ></button>'.PHP_EOL;*/
 
         }else{
 
-            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; texte &#8615;</a>'.CRLF;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>'.CRLF;
+            $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; texte &#8615;</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>'.PHP_EOL;
         }
 
 
     }
-    $o1.='   <a class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_genere_source&quot;);" title="agrandir la zone">🖐</a>'.CRLF;
-    $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_genere_source&quot;);" title="réduire la zone">👊</a>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">genere</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_genere_source" id="chp_genere_source"  rows="15" spellcheck="false" >'.enti1($__valeurs['T0.chp_genere_source'],ENT_COMPAT).'</textarea>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">outils de fichiers</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
+    $o1.='   <a class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_genere_source&quot;);" title="agrandir la zone">🖐</a>'.PHP_EOL;
+    $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_genere_source&quot;);" title="réduire la zone">👊</a>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">genere</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <textarea  name="chp_genere_source" id="chp_genere_source"  rows="15" spellcheck="false" >'.enti1($__valeurs['T0.chp_genere_source'],ENT_COMPAT).'</textarea>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">outils de fichiers</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
     
 
     if($__valeurs['T2.chp_nom_dossier']!==null){
     
-        $o1.='   <button id="__ecrire_sur_disque" name="__ecrire_sur_disque" class="yyinfo">ecrire le généré sur le disque</button>'.CRLF;
+        $o1.='   <button id="__ecrire_sur_disque" name="__ecrire_sur_disque" class="yyinfo">ecrire le généré sur le disque</button>'.PHP_EOL;
     }
 
     if(($__valeurs['T1.chp_dossier_cible'] !== null) && ($__valeurs['T2.chp_nom_dossier'] !== null)){
@@ -1050,15 +1050,15 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
             if(($__valeurs['T0.chp_type_source'] === 'normal') ){
 
-                $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.CRLF;
-                $o1.='   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">supprimer du disque</a>'.CRLF;
+                $o1.='   <a href="javascript:lire_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">lire du disque</a>'.PHP_EOL;
+                $o1.='   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;'.encrypter(enti1($nomCompletSource)).'&quot;)" class="yyavertissement">supprimer du disque</a>'.PHP_EOL;
 
             }
 
 
         }else{
 
-            $o1.='   <span>le fichier est absent du disque</span>'.CRLF;
+            $o1.='   <span>le fichier est absent du disque</span>'.PHP_EOL;
         }
 
 
@@ -1068,11 +1068,11 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
             if(is_file($nom_complet_du_source_dans_fta)){
 
-                $o1.='   <button name="__importer_le_fichier_source_de_fta" class="yyinfo">importer le fichier source de fta</button>'.CRLF;
+                $o1.='   <button name="__importer_le_fichier_source_de_fta" class="yyinfo">importer le fichier source de fta</button>'.PHP_EOL;
 
             }else{
 
-                $o1.='   ce fichier n\'a pas de correspondant dans fta'.CRLF;
+                $o1.='   ce fichier n\'a pas de correspondant dans fta'.PHP_EOL;
             }
 
 
@@ -1081,27 +1081,27 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
     }
 
-    $o1.='   '.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.=' <div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyflab1">'.CRLF;
-    $o1.='   <div style="word-break:break-word;">commentaire</div>'.CRLF;
-    $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
-    $o1.='  </div>'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="5" >'.enti1($__valeurs['T0.chp_commentaire_source'],ENT_COMPAT).'</textarea>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.='<div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.CRLF;
+    $o1.='   '.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyflab1">'.PHP_EOL;
+    $o1.='   <div style="word-break:break-word;">commentaire</div>'.PHP_EOL;
+    $o1.='   <div style="font-weight: normal;">texte libre</div>'.PHP_EOL;
+    $o1.='  </div>'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="5" >'.enti1($__valeurs['T0.chp_commentaire_source'],ENT_COMPAT).'</textarea>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.='<div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.PHP_EOL;
     if(isset($_GET['__option']) && $_GET['__option']==='remplacer_le_fichier'){
-          $o1.='   <button type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>'.CRLF;
+          $o1.='   <button type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>'.PHP_EOL;
     }
-    $o1.='  </div></div>'.CRLF;
-    $o1.='</div>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.='</div>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
     $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'chp_rev_source' , 'mode' => 'rev' ));
 
     if((isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'])) && (count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) > 0)){
@@ -1146,7 +1146,7 @@ $par=array( 'js_a_inclure' => array(
             'js/convertion_sql_en_rev.js',
             'js/convertit-html-en-rev1.js',
             ), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
+$o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

@@ -106,37 +106,37 @@ if($chp_nom_source1 != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_nom_source1">nom source =</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_source1" id="chp_nom_source1"   value="'.enti1($chp_nom_source1).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source1')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_provenance_rev">provenance</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_provenance_rev" id="chp_provenance_rev"   value="'.enti1($chp_provenance_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_provenance_rev')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_nom_source2">nom source <></label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_source2" id="chp_nom_source2"   value="'.enti1($chp_nom_source2).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source2')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_valeur_rev">valeur(1)</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_valeur_rev" id="chp_valeur_rev"   value="'.enti1($chp_valeur_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_valeur_rev')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chx_source_rev">id source</label>'.CRLF;
-$o1.='    <input  type="text" name="chx_source_rev" id="chx_source_rev"   value="'.enti1($chx_source_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chx_source_rev')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_commentaire_rev">commentaire(13)</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_commentaire_rev" id="chp_commentaire_rev"   value="'.enti1($chp_commentaire_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_commentaire_rev')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_rev">id rev</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_rev')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
-$o1.='</form>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_nom_source1">nom source =</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_source1" id="chp_nom_source1"   value="'.enti1($chp_nom_source1).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source1')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_provenance_rev">provenance</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_provenance_rev" id="chp_provenance_rev"   value="'.enti1($chp_provenance_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_provenance_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_nom_source2">nom source <></label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_source2" id="chp_nom_source2"   value="'.enti1($chp_nom_source2).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source2')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_valeur_rev">valeur(1)</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_valeur_rev" id="chp_valeur_rev"   value="'.enti1($chp_valeur_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_valeur_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chx_source_rev">id source</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chx_source_rev" id="chx_source_rev"   value="'.enti1($chx_source_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chx_source_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_commentaire_rev">commentaire(13)</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_commentaire_rev" id="chp_commentaire_rev"   value="'.enti1($chp_commentaire_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_commentaire_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_rev">id rev</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
+$o1.='</form>'.PHP_EOL;
 $__debut=$__xpage*$__nbMax;
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
@@ -328,7 +328,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl.='</td>';
     $__lsttbl.='</tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$__lsttbl.'</tbody></table></div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$__lsttbl.'</tbody></table></div>'.PHP_EOL;
 
 if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
 
@@ -353,7 +353,7 @@ if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) |
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sources, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.CRLF;
+            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sources, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.PHP_EOL;
 
         }
 
@@ -383,7 +383,7 @@ if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sql, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sql</a>'.CRLF;
+            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sql, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sql</a>'.PHP_EOL;
 
         }
 

@@ -144,14 +144,14 @@ class module_svg_bdd{
                     logerreur({__xst:false,__xme:'url='+url});
                     logerreur({__xst:false,__xme:JSON.stringify(en_entree)});
                     logerreur({__xst:false,__xme:JSON.stringify(donnees)});
-                    return({__xst:'KO' , message:'le retour n\'est pas en json'});
+                    return({__xst:false , message:'le retour n\'est pas en json'});
                 }
 
             }catch(e){
 
                 debugger
                 console.log('e=',e);
-                return({__xst:'KO' , message:e.message});
+                return({__xst:false , message:e.message});
                 
             }
             
@@ -703,8 +703,8 @@ class module_svg_bdd{
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_en_bdd_l_index'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         supprimer_en_bdd_l_index('za_ajax.php?supprimer_en_bdd_l_index',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
-                console.log('OK');
+            if(donnees.__xst === true){
+                console.log(true);
             }else{
                 console.log('KO donnees=',donnees);
             }
@@ -731,8 +731,8 @@ class module_svg_bdd{
                 }
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_l_index'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
                 ajouter_en_bdd_l_index('za_ajax.php?ajouter_en_bdd_l_index',ajax_param,this).then((donnees) => {
-                    if(donnees.__xst === 'OK'){
-                        console.log('OK');
+                    if(donnees.__xst === true){
+                        console.log(true);
                     }else{
                         console.error('KO donnees=',donnees);
                     }
@@ -775,7 +775,7 @@ class module_svg_bdd{
 
                     var ajax_param={'call':{'lib':'core','file':'bdd','funct':'ajouter_en_bdd_le_champ'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
                     ajouter_en_bdd_le_champ('za_ajax.php?ajouter_en_bdd_le_champ',ajax_param,this).then((donnees) => {
-                        if(donnees.__xst === 'OK'){
+                        if(donnees.__xst === true){
                             this.#message_succes_et_fermer_modale(donnees);
                         }else{
                             this.#message_erreur_modale(donnees);
@@ -1571,10 +1571,10 @@ class module_svg_bdd{
           for( var nom_de_la_table in par['donnees'][references[ref]]){
               t+='<tr>'
               t+='<th>'+nom_de_la_table+'</th>'
-              t+='<th>type</th>'
-              t+='<th>nn</th>'
-              t+='<th>pk</th>'
-              t+='<th>dft</th>'
+              t+='<th style="text-align:left;">type</th>'
+              t+='<th style="text-align:left;">pk</th>'
+              t+='<th style="text-align:left;">nn</th>'
+              t+='<th style="text-align:left;">dft</th>'
               t+='</tr>'
 //              var position=0;
               for( var nom_du_champ in par['donnees'][references[ref]][nom_de_la_table].liste_des_champs){
@@ -1586,18 +1586,22 @@ class module_svg_bdd{
                   if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty('absent_de_l_autre_tableau') && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].absent_de_l_autre_tableau===true){
                    la_class_quoi='yyavertissement';
                   }
-
+/*
                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].name+'</td>';
                   t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].type+'</td>';
-                  
-                  var proprietes_a_tester=['name' , 'type' , 'notnull' , 'dflt_value' , 'pk' ];
+*/                  
+                  var proprietes_a_tester=['name' , 'type'  , 'pk' , 'notnull' , 'dflt_value' ];
                   for( var ind_prop in proprietes_a_tester){
                       if(references[ref]==='tableau1'){
                           if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ]){
                               if(par['donnees']['tableau2'][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]!==par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]){
                                   t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
                               }else{
-                                  t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                                  if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]===null && 'dflt_value'===proprietes_a_tester[ind_prop]){
+                                      t+='<td class="'+la_class_quoi+'"></td>';
+                                  }else{
+                                      t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
+                                  }
                               }
                           }else{
                               t+='<td class="yydanger">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ][proprietes_a_tester[ind_prop]]+'</td>';
@@ -1633,9 +1637,9 @@ class module_svg_bdd{
                                   if(  tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_2===true 
                                     && tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].champs_de_l_index === tables_indexes[nom_de_la_table].indexes[nom_de_l_index]['tableau2'].champs_de_l_index 
                                   ){
-                                      t+='<td colspan="5">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                      t+='<td colspan="5" style="word-break: break-word;">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
                                   }else{
-                                      t+='<td colspan="5" class="yydanger">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                      t+='<td colspan="5" class="yydanger"  style="word-break: break-word;">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
                                   }
 
                               }
@@ -1662,9 +1666,9 @@ class module_svg_bdd{
                                   if(  tables_indexes[nom_de_la_table].indexes[nom_de_l_index].present_dans_tableau_1===true 
                                     && tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]].champs_de_l_index === tables_indexes[nom_de_la_table].indexes[nom_de_l_index]['tableau1'].champs_de_l_index 
                                   ){
-                                      t+='<td colspan="5">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                      t+='<td colspan="5" style="word-break: break-word;">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
                                   }else{
-                                      t+='<td colspan="5" class="yydanger">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
+                                      t+='<td colspan="5" class="yydanger" style="word-break: break-word;">'+tables_indexes[nom_de_la_table].indexes[nom_de_l_index][references[ref]]['champs_de_l_index']+'</td>';
                                   }
                               }
                               t+='</td>';
@@ -1716,7 +1720,7 @@ class module_svg_bdd{
                     };
                     recuperer_les_tableaux_des_bases('za_ajax.php?recuperer_les_tableaux_des_bases',ajax_param,this).then((donnees) => {
 
-                        if(donnees.__xst === 'OK'){
+                        if(donnees.__xst === true){
                             
                             this.afficher_resultat_comparaison_base_physique_et_base_virtuelle({'donnees':donnees.__xva,id_bdd_de_la_base_en_cours:id_bdd_de_la_base_en_cours});
                          
@@ -1790,8 +1794,8 @@ class module_svg_bdd{
         
 
         creer_la_base_a_partir_du_shema_sur_disque('za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
-                console.log('OK');
+            if(donnees.__xst === true){
+                console.log(true);
             }else{
                 console.error('KO donnees=' , donnees);
             }
@@ -1875,7 +1879,7 @@ class module_svg_bdd{
         
 
         reecrire_la_base_a_partir_du_shema_sur_disque('za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
+            if(donnees.__xst === true){
                 this.#message_succes_et_fermer_modale(donnees);
             }else{
                 this.#message_erreur_modale(donnees);
@@ -2067,7 +2071,7 @@ class module_svg_bdd{
             en_base_et_sur_schema    : en_base_et_sur_schema,
         };
         ordonner_les_champs_de_table('za_ajax.php?ordonner_les_champs_de_table',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
+            if(donnees.__xst === true){
                 //console.log( this.#arbre );
                 // mode_supression_de_champ,en_base_et_sur_schema
                 if(donnees.input.mode_supression_de_champ===true && en_base_et_sur_schema===false){
@@ -2685,7 +2689,7 @@ class module_svg_bdd{
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'supprimer_table_dans_base'},source_sql:source_sql,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         supprimer_table_dans_base('za_ajax.php?supprimer_table_dans_base',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
+            if(donnees.__xst === true){
                 this.#message_succes_modale(donnees);
             }else{
                 this.#message_erreur_modale(donnees);
@@ -2715,7 +2719,7 @@ class module_svg_bdd{
                 var ajax_param={'call':{'lib':'core','file':'bdd','funct':'creer_table_dans_base'},source_sql:obj2.__xva,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
                 creer_table_dans_base('za_ajax.php?creer_table_dans_base',ajax_param,this).then((donnees) => {
 
-                    if(donnees.__xst === 'OK'){
+                    if(donnees.__xst === true){
                         this.#message_succes_modale(donnees);
                     }else{
                         this.#message_erreur_modale(donnees);
@@ -3402,15 +3406,15 @@ class module_svg_bdd{
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'envoyer_le_rev_de_le_base_en_post'},source_rev_de_la_base:t,id_bdd_de_la_base:this.#id_bdd_de_la_base_en_cours};
         envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
+            if(donnees.__xst === true){
 
                logerreur({__xst:true,__xme:' Le schema de la base est sauvegardé'});
             }else{
                console.log(donnees);
-               if(donnees.hasOwnProperty('messages')){
-                   if(typeof donnees.messages === 'object' && !Array.isArray(donnees.messages) && donnees.messages !== null ){
-                       for(var i in donnees.messages){
-                           logerreur({__xst:false,__xme:donnees.messages[i]});
+               if(donnees.hasOwnProperty('__xms')){
+                   if(typeof donnees.__xms === 'object' && !Array.isArray(donnees.__xms) && donnees.__xms !== null ){
+                       for(var i in donnees.__xms){
+                           logerreur({__xst:false,__xme:donnees.__xms[i]});
                        }
                    }
                }
@@ -3913,7 +3917,7 @@ class module_svg_bdd{
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_zone_travail_pour_les_bases'},les_id_des_bases:les_id_des_bases};
         recuperer_les_donnees_de_le_base_en_post('za_ajax.php?recuperer_zone_travail_pour_les_bases',ajax_param,this).then((donnees) => {
-            if(donnees.__xst !== 'OK'){
+            if(donnees.__xst !== true){
                 console.log('donnees=',donnees)
                 logerreur({__xst:false,__xme:donnees.message});
                 logerreur({__xst:false,__xme:'0132 erreur de récupération des données de la base'});

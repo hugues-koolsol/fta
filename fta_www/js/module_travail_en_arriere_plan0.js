@@ -50,7 +50,7 @@ function enregistrer_les_sql_en_base(params,fonction_apres){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
@@ -142,7 +142,7 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
@@ -547,7 +547,7 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 console.log('jsonRet=',jsonRet);
                 traitement_a_lancer_si_succes(jsonRet.__xva);
             }else{
@@ -632,7 +632,7 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 console.log('jsonRet=',jsonRet);
 
                 traitement_a_lancer_si_succes(jsonRet.__xva,jsonRet);
@@ -802,7 +802,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 var i={};
                 for(i in liste_des_travaux_en_arriere_plan){
                     if(liste_des_travaux_en_arriere_plan[i].etat_du_travail == 'travail_en_arriere_plan_terminé'){
@@ -888,7 +888,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 var i={};
                 for(i in liste_des_travaux_en_arriere_plan){
                     if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
@@ -1029,7 +1029,7 @@ function recuperer_les_travaux_en_session(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst === 'OK'){
+            if(jsonRet.__xst === true){
                 var tableau_des_travaux = [];
                 var i={};
                 for(i in jsonRet.valeur){

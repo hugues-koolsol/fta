@@ -12,7 +12,7 @@ function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
 */
 
   $_SESSION[APP_KEY]['__parametres_utilisateurs'][$data['input']['nom_de_la_page']]['nombre_de_lignes']=$data['input']['nombre_de_lignes'];
-  $data[__xst]='OK';
+  $data[__xst]=true;
 
 }
 
@@ -21,7 +21,7 @@ function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
 */
 function recuperer_les_travaux_en_arriere_plan_de_la_session(&$data){
  if(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])){
-    $data[__xst]='OK';
+    $data[__xst]=true;
     $data[__xva]=$_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'];
  }
 }
@@ -46,7 +46,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(&$data){
         }
     }
     usleep(100000); /* on calme le jeu pendant 100ms */
-    $data[__xst]='OK';
+    $data[__xst]=true;
     $data['nombre_de_travaux_restants_fin']=isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])?count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']):0;
 }
 /*
@@ -61,7 +61,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(&$data){
     }
     $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'][]=$data['input']['travail_en_arriere_plan'];
     usleep(100000); /* on calme le jeu pendant 100ms */
-    $data[__xst]='OK';
+    $data[__xst]=true;
 }
 /*
   =====================================================================================================================

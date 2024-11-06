@@ -396,14 +396,14 @@ function recupere_une_donnees_des_cibles($id){
    $chemin_fichier_acces_pour_bdd=realpath($dossier_racine.'/fta_inc/db/__liste_des_acces_bdd.php');
 
    $contenu_fichier_acces_pour_bdd='';
-   $contenu_fichier_acces_pour_bdd.='<'.'?php'.CRLF;
-   $contenu_fichier_acces_pour_bdd.='$GLOBALS[BDD][1]=array('.CRLF;
-   $contenu_fichier_acces_pour_bdd.=' \'id\'             => 1,'.CRLF;
-   $contenu_fichier_acces_pour_bdd.=' \'nom_bdd\'        => \'system.db\','.CRLF;
-   $contenu_fichier_acces_pour_bdd.=' \'fournisseur\'    => \'sqlite\','.CRLF;
-   $contenu_fichier_acces_pour_bdd.=' \'initialisation\' => \'attach database "'.str_replace('\\','\\\\',$chemin_base_systeme).'" as "system.db"\','.CRLF;
-   $contenu_fichier_acces_pour_bdd.=' \'lien\' => null,'.CRLF;
-   $contenu_fichier_acces_pour_bdd.=');'.CRLF;
+   $contenu_fichier_acces_pour_bdd.='<'.'?php'.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.='$GLOBALS[BDD][1]=array('.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=' \'id\'             => 1,'.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=' \'nom_bdd\'        => \'system.db\','.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=' \'fournisseur\'    => \'sqlite\','.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=' \'initialisation\' => \'attach database "'.str_replace('\\','\\\\',$chemin_base_systeme).'" as "system.db"\','.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=' \'lien\' => null,'.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=');'.PHP_EOL;
    
 
    if($fd=fopen($chemin_fichier_acces_pour_bdd,'w')){
@@ -1061,17 +1061,17 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   /*
   http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=2&__action=__suppression
   */
- $o1.=' <form method="post" class="yyformDelete">'.CRLF;
- $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
- $o1.='   veuillez confirmer le suppression de  : '.CRLF;
+ $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
+ $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
+ $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
  $o1.='   <br /><br /><b>'.
        '('.$__valeurs['T0.chi_id_cible'].') : nom : ' .$__valeurs['T0.chp_nom_cible'].' , dossier : ' .$__valeurs['T0.chp_dossier_cible'].'  <br /> '.
-       '</b><br />'.CRLF;
- $o1.='   <input type="hidden" value="'.$_GET['__id'].'" name="__id1" id="__id1" />'.CRLF;
- $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.CRLF;
- $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.CRLF;
- $o1.=''.CRLF;
- $o1.=' </form>'.CRLF;
+       '</b><br />'.PHP_EOL;
+ $o1.='   <input type="hidden" value="'.$_GET['__id'].'" name="__id1" id="__id1" />'.PHP_EOL;
+ $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
+ $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
+ $o1.=''.PHP_EOL;
+ $o1.=' </form>'.PHP_EOL;
 
 }else if(isset($_GET['__action'])&&$_GET['__action']=='__creation'){
 
@@ -1082,46 +1082,46 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
 
-  $o1.='<h2>ajouter une cible</h2>'.CRLF;
+  $o1.='<h2>ajouter une cible</h2>'.PHP_EOL;
 
-  $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.CRLF;
+  $o1.='<form method="post"  enctype="multipart/form-data" class="form1">'.PHP_EOL;
 
   $chp_nom_cible =isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']:'';
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_cible).'" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="max-width:3em;" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_nom_cible).'" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="max-width:3em;" />'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
   $chp_dossier_cible =isset($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']:'';
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_dossier_cible).'" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="max-width:3em;" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <input type="text" autofocus="autofocus" value="'.enti1($chp_dossier_cible).'" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="max-width:3em;" />'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
 
 
   $chp_commentaire_cible =isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] )?$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']:'';
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.enti1($chp_commentaire_cible,ENT_COMPAT).'</textarea>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.enti1($chp_commentaire_cible,ENT_COMPAT).'</textarea>'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
 
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <button type="submit">enregistrer</button>'.CRLF;
-  $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.CRLF;
-  $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <button type="submit">enregistrer</button>'.PHP_EOL;
+  $o1.='   <input type="hidden" value="0" name="__id1" id="__id1" />'.PHP_EOL;
+  $o1.='   <input type="hidden" value="__creation" name="__action" id="__action" />'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
-  $o1.='</form>'.CRLF;
+  $o1.='</form>'.PHP_EOL;
 
 }else if(isset($_GET['__action'])&&$_GET['__action']=='__modification'){
 
@@ -1132,7 +1132,7 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   */
 
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
-  $o1.='<h2>modifier une cible</h2>'.CRLF;
+  $o1.='<h2>modifier une cible</h2>'.PHP_EOL;
 
   $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']=$__id;
   $__valeurs['T0.chp_nom_cible']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']        ??$__valeurs['T0.chp_nom_cible'];
@@ -1140,73 +1140,73 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   
   $__valeurs['T0.chp_commentaire_cible']  =$_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']??$__valeurs['T0.chp_commentaire_cible'];
   
-  $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
+  $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
 
-  $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.CRLF;
-  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
+  $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
+  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
   
 
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">id</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <span>'.$__id.'</span>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1">'.PHP_EOL;
+  $o1.='   <div style="word-break:break-word;">id</div>'.PHP_EOL;
+  $o1.='  </div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <span>'.$__id.'</span>'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
   
   if($__id!='1'){
-   $o1.=' <div class="yyfdiv1">'.CRLF;
-   $o1.='  <div class="yyflab1">'.CRLF;
-   $o1.='   <div style="word-break:break-word;">nom</div>'.CRLF;
-   $o1.='  </div>'.CRLF;
-   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_cible']).'" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="width:100%;max-width:3em;" />'.CRLF;
-   $o1.='   <span>3 caractères écrits en minuscules</span>'.CRLF;
-   $o1.='  </div></div>'.CRLF;
-   $o1.=' </div>'.CRLF;
+   $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+   $o1.='  <div class="yyflab1">'.PHP_EOL;
+   $o1.='   <div style="word-break:break-word;">nom</div>'.PHP_EOL;
+   $o1.='  </div>'.PHP_EOL;
+   $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_cible']).'" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="width:100%;max-width:3em;" />'.PHP_EOL;
+   $o1.='   <span>3 caractères écrits en minuscules</span>'.PHP_EOL;
+   $o1.='  </div></div>'.PHP_EOL;
+   $o1.=' </div>'.PHP_EOL;
    
-   $o1.=' <div class="yyfdiv1">'.CRLF;
-   $o1.='  <div class="yyflab1">'.CRLF;
-   $o1.='   <div style="word-break:break-word;">dossier</div>'.CRLF;
-   $o1.='  </div>'.CRLF;
-   $o1.='  <div class="yyfinp1"><div>'.CRLF;
-   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_dossier_cible']).'" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="width:100%;max-width:3em;" />'.CRLF;
-   $o1.='   <span>3 caractères écrits en minuscules</span>'.CRLF;
-   $o1.='  </div></div>'.CRLF;
-   $o1.=' </div>'.CRLF;
+   $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+   $o1.='  <div class="yyflab1">'.PHP_EOL;
+   $o1.='   <div style="word-break:break-word;">dossier</div>'.PHP_EOL;
+   $o1.='  </div>'.PHP_EOL;
+   $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+   $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_dossier_cible']).'" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="width:100%;max-width:3em;" />'.PHP_EOL;
+   $o1.='   <span>3 caractères écrits en minuscules</span>'.PHP_EOL;
+   $o1.='  </div></div>'.PHP_EOL;
+   $o1.=' </div>'.PHP_EOL;
    
    
    
   }
 
-  $o1.=' <div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyflab1">'.CRLF;
-  $o1.='   <div style="word-break:break-word;">commentaire</div>'.CRLF;
-  $o1.='   <div style="font-weight: normal;">texte libre</div>'.CRLF;
-  $o1.='  </div>'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.enti1($__valeurs['T0.chp_commentaire_cible'],ENT_COMPAT).'</textarea>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.=' </div>'.CRLF;
+  $o1.=' <div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyflab1">'.PHP_EOL;
+  $o1.='   <div style="word-break:break-word;">commentaire</div>'.PHP_EOL;
+  $o1.='   <div style="font-weight: normal;">texte libre</div>'.PHP_EOL;
+  $o1.='  </div>'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >'.enti1($__valeurs['T0.chp_commentaire_cible'],ENT_COMPAT).'</textarea>'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.=' </div>'.PHP_EOL;
 
 
 
-  $o1.='<div class="yyfdiv1">'.CRLF;
-  $o1.='  <div class="yyfinp1"><div>'.CRLF;
-  $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.CRLF;
-  $o1.='  </div></div>'.CRLF;
-  $o1.='</div>'.CRLF;
+  $o1.='<div class="yyfdiv1">'.PHP_EOL;
+  $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+  $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.PHP_EOL;
+  $o1.='  </div></div>'.PHP_EOL;
+  $o1.='</div>'.PHP_EOL;
 
-  $o1.='</form>'.CRLF;
+  $o1.='</form>'.PHP_EOL;
   
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( basename(dirname(dirname(__FILE__))) , true ) . '</pre>' ; exit(0);
   
   /*debutspécifiquefta*/
   if(APP_KEY==='fta' && basename(dirname(__FILE__,2))==='fta' && $__valeurs['T0.chp_nom_cible']==='fta' && $__valeurs['T0.chp_dossier_cible']==='fta' ){
-    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
-    $o1.='   <button name="__copier_les_fichiers_de_base_dans_ftb" class="">copier les fichiers de base dans ftb</button>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
+    $o1.='   <button name="__copier_les_fichiers_de_base_dans_ftb" class="">copier les fichiers de base dans ftb</button>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
   }
   /*finspécifiquefta*/
   
@@ -1214,38 +1214,38 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $dossier='../../'.$__valeurs['T0.chp_dossier_cible'];
   
   if(is_dir($dossier)){
-   $o1.='le dossier existe '.CRLF;
+   $o1.='le dossier existe '.PHP_EOL;
    
    if(le_dossier_est_vide($dossier)){
     
-    $o1.='<br />le dossier '.$dossier.' est vide'.CRLF;
-    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
-    $o1.=' <input type="hidden" value="__suppression_du_dossier" name="__action" id="__action" />'.CRLF;
-    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
-    $o1.='<div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <button type="submit" class="">supprimer le dossier</button>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.='</div>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.='<br />le dossier '.$dossier.' est vide'.PHP_EOL;
+    $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
+    $o1.=' <input type="hidden" value="__suppression_du_dossier" name="__action" id="__action" />'.PHP_EOL;
+    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
+    $o1.='<div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <button type="submit" class="">supprimer le dossier</button>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.='</div>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
    
    
    }else{
-    $o1.='<br />le dossier '.$dossier.' contient des fichiers ou des dossiers '.CRLF;
+    $o1.='<br />le dossier '.$dossier.' contient des fichiers ou des dossiers '.PHP_EOL;
    }
   
    
   }else{
-    $o1.='le dossier '.$dossier.' n\'existe pas '.CRLF;
-    $o1.='<form method="post" enctype="multipart/form-data">'.CRLF;
-    $o1.=' <input type="hidden" value="__creation_du_dossier" name="__action" id="__action" />'.CRLF;
-    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.CRLF;
-    $o1.='<div class="yyfdiv1">'.CRLF;
-    $o1.='  <div class="yyfinp1"><div>'.CRLF;
-    $o1.='   <button type="submit" class="">créer le dossier</button>'.CRLF;
-    $o1.='  </div></div>'.CRLF;
-    $o1.='</div>'.CRLF;
-    $o1.='</form>'.CRLF;
+    $o1.='le dossier '.$dossier.' n\'existe pas '.PHP_EOL;
+    $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
+    $o1.=' <input type="hidden" value="__creation_du_dossier" name="__action" id="__action" />'.PHP_EOL;
+    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
+    $o1.='<div class="yyfdiv1">'.PHP_EOL;
+    $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
+    $o1.='   <button type="submit" class="">créer le dossier</button>'.PHP_EOL;
+    $o1.='  </div></div>'.PHP_EOL;
+    $o1.='</div>'.PHP_EOL;
+    $o1.='</form>'.PHP_EOL;
   }
 
 

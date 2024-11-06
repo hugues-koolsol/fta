@@ -2197,38 +2197,6 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
      }else{
        return php_logerr({__xst:false,__xva:t,id:j,tab:tab,__xme:'erreur 1858 dans php_traiteAppelFonction '});
      }
-/*     
-     // cas ou le paramètre d'une fonction est une fonction
-     if(tab[j][8]==1 && tab[j+1][2]=='f' ){
-      if(tab[j+1][1]=='appelf'){
-       obj=php_traiteAppelFonction(tab,j+1,true,niveau);
-       if(obj.__xst==true){
-        argumentsFonction+=','+obj.__xva;
-       }else{
-        return php_logerr({__xst:false,__xva:t,id:j,tab:tab,__xme:'erreur dans un appel de fonction imbriqué 1'});
-       }
-      }else if(tab[j+1][1]=='concat'){
-       obj=php_traiteConcat(tab,j+1,niveau);
-       if(obj.__xst==true){
-        argumentsFonction+=','+obj.__xva+'';
-       }else{
-        return php_logerr({__xst:false,__xva:t,id:j,tab:tab,__xme:'erreur dans un appel de fonction imbriqué 1'});
-       }
-
-      }else if(tab[j+1][1]=='tableau'){
-       
-       obj=php_traiteTableau1(tab,j+1,niveau);
-       if(obj.__xst==true){
-        argumentsFonction+=','+obj.__xva+'';
-       }else{
-        return php_logerr({__xst:false,__xva:t,id:j,tab:tab,__xme:'erreur dans un appel de fonction imbriqué 1'});
-       }
-      
-      }else{
-       return php_logerr({__xst:false,__xva:t,id:j,tab:tab,__xme:' 1668 erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue '+tab[j+1][1]});
-      }
-     }
-*/     
     }
    }
   }

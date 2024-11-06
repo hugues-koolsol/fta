@@ -1621,12 +1621,12 @@ class requete_sql{
                 logerreur({__xst:false,__xme:'url=' + url});
                 logerreur({__xst:false,__xme:JSON.stringify(en_entree)});
                 logerreur({__xst:false,__xme:JSON.stringify(donnees)});
-                return({__xst:'KO',__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
+                return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
             }
         }catch(e){
             debugger;
             console.log('e=',e);
-            return({__xst:'KO',__xme:e.message});
+            return({__xst:false,__xme:e.message});
         }
     }
     /*
@@ -1657,9 +1657,9 @@ class requete_sql{
                 };
                 modifier_la_requete_en_base(this.#globale_debut_url+'?modifier_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=',donnees);
-                    if(donnees.__xst === 'OK'){
+                    if(donnees.__xst === true){
                         logerreur({__xst:true,__xme:' requête sauvegardée'});
-                        console.log('OK');
+                        console.log(true);
                     }else{
                         console.log('donnees=',donnees);
                         logerreur({__xst:false,__xme:' il y a eu un problème lors de la sauvegarde de la requête'});
@@ -1702,7 +1702,7 @@ class requete_sql{
                 };
                 enregistrer_la_requete_en_base(this.#globale_debut_url+'?enregistrer_la_requete_en_base',ajax_param,this).then((donnees) => {
                     console.log('donnees=',donnees);
-                    if(donnees.__xst === 'OK'){
+                    if(donnees.__xst === true){
                         var recharger_page = 'zz_requetes_a1.php?__action=__modification&__id=' + donnees.nouvel_id;
                         window.location=recharger_page;
                         return;
@@ -1953,7 +1953,7 @@ class requete_sql{
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.__xva);
             var nom_de_la_table = this.#obj_webs['ordre_des_tables'][0]['nom_de_la_table'];
             var champs_bdd = this.#obj_webs['tableau_des_bases_tables_champs'][obj3.id_base_principale][nom_de_la_table].champs;
-            t+='    $texte_sql_' + id_requete_en_base + '=\'UPDATE `\'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][\'nom_bdd\'].\'`.`' + nom_de_la_table + '` SET \'.CRLF;' + CRLF;
+            t+='    $texte_sql_' + id_requete_en_base + '=\'UPDATE `\'.$GLOBALS[BDD][BDD_' + obj3.id_base_principale + '][\'nom_bdd\'].\'`.`' + nom_de_la_table + '` SET \'.PHP_EOL;' + CRLF;
             var liste_des_champs_pour_update='';
             var lng_max=0;
             var champ_sortie=0;
@@ -2012,7 +2012,7 @@ class requete_sql{
                                     }
                                 }
                             }
-                            liste_des_champs_pour_update+='    $texte_sql_' + id_requete_en_base + '.=\' `' + nom_du_champ + '` = ' + valeur_du_champ + ' \'.CRLF;' + CRLF;
+                            liste_des_champs_pour_update+='    $texte_sql_' + id_requete_en_base + '.=\' `' + nom_du_champ + '` = ' + valeur_du_champ + ' \'.PHP_EOL;' + CRLF;
                         }
                     }
                 }else if(this.#obj_webs['champs_sortie'][champ_sortie].type_d_element === 'champ'){
@@ -2033,7 +2033,7 @@ class requete_sql{
                         if(champ_sortie < (this.#obj_webs['champs_sortie'].length - 1)){
                             liste_des_champs_pour_update+=' ,';
                         }
-                        liste_des_champs_pour_update+=' \'.CRLF;' + CRLF;
+                        liste_des_champs_pour_update+=' \'.PHP_EOL;' + CRLF;
                     }else{
                         liste_des_champs_pour_update+='    if($par[\'n_' + nom_du_champ + '\']===\'\' || $par[\'n_' + nom_du_champ + '\']===NULL ){' + CRLF;
                         liste_des_champs_pour_update+='        $texte_sql_' + id_requete_en_base + '.=\'    `' + nom_du_champ + '`' + rpt + ' = NULL';
@@ -2041,13 +2041,13 @@ class requete_sql{
                         if(champ_sortie < (this.#obj_webs['champs_sortie'].length - 1)){
                             liste_des_champs_pour_update+=' ,';
                         }
-                        liste_des_champs_pour_update+=' \'.CRLF;' + CRLF;
+                        liste_des_champs_pour_update+=' \'.PHP_EOL;' + CRLF;
                         liste_des_champs_pour_update+='    }else{' + CRLF;
                         liste_des_champs_pour_update+='        $texte_sql_' + id_requete_en_base + '.=\'    `' + nom_du_champ + '`' + rpt + ' = ' + encadrement_variable + '\'.sq0($par[\'n_' + nom_du_champ + '\']).\'' + encadrement_variable + '';
                         if(champ_sortie < (this.#obj_webs['champs_sortie'].length - 1)){
                             liste_des_champs_pour_update+=' ,';
                         }
-                        liste_des_champs_pour_update+=' \'.CRLF;' + CRLF;
+                        liste_des_champs_pour_update+=' \'.PHP_EOL;' + CRLF;
                         liste_des_champs_pour_update+='    }' + CRLF;
                     }
                 }
@@ -2062,7 +2062,7 @@ class requete_sql{
                   les conditions dans un select list sont soit une seule conditions, soit une liste contenue dans un et[] 
                   Il n'y a alors qu'une seule formule
                 */
-                t+='    $where0=\' WHERE 1=1 \'.CRLF;' + CRLF;
+                t+='    $where0=\' WHERE 1=1 \'.PHP_EOL;' + CRLF;
                 var formule=this.#obj_webs.conditions[0].formule;
                 tableau_des_conditions=this.#obtenir_le_tableau_des_conditions(this.#obj_webs.conditions[0].formule,obj3);
             }
@@ -2070,7 +2070,7 @@ class requete_sql{
             for(i=0;i < tableau_des_conditions.length;i++){
                 var elem=tableau_des_conditions[i];
                 if(elem.type_condition === 'constante'){
-                    t+='    $where0.=\' AND ' + elem.valeur.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'.CRLF;' + CRLF;
+                    t+='    $where0.=\' AND ' + elem.valeur.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'.PHP_EOL;' + CRLF;
                 }else if(elem.type_condition === 'variable'){
                     if(((elem.type.toLowerCase() === 'integer')
                      || (elem.type.toLowerCase() === 'int'))
@@ -2079,7 +2079,7 @@ class requete_sql{
                     ){
                         t+='    $where0.=CRLF.construction_where_sql_sur_id(\'' + elem.nom_du_champ_pour_where + '\',' + elem.condition + ');' + CRLF;
                     }else{
-                        t+='    $where0.=\' AND ' + elem.valeur + '\'.CRLF;' + CRLF;
+                        t+='    $where0.=\' AND ' + elem.valeur + '\'.PHP_EOL;' + CRLF;
                     }
                 }
             }
@@ -2136,7 +2136,7 @@ class requete_sql{
                   les conditions dans un select list sont soit une seule conditions, soit une liste contenue dans un et[] 
                   Il n'y a alors qu'une seule formule
                 */
-                t+='    $where0=\' WHERE 1=1 \'.CRLF;' + CRLF;
+                t+='    $where0=\' WHERE 1=1 \'.PHP_EOL;' + CRLF;
                 var formule=this.#obj_webs.conditions[0].formule;
                 tableau_des_conditions=this.#obtenir_le_tableau_des_conditions(this.#obj_webs.conditions[0].formule,obj3);
             }
@@ -2144,15 +2144,15 @@ class requete_sql{
             for(i=0;i < tableau_des_conditions.length;i++){
                 var elem=tableau_des_conditions[i];
                 if(elem.type_condition === 'constante'){
-                    t+='    $where0.=\' AND ' + elem.valeur + '\'.CRLF;' + CRLF;
+                    t+='    $where0.=\' AND ' + elem.valeur + '\'.PHP_EOL;' + CRLF;
                 }else if(elem.type_condition === 'variable'){
                     if(((elem.type.toLowerCase() === 'integer') || (elem.type.toLowerCase() === 'int')) && (elem.operation === 'egal')){
-                        t+='    $where0.=CRLF.construction_where_sql_sur_id(\'' + elem.nom_du_champ_pour_where + '\',' + elem.condition + ');' + CRLF;
+                        t+='    $where0.=PHP_EOL.construction_where_sql_sur_id(\'' + elem.nom_du_champ_pour_where + '\',' + elem.condition + ');' + CRLF;
                     }else{
                         if(elem.operation === 'dans'){
-                            t+='    $where0.=\' AND ' + elem.valeur + '\'.CRLF;' + CRLF;
+                            t+='    $where0.=\' AND ' + elem.valeur + '\'.PHP_EOL;' + CRLF;
                         }else{
-                            t+='    $where0.=\' AND ' + elem.valeur + '\'.CRLF;' + CRLF;
+                            t+='    $where0.=\' AND ' + elem.valeur + '\'.PHP_EOL;' + CRLF;
                         }
                     }
                 }
@@ -2248,7 +2248,7 @@ class requete_sql{
                   les conditions dans un select list sont soit une seule conditions, soit une liste contenue dans un et[] 
                   Il n'y a alors qu'une seule formule
                 */
-                t+='    $where0=\' WHERE 1=1 \'.CRLF;' + CRLF;
+                t+='    $where0=\' WHERE 1=1 \'.PHP_EOL;' + CRLF;
                 var formule=this.#obj_webs.conditions[0].formule;
                 var tableau1 = iterateCharacters2(formule);
                 var matriceFonction = functionToArray2(tableau1.out,true,true,'');
@@ -2327,13 +2327,13 @@ class requete_sql{
             for(i=0;i < tableau_des_conditions.length;i++){
                 var elem=tableau_des_conditions[i];
                 if(elem.type_condition === 'constante'){
-                    t+='    $where0.=\' AND ' + elem.valeur + '\'.CRLF;' + CRLF;
+                    t+='    $where0.=\' AND ' + elem.valeur + '\'.PHP_EOL;' + CRLF;
                 }else if(elem.type_condition === 'variable'){
                     t+='    if((' + elem.condition + ' !== \'\')){' + CRLF;
                     if(((elem.type.toLowerCase() === 'integer') || (elem.type.toLowerCase() === 'int')) && (elem.operation === 'egal')){
                         t+='        $where0.=CRLF.construction_where_sql_sur_id(\'' + elem.nom_du_champ_pour_where + '\',' + elem.condition + ');' + CRLF;
                     }else{
-                        t+='        $where0.=\' AND ' + elem.valeur + '\'.CRLF;' + CRLF;
+                        t+='        $where0.=\' AND ' + elem.valeur + '\'.PHP_EOL;' + CRLF;
                     }
                     t+='    }' + CRLF;
                 }
@@ -2509,7 +2509,7 @@ class requete_sql{
         }
         var ajax_param={'call':{'lib':'core','file':'bdd','funct':'recuperer_les_bases_de_la_cible_en_cours'}};
         recuperer_les_bases_de_la_cible_en_cours(this.#globale_debut_url+'?recuperer_les_bases_de_la_cible_en_cours',ajax_param,this).then((donnees) => {
-            if(donnees.__xst === 'OK'){
+            if(donnees.__xst === true){
                 console.log('bases_chargées');
                 this.#obj_init['bases']={};
                 var i={};

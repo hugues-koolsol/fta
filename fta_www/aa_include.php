@@ -10,12 +10,7 @@ define('LIEN_BDD','LIEN_BDD');
 define('BDD','BDD');
 $GLOBALS[BDD]=array();
 define('NAV','NAV');
-/*
-PHP_EOL = \r\n
-*/
 define('CRLF',"\r\n");
-define('OK','OK');
-define('MESSAGES','messages');
 define('INPUT','input');
 define('VALUE','value');
 define('TAILLE_MAXI_SOURCE',512000);
@@ -197,18 +192,18 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
 
    if(($__nbEnregs > 0)){
 
-       $o1.='<form class="yylistForm1" method="post">'.CRLF;
+       $o1.='<form class="yylistForm1" method="post">'.PHP_EOL;
        $o1.=$boutons_avant;
-       $o1.=$__bouton_enregs_prec.CRLF.$__bouton_enregs_suiv.CRLF.' <div style="display:inline-block;">'.CRLF;
-       $o1.='  page '.number_format((($__xpage+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )'.CRLF;
-       $o1.=' </div>'.CRLF;
-       $o1.='</form>'.CRLF;
+       $o1.=$__bouton_enregs_prec.PHP_EOL.$__bouton_enregs_suiv.PHP_EOL.' <div style="display:inline-block;">'.PHP_EOL;
+       $o1.='  page '.number_format((($__xpage+1)),0,',' , ' ').'/'.number_format(ceil($__nbEnregs/($__nbMax)),0,',' , ' ').' ('.number_format($__nbEnregs,0,',' , ' ').' enregistrements )'.PHP_EOL;
+       $o1.=' </div>'.PHP_EOL;
+       $o1.='</form>'.PHP_EOL;
 
    }else{
 
        $o1.='<form class="yylistForm1 yyavertissement" method="post">';
        $o1.=$boutons_avant;
-       $o1.='Aucun enregistrement trouvé</form>'.CRLF;
+       $o1.='Aucun enregistrement trouvé</form>'.PHP_EOL;
    }
 
 
@@ -221,8 +216,8 @@ function construire_navigation_pour_liste($__debut , $__nbMax , $__nbEnregs , $c
   =====================================================================================================================
 */
 function html_du_bouton_rechercher_pour_les_listes(){
- $o='    <label for="button_chercher">rechercher</label>'.CRLF;
- $o.='    <button id="button_chercher" name="button_chercher" type="submit" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche" value="0">🔎</button>'.CRLF;
+ $o='    <label for="button_chercher">rechercher</label>'.PHP_EOL;
+ $o.='    <button id="button_chercher" name="button_chercher" type="submit" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche" value="0">🔎</button>'.PHP_EOL;
  return $o;
 }
 
@@ -565,7 +560,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
   =====================================================================================================================
 */
 
-function recupereLesMessagesDeSession($f){
+function recupere_les_messages_de_session($bnf){
     $les_messages_a_afficher='';
     $tableauTypeMessage=array(
         'normal',
@@ -574,20 +569,22 @@ function recupereLesMessagesDeSession($f){
         'erreur',
         'danger',
         'avertissement');
+    $visible='hidden';
     foreach($tableauTypeMessage as $v1){
 
-        if((isset($_SESSION[APP_KEY][NAV][$f][$v1]))){
+        if((isset($_SESSION[APP_KEY][NAV][$bnf][$v1]))){
 
 
-            if((count($_SESSION[APP_KEY][NAV][$f][$v1]) > 0)){
+            if((count($_SESSION[APP_KEY][NAV][$bnf][$v1]) > 0)){
 
-                foreach($_SESSION[APP_KEY][NAV][$f][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                foreach($_SESSION[APP_KEY][NAV][$bnf][$v1] as $kerr => $verr){
+                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.PHP_EOL;
+                    $visible='visible;';
                 }
 
             }
 
-            unset($_SESSION[APP_KEY][NAV][$f][$v1]);
+            unset($_SESSION[APP_KEY][NAV][$bnf][$v1]);
 
         }
 
@@ -598,7 +595,8 @@ function recupereLesMessagesDeSession($f){
             if((count($_SESSION[APP_KEY][NAV][$v1]) > 0)){
 
                 foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
-                     $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.CRLF;
+                     $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.PHP_EOL;
+                     $visible='visible;';
                 }
 
             }
@@ -609,7 +607,7 @@ function recupereLesMessagesDeSession($f){
 
     }
 
-    return($les_messages_a_afficher);
+    return(array( $visible , $les_messages_a_afficher));
 
 }
 /*===================================================================================================================*/
@@ -657,12 +655,12 @@ function html_header1($parametres){
         ob_start();
     }
     $o1='';
-    $o1.='<!DOCTYPE HTML>'.CRLF;
-    $o1.='<html lang="fr">'.CRLF;
-    $o1.=' <head>'.CRLF;
-    $o1.='  <meta charset="utf-8" />'.CRLF;
-    $o1.='  <title>'.(($parametres['title']??'titre de la page à compléter')).'</title>'.CRLF;
-    $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.CRLF;
+    $o1.='<!DOCTYPE HTML>'.PHP_EOL;
+    $o1.='<html lang="fr">'.PHP_EOL;
+    $o1.=' <head>'.PHP_EOL;
+    $o1.='  <meta charset="utf-8" />'.PHP_EOL;
+    $o1.='  <title>'.(($parametres['title']??'titre de la page à compléter')).'</title>'.PHP_EOL;
+    $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;
 
     /*
       attention, les variables css ajoutent un espace dans le css
@@ -759,115 +757,111 @@ function html_header1($parametres){
 
 
 
-    $texte_base_css=CRLF;
-    $texte_base_css.='<style type="text/css">:root{'.CRLF;
-    $texte_base_css.='--yyvtrg:'.$le_biscuit['--yyvtrg'].';'.CRLF;
-    $texte_base_css.='--yyvtrt:'.$le_biscuit['--yyvtrt'].'; /* taille de référence du texte */'.CRLF;
-    $texte_base_css.='--yyvtrp:'.$le_biscuit['--yyvtrp'].'; /* taille de référence du espaces ( padding ) */'.CRLF;
-    $texte_base_css.='--yyvtrb:'.$le_biscuit['--yyvtrb'].'; /* taille de référence des bordures */'.CRLF;
-    $texte_base_css.='--yyvtrm:'.$le_biscuit['--yyvtrm'].'; /* taille de référence dus marges */'.CRLF;
-    $texte_base_css.='--yyvhmb:'.$le_biscuit['--yyvhmb'].'; /* hauteur minimales des boutons */'.CRLF;
-    $texte_base_css.='--yyvhal:'.$le_biscuit['--yyvhal'].'; /* hauteur de ligne */'.CRLF;
-    $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].'; /* hauteur du menu à défilement */'.CRLF;
-    $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].'; /* hauteur des grands boutons ( quitter et index ) */'.CRLF;
-    $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.CRLF;
-    $texte_base_css.='}</style>'.CRLF;
+    $texte_base_css=PHP_EOL;
+    $texte_base_css.='<style type="text/css">:root{'.PHP_EOL;
+    $texte_base_css.='--yyvtrg:'.$le_biscuit['--yyvtrg'].';'.PHP_EOL;
+    $texte_base_css.='--yyvtrt:'.$le_biscuit['--yyvtrt'].'; /* taille de référence du texte */'.PHP_EOL;
+    $texte_base_css.='--yyvtrp:'.$le_biscuit['--yyvtrp'].'; /* taille de référence du espaces ( padding ) */'.PHP_EOL;
+    $texte_base_css.='--yyvtrb:'.$le_biscuit['--yyvtrb'].'; /* taille de référence des bordures */'.PHP_EOL;
+    $texte_base_css.='--yyvtrm:'.$le_biscuit['--yyvtrm'].'; /* taille de référence dus marges */'.PHP_EOL;
+    $texte_base_css.='--yyvhmb:'.$le_biscuit['--yyvhmb'].'; /* hauteur minimales des boutons */'.PHP_EOL;
+    $texte_base_css.='--yyvhal:'.$le_biscuit['--yyvhal'].'; /* hauteur de ligne */'.PHP_EOL;
+    $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].'; /* hauteur du menu à défilement */'.PHP_EOL;
+    $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].'; /* hauteur des grands boutons ( quitter et index ) */'.PHP_EOL;
+    $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.PHP_EOL;
+    $texte_base_css.='}</style>'.PHP_EOL;
 
 
     $o1.=$texte_base_css;
 
-    $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.CRLF;
-    $o1.='<script type="text/javascript">'.CRLF;
-    $o1.=' const __debut_execution=performance.now();'.CRLF;
-    $o1.=' const APP_KEY=\''.APP_KEY.'\';'.CRLF;
-    $o1.=' const __xst=\'__xst\';'.CRLF;
-    $o1.=' const __xme=\'__xme\';'.CRLF;
-    $o1.=' const __xms=\'__xms\';'.CRLF;
-    $o1.=' const __xva=\'__xva\';'.CRLF;
+    $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.PHP_EOL;
+    $o1.='<script type="text/javascript">'.PHP_EOL;
+    $o1.=' const __debut_execution=performance.now();'.PHP_EOL;
+    $o1.=' const APP_KEY=\''.APP_KEY.'\';'.PHP_EOL;
+    $o1.=' const __xst=\'__xst\';'.PHP_EOL;
+    $o1.=' const __xme=\'__xme\';'.PHP_EOL;
+    $o1.=' const __xms=\'__xms\';'.PHP_EOL;
+    $o1.=' const __xva=\'__xva\';'.PHP_EOL;
     
     
-    $o1.=' const CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.CRLF;
-    $o1.=' const CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.CRLF;
-    $o1.=' const CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.CRLF;
-    $o1.=' const CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.CRLF;
-    $o1.=' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.CRLF;
+    $o1.=' const CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.PHP_EOL;
+    $o1.=' const CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.PHP_EOL;
+    $o1.=' const CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.PHP_EOL;
+    $o1.=' const CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.PHP_EOL;
+    $o1.=' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.PHP_EOL;
 
-    $o1.='</script>'.CRLF;
-    $o1.='<script type="text/javascript" rel="preload" as="script" src="js/interface0.js"></script>'.CRLF;
-    $o1.='<script type="module" src="js/module_interface1.js"></script>'.CRLF;
-    $o1.=''.CRLF;
+    $o1.='</script>'.PHP_EOL;
+    $o1.='<script type="text/javascript" rel="preload" as="script" src="js/interface0.js"></script>'.PHP_EOL;
+    $o1.='<script type="module" src="js/module_interface1.js"></script>'.PHP_EOL;
+    $o1.=''.PHP_EOL;
 
-    $o1.=' </head>'.CRLF;
-    $o1.=' <body>'.CRLF;
+    $o1.=' </head>'.PHP_EOL;
+    $o1.=' <body>'.PHP_EOL;
     /*
       pour la phase de conception
-      $o1.='<!-- '.$texte_base_css.' -->'.CRLF;
+      $o1.='<!-- '.$texte_base_css.' -->'.PHP_EOL;
     */
 
 
     if(( !(isset($parametres['pas_de_menu'])))){
 
-        $o1.='  <nav id="navbar" class="yynavbar">'.CRLF;
-        $o1.='    <div style="min-width:'.($css_hauteur_grands_boutons*2+4*$css_taille_reference_margin).'px;">'.CRLF;
-        $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.(('index.php' === BNF)?'yymenusel1':'').'" title="page d\'accueil" style="">&#127968;</a>'.CRLF;
-        $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()">💬</a>'.CRLF;
-        $o1.='    </div>'.CRLF;
-        $o1.='    <div id="menuPrincipal" class="menuScroller">'.CRLF;
-        $o1.='      <div>'.CRLF;
-        $o1.='        <ul>'.CRLF;
+        $o1.='  <nav id="navbar" class="yynavbar">'.PHP_EOL;
+        $o1.='    <div style="min-width:'.($css_hauteur_grands_boutons*2+4*$css_taille_reference_margin).'px;">'.PHP_EOL;
+        $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.(('index.php' === BNF)?'yymenusel1':'').'" title="page d\'accueil" style="">&#127968;</a>'.PHP_EOL;
+        $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()">💬</a>'.PHP_EOL;
+        $o1.='    </div>'.PHP_EOL;
+        $o1.='    <div id="menuPrincipal" class="menuScroller">'.PHP_EOL;
+        $o1.='      <div>'.PHP_EOL;
+        $o1.='        <ul>'.PHP_EOL;
         $idMenu=0;
 
         if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
 
-            $o1.='          <li><a class="yytbfixe '.(('traiteHtml.php' === BNF)?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.($idMenu++).'">HTML</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('traiteJs.php' === BNF)?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('traitePhp.php' === BNF)?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('traiteSql.php' === BNF)?'yymenusel1':'').'" href="traiteSql.php?idMenu='.($idMenu++).'">SQL</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('index_source.php' === BNF)?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('zz_taches_l1.php' === BNF)?'yymenusel1':'').'" href="zz_taches_l1.php?idMenu='.($idMenu++).'&chp_priorite_tache2=99">tâches</a></li>'.CRLF;
-            $o1.='          <li><a class="yytbfixe '.(('zz_cibles_l1.php' === BNF)?'yymenusel1':'').'" href="zz_cibles_l1.php?idMenu='.($idMenu++).'">cibles</a></li>'.CRLF;
+            $o1.='          <li><a class="yytbfixe '.(('traiteHtml.php' === BNF)?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.($idMenu++).'">HTML</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.(('traiteJs.php' === BNF)?'yymenusel1':'').'" href="traiteJs.php?idMenu='.($idMenu++).'">JS</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.(('traitePhp.php' === BNF)?'yymenusel1':'').'" href="traitePhp.php?idMenu='.($idMenu++).'">PHP</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.(('traiteSql.php' === BNF)?'yymenusel1':'').'" href="traiteSql.php?idMenu='.($idMenu++).'">SQL</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.(('index_source.php' === BNF)?'yymenusel1':'').'" href="index_source.php?idMenu='.($idMenu++).'">REV</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.(('zz_taches_l1.php' === BNF)?'yymenusel1':'').'" href="zz_taches_l1.php?idMenu='.($idMenu++).'&chp_priorite_tache2=99">tâches</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.(('zz_cibles_l1.php' === BNF)?'yymenusel1':'').'" href="zz_cibles_l1.php?idMenu='.($idMenu++).'">cibles</a></li>'.PHP_EOL;
 
             if((isset($_SESSION[APP_KEY]['cible_courante']))){
 
-                $o1.='          <li><a class="yytbfixe '.(('zz_dossiers_l1.php' === BNF)?'yymenusel1':'').'" href="zz_dossiers_l1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_sources_l1.php' === BNF)?'yymenusel1':'').'" href="zz_sources_l1.php?idMenu='.($idMenu++).'">sources</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_bdds_l1.php' === BNF)?'yymenusel1':'').'" href="zz_bdds_l1.php?idMenu='.($idMenu++).'">bdds</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_requetes_l1.php' === BNF)?'yymenusel1':'').'" href="zz_requetes_l1.php?idMenu='.($idMenu++).'">rsql</a></li>'.CRLF;
-                $o1.='          <li><a class="yytbfixe '.(('zz_rev_l1.php' === BNF)?'yymenusel1':'').'" href="zz_revs_l1.php?idMenu='.($idMenu++).'">revs</a></li>'.CRLF;
+                $o1.='          <li><a class="yytbfixe '.(('zz_dossiers_l1.php' === BNF)?'yymenusel1':'').'" href="zz_dossiers_l1.php?idMenu='.($idMenu++).'">dossiers</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.(('zz_sources_l1.php' === BNF)?'yymenusel1':'').'" href="zz_sources_l1.php?idMenu='.($idMenu++).'">sources</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.(('zz_bdds_l1.php' === BNF)?'yymenusel1':'').'" href="zz_bdds_l1.php?idMenu='.($idMenu++).'">bdds</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.(('zz_requetes_l1.php' === BNF)?'yymenusel1':'').'" href="zz_requetes_l1.php?idMenu='.($idMenu++).'">rsql</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.(('zz_rev_l1.php' === BNF)?'yymenusel1':'').'" href="zz_revs_l1.php?idMenu='.($idMenu++).'">revs</a></li>'.PHP_EOL;
 
             }
 
 
         }
 
-        $o1.='        </ul>'.CRLF;
-        $o1.='      </div>'.CRLF;
-        $o1.='    </div>'.CRLF;
+        $o1.='        </ul>'.PHP_EOL;
+        $o1.='      </div>'.PHP_EOL;
+        $o1.='    </div>'.PHP_EOL;
 
         if((isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
 
-            $o1.='    <div class="">'.CRLF;
-            $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">🔑</a>'.CRLF;
-            $o1.='    </div>'.CRLF;
+            $o1.='    <div class="">'.PHP_EOL;
+            $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">🔑</a>'.PHP_EOL;
+            $o1.='    </div>'.PHP_EOL;
 
         }else if((BNF !== 'aa_login.php')){
 
-            $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>'.CRLF;
+            $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>'.PHP_EOL;
 
         }
 
 
-        $o1.='  </nav>'.CRLF;
+        $o1.='  </nav>'.PHP_EOL;
 
     }
 
-    $o1.='  <main id="contenuPrincipal">'.CRLF;
-    $les_messages=recupereLesMessagesDeSession(BNF);
-    if($les_messages!==''){
-      $o1.='   <div id="zone_global_messages" style="visibility:visible;">'.$les_messages.'</div>'.CRLF;
-    }else{
-      $o1.='   <div id="zone_global_messages" style="visibility:hidden;">'.$les_messages.'</div>'.CRLF;
-    }
+    $o1.='  <main id="contenuPrincipal">'.PHP_EOL;
+    $les_messages=recupere_les_messages_de_session(BNF);
+    $o1.='   <div id="zone_global_messages" style="visibility:'.$les_messages[0].';">'.$les_messages[1].'</div>'.PHP_EOL;
     return($o1);
 
 }
@@ -916,25 +910,25 @@ function supprimerLesParametresDeNavigationEnSession(){
 function html_footer1($parametres=array()){
 
     $o1='';
-    $o1.='</main>'.CRLF;
-    $o1.='<dialog id="modale1">'.CRLF.' <a id="__fermerModale1" href="javascript:__gi1.fermerModale2()" class="yydanger">×</a>'.CRLF;
-    $o1.=' <div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div>'.CRLF;
-    $o1.=' <div id="__contenu_modale">'.CRLF;
-    $o1.='  <iframe id="iframe_modale_1" src=""></iframe>'.CRLF;
-    $o1.=' </div>'.CRLF;
-    $o1.='</dialog>'.CRLF;
-    $o1.='<div id="bas_de_page">'.CRLF;
-    $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.CRLF;
+    $o1.='</main>'.PHP_EOL;
+    $o1.='<dialog id="modale1">'.PHP_EOL.' <a id="__fermerModale1" href="javascript:__gi1.fermerModale2()" class="yydanger">×</a>'.PHP_EOL;
+    $o1.=' <div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div>'.PHP_EOL;
+    $o1.=' <div id="__contenu_modale">'.PHP_EOL;
+    $o1.='  <iframe id="iframe_modale_1" src=""></iframe>'.PHP_EOL;
+    $o1.=' </div>'.PHP_EOL;
+    $o1.='</dialog>'.PHP_EOL;
+    $o1.='<div id="bas_de_page">'.PHP_EOL;
+    $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.PHP_EOL;
     if(!preg_match('/.*_a[0-9]+\\.php/',BNF)){
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A'.$GLOBALS['__le_biscuit']['--yyvtrt'].'</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p'.$GLOBALS['__le_biscuit']['--yyvtrp'].'</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b'.$GLOBALS['__le_biscuit']['--yyvtrb'].'</a>'.CRLF;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m'.$GLOBALS['__le_biscuit']['--yyvtrm'].'</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A'.$GLOBALS['__le_biscuit']['--yyvtrt'].'</a>'.PHP_EOL;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p'.$GLOBALS['__le_biscuit']['--yyvtrp'].'</a>'.PHP_EOL;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b'.$GLOBALS['__le_biscuit']['--yyvtrb'].'</a>'.PHP_EOL;
+        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m'.$GLOBALS['__le_biscuit']['--yyvtrm'].'</a>'.PHP_EOL;
 
-        $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.CRLF;
+        $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.PHP_EOL;
     }
-    $o1.='</div>'.CRLF;
-    $o1.='  <script type="text/javascript" defer src="js/core6.js"></script>'.CRLF;
+    $o1.='</div>'.PHP_EOL;
+    $o1.='  <script type="text/javascript" defer src="js/core6.js"></script>'.PHP_EOL;
 
     /*
      d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
@@ -946,7 +940,7 @@ function html_footer1($parametres=array()){
 
             if(($v1 !== '')){
 
-                $o1.='  <script type="module" src="'.$v1.'"></script>'.CRLF;
+                $o1.='  <script type="module" src="'.$v1.'"></script>'.PHP_EOL;
 
             }
 
@@ -960,7 +954,7 @@ function html_footer1($parametres=array()){
 
             if(($v1 !== '')){
 
-                $o1.='  <script type="text/javascript" src="'.$v1.'" defer></script>'.CRLF;
+                $o1.='  <script type="text/javascript" src="'.$v1.'" defer></script>'.PHP_EOL;
 
             }
 
@@ -968,12 +962,12 @@ function html_footer1($parametres=array()){
 
     }
 
-    $o1.='<script type="text/javascript">'.CRLF;
-    $o1.='"use strict";'.CRLF;
+    $o1.='<script type="text/javascript">'.PHP_EOL;
+    $o1.='"use strict";'.PHP_EOL;
 
     if((isset($parametres['js_a_executer_apres_chargement']))){
 
-        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){'.CRLF;
+        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){'.PHP_EOL;
         $txt1='';
         foreach($parametres['js_a_executer_apres_chargement'] as $k1 => $v1){
 
@@ -982,7 +976,7 @@ function html_footer1($parametres=array()){
 
                 if(($txt1 != '')){
 
-                    $txt1.=','.CRLF;
+                    $txt1.=','.PHP_EOL;
 
                 }
 
@@ -991,17 +985,17 @@ function html_footer1($parametres=array()){
             }
 
         }
-        $o1.=' var arrayLocalJs=['.CRLF.$txt1.CRLF.' ];'.CRLF;
-        $o1.=' __gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);'.CRLF;
-        $o1.='}'.CRLF;
+        $o1.=' var arrayLocalJs=['.PHP_EOL.$txt1.PHP_EOL.' ];'.PHP_EOL;
+        $o1.=' __gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);'.PHP_EOL;
+        $o1.='}'.PHP_EOL;
 
     }else{
 
-        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};'.CRLF;
+        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};'.PHP_EOL;
     }
 
-    $o1.='</script>'.CRLF;
-    $o1.='</body></html>'.CRLF;
+    $o1.='</script>'.PHP_EOL;
+    $o1.='</body></html>'.PHP_EOL;
 
     if((isset($parametres['ne_pas_supprimer_les_valeurs_de_session_sur_un_choix']))){
 

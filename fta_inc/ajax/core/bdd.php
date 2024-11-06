@@ -39,12 +39,12 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
     if($retour_sql[__xst] === true){
         $chaine_js='';
         foreach($retour_sql[__xva] as $k1 => $v1){
-            $chaine_js.=CRLF.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
+            $chaine_js.=PHP_EOL.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
         }
         $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'aa_js_sql.js';
 
         if($fd=fopen($nom_fichier,'w')){
-            if(fwrite($fd,'//<![CDATA['.CRLF.'aa_js_sql={'.CRLF.$chaine_js.CRLF.'};'.CRLF.'//]]>')){
+            if(fwrite($fd,'//<![CDATA['.PHP_EOL.'aa_js_sql={'.PHP_EOL.$chaine_js.PHP_EOL.'};'.PHP_EOL.'//]]>')){
                 fclose($fd);
             }else{
                @fclose($fd);
@@ -81,14 +81,14 @@ function modifier_la_requete_en_base(&$data){
     
     $tt=sql_9($a_modifier);
     if($tt[__xst]===true){
-        $data[__xst]='OK';
+        $data[__xst]=true;
         ecrire_le_php_de_la_requete_sur_disque($data['input']['id_requete'],$data['input']['php']);
             
         
         
     }else{
-        $data['messages'][]=__FILE__.' '.__LINE__.' erreur modifier_la_requete_en_base '.$tt[__xme];
-        $data[__xst]='KO';
+        $data[__xms][]=__FILE__.' '.__LINE__.' erreur modifier_la_requete_en_base '.$tt[__xme];
+        $data[__xst]=false;
     }
     
     $data['input']['parametres_sauvegarde']=array(
@@ -126,7 +126,7 @@ function enregistrer_la_requete_en_base(&$data){
     );
     $tt=sql_7($a_inserer);
     if($tt[__xst]===true){
-        $data[__xst]='OK';
+        $data[__xst]=true;
         $data['nouvel_id']=$tt['nouvel_id'];
         /*
          lors de la création dans l'interface, l'id est égal à 0 ou bien nnn si on part d'une requête existante
@@ -147,7 +147,7 @@ function enregistrer_la_requete_en_base(&$data){
          
         }
     }else{
-     $data[__xst]='KO';
+     $data[__xst]=false;
     }
 
     $data['input']['parametres_sauvegarde']=array(
@@ -181,7 +181,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     ));
 
     if($tt[__xst] === false || count($tt[__xva])!==1){
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
      
     }  
@@ -191,7 +191,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     
     
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$ret0='.var_export( $ret0 , true ) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$ret0='.var_export( $ret0 , true ) .PHP_EOL.PHP_EOL); fclose($fd);}
     */
     $chemin_bdd='..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.$ret0['T2.chp_dossier_cible'].$ret0['T1.chp_nom_dossier'].DIRECTORY_SEPARATOR.$ret0['T0.chp_nom_basedd'];
     $repertoire=realpath(dirname($chemin_bdd));
@@ -199,7 +199,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if(is_file($chemin_bdd)){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque le fichier bdd existe déjà';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque le fichier bdd existe déjà';
         return;
 
     }
@@ -209,7 +209,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
         return;
 
     }
@@ -218,7 +218,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque création base impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_la_base_a_partir_du_shema_sur_disque création base impossible';
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -226,7 +226,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     }
 
     $ret1=$db1temp->exec('COMMIT;');
-    $data[__xst]='OK';
+    $data[__xst]=true;
 
 }
 /*
@@ -236,7 +236,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
 /*
-    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data,true) .CRLF.CRLF); fclose($fdtoto);}
+    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data,true) .PHP_EOL.PHP_EOL); fclose($fdtoto);}
 */
     sql_inclure_reference(26);
     /*sql_inclure_deb*/
@@ -249,7 +249,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     ));
 
     if($tt[__xst] === false || count($tt[__xva])!==1){
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
      
     }  
@@ -266,7 +266,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if(!is_file($chemin_bdd)){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
+        $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
         return;
 
     }
@@ -277,7 +277,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
+        $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
         return;
 
     }
@@ -286,7 +286,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque création base temporaire impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque création base temporaire impossible';
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -299,7 +299,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     if($ret2 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque attach impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque attach impossible';
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -309,13 +309,13 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     foreach($data['input']['liste_des_tables'] as $k1 => $v1){
         $sql3='INSERT INTO `'.sq0($v1).'` SELECT * FROM `source`.`'.sq0($v1).'`';
 /*        
-          if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql3='.$sql3 .CRLF.CRLF); fclose($fd);}
+          if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql3='.$sql3 .PHP_EOL.PHP_EOL); fclose($fd);}
 */        
         $ret3=$db1temp->exec($sql3);
 
         if($ret3 !== true){
 
-            $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque, les donnees de '.$v1.' ne peuvent être copiées';
+            $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque, les donnees de '.$v1.' ne peuvent être copiées';
             $db1temp->close();
             sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
             return;
@@ -336,7 +336,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
         if(@rename($chemin_bdd_base_temporaire,$chemin_bdd)){
 
-            $data[__xst]='OK';
+            $data[__xst]=true;
 
         }
     }
@@ -359,12 +359,12 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
     ));
 
     if($tt[__xst] === false){
-        $data['messages'][]=__FILE__.' '.__LINE__.' recuperer_les_bases bdd non trouvée';
+        $data[__xms][]=__FILE__.' '.__LINE__.' recuperer_les_bases bdd non trouvée';
         return;
      
     }  
     $data[__xva]=$tt[__xva];
-    $data[__xst]='OK';
+    $data[__xst]=true;
 
 }
 /*
@@ -384,7 +384,7 @@ function recuperer_les_tableaux_des_bases(&$data){
 
         $data[__xva]=$obj[__xva];
         $id_bdd_de_la_base=$data['input']['id_bdd_de_la_base'];
-        $data[__xst]='OK';
+        $data[__xst]=true;
 
     }else{
 
@@ -436,7 +436,7 @@ function supprimer_table_dans_base(&$data){
 function operation_sur_base(&$data,$nom_operation){
 
     /*    
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .PHP_EOL.PHP_EOL); fclose($fd);}
     */    
     sql_inclure_reference(26);
     /*sql_inclure_deb*/
@@ -449,7 +449,7 @@ function operation_sur_base(&$data,$nom_operation){
     ));
 
     if($tt[__xst] === false || count($tt[__xva])!==1){
-        $data['messages'][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        $data[__xms][]=__FILE__.' '.__LINE__.' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
      
     }  
@@ -463,7 +463,7 @@ function operation_sur_base(&$data,$nom_operation){
 
     if(!is_file($chemin_bdd)){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' fichier de bdd non trouvé';
+        $data[__xms][]=__FILE__.' '.__LINE__.' '.$nom_operation.' fichier de bdd non trouvé';
         return;
 
     }
@@ -473,7 +473,7 @@ function operation_sur_base(&$data,$nom_operation){
 
     if($ret0 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' BEGIN transaction KO';
+        $data[__xms][]=__FILE__.' '.__LINE__.' '.$nom_operation.' BEGIN transaction KO';
         return;
 
     }
@@ -484,7 +484,7 @@ function operation_sur_base(&$data,$nom_operation){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' '.$nom_operation.' impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -494,13 +494,13 @@ function operation_sur_base(&$data,$nom_operation){
 
     if($retfin !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' '.$nom_operation.' COMMIT impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' '.$nom_operation.' COMMIT impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
     }
 
-    $data[__xst]='OK';
+    $data[__xst]=true;
 
 }
 /*
@@ -510,8 +510,8 @@ function operation_sur_base(&$data,$nom_operation){
 function creer_table_dans_base(&$data){
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data=' . $data['input']['source_sql'] . CRLF.CRLF); fclose($fd);}
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data=' . $data['input']['source_sql'] . PHP_EOL.PHP_EOL); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .PHP_EOL.PHP_EOL); fclose($fd);}
     */
     
     sql_inclure_reference(26);
@@ -525,7 +525,7 @@ function creer_table_dans_base(&$data){
     ));
 
     if($tt[__xst] === false || count($tt[__xva])!==1){
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base bdd non trouvée';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_table_dans_base bdd non trouvée';
         return;
      
     }  
@@ -540,7 +540,7 @@ function creer_table_dans_base(&$data){
 
     if(!is_file($chemin_bdd)){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base fichier de bdd non trouvé';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_table_dans_base fichier de bdd non trouvé';
         return;
 
     }
@@ -550,7 +550,7 @@ function creer_table_dans_base(&$data){
 
     if($ret0 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base BEGIN transaction KO';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_table_dans_base BEGIN transaction KO';
         return;
 
     }
@@ -559,7 +559,7 @@ function creer_table_dans_base(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base création table temporaire impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_table_dans_base création table temporaire impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -569,13 +569,13 @@ function creer_table_dans_base(&$data){
 
     if($retfin !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' creer_table_dans_base COMMIT impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' creer_table_dans_base COMMIT impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
     }
 
-    $data[__xst]='OK';
+    $data[__xst]=true;
 
 }
 /*
@@ -585,7 +585,7 @@ function creer_table_dans_base(&$data){
 function ordonner_les_champs_de_table(&$data){
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .PHP_EOL.PHP_EOL); fclose($fd);}
     */
 
     sql_inclure_reference(26);
@@ -599,7 +599,7 @@ function ordonner_les_champs_de_table(&$data){
     ));
 
     if($tt[__xst] === false || count($tt[__xva])!==1){
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table bdd non trouvée';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table bdd non trouvée';
         return;
      
     }  
@@ -615,7 +615,7 @@ function ordonner_les_champs_de_table(&$data){
 
     if(!is_file($chemin_bdd)){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table fichier de bdd non trouvé';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table fichier de bdd non trouvé';
         return;
 
     }
@@ -625,7 +625,7 @@ function ordonner_les_champs_de_table(&$data){
 
     if($ret0 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table BEGIN transaction KO';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table BEGIN transaction KO';
         return;
 
     }
@@ -634,7 +634,7 @@ function ordonner_les_champs_de_table(&$data){
 
     if($ret1 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table création table temporaire impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table création table temporaire impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -642,13 +642,13 @@ function ordonner_les_champs_de_table(&$data){
 
     $sql2='INSERT INTO '.$data['input']['nom_table_temporaire'].'('.$data['input']['ordre_modifie'].') SELECT '.$data['input']['ordre_modifie'].' FROM '.$data['input']['nom_de_la_table'].';';
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql2='.$sql2.CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql2='.$sql2.PHP_EOL.PHP_EOL); fclose($fd);}
     */
     $ret2=$db1->exec($sql2);
 
     if($ret2 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table insertion des données impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table insertion des données impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -659,7 +659,7 @@ function ordonner_les_champs_de_table(&$data){
 
     if($ret3 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table DROP TABLE impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table DROP TABLE impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -670,7 +670,7 @@ function ordonner_les_champs_de_table(&$data){
 
     if($ret4 !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table RENAME impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table RENAME impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -681,7 +681,7 @@ function ordonner_les_champs_de_table(&$data){
 
         if($ret5 !== true){
 
-            $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table RENAME impossible';
+            $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table RENAME impossible';
             $ret0=$db1->exec('ROLLBACK;');
             return;
 
@@ -692,13 +692,13 @@ function ordonner_les_champs_de_table(&$data){
 
     if($retfin !== true){
 
-        $data['messages'][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table COMMIT impossible';
+        $data[__xms][]=__FILE__.' '.__LINE__.' ordonner_les_champs_de_table COMMIT impossible';
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
     }
 
-    $data[__xst]='OK';
+    $data[__xst]=true;
 
 }
 /*
@@ -708,7 +708,7 @@ function ordonner_les_champs_de_table(&$data){
 function envoyer_le_rev_de_le_base_en_post(&$data){
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ).CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ).PHP_EOL.PHP_EOL); fclose($fd);}
     */
     sql_inclure_reference(10);
     // sql_inclure_deb
@@ -722,10 +722,10 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
     
     $tt=sql_10($a_modifier);
     if($tt[__xst]===true){
-        $data[__xst]='OK';
+        $data[__xst]=true;
     }else{
-        $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur la sauvegarde de la base';
-        $data[__xst]='KO';
+        $data[__xms][]=basename(__FILE__).' '.__LINE__.' Erreur sur la sauvegarde de la base';
+        $data[__xst]=false;
     }
 }
 /*
@@ -747,14 +747,14 @@ function recuperer_zone_travail_pour_les_bases(&$data){
     $tt=sql_11($a_selectionner);
     if($tt[__xst]===true){
 /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,CRLF.CRLF.'===================='.CRLF.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt[__xva] , true ).CRLF.CRLF); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt[__xva] , true ).PHP_EOL.PHP_EOL); fclose($fd);}
 */
      
         $data[__xva]=$tt[__xva];
-        $data[__xst]='OK';
+        $data[__xst]=true;
     }else{
-        $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur select '.$db->lastErrorMsg();
-        $data[__xst]='KO';
+        $data[__xms][]=basename(__FILE__).' '.__LINE__.' Erreur select '.$db->lastErrorMsg();
+        $data[__xst]=false;
     }
 
 }
@@ -775,7 +775,7 @@ function sauvegarder_format_rev_en_dbb(&$data){
  */
 
     /*
-      if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][parametres_sauvegarde]='.var_export($data['input']['parametres_sauvegarde'],true).CRLF); fclose($fdtoto);}
+      if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][parametres_sauvegarde]='.var_export($data['input']['parametres_sauvegarde'],true).PHP_EOL); fclose($fdtoto);}
     */
     sql_inclure_reference(5);
     // sql_inclure_deb
@@ -789,8 +789,8 @@ function sauvegarder_format_rev_en_dbb(&$data){
     
     $tt=sql_5($a_supprimer);
     if($tt[__xst]!==true){
-       $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur suppression dans la table rev ';
-       $data[__xst]='KO';
+       $data[__xms][]=basename(__FILE__).' '.__LINE__.' Erreur sur suppression dans la table rev ';
+       $data[__xst]=false;
     }
     
     
@@ -828,10 +828,10 @@ function sauvegarder_format_rev_en_dbb(&$data){
     
     $tt=sql_12($a_sauvegarder);
     if($tt[__xst]!==true){
-       $data['messages'][]=basename(__FILE__).' '.__LINE__.' Erreur sur insertion';
+       $data[__xms][]=basename(__FILE__).' '.__LINE__.' Erreur sur insertion';
     }else{
-        $data['messages'][]=basename(__FILE__).' '.__LINE__.' la matrice est en bdd';
-        $data[__xst]='OK';
+        $data[__xms][]=basename(__FILE__).' '.__LINE__.' la matrice est en bdd';
+        $data[__xst]=true;
     }
 }
 ?>

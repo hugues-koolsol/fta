@@ -830,83 +830,80 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
 function simplifie_tableau(nom_variable,parametres,num){
     var t='';
     var obj_nom_tableau=functionToArray(nom_variable,true,true,'');
-    
-    if(obj_nom_tableau.__xst===true && 
-         (obj_nom_tableau.__xva.length===3 && obj_nom_tableau.__xva[2][2]==='c' && obj_nom_tableau.__xva[1][8]===1 && obj_nom_tableau.__xva[1][1]==='nomt' )
-      || (obj_nom_tableau.__xva.length===2 && obj_nom_tableau.__xva[1][2]==='c' )
-    ){
-        if(parametres.substr(0,1)===','){
-            parametres=parametres.substr(1);
-        }
-        var obj_indice_tableau=functionToArray(parametres,true,true,'');
-        if(obj_indice_tableau.__xst===true && (
-            (
-                obj_indice_tableau.__xva.length===2 
-                && obj_indice_tableau.__xva[1][1]==='p' 
-                && obj_indice_tableau.__xva[1][2]==='f' 
-                && obj_indice_tableau.__xva[1][8]===0
-            )
-            ||
-            (
-                obj_indice_tableau.__xva.length===3 
-                && obj_indice_tableau.__xva[1][1]==='p' 
-                && obj_indice_tableau.__xva[1][2]==='f' 
-                && obj_indice_tableau.__xva[1][8]===1
-                && obj_indice_tableau.__xva[2][2]==='c' 
-                && obj_indice_tableau.__xva[2][4]==='0' 
-            )
-            ||
-            (
-                obj_indice_tableau.__xva.length===5 
-                && obj_indice_tableau.__xva[1][1]==='p' 
-                && obj_indice_tableau.__xva[1][2]==='f' 
-                && obj_indice_tableau.__xva[1][8]===1
-                && obj_indice_tableau.__xva[2][2]==='c' 
-                && obj_indice_tableau.__xva[2][4]===0 
-                && obj_indice_tableau.__xva[3][1]==='p' 
-                && obj_indice_tableau.__xva[3][2]==='f' 
-                && obj_indice_tableau.__xva[3][8]===1
-                && obj_indice_tableau.__xva[4][2]==='c' 
-                && obj_indice_tableau.__xva[4][4]==='0' 
-            )
-           )
+    if(obj_nom_tableau.__xst===true){
+     
+        if(
+            obj_nom_tableau.__xva.length===2 
+            && obj_nom_tableau.__xva[1][2]==='c' 
+            && obj_nom_tableau.__xva[1][4]===0 
+            && obj_nom_tableau.__xva[1][1].substr(0,1)==='$'
         ){
-            if(obj_nom_tableau.__xva.length===2){
-                if(obj_indice_tableau.__xva.length===2 ){
-                    t=obj_nom_tableau.__xva[1][1]+'[]';
-                }else if(obj_indice_tableau.__xva.length===3 ){
-                 
-                    t=obj_nom_tableau.__xva[1][1]+'['+obj_indice_tableau.__xva[2][1]+']';
-                }else if(obj_indice_tableau.__xva.length===5 ){
-                    t=obj_nom_tableau.__xva[1][1]+'['+obj_indice_tableau.__xva[2][1]+']'+'['+obj_indice_tableau.__xva[4][1]+']';
-                }
-            }else{
-                if(obj_indice_tableau.__xva.length===2 ){
-                    t=obj_nom_tableau.__xva[2][1]+'[]';
-                }else if(obj_indice_tableau.__xva.length===3 ){
-                 
-                    t=obj_nom_tableau.__xva[2][1]+'['+obj_indice_tableau.__xva[2][1]+']';
-                }else if(obj_indice_tableau.__xva.length===5 ){
-                    t=obj_nom_tableau.__xva[2][1]+'['+obj_indice_tableau.__xva[2][1]+']'+'['+obj_indice_tableau.__xva[4][1]+']';
-                }
+            /*
+              cas $xxx
+            */
+            
+            
+            if(parametres.substr(0,1)===','){
+                parametres=parametres.substr(1);
             }
-        }else{
-            if(nom_variable.substr(0,4)==='nomt'){
-                t='tableau(' + nom_variable + parametres + ')';
+            var obj_indice_tableau=functionToArray(parametres,true,true,'');
+            if(obj_indice_tableau.__xst===true && (
+                (
+                    obj_indice_tableau.__xva.length===3 
+                    && obj_indice_tableau.__xva[1][1]==='p' 
+                    && obj_indice_tableau.__xva[1][2]==='f' 
+                    && obj_indice_tableau.__xva[1][8]===1
+                    && obj_indice_tableau.__xva[2][2]==='c' 
+                    && obj_indice_tableau.__xva[2][4]===0
+                )
+               )
+            ){
+               t=obj_nom_tableau.__xva[1][1]+'['+obj_indice_tableau.__xva[2][1]+']';
             }else{
-                t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
+               t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
             }
-        }
-     
-     
-    }else{
-
-        if(nom_variable.substr(0,4)==='nomt'){
-            t='tableau(' + nom_variable + parametres + ')';
+        }else if(
+         (   obj_nom_tableau.__xva.length===3 
+          && obj_nom_tableau.__xva[2][2]==='c' 
+          && obj_nom_tableau.__xva[1][8]===1 
+          && obj_nom_tableau.__xva[1][1]==='nomt' 
+         )
+        ){
+        
+            /*
+             cas nomt($xxx)
+            */
+            if(parametres.substr(0,1)===','){
+                parametres=parametres.substr(1);
+            }
+            
+            var obj_indice_tableau=functionToArray(parametres,true,true,'');
+            if(obj_indice_tableau.__xst===true && (
+                (
+                    obj_indice_tableau.__xva.length===3 
+                    && obj_indice_tableau.__xva[1][1]==='p' 
+                    && obj_indice_tableau.__xva[1][2]==='f' 
+                    && obj_indice_tableau.__xva[1][8]===1
+                    && obj_indice_tableau.__xva[2][2]==='c' 
+                    && obj_indice_tableau.__xva[2][4]===0
+                )
+               )
+            ){
+               t=obj_nom_tableau.__xva[2][1]+'['+obj_indice_tableau.__xva[2][1]+']';
+            }else{
+               t='tableau(' + nom_variable + '' + parametres + ')';
+            }
+            
+            
+            
         }else{
             t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
         }
+     
+    }else{
+            t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
     }
+
     return t;
  
 }
@@ -925,8 +922,8 @@ function php_traite_Expr_List(element,niveau){
                 lesElements+='p()';
             }else if("ArrayItem" === element.items[i].nodeType){
                 var cle='';
-                if(element.items[i].__xva){
-                    var objValeur = php_traite_Stmt_Expression(element.items[i].__xva,niveau,false,element);
+                if(element.items[i].value){
+                    var objValeur = php_traite_Stmt_Expression(element.items[i].value,niveau,false,element);
                     if(objValeur.__xst === true){
                         if(lesElements !== ''){
                             lesElements+=' , ';
@@ -961,8 +958,8 @@ function php_traite_Expr_Array(element,niveau){
                         cle='#(TODO ERREUR dans php_traite_Expr_Array 0859)';
                     }
                 }
-                if(element.items[i].__xva){
-                    var objValeur = php_traite_Stmt_Expression(element.items[i].__xva,niveau,false,element);
+                if(element.items[i].value){
+                    var objValeur = php_traite_Stmt_Expression(element.items[i].value,niveau,false,element);
                     if(objValeur.__xst === true){
                         if(lesElements !== ''){
                             lesElements+=' , ';
@@ -1575,7 +1572,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
             var i=0;
             for(i=0;i < element.parts.length;i++){
                 if("InterpolatedStringPart" === element.parts[i].nodeType){
-                    chaine_concat+=',"' + element.parts[i].__xva.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+                    chaine_concat+=',"' + element.parts[i].value.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
                 }else if("Expr_Variable" === element.parts[i].nodeType){
                     chaine_concat+=',$' + element.parts[i].name + '';
                 }else{
@@ -2831,7 +2828,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             return;
         }
-        if(jsonRet.__xst === 'OK'){
+        if(jsonRet.__xst === true){
             var elem={};
             for(elem in jsonRet.messages){
                 astphp_logerreur({__xst:true,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
@@ -2923,9 +2920,9 @@ function recupererAstDePhp(&$data){
     try {
         $ast = $parser->parse($data['input']['texteSource']);
         $data[__xva]=json_encode($ast);
-        $data[__xst]='OK';
+        $data[__xst]=true;
     } catch (Error $error) {
-       $data['messages'][]=$error->getMessage();
+       $data[__xms][]=$error->getMessage();
        return;
     }
 }

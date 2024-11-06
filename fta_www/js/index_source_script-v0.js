@@ -354,7 +354,7 @@ function chargerLaListeDesSourcesRev(){
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == 'OK'){
+            if(jsonRet.__xst == true){
                 var t='';
                 var idFile={};
                 for(idFile in jsonRet.files){

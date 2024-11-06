@@ -314,7 +314,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
         t='cascade(' + t + ')';
     }else if('MethodDefinition' === element.type){
 
-        if(((element.kind === "method") || (element.kind === "constructor") || (element.kind === "get") || (element.kind === "set")) && (element.__xva) && (element.__xva.type === "FunctionExpression") && (element.__xva.body)){
+        if(((element.kind === "method") || (element.kind === "constructor") || (element.kind === "get") || (element.kind === "set")) && (element.value) && (element.value.type === "FunctionExpression") && (element.value.body)){
 
             t+='\n' + esp0 + 'méthode(';
             t+='\n' + esp0 + esp1 + 'definition(';
@@ -327,31 +327,31 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
 
                 t+='\n' + esp0 + esp1 + esp1 + 'mode(privée),';
             }
-            if(element.__xva.async===true){
+            if(element.value.async===true){
 
                 t+='\n' + esp0 + esp1 + esp1 + 'asynchrone()';
             }
-            if((element.__xva.params) && (element.__xva.params.length > 0)){
+            if((element.value.params) && (element.value.params.length > 0)){
 
                 t+=',';
                 var j=0;
-                for(j=0;j < element.__xva.params.length;j++){
-                    if(element.__xva.params[j].type === "Identifier"){
+                for(j=0;j < element.value.params.length;j++){
+                    if(element.value.params[j].type === "Identifier"){
 
-                        t+='\n' + esp0 + esp1 + esp1 + 'argument(' + element.__xva.params[j].name + ')';
-                    }else if(element.__xva.params[j].type === "AssignmentPattern"){
+                        t+='\n' + esp0 + esp1 + esp1 + 'argument(' + element.value.params[j].name + ')';
+                    }else if(element.value.params[j].type === "AssignmentPattern"){
 
-                        var obj = traiteAssignmentPattern(element.__xva.params[j],niveau,{});
+                        var obj = traiteAssignmentPattern(element.value.params[j],niveau,{});
                         if(obj.__xst === true){
 
                             t+='\n' + esp0 + esp1 + esp1 + 'argument(' + obj.__xva + ')';
                         }else{
-                            return(astjs_logerreur({__xst:false,__xme:'erreur pour TransformAstEnRev 2377 type argument non prévu ' + element.__xva.params[j].type,element:element}));
+                            return(astjs_logerreur({__xst:false,__xme:'erreur pour TransformAstEnRev 2377 type argument non prévu ' + element.value.params[j].type,element:element}));
                         }
                     }else{
-                        return(astjs_logerreur({__xst:false,__xme:'erreur pour TransformAstEnRev 2380 type argument non prévu ' + element.__xva.params[j].type,element:element}));
+                        return(astjs_logerreur({__xst:false,__xme:'erreur pour TransformAstEnRev 2380 type argument non prévu ' + element.value.params[j].type,element:element}));
                     }
-                    if(j < (element.__xva.params.length - 1)){
+                    if(j < (element.value.params.length - 1)){
 
                         t+=',';
                     }
@@ -361,11 +361,11 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
             t+='\n' + esp0 + esp1 + 'contenu(';
             var prop={};
             var bodyTrouve=false;
-            for(prop in element.__xva){
+            for(prop in element.value){
                 if(prop === 'body'){
 
                     bodyTrouve=true;
-                    var obj = TransformAstEnRev(element.__xva[prop],(niveau + 2));
+                    var obj = TransformAstEnRev(element.value[prop],(niveau + 2));
                     if(obj.__xst === true){
 
                         t+=obj.__xva;
@@ -389,17 +389,17 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
             }else if(element.key.type === 'Identifier' ){
               t+='\n' + esp0 + esp1 + 'variable_publique(' + element.key.name;
             }
-            if(element.__xva){
+            if(element.value){
 
-                if(element.__xva.type === 'Literal'){
+                if(element.value.type === 'Literal'){
 
-                    t+=',' + element.__xva.raw;
-                }else if(element.__xva.type === 'Identifier'){
+                    t+=',' + element.value.raw;
+                }else if(element.value.type === 'Identifier'){
 
-                    t+=',' + element.__xva.name;
-                }else if((element.__xva.type === 'ObjectExpression') || (element.__xva.type === 'BinaryExpression') || (element.__xva.type === 'MemberExpression') || (element.__xva.type === 'ArrayExpression')){
+                    t+=',' + element.value.name;
+                }else if((element.value.type === 'ObjectExpression') || (element.value.type === 'BinaryExpression') || (element.value.type === 'MemberExpression') || (element.value.type === 'ArrayExpression')){
 
-                    var obj1 = traiteUneComposante(element.__xva,niveau,false,false);
+                    var obj1 = traiteUneComposante(element.value,niveau,false,false);
                     if(obj1.__xst === true){
 
                         t+=',' + obj1.__xva + '';
@@ -408,7 +408,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
                     }
                 }else{
                     debugger;
-                    return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteUneComposante 0295 ' + element.__xva.type,element:element}));
+                    return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteUneComposante 0295 ' + element.value.type,element:element}));
                 }
             }
             t+=')';
@@ -1701,28 +1701,28 @@ function traiteObjectExpression1(element,niveau){
             return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteObjectExpression1 609 ' + val.key.type,element:element}));
         }
         /*
-          //     || 'AssignmentExpression'  === val.__xva.type
-          //     || 'NewExpression'         === val.__xva.type
-          //     || 'SequenceExpression'    === val.__xva.type
-          //     || 'TemplateLiteral'       === val.__xva.type
-          //     || 'ThisExpression'        === val.__xva.type     
-          //     || 'UpdateExpression'      === val.__xva.type
-          //     || 'UnaryExpression'       === val.__xva.type
-          //     || 'VariableDeclarator'    === val.__xva.type
+          //     || 'AssignmentExpression'  === val.value.type
+          //     || 'NewExpression'         === val.value.type
+          //     || 'SequenceExpression'    === val.value.type
+          //     || 'TemplateLiteral'       === val.value.type
+          //     || 'ThisExpression'        === val.value.type     
+          //     || 'UpdateExpression'      === val.value.type
+          //     || 'UnaryExpression'       === val.value.type
+          //     || 'VariableDeclarator'    === val.value.type
         */
-        if(('ArrayExpression' === val.__xva.type)
-         || ('BinaryExpression' === val.__xva.type)
-         || ('CallExpression' === val.__xva.type)
-         || ('ConditionalExpression' === val.__xva.type)
-         || ('FunctionExpression' === val.__xva.type)
-         || ('Identifier' === val.__xva.type)
-         || ('Literal' === val.__xva.type)
-         || ('LogicalExpression' === val.__xva.type)
-         || ('MemberExpression' === val.__xva.type)
-         || ('ObjectExpression' === val.__xva.type)
-         || ('UnaryExpression' === val.__xva.type)){
+        if(('ArrayExpression' === val.value.type)
+         || ('BinaryExpression' === val.value.type)
+         || ('CallExpression' === val.value.type)
+         || ('ConditionalExpression' === val.value.type)
+         || ('FunctionExpression' === val.value.type)
+         || ('Identifier' === val.value.type)
+         || ('Literal' === val.value.type)
+         || ('LogicalExpression' === val.value.type)
+         || ('MemberExpression' === val.value.type)
+         || ('ObjectExpression' === val.value.type)
+         || ('UnaryExpression' === val.value.type)){
 
-            var obj1 = traiteUneComposante(val.__xva,niveau,false,false);
+            var obj1 = traiteUneComposante(val.value,niveau,false,false);
             if(obj1.__xst === true){
 
                 t+=obj1.__xva + ')';
@@ -1730,7 +1730,7 @@ function traiteObjectExpression1(element,niveau){
                 return(astjs_logerreur({__xst:false,__xme:'erreur 0000 [ todo ajuster ] '}));
             }
         }else{
-            return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteObjectExpression1 817 ' + val.__xva.type,element:element}));
+            return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteObjectExpression1 817 ' + val.value.type,element:element}));
         }
     }
     t='obj(' + t + ')';
@@ -2597,10 +2597,10 @@ function traiteTemplateLiteral1(element,niveau){
     if((element.quasis)
      && (element.quasis.length === 1)
      && ('TemplateElement' === element.quasis[0].type)
-     && (element.quasis[0].__xva)
-     && (element.quasis[0].__xva.raw)){
+     && (element.quasis[0].value)
+     && (element.quasis[0].value.raw)){
 
-        t='`' + element.quasis[0].__xva.raw + '`';
+        t='`' + element.quasis[0].value.raw + '`';
     }else{
         
         return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteTemplateLiteral1 2131 ' + element.type,element:element}));
@@ -3136,7 +3136,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
     if(r.readyState === 4){
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst === 'OK'){
+            if(jsonRet.__xst === true){
 
                 var elem={};
                 for(elem in jsonRet.messages){
@@ -3273,7 +3273,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
         }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst === 'OK'){
+            if(jsonRet.__xst === true){
 
                 var elem={};
                 for(elem in jsonRet.messages){
@@ -3341,7 +3341,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
   =====================================================================================================================
 */
 function transform_source_js_en_rev_avec_acorn(source,options){
-    var ret={__xst:true,__xme:'OK'};
+    var ret={__xst:true,__xme:true};
     try{
         var ret = recupere_ast_de_js_avec_acorn(source,{options:options},traitement_apres_recuperation_ast_de_js_avec_acorn);
         if(ret.__xst === true){

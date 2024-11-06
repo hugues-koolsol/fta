@@ -105,7 +105,7 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
   }
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
     console.log('jsonRet=',jsonRet);
     for(var elem in jsonRet.messages){
      logerreur( {__xst:true,__xme:'<pre>'+jsonRet.messages[elem].replace(/&/g,'&lt;')+'</pre>'});

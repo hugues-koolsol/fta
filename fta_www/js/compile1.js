@@ -10,7 +10,7 @@ function loadRevFile(nomFichierSource,fntSiOk,nomZone,faireApres){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
     fntSiOk({__xst:true,__xva:jsonRet.__xva,nomZone:nomZone,nomFichierSource:nomFichierSource});
     try{
      localStorage.setItem("fta_dernier_fichier_charge", nomFichierSource);
@@ -54,7 +54,7 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
 //    console.log(tabConcatFichier);
     if(tabConcatFichier.length>0){
      concateneFichiers(tabConcatFichier,file_name,file_extension,file_path)
@@ -172,7 +172,7 @@ function convertSource(objMatSrc){
      baliseHtmlOuPhpTrouvee=true;
      php_contexte_commentaire_html=false;
      retProgrammeSource=parsePhp0(objMatSrc.__xva , i , 0 );
-     if(retProgrammeSource.__xst==true){
+     if(retProgrammeSource.__xst === true){
       t+='<?php'+CRLF+retProgrammeSource.__xva+CRLF+'?>';
      }else{
       return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
@@ -182,7 +182,7 @@ function convertSource(objMatSrc){
      php_contexte_commentaire_html=true;
      //                             tab             , id , noHead , niveau
      retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.__xva , i  , true   , 0      );
-     if(retProgrammeSource.__xst==true){
+     if(retProgrammeSource.__xst === true){
       t+='\n'+retProgrammeSource.__xva+'\n';
      }else{
       return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
@@ -196,7 +196,7 @@ function convertSource(objMatSrc){
     */
     php_contexte_commentaire_html=false;
     retProgrammeSource=parsePhp0(objMatSrc.__xva , position_de_la_balise_source , 0 );
-    if(retProgrammeSource.__xst==true){
+    if(retProgrammeSource.__xst === true){
      t+='<?php'+CRLF+retProgrammeSource.__xva+CRLF+'?>';
     }else{
      return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un php'});
@@ -220,7 +220,7 @@ function convertSource(objMatSrc){
    return logerreur({__xst:true,__xva:t,file_name:file_name,file_path:file_path,file_extension:file_extension,tabConcatFichier:tabConcatFichier});
   }else if(type_source=='src_javascript'  && (file_extension=='js')){
    retProgrammeSource=parseJavascript0(objMatSrc.__xva ,idJs+1 , 0 );
-   if(retProgrammeSource.__xst==true){
+   if(retProgrammeSource.__xst === true){
     t+=retProgrammeSource.__xva;
    }else{
     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un javascript'});
@@ -229,7 +229,7 @@ function convertSource(objMatSrc){
   }else if(type_source=='src_html'  && (file_extension=='html')){
    //                             tab             , id     , noHead , niveau
    retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.__xva , idJs+1 , false  , 0      );
-   if(retProgrammeSource.__xst==true){
+   if(retProgrammeSource.__xst === true){
     t+=retProgrammeSource.__xva;
    }else{
     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un html'});
@@ -238,7 +238,7 @@ function convertSource(objMatSrc){
   }else if(type_source=='src_sql'  && (file_extension=='sql')){
    //                             tab             , id    , niveau , format php
    retProgrammeSource=tabToSql1( objMatSrc.__xva , idJs+1 , 0      , false );
-   if(retProgrammeSource.__xst==true){
+   if(retProgrammeSource.__xst === true){
     t+=retProgrammeSource.__xva;
    }else{
     return logerreur({__xst:false,id:i,__xme:'file core , fonction convertSource : erreur dans un sql'});
@@ -268,7 +268,7 @@ function writeRevFile(fileName, value){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
     return;
    }else{
     console.log(r);
@@ -282,7 +282,7 @@ function writeRevFile(fileName, value){
  };
  r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
  r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
- debugger
+
  var ajax_param={
   call:{
    lib                       : 'core'   ,
@@ -311,7 +311,7 @@ function writeSourceFile(obj){
   if (r.readyState != 4 || r.status != 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
     if(obj.tabConcatFichier.length>0){
      concateneFichiers(obj.tabConcatFichier,obj.file_name,obj.file_extension,obj.file_path)
     }
@@ -328,7 +328,7 @@ function writeSourceFile(obj){
  };
  r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
  r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
- debugger
+ 
  var ajax_param={
   call:{
    lib                       : 'core'   ,

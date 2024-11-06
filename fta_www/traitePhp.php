@@ -58,8 +58,8 @@ window.addEventListener(\'load\',function(){
 //  transformPhpEnRev();
  }
 );
-</script>'.CRLF;
-$o1.='<script type="text/javascript">'.CRLF.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>';
+</script>'.PHP_EOL;
+$o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>';
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

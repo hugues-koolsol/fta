@@ -57,8 +57,8 @@ function shutdownHandler(){
 }
 //================================================================================================
 function mylog($error){
- $ret=array(__xst => 'KO','messages'=>array());
- $ret['messages'][]=$error; 
+ $ret=array(__xst => false,__xms=>array());
+ $ret[__xms][]=$error; 
  header('Content-Type: application/json; charset=utf-8');
  echo json_encode($ret,JSON_FORCE_OBJECT);
  /* on a capturé une erreur de type 500, on force la réponse en 200 */
@@ -69,17 +69,17 @@ function mylog($error){
 require_once('aa_include.php');
 initialiser_les_services(false,true);
 /*
-if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,CRLF.'========================'.CRLF.date('Y-m-d H:i:s'). ' ' . __LINE__ .CRLF.'$_POST='.var_export($_POST,true).CRLF.'$_FILES='.var_export($_FILES,true)."\r\n"); fclose($fdtoto);}
+if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'========================'.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ .PHP_EOL.'$_POST='.var_export($_POST,true).PHP_EOL.'$_FILES='.var_export($_FILES,true)."\r\n"); fclose($fdtoto);}
 sleep(1);
 */
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
- $ret=array(__xst => 'KO','messages' => array() ); // messages must be in array
+ $ret=array(__xst => false,__xms => array() ); // messages must be in array
  $ret['input']=json_decode($_POST['ajax_param'],true);
  if(isset($ret['input']['call']['funct'])&&$ret['input']['call']['lib']!=''&&$ret['input']['call']['file']!=''&&$ret['input']['call']['funct']!=''){
   define('BNF' , '/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php' );
   if(!is_file(INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php')){
-   $ret[__xst]='KO';
-   $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/ajax_'.$ret['input']['call']['funct'].'.php"';
+   $ret[__xst]=false;
+   $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/ajax_'.$ret['input']['call']['funct'].'.php"';
   }else{
    if(session_status()==PHP_SESSION_NONE){
     session_start();
@@ -96,12 +96,12 @@ if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
    }
   }
  }else{
-  $ret[__xst]='KO';
-  $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret['input'],true).'"';
+  $ret[__xst]=false;
+  $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret['input'],true).'"';
  }
 }else{
- $ret[__xst]='KO';
- $ret['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'post ajax_param is not defined : "'.var_export($_POST,true).'"'; 
+ $ret[__xst]=false;
+ $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'post ajax_param is not defined : "'.var_export($_POST,true).'"'; 
 }
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($ret,JSON_FORCE_OBJECT);

@@ -237,7 +237,7 @@ $o1='';
 $o1=html_header1(array( 'title' => 'Dossiers', 'description' => 'Dossiers'));
 print($o1);
 $o1='';
-$o1.='    <h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>'.CRLF;
+$o1.='    <h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>'.PHP_EOL;
 /*
   =====================================================================================================================
 */
@@ -265,19 +265,19 @@ if($chi_id_dossier != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_dossier">id dossier</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_nom_dossier">nom</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_dossier">id dossier</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_nom_dossier">nom</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 
-$o1.='</form>'.CRLF;
+$o1.='</form>'.PHP_EOL;
 
 
 $__debut=$__xpage*($__nbMax);
@@ -320,7 +320,7 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
-$boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.CRLF;
+$boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.PHP_EOL;
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_haut);
 
 $__lsttbl='';
@@ -328,9 +328,9 @@ $__lsttbl.='  <thead><tr>';
 $__lsttbl.='<th>action</th>';
 $__lsttbl.='<th>id</th>';
 $__lsttbl.='<th>nom</th>';
-$__lsttbl.='</tr></thead>'.CRLF.'  <tbody>'.CRLF;
+$__lsttbl.='</tr></thead>'.PHP_EOL.'  <tbody>'.PHP_EOL;
 foreach($tt[__xva] as $k0 => $v0){
-    $__lsttbl.='<tr>'.CRLF;
+    $__lsttbl.='<tr>'.PHP_EOL;
     $__lsttbl.='<td data-label="" style="text-align:left!important;">';
     $__lsttbl.='<div class="yyflex1">';
 
@@ -352,13 +352,13 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl.='<td style="text-align:left;">';
     $__lsttbl.='['.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].']'.$v0['T0.chp_nom_dossier'].'';
     $__lsttbl.='</td>';
-    $__lsttbl.=CRLF.'</tr>'.CRLF;
+    $__lsttbl.=PHP_EOL.'</tr>'.PHP_EOL;
 }
-$o1.='<div style="overflow-x:scroll;">'.CRLF.' <table class="yytableResult1">'.CRLF.$__lsttbl.'  </tbody>'.CRLF.' </table>'.CRLF.'</div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;">'.PHP_EOL.' <table class="yytableResult1">'.PHP_EOL.$__lsttbl.'  </tbody>'.PHP_EOL.' </table>'.PHP_EOL.'</div>'.PHP_EOL;
 
 if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta') && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
 
-    $o1.='<a class="yyinfo" href="zz_dossiers_l1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.CRLF;
+    $o1.='<a class="yyinfo" href="zz_dossiers_l1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.PHP_EOL;
 
 }
 

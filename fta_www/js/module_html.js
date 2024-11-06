@@ -65,6 +65,9 @@ class traitements_sur_html{
       =======================================================================================  
     */
     traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
+        var i=0;
+        var j=0;
+        var k=0;
         var t='';
         var esp0 = ' '.repeat(NBESPACESREV*(niveau));
         var esp1 = ' '.repeat(NBESPACESREV);
@@ -240,18 +243,36 @@ class traitements_sur_html{
              }
              if(type.toLowerCase()==='#text'){
                  if(typeParent==='style'){
-                     contenu=contenu.trim();
-                     if(contenu.substr(0,2)===CRLF){
-                        contenu=contenu.substr(2);
-                     }
-                     if(contenu.substr(0,1)===LF){
-                        contenu=contenu.substr(2);
-                     }
-                     if(contenu.substr(0,1)===CR){
-                        contenu=contenu.substr(1);
-                     }
                      if(contenu!==''){
-                         t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                         contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
+                         if(contenu.substr(0,1)!=='\n'){
+                          debugger
+                          contenu='\n'+contenu;
+                         }
+                         /*
+                           on supprime les espace en début de ligne
+                         */
+                         var contenuTab=contenu.split('\n');
+                         k=9999;
+                         for(i=1;i<contenuTab.length;i++){
+                             for(j=0;j<contenuTab[i].length;j++){
+                                 if(contenuTab[i].substr(j,1)!==' '){
+                                     if(j<k){
+                                         k=j;
+                                     }
+                                     break;
+                                 }
+                             }
+                             
+                         }
+                         if(k<999 && k>0){
+                            for(i=1;i<contenuTab.length;i++){
+                                contenuTab[i]=contenuTab[i].substr(k);
+                            }
+                            contenu=contenuTab.join('\n');
+                         }
+                         t+='\''+contenu+'\'';
+                         
                      }
                  }else{
                      contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
@@ -320,12 +341,20 @@ class traitements_sur_html{
              try{
                  if(jsonDeHtml.hasOwnProperty('content')){
                      if(typeof jsonDeHtml.content === 'string'){
-                         contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                         if(typeParent==='style'){
+                           contenu=jsonDeHtml.content;
+                         }else{
+                           contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                         }
                      }else{
                          debugger
                      }
                  }else{
-                     contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                     if(typeParent==='style'){
+                         contenu=jsonDeHtml;
+                     }else{
+                         contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                     }
                  }
              }catch(e){
                  /*
@@ -520,7 +549,11 @@ class traitements_sur_html{
               "image/svg+xml"
               "text/html"
             */
-            var docNode = parser.parseFromString('<aaaaa>'+element+'</aaaaa>','application/xml'); // element.replace(/&nbsp;/g,'&amp;#160;')
+            var element_a_traiter=element.replace(/&nbsp;/g,'__a_remplacer__&#160;__a_remplacer__')
+            /*
+              j'aime les &nbsp;
+            */
+            var docNode = parser.parseFromString('<aaaaa>'+element_a_traiter+'</aaaaa>','application/xml'); // element.replace(/&nbsp;/g,'&amp;#160;')
             var elementNoeud=docNode.firstChild; // element
             if(docNode.getElementsByTagName('parsererror').length || element.indexOf('<')<0){
                 /*
@@ -573,8 +606,10 @@ class traitements_sur_html{
                         }
                     }
                 }
+                
 
                 treeHTML(elementNoeud,treeObject);
+
                 return {__xst:true, __xva:treeObject,parfait:false};
                 
                 
@@ -585,7 +620,7 @@ class traitements_sur_html{
                 */
                 elementNoeud = docNode.firstChild.childNodes;
                 
-                function treeXML(elements, objet , niveau){
+                function treeXML(elements, objet , niveau , remplacer_les_nbsp){
                     try{
                         var les_contenus=[];
                         for(var i=0;i<elements.length;i++){
@@ -599,10 +634,15 @@ class traitements_sur_html{
                                 le_noeud['attributes']=les_attributs;
                             }
                             if(elements[i].childNodes && elements[i].childNodes.length>0){
-                                treeXML(elements[i].childNodes,le_noeud);
+                                treeXML(elements[i].childNodes,le_noeud,niveau+1,remplacer_les_nbsp);
                             }else{
                                 if(elements[i].data){
-                                    le_noeud.content=elements[i].data;
+                                    if(remplacer_les_nbsp===true){
+                                        le_noeud.content=elements[i].data.replace(/__a_remplacer__\u00A0__a_remplacer__/g, "&nbsp;");
+                                        le_noeud.content=le_noeud.content.replace(/__a_remplacer__&#160;__a_remplacer__/g, "&nbsp;");
+                                    }else{
+                                        le_noeud.content=elements[i].data;
+                                    }
                                 }else{
                                     le_noeud.content=null;
                                 }
@@ -616,7 +656,14 @@ class traitements_sur_html{
                     
                 }
                 treeObject['type']='';
-                treeXML(elementNoeud,treeObject,0);
+                if(element.indexOf('&nbsp;')>=0){
+                 /*
+                   j'aime les &nbsp;
+                 */
+                 treeXML(elementNoeud,treeObject,0,true);
+                }else{
+                 treeXML(elementNoeud,treeObject,0,false);
+                }
                 return {__xst:true, __xva:treeObject,parfait:true};
                 
             }
@@ -1149,7 +1196,7 @@ class traitements_sur_html{
              c'est un script dans un html
             */
             
-            var ob=parseJavascript0(tab,indiceDebutJs,niveau+1);
+            var ob=parseJavascript0(tab,indiceDebutJs,0);
             
             if(ob.__xst===true){
                 /*
@@ -1446,58 +1493,77 @@ class traitements_sur_html{
            
            
           }else{
-           /*
-             ===========================================================================================
-             entrée dans le récursif
-             ===========================================================================================
-           */
-           if(tab[i][1]==='script'){
-            /*
-              dans le cas du script, on le met à la racine
-            */
-            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
-            
-            
-           }else{
-            niveau++;
-            ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau); // appel récursif
-            niveau--;
-           }
+              /*
+                ===========================================================================================
+                entrée dans le récursif
+                ===========================================================================================
+              */
+              if(tab[i][1]==='script'){
+               /*
+                 dans le cas du script, on le met à la racine
+               */
+               ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
+               
+               
+              }else{
+               niveau++;
+               ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau); // appel récursif
+               niveau--;
+              }
+              
+              if(ob.__xst===true){
+               /*
+                ===========================================================================================
+                ecriture de la valeur dans le cas d'un tag html normal
+                ===========================================================================================
+               */
+               t+=ob.__xva;
+               dansBody=ob.dansBody;
+               dansHead=ob.dansHead;
+               dansJs=ob.dansJs;
+              }else{
+               return logerreur({__xst:false,__xme:'erreur dans un html 0659'});  
+              }
            
-           if(ob.__xst===true){
-            /*
-             ===========================================================================================
-             ecriture de la valeur dans le cas d'un tag html normal
-             ===========================================================================================
-            */
-            t+=ob.__xva;
-            dansBody=ob.dansBody;
-            dansHead=ob.dansHead;
-            dansJs=ob.dansJs;
-           }else{
-            return logerreur({__xst:false,__xme:'erreur dans un html 0659'});  
-           }
            
            
-           
-          }      
+          }
           
          }else{
-          if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
-          }else{
-           t+=espacesn(true,niveau+1);
-           /*
-            ===========================================================================================
-            ecriture de la valeur dans le cas d'une constante
-            ===========================================================================================
-           */
-           if(dansCss===true){
-             t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n'+' '.repeat((niveau+1)*NBESPACESSOURCEPRODUIT)).replace(/¶CR¶/g,'\r');
-           }else{
-             t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
-           }
-           contenuNiveauPlus1=tab[i][1];
-          }
+             if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
+             }else{
+              t+=espacesn(true,niveau+1);
+              /*
+               ===========================================================================================
+               ecriture de la valeur dans le cas d'une constante
+               ===========================================================================================
+              */
+              var indcss=0;
+              if(dansCss===true){
+                for(indcss=t.length-1;indcss>=0;indcss--){
+                    if(t.substr(indcss,1)!==' '){
+                        t=t.substr(0,indcss);
+                        break
+                    }
+                }
+                var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                /*
+                on supprime les espaces de fin
+                */
+                if(contenuCss!==''){
+                 for(var indcss=contenuCss.length-1;indcss>=0;indcss--){
+                  if(!(contenuCss.substr(indcss,1)===' ' || contenuCss.substr(indcss,1)==='\n'  || contenuCss.substr(indcss,1)==='\r' )){
+                   contenuCss=contenuCss.substr(0,indcss+1);
+                   break;
+                  }
+                 }
+                }
+                t+=contenuCss;
+              }else{
+                t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+              }
+              contenuNiveauPlus1=tab[i][1];
+             }
          }
         }
        }
@@ -1506,7 +1572,7 @@ class traitements_sur_html{
          t+=CRLF;
         }else{
          t+=espacesn(true,niveau);
-         if(tab[id][1]=='php'){
+         if(tab[id][1]==='php'){
          }else{
           t+='</'+tab[id][1]+'>';
           if((

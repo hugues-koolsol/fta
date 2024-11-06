@@ -365,30 +365,30 @@ if(($chp_texte_tache != '')){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_texte_tache">texte</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_texte_tache" id="chp_texte_tache"   value="'.enti1($chp_texte_tache).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_texte_tache')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_texte_tache">texte</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_texte_tache" id="chp_texte_tache"   value="'.enti1($chp_texte_tache).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_texte_tache')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_priorite_tache">priorité =</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_priorite_tache" id="chp_priorite_tache"   value="'.enti1($chp_priorite_tache).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_priorite_tache')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_priorite_tache">priorité =</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_priorite_tache" id="chp_priorite_tache"   value="'.enti1($chp_priorite_tache).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_priorite_tache')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_priorite_tache">priorité <</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_priorite_tache2" id="chp_priorite_tache2"   value="'.enti1($chp_priorite_tache2).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_priorite_tache2')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_priorite_tache">priorité <</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_priorite_tache2" id="chp_priorite_tache2"   value="'.enti1($chp_priorite_tache2).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_priorite_tache2')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_tache">id</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_tache" id="chi_id_tache"   value="'.enti1($chi_id_tache).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_tache')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_tache">id</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_tache" id="chi_id_tache"   value="'.enti1($chi_id_tache).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_tache')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 
-$o1.='</form>'.CRLF;
+$o1.='</form>'.PHP_EOL;
 
 $__debut=$__xpage*($__nbMax);
 
@@ -430,10 +430,10 @@ $consUrlRedir.=(($chp_texte_tache !== '')?'&amp;chp_texte_tache='.rawurlencode($
 $consUrlRedir.=(($chp_priorite_tache !== '')?'&amp;chp_priorite_tache='.rawurlencode($chp_priorite_tache):'');
 $consUrlRedir.=(($chp_priorite_tache2 !== '')?'&amp;chp_priorite_tache2='.rawurlencode($chp_priorite_tache2):'');
 
-$boutons_haut=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.CRLF;
-$boutons_haut.=' <button type="submit" name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.CRLF;
-$boutons_haut.=' <button type="submit" name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.CRLF;
-$boutons_haut.=' <button type="submit" name="__ordonner_les_taches" id="__ordonner_les_taches" class="yyinfo" title="réordonner les tâches" >#</button>'.CRLF;
+$boutons_haut=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>'.PHP_EOL;
+$boutons_haut.=' <button type="submit" name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>'.PHP_EOL;
+$boutons_haut.=' <button type="submit" name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>'.PHP_EOL;
+$boutons_haut.=' <button type="submit" name="__ordonner_les_taches" id="__ordonner_les_taches" class="yyinfo" title="réordonner les tâches" >#</button>'.PHP_EOL;
 
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_haut);
 
@@ -476,7 +476,7 @@ foreach($tt[__xva] as $k0 => $v0){
 
     $lsttbl.='</tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$lsttbl.'</tbody></table></div>'.PHP_EOL;
 
 /* $o1.= __FILE__ . ' ' . __LINE__ . ' $tab0 = <pre>' . var_export( $data0 , true ) . '</pre>' ;*/
 /*

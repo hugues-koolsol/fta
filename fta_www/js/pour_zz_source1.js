@@ -69,7 +69,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
         if (r.readyState !== 4 || r.status !== 200) return;
         try{
             var jsonRet=JSON.parse(r.responseText);
-            if(jsonRet.__xst=='OK'){
+            if(jsonRet.__xst===true){
              
                 var date_de_fin_traitement = new Date();
                 date_de_fin_traitement = date_de_fin_traitement.getTime();
@@ -176,7 +176,7 @@ function convertir_js_en_rev(chp_genere_source , chp_rev_source ){
   if(obj1.__xst===true){
        tabComment=obj1.commentaires;
        var objRev = TransformAstEnRev(obj1.__xva.body,0);
-       if(objRev.__xst == true){
+       if(objRev.__xst === true){
          dogid(chp_rev_source).value=objRev.__xva;
        }else{
          __gi1.remplir_et_afficher_les_messages1('zone_global_messages',chp_genere_source);
@@ -199,7 +199,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
        tabComment=obj1.commentaires;
        
        var objRev = TransformAstEnRev(obj1.__xva.body,0);
-       if(objRev.__xst == true){
+       if(objRev.__xst === true){
         
         var tableau1 = iterateCharacters2(objRev.__xva);
         var matriceFonction = functionToArray2(tableau1.out,true,false,''); 
@@ -288,7 +288,7 @@ function convertir_un_source_sur_disque(id_source){
   if (r.readyState !== 4 || r.status !== 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
 //    console.log('jsonRet=',jsonRet);
 //    dogid('chp_genere_source').value=jsonRet.__xva;
     var nom_source=jsonRet.db['T0.chp_nom_source'];
@@ -597,7 +597,7 @@ function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
   if (r.readyState !== 4 || r.status !== 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
     console.log('jsonRet=',jsonRet);
     document.location=String(document.location);
     return;
@@ -641,7 +641,7 @@ function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
   if (r.readyState !== 4 || r.status !== 200) return;
   try{
    var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst=='OK'){
+   if(jsonRet.__xst===true){
     console.log('jsonRet=',jsonRet);
     dogid('chp_genere_source').value=jsonRet.__xva;
     return;

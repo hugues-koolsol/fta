@@ -147,7 +147,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
      var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
      var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
      
-     if(compacteOriginal.__xst==true && compacteReecrit.__xst===true){
+     if(compacteOriginal.__xst===true && compacteReecrit.__xst===true){
       if(compacteOriginal.__xva == compacteReecrit.__xva){
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML+'<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">'+strToHtml(compacteOriginal.__xva)+'</textarea>';

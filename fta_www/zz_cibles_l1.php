@@ -96,27 +96,27 @@ if($chi_id_cible != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chi_id_cible">id cible</label>'.CRLF;
-$o1.='    <input  type="text" name="chi_id_cible" id="chi_id_cible"   value="'.enti1($chi_id_cible).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_cible')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_nom_cible">nom</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_nom_cible" id="chp_nom_cible"   value="'.enti1($chp_nom_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_cible')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_dossier_cible">dossier</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_dossier_cible" id="chp_dossier_cible"   value="'.enti1($chp_dossier_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_dossier_cible')?'autofocus="autofocus"':'').' />'.CRLF;
-$o1.='   </div>'.CRLF;
-$o1.='   <div>'.CRLF;
-$o1.='    <label for="chp_commentaire_cible">commentaire</label>'.CRLF;
-$o1.='    <input  type="text" name="chp_commentaire_cible" id="chp_commentaire_cible"   value="'.enti1($chp_commentaire_cible).'"  size="8" maxlength="64" '.(($autofocus == 'chp_commentaire_cible')?'autofocus="autofocus"':'').'  />'.CRLF;
-$o1.='   </div>'.CRLF;
+$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chi_id_cible">id cible</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_cible" id="chi_id_cible"   value="'.enti1($chi_id_cible).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_cible')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_nom_cible">nom</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_cible" id="chp_nom_cible"   value="'.enti1($chp_nom_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_cible')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_dossier_cible">dossier</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_dossier_cible" id="chp_dossier_cible"   value="'.enti1($chp_dossier_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_dossier_cible')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
+$o1.='   <div>'.PHP_EOL;
+$o1.='    <label for="chp_commentaire_cible">commentaire</label>'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_commentaire_cible" id="chp_commentaire_cible"   value="'.enti1($chp_commentaire_cible).'"  size="8" maxlength="64" '.(($autofocus == 'chp_commentaire_cible')?'autofocus="autofocus"':'').'  />'.PHP_EOL;
+$o1.='   </div>'.PHP_EOL;
 
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().CRLF.'   </div>'.CRLF;
+$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 
-$o1.=' </form>'.CRLF;
+$o1.=' </form>'.PHP_EOL;
 $__debut=$__xpage*($__nbMax);
 
 sql_inclure_reference(33);
@@ -259,7 +259,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='</td>';
     $lsttbl.='<tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.CRLF.$lsttbl.'</tbody></table></div>'.CRLF;
+$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$lsttbl.'</tbody></table></div>'.PHP_EOL;
 /*
   =====================================================================================================================
 */

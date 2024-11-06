@@ -28,8 +28,8 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         ));
 
         if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
-                $data[__xst]='KO';
-                $data['messages'][]=__LINE__. ' ' . __FILE__ . ' KO';
+                $data[__xst]=false;
+                $data[__xms][]=__LINE__. ' ' . __FILE__ . ' KO';
                 return;
         }
         $__valeurs=$tt[__xva][0];
@@ -43,7 +43,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         if($fd=fopen($chemin_fichier,'w')){
             fwrite($fd,$data['input']['source']);
             fclose($fd);
-            $data[__xst]='OK';
+            $data[__xst]=true;
             
             $data['input']['parametres_sauvegarde'] = array(
                   'id_cible'                => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
@@ -89,8 +89,8 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
         ));
 
         if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
-                $data[__xst]='KO';
-                $data['messages'][]=__LINE__. ' ' . __FILE__ . ' KO';
+                $data[__xst]=false;
+                $data[__xms][]=__LINE__. ' ' . __FILE__ . ' KO';
                 return;
         }
         $__valeurs=$tt[__xva][0];
@@ -105,17 +105,17 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
           if($contenu_du_fichier!==false){
               $data['contenu_du_fichier']=$contenu_du_fichier;
               $data['db']=$__valeurs;
-              $data[__xst]='OK';
+              $data[__xst]=true;
           }
       
       
       
      }else{
-         $data['messages'][]='fichier introuvable '.$chemin_fichier;
+         $data[__xms][]='fichier introuvable '.$chemin_fichier;
      }
   
  }else{
-     $data['messages'][]='champ id_source introuvable';
+     $data[__xms][]='champ id_source introuvable';
  }
 
 
@@ -127,12 +127,12 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
   $nomFichierDecripte=decrypter($data['input']['file_name']);
   
   if(sauvegarder_et_supprimer_fichier($nomFichierDecripte)){
-    $data[__xst]='OK';
+    $data[__xst]=true;
   }else{
-    $data['messages'][]='la copie du fichier dans le répertoire de sauvegarde est impossible';
+    $data[__xms][]='la copie du fichier dans le répertoire de sauvegarde est impossible';
   }
  }else{
-  $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';
+  $data[__xms][]='$data[\'input\'][\'file_name\'] non trouvé';
  }
 
 
@@ -150,20 +150,20 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
    $contenu=file_get_contents($nomFichierDecripte);
    if($contenu===false){
     
-       $data['messages'][]='impossible de lire le fichier';   
+       $data[__xms][]='impossible de lire le fichier';   
     
    }else{
      
        $data[__xva]=$contenu;
-       $data[__xst]='OK';
+       $data[__xst]=true;
     
    }
    
   }else{
-       $data['messages'][]='le fichier fait plus de '.TAILLE_MAXI_SOURCE.' octets et il ne peut pas être intégré dans une zone de texte';   
+       $data[__xms][]='le fichier fait plus de '.TAILLE_MAXI_SOURCE.' octets et il ne peut pas être intégré dans une zone de texte';   
   }
  }else{
-  $data['messages'][]='$data[\'input\'][\'file_name\'] non trouvé';
+  $data[__xms][]='$data[\'input\'][\'file_name\'] non trouvé';
  }
 
 
@@ -173,7 +173,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
 function loadRevFile(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_name'],'..')!==false){
-  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+  $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
   return;
  }
  if($data['input']['file_name']!=''){
@@ -181,12 +181,12 @@ function loadRevFile(&$data){
   $contenu=file_get_contents($filefullpath);
   if($contenu!==false){
    $data[__xva]=$contenu;
-   $data[__xst]='OK';
+   $data[__xst]=true;
   }else{
-   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot read the file';
+   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot read the file';
   }
  }else{
-  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'file name must be given';
+  $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'file name must be given';
  }
 }
 //==========================================================================================================
@@ -196,29 +196,29 @@ function getRevFiles(&$data){
  foreach (glob($dir.'*.rev') as $filename) {
   $data['files'][]=basename($filename);
  } 
- $data[__xst]='OK';
+ $data[__xst]=true;
 }
 //==========================================================================================================
 function writeRevFile(&$data){
 // sleep(2);
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_name'],'..')){
-  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write a file containing ".."';
+  $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write a file containing ".."';
   return;
  }
  
  if(substr($data['input']['file_name'],-4)!=='.rev'){
-  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The file must end with a .rev extension';
+  $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The file must end with a .rev extension';
   return;
  }
  for($i=0;$i<strlen($data['input']['file_name']);$i++){
   $c=substr($data['input']['file_name'],$i,1);
   if($c=='/' || $c=='\\' || $c==':' || $c=='*' || $c=='?' || $c=='"' || $c=='<' || $c=='>' || $c=='|'){
-   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
+   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
    return;
   }else{
    if(!(ord($c)>=32 && ord($c)<127)){
-    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
+    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
     return;
    }
   }
@@ -231,15 +231,15 @@ function writeRevFile(&$data){
  if($fd=fopen($filefullpath,'w')){
   if(fwrite($fd,$data['input']['contenu_du_fichier'])){
    if(fclose($fd)){
-    $data[__xst]='OK';
+    $data[__xst]=true;
    }else{
-    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
+    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
    }
   }else{
-   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
+   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
   }
  }else{
-  $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+  $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
  }
 }
 //==========================================================================================================
@@ -251,7 +251,7 @@ function writeFile(&$data){
   (strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false )
   && ( 1 !== $_SESSION[APP_KEY]["user"] )
  ){
-  $data['messages'][]=__FILE__ . ' ' . __LINE__ . ' ' . '1 cannot open the file';
+  $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . '1 cannot open the file';
  }else{
   $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];
   if(is_file($filefullpath)){   
@@ -261,15 +261,15 @@ function writeFile(&$data){
   if($fd=fopen($filefullpath,'w')){
    if(fwrite($fd,$data['input']['contenu_du_fichier'])){
     if(fclose($fd)){
-     $data[__xst]='OK';
+     $data[__xst]=true;
     }else{
-     $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
+     $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
     }
    }else{
-    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
+    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
    }
   }else{
-   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
   }
  }
 }
@@ -277,7 +277,7 @@ function writeFile(&$data){
 function concatFile(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
  if(strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false){
-  $data['messages'][]='cannot open the file';
+  $data[__xms][]='cannot open the file';
  }else{
   $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];
   if($fd=fopen($filefullpath,'a')){
@@ -286,18 +286,18 @@ function concatFile(&$data){
    if($contenu!==false){
     if(fwrite($fd,"\r\n".$contenu)){
      if(fclose($fd)){
-      $data[__xst]='OK';
+      $data[__xst]=true;
      }else{
-      $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
+      $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
      }
     }else{
-     $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
+     $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
     }
    }else{
-    $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot get content of "'.$filefullpath2.'"';     
+    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot get content of "'.$filefullpath2.'"';     
    }
   }else{
-   $data['messages'][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
   }
  }
 }

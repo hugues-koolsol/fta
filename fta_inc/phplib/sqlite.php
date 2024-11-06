@@ -123,11 +123,11 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
 //    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__nbEnregs . ' pour ' . $k0 , true ) . '</pre>' ; exit(0);
     if($__nbEnregs>0){
      
-     fwrite($fd,'/*'.CRLF.CRLF.CRLF.CRLF);
-     fwrite($fd,'  ========================================================================='.CRLF);
-     fwrite($fd,'  Pour la table '.$k0.' il y a ' . $__nbEnregs . ' enregistrement(s) à insérer '.CRLF);
-     fwrite($fd,'  ========================================================================='.CRLF);
-     fwrite($fd,'*/'.CRLF);
+     fwrite($fd,'/*'.PHP_EOL.PHP_EOL.PHP_EOL.PHP_EOL);
+     fwrite($fd,'  ========================================================================='.PHP_EOL);
+     fwrite($fd,'  Pour la table '.$k0.' il y a ' . $__nbEnregs . ' enregistrement(s) à insérer '.PHP_EOL);
+     fwrite($fd,'  ========================================================================='.PHP_EOL);
+     fwrite($fd,'*/'.PHP_EOL);
      
      if(   APP_KEY==='fta' 
         && $_SESSION[APP_KEY]['sess_id_utilisateur']===1 
@@ -169,12 +169,12 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
         if($indice_actuel!==0 && $indice_actuel%$nombre_de_values_par_insert===0){
          
          $sql=substr($sql,0,-1).';';
-         fwrite($fd,CRLF.'INSERT INTO `'.$k0.'`('.$listeDesChamps.') VALUES');
-         fwrite($fd,$sql.CRLF);
+         fwrite($fd,PHP_EOL.'INSERT INTO `'.$k0.'`('.$listeDesChamps.') VALUES');
+         fwrite($fd,$sql.PHP_EOL);
          $sql='';
          
         }
-        $sql.=CRLF.'(';
+        $sql.=PHP_EOL.'(';
         foreach($tab0 as $k2 => $v2){
          if($v2===null){
              $sql.='NULL,';
@@ -189,8 +189,8 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
        $stmt0->close();
        if( $sql !== '' ){
          $sql=substr($sql,0,-1).';';
-         fwrite($fd,CRLF.'INSERT INTO `'.$k0.'`('.$listeDesChamps.') VALUES');
-         fwrite($fd,$sql.CRLF);
+         fwrite($fd,PHP_EOL.'INSERT INTO `'.$k0.'`('.$listeDesChamps.') VALUES');
+         fwrite($fd,$sql.PHP_EOL);
          $sql='';
        }
 
@@ -203,11 +203,11 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
      
      
     }else{
-     fwrite($fd,'/*'.CRLF.CRLF.CRLF.CRLF);
-     fwrite($fd,'  ========================================================================='.CRLF);
-     fwrite($fd,'  Pour la table '.$k0.' il n\'y a aucune donnée à insérer'.CRLF);
-     fwrite($fd,'  ========================================================================='.CRLF);
-     fwrite($fd,'*/'.CRLF);
+     fwrite($fd,'/*'.PHP_EOL.PHP_EOL.PHP_EOL.PHP_EOL);
+     fwrite($fd,'  ========================================================================='.PHP_EOL);
+     fwrite($fd,'  Pour la table '.$k0.' il n\'y a aucune donnée à insérer'.PHP_EOL);
+     fwrite($fd,'  ========================================================================='.PHP_EOL);
+     fwrite($fd,'*/'.PHP_EOL);
     }
     
    }
