@@ -68,6 +68,9 @@ $o1='';?>
 $js_a_executer_apres_chargement=array(
     array(
      'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea' , 'parametre' => array( 'nom' => 'zonesource' , 'mode' => 'rev' )
+    ),
+    array(
+     'nomDeLaFonctionAappeler' => 'initialisation_page_rev' , 'parametre' => array( 'nom' => 'zonesource' , 'mode' => 'rev' )
     )
 );
 

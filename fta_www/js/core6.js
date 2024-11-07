@@ -62,6 +62,11 @@ function logerreur(o){
             if(o.hasOwnProperty('id')){
                 global_messages['ids'].push(o.id);
             }
+            if(o.hasOwnProperty('__xms')){
+                for(var i in o.__xms){
+                    global_messages['errors'].push(o.__xms[i]);
+                }
+            }
         }else{
             if(o.hasOwnProperty(__xme)){
                 if(o.__xme !== ''){
@@ -1012,7 +1017,7 @@ function formaterErreurRev(obj){
             }
         }
     }
-    return({__xst:obj.__xst,'__xva':T,'id':obj.ind,__xme:(obj.message + message_ajoute),'line':line});
+    return({__xst:obj.__xst,'__xva':T,'id':obj.ind,__xme:(obj.__xme + message_ajoute),'line':line});
 }
 /*
   =====================================================================================================================
@@ -1335,6 +1340,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                  || (c1 === '>')
                  || (c1 === '<')
                  || (c1 === '/')
+                 || (c1 === '&')
                  || (c1 === '$')){
                     if(texte === ''){
                         premier=i;
@@ -1686,6 +1692,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                  || (c1 === 'x')
                  || (c1 === 'v')
                  || (c1 === '0')
+                 || (c1 === '&')
                  || (c1 === '$')){
                     if(texte === ''){
                         premier=i;

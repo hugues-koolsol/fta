@@ -2449,10 +2449,21 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                             var objfnt1 = js_traiteAppelFonction(tab,(j + 2),dans_condition,(niveau + 1),false);
                             if(objfnt1.__xst === true){
                                 if(objfnt1.__xva.substr((objfnt1.__xva.length - 1),1) === ';'){
-                                    textObj+=maConstante(tab[j + 1]) + ':' + objfnt1.__xva.substr(0,(objfnt1.__xva.length - 1));
-                                }else{
-                                    textObj+=maConstante(tab[j + 1]) + ':' + objfnt1.__xva;
+                                    objfnt1.__xva=objfnt1.__xva.substr(0,objfnt1.__xva.length - 1);
                                 }
+                                if(objfnt1.__xva.length<100 && (objfnt1.__xva.substr(0,1)==='\n' || objfnt1.__xva.substr(0,1)==='\r' ) ){
+                                  /* */
+                                  var c1='';
+                                  var indTxt=0;
+                                  for(indTxt=0;indTxt<objfnt1.__xva.length;indTxt++){
+                                   c1=objfnt1.__xva.substr(indTxt,1);
+                                   if( !(c1==='\n' ||  c1==='\r' ||  c1===' ')  ){
+                                    objfnt1.__xva=' '+objfnt1.__xva.substr(indTxt);
+                                    break;
+                                   }
+                                  }
+                                }
+                                textObj+=maConstante(tab[j + 1]) + ':' + objfnt1.__xva;
                             }else{
                                 logerreur({
                                     __xst:false,

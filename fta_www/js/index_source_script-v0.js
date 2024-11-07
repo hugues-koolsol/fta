@@ -3,6 +3,7 @@
   =====================================================================================================================
 */
 function sauvegardeTexteSource(){
+    __gi1.raz_des_messages();
     var i=0;
     var c='';
     var obj={};
@@ -20,10 +21,27 @@ function sauvegardeTexteSource(){
                 }
             }
         }
-        obj=writeRevFile(nomDuSource,document.getElementById('normalise').value);
+        var ajax_param={
+           call:{
+            lib               : 'core'   ,
+            file              : 'file'  ,
+            funct             : 'sauvegarger_un_fichier_rev' ,
+           },
+           contenu_du_fichier : document.getElementById('normalise').value ,
+           file_name          : nomDuSource ,
+        }
+        async function sauvegarger_un_fichier_rev(url="",ajax_param){
+            return(__gi1.recupérer_un_fetch(url,ajax_param));
+        }
+        sauvegarger_un_fichier_rev('za_ajax.php?sauvegarger_un_fichier_rev',ajax_param).then((donnees) => {
+            if(donnees.__xst===true){
+              logerreur({__xst:true,__xme:'👍 fichier sauvegardé'})
+            }
+             __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
+        });
+        document.getElementById('sauvegarderLeNormalise').disabled=true;
+        document.getElementById('nomDuSource').disabled=true;
     }
-    document.getElementById('sauvegarderLeNormalise').disabled=true;
-    document.getElementById('nomDuSource').disabled=true;
 }
 
 /*
@@ -105,6 +123,53 @@ function ajusteTailleTextareaContenantSource(normalise){
     }catch(e){
     }
 }
+//=====================================================================================================================
+function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
+    var fichierAConcatener='';
+    if(Array.isArray(tabConcatFichier)){
+        fichierAConcatener=tabConcatFichier.shift();
+    }else{
+        var nouveau_tableau=[];
+        for( var i in tabConcatFichier){
+         nouveau_tableau.push(tabConcatFichier[i])
+        }
+        tabConcatFichier=nouveau_tableau;
+        if(tabConcatFichier.length>0){
+            fichierAConcatener=tabConcatFichier.shift();
+        }
+    }
+    if(fichierAConcatener!==''){ 
+        var ajax_param={
+            call:{
+                lib                       : 'core' ,
+                file                      : 'file' ,
+                funct                     : 'concatener_des_fichiers1' ,
+            },
+            file_name                 : file_name          ,
+            file_extension            : file_extension     ,
+            file_path                 : file_path          ,
+            fichierAConcatener        : fichierAConcatener ,
+            tabConcatFichier          : tabConcatFichier   ,
+        }
+        
+        async function concatener_des_fichiers1(url="",ajax_param){
+            return(__gi1.recupérer_un_fetch(url,ajax_param));
+        }
+        concatener_des_fichiers1('za_ajax.php?concatener_des_fichiers1',ajax_param).then((donnees) => {
+            console.log(donnees);
+            if(donnees.__xst===true){
+                logerreur({__xst:true,__xme:'le fichier '+fichierAConcatener+' a été concaténé'});
+             
+                if(donnees.input.tabConcatFichier){
+                 concateneFichiers(donnees.input.tabConcatFichier,donnees.input.file_name,donnees.input.file_extension,donnees.input.file_path)
+                }
+            }
+        });
+    }else{
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
+    }
+}
+
 /*
   =====================================================================================================================
 */
@@ -117,7 +182,7 @@ function enregistrer2(){
     __gi1.raz_des_messages();
     document.getElementById('arrayed').innerHTML='';
     var zonedonneesComplementaires = document.getElementById('donneesComplementaires');
-    console.clear();
+//    console.clear();
     zonedonneesComplementaires.innerHTML='';
     var a = document.getElementById('zonesource');
     var startMicro = performance.now();
@@ -180,15 +245,41 @@ function enregistrer2(){
                 document.getElementById('nomDuSource').disabled=false;
                 if(conversion.__xst == true){
                     global_messages.data.sourceGenere=conversion.__xva;
-                    var arr = writeSourceFile(conversion);
-                    if(arr.__xst == false){
-                        logerreur({__xst:false,__xme:'il y a eu un problème d\'écriture sur disque'});
-                        console.log(arr);
-                    }else{
-                        logerreur({__xst:true,__xme:'<b>👍👍👍 programme écrit sur disque</b>'});
+                    
+                    
+                    var ajax_param={
+                     call:{
+                      lib                       : 'core'   ,
+                      file                      : 'file'  ,
+                      funct                     : 'ecrire_fichier1' ,
+                     },
+                     contenu_du_fichier        : conversion.__xva     ,
+                     file_name                 : conversion.file_name       ,
+                     file_extension            : conversion.file_extension  ,
+                     file_path                 : conversion.file_path       ,
+                    }
+                    
+                    async function ecrire_fichier1(url="",ajax_param){
+                        return(__gi1.recupérer_un_fetch(url,ajax_param));
+                    }
+                    ecrire_fichier1('za_ajax.php?ecrire_fichier1',ajax_param).then((donnees) => {
+//                     console.log(donnees);
+                     if(donnees.__xst===true){
+                        logerreur({__xst:true,__xme:'<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'});
+                        
+                        if(conversion.tabConcatFichier.length>0){
+                            concateneFichiers(conversion.tabConcatFichier,conversion.file_name,conversion.file_extension,conversion.file_path)
+                        }
+                        
+                        
                         document.getElementById('sauvegarderLeNormalise').disabled=false;
                         document.getElementById('nomDuSource').disabled=false;
-                    }
+                      
+                     }else{
+                        logerreur({__xst:false,__xme:'il y a eu un problème d\'écriture sur disque'});
+                     }
+                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
+                    });
                 }
             }else{
                 logerreur({__xst:false,__xme:'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '});
@@ -297,29 +388,47 @@ function voirTableau1(){
 /*
   =====================================================================================================================
 */
-function afficherFichierSource(source){
-    if(source.__xst == true){
-        var zoneSource = document.getElementById(source.nomZone);
-        zoneSource.value=source.__xva;
-        ajusteTailleTextareaContenantSource(source.nomZone);
-        document.getElementById('sauvegarderLeNormalise').disabled=true;
-        document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',source.nomFichierSource);
-        document.getElementById('nomDuSource').value=source.nomFichierSource;
-        document.getElementById('nomDuSource').disabled=true;
-    }else{
-        console.log(source);
-    }
-}
-/*
-  =====================================================================================================================
-*/
 function chargerFichierRev(nomFichierSource){
     __gi1.raz_des_messages();
     document.getElementById('sauvegarderLeNormalise').disabled=true;
     document.getElementById('nomDuSource').disabled=true;
     document.getElementById('normalise').value='';
     document.getElementById('zonesource').value='';
-    loadRevFile(nomFichierSource,afficherFichierSource,'zonesource',enregistrer2);
+
+    var ajax_param={
+     call:{
+      lib                       : 'core'          ,
+      file                      : 'file' ,
+      funct                     : 'charger_un_ficher_rev' ,
+      opt                       : {'delais_admis':1500}
+     },
+     file_name                  : nomFichierSource   ,
+    }
+
+    async function charger_fichier_rev1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    charger_fichier_rev1('za_ajax.php?charger_un_ficher_rev',ajax_param).then((donnees) => {
+
+     if(donnees.__xst===true){
+       localStorage.setItem("fta_dernier_fichier_charge", donnees.input.file_name);
+      
+       //afficherFichierSource({__xst:true,__xva:donnees.__xva,nomZone:'zonesource',nomFichierSource:nomFichierSource});
+       
+        var zoneSource = document.getElementById('zonesource');
+        zoneSource.value=donnees.__xva;
+        ajusteTailleTextareaContenantSource('zonesource');
+        document.getElementById('sauvegarderLeNormalise').disabled=true;
+        document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',donnees.input.file_name );
+        document.getElementById('nomDuSource').value=donnees.input.file_name;
+        document.getElementById('nomDuSource').disabled=true;
+       
+       
+       enregistrer2();
+     }else{
+      __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
+     }
+    });
 }
 
 
@@ -327,89 +436,37 @@ function chargerFichierRev(nomFichierSource){
 /*
   =====================================================================================================================
 */
-function chargerLaListeDesSourcesRev(){
-    var r= new XMLHttpRequest();
-    r.open('POST','za_ajax.php?getRevFiles',true);
-    r.timeout=6000;
-    r.setRequestHeader('Content-Type','application/x-www-form-urlencoded;charset=utf-8');
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 500){
-                if(global_messages['e500logged'] == false){
-                    try{
-                        var errors = JSON.parse(r.responseText);
-                        var t='';
-                        var elem={};
-                        for(elem in errors.messages){
-                            global_messages['errors'].push(errors.messages[elem]);
-                        }
-                        global_messages['e500logged']=true;
-                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
-                        console.log(global_messages);
-                    }catch(e){
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                var t='';
-                var idFile={};
-                for(idFile in jsonRet.files){
-                    t+='<button onclick="chargerFichierRev(\''+jsonRet.files[idFile]+'\')" title="'+jsonRet.files[idFile]+'">'+jsonRet.files[idFile]+'</button>';
-                }
-                document.getElementById('zoneRevFiles').innerHTML=t;
-            }else{
-                console.log(r);
-                alert('BAD job !');
-                return;
-            }
-        }catch(e){
-            var errors = JSON.parse(r.responseText);
-            var t='';
-            var elem={};
-            for(elem in errors.messages){
-                global_messages['errors'].push(errors.messages[elem]);
-            }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , 'zonesource');
-            console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
-            return;
-        }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return;
-    };
+
+function initialisation_page_rev(par){
+    /* 
+     chargement de la liste des sources
+    */
+    async function charger_la_liste_des_sources1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+
     var ajax_param={'call':{lib:'core',file:'file',funct:'getRevFiles'}};
-    try{
-        r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-    }
-    /* whatever(); */
-    return(logerreur({__xst:true}));
+    charger_la_liste_des_sources1('za_ajax.php?getRevFiles',ajax_param).then((donnees) => {
+       if(donnees.__xst == true){
+        
+           var fta_dernier_fichier_charge = localStorage.getItem('fta_dernier_fichier_charge');
+           var trouve='';
+           var t='';
+           var idFile={};
+           for(idFile in donnees.files){
+               t+='<button onclick="chargerFichierRev(\''+donnees.files[idFile]+'\')" title="'+donnees.files[idFile]+'">'+donnees.files[idFile]+'</button>';
+               if(fta_dernier_fichier_charge && donnees.files[idFile]===fta_dernier_fichier_charge){
+                trouve=fta_dernier_fichier_charge;
+               }
+           }
+           document.getElementById('zoneRevFiles').innerHTML=t;
+           if(trouve!==''){
+               chargerFichierRev(fta_dernier_fichier_charge);
+           }
+       }else{
+           console.log(r);
+           alert('BAD job !');
+           return;
+       }
+   });
 }
-/*
-  =====================================================================================================================
-*/
-function chargerLeDernierSourceChargePrecedemment(){
-    var fta_dernier_fichier_charge = localStorage.getItem('fta_dernier_fichier_charge');
-    if(fta_dernier_fichier_charge !== null){
-        loadRevFile(fta_dernier_fichier_charge,afficherFichierSource,'zonesource');
-    }
-}
-/*
-  =====================================================================================================================
-*/
-document.addEventListener('DOMContentLoaded',function(){
-    chargerLaListeDesSourcesRev('source1.txt');
-    chargerLeDernierSourceChargePrecedemment();
-});

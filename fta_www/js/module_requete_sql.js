@@ -1688,16 +1688,12 @@ class requete_sql{
             if(obj2.__xst === true){
                 var ajax_param={
                     'call':{'lib':'core','file':'bdd','funct':'enregistrer_la_requete_en_base'},
-                    'rev':
-                    document.getElementById('txtar1').value,
-                    'sql':
-                    document.getElementById('txtar2').value,
-                    'php':
-                    document.getElementById('txtar3').value,
+                    'rev': document.getElementById('txtar1').value,
+                    'sql': document.getElementById('txtar2').value,
+                    'php': document.getElementById('txtar3').value,
                     'type':this.#obj_webs.type_de_requete,
                     'tableau_rev_requete':obj1.__xva,
-                    'cht_commentaire_requete':
-                    document.getElementById('cht_commentaire_requete').value,
+                    'cht_commentaire_requete': document.getElementById('cht_commentaire_requete').value,
                     'id_courant':id_courant
                 };
                 enregistrer_la_requete_en_base(this.#globale_debut_url+'?enregistrer_la_requete_en_base',ajax_param,this).then((donnees) => {

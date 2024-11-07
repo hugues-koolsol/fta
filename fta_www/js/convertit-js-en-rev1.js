@@ -1130,13 +1130,6 @@ function traiteIf1(element,niveau,type){
             var obj3 = TransformAstEnRev(element.consequent.body,niveau);
         }else{
             var obj3 = TransformAstEnRev([element.consequent],niveau);
-            /*
-              if(element.consequent.type === 'ExpressionStatement'){
-              var obj3 = traiteExpression1(element.consequent,niveau);
-              }else{
-              return(astjs_logerreur({__xst:false,__xme:'erreur traiteIf1 0817 pour '+element.type,element:element}));
-              }
-            */
         }
     }else{
         if(element.body){
@@ -1720,6 +1713,7 @@ function traiteObjectExpression1(element,niveau){
          || ('LogicalExpression' === val.value.type)
          || ('MemberExpression' === val.value.type)
          || ('ObjectExpression' === val.value.type)
+         || ('TemplateLiteral' === val.value.type)
          || ('UnaryExpression' === val.value.type)){
 
             var obj1 = traiteUneComposante(val.value,niveau,false,false);
@@ -1730,7 +1724,7 @@ function traiteObjectExpression1(element,niveau){
                 return(astjs_logerreur({__xst:false,__xme:'erreur 0000 [ todo ajuster ] '}));
             }
         }else{
-            return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteObjectExpression1 817 ' + val.value.type,element:element}));
+            return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteObjectExpression1 0817 ' + val.value.type,element:element}));
         }
     }
     t='obj(' + t + ')';
@@ -3108,7 +3102,6 @@ function analyse_fichier_log_acorn(jsonRet){
 */
 function recupere_ast_de_source_js_en_synchrone(texteSource){
     var r= new XMLHttpRequest();
-    
     r.onerror=function(e){
         console.error('e=',e);
         return({__xst:false});
@@ -3120,6 +3113,9 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
       =============================================================================================================
       =============================================================================================================
       ATTENTION appel "SYNCHRONE" à la récupération ast, le r.open a comme dernier paramètre : false
+      on fait ceci car quand un html contient du javascript, on convertit ce dernier à la volée
+      Remarque : le html peut aussi être dans un php ....
+      Ce sera à modifier plus tard ...
       =============================================================================================================
       =============================================================================================================
       =============================================================================================================
@@ -3130,37 +3126,44 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
         r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
         console.error('e=',e);
-        /* whatever(); */
-        return({__xst:false});
+        logerreur({__xst:false,__xme:' conv js 3127  message='+e.message});
+        return({__xst:false,__xme:' conv js message='+e.message});
     }
     if(r.readyState === 4){
+        if(r.status===404){
+            logerreur({__xst:false,__xme:' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée '});
+            return({__xst:false,__xme:'conv js 3131url non trouvée '});
+            
+        }
         try{
             var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst === true){
+            
+        }catch(erreur_json){
+            logerreur({__xst:false,__xme:' conv js 3141 erreur de réception de données, erreur_json= '+erreur_json.message});
+            return({__xst:false,__xme:' conv js 3141 erreur de réception de données, erreur_json= '+erreur_json.message});
+            
+        }
+        if(jsonRet.__xst === true){
 
-                var elem={};
-                for(elem in jsonRet.messages){
-                    logerreur({__xst:true,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
-                }
-                return({__xst:true,'__xva':JSON.parse(jsonRet.__xva),'commentaires':JSON.parse(jsonRet.commentaires)});
-            }else{
-//                console.error('jsonRet=',jsonRet);
-                if(jsonRet.fichier_erreur){
-                   var obj=analyse_fichier_log_acorn(jsonRet);
-                   if(obj.__xst===true){
-                   }else{
-                    
-                      console.error(jsonRet.fichier_erreur);
-                      console.error(jsonRet.input.texteSource);
-                      
-                      logerreur({__xst:false,__xme:'erreur dans un source javascript'});
-                      return(logerreur({__xst:false,__xme:jsonRet.fichier_erreur}));
-                   }
-                }
-                return({__xst:false,__xme:'convertit js en rev erreur dans le source js '});
+            var elem={};
+            for(elem in jsonRet.messages){
+                logerreur({__xst:true,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
             }
-        }catch(e){
-           console.error('e=',e);
+            return({__xst:true,'__xva':JSON.parse(jsonRet.__xva),'commentaires':JSON.parse(jsonRet.commentaires)});
+        }else{
+            if(jsonRet.fichier_erreur){
+               var obj=analyse_fichier_log_acorn(jsonRet);
+               if(obj.__xst===true){
+               }else{
+                
+                  console.error(jsonRet.fichier_erreur);
+                  console.error(jsonRet.input.texteSource);
+                  
+                  logerreur({__xst:false,__xme:'erreur dans un source javascript'});
+                  return(logerreur({__xst:false,__xme:jsonRet.fichier_erreur}));
+               }
+            }
+            return({__xst:false,__xme:'convertit js en rev erreur dans le source js '});
         }
     }else{
         return({__xst:false});
@@ -3239,7 +3242,62 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
 }
+/*
+  =====================================================================================================================
+*/
 function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apres_traitement){
+
+
+    
+    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'options':options};
+    
+    async function recupererAstDeJs1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    recupererAstDeJs1('za_ajax.php?charger_un_ficher_rev',ajax_param).then((donnees) => {
+     if(donnees.__xst===true){
+         var elem={};
+         for(elem in donnees.messages){
+             logerreur({__xst:true,__xme:'<pre>' + donnees.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+         }
+         fonction_a_lancer_apres_traitement({__xst:true,__xva:donnees});
+         return({__xst:true});
+      
+     }else{
+         var elem={};
+         for(elem in donnees.messages){
+             logerreur({__xst:false,__xme:'<pre>' + donnees.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+         }
+         if(donnees.fichier_erreur){
+             var obj=analyse_fichier_log_acorn(donnees);
+             if(obj.__xst===true){
+             }else{
+              logerreur({__xst:false,__xme:'<pre>' + donnees.fichier_erreur.replace(/&/g,'&lt;').replace(/\n/,'<br />') + '</pre>'});
+             }
+             
+
+         }
+         if(donnees.hasOwnProperty('input')
+           && donnees.input.hasOwnProperty('options')
+           && donnees.input.options.hasOwnProperty('options')
+           && donnees.input.options.options.hasOwnProperty('nom_de_la_text_area_source')
+         ){
+           __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.input.options.options.nom_de_la_text_area_source);
+         }else{
+           __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+         }
+//                console.log(r);
+         return({__xst:true,__xme:'3372'});
+      
+     }
+    });
+    return({__xst:true});
+}
+
+
+function recupere_ast_de_js_avec_acorn_ancien(texteSource,options,fonction_a_lancer_apres_traitement){
+
+
     var r= new XMLHttpRequest();
     r.open("POST",'za_ajax.php?recupererAstDeJs',true);
     r.timeout=6000;
@@ -3247,28 +3305,6 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
     r.onreadystatechange=function(){
         if((r.readyState !== 4) || (r.status !== 200)){
 
-            if(r.status === 500){
-
-                /*
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] === false){
-
-                    try{
-                        var errors = JSON.parse(r.responseText);
-                        var t='';
-                        var elem={};
-                        for(elem in errors.messages){
-                            global_messages['errors'].push(errors.messages[elem]);
-                        }
-                        global_messages['e500logged']=true;
-                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                        return;
-                    }catch(e){
-                    }
-                }
-            }
             return;
         }
         try{
@@ -3320,22 +3356,30 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
     };
     r.onerror=function(e){
         console.error('e=',e);
-        /* whatever(); */
         return;
     };
     r.ontimeout=function(e){
         console.error('e=',e);
         return;
     };
+    
+
+    
     var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'options':options};
+    
+    async function recupererAstDeJs1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    
+    
     try{
         r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
     }catch(e){
         console.error('e=',e);
-        /* whatever(); */
-        return({__xst:false});
+        return({__xst:false,__xme:'3488 convertit js'});
     }
     return({__xst:true});
+    
 }
 /*
   =====================================================================================================================

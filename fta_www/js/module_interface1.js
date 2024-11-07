@@ -53,6 +53,59 @@ class interface1{
     }
     /*
       =============================================================================================================
+      function recupérer_un_fetch
+    */
+    async recupérer_un_fetch(url,donnees){
+        
+        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis?donnees.call.opt.delais_admis:6000;
+        var en_entree={
+            'signal':AbortSignal.timeout(delais_admis),
+            'method':"POST",
+            'mode':"cors",
+            'cache':"no-cache",
+            'credentials':"same-origin",
+            'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+            'redirect':"follow",
+            'referrerPolicy':"no-referrer",
+            'body':'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
+        };
+        try{
+            var response= await fetch(url,en_entree);
+            var t= await response.text();
+            try{
+                var le_json = JSON.parse(t);
+                if(le_json.__xst===false){
+                    if(le_json.hasOwnProperty('__xms')){
+                        for(var i in le_json.__xms){
+                            logerreur({__xst:false,__xme:le_json.__xms[i]});
+                        }
+                    }
+                    if(le_json.hasOwnProperty('__xme')){
+                        logerreur({__xst:false,__xme:le_json.__xme});
+                    }
+                }
+                return le_json;
+            }catch(e){
+                logerreur({__xst:false,__xme:'erreur sur convertion json, texte non json=' + t});
+                logerreur({__xst:false,__xme:'url=' + url});
+                logerreur({__xst:false,__xme:JSON.stringify(en_entree)});
+                logerreur({__xst:false,__xme:JSON.stringify(donnees)});
+                return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
+            }
+        }catch(e){
+            console.log(e);
+            if(e.message==='signal timed out'){
+             logerreur({__xst:false,__xme:'les données n\'ont pas pu être récupérées  en moins de '+(parseInt((delais_admis/1000)*10,10)/10)+' secondes '});
+            }else{
+             logerreur({__xst:false,__xme:e.message});
+            }
+
+            return({__xst:false,__xme:e.message});
+        }
+    }
+    
+    /*
+      =============================================================================================================
       modale
     */
     fermerModale2(){
@@ -1972,6 +2025,10 @@ class interface1{
         var i=0;
         for(i=0;i < par.length;i++){
             switch (par[i].nomDeLaFonctionAappeler){
+             
+                case 'initialisation_page_rev':
+                    initialisation_page_rev(par[i].parametre)
+                    break;
                 case '#charger_le_module_des_taches_en_arrière_plan':
                     /* if(APP_KEY !== 'fta'){ */
                         this.#charger_le_module_des_taches_en_arrière_plan(par[i].parametre);

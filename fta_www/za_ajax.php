@@ -36,8 +36,8 @@ Fonction appelée quand il y a un problème de traitement, par exemple une divis
 =====================================================================================================================
 */
 function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context){
- $error = 'error : '.recupTypeErreur($error_level)." | problème de traitement :" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")"; // , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true)));
- mylog($error);
+    $error = 'error : '.recupTypeErreur($error_level)." | problème de traitement :" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")"; // , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true)));
+    mylog($error);
 }
 /*
 =====================================================================================================================
@@ -47,13 +47,15 @@ ou bien une erreur dans l'écriture du programme
 */
 
 function shutdownHandler(){
- $lasterror = error_get_last();
- $nomErreur='UNKNOWN_ERROR';
- if(isset($lasterror['type'])){
-  $dernierMessage=str_replace(RACINE_DU_PROJET,'',$lasterror['message']);
-  $error = 'shutdown : '.recupTypeErreur($lasterror['type'])." problème dans le source php | msg:" . '<span style="text-wrap:wrap;color:blue;">'.$dernierMessage . "</span> | line:" . $lasterror['line'] . " | aafile:" . basename($lasterror['file']) . " (" . $lasterror['file'] . ")";
-  mylog($error);
- }
+    $lasterror = error_get_last();
+    $nomErreur='UNKNOWN_ERROR';
+    if(isset($lasterror['type'])){
+        $dernierMessage=str_replace('#','<br />#',str_replace(RACINE_DU_PROJET,'',$lasterror['message']));
+        $error= 'shutdown : '.recupTypeErreur($lasterror['type']).' problème dans le source <b>"'.basename($lasterror['file']).'"</b> en ligne <b>"'.$lasterror['line'].'"</b> <br />';
+        $error.=' msg:' . '<span style="text-wrap:wrap;">'.$dernierMessage . '</span> ';
+//        $error.= '<br />ligne:' . $lasterror['line'] . ' <br /> fichier:' . basename($lasterror['file']) . ' (' . $lasterror['file'] . ')';
+        mylog($error);
+    }
 }
 //================================================================================================
 function mylog($error){

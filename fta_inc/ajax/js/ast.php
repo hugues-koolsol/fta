@@ -9,7 +9,6 @@ Fait un appel à acorn.js pour récupérer l'ast d'un javascript ou d'un module
 ===================================================================================
 */
 function recupererAstDeJs(&$data){
-
 /*
     if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'========================'.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ .PHP_EOL.'$data='.var_export($data,true).PHP_EOL);  fclose($fdtoto); }
 */
