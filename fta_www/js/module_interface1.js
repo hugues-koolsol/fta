@@ -74,14 +74,9 @@ class interface1{
             var t= await response.text();
             try{
                 var le_json = JSON.parse(t);
-                if(le_json.__xst===false){
-                    if(le_json.hasOwnProperty('__xms')){
-                        for(var i in le_json.__xms){
-                            logerreur({__xst:false,__xme:le_json.__xms[i]});
-                        }
-                    }
-                    if(le_json.hasOwnProperty('__xme')){
-                        logerreur({__xst:false,__xme:le_json.__xme});
+                if(le_json.hasOwnProperty('__xms')){
+                    for(var i in le_json.__xms){
+                        logerreur({__xst:le_json.__xst,__xme:le_json.__xms[i]});
                     }
                 }
                 return le_json;
@@ -334,70 +329,26 @@ class interface1{
         }
     }
     /*
-      
       =============================================================================================================
-      
       function definir_le_nombre_de_lignes_a_afficher_pour_une_liste
     */
     definir_le_nombre_de_lignes_a_afficher_pour_une_liste(nom_de_la_page,nombre_de_lignes){
-        var r= new XMLHttpRequest();
-        r.open("POST",'za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',true);
-        r.timeout=6000;
-        r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-        r.onreadystatechange=function(){
-            if((r.readyState != 4) || (r.status != 200)){
-                if(r.status == 404){
-                    console.log('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-                }else if(r.status == 500){
-                    /*
-                      
-                      normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                      au niveau du php za_ajax mais sait-on jamais
-                    */
-                    if(global_messages['e500logged'] == false){
-                        try{
-                            console.log('r=',r);
-                        }catch(e){
-                        }
-                    }
-                }
-                return;
-            }
-            try{
-                var jsonRet = JSON.parse(r.responseText);
-                if(jsonRet.__xst == true){
-                    window.location.reload(true);
-                    return;
-                }else{
-                    console.log('loupé');
-                    return;
-                }
-            }catch(e){
-                console.log('r=',r);
-                return;
-            }
-        };
-        r.onerror=function(e){
-            console.error('e=',e);
-            /* whatever(); */
-            return;
-        };
-        r.ontimeout=function(e){
-            console.error('e=',e);
-            return;
-        };
         var ajax_param={'call':{'lib':'php','file':'session','funct':'definir_le_nombre_de_lignes_a_afficher_pour_une_liste'},nom_de_la_page:nom_de_la_page,nombre_de_lignes:nombre_de_lignes};
-        try{
-            r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-        }catch(e){
-            console.error('e=',e);
-            /* whatever(); */
-            return({__xst:false});
+        
+        async function definir_le_nombre_de_lignes_a_afficher_pour_une_liste1(url="",ajax_param){
+            return(__gi1.recupérer_un_fetch(url,ajax_param));
         }
+        definir_le_nombre_de_lignes_a_afficher_pour_une_liste1('za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',ajax_param).then((donnees) => {
+            if(donnees.__xst===true){
+                window.location.reload(true);
+                return;
+            }else{
+                debugger;
+            }
+        });
         return({__xst:true});
     }
     /*
-      
       =============================================================================================================
       affichage de la modale permettant de fixer_les_parametres_pour_une_liste
       function fixer_les_parametres_pour_une_liste
@@ -2004,6 +1955,33 @@ class interface1{
         if( !(window.Worker)){
             return;
         }
+
+        setTimeout(
+            function(){
+                if(this.__gi1.#programme_en_arriere_plan === null){
+                    console.log('on charge le worker 1111');
+                    this.__gi1.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
+                }
+                var that=this.__gi1;
+                this.__gi1.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+                    console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
+                    that.traite_message_recupere_du_worker(message_recu_du_worker);
+                };
+                this.__gi1.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
+                console.log('pas d\'erreur !');
+            },
+            1500
+        );
+    }
+    
+    /*
+      =============================================================================================================
+    */
+/*
+    #charger_le_module_des_taches_en_arrière_plan(par){
+        if( !(window.Worker)){
+            return;
+        }
 //        console.log('#charger_le_module_des_taches_en_arrière_plan');
         if(this.#programme_en_arriere_plan === null){
             console.log('on charge le worker');
@@ -2018,6 +1996,7 @@ class interface1{
         this.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
         console.log('pas d\'erreur !');
     }
+*/    
     /*
       =============================================================================================================
     */

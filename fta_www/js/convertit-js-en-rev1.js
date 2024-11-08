@@ -3099,8 +3099,17 @@ function analyse_fichier_log_acorn(jsonRet){
 
 /*
   =====================================================================================================================
+  Appel SYNCHRONE à la transformation de source js en ast
+  =====================================================================================================================
 */
 function recupere_ast_de_source_js_en_synchrone(texteSource){
+    var texte_source_mini=texteSource.trim();
+    if(texte_source_mini===''){
+        return({__xst:true,'__xva':{"type":"Program","start":0,"end":1,"range":[0,1],"body":[],"sourceType":"module"},'commentaires':[]});
+    }else if(texte_source_mini==='//'){
+        return({__xst:true,'__xva':{"type":"Program","start":0,"end":3,"range":[0,3],"body":[],"sourceType":"module"},'commentaires':[{"type":"Line","value":"","start":1,"end":3,"range":[1,3]}]});
+    }
+    
     var r= new XMLHttpRequest();
     r.onerror=function(e){
         console.error('e=',e);
@@ -3254,19 +3263,19 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
     async function recupererAstDeJs1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
-    recupererAstDeJs1('za_ajax.php?charger_un_ficher_rev',ajax_param).then((donnees) => {
+    recupererAstDeJs1('za_ajax.php?recupererAstDeJs',ajax_param).then((donnees) => {
      if(donnees.__xst===true){
          var elem={};
-         for(elem in donnees.messages){
-             logerreur({__xst:true,__xme:'<pre>' + donnees.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+         for(elem in donnees.__xms){
+             logerreur({__xst:true,__xme:'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
          }
          fonction_a_lancer_apres_traitement({__xst:true,__xva:donnees});
          return({__xst:true});
       
      }else{
          var elem={};
-         for(elem in donnees.messages){
-             logerreur({__xst:false,__xme:'<pre>' + donnees.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+         for(elem in donnees.__xms){
+             logerreur({__xst:false,__xme:'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
          }
          if(donnees.fichier_erreur){
              var obj=analyse_fichier_log_acorn(donnees);
@@ -3294,93 +3303,6 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
     return({__xst:true});
 }
 
-
-function recupere_ast_de_js_avec_acorn_ancien(texteSource,options,fonction_a_lancer_apres_traitement){
-
-
-    var r= new XMLHttpRequest();
-    r.open("POST",'za_ajax.php?recupererAstDeJs',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState !== 4) || (r.status !== 200)){
-
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst === true){
-
-                var elem={};
-                for(elem in jsonRet.messages){
-                    logerreur({__xst:true,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
-                }
-                fonction_a_lancer_apres_traitement({__xst:true,__xva:jsonRet});
-            }else{
-                var elem={};
-                for(elem in jsonRet.messages){
-                    logerreur({__xst:false,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
-                }
-                if(jsonRet.fichier_erreur){
-                    var obj=analyse_fichier_log_acorn(jsonRet);
-                    if(obj.__xst===true){
-                    }else{
-                     logerreur({__xst:false,__xme:'<pre>' + jsonRet.fichier_erreur.replace(/&/g,'&lt;').replace(/\n/,'<br />') + '</pre>'});
-                    }
-                    
-
-                }
-                if(jsonRet.hasOwnProperty('input')
-                  && jsonRet.input.hasOwnProperty('options')
-                  && jsonRet.input.options.hasOwnProperty('options')
-                  && jsonRet.input.options.options.hasOwnProperty('nom_de_la_text_area_source')
-                ){
-                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages',jsonRet.input.options.options.nom_de_la_text_area_source);
-                }else{
-                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                }
-//                console.log(r);
-                return;
-            }
-        }catch(e){
-            var errors = JSON.parse(r.responseText);
-            var t='';
-            var elem={};
-            for(elem in errors.messages){
-                global_messages['errors'].push(errors.messages[elem]);
-            }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-            console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
-            return;
-        }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        return;
-    };
-    
-
-    
-    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'options':options};
-    
-    async function recupererAstDeJs1(url="",ajax_param){
-        return(__gi1.recupérer_un_fetch(url,ajax_param));
-    }
-    
-    
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        return({__xst:false,__xme:'3488 convertit js'});
-    }
-    return({__xst:true});
-    
-}
 /*
   =====================================================================================================================
 */

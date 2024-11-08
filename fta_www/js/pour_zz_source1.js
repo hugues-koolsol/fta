@@ -59,44 +59,7 @@ function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
   =====================================================================================================================
 */
 function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source , contenuRev , contenuSource , date_de_debut_traitement , matrice){
- 
- 
-    var r = new XMLHttpRequest();
-    r.open("POST",'za_ajax.php?sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange = function () {
-        if (r.readyState !== 4 || r.status !== 200) return;
-        try{
-            var jsonRet=JSON.parse(r.responseText);
-            if(jsonRet.__xst===true){
-             
-                var date_de_fin_traitement = new Date();
-                date_de_fin_traitement = date_de_fin_traitement.getTime();
-             
-                var date_de_debut_traitement=jsonRet.input.date_de_debut_traitement;
-                var nombre_de_secondes = (date_de_fin_traitement-date_de_debut_traitement)/1000;
 
-                
-                if(jsonRet.input.parametres_sauvegarde.nom_du_source){
-                 logerreur({__xst:true,__xme:'la réécriture de '+jsonRet.input.parametres_sauvegarde.nom_du_source+' a été faite en '+nombre_de_secondes+' secondes'})
-                }else{
-                 logerreur({__xst:true,__xme:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
-                }
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                return;
-            }else{
-                console.log(r);
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                return;
-            }
-        }catch(e){
-         console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
-         return;
-        }
-    };
-    r.onerror=function(e){console.error('e=',e); /* a_faire(); */    return;}
-    r.ontimeout=function(e){console.error('e=',e); /* a_faire(); */    return;}
     var ajax_param={
         call:{
          lib       : 'core'          ,
@@ -109,11 +72,34 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
         date_de_debut_traitement : date_de_debut_traitement,
         matrice                  : matrice
     }
-    r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
- 
+    async function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant1('za_ajax.php?sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant1',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            var date_de_fin_traitement = new Date();
+            date_de_fin_traitement = date_de_fin_traitement.getTime();
+         
+            var date_de_debut_traitement=donnees.input.date_de_debut_traitement;
+            var nombre_de_secondes = (date_de_fin_traitement-date_de_debut_traitement)/1000;
+
+            
+            if(donnees.input.parametres_sauvegarde.nom_du_source){
+             logerreur({__xst:true,__xme:'la réécriture de '+donnees.input.parametres_sauvegarde.nom_du_source+' a été faite en '+nombre_de_secondes+' secondes'})
+            }else{
+             logerreur({__xst:true,__xme:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
+            }
+        }else{
+            console.log(donnees);
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+        
+     
+    })
  
 }
 /*
+  =====================================================================================================================
 */
 function traitement_apres_ajax_pour_conversion_fichier_sql(par){
  
@@ -261,11 +247,7 @@ function traitement_apres_ajax_pour_conversion_fichier_php(par){
                 on a obtenu le php à partir du rev,
                 on peut tout enregistrer
                 */
-//                console.log(objPhp.__xva)
-                
-//                console.log(par.input.opt.jsonRet.input.id_source);
-                
-               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.jsonRet.input.id_source , objRev.__xva , objPhp.__xva , par.input.opt.jsonRet.input.date_de_debut_traitement , matriceFonction.__xva) ;
+               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.donnees.input.id_source , objRev.__xva , objPhp.__xva , par.input.opt.donnees.input.date_de_debut_traitement , matriceFonction.__xva) ;
                 
             }
         }
@@ -276,48 +258,8 @@ function traitement_apres_ajax_pour_conversion_fichier_php(par){
 */
 function convertir_un_source_sur_disque(id_source){
 
-// console.log(nom_de_fichier_encrypte);
- 
  __gi1.raz_des_messages();
- 
- var r = new XMLHttpRequest();
- r.open("POST",'za_ajax.php?charger_un_fichier_source_par_son_identifiant',true);
- r.timeout=6000;
- r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
- r.onreadystatechange = function () {
-  if (r.readyState !== 4 || r.status !== 200) return;
-  try{
-   var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst===true){
-//    console.log('jsonRet=',jsonRet);
-//    dogid('chp_genere_source').value=jsonRet.__xva;
-    var nom_source=jsonRet.db['T0.chp_nom_source'];
-    var type_source=jsonRet.db['T0.chp_type_source'];
-    if(nom_source.substr(nom_source.length-4)==='.php'){
-     var ret=recupereAstDePhp(jsonRet.contenu_du_fichier,{'jsonRet':jsonRet},traitement_apres_ajax_pour_conversion_fichier_php); // ,{'comment':true}
-    }else if(nom_source.substr(nom_source.length-3)==='.js'){
-     
-     traitement_apres_ajax_pour_conversion_fichier_js(jsonRet, type_source);
-     
-    }else if(nom_source.substr(nom_source.length-5)==='.html' || nom_source.substr(nom_source.length-4)==='.htm'){
-     traitement_apres_ajax_pour_conversion_fichier_html(jsonRet);
-    }else if(nom_source.substr(nom_source.length-4)==='.sql' ){
-     traitement_apres_ajax_pour_conversion_fichier_sql(jsonRet);
-    }
 
-    return;
-   }else{
-    console.log(r);
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-    return;
-   }
-  }catch(e){
-   console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
-   return;
-  }
- };
- r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
- r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
  var date_de_debut_traitement=new Date();
  date_de_debut_traitement = date_de_debut_traitement.getTime();
  var ajax_param={
@@ -329,9 +271,41 @@ function convertir_un_source_sur_disque(id_source){
   id_source                  : id_source   ,
   date_de_debut_traitement   : date_de_debut_traitement
  }
- r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
  
-  
+ async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
+     return(__gi1.recupérer_un_fetch(url,ajax_param));
+ }
+ charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
+     if(donnees.__xst === true){
+      
+           
+         var nom_source=donnees.db['T0.chp_nom_source'];
+         var type_source=donnees.db['T0.chp_type_source'];
+         if(nom_source.substr(nom_source.length-4)==='.php'){
+          
+          var ret=recupereAstDePhp(donnees.contenu_du_fichier,{'donnees':donnees},traitement_apres_ajax_pour_conversion_fichier_php); // ,{'comment':true}
+          
+         }else if(nom_source.substr(nom_source.length-3)==='.js'){
+          
+          traitement_apres_ajax_pour_conversion_fichier_js(donnees, type_source);
+          
+         }else if(nom_source.substr(nom_source.length-5)==='.html' || nom_source.substr(nom_source.length-4)==='.htm'){
+          
+          traitement_apres_ajax_pour_conversion_fichier_html(donnees);
+          
+         }else if(nom_source.substr(nom_source.length-4)==='.sql' ){
+          
+          traitement_apres_ajax_pour_conversion_fichier_sql(donnees);
+          
+         }
+
+         return;
+      
+     }else{
+         console.log(donnees);
+     }
+     __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+ });
  
 }
 
@@ -583,89 +557,35 @@ function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev , nom_zone_g
 /*
   =====================================================================================================================
 */
-
 function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
-// console.log(nom_de_fichier_encrypte);
- 
- __gi1.raz_des_messages();
- 
- var r = new XMLHttpRequest();
- r.open("POST",'za_ajax.php?supprimer_un_fichier_avec_un_nom_encrypte',true);
- r.timeout=6000;
- r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
- r.onreadystatechange = function () {
-  if (r.readyState !== 4 || r.status !== 200) return;
-  try{
-   var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst===true){
-    console.log('jsonRet=',jsonRet);
-    document.location=String(document.location);
-    return;
-   }else{
-    console.log(r);
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-    return;
-   }
-  }catch(e){
-   console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
-   return;
-  }
- };
- r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
- r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
- var ajax_param={
-  call:{
-   lib                       : 'core'          ,
-   file                      : 'file' ,
-   funct                     : 'supprimer_un_fichier_avec_un_nom_encrypte' ,
-  },
-  file_name                  : nom_de_fichier_encrypte   ,
- }
- r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
- 
- 
-}/*
+    __gi1.raz_des_messages();
+    var ajax_param={'call':{lib:'core',file:'file',funct:'supprimer_un_fichier_avec_un_nom_encrypte'},file_name:nom_de_fichier_encrypte};
+    async function supprimer_un_fichier_avec_un_nom_encrypte1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    supprimer_un_fichier_avec_un_nom_encrypte1('za_ajax.php?supprimer_un_fichier_avec_un_nom_encrypte',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            document.location=String(document.location);
+            return;
+        }else{
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+        }
+    });
+}
+/*
   =====================================================================================================================
 */
-
 function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
-// console.log(nom_de_fichier_encrypte);
- 
- __gi1.raz_des_messages();
- 
- var r = new XMLHttpRequest();
- r.open("POST",'za_ajax.php?charger_un_fichier_avec_un_nom_encrypte',true);
- r.timeout=6000;
- r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
- r.onreadystatechange = function () {
-  if (r.readyState !== 4 || r.status !== 200) return;
-  try{
-   var jsonRet=JSON.parse(r.responseText);
-   if(jsonRet.__xst===true){
-    console.log('jsonRet=',jsonRet);
-    dogid('chp_genere_source').value=jsonRet.__xva;
-    return;
-   }else{
-    console.log(r);
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-    return;
-   }
-  }catch(e){
-   console.error('Go to the network panel and look the preview tab\n\n',e,'\n\n',r,'\n\n');
-   return;
-  }
- };
- r.onerror=function(e){console.error('e=',e); /* whatever(); */    return;}
- r.ontimeout=function(e){console.error('e=',e); /* whatever(); */    return;}
- var ajax_param={
-  call:{
-   lib                       : 'core'          ,
-   file                      : 'file' ,
-   funct                     : 'charger_un_fichier_avec_un_nom_encrypte' ,
-  },
-  file_name                  : nom_de_fichier_encrypte   ,
- }
- r.send('ajax_param='+encodeURIComponent(JSON.stringify(ajax_param)));  
- 
- 
+    __gi1.raz_des_messages();
+    var ajax_param={'call':{lib:'core',file:'file',funct:'charger_un_fichier_avec_un_nom_encrypte'},file_name:nom_de_fichier_encrypte};
+    async function charger_un_fichier_avec_un_nom_encrypte1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    charger_un_fichier_avec_un_nom_encrypte1('za_ajax.php?charger_un_fichier_avec_un_nom_encrypte',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            dogid('chp_genere_source').value=donnees.__xva;
+        }else{
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+        }
+    });
 }

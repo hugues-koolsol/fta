@@ -59,6 +59,8 @@ function recupere_une_donnees_des_cibles($id){
          )
       ),
       'tictactoe.html' => array( 'dossier' => 1),
+      'index.html' => array( 'dossier' => 1),
+      'index.php' => array( 'dossier' => 1),
       'fta_inc/.htaccess' => array(),
       'fta_inc/.htaccess' => array(),
       'fta_inc/ajax/core/bdd.php' => array(),

@@ -2748,22 +2748,7 @@ function isHTML(str){
     return({__xst:true});
 }
 /*
-  liste des essais foireux trouvés sur stackoverflow      
-  try {
-  const fragment = new DOMParser().parseFromString(str,"application/xml");
-  return fragment.body.children.length>0
-  } catch(error) { ; }  
-  return false;
-  
-  return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(str);
-  var a = document.createElement('div');
-  a.innerHTML = str;
-  
-  for (var c = a.childNodes, i = c.length; i--; ) {
-  if (c[i].nodeType === 1) return true; 
-  }
-  
-  return false;
+  =====================================================================================================================
 */
 function traitementApresRecuperationAst(ret){
     var une_erreur_catch=false;
@@ -2779,7 +2764,7 @@ function traitementApresRecuperationAst(ret){
         }
     }catch(e){
         console.error('e=',e);
-        astphp_logerreur({__xst:false,__xme:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')});
+        astphp_logerreur({__xst:false,'__xme':'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')});
         une_erreur_catch=true;
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
     }
@@ -2792,95 +2777,39 @@ function traitementApresRecuperationAst(ret){
     }
     return({__xst:true,__xva:''});
 }
+/*
+  =====================================================================================================================
+*/
 function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
-    var r= new XMLHttpRequest();
-    r.open("POST",'za_ajax.php?recupererAstDePhp',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState !== 4) || (r.status !== 200)){
-            if(r.status === 500){
-                /*
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] === false){
-                    try{
-                        var errors = JSON.parse(r.responseText);
-                        var t='';
-                        var elem={};
-                        for(elem in errors.messages){
-                            global_messages['errors'].push(errors.messages[elem]);
-                        }
-                        global_messages['e500logged']=true;
-                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                        console.log(global_messages);
-                    }catch(e){
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-        }catch(e){
-            logerreur({__xst:false,__xme: 'contenu non json' + r.responseText.substr(0,2000)+'...'});
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-            return;
-        }
-        if(jsonRet.__xst === true){
+    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp'},'texteSource':texteSource,'opt':opt};
+    
+    async function recupererAstDePhp1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    recupererAstDePhp1('za_ajax.php?recupererAstDePhp',ajax_param).then((donnees) => {
+        if(donnees.__xst===true){
             var elem={};
-            for(elem in jsonRet.messages){
-                astphp_logerreur({__xst:true,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+            for(elem in donnees.__xms){
+                astphp_logerreur({__xst:true,__xme:'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
             }
-            f_traitementApresRecuperationAst({__xst:true,__xva:jsonRet.__xva,input:jsonRet.input,opt:opt});
+            f_traitementApresRecuperationAst({__xst:true,__xva:donnees.__xva,input:donnees.input,opt:opt});
+         
         }else{
-
             var elem={};
-            for(elem in jsonRet.messages){
-                if(jsonRet.messages[elem].indexOf('on line ')>=0 && isNumeric(jsonRet.messages[elem].substr(jsonRet.messages[elem].indexOf('on line ')+8)) ){
-                 var line=parseInt(jsonRet.messages[elem].substr(jsonRet.messages[elem].indexOf('on line ')+8),10);
-                 astphp_logerreur({__xst:false,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>',line:line});
-                }else{
-                 astphp_logerreur({__xst:false,__xme:'<pre>' + jsonRet.messages[elem].replace(/&/g,'&lt;') + '</pre>'});
+            for(elem in donnees.__xms){
+                if(donnees.__xms[elem].indexOf('on line ')>=0 && isNumeric(donnees.__xms[elem].substr(donnees.__xms[elem].indexOf('on line ')+8)) ){
+                 var line=parseInt(donnees.__xms[elem].substr(donnees.__xms[elem].indexOf('on line ')+8),10);
+                 astphp_logerreur({__xst:false,line:line});
                 }
             }
-            if(jsonRet.input && jsonRet.input.hasOwnProperty('opt') && jsonRet.input.opt.hasOwnProperty('zone_php')){
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',jsonRet.input.opt.zone_php);
+            if(donnees.input && donnees.input.hasOwnProperty('opt') && donnees.input.opt.hasOwnProperty('zone_php')){
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.input.opt.zone_php);
             }else{
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             }
-            console.log(r);
-            return;
+            return({__xst:true,__xme:'3372'});
         }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        return;
-    };
-    r.onload = function() {
-      if (r.status !== 200){
-        logerreur({__xst:false,__xme: r.status + ' '+ r.statusText});
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-        return;
-        
-      } else { // show the result
-        console.log('Done, got '+r.response.length+' bytes'); // response is the server response
-      }
-    };
-    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp'},'texteSource':texteSource,'opt':opt};
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return({__xst:false});
-    }
+    });     
     return({__xst:true});
 }
 function transform_text_area_php_en_rev(nom_de_la_text_area){

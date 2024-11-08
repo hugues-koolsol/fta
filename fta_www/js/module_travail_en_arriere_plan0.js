@@ -19,57 +19,76 @@ import('./module_requete_sql.js').then(function(Module){
 });
 
 
+/*
+  =============================================================================================================
+  function recupérer_un_fetch
+*/
+async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
+    
+    var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis?donnees.call.opt.delais_admis:6000;
+    var en_entree={
+        'signal':AbortSignal.timeout(delais_admis),
+        'method':"POST",
+        'mode':"cors",
+        'cache':"no-cache",
+        'credentials':"same-origin",
+        'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+        'redirect':"follow",
+        'referrerPolicy':"no-referrer",
+        'body':'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
+    };
+    try{
+        var response= await fetch(url,en_entree);
+        var t= await response.text();
+        try{
+            var le_json = JSON.parse(t);
+            if(le_json.hasOwnProperty('__xms')){
+                for(var i in le_json.__xms){
+                    logerreur({__xst:le_json.__xst,__xme:le_json.__xms[i]});
+                }
+            }
+            return le_json;
+        }catch(e){
+            console.log('erreur sur convertion json, texte non json=' + t);
+            console.log('url=' + url);
+            console.log(JSON.stringify(en_entree));
+            console.log(JSON.stringify(donnees));
+            return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
+        }
+    }catch(e){
+        console.log(e);
+        if(e.message==='signal timed out'){
+         console.log('les données n\'ont pas pu être récupérées  en moins de '+(parseInt((delais_admis/1000)*10,10)/10)+' secondes ');
+        }else{
+         console.log(e.message);
+        }
+
+        return({__xst:false,__xme:e.message});
+    }
+}
 
 
 /*
   =====================================================================================================================
 */
 function enregistrer_les_sql_en_base(params,fonction_apres){
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?enregistrer_les_sql_en_base',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                    }catch(e){
-                        console.error('e=',e);
-                    }
-                }
-            }
+    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'enregistrer_les_sql_en_base'},'params':params};
+    async function enregistrer_les_sql_en_base1(url="",ajax_param){
+        return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
+    }
+    
+    enregistrer_les_sql_en_base1('../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            console.log('%cYOUPIIIII sql donnees=','background:yellow;color:red;',donnees);
+            liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
+            tache_en_cours=false;
+            setTimeout(function(){
+                fonction_apres(params.arg);
+            },16);
             return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
-                liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
-                tache_en_cours=false;
-                setTimeout(function(){
-                    fonction_apres(params.arg);
-                },16);
-                return;
-            }else{
-                console.error('r.responseText=',r.responseText);
-                liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-                tache_en_cours=false;
-                setTimeout(function(){
-                    fonction_apres(params.arg);
-                },16);
-                return;
-            }
-        }catch(e){
-            console.error('e=',e);
-            /* whatever(); */
+         
+        }else{
+            console.error('r.responseText=',r.responseText);
             liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
             tache_en_cours=false;
             setTimeout(function(){
@@ -77,80 +96,32 @@ function enregistrer_les_sql_en_base(params,fonction_apres){
             },16);
             return;
         }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-        tache_en_cours=false;
-        setTimeout(function(){
-            fonction_apres(params.arg);
-        },16);
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-        tache_en_cours=false;
-        setTimeout(function(){
-            fonction_apres(params.arg);
-        },16);
-        return;
-    };
-    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'enregistrer_les_sql_en_base'},'params':params};
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        /* whatever(); */
-        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-        tache_en_cours=false;
-        setTimeout(function(){
-            fonction_apres(params.arg);
-        },16);
-        return({__xst:false});
-    }
+    });
+    
     return({__xst:true});
 }
 /*
   =====================================================================================================================
 */
 function enregistrer_les_sources_en_base(params,fonction_apres){
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?enregistrer_les_sources_en_base',true);
-    r.timeout=120000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                    }catch(e){
-                        console.error('e=',e);
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                console.log('%cYOUPIIIII jsonRet=','background:yellow;color:red;',jsonRet);
+
+    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'enregistrer_les_sources_en_base'},'params':params};
+    
+    async function enregistrer_les_sources_en_base1(url="",ajax_param){
+        return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
+    }
+    
+    enregistrer_les_sources_en_base1('../za_ajax.php?enregistrer_les_sources_en_base',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+                console.log('%cYOUPIIIII donnees=','background:yellow;color:red;',donnees);
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
                 setTimeout(function(){
                     fonction_apres(params.arg);
                 },16);
                 return;
-            }else{
+         
+        }else{
                 console.error('r.responseText=',r.responseText);
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
                 tache_en_cours=false;
@@ -158,51 +129,8 @@ function enregistrer_les_sources_en_base(params,fonction_apres){
                     fonction_apres(params.arg);
                 },16);
                 return;
-            }
-        }catch(e){
-            console.error('e=',e);
-            /* whatever(); */
-            liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-            tache_en_cours=false;
-            setTimeout(function(){
-                fonction_apres(params.arg);
-            },16);
-            return;
         }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-        tache_en_cours=false;
-        setTimeout(function(){
-            fonction_apres(params.arg);
-        },16);
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-        tache_en_cours=false;
-        setTimeout(function(){
-            fonction_apres(params.arg);
-        },16);
-        return;
-    };
-    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'enregistrer_les_sources_en_base'},'params':params};
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        /* whatever(); */
-        liste_des_taches_en_arriere_plan[params['id_tache']].etat='en_erreur';
-        tache_en_cours=false;
-        setTimeout(function(){
-            fonction_apres(params.arg);
-        },16);
-        return({__xst:false});
-    }
+    });
     return({__xst:true});
 }
 /*
@@ -258,10 +186,10 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                                if(objSource.__xst===true){
                                 var obj1=a2F1(tab,0,true,1,false);
                                 if(obj1.__xst===true){
-                                    var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.value,id_source);
+                                    var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.__xva,id_source);
                                     if(obj2.__xst===true){
                                         arg[id_source].tab=[];
-                                        var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj1.value,'source_sql':obj2.source_sql,source_php:obj2.source_php};
+                                        var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj1.__xva,'source_sql':obj2.source_sql,source_php:obj2.source_php};
                                         enregistrer_les_sql_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
                                         return;
                                     }else{
@@ -303,7 +231,7 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                                     var obj = arrayToFunct1(tab,true,false);
                                     if(obj.__xst === true ){
                                         arg[id_source].tab=[];
-                                        var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value};
+                                        var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.__xva,'source_genere':objSource.__xva};
                                         enregistrer_les_sources_en_base(params,traitement_apres_remplacement_chaine_en_bdd);
                                         return;
                                     }else{
@@ -402,7 +330,7 @@ function traite_une_suppression(id_tache,arg){
                                 var obj = arrayToFunct1(tab1,true,false);
                                 if(obj.__xst === true){
                                     arg[id_source].tab1=[];
-                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.value,'source_genere':objSource.value,provenance:null};
+                                    var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.__xva,'source_genere':objSource.__xva,provenance:null};
                                     enregistrer_les_sources_en_base(params,traitement_apres_suppression_ligne_en_bdd);
                                     return;
                                 }else{
@@ -522,36 +450,17 @@ function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
   =====================================================================================================================
 */
 function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_en_cours,traitement_a_lancer_si_succes){
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?supprimer_un_commentaire1',true);
-    r.timeout=120000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                    }catch(e){
-                        console.error('e=',e);
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                console.log('jsonRet=',jsonRet);
-                traitement_a_lancer_si_succes(jsonRet.__xva);
-            }else{
-                console.error('r.responseText=',r.responseText);
+
+    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'supprimer_un_commentaire1'},'parametre':parametre_supprimer_un_commentaire1,'tache_en_cours':la_tache_en_cours};
+    async function supprimer_un_commentaire2(url="",ajax_param){
+        return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
+    }
+    
+    supprimer_un_commentaire2('../za_ajax.php?supprimer_un_commentaire1',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+                console.log('donnees=',donnees);
+                traitement_a_lancer_si_succes(donnees.__xva);
+        }else{
                 parametre_supprimer_un_commentaire1.etat_du_travail='travail_en_arriere_plan_en_erreur';
                 console.log('j\'ai terminé le travail mais il y a une erreur');
                 travail_en_cours=false;
@@ -559,47 +468,9 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
                     lancer_les_travaux();
                 },100);
                 return;
-            }
-        }catch(e){
-            console.error('e=',e);
-            parametre_supprimer_un_commentaire1.etat_du_travail='travail_en_arriere_plan_en_erreur';
-            console.log('j\'ai terminé le travail mais il y a une erreur');
-            travail_en_cours=false;
-            setTimeout(function(){
-                lancer_les_travaux();
-            },100);
-            return;
+         
         }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        parametre_supprimer_un_commentaire1.etat_du_travail='travail_en_arriere_plan_en_erreur';
-        console.log('j\'ai terminé le travail mais il y a une erreur');
-        travail_en_cours=false;
-        setTimeout(function(){
-            lancer_les_travaux();
-        },100);
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        parametre_supprimer_un_commentaire1.etat_du_travail='travail_en_arriere_plan_en_erreur';
-        console.log('j\'ai terminé le travail mais il y a une erreur');
-        travail_en_cours=false;
-        setTimeout(function(){
-            lancer_les_travaux();
-        },100);
-        return;
-    };
-    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'supprimer_un_commentaire1'},'parametre':parametre_supprimer_un_commentaire1,'tache_en_cours':la_tache_en_cours};
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return({__xst:false});
-    }
+    });
     return({__xst:true});
 }
 /*
@@ -607,52 +478,18 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
   =====================================================================================================================
 */
 function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cours,traitement_a_lancer_si_succes){
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?remplacer_des_chaine1',true);
-    r.timeout=120000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                    }catch(e){
-                        console.error('e=',e);
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                console.log('jsonRet=',jsonRet);
 
-                traitement_a_lancer_si_succes(jsonRet.__xva,jsonRet);
-                /*
-                peut valoir :
-                traitement_apres_remplacement_chaine_en_bdd
-                
-                */
-            }else{
-                console.error('r.responseText=',r.responseText);
-                parametre_remplacer_des_chaines1.etat_du_travail='travail_en_arriere_plan_en_erreur';
-                console.log('j\'ai terminé le travail mais il y a une erreur');
-                travail_en_cours=false;
-                setTimeout(function(){
-                    lancer_les_travaux();
-                },100);
-                return;
-            }
-        }catch(e){
-            console.error('e=',e);
+    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'remplacer_des_chaine1'},'parametre':parametre_remplacer_des_chaines1,'tache_en_cours':la_tache_en_cours};
+    async function remplacer_des_chaine2(url="",ajax_param){
+        return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
+    }
+    
+    remplacer_des_chaine2('../za_ajax.php?remplacer_des_chaine1',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+         
+            traitement_a_lancer_si_succes(donnees.__xva,donnees);
+         
+        }else{
             parametre_remplacer_des_chaines1.etat_du_travail='travail_en_arriere_plan_en_erreur';
             console.log('j\'ai terminé le travail mais il y a une erreur');
             travail_en_cours=false;
@@ -660,37 +497,9 @@ function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cour
                 lancer_les_travaux();
             },100);
             return;
+         
         }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        parametre_remplacer_des_chaines1.etat_du_travail='travail_en_arriere_plan_en_erreur';
-        console.log('j\'ai terminé le travail mais il y a une erreur');
-        travail_en_cours=false;
-        setTimeout(function(){
-            lancer_les_travaux();
-        },100);
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        parametre_remplacer_des_chaines1.etat_du_travail='travail_en_arriere_plan_en_erreur';
-        console.log('j\'ai terminé le travail mais il y a une erreur');
-        travail_en_cours=false;
-        setTimeout(function(){
-            lancer_les_travaux();
-        },100);
-        return;
-    };
-    var ajax_param={'call':{'lib':'php','file':'travail_en_arriere_plan1','funct':'remplacer_des_chaine1'},'parametre':parametre_remplacer_des_chaines1,'tache_en_cours':la_tache_en_cours};
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return({__xst:false});
-    }
+    });
     return({__xst:true});
 }
 /*
@@ -709,7 +518,7 @@ function lancer_le_travail(){
         */
         var i={};
         for(i in liste_des_travaux_en_arriere_plan){
-            console.log('%cje traite ','background:lightblue;color:red;',liste_des_travaux_en_arriere_plan[i].etat_du_travail,liste_des_travaux_en_arriere_plan[i]);
+            console.log('%cje traite ','background:lightblue;color:red;','etat=',liste_des_travaux_en_arriere_plan[i].etat_du_travail,liste_des_travaux_en_arriere_plan[i]);
             if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_enregistré_en_session'){
                 try{
                     if(liste_des_travaux_en_arriere_plan[i].donnees_recues_du_message.nom_du_travail_en_arriere_plan === 'replacer_des_chaines1'
@@ -777,82 +586,42 @@ function lancer_le_travail(){
   =====================================================================================================================
 */
 function supprimer_un_travail_en_arriere_plan_en_session(){
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?supprimer_un_travail_en_arriere_plan_en_session',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                        console.error('r=',r);
-                    }catch(e){
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                var i={};
-                for(i in liste_des_travaux_en_arriere_plan){
-                    if(liste_des_travaux_en_arriere_plan[i].etat_du_travail == 'travail_en_arriere_plan_terminé'){
-                        delete liste_des_travaux_en_arriere_plan[i];
-                        travail_en_cours=false;
-                        if(jsonRet.nombre_de_travaux_restants_fin === 0){
-                            liste_des_travaux_en_arriere_plan=[];
-                        }
-                        setTimeout(function(){
-                            lancer_les_travaux();
-                        },16);
-                        break;
-                    }
-                }
-                return;
-            }else{
-                console.error('r=',r);
-                return;
-            }
-        }catch(e){
-            console.error('r=',r);
-            return;
-        }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return;
-    };
-    r.ontimeout=function(e){
-        /*
-          
-          il se peut qu'on aie plusieurs clicks
-        */
-        console.error('e=',e);
-        return;
-    };
+
     var i={};
     for(i in liste_des_travaux_en_arriere_plan){
         if(('travail_en_arriere_plan_terminé' === liste_des_travaux_en_arriere_plan[i].etat_du_travail)
          || ('travail_en_arriere_plan_en_erreur' === liste_des_travaux_en_arriere_plan[i].etat_du_travail)
         ){
             var ajax_param={'call':{'lib':'php','file':'session','funct':'supprimer_un_travail_en_arriere_plan_en_session'},'travail_en_arriere_plan':liste_des_travaux_en_arriere_plan[i]};
-            try{
-                r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-            }catch(e){
-                console.error('e=',e);
-                /* whatever(); */
-                return({__xst:false});
+            
+            
+            async function supprimer_un_travail_en_arriere_plan_en_session1(url="",ajax_param){
+                return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
             }
+            
+            supprimer_un_travail_en_arriere_plan_en_session1('../za_ajax.php?supprimer_un_travail_en_arriere_plan_en_session',ajax_param).then((donnees) => {
+                if(donnees.__xst === true){
+                    var i={};
+                    for(i in liste_des_travaux_en_arriere_plan){
+                        if(liste_des_travaux_en_arriere_plan[i].etat_du_travail == 'travail_en_arriere_plan_terminé'){
+                            delete liste_des_travaux_en_arriere_plan[i];
+                            travail_en_cours=false;
+                            if(donnees.nombre_de_travaux_restants_fin === 0){
+                                liste_des_travaux_en_arriere_plan=[];
+                            }
+                            setTimeout(function(){
+                                lancer_les_travaux();
+                            },16);
+                            break;
+                        }
+                    }
+                 
+                }else{
+                    console.error('donnees=' , donnees );
+                    return;
+                }
+                return;
+            });
             break;
         }
     }
@@ -863,73 +632,39 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
   =====================================================================================================================
 */
 function enregistrer_un_travail_en_arriere_plan_en_session(){
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?enregistrer_un_travail_en_arriere_plan_en_session',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                    }catch(e){
-                        console.error('e=',e);
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst == true){
-                var i={};
-                for(i in liste_des_travaux_en_arriere_plan){
-                    if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
-                        liste_des_travaux_en_arriere_plan[i].etat_du_travail='travail_en_arriere_plan_enregistré_en_session';
-                        travail_en_cours=false;
-                        break;
-                    }
-                }
-                setTimeout(function(){
-                    lancer_les_travaux();
-                },16);
-                return;
-            }else{
-                console.error('r.responseText=',r.responseText);
-                return;
-            }
-        }catch(e){
-            console.error('e=',e);
-            return;
-        }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        return;
-    };
+
     var i={};
     for(i in liste_des_travaux_en_arriere_plan){
         if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
             var ajax_param={'call':{'lib':'php','file':'session','funct':'enregistrer_un_travail_en_arriere_plan_en_session'},'travail_en_arriere_plan':liste_des_travaux_en_arriere_plan[i]};
-            try{
-                r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-            }catch(e){
-                console.error('e=',e);
-                /* whatever(); */
-                return({__xst:false});
+            
+            async function enregistrer_un_travail_en_arriere_plan_en_session1(url="",ajax_param){
+                return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
             }
+            
+            enregistrer_un_travail_en_arriere_plan_en_session1('../za_ajax.php?enregistrer_un_travail_en_arriere_plan_en_session',ajax_param).then((donnees) => {
+                if(donnees.__xst === true){
+                 
+                    var i={};
+                    for(i in liste_des_travaux_en_arriere_plan){
+                        if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
+                            liste_des_travaux_en_arriere_plan[i].etat_du_travail='travail_en_arriere_plan_enregistré_en_session';
+                            travail_en_cours=false;
+                            break;
+                        }
+                    }
+                    setTimeout(function(){
+                        lancer_les_travaux();
+                    },16);
+                    return;
+                 
+                 
+                }else{
+                  console.error('donnees=',donnees);
+                }
+            });
+            
+            
             break;
         }
     }
@@ -1002,73 +737,37 @@ function lancer_les_travaux(){
         }
     }
 }
+/*
+  =====================================================================================================================
+*/
 function recuperer_les_travaux_en_session(){
-//    console.log('dans le worker fonction recuperer_les_travaux_en_session');
-    var r= new XMLHttpRequest();
-    r.open("POST",'../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',true);
-    r.timeout=6000;
-    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-    r.onreadystatechange=function(){
-        if((r.readyState != 4) || (r.status != 200)){
-            if(r.status == 404){
-                console.error('404 : Verifiez l\'url de l\'appel AJAX ',r.responseURL);
-            }else if(r.status == 500){
-                /*
-                  
-                  normalement, on ne devrait pas passer par ici car les erreurs 500 ont été capturées
-                  au niveau du php za_ajax mais sait-on jamais
-                */
-                if(global_messages['e500logged'] == false){
-                    try{
-                    }catch(e){
-                        console.error('e=',e);
-                    }
-                }
-            }
-            return;
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-            if(jsonRet.__xst === true){
-                var tableau_des_travaux = [];
-                var i={};
-                for(i in jsonRet.valeur){
-                    console.log(jsonRet.valeur[i]);
-                    tableau_des_travaux.push(jsonRet.valeur[i]);
-                }
-                console.log('tableau_des_travaux=',tableau_des_travaux);
-                var message_a_retourner={type_de_message:'recuperer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux};
-                postMessage(message_a_retourner);
-                return;
-            }else{
-                /* pas de travail en arrière plan' */
-                return;
-            }
-        }catch(e){
-            console.log('r=',r);
-            return;
-        }
-    };
-    r.onerror=function(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return;
-    };
-    r.ontimeout=function(e){
-        console.error('e=',e);
-        return;
-    };
+
     var ajax_param={'call':{'lib':'php','file':'session','funct':'recuperer_les_travaux_en_arriere_plan_de_la_session'}};
-    try{
-        r.send('ajax_param=' + encodeURIComponent(JSON.stringify(ajax_param)));
-    }catch(e){
-        console.error('e=',e);
-        /* whatever(); */
-        return({__xst:false});
+    async function recuperer_les_travaux_en_arriere_plan_de_la_session1(url="",ajax_param){
+        return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
     }
+    
+    recuperer_les_travaux_en_arriere_plan_de_la_session1('../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+
+            var tableau_des_travaux = [];
+            var i={};
+            for(i in donnees.valeur){
+                console.log(donnees.valeur[i]);
+                tableau_des_travaux.push(donnees.valeur[i]);
+            }
+            console.log('tableau_des_travaux=',tableau_des_travaux);
+            var message_a_retourner={type_de_message:'recuperer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux};
+            postMessage(message_a_retourner);
+            return;
+
+        }else{
+            /* pas de travail en arrière plan' */
+            return;
+        }
+    });
 }
 /*
-  
   =====================================================================================================================
 */
 onmessage=function(message_recu){
@@ -1099,3 +798,6 @@ onmessage=function(message_recu){
     }else{
     }
 };
+/*
+  =====================================================================================================================
+*/
