@@ -5,11 +5,11 @@
 */
 function enregistrer_les_sql_en_base(&$data){
 /*
-    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).PHP_EOL.PHP_EOL); fclose($fdtoto);}
-    $data['input']['params']['id_source']
-    $data['input']['params']['source_rev']
-    $data['input']['params']['source_sql']
-    $data['input']['params']['source_php']
+    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data[__entree],true).PHP_EOL.PHP_EOL); fclose($fdtoto);}
+    $data[__entree]['params']['id_source']
+    $data[__entree]['params']['source_rev']
+    $data[__entree]['params']['source_sql']
+    $data[__entree]['params']['source_php']
     
 */
     sql_inclure_reference(66);
@@ -27,17 +27,17 @@ function enregistrer_les_sql_en_base(&$data){
     /*sql_inclure_fin*/
 
     $tt=sql_66(array(
-        'c_chi_id_requete'        => $data['input']['params']['id_source']         ,
+        'c_chi_id_requete'        => $data[__entree]['params']['id_source']         ,
         'c_chx_cible_requete'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']  ,
-        'n_cht_rev_requete'       => $data['input']['params']['source_rev']        ,
-        'n_cht_sql_requete'       => $data['input']['params']['source_sql']   ,
-        'n_cht_php_requete'       => $data['input']['params']['source_php'] ,
+        'n_cht_rev_requete'       => $data[__entree]['params']['source_rev']        ,
+        'n_cht_sql_requete'       => $data[__entree]['params']['source_sql']   ,
+        'n_cht_php_requete'       => $data[__entree]['params']['source_php'] ,
     ));
 
     if($tt[__xst] === true && $tt['changements']===1){
      
         require_once(INCLUDE_PATH.DIRECTORY_SEPARATOR.'ajax/core/bdd.php');
-        $ret=ecrire_le_php_de_la_requete_sur_disque( $data['input']['params']['id_source'] , $data['input']['params']['source_php']);
+        $ret=ecrire_le_php_de_la_requete_sur_disque( $data[__entree]['params']['id_source'] , $data[__entree]['params']['source_php']);
         if($ret[__xst]===true){
             $data[__xst]=true;
         }else{
@@ -54,11 +54,11 @@ function enregistrer_les_sql_en_base(&$data){
 */
 function enregistrer_les_sources_en_base(&$data){
 
-    /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).PHP_EOL.PHP_EOL.'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);} */
+    /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data[__entree],true).PHP_EOL.PHP_EOL.'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);} */
     $sql0='update tbl_sources SET 	
-      chp_rev_source = \''.sq0($data['input']['params']['source_rev']).'\' 
-    , chp_genere_source=\''.sq0($data['input']['params']['source_genere']).'\' 
-    WHERE chi_id_source = '.sq0($data['input']['params']['id_source']).'
+      chp_rev_source = \''.sq0($data[__entree]['params']['source_rev']).'\' 
+    , chp_genere_source=\''.sq0($data[__entree]['params']['source_genere']).'\' 
+    WHERE chi_id_source = '.sq0($data[__entree]['params']['id_source']).'
  ';
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql0='.var_export($sql0,true).PHP_EOL.PHP_EOL); fclose($fd);} */
     $db=new SQLite3(INCLUDE_PATH.DIRECTORY_SEPARATOR.'db/sqlite/system.db');
@@ -71,7 +71,7 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
 */
     /*sql_inclure_fin*/
     
-    $tt=sql_62(array( 'T0_chi_id_source' => $data['input']['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
+    $tt=sql_62(array( 'T0_chi_id_source' => $data[__entree]['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
 
@@ -88,7 +88,7 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
     if($fd=fopen($chemin_fichier,'w')){
 
 
-        if(fwrite($fd,$data['input']['params']['source_genere'])){
+        if(fwrite($fd,$data[__entree]['params']['source_genere'])){
 
             fclose($fd);
             $data[__xst]=true;
@@ -107,7 +107,7 @@ Le fichier des requêtes sql js est à regénérer et/ou à intégrer
 function supprimer_un_commentaire1(&$data){
 
     /*
-    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).PHP_EOL.PHP_EOL); fclose($fdtoto);} 
+    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data[__entree],true).PHP_EOL.PHP_EOL); fclose($fdtoto);} 
       'parametre' => 
       array (
       'nom_du_travail_en_arriere_plan' => 'supprimer_un_commentaire1',
@@ -128,7 +128,7 @@ function supprimer_un_commentaire1(&$data){
     $liste_des_id_des_sources='';
     $liste_des_suppressions='';
     $provenance='';
-    foreach($data['input']['parametre']['liste_des_taches'] as $k1 => $v1){
+    foreach($data[__entree]['parametre']['liste_des_taches'] as $k1 => $v1){
         /* ['donnees_recues_du_message']*/
 
         if($v1['etat'] === "maj_bdd_et_récupération_du_tableau"){
@@ -217,11 +217,11 @@ function supprimer_un_commentaire1(&$data){
 function remplacer_des_chaine1(&$data){
 
 /*    
-      if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data['input'],true).PHP_EOL.PHP_EOL); fclose($fdtoto);} 
+      if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export($data[__entree],true).PHP_EOL.PHP_EOL); fclose($fdtoto);} 
 */    
     $data[__xva]=array();
     $liste_des_id_des_sources='';
-    foreach($data['input']['parametre']['liste_des_taches'] as $k1 => $v1){
+    foreach($data[__entree]['parametre']['liste_des_taches'] as $k1 => $v1){
         /* ['donnees_recues_du_message']*/
 
         if($v1['etat'] === "maj_bdd_et_récupération_du_tableau"){
@@ -243,11 +243,11 @@ function remplacer_des_chaine1(&$data){
 
 
     $sql0='UPDATE tbl_revs 
-    SET `chp_valeur_rev` = \''.sq0($data['input']['parametre']['remplacer_par']).'\' '.' 
+    SET `chp_valeur_rev` = \''.sq0($data[__entree]['parametre']['remplacer_par']).'\' '.' 
     WHERE  
-     `chp_valeur_rev` = \''.sq0($data['input']['parametre']['chaine_a_remplacer']).'\''.' 
+     `chp_valeur_rev` = \''.sq0($data[__entree]['parametre']['chaine_a_remplacer']).'\''.' 
       AND `chx_source_rev` IN ('.sq0($liste_des_id_des_sources).')  
-      AND `chp_provenance_rev` =\''.$data['input']['parametre']['provenance'].'\'
+      AND `chp_provenance_rev` =\''.$data[__entree]['parametre']['provenance'].'\'
       AND `chx_cible_rev` ='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
     ';
 
@@ -268,7 +268,7 @@ function remplacer_des_chaine1(&$data){
         FROM tbl_revs   
         LEFT JOIN tbl_sources T1 ON T1.chi_id_source = chx_source_rev
         WHERE  `chx_source_rev` IN ('.sq0($liste_des_id_des_sources).') 
-          AND `chp_provenance_rev` =\''.$data['input']['parametre']['provenance'].'\'
+          AND `chp_provenance_rev` =\''.$data[__entree]['parametre']['provenance'].'\'
           AND `chx_cible_rev` ='.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'
         ';
 /*
@@ -302,7 +302,7 @@ function remplacer_des_chaine1(&$data){
             }
             $stmt->close();
             $data[__xst]=true;
-            $data['provenance']=$data['input']['parametre']['provenance'];
+            $data['provenance']=$data[__entree]['parametre']['provenance'];
             $data[__xva]=$data0;
 
         }else{

@@ -7,8 +7,8 @@ function sql_1($par){
     $from0='
       FROM `'.$GLOBALS[BDD][BDD_1]['nom_bdd'].'`.tbl_utilisateurs T0    ';
     $sql0.=$from0;
-    $where0=' WHERE 1=1 '.CRLF;
-    $where0.=' AND `T0`.`chp_nom_de_connexion_utilisateur` = '.sq1($par['nom_de_connexion']).''.CRLF;
+    $where0=' WHERE 1=1 '.PHP_EOL;
+    $where0.=' AND `T0`.`chp_nom_de_connexion_utilisateur` = '.sq1($par['nom_de_connexion']).''.PHP_EOL;
     $sql0.=$where0;
     $order0='';
     $sql0.=$order0;

@@ -3075,14 +3075,14 @@ function analyse_fichier_log_acorn(jsonRet){
       temp=temp.substr(0,temp.indexOf(','));
       try{
           position=parseInt(temp,10);
-          if(jsonRet.input && jsonRet.input.texteSource){
-           if(jsonRet.input.texteSource.length>=position){
-            caractere_incorrecte=jsonRet.input.texteSource.substr(position,1);
+          if(jsonRet.__entree && jsonRet.__entree.texteSource){
+           if(jsonRet.__entree.texteSource.length>=position){
+            caractere_incorrecte=jsonRet.__entree.texteSource.substr(position,1);
             logerreur({__xst:false,__xme:'erreur dans un source javascript caractere_incorrecte="'+caractere_incorrecte+'"'});
             if(position-10>0){
-             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(position-10,20)+'"',plage:[position,position]});
+             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(position-10,20)+'"',plage:[position,position]});
             }else{
-             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.input.texteSource.substr(0,20)+'"',plage:[position,position]});
+             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(0,20)+'"',plage:[position,position]});
             }
             return({__xst:true});
            }
@@ -3166,7 +3166,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
                }else{
                 
                   console.error(jsonRet.fichier_erreur);
-                  console.error(jsonRet.input.texteSource);
+                  console.error(jsonRet.__entree.texteSource);
                   
                   logerreur({__xst:false,__xme:'erreur dans un source javascript'});
                   return(logerreur({__xst:false,__xme:jsonRet.fichier_erreur}));
@@ -3220,9 +3220,9 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
             var obj = TransformAstEnRev(ast_json.body,0);
             if(obj.__xst === true){
 
-                if(donnees_en_entree.__xva.input.options.options.nom_de_la_text_area_rev){
+                if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
 
-                    document.getElementById(donnees_en_entree.__xva.input.options.options.nom_de_la_text_area_rev).value=obj.__xva;
+                    document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
                     var obj1 = functionToArray(obj.__xva,true,false,'');
                     if(obj1.__xst === true){
 
@@ -3286,12 +3286,12 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
              
 
          }
-         if(donnees.hasOwnProperty('input')
-           && donnees.input.hasOwnProperty('options')
-           && donnees.input.options.hasOwnProperty('options')
-           && donnees.input.options.options.hasOwnProperty('nom_de_la_text_area_source')
+         if(donnees.hasOwnProperty('__entree')
+           && donnees.__entree.hasOwnProperty('options')
+           && donnees.__entree.options.hasOwnProperty('options')
+           && donnees.__entree.options.options.hasOwnProperty('nom_de_la_text_area_source')
          ){
-           __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.input.options.options.nom_de_la_text_area_source);
+           __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.__entree.options.options.nom_de_la_text_area_source);
          }else{
            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
          }

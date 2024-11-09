@@ -41,17 +41,18 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
         foreach($retour_sql[__xva] as $k1 => $v1){
             $chaine_js.=PHP_EOL.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
         }
-        $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'aa_js_sql.js';
+        $nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';
+        $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.$nom_bref;
 
         if($fd=fopen($nom_fichier,'w')){
-            if(fwrite($fd,'//<![CDATA['.PHP_EOL.'aa_js_sql={'.PHP_EOL.$chaine_js.PHP_EOL.'};'.PHP_EOL.'//]]>')){
+            if(fwrite($fd,'//<![CDATA['.PHP_EOL.'__aa_js_sql={'.PHP_EOL.$chaine_js.PHP_EOL.'};'.PHP_EOL.'//]]>')){
                 fclose($fd);
             }else{
                @fclose($fd);
-               return(array(__xst => false , __xme => 'erreur ecriture fichier aa_js_sql.js' ) );
+               return(array(__xst => false , __xme => 'erreur ecriture fichier '.$nom_bref  ) );
             }
         }else{
-            return(array(__xst => false , __xme => 'erreur ouverture fichier aa_js_sql.js' ) );
+            return(array(__xst => false , __xme => 'erreur ouverture fichier '.$nom_bref ) );
         }
     }else{
         return(array(__xst => false , __xme => $retour_sql[__xme] ) );
@@ -70,19 +71,19 @@ function modifier_la_requete_en_base(&$data){
     // sql_inclure_fin
     $a_modifier=array(
           'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-          'c_chi_id_requete' => $data['input']['id_requete'],
-          'n_chp_type_requete' => $data['input']['type'],
-          'n_cht_rev_requete' => $data['input']['rev'],
-          'n_cht_sql_requete' => $data['input']['sql'],
-          'n_cht_php_requete' => $data['input']['php'],
-          'n_cht_matrice_requete' => json_encode($data['input']['tableau_rev_requete']),
-          'n_cht_commentaire_requete' => $data['input']['cht_commentaire_requete'],
+          'c_chi_id_requete' => $data[__entree]['id_requete'],
+          'n_chp_type_requete' => $data[__entree]['type'],
+          'n_cht_rev_requete' => $data[__entree]['rev'],
+          'n_cht_sql_requete' => $data[__entree]['sql'],
+          'n_cht_php_requete' => $data[__entree]['php'],
+          'n_cht_matrice_requete' => json_encode($data[__entree]['tableau_rev_requete']),
+          'n_cht_commentaire_requete' => $data[__entree]['cht_commentaire_requete'],
     );
     
     $tt=sql_9($a_modifier);
     if($tt[__xst]===true){
         $data[__xst]=true;
-        ecrire_le_php_de_la_requete_sur_disque($data['input']['id_requete'],$data['input']['php']);
+        ecrire_le_php_de_la_requete_sur_disque($data[__entree]['id_requete'],$data[__entree]['php']);
             
         
         
@@ -91,11 +92,11 @@ function modifier_la_requete_en_base(&$data){
         $data[__xst]=false;
     }
     
-    $data['input']['parametres_sauvegarde']=array(
+    $data[__entree]['parametres_sauvegarde']=array(
         'id_cible'           => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
         'chp_provenance_rev' => 'sql'                                  , // 'bdd' , '	source' , 'sql'
-        'chx_source_rev'     => $data['input']['id_requete']           , // id de la source
-        'matrice'            => $data['input']['tableau_rev_requete']  ,
+        'chx_source_rev'     => $data[__entree]['id_requete']           , // id de la source
+        'matrice'            => $data[__entree]['tableau_rev_requete']  ,
     );
     
     $ret=sauvegarder_format_rev_en_dbb($data);
@@ -117,11 +118,11 @@ function enregistrer_la_requete_en_base(&$data){
     $a_inserer=array(
          array(
           'chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-          'chp_type_requete' => $data['input']['type'],
-          'cht_rev_requete' => $data['input']['rev'],
-          'cht_sql_requete' => $data['input']['sql'],
-          'cht_php_requete' => $data['input']['php'],
-          'cht_commentaire_requete' => $data['input']['cht_commentaire_requete'],
+          'chp_type_requete' => $data[__entree]['type'],
+          'cht_rev_requete' => $data[__entree]['rev'],
+          'cht_sql_requete' => $data[__entree]['sql'],
+          'cht_php_requete' => $data[__entree]['php'],
+          'cht_commentaire_requete' => $data[__entree]['cht_commentaire_requete'],
          )
     );
     $tt=sql_7($a_inserer);
@@ -131,7 +132,7 @@ function enregistrer_la_requete_en_base(&$data){
         /*
          lors de la création dans l'interface, l'id est égal à 0 ou bien nnn si on part d'une requête existante
         */
-        $nouveau_php=str_replace( 'function sql_'.$data['input']['id_courant'].'(' , 'function sql_'.$data['nouvel_id'].'(' , $data['input']['php'] );
+        $nouveau_php=str_replace( 'function sql_'.$data[__entree]['id_courant'].'(' , 'function sql_'.$data['nouvel_id'].'(' , $data[__entree]['php'] );
         sql_inclure_reference(35);
         // sql_inclure_deb
         require_once(INCLUDE_PATH.'/sql/sql_35.php');
@@ -150,11 +151,11 @@ function enregistrer_la_requete_en_base(&$data){
      $data[__xst]=false;
     }
 
-    $data['input']['parametres_sauvegarde']=array(
+    $data[__entree]['parametres_sauvegarde']=array(
         'id_cible'           => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
         'chp_provenance_rev' => 'sql'                                  , // 'bdd' , '	source' , 'sql'
         'chx_source_rev'     => $data['nouvel_id']                     , // id de la source
-        'matrice'            => $data['input']['tableau_rev_requete']  ,
+        'matrice'            => $data[__entree]['tableau_rev_requete']  ,
     );
     
     $ret=sauvegarder_format_rev_en_dbb($data);
@@ -176,7 +177,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     /*sql_inclure_fin*/
 
     $tt=sql_26(array(
-        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chi_id_basedd'           => $data[__entree]['id_bdd_de_la_base'] ,
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
@@ -214,7 +215,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
     }
 
-    $ret1=$db1temp->exec($data['input']['source_sql_de_la_base']);
+    $ret1=$db1temp->exec($data[__entree]['source_sql_de_la_base']);
 
     if($ret1 !== true){
 
@@ -244,7 +245,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     /*sql_inclure_fin*/
 
     $tt=sql_26(array(
-        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chi_id_basedd'           => $data[__entree]['id_bdd_de_la_base'] ,
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
@@ -282,7 +283,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     }
 
-    $ret1=$db1temp->exec($data['input']['source_sql_de_la_base']);
+    $ret1=$db1temp->exec($data[__entree]['source_sql_de_la_base']);
 
     if($ret1 !== true){
 
@@ -306,7 +307,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     }
 
-    foreach($data['input']['liste_des_tables'] as $k1 => $v1){
+    foreach($data[__entree]['liste_des_tables'] as $k1 => $v1){
         $sql3='INSERT INTO `'.sq0($v1).'` SELECT * FROM `source`.`'.sq0($v1).'`';
 /*        
           if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql3='.$sql3 .PHP_EOL.PHP_EOL); fclose($fd);}
@@ -327,8 +328,8 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
       il faut supprimer les connexions aux bases;
     */
     $db1temp->close();
-    if(isset($GLOBALS[BDD][$data['input']['id_bdd_de_la_base']])){
-        $GLOBALS[BDD][$data['input']['id_bdd_de_la_base']][LIEN_BDD]->close();
+    if(isset($GLOBALS[BDD][$data[__entree]['id_bdd_de_la_base']])){
+        $GLOBALS[BDD][$data[__entree]['id_bdd_de_la_base']][LIEN_BDD]->close();
     }
 
     if(sauvegarder_et_supprimer_fichier($chemin_bdd,false)){
@@ -378,12 +379,12 @@ function recuperer_les_tableaux_des_bases(&$data){
       id_bdd_de_la_base      : id_bdd_de_la_base_en_cours,
     */
     require_once(INCLUDE_PATH.'/phplib/sqlite.php');
-    $obj=comparer_une_base_physique_et_une_base_virtuelle($data['input']['id_bdd_de_la_base'],$data['input']['source_base_sql']);
+    $obj=comparer_une_base_physique_et_une_base_virtuelle($data[__entree]['id_bdd_de_la_base'],$data[__entree]['source_base_sql']);
 
     if($obj[__xst] === true){
 
         $data[__xva]=$obj[__xva];
-        $id_bdd_de_la_base=$data['input']['id_bdd_de_la_base'];
+        $id_bdd_de_la_base=$data[__entree]['id_bdd_de_la_base'];
         $data[__xst]=true;
 
     }else{
@@ -436,7 +437,7 @@ function supprimer_table_dans_base(&$data){
 function operation_sur_base(&$data,$nom_operation){
 
     /*    
-      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data['input'] , true) .PHP_EOL.PHP_EOL); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $data[__entree] , true) .PHP_EOL.PHP_EOL); fclose($fd);}
     */    
     sql_inclure_reference(26);
     /*sql_inclure_deb*/
@@ -444,7 +445,7 @@ function operation_sur_base(&$data,$nom_operation){
     /*sql_inclure_fin*/
 
     $tt=sql_26(array(
-        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chi_id_basedd'           => $data[__entree]['id_bdd_de_la_base'] ,
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
@@ -480,7 +481,7 @@ function operation_sur_base(&$data,$nom_operation){
     //error_reporting(0);
     //$db1->enableExceptions(true);
 
-    $ret1=$db1->exec($data['input']['source_sql']);
+    $ret1=$db1->exec($data[__entree]['source_sql']);
 
     if($ret1 !== true){
 
@@ -510,7 +511,7 @@ function operation_sur_base(&$data,$nom_operation){
 function creer_table_dans_base(&$data){
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data=' . $data['input']['source_sql'] . PHP_EOL.PHP_EOL); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data=' . $data[__entree]['source_sql'] . PHP_EOL.PHP_EOL); fclose($fd);}
       if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export( $GLOBALS[BDD] , true) .PHP_EOL.PHP_EOL); fclose($fd);}
     */
     
@@ -520,7 +521,7 @@ function creer_table_dans_base(&$data){
     /*sql_inclure_fin*/
 
     $tt=sql_26(array(
-        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chi_id_basedd'           => $data[__entree]['id_bdd_de_la_base'] ,
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
@@ -555,7 +556,7 @@ function creer_table_dans_base(&$data){
 
     }
 
-    $ret1=$db1->exec($data['input']['source_sql']);
+    $ret1=$db1->exec($data[__entree]['source_sql']);
 
     if($ret1 !== true){
 
@@ -585,7 +586,7 @@ function creer_table_dans_base(&$data){
 function ordonner_les_champs_de_table(&$data){
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ) .PHP_EOL.PHP_EOL); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data[__entree] , true ) .PHP_EOL.PHP_EOL); fclose($fd);}
     */
 
     sql_inclure_reference(26);
@@ -594,7 +595,7 @@ function ordonner_les_champs_de_table(&$data){
     /*sql_inclure_fin*/
 
     $tt=sql_26(array(
-        'T0_chi_id_basedd'           => $data['input']['id_bdd_de_la_base'] ,
+        'T0_chi_id_basedd'           => $data[__entree]['id_bdd_de_la_base'] ,
         'T0_chx_cible_id_basedd'     => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     ));
 
@@ -630,7 +631,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    $ret1=$db1->exec($data['input']['chaine_create_table']);
+    $ret1=$db1->exec($data[__entree]['chaine_create_table']);
 
     if($ret1 !== true){
 
@@ -640,7 +641,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    $sql2='INSERT INTO '.$data['input']['nom_table_temporaire'].'('.$data['input']['ordre_modifie'].') SELECT '.$data['input']['ordre_modifie'].' FROM '.$data['input']['nom_de_la_table'].';';
+    $sql2='INSERT INTO '.$data[__entree]['nom_table_temporaire'].'('.$data[__entree]['ordre_modifie'].') SELECT '.$data[__entree]['ordre_modifie'].' FROM '.$data[__entree]['nom_de_la_table'].';';
     /*
       if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql2='.$sql2.PHP_EOL.PHP_EOL); fclose($fd);}
     */
@@ -654,7 +655,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    $sql3='DROP TABLE '.$data['input']['nom_de_la_table'].';';
+    $sql3='DROP TABLE '.$data[__entree]['nom_de_la_table'].';';
     $ret3=$db1->exec($sql3);
 
     if($ret3 !== true){
@@ -665,7 +666,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    $sql4='ALTER TABLE  '.$data['input']['nom_table_temporaire'].' RENAME TO '.$data['input']['nom_de_la_table'].' ;';
+    $sql4='ALTER TABLE  '.$data[__entree]['nom_table_temporaire'].' RENAME TO '.$data[__entree]['nom_de_la_table'].' ;';
     $ret4=$db1->exec($sql4);
 
     if($ret4 !== true){
@@ -676,7 +677,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    foreach($data['input']['tab_des_index_sql'] as $k1 => $sql5){
+    foreach($data[__entree]['tab_des_index_sql'] as $k1 => $sql5){
         $ret5=$db1->exec($sql5);
 
         if($ret5 !== true){
@@ -708,15 +709,15 @@ function ordonner_les_champs_de_table(&$data){
 function envoyer_le_rev_de_le_base_en_post(&$data){
 
     /*
-      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data['input'] , true ).PHP_EOL.PHP_EOL); fclose($fd);}
+      if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input]='.var_export( $data[__entree] , true ).PHP_EOL.PHP_EOL); fclose($fd);}
     */
     sql_inclure_reference(10);
     // sql_inclure_deb
     require_once(INCLUDE_PATH.'/sql/sql_10.php');
     // sql_inclure_fin
     $a_modifier=array(
-          'n_chp_rev_travail_basedd' => $data['input']['source_rev_de_la_base'],
-          'c_chi_id_basedd'          => $data['input']['id_bdd_de_la_base'],
+          'n_chp_rev_travail_basedd' => $data[__entree]['source_rev_de_la_base'],
+          'c_chi_id_basedd'          => $data[__entree]['id_bdd_de_la_base'],
           'c_chx_cible_id_basedd'    => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     );
     
@@ -740,7 +741,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
     require_once(INCLUDE_PATH.'/sql/sql_11.php');
     // sql_inclure_fin
     $a_selectionner=array(
-          'les_id_des_bases'     => $data['input']['les_id_des_bases'],
+          'les_id_des_bases'     => $data[__entree]['les_id_des_bases'],
           'chx_cible_id_basedd'  => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     );
     
@@ -765,7 +766,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
 function sauvegarder_format_rev_en_dbb(&$data){
  
  /*
- $data['input']['parametres_sauvegarde']=array(
+ $data[__entree]['parametres_sauvegarde']=array(
   'id_cible'           => id_cible           ,
   'chp_provenance_rev' => chp_provenance_rev , // 'bdd' , '	source' , 'sql'
   'chx_source_rev'     => chx_source_rev     , // id de la source
@@ -775,16 +776,16 @@ function sauvegarder_format_rev_en_dbb(&$data){
  */
 
     /*
-      if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][parametres_sauvegarde]='.var_export($data['input']['parametres_sauvegarde'],true).PHP_EOL); fclose($fdtoto);}
+      if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data[input][parametres_sauvegarde]='.var_export($data[__entree]['parametres_sauvegarde'],true).PHP_EOL); fclose($fdtoto);}
     */
     sql_inclure_reference(5);
     // sql_inclure_deb
     require_once(INCLUDE_PATH.'/sql/sql_5.php');
     // sql_inclure_fin
     $a_supprimer=array(
-          'chx_cible_rev'      => $data['input']['parametres_sauvegarde']['id_cible'],
-          'chp_provenance_rev' => $data['input']['parametres_sauvegarde']['chp_provenance_rev'],
-          'chx_source_rev'     => $data['input']['parametres_sauvegarde']['chx_source_rev'],
+          'chx_cible_rev'      => $data[__entree]['parametres_sauvegarde']['id_cible'],
+          'chp_provenance_rev' => $data[__entree]['parametres_sauvegarde']['chp_provenance_rev'],
+          'chx_source_rev'     => $data[__entree]['parametres_sauvegarde']['chx_source_rev'],
     );
     
     $tt=sql_5($a_supprimer);
@@ -795,15 +796,15 @@ function sauvegarder_format_rev_en_dbb(&$data){
     
     
     $a_sauvegarder=array();
-    for($i=0;($i < count($data['input']['parametres_sauvegarde']['matrice']));$i++){
-        $tab=$data['input']['parametres_sauvegarde']['matrice'][$i];
+    for($i=0;($i < count($data[__entree]['parametres_sauvegarde']['matrice']));$i++){
+        $tab=$data[__entree]['parametres_sauvegarde']['matrice'][$i];
         /*
           14 champs pour le rev + id_cible + chp_provenance_rev + chx_source_rev
         */
         $a_sauvegarder[]=array(
-         'chx_cible_rev'                 => $data['input']['parametres_sauvegarde']['id_cible'],
-         'chp_provenance_rev'            => $data['input']['parametres_sauvegarde']['chp_provenance_rev'],
-         'chx_source_rev'                => $data['input']['parametres_sauvegarde']['chx_source_rev'],
+         'chx_cible_rev'                 => $data[__entree]['parametres_sauvegarde']['id_cible'],
+         'chp_provenance_rev'            => $data[__entree]['parametres_sauvegarde']['chp_provenance_rev'],
+         'chx_source_rev'                => $data[__entree]['parametres_sauvegarde']['chx_source_rev'],
          'chp_id_rev'                    => $tab[0],
          'chp_valeur_rev'                => $tab[1],
          'chp_type_rev'                  => $tab[2],
@@ -830,7 +831,9 @@ function sauvegarder_format_rev_en_dbb(&$data){
     if($tt[__xst]!==true){
        $data[__xms][]=basename(__FILE__).' '.__LINE__.' Erreur sur insertion';
     }else{
-        $data[__xms][]=basename(__FILE__).' '.__LINE__.' la matrice est en bdd';
+        if($GLOBALS[__mode_traque]){
+            $data[__xms][]=basename(__FILE__).' '.__LINE__.' la matrice est en bdd';
+        }
         $data[__xst]=true;
     }
 }

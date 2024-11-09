@@ -1132,9 +1132,8 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 */
 $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'));
 $par=array( 'js_a_inclure' => array(
-            'js/javascript',
-            'js/html',
-            'js/php',
+            'js/javascript.js',
+            'js/php.js',
             'js/convertit-php-en-rev0.js',
             'js/pour_zz_source1.js',
             'js/pour_zz_bdds_action1.js',
@@ -1146,7 +1145,13 @@ $par=array( 'js_a_inclure' => array(
             'js/convertion_sql_en_rev.js',
             'js/convertit-html-en-rev1.js',
             ), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents(INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/aa_js_sql.js').'</script>'; 
+
+$nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';
+$nom_complet=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/'.$nom_bref;
+if(is_file($nom_complet)){
+    $o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents($nom_complet).'</script>';
+}
+
 $o1.=html_footer1($par);
 print($o1);
 $o1='';

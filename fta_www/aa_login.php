@@ -7,11 +7,11 @@
 define("BNF",basename(__FILE__));
 /*
   =====================================================================================================================
-  Puis l'inclusion des fonctions communes et initialisation des session et de la bdd
+  Puis l'inclusion des fonctions communes et initialisation des session(true) et de la bdd(true)
   =====================================================================================================================
 */
 require_once('aa_include.php');
-initialiser_les_services(true,true);
+initialiser_les_services(true,false);
 /*===================================================================================================================*/
 
 function supprimerLesValeursDeSession(){
@@ -40,6 +40,8 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
 
     if((isset($_POST['nom_de_connexion'])) && (isset($_POST['mot_de_passe']))){
+        initialiser_les_services(true,true);
+     
 
         /*#
   ===========================================================================
@@ -122,10 +124,10 @@ if((isset($_POST)) && (count($_POST) > 0)){
     }else if(isset($_POST['logout'])){
 
         supprimerLesValeursDeSession();
+        recharger_la_page(BNF);
 
     }
 
-    recharger_la_page(BNF);
 
 }
 

@@ -160,8 +160,8 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
             if(donnees.__xst===true){
                 logerreur({__xst:true,__xme:'le fichier '+fichierAConcatener+' a été concaténé'});
              
-                if(donnees.input.tabConcatFichier){
-                 concateneFichiers(donnees.input.tabConcatFichier,donnees.input.file_name,donnees.input.file_extension,donnees.input.file_path)
+                if(donnees.__entree.tabConcatFichier){
+                 concateneFichiers(donnees.__entree.tabConcatFichier,donnees.__entree.file_name,donnees.__entree.file_extension,donnees.__entree.file_path)
                 }
             }
         });
@@ -411,7 +411,7 @@ function chargerFichierRev(nomFichierSource){
     charger_fichier_rev1('za_ajax.php?charger_un_ficher_rev',ajax_param).then((donnees) => {
 
      if(donnees.__xst===true){
-       localStorage.setItem("fta_dernier_fichier_charge", donnees.input.file_name);
+       localStorage.setItem("fta_dernier_fichier_charge", donnees.__entree.file_name);
       
        //afficherFichierSource({__xst:true,__xva:donnees.__xva,nomZone:'zonesource',nomFichierSource:nomFichierSource});
        
@@ -419,8 +419,8 @@ function chargerFichierRev(nomFichierSource){
         zoneSource.value=donnees.__xva;
         ajusteTailleTextareaContenantSource('zonesource');
         document.getElementById('sauvegarderLeNormalise').disabled=true;
-        document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',donnees.input.file_name );
-        document.getElementById('nomDuSource').value=donnees.input.file_name;
+        document.getElementById('sauvegarderLeNormalise').setAttribute('data-fichiertexte',donnees.__entree.file_name );
+        document.getElementById('nomDuSource').value=donnees.__entree.file_name;
         document.getElementById('nomDuSource').disabled=true;
        
        

@@ -13,7 +13,7 @@ function recupererAstDePhp(&$data){
     $parser=(new ParserFactory())->createForNewestSupportedVersion();
     try{
      
-        $contenu=preg_replace('/\\/\\*sql_'.'inclure_deb\\*\\/(.*?)\\/\\*sql_'.'inclure_fin\\*\\//us','', $data['input']['texteSource']);
+        $contenu=preg_replace('/\\/\\*sql_'.'inclure_deb\\*\\/(.*?)\\/\\*sql_'.'inclure_fin\\*\\//us','', $data[__entree]['texteSource']);
 
         $ast=$parser->parse($contenu);
         $data[__xva]=json_encode($ast);

@@ -123,6 +123,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         if($retour_sql[__xst] === true){
 
             $chaine_js='';
+            $chaine_php='';
             $repertoire_destination=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql';
 
             if(is_dir($repertoire_destination)){
@@ -148,6 +149,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
                         fclose($fd);
                         $chaine_js.=PHP_EOL.'"'.$v1['T0.chi_id_requete'].'":'.json_encode($v1['T0.cht_sql_requete']).',';
+                        $chaine_php.=PHP_EOL.'"'.$v1['T0.chi_id_requete'].'"=>'.json_encode($v1['T0.cht_sql_requete']).',';
 
                     }else{
                         return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier sql_'.$v1['T0.chi_id_requete'].'.php');
@@ -160,28 +162,49 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
                 }
 
             }
-            $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.'aa_js_sql.js';
+            $nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';
+            $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.$nom_bref;
 
             if($fd=fopen($nom_fichier,'w')){
 
-                if(fwrite($fd,'//<![CDATA['.PHP_EOL.'aa_js_sql={'.PHP_EOL.$chaine_js.PHP_EOL.'};'.PHP_EOL.'//]]>')){
+                if(fwrite($fd,'//<![CDATA['.PHP_EOL.'__aa_js_sql={'.PHP_EOL.$chaine_js.PHP_EOL.'};'.PHP_EOL.'//]]>')){
 
                     fclose($fd);
 
                 }else{
 
-                    return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier aa_js_sql' );
+                    return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier '.$nom_bref );
                 }
 
 
             }else{
 
-                return array(__xst=>false,__xme=> __LINE__.' erreur ouverture fichier saa_js_sql' );
+                return array(__xst=>false,__xme=> __LINE__.' erreur ouverture fichier '.$nom_bref );
+            }
+
+            $nom_bref='aa_php_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.php';
+            $nom_fichier=$repertoire_destination.DIRECTORY_SEPARATOR.$nom_bref;
+
+            if($fd=fopen($nom_fichier,'w')){
+
+                if(fwrite($fd,'<?'.'php'.PHP_EOL.'$__aa_php_sql=array('.PHP_EOL.$chaine_php.PHP_EOL.');'.PHP_EOL.'?>')){
+
+                    fclose($fd);
+
+                }else{
+
+                    return array(__xst=>false,__xme=>__LINE__.' erreur ecriture fichier '.$nom_bref );
+                }
+
+
+            }else{
+
+                return array(__xst=>false,__xme=> __LINE__.' erreur ouverture fichier '.$nom_bref );
             }
 
             $zip=new ZipArchive();
 
-            if($zip->open($repertoire_destination.DIRECTORY_SEPARATOR.'sql.zip',ZIPARCHIVE::CREATE) !== TRUE){
+            if($zip->open($repertoire_destination.DIRECTORY_SEPARATOR.'sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.zip',ZIPARCHIVE::CREATE) !== TRUE){
 
                 return array(__xst=>false,__xme=> __LINE__.' erreur ouverture fichier zip' );
 

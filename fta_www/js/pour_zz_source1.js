@@ -80,12 +80,12 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_source ,
             var date_de_fin_traitement = new Date();
             date_de_fin_traitement = date_de_fin_traitement.getTime();
          
-            var date_de_debut_traitement=donnees.input.date_de_debut_traitement;
+            var date_de_debut_traitement=donnees.__entree.date_de_debut_traitement;
             var nombre_de_secondes = (date_de_fin_traitement-date_de_debut_traitement)/1000;
 
             
-            if(donnees.input.parametres_sauvegarde.nom_du_source){
-             logerreur({__xst:true,__xme:'la réécriture de '+donnees.input.parametres_sauvegarde.nom_du_source+' a été faite en '+nombre_de_secondes+' secondes'})
+            if(donnees.__entree.parametres_sauvegarde.nom_du_source){
+             logerreur({__xst:true,__xme:'la réécriture de '+donnees.__entree.parametres_sauvegarde.nom_du_source+' a été faite en '+nombre_de_secondes+' secondes'})
             }else{
              logerreur({__xst:true,__xme:'la réécriture du fichier a été faite en '+nombre_de_secondes+' secondes'})
             }
@@ -117,7 +117,7 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
             
                 var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');            
 //                console.log(objSql.__xva);
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.__xva , contenu , par.input.date_de_debut_traitement , matriceFonction.__xva);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.__entree.id_source , objRev.__xva , contenu , par.__entree.date_de_debut_traitement , matriceFonction.__xva);
                
            }
 
@@ -141,8 +141,7 @@ function traitement_apres_ajax_pour_conversion_fichier_html(par){
            
            if(objHtml.__xst===true){
           
-                console.log(objHtml.__xva);
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.__xva , objHtml.__xva , par.input.date_de_debut_traitement , matriceFonction.__xva);
+                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.__entree.id_source , objRev.__xva , objHtml.__xva , par.__entree.date_de_debut_traitement , matriceFonction.__xva);
                
            }
        }
@@ -196,7 +195,7 @@ function traitement_apres_ajax_pour_conversion_fichier_js(par,type_source){
             
             if(objJs.__xst===true){           
 //              console.log(objJs.__xva);
-              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.id_source , objRev.__xva , objJs.__xva , par.input.date_de_debut_traitement , matriceFonction.__xva);
+              sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.__entree.id_source , objRev.__xva , objJs.__xva , par.__entree.date_de_debut_traitement , matriceFonction.__xva);
              
             }else{
                logerreur({__xst:false,__xme:'erreur 0223 traitement_apres_ajax_pour_conversion_fichier_js'});
@@ -247,7 +246,7 @@ function traitement_apres_ajax_pour_conversion_fichier_php(par){
                 on a obtenu le php à partir du rev,
                 on peut tout enregistrer
                 */
-               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.input.opt.donnees.input.id_source , objRev.__xva , objPhp.__xva , par.input.opt.donnees.input.date_de_debut_traitement , matriceFonction.__xva) ;
+               sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.__entree.opt.donnees.__entree.id_source , objRev.__xva , objPhp.__xva , par.__entree.opt.donnees.__entree.date_de_debut_traitement , matriceFonction.__xva) ;
                 
             }
         }
@@ -422,24 +421,24 @@ function convertir_rev_en_texte(nom_zone_source , nom_zone_genere , id_source , 
 function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
  
  __gi1.raz_des_messages();
- console.log('ret=',ret.input.opt);
+ console.log('ret=',ret.__entree.opt);
  try{
   var startMicro=performance.now();
   var ast=JSON.parse(ret.__xva);
 //  console.log('ast=',ast);
   var obj=TransformAstPhpEnRev(ast,0,false);
   if(obj.__xst===true){
-//   console.log( ret.input.opt.nom_zone_rev )
-   document.getElementById(ret.input.opt.nom_zone_rev).value='php('+obj.__xva+')';
+//   console.log( ret.__entree.opt.nom_zone_rev )
+   document.getElementById(ret.__entree.opt.nom_zone_rev).value='php('+obj.__xva+')';
   }else{
     
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.input.opt.nom_zone_genere);
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.__entree.opt.nom_zone_genere);
   }
  }catch(e){
   astphp_logerreur({__xst:false,__xme:'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />') })
  }
  
- __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.input.opt.nom_zone_genere);
+ __gi1.remplir_et_afficher_les_messages1('zone_global_messages' , ret.__entree.opt.nom_zone_genere);
  
 }
 

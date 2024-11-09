@@ -861,7 +861,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
              if(tab[j][7]===i){
                  if(tab[j][1]==='quand' && tab[j][2]==='f' ){
                      if(tab[j][8]===1 && tab[j+1][2]==='c'){
-                         valeurQuand=tab[j+1][1];
+                         valeurQuand=ma_cst_pour_php(tab[j+1]);
                      }else{
                          var obj=php_traiteElement(tab , j+1 , niveau,{})
                          if(obj.__xst===true){
@@ -1080,9 +1080,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                 t+='/*sql_inclure_deb*/';
                 t+=espacesn(true,niveau);
                 t+='require_once(INCLUDE_PATH.\'/sql/sql_'+tab[i+1][1]+'.php\');';
-                if(typeof aa_js_sql !== 'undefined' && aa_js_sql[tab[i+1][1]]){
+                if(typeof __aa_js_sql !== 'undefined' && __aa_js_sql[tab[i+1][1]]){
                  t+=espacesn(true,niveau);
-                 var contenu='/*'+espacesn(false,niveau)+aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /').replace(/\r/g,'').replace(/\n/g,espacesn(false,niveau));
+                 var contenu='/*'+espacesn(false,niveau)+__aa_js_sql[tab[i+1][1]].replace(/\/\*/g,'/ *').replace(/\*\//g,'* /').replace(/\r/g,'').replace(/\n/g,espacesn(false,niveau));
                  contenu=contenu.replace(/\n\n/g,'\n')
                  contenu=contenu.replace(/ AND /g,espacesn(false,niveau)+' AND ')
                  contenu=contenu.replace(/ ORDER BY /,espacesn(false,niveau)+' ORDER BY ')

@@ -2074,9 +2074,9 @@ class module_svg_bdd{
             if(donnees.__xst === true){
                 //console.log( this.#arbre );
                 // mode_supression_de_champ,en_base_et_sur_schema
-                if(donnees.input.mode_supression_de_champ===true && en_base_et_sur_schema===false){
+                if(donnees.__entree.mode_supression_de_champ===true && en_base_et_sur_schema===false){
                 }else{
-                   var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg(donnees.input.id_bdd_de_la_base , donnees.input.nom_de_la_table , donnees.input.ordre_modifie , donnees.input.id_svg_conteneur_table , donnees.input.nouveau_rev);
+                   var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg(donnees.__entree.id_bdd_de_la_base , donnees.__entree.nom_de_la_table , donnees.__entree.ordre_modifie , donnees.__entree.id_svg_conteneur_table , donnees.__entree.nouveau_rev);
                    if(obj.__xst===true){
                       console.log('réordonner OK')
                    }else{

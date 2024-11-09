@@ -2792,7 +2792,7 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
             for(elem in donnees.__xms){
                 astphp_logerreur({__xst:true,__xme:'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
             }
-            f_traitementApresRecuperationAst({__xst:true,__xva:donnees.__xva,input:donnees.input,opt:opt});
+            f_traitementApresRecuperationAst({__xst:true,__xva:donnees.__xva,__entree:donnees.__entree,opt:opt});
          
         }else{
             var elem={};
@@ -2802,8 +2802,8 @@ function recupereAstDePhp(texteSource,opt,f_traitementApresRecuperationAst){
                  astphp_logerreur({__xst:false,line:line});
                 }
             }
-            if(donnees.input && donnees.input.hasOwnProperty('opt') && donnees.input.opt.hasOwnProperty('zone_php')){
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.input.opt.zone_php);
+            if(donnees.__entree && donnees.__entree.hasOwnProperty('opt') && donnees.__entree.opt.hasOwnProperty('zone_php')){
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.__entree.opt.zone_php);
             }else{
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             }
@@ -2847,7 +2847,7 @@ use PhpParser\\ParserFactory;
 function recupererAstDePhp(&$data){
     $parser = (new ParserFactory())->createForNewestSupportedVersion();
     try {
-        $ast = $parser->parse($data['input']['texteSource']);
+        $ast = $parser->parse($data[__entree]['texteSource']);
         $data[__xva]=json_encode($ast);
         $data[__xst]=true;
     } catch (Error $error) {

@@ -3,7 +3,7 @@
 
 function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 
-    if((isset($data['input']['id_source']))){
+    if((isset($data[__entree]['id_source']))){
         
         sql_inclure_reference(62);
         /*sql_inclure_deb*/
@@ -23,7 +23,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         /*sql_inclure_fin*/
         
         $tt=sql_62(array( 
-         'T0_chi_id_source'       => $data['input']['id_source'], 
+         'T0_chi_id_source'       => $data[__entree]['id_source'], 
          'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
@@ -41,15 +41,15 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         
         
         if($fd=fopen($chemin_fichier,'w')){
-            fwrite($fd,$data['input']['source']);
+            fwrite($fd,$data[__entree]['source']);
             fclose($fd);
             $data[__xst]=true;
             
-            $data['input']['parametres_sauvegarde'] = array(
+            $data[__entree]['parametres_sauvegarde'] = array(
                   'id_cible'                => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] ,
                   'chp_provenance_rev'      => 'source'                                             ,
-                  'chx_source_rev'          => $data['input']['id_source']                          ,
-                  'matrice'                 => $data['input']['matrice']                            ,
+                  'chx_source_rev'          => $data[__entree]['id_source']                          ,
+                  'matrice'                 => $data[__entree]['matrice']                            ,
                   'nom_du_source'           => $__valeurs['T0.chp_nom_source']                            ,
                   'dossier_du_source'       => $__valeurs['T2.chp_nom_dossier']                           ,
                   'dossier_cible_du_source' => $__valeurs['T1.chp_dossier_cible']                         ,
@@ -63,7 +63,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 
 function charger_un_fichier_source_par_son_identifiant(&$data){
 
- if((isset($data['input']['id_source']))){
+ if((isset($data[__entree]['id_source']))){
 
 
         sql_inclure_reference(62);
@@ -84,7 +84,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
         /*sql_inclure_fin*/
         
         $tt=sql_62(array( 
-         'T0_chi_id_source'       => $data['input']['id_source'], 
+         'T0_chi_id_source'       => $data[__entree]['id_source'], 
          'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
@@ -123,8 +123,8 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
 //==========================================================================================================
 function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
  
- if((isset($data['input']['file_name']))){
-  $nomFichierDecripte=decrypter($data['input']['file_name']);
+ if((isset($data[__entree]['file_name']))){
+  $nomFichierDecripte=decrypter($data[__entree]['file_name']);
   
   if(sauvegarder_et_supprimer_fichier($nomFichierDecripte)){
     $data[__xst]=true;
@@ -142,9 +142,9 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
 function charger_un_fichier_avec_un_nom_encrypte(&$data){
 
  
- if((isset($data['input']['file_name']))){
+ if((isset($data[__entree]['file_name']))){
   
-  $nomFichierDecripte=decrypter($data['input']['file_name']);
+  $nomFichierDecripte=decrypter($data[__entree]['file_name']);
   $taille_en_octets=filesize($nomFichierDecripte);
   if($taille_en_octets<=TAILLE_MAXI_SOURCE){
    $contenu=file_get_contents($nomFichierDecripte);
@@ -173,12 +173,12 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
 function charger_un_ficher_rev(&$data){
 
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
- if(strpos($data['input']['file_name'],'..')!==false){
+ if(strpos($data[__entree]['file_name'],'..')!==false){
   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . ' le fichier n\'a pas pu être ouvert';
   return;
  }
- if($data['input']['file_name']!=''){
-  $filefullpath=INCLUDE_PATH.DIRECTORY_SEPARATOR.'rev'.DIRECTORY_SEPARATOR.$data['input']['file_name'];
+ if($data[__entree]['file_name']!=''){
+  $filefullpath=INCLUDE_PATH.DIRECTORY_SEPARATOR.'rev'.DIRECTORY_SEPARATOR.$data[__entree]['file_name'];
   $contenu=file_get_contents($filefullpath);
   if($contenu!==false){
    $data[__xva]=$contenu;
@@ -203,17 +203,17 @@ function getRevFiles(&$data){
 function sauvegarger_un_fichier_rev(&$data){
 // sleep(2);
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
- if(strpos($data['input']['file_name'],'..')){
+ if(strpos($data[__entree]['file_name'],'..')){
   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write a file containing ".."';
   return;
  }
  
- if(substr($data['input']['file_name'],-4)!=='.rev'){
+ if(substr($data[__entree]['file_name'],-4)!=='.rev'){
   $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The file must end with a .rev extension';
   return;
  }
- for($i=0;$i<strlen($data['input']['file_name']);$i++){
-  $c=substr($data['input']['file_name'],$i,1);
+ for($i=0;$i<strlen($data[__entree]['file_name']);$i++){
+  $c=substr($data[__entree]['file_name'],$i,1);
   if($c=='/' || $c=='\\' || $c==':' || $c=='*' || $c=='?' || $c=='"' || $c=='<' || $c=='>' || $c=='|'){
    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "'.$c.'"';
    return;
@@ -224,13 +224,13 @@ function sauvegarger_un_fichier_rev(&$data){
    }
   }
  }
- $filefullpath=INCLUDE_PATH.DIRECTORY_SEPARATOR.'rev'.DIRECTORY_SEPARATOR.$data['input']['file_name'];
+ $filefullpath=INCLUDE_PATH.DIRECTORY_SEPARATOR.'rev'.DIRECTORY_SEPARATOR.$data[__entree]['file_name'];
  if(is_file($filefullpath)){   
-  $backupName=BACKUP_PATH.'/'.uniqid().'_'.$data['input']['file_name'];
+  $backupName=BACKUP_PATH.'/'.uniqid().'_'.$data[__entree]['file_name'];
   copy($filefullpath,$backupName);
  }
  if($fd=fopen($filefullpath,'w')){
-  if(fwrite($fd,$data['input']['contenu_du_fichier'])){
+  if(fwrite($fd,$data[__entree]['contenu_du_fichier'])){
    if(fclose($fd)){
     $data[__xst]=true;
    }else{
@@ -249,18 +249,18 @@ function ecrire_fichier1(&$data){
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_SESSION[APP_KEY]='.var_export($_SESSION[APP_KEY],true)."\r\n"); fclose($fd);}
  if(
-  (strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false )
+  (strpos($data[__entree]['file_path'],'..')!==false||strpos($data[__entree]['file_name'],'..')||strpos($data[__entree]['file_extension'],'..')!==false )
   && ( 1 !== $_SESSION[APP_KEY]["user"] )
  ){
   $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . '1 cannot open the file';
  }else{
-  $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];
+  $filefullpath=$data[__entree]['file_path'].DIRECTORY_SEPARATOR.$data[__entree]['file_name'].'.'.$data[__entree]['file_extension'];
   if(is_file($filefullpath)){   
-   $backupName=BACKUP_PATH.'/'.uniqid().'_'.$data['input']['file_name'].'.'.$data['input']['file_extension'];
+   $backupName=BACKUP_PATH.'/'.uniqid().'_'.$data[__entree]['file_name'].'.'.$data[__entree]['file_extension'];
    copy($filefullpath,$backupName);
   }
   if($fd=fopen($filefullpath,'w')){
-   if(fwrite($fd,$data['input']['contenu_du_fichier'])){
+   if(fwrite($fd,$data[__entree]['contenu_du_fichier'])){
     if(fclose($fd)){
      $data[__xst]=true;
     }else{
@@ -277,12 +277,12 @@ function ecrire_fichier1(&$data){
 //==========================================================================================================
 function concatener_des_fichiers1(&$data){ /* ancien concatFile */
 // if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}
- if(strpos($data['input']['file_path'],'..')!==false||strpos($data['input']['file_name'],'..')||strpos($data['input']['file_extension'],'..')!==false){
+ if(strpos($data[__entree]['file_path'],'..')!==false||strpos($data[__entree]['file_name'],'..')||strpos($data[__entree]['file_extension'],'..')!==false){
      $data[__xms][]='cannot open the file';
  }else{
-     $filefullpath=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['file_name'].'.'.$data['input']['file_extension'];
+     $filefullpath=$data[__entree]['file_path'].DIRECTORY_SEPARATOR.$data[__entree]['file_name'].'.'.$data[__entree]['file_extension'];
      if($fd=fopen($filefullpath,'a')){
-         $filefullpath2=$data['input']['file_path'].DIRECTORY_SEPARATOR.$data['input']['fichierAConcatener'];
+         $filefullpath2=$data[__entree]['file_path'].DIRECTORY_SEPARATOR.$data[__entree]['fichierAConcatener'];
          $contenu=file_get_contents($filefullpath2);
          if($contenu!==false){
              if(fwrite($fd,"\r\n".$contenu)){

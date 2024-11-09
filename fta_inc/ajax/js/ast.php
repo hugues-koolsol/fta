@@ -33,7 +33,7 @@ function recupererAstDeJs(&$data){
     }
     
     if($fd=fopen($nom_de_fichier_contenant_le_source,'w')){
-        if(!fwrite($fd,$data['input']['texteSource'])){
+        if(!fwrite($fd,$data[__entree]['texteSource'])){
                $data[__xms][]=basename(__FILE__) . __LINE__ .' ecriture impossible ';
                fclose($fd);
                return;
@@ -44,18 +44,6 @@ function recupererAstDeJs(&$data){
         fclose($fd);
         return;
     }
-    /**
-    if(false && $data['input']['type_de_source']==='script'){
-        $chemin_du_script_node=realpath(dirname(__FILE__,3).DIRECTORY_SEPARATOR.'jslib'.DIRECTORY_SEPARATOR.'convertir_un_script.js');
-    }else if(true || $data['input']['type_de_source']==='module'){
-        $chemin_du_script_node=realpath(dirname(__FILE__,3).DIRECTORY_SEPARATOR.'jslib'.DIRECTORY_SEPARATOR.'convertir_un_module.js');
-    }else{
-        sauvegarder_et_supprimer_fichier($nom_de_fichier_contenant_le_source,true);
-        $data[__xms][]=basename(__FILE__) . __LINE__ .' seuls les modules et les scripts peuvent être convertis';
-        return;
-    }
-    Code ci dessus supprimé car on n'utilise qu'un seul programme qui convertit aussi bien les modules que les javascript
-    */
     $chemin_du_script_node=realpath(dirname(__FILE__,3).DIRECTORY_SEPARATOR.'jslib'.DIRECTORY_SEPARATOR.'convertir_un_module.js');
     $commande_a_passer='node '.$chemin_du_script_node.' '.$nom_de_fichier_contenant_le_source.' '.$nom_de_fichier_contenant_l_ast . ' ' . $nom_de_fichier_commentaires . ' 2>'.$nom_de_fichier_console;
     $resultat = exec($commande_a_passer);

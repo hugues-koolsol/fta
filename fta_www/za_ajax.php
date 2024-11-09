@@ -76,30 +76,30 @@ sleep(1);
 */
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
  $ret=array(__xst => false,__xms => array() ); // messages must be in array
- $ret['input']=json_decode($_POST['ajax_param'],true);
- if(isset($ret['input']['call']['funct'])&&$ret['input']['call']['lib']!=''&&$ret['input']['call']['file']!=''&&$ret['input']['call']['funct']!=''){
-  define('BNF' , '/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php' );
-  if(!is_file(INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php')){
+ $ret[__entree]=json_decode($_POST['ajax_param'],true);
+ if(isset($ret[__entree]['call']['funct'])&&$ret[__entree]['call']['lib']!=''&&$ret[__entree]['call']['file']!=''&&$ret[__entree]['call']['funct']!=''){
+  define('BNF' , '/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php' );
+  if(!is_file(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php')){
    $ret[__xst]=false;
-   $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/ajax_'.$ret['input']['call']['funct'].'.php"';
+   $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/ajax_'.$ret[__entree]['call']['funct'].'.php"';
   }else{
    if(session_status()==PHP_SESSION_NONE){
     session_start();
    }
-   if($ret['input']['call']['funct']!=''){
+   if($ret[__entree]['call']['funct']!=''){
     if(true===checkGroupAjaxPages()){
-     require_once INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php';
-     $ret['input']['call']['funct']($ret);
+     require_once INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php';
+     $ret[__entree]['call']['funct']($ret);
     }
    }else{
     if(true===checkGroupAjaxPages()){
-     require_once INCLUDE_PATH.'/ajax/'.$ret['input']['call']['lib'].'/'.$ret['input']['call']['file'].'.php';
+     require_once INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php';
     }
    }
   }
  }else{
   $ret[__xst]=false;
-  $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret['input'],true).'"';
+  $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret[__entree],true).'"';
  }
 }else{
  $ret[__xst]=false;

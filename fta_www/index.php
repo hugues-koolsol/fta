@@ -2,7 +2,8 @@
 
 define('BNF',basename(__FILE__));
 require_once 'aa_include.php';
-session_start();
+initialiser_les_services(true,false);
+
 
 
 $o1='';

@@ -10,6 +10,7 @@ var travail_en_cours=false;
 var tache_en_cours=false;
 var __module_html1=null;
 var __module_requete_sql1=null;
+var __aa_js_sql={};
 import('./module_html.js').then(function(Module){
      __module_html1= new Module.traitements_sur_html('__module_html1');
 });
@@ -414,8 +415,8 @@ function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
             if(liste_des_taches_en_arriere_plan[i].etat === 'maj_bdd_et_récupération_du_tableau'){
                 liste_des_taches_en_arriere_plan[i].etat='en_cours';
                 tache_en_cours=true;
-                if(jsonRet && jsonRet.hasOwnProperty('input') && jsonRet && jsonRet.input.hasOwnProperty('parametre') && jsonRet.input.parametre.hasOwnProperty('provenance')){
-                    apres_traite_un_remplacement(i,arg , jsonRet.input.parametre.provenance );
+                if(jsonRet && jsonRet.hasOwnProperty(__entree) && jsonRet && jsonRet.__entree.hasOwnProperty('parametre') && jsonRet.__entree.parametre.hasOwnProperty('provenance')){
+                    apres_traite_un_remplacement(i,arg , jsonRet.__entree.parametre.provenance );
                 }else{
                     apres_traite_un_remplacement(i,arg , null );
                 }
@@ -429,8 +430,8 @@ function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
             if(liste_des_taches_en_arriere_plan[i].etat === 'maj_bdd_et_récupération_du_tableau'){
                 liste_des_taches_en_arriere_plan[i].etat='en_cours';
                 une_tache_en_cours=true;
-                if(jsonRet && jsonRet.hasOwnProperty('input') && jsonRet && jsonRet.input.hasOwnProperty('parametre') && jsonRet.input.parametre.hasOwnProperty('provenance')){
-                 apres_traite_un_remplacement(i,arg , jsonRet.input.parametre.provenance );
+                if(jsonRet && jsonRet.hasOwnProperty('__entree') && jsonRet && jsonRet.__entree.hasOwnProperty('parametre') && jsonRet.__entree.parametre.hasOwnProperty('provenance')){
+                 apres_traite_un_remplacement(i,arg , jsonRet.__entree.parametre.provenance );
                 }else{
                  apres_traite_un_remplacement(i,arg , null);
                 }
@@ -749,12 +750,13 @@ function recuperer_les_travaux_en_session(){
     
     recuperer_les_travaux_en_arriere_plan_de_la_session1('../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',ajax_param).then((donnees) => {
         if(donnees.__xst === true){
-
+            console.log('donnees.__xva=',donnees.__xva);
+            aa_js_sql=donnees.__xva.aa_js_sql;
             var tableau_des_travaux = [];
             var i={};
-            for(i in donnees.valeur){
-                console.log(donnees.valeur[i]);
-                tableau_des_travaux.push(donnees.valeur[i]);
+            for(i in donnees.__xva.sess_travaux_en_arriere_plan){
+                console.log(donnees.__xva.sess_travaux_en_arriere_plan[i]);
+                tableau_des_travaux.push(donnees.__xva.sess_travaux_en_arriere_plan[i]);
             }
             console.log('tableau_des_travaux=',tableau_des_travaux);
             var message_a_retourner={type_de_message:'recuperer_les_travaux_en_session','tableau_des_travaux':tableau_des_travaux};

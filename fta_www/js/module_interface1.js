@@ -1282,7 +1282,7 @@ class interface1{
                     var tableau1 = iterateCharacters2(texte);
                     var matriceFonction = functionToArray2(tableau1.out,false,true,'');
                     if(matriceFonction.__xst === true){
-                        var l01=matriceFonction.value.length;
+                        var l01=matriceFonction.__xva.length;
                         var fait=false;
                         var repereDansTableau=-1;
                         for(i=0;i < tableau1.out.length;i++){
@@ -1293,9 +1293,9 @@ class interface1{
                         }
                         if(repereDansTableau >= 0){
                             for(i=0;i < l01;i++){
-                                if(matriceFonction.value[i][11] === (repereDansTableau - 1)){
-                                    if(matriceFonction.value[i][7] > 0){
-                                        var positionParentheseDuParent=matriceFonction.value[matriceFonction.value[i][7]][11];
+                                if(matriceFonction.__xva[i][11] === (repereDansTableau - 1)){
+                                    if(matriceFonction.__xva[i][7] > 0){
+                                        var positionParentheseDuParent=matriceFonction.__xva[matriceFonction.__xva[i][7]][11];
                                         texte=texte.substr(positionParentheseDuParent);
                                         var arr = functionToArray(texte,false,false,'(');
                                         if(arr.__xst === true){
@@ -1631,11 +1631,11 @@ class interface1{
             global_messages.lines.splice(0,1);
             affichagesPresents=true;
         }
-        if((global_messages.data.matrice) && (global_messages.data.matrice.value)){
+        if((global_messages.data.matrice) && (global_messages.data.matrice.__xva)){
             for(i=0;(i < global_messages.ids.length) && (nombre_de_boutons_affiches <= 3);i++){
                 var id=global_messages.ids[i];
-                if((global_messages.data.matrice) && (id < global_messages.data.matrice.value.length)){
-                    var ligneMatrice=global_messages.data.matrice.value[id];
+                if((global_messages.data.matrice) && (id < global_messages.data.matrice.__xva.length)){
+                    var ligneMatrice=global_messages.data.matrice.__xva[id];
                     var caractereDebut=ligneMatrice[5];
                     var numeroDeLigne=0;
                     var j=caractereDebut;
@@ -1883,9 +1883,6 @@ class interface1{
     */
     lancer_un_travail_en_arriere_plan(parametre){
         if( !(window.Worker)){
-            return;
-        }
-        if(APP_KEY === 'fta'){
             return;
         }
         if(this.#programme_en_arriere_plan === null){

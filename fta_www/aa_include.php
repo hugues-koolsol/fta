@@ -11,7 +11,8 @@ define('BDD','BDD');
 $GLOBALS[BDD]=array();
 define('NAV','NAV');
 define('CRLF',"\r\n");
-define('INPUT','input');
+define('__entree','__entree');
+//define('INPUT','input');
 define('VALUE','value');
 define('TAILLE_MAXI_SOURCE',512000);
 define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_et_"suffisament"_longue'));
@@ -24,9 +25,13 @@ define('__xme','__xme');
 define('__xms','__xms');
 /*valeur*/
 define('__xva','__xva');
+define('__mode_traque','__mode_traque');
+define('__date','__date');
+define('__le_biscuit','__le_biscuit');
 
-$GLOBALS['__date']=date('Y-m-d H:i:s');
-$GLOBALS['__le_biscuit']=array();
+$GLOBALS[__date]=date('Y-m-d H:i:s');
+$GLOBALS[__le_biscuit]=array();
+$GLOBALS[__mode_traque]=false;
 
 
 /*===================================================================================================================*/
@@ -661,6 +666,7 @@ function html_header1($parametres){
     $o1.='  <meta charset="utf-8" />'.PHP_EOL;
     $o1.='  <title>'.(($parametres['title']??'titre de la page à compléter')).'</title>'.PHP_EOL;
     $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;
+    $o1.='  <link rel="icon" href="favicon.ico" type="image/x-icon" />'.PHP_EOL;
 
     /*
       attention, les variables css ajoutent un espace dans le css
@@ -782,6 +788,8 @@ function html_header1($parametres){
     $o1.=' const __xme=\'__xme\';'.PHP_EOL;
     $o1.=' const __xms=\'__xms\';'.PHP_EOL;
     $o1.=' const __xva=\'__xva\';'.PHP_EOL;
+    $o1.=' const __entree=\'__entree\';'.PHP_EOL;
+    
     
     
     $o1.=' const CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.PHP_EOL;
