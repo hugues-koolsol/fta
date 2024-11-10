@@ -3079,10 +3079,10 @@ function analyse_fichier_log_acorn(jsonRet){
            if(jsonRet.__entree.texteSource.length>=position){
             caractere_incorrecte=jsonRet.__entree.texteSource.substr(position,1);
             logerreur({__xst:false,__xme:'erreur dans un source javascript caractere_incorrecte="'+caractere_incorrecte+'"'});
-            if(position-10>0){
-             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(position-10,20)+'"',plage:[position,position]});
+            if(position-15>0){
+             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(position-15,30).replace(/\n/g,'\\n')+'"',plage:[position,position]});
             }else{
-             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(0,20)+'"',plage:[position,position]});
+             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(0,30)+'"',plage:[position,position]});
             }
             return({__xst:true});
            }

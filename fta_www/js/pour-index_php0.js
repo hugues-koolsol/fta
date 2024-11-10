@@ -81,10 +81,10 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
 )
 `;
 
- dogid('txtar1').value=t;
+ document.getElementById('txtar1').value=t;
  var lines = t.split(/\r|\r\n|\n/);
  var count = lines.length;
- dogid('txtar1').setAttribute('rows',count+1);
+ document.getElementById('txtar1').setAttribute('rows',count+1);
  transformLeRev();
  
 }
@@ -219,11 +219,11 @@ function chargerLeDernierSourceRev(){
  var fta_indexhtml_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_dernier_fichier_charge");
 // console.log('fta_indexhtml_dernier_fichier_charge=' , fta_indexhtml_dernier_fichier_charge );
  if(fta_indexhtml_dernier_fichier_charge!==null){
-  dogid('txtar1').value=fta_indexhtml_dernier_fichier_charge;
+  document.getElementById('txtar1').value=fta_indexhtml_dernier_fichier_charge;
   
   var lines = fta_indexhtml_dernier_fichier_charge.split(/\r|\r\n|\n/);
   var count = lines.length;
-  dogid('txtar1').setAttribute('rows',count+1);
+  document.getElementById('txtar1').setAttribute('rows',count+1);
 //  sessionStorage.setItem("clé", "valeur_fenetre2");
   
  }

@@ -1961,7 +1961,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
     t=t.substr(1);
     if(par['zone_rev']){
         if('___produire_le_rev_v2' === par['contexte']){
-            dogid(par['zone_rev']).value=t;
+            document.getElementById(par['zone_rev']).value=t;
             __gi1.formatter_le_source_rev(par['zone_rev']);
         }else{
             console.error('TODO');

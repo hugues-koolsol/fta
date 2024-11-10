@@ -332,7 +332,7 @@ function enregistrer2(){
   =====================================================================================================================
 */
 function voirSourceGenere(){
-    var zoneContenantLeSourceGenere = dogid('zoneContenantLeSourceGenere');
+    var zoneContenantLeSourceGenere = document.getElementById('zoneContenantLeSourceGenere');
     if((zoneContenantLeSourceGenere) && (zoneContenantLeSourceGenere.innerHTML == '')){
         var zoneSourceGenere = document.createElement('pre');
         zoneSourceGenere.style.fontSize='0.8em';
@@ -353,8 +353,8 @@ function voirSourceGenere(){
   =====================================================================================================================
 */
 function voirMatrice1(){
-    var zoneContenantLaMatrice = dogid('zoneContenantLaMatrice');
-    if((zoneContenantLaMatrice) && (dogid('zoneContenantLaMatrice').innerHTML == '')){
+    var zoneContenantLaMatrice = document.getElementById('zoneContenantLaMatrice');
+    if((zoneContenantLaMatrice) && (document.getElementById('zoneContenantLaMatrice').innerHTML == '')){
         var zoneMatrice = document.createElement('table');
         ConstruitHtmlMatrice(zoneMatrice,global_messages.data.matrice);
         zoneContenantLaMatrice.appendChild(zoneMatrice);
@@ -371,8 +371,8 @@ function voirMatrice1(){
   =====================================================================================================================
 */
 function voirTableau1(){
-    var zoneContenantLeTableauCaracteres = dogid('zoneContenantLeTableauCaracteres');
-    if((zoneContenantLeTableauCaracteres) && (dogid('zoneContenantLeTableauCaracteres').innerHTML == '')){
+    var zoneContenantLeTableauCaracteres = document.getElementById('zoneContenantLeTableauCaracteres');
+    if((zoneContenantLeTableauCaracteres) && (document.getElementById('zoneContenantLeTableauCaracteres').innerHTML == '')){
         var zoneTableauCaracteres = document.createElement('table');
         ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,'',global_messages.data.tableau);
         zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);

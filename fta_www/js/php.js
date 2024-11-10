@@ -1692,6 +1692,12 @@ function php_traiteElement(tab , ind , niveau,options={}){
      }else{
          return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'php_traiteElement dans sql_inclure_source 1643'});
      }
+ }else if(tab[ind][2]==='f' && tab[ind][1]==='heredoc' ){
+     if(tab[ind][8]===2){
+         t+='<<<'+tab[ind+1][1]+tab[ind+2][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\`/g,'`')+'\n'+tab[ind+1][1]+'';
+     }else{
+         return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'php_traiteElement heredoc incorrecte 1698'});
+     }
  }else if(tab[ind][2]==='f' && tab[ind][1]==='sql_inclure_reference' ){
      if(tab[ind][8]===1 && tab[ind+1][2]==='c'){
          t+='sql_inclure_reference('+tab[ind+1][1]+')';

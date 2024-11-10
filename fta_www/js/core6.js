@@ -101,12 +101,6 @@ function logerreur(o){
 /*
   =====================================================================================================================
 */
-function dogid(n){
-    return(document.getElementById(n));
-}
-/*
-  =====================================================================================================================
-*/
 function maConstante(eltTab){
     var t='';
     if(eltTab[4] === 1){
@@ -147,17 +141,6 @@ function espacesn(optionCRLF,i){
     }
     if(i > 0){
         t+=' '.repeat((NBESPACESSOURCEPRODUIT * i));
-    }
-    return t;
-}
-/*
-  =====================================================================================================================
-*/
-function concat(){
-    var t='';
-    var a={};
-    for(a in arguments){
-        t+=arguments[a];
     }
     return t;
 }

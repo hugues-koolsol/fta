@@ -2420,7 +2420,7 @@ class requete_sql{
                     }
                     obj2.__xva=str1 + str2;
                 }
-//                dogid(txtarea_dest).value=obj2.__xva;
+//                document.getElementById(txtarea_dest).value=obj2.__xva;
 
                 var obj3 = tabToSql1(obj1.__xva,0,0,true);
                 if(obj3.__xst === true){
@@ -2467,7 +2467,7 @@ class requete_sql{
            ne rien faire
          */
         }else if(typeof globale_requete_en_cours==='object'){
-            raz_messages('zone_global_messages');
+            __gi1.raz_des_messages('zone_global_messages');
             __gi1.masquer_les_messages1('zone_global_messages');
             
             var obj1=this.transform_source_rev_vers_sql(document.getElementById(txtarea_source).value,id_requete);

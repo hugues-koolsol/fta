@@ -279,7 +279,7 @@ class interface1{
     aller_a_la_position(nom_textarea){
         var resultat = window.prompt('aller à la position',1);
         if((resultat) && (isNumeric(resultat))){
-            var a = dogid(nom_textarea);
+            var a = document.getElementById(nom_textarea);
             a.rows="100";
             a.focus();
             a.selectionStart=0;
@@ -298,7 +298,7 @@ class interface1{
         var numero_de_ligne = window.prompt('aller à la ligne n°?',1);
         if((numero_de_ligne) && (isNumeric(numero_de_ligne))){
             numero_de_ligne=parseInt(numero_de_ligne,10) + ajouter;
-            var a = dogid(nom_textarea);
+            var a = document.getElementById(nom_textarea);
             var lignes = a.value.split('\n');
             if(lignes.length > numero_de_ligne){
                 lignes.splice((numero_de_ligne - 1),(((lignes.length - numero_de_ligne)) + 1));
@@ -644,7 +644,7 @@ class interface1{
         if(matriceFonction.__xst === true){
             var objJs = parseJavascript0(matriceFonction.__xva,1,0);
             if(objJs.__xst === true){
-                dogid(chp_genere_source).value=objJs.__xva;
+                document.getElementById(chp_genere_source).value=objJs.__xva;
             }else{
                 this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
                 return;
@@ -660,7 +660,7 @@ class interface1{
     */
     convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
         this.raz_des_messages();
-        var a = dogid(nom_zone_source_rev);
+        var a = document.getElementById(nom_zone_source_rev);
         var startMicro = performance.now();
         var tableau1 = iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
@@ -671,7 +671,7 @@ class interface1{
         if(matriceFonction.__xst === true){
             var objPhp = parsePhp0(matriceFonction.__xva,0,0);
             if(objPhp.__xst === true){
-                dogid(nom_zone_genere_php).value=objPhp.__xva;
+                document.getElementById(nom_zone_genere_php).value=objPhp.__xva;
                 if(bouton_interface === true){
                     /* pour firefox ! */
                     return;
@@ -792,7 +792,7 @@ class interface1{
             td1=document.createElement('td');
             td1.innerHTML=out[i][0].replace('\n','\\n');
             tmps=out[i][0].codePointAt(0);
-            td1.title=concat('&amp;#',tmps,'; (',out[i][1],')');
+            td1.title= '&amp;#' + tmps + '; ('+out[i][1]+')';
             tr1.appendChild(td1);
             /*
               
@@ -1015,9 +1015,9 @@ class interface1{
         for(i=0;i < l01;i++){
             var td1={};
             td1=document.createElement('th');
-            td1.innerHTML=concat(i,global_enteteTableau[i][0]);
+            td1.innerHTML=i+global_enteteTableau[i][0];
             /**/
-            td1.setAttribute('title',concat(global_enteteTableau[i][1],'(',i,')'));
+            td1.setAttribute('title',global_enteteTableau[i][1]+'('+i+')');
             tr1.appendChild(td1);
         }
         t1.appendChild(tr1);
@@ -1062,7 +1062,7 @@ class interface1{
                 }else{
                     td1.innerHTML=String(matriceFonction.__xva[i][j]);
                 }
-                temp=concat(global_enteteTableau[j][1],'(',j,')');
+                temp=global_enteteTableau[j][1]+'('+j+')';
                 td1.setAttribute('title',temp);
                 tr1.appendChild(td1);
             }
@@ -1116,7 +1116,7 @@ class interface1{
                 paddingTopBody=parseInt(bodyComputed[elem],10);
             }
         }
-        var contenuPrincipal = dogid('contenuPrincipal');
+        var contenuPrincipal = document.getElementById('contenuPrincipal');
         var lesDivs = contenuPrincipal.getElementsByTagName('div');
         for(i=0;i < lesDivs.length;i++){
             if(lesDivs[i].className === 'menuScroller'){
@@ -1130,7 +1130,7 @@ class interface1{
                 paddingTopBody+=hauteurMenuUtilisateur;
             }
         }
-        dogid('zone_global_messages').style.top=((paddingTopBody + 2)) + 'px';
+        document.getElementById('zone_global_messages').style.top=((paddingTopBody + 2)) + 'px';
         bod.style.paddingTop=paddingTopBody + 'px';
         /*
           
@@ -1148,7 +1148,7 @@ class interface1{
                 hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('?'));
             }
             var lienActuel=null;
-            var menuPrincipal = dogid('menuPrincipal');
+            var menuPrincipal = document.getElementById('menuPrincipal');
             if(menuPrincipal){
                 var listeMenu = menuPrincipal.getElementsByTagName('a');
                 for(i=0;i < listeMenu.length;i++){
@@ -1534,7 +1534,7 @@ class interface1{
     */
     selectionner_une_plage1(debut,fin,nomDeZoneSource){
         this.masquer_les_messages1('zone_global_messages');
-        var zoneSource = dogid(nomDeZoneSource);
+        var zoneSource = document.getElementById(nomDeZoneSource);
         zoneSource.focus();
         zoneSource.selectionStart=debut;
         zoneSource.selectionEnd=fin;

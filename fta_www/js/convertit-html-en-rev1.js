@@ -25,10 +25,10 @@ function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textar
         
         var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
         if(obj2.__xst===true){
-         dogid(nom_de_la_textarea_html).value=obj2.__xva;
-         asthtml_logerreur({__xst:true,__xme:'html produit'});
+            document.getElementById(nom_de_la_textarea_html).value=obj2.__xva;
+            asthtml_logerreur({__xst:true,__xme:'html produit'});
         }else{
-         asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
+            asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
         }
     }else{
         asthtml_logerreur({__xst:false,__xme:'erreur pour le rev'});
@@ -45,7 +45,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
  
 //    console.log('=========================\ndébut de transforme');
     document.getElementById('txtar2').value='';
-    dogid('txtar3').value='';
+    document.getElementById('txtar3').value='';
 //    document.getElementById('resultat1').innerHTML='';
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_textarea);
@@ -66,7 +66,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
             
             var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
             if(obj2.__xst===true){
-             dogid('txtar3').value=obj2.__xva;
+             document.getElementById('txtar3').value=obj2.__xva;
              asthtml_logerreur({__xst:true,__xme:'html produit'});
             }else{
              asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
@@ -105,7 +105,7 @@ function monAlerte(a){
 monAlerte(0)
 </script>  
 </body></head>`;
-    dogid('txtar1').value=t;
+    document.getElementById('txtar1').value=t;
 }
 /*
   =================================================================================== 
@@ -113,6 +113,6 @@ monAlerte(0)
 function chargerLeDernierSourceHTML(){
     var fta_traitehtml_dernier_fichier_charge = localStorage.getItem('fta_traitehtml_dernier_fichier_charge');
     if(fta_traitehtml_dernier_fichier_charge !== null){
-        dogid('txtar1').value=fta_traitehtml_dernier_fichier_charge;
+        document.getElementById('txtar1').value=fta_traitehtml_dernier_fichier_charge;
     }
 }

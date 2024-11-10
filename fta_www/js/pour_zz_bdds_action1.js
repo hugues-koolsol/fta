@@ -26,7 +26,7 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
 function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , id_cible ){
  
     __gi1.raz_des_messages();
-    var a=dogid(nom_zone_source);
+    var a=document.getElementById(nom_zone_source);
     var startMicro = performance.now();
     var tableau1 = iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
@@ -40,7 +40,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source , nom_zone_genere , id_bdd  , 
         var objSql=tabToSql1(matriceFonction.__xva,0,0,false);
         if(objSql.__xst===true){
             var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'')
-            dogid(nom_zone_genere).value=contenu;
+            document.getElementById(nom_zone_genere).value=contenu;
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         
@@ -70,7 +70,8 @@ function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
         if(donnees.__xst === true){
             logerreur({__xst:true,__xme:'le format rev a été sauvegardé'});
         }else{
-            console.log(r);
+            logerreur({__xst:false,__xme:'erreur dans la sauvegarde du format rev'});
+            console.log('donnees=',donnees);
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
     });
