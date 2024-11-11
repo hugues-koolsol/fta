@@ -36,6 +36,8 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
     $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']=$_POST['chp_priorite_tache']??'0';
     $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']=((isset($_POST['chi_id_tache']))?decrypter($_POST['chi_id_tache']):'');
 
+    verifie_id_envoye('chi_id_tache', 'zz_taches_l1.php' , BNF , $_POST);
+
     if((isset($_POST['__action'])) && ($_POST['__action'] == '__modification')){
 
         /*
@@ -284,11 +286,12 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       ==== __suppression =========================================================
       =============================================================================================================
     */
-    $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
     $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
     $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_tache'].')  nom : '.enti1($__valeurs['T0.chp_texte_tache']).'    <br /> '.'</b><br />'.PHP_EOL;
-    $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.PHP_EOL;
+    $__valeur_encriptee=encrypter($__id);
+    $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_tache']=sha1($__valeur_encriptee);    
+    $o1.='   <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_tache" id="chi_id_tache" />'.PHP_EOL;
     $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
     $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
     $o1.=''.PHP_EOL;
@@ -336,12 +339,13 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     */
     /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
     $o1.='<h2>modifier une tâche</h2>'.PHP_EOL;
-    $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $__valeurs['T0.chp_texte_tache']=$_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']??$__valeurs['T0.chp_texte_tache'];
     $__valeurs['T0.chp_priorite_tache']=$_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']??$__valeurs['T0.chp_priorite_tache'];
     $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
     $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
-    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_tache" id="chi_id_tache" />'.PHP_EOL;
+    $__valeur_encriptee=encrypter($__id);
+    $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_tache']=sha1($__valeur_encriptee);    
+    $o1.=' <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_tache" id="chi_id_tache" />'.PHP_EOL;
     $o1.=' <div class="yyfdiv1">'.PHP_EOL;
     $o1.='  <div class="yyflab1">'.PHP_EOL;
     $o1.='   <div style="word-break:break-word;">id, priorité</div>'.PHP_EOL;

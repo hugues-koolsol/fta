@@ -501,6 +501,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
  $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']           =isset($_POST['chi_id_cible'])?decrypter($_POST['chi_id_cible']) : '';
  
  
+ verifie_id_envoye('chi_id_cible', 'zz_cibles_l1.php' , BNF , $_POST);
  
  
 
@@ -1063,7 +1064,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   http://localhost/functToArray/fta/fta_www/zz_cibles_a1.php?__id=2&__action=__suppression
   */
  $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
- $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
+ $__valeur_encriptee=encrypter($__id);
+ $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_cible']=sha1($__valeur_encriptee);    
+ $o1.='   <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
  $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
  $o1.='   <br /><br /><b>'.
        '('.$__valeurs['T0.chi_id_cible'].') : nom : ' .$__valeurs['T0.chp_nom_cible'].' , dossier : ' .$__valeurs['T0.chp_dossier_cible'].'  <br /> '.
@@ -1144,7 +1147,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
 
   $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
-  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
+  $__valeur_encriptee=encrypter($__id);
+  $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_cible']=sha1($__valeur_encriptee);    
+  $o1.=' <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_cible" id="chi_id_cible" />'.PHP_EOL;
   
 
   $o1.=' <div class="yyfdiv1">'.PHP_EOL;

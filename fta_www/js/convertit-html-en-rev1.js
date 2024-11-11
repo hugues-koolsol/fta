@@ -59,7 +59,22 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea){
     if(obj.__xst == true){
         var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
 //                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
-        document.getElementById('txtar2').value=obj.__xva;
+
+
+        var tableau1 = iterateCharacters2(obj.__xva);
+        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        if(matriceFonction.__xst === true){
+            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+            if(obj2.__xst === true){
+                document.getElementById('txtar2').value=obj2.__xva;
+            }else{
+                document.getElementById('txtar2').value=obj.__xva;
+            }
+        }else{
+            document.getElementById('txtar2').value=obj.__xva;
+        }
+
+
         var obj1 = functionToArray2(obj.__xva,false,true,'');
         if(obj1.__xst === true){
             asthtml_logerreur({__xst:true,__xme:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });

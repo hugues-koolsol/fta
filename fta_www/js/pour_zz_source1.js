@@ -298,7 +298,20 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
         var ast = JSON.parse(ret.__xva);
         var obj = TransformAstPhpEnRev(ast,0,false);
         if(obj.__xst === true){
-            document.getElementById(ret.__entree.opt.nom_zone_rev).value='php(' + obj.__xva + ')';
+         
+         
+            var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
+            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            if(matriceFonction.__xst === true){
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                if(obj2.__xst === true){
+                    document.getElementById(ret.__entree.opt.nom_zone_rev).value=obj2.__xva;
+                }else{
+                    document.getElementById(ret.__entree.opt.nom_zone_rev).value='php(' + obj.__xva + ')';
+                }
+            }else{
+                document.getElementById(ret.__entree.opt.nom_zone_rev).value='php(' + obj.__xva + ')';
+            }
         }else{
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
         }
@@ -339,7 +352,19 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
     var startMicro = performance.now();
     var objRev = __module_html1.TransformHtmlEnRev(a.value,0);
     if(objRev.__xst === true){
-        document.getElementById(nom_zone_source).value=objRev.__xva;
+     
+        var tableau1 = iterateCharacters2(objRev.__xva);
+        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        if(matriceFonction.__xst === true){
+            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+            if(obj2.__xst === true){
+                document.getElementById(nom_zone_source).value=obj2.__xva;
+            }else{
+                document.getElementById(nom_zone_source).value=objRev.__xva;
+            }
+        }else{
+            document.getElementById(nom_zone_source).value=objRev.__xva;
+        }
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_zone_genere);
 }

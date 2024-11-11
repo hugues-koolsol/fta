@@ -1127,7 +1127,7 @@ class traitements_sur_html{
                          if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
                             obj.__xva=obj.__xva.replace(/html\(/,'html((doctype)');
                          }else{
-                            obj.__xva=obj.__xva.replace(/html\(/,'html(#(?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                            obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
                          }
                         }
                         t=obj.__xva;

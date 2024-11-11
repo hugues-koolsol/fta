@@ -58,8 +58,7 @@ if(isset($_POST)&&sizeof($_POST)>=1){
     $_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier']       =$_POST['chx_cible_dossier']    ?? $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
     $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']           =isset($_POST['chi_id_dossier'])?decrypter($_POST['chi_id_dossier']) : '';
     
-    
-    
+    verifie_id_envoye('chi_id_dossier', 'zz_cibles_l1.php' , BNF , $_POST);
     
     if(isset($_POST['__effacer_du_disque'])){
   
@@ -555,13 +554,14 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   }
 
 
- $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
  $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
  $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
  $o1.='   <br /><br /><b>'.
        '('.$__valeurs['T0.chi_id_dossier'].')  nom : ' .$__valeurs['T0.chp_nom_dossier'].'    <br /> '.
        '</b><br />'.PHP_EOL;
- $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.PHP_EOL;
+ $__valeur_encriptee=encrypter($__id);
+ $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_dossier']=sha1($__valeur_encriptee);    
+ $o1.='   <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_dossier" id="chi_id_dossier" />'.PHP_EOL;
  $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
  $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
  $o1.=''.PHP_EOL;
@@ -612,7 +612,6 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
 //  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
   $o1.='<h2>modifier un dossier</h2>'.PHP_EOL;
 
-  $_SESSION[APP_KEY][NAV][BNF]['verification']=array($__id);
   $__valeurs['T0.chp_nom_dossier']          =$_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']         ??$__valeurs['T0.chp_nom_dossier']        ;
   $__valeurs['T0.chx_cible_dossier']     =$_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier']    ??$__valeurs['T0.chx_cible_dossier']   ;
   
@@ -622,7 +621,9 @@ if(isset($_GET['__action'])&&$_GET['__action']=='__suppression'){
   $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
 
   $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
-  $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_dossier" id="chi_id_dossier" />'.PHP_EOL;
+  $__valeur_encriptee=encrypter($__id);
+  $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_dossier']=sha1($__valeur_encriptee);    
+  $o1.=' <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_dossier" id="chi_id_dossier" />'.PHP_EOL;
   
 
   $o1.=' <div class="yyfdiv1">'.PHP_EOL;

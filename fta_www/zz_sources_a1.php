@@ -74,7 +74,9 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
     if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']===''){
      $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=NULL;
     }
-//    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);
+
+    
+    verifie_id_envoye('chi_id_source', 'zz_sources_l1.php' , BNF , $_POST);
 
     if(isset($_POST['__importer_le_fichier_source_de_fta'])){
 
@@ -298,14 +300,6 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         }
 
-        /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
-
-        if($_SESSION[APP_KEY][NAV][BNF]['verification'][0] != $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']){
-
-            /*   ajouterMessage('erreur' , __LINE__ .' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'] );*/
-            /*   recharger_la_page('zz_sources_l1.php');   */
-
-        }
 
         $le_fichier_est_renomme=false;
         sql_inclure_reference(62);
@@ -398,6 +392,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
                     }else{
 
                        /* si le fichier existe déjà sur le disque */
+                       ajouterMessage('info',__LINE__.' :  Utilisez le bouton "remplacer le fichier ..." pour remplacer ce fichier');
                        ajouterMessage('erreur',__LINE__.' :  ce fichier "'.$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'].'" existe déjà sur disque');
                        $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']=$__valeurs['T0.chp_nom_source'];
                        recharger_la_page(BNF.'?__option=remplacer_le_fichier&__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
@@ -790,11 +785,12 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       
       http://localhost/functToArray/fta/fta_www/zz_sources_a1.php?__id=2&__action=__suppression
     */
-    $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $o1.=' <form method="post" class="yyformDelete">'.PHP_EOL;
     $o1.='   veuillez confirmer le suppression de  : '.PHP_EOL;
     $o1.='   <br /><br /><b>'.'('.$__valeurs['T0.chi_id_source'].')  nom : '.$__valeurs['T0.chp_nom_source'].' <br /> '.'</b><br />'.PHP_EOL;
-    $o1.='   <input type="hidden" value="'.encrypter($__id).'" name="chi_id_source" id="chi_id_source" />'.PHP_EOL;
+    $__valeur_encriptee=encrypter($__id);
+    $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_source']=sha1($__valeur_encriptee);    
+    $o1.='   <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_source" id="chi_id_source" />'.PHP_EOL;
     $o1.='   <input type="hidden" value="__confirme_suppression" name="__action" id="__action" />'.PHP_EOL;
     $o1.='   <button type="submit" class="yydanger">Je confirme la suppression</button>'.PHP_EOL;
     $o1.=''.PHP_EOL;
@@ -908,7 +904,6 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     */
     /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
     $o1.='<h2>modifier un source</h2>'.PHP_EOL;
-    $_SESSION[APP_KEY][NAV][BNF]['verification']=array( $__id);
     $__valeurs['T0.chp_nom_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']??$__valeurs['T0.chp_nom_source'];
     $__valeurs['T0.chp_type_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_type_source']??$__valeurs['T0.chp_type_source'];
     $__valeurs['T0.chx_dossier_id_source']=$_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']??$__valeurs['T0.chx_dossier_id_source'];
@@ -918,7 +913,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $__valeurs['T0.chp_genere_source']=$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']??$__valeurs['T0.chp_genere_source'];
     $o1.='<form method="post" enctype="multipart/form-data">'.PHP_EOL;
     $o1.=' <input type="hidden" value="__modification" name="__action" id="__action" />'.PHP_EOL;
-    $o1.=' <input type="hidden" value="'.encrypter($__id).'" name="chi_id_source" id="chi_id_source" />'.PHP_EOL;
+    $__valeur_encriptee=encrypter($__id);
+    $_SESSION[APP_KEY][NAV][BNF]['sha1']['chi_id_source']=sha1($__valeur_encriptee);
+    $o1.=' <input type="hidden" value="'.$__valeur_encriptee.'" name="chi_id_source" id="chi_id_source" />'.PHP_EOL;
     $o1.=' <div class="yyfdiv1">'.PHP_EOL;
     $o1.='  <div class="yyflab1">'.PHP_EOL;
     $o1.='   <div style="word-break:break-word;">id, nom , dossier</div>'.PHP_EOL;
@@ -927,7 +924,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <span>'.$__id.'</span>'.PHP_EOL;
     $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_nom_source']).'" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="width:100%;max-width:20em;" />'.PHP_EOL;
     $o1.='   <input  type="text" value="'.enti1($__valeurs['T0.chp_type_source']).'" name="chp_type_source" id="chp_type_source" maxlength="64" style="width:100%;max-width:8em;" />'.PHP_EOL;
-    $o1.='   <input  type="hidden" value="'.encrypter($__valeurs['T0.chx_dossier_id_source']).'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.PHP_EOL;
+    
+    $__valeur_encriptee=encrypter($__valeurs['T0.chx_dossier_id_source']);
+    $o1.='   <input  type="hidden" value="'.$__valeur_encriptee.'" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:3em;"/>'.PHP_EOL;
     $__parametres_pour_la_modale=array(
         '__fonction' => 'recupérer_un_element_parent_en_bdd',
         '__url' => 'zz_dossiers_c1.php',
@@ -1097,7 +1096,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='  <div class="yyfinp1"><div>'.PHP_EOL;
     $o1.='   <button type="submit" class="">enregistrer les modifications</button>'.PHP_EOL;
     if(isset($_GET['__option']) && $_GET['__option']==='remplacer_le_fichier'){
-          $o1.='   <button type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>'.PHP_EOL;
+          $o1.='   <button class="yyavertissement" type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>'.PHP_EOL;
     }
     $o1.='  </div></div>'.PHP_EOL;
     $o1.='</div>'.PHP_EOL;

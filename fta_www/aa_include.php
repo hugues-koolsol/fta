@@ -300,50 +300,6 @@ function concat(...$ps){
 }
 /*========================================================================================================================*/
 
-function cleanSession1(){
-
-
-    if((isset($_GET['idMenu']) && is_numeric($_GET['idMenu']))){
-
-        xcleanSession1(array( 'except' => ''));
-
-    }else{
-
-        xcleanSession1(array( 'except' => BNF));
-    }
-
-
-}
-/*========================================================================================================================*/
-
-function xcleanSession1($par){
-
-
-    if((isset($_SESSION[APP_KEY][NAV]))){
-
-        foreach($_SESSION[APP_KEY][NAV] as $k => $v){
-
-            if(($par['except'] != $k)){
-
-                unset($_SESSION[APP_KEY][NAV][$k]);
-
-            }
-
-        }
-
-    }
-
-
-    if((isset($_SESSION[APP_KEY]['choose']))){
-
-        unset($_SESSION[APP_KEY]['choose']);
-
-    }
-
-
-}
-/*========================================================================================================================*/
-
 function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     /*
@@ -873,6 +829,81 @@ function html_header1($parametres){
     return($o1);
 
 }
+
+/*
+
+function cleanSession1(){
+
+
+    if((isset($_GET['idMenu']) && is_numeric($_GET['idMenu']))){
+
+        xcleanSession1(array( 'except' => ''));
+
+    }else{
+
+        xcleanSession1(array( 'except' => BNF));
+    }
+
+
+}
+*/
+/*
+  ========================================================================================================================
+  quand on fait une maj, il faut vérifier que l'id envoyé en post correspond bien à l'id du formulaire
+  ========================================================================================================================
+*/
+
+function verifie_id_envoye($nom_du_champ , $page_de_redirection , $bnf, &$post){
+    if( isset($post['__action']) && $post['__action'] == '__creation'){
+        return;
+    }
+    
+    if(!isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ]) || sha1($post[$nom_du_champ])!==$_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ]){
+     
+       if((isset($post['__action'])) && ($post['__action'] == '__modification') && is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]) ){
+        
+           ajouterMessage('avertissement',__LINE__.' désolé, il faut sauvegarder à nouveau');
+           recharger_la_page($bnf.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);
+        
+       }else{
+     
+           ajouterMessage('erreur',__LINE__.' désolé, sha1 différents sur '.$nom_du_champ.', cette erreur sera analysée');        
+           recharger_la_page($page_de_redirection);
+           
+       }
+    }
+}
+
+
+/*========================================================================================================================*/
+
+function xcleanSession1($par){
+
+
+    if((isset($_SESSION[APP_KEY][NAV]))){
+
+        foreach($_SESSION[APP_KEY][NAV] as $k => $v){
+
+            if(($par['except'] != $k)){
+
+                unset($_SESSION[APP_KEY][NAV][$k]);
+
+            }
+
+        }
+
+    }
+
+
+    if((isset($_SESSION[APP_KEY]['choose']))){
+
+        unset($_SESSION[APP_KEY]['choose']);
+
+    }
+
+
+}
+
 /*========================================================================================================================*/
 
 function supprimerLesParametresDeNavigationEnSession(){

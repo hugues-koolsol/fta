@@ -491,9 +491,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 var faire='';
                 for(j=0;j < tabchoix.length;j=j + 1){
                     if(tabchoix[j][1] === 'pourChaque'){
-                        niveau=niveau + 1;
-                        obj=js_tabTojavascript1(tab,(tabchoix[j][0] + 1),dansFonction,true,niveau);
-                        niveau=niveau - 1;
+                        obj=js_tabTojavascript1(tab,(tabchoix[j][0] + 1),dansFonction,true,niveau+1);
                         if(obj.__xst === true){
                             pourChaque+=obj.__xva;
                         }else{
@@ -506,19 +504,22 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             }));
                         }
                     }else if(tabchoix[j][1] === 'faire'){
-                        niveau=niveau + 1;
-                        obj=js_tabTojavascript1(tab,(tabchoix[j][0] + 1),dansFonction,false,niveau);
-                        niveau=niveau - 1;
-                        if(obj.__xst === true){
-                            faire+=obj.__xva;
+
+                        if(tab[tabchoix[j][0]][8]===0){
+                            faire+='';
                         }else{
-                            return(logerreur({
-                                __xst:false,
-                                __xva:t,
-                                id:tabchoix[j][0],
-                                tab:tab,
-                                __xme:'problème sur le alors de boucleSurObjet en indice ' + tabchoix[j][0]
-                            }));
+                            obj=js_tabTojavascript1(tab,(tabchoix[j][0] + 1),dansFonction,false,niveau+1);
+                            if(obj.__xst === true){
+                                faire+=obj.__xva;
+                            }else{
+                                return(logerreur({
+                                    __xst:false,
+                                    __xva:t,
+                                    id:tabchoix[j][0],
+                                    tab:tab,
+                                    __xme:'problème sur le alors de boucleSurObjet en indice ' + tabchoix[j][0]
+                                }));
+                            }
                         }
                     }
                 }
@@ -2374,6 +2375,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     var textObj='';
     var precedent_est_commentaire=false;
     var a_des_commentaires=false;
+    var propriete='';
     for(j=id + 1;(j < tab.length) && (tab[j][3] > tab[id][3]) && (a_des_commentaires === false);j=j + 1){
         if(tab[j][3] === (tab[id][3] + 1)){
             if((tab[j][1] === '#') && (tab[j][2] === 'f')){
@@ -2400,6 +2402,19 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                 textObj+='/*' + commt + '*/';
                 textObj+=espacesn(true,(niveau + 1));
                 precedent_est_commentaire=true;
+            }else if((tab[j][1] === 'prop') && (tab[j][2] === 'f')){
+                if(tab[j][8]===1 && tab[j+1][2]==='c'){
+                    propriete+='.'+tab[j+1][1];
+                }else{
+                     return(logerreur({
+                         __xst:false,
+                         __xva:t,
+                         id:j,
+                         tab:tab,
+                         message:'erreur js_traiteDefinitionObjet 2412 sur propriete d\'objet '
+                     }));
+                 
+                }
             }else if((tab[j][1] === '') && (tab[j][2] === 'f')){
                 if(tab[j][8] === 2){
                     if(precedent_est_commentaire){
@@ -2548,7 +2563,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     if(a_des_commentaires){
         t+=espacesn(true,niveau);
     }
-    t+='}';
+    t+='}'+propriete;
     return({__xst:true,__xva:t});
 }
 function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursif){

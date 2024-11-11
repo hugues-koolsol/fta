@@ -33,7 +33,7 @@ if(isset($_GET['__parametres_choix'])){
 
 
 
-$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??1;
+$__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??10;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
 if(isset($_GET['button_chercher'])){
