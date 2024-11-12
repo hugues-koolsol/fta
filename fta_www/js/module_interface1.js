@@ -1739,7 +1739,7 @@ class interface1{
         }else if(e.keyCode == 13){
             /* retour chariot*/
             var scroll_initial=zoneSource.scrollTop;
-            console.log('scroll_initial',scroll_initial , elem );
+//            console.log('scroll_initial',scroll_initial , elem );
             var startPos=zoneSource.selectionStart;
             var endPos=zoneSource.selectionEnd;
             var contenu= new String(zoneSource.value);
@@ -1777,7 +1777,7 @@ class interface1{
                 zoneSource.selectionStart=startPos + a_inserer.length;
                 zoneSource.selectionEnd=startPos + a_inserer.length;
 //                zoneSource.scrollTo({'left':0});
-                console.log('à la fin scroll_initial=',scroll_initial , elem , elem.mon_decallage_haut )
+//                console.log('à la fin scroll_initial=',scroll_initial , elem , elem.mon_decallage_haut )
                 zoneSource.scrollTo(0,elem.mon_decallage_haut);
             }
             return;

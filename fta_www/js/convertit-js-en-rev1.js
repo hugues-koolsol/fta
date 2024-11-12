@@ -69,11 +69,18 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle){
             }
             t+=leParam;
         }else{
-            t+=element.raw;
+            if(niveau===0){
+                t+='directive('+element.raw+')';
+            }else{
+                t+=element.raw;
+            }
         }
     }else if('Identifier' === element.type){
-
-        t+=element.name;
+        if(niveau===0){
+            t+='identifiant('+element.name+')';
+        }else{
+            t+=element.name;
+        }
     }else if('AwaitExpression' === element.type){
 
         if("CallExpression" === element.argument.type){
@@ -945,7 +952,7 @@ function traiteWhile1(element,niveau){
     t+=ajouteCommentaireAvant(element,niveau);
     t+='\n' + esp0 + 'tantQue(';
     t+='\n' + esp0 + esp1 + 'condition(';
-    var obj2 = js_traiteCondition1(element.test,0,true);
+    var obj2 = js_traiteCondition1(element.test,niveau+1,true);
     if(obj2.__xst === true){
 
         t+='' + obj2.__xva;
@@ -1002,7 +1009,7 @@ function traiteDo1(element,niveau){
     }else{
         return(astjs_logerreur({__xst:false,__xme:'erreur traiteFor1 152 pour ' + element.type,element:element}));
     }
-    var obj2 = js_traiteCondition1(element.test,0,true);
+    var obj2 = js_traiteCondition1(element.test,niveau+1,true);
     if(obj2.__xst === true){
 
         test=obj2.__xva;
@@ -1011,7 +1018,7 @@ function traiteDo1(element,niveau){
     }
     t+='\n' + esp0 + 'faire_tant_que(';
     t+='\n' + esp0 + esp1 + 'instructions(' + body + ')';
-    t+='\n' + esp0 + esp1 + 'conditions(' + test + ')';
+    t+='\n' + esp0 + esp1 + 'condition(' + test + ')';
     t+='\n' + esp0 + ')';
     return({__xst:true,__xva:t});
 }
@@ -1070,7 +1077,7 @@ function traiteFor1(element,niveau){
     if(element.test === null){
 
     }else{
-        var obj2 = js_traiteCondition1(element.test,0,true);
+        var obj2 = js_traiteCondition1(element.test,niveau+1,true);
         if(obj2.__xst === true){
 
             t+='' + obj2.__xva;
@@ -1143,7 +1150,7 @@ function traiteIf1(element,niveau,type){
         t+='\n' + esp0 + 'choix(';
         t+='\n' + esp0 + esp1 + 'si(';
         t+='\n' + esp0 + esp1 + esp1 + 'condition(';
-        var obj2 = js_traiteCondition1(element.test,0,true);
+        var obj2 = js_traiteCondition1(element.test,niveau+1,true);
         if(obj2.__xst === true){
 
             t+='' + obj2.__xva;
@@ -1156,7 +1163,7 @@ function traiteIf1(element,niveau,type){
 
             t+='\n' + esp0 + esp1 + 'sinonsi(';
             t+='\n' + esp0 + esp1 + esp1 + 'condition(';
-            var obj2 = js_traiteCondition1(element.test,0,true);
+            var obj2 = js_traiteCondition1(element.test,niveau+1,true);
             if(obj2.__xst === true){
 
                 t+='' + obj2.__xva;
@@ -1544,6 +1551,22 @@ function traiteCallExpression1(element,niveau,parent,opt){
                 }else{
                     return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteCallExpression1 1366 ' + element.callee.object.type,element:element}));
                 }
+            }else if(element.callee.object.type === 'FunctionExpression'){
+             
+             
+                var obj1 = traiteFunctionExpression1(element.callee.object,niveau,element,'');
+                if(obj1.__xst === true){
+                    if(contenu === ''){
+
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + ')';
+                    }else{
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + ',contenu(' + contenu + '))';
+                    }
+                }else{
+                    return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteUneComposante 0147 ',element:element}));
+                }
+             
+             
             }else{
                 return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteCallExpression1 0618 ' + element.callee.object.type,element:element}));
             }
@@ -1761,7 +1784,9 @@ function traiteObjectExpression1(element,niveau){
          || ('MemberExpression' === val.value.type)
          || ('ObjectExpression' === val.value.type)
          || ('TemplateLiteral' === val.value.type)
-         || ('UnaryExpression' === val.value.type)){
+         || ('ThisExpression' === val.value.type)
+         || ('UnaryExpression' === val.value.type)
+         ){
 
             var obj1 = traiteUneComposante(val.value,niveau,false,false);
             if(obj1.__xst === true){
@@ -2499,18 +2524,21 @@ function traiteExpression1(element,niveau){
 
                 t+='useStrict()';
             }else{
-                t+='directive('+element.directive.replace(/"/g,'\\"')+')';
+                t+='directive("'+element.directive.replace(/"/g,'\\"')+'")';
                 
             }
-        }else if(('AssignmentExpression' === element.expression.type)
+        }else if(
+            ('AssignmentExpression' === element.expression.type)
          || ('UpdateExpression' === element.expression.type)
          || ('CallExpression' === element.expression.type)
+         || ('ConditionalExpression' === element.expression.type)
          || ('Identifier' === element.expression.type)
          || ('Literal' === element.expression.type)
          || ('LogicalExpression' === element.expression.type)
          || ('UnaryExpression' === element.expression.type)
          || ('SequenceExpression' === element.expression.type)
-         || ('NewExpression' === element.expression.type)){
+         || ('NewExpression' === element.expression.type)
+         ){
 
             var obj1 = traiteUneComposante(element.expression,niveau,false,false);
             if(obj1.__xst === true){
@@ -2552,7 +2580,7 @@ function traiteDeclaration1(element,niveau){
                 t+=((debutDeclaration + element.declarations[decl].init.name)) + ')';
             }else if('MemberExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteMemberExpression1(element.declarations[decl].init,niveau,element,'');
+                var obj1 = traiteMemberExpression1(element.declarations[decl].init,niveau+1,element,'');
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2561,7 +2589,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('CallExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteCallExpression1(element.declarations[decl].init,niveau,element,{});
+                var obj1 = traiteCallExpression1(element.declarations[decl].init,niveau+1,element,{});
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2570,7 +2598,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('ObjectExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteObjectExpression1(element.declarations[decl].init,niveau);
+                var obj1 = traiteObjectExpression1(element.declarations[decl].init,niveau+1);
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2579,15 +2607,35 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('UnaryExpression' === element.declarations[decl].init.type){
 
-                if((element.declarations[decl].init.argument) && (element.declarations[decl].init.argument.type === 'Literal')){
+                var nomDuTestUnary = recupNomOperateur(element.declarations[decl].init.operator);
+                if((element.declarations[decl].init.argument) ){
+                    if((element.declarations[decl].init.argument.type === 'Literal')){
 
-                    t+=((debutDeclaration + element.declarations[decl].init.operator + element.declarations[decl].init.argument.raw)) + ')';
+// ancien                       t+=((debutDeclaration + element.declarations[decl].init.operator + element.declarations[decl].init.argument.raw)) + ')';
+
+                        t+=((debutDeclaration + nomDuTestUnary + '(' + element.declarations[decl].init.argument.raw)) + '))';
+
+                     
+                    }else if((element.declarations[decl].init.argument.type === 'CallExpression')){
+                     
+
+                        var obj1 = traiteCallExpression1(element.declarations[decl].init.argument,niveau+1,element,{});
+                        if(obj1.__xst === true){
+                            t+=((debutDeclaration + nomDuTestUnary + '(' + obj1.__xva)) + '))';
+                        }else{
+                            return(astjs_logerreur({__xst:false,__xme:'erreur pas de callee dans traiteDeclaration1 2594',element:element}));
+                        }
+                     
+                        
+                    }else{
+                      return(astjs_logerreur({__xst:false,__xme:'erreur pas de callee dans traiteDeclaration1 2590',element:element}));
+                    }
                 }else{
-                    return(astjs_logerreur({__xst:false,__xme:'erreur pas de callee dans traiteCallExpression1 517',element:element}));
+                    return(astjs_logerreur({__xst:false,__xme:'erreur pas de callee dans traiteDeclaration1 2602',element:element}));
                 }
             }else if('LogicalExpression' === element.declarations[decl].init.type){
 
-                var obj = traiteLogicalExpression1(element.declarations[decl].init,niveau,false);
+                var obj = traiteLogicalExpression1(element.declarations[decl].init,niveau+1,false);
                 if(obj.__xst === true){
 
                     if(obj.__xva.substr(0,1) === ','){
@@ -2601,7 +2649,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('NewExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteCallExpression1(element.declarations[decl].init,niveau,element,{});
+                var obj1 = traiteCallExpression1(element.declarations[decl].init,niveau+1,element,{});
                 if(obj1.__xst === true){
 
                     t+=debutDeclaration + 'new(' + obj1.__xva + '))';
@@ -2610,7 +2658,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('ArrayExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteArrayExpression1(element.declarations[decl].init,niveau);
+                var obj1 = traiteArrayExpression1(element.declarations[decl].init,niveau+1);
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2619,7 +2667,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('BinaryExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteBinaryExpress1(element.declarations[decl].init,niveau,false,false);
+                var obj1 = traiteBinaryExpress1(element.declarations[decl].init,niveau+1,false,false);
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2628,7 +2676,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('ConditionalExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteConditionalExpression1(element.declarations[decl].init,niveau);
+                var obj1 = traiteConditionalExpression1(element.declarations[decl].init,niveau+1);
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2637,7 +2685,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('TemplateLiteral' === element.declarations[decl].init.type){
 
-                var obj1 = traiteTemplateLiteral1(element.declarations[decl].init,niveau);
+                var obj1 = traiteTemplateLiteral1(element.declarations[decl].init,niveau+1);
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2646,7 +2694,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if('FunctionExpression' === element.declarations[decl].init.type){
 
-                var obj1 = traiteFunctionExpression1(element.declarations[decl].init,niveau,element.declarations[decl],'');
+                var obj1 = traiteFunctionExpression1(element.declarations[decl].init,niveau+1,element.declarations[decl],'');
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2655,7 +2703,7 @@ function traiteDeclaration1(element,niveau){
                 }
             }else if(('UpdateExpression' === element.declarations[decl].init.type) || ("ThisExpression" === element.declarations[decl].init.type) || ("AssignmentExpression" === element.declarations[decl].init.type) || ("AwaitExpression" === element.declarations[decl].init.type)){
 
-                var obj1 = traiteUneComposante(element.declarations[decl],niveau,false,false);
+                var obj1 = traiteUneComposante(element.declarations[decl],niveau+1,false,false);
                 if(obj1.__xst === true){
 
                     t+=((debutDeclaration + obj1.__xva)) + ')';
@@ -2787,6 +2835,7 @@ var positionDebutBlocSuivant=0;
   =====================================================================================================================
 */
 function TransformAstEnRev(les_elements,niveau){
+
     var t='';
     var esp0 = ' '.repeat((NBESPACESREV * niveau));
     var esp1 = ' '.repeat(NBESPACESREV);

@@ -1013,7 +1013,7 @@
           } else if (typeof value === 'function') {
             return toFn(value(to, from, dragEl, evt), pull)(to, from, dragEl, evt);
           } else {
-            var otherGroup = (pull ? to : from).options.group.name;
+            var otherGroup = (pull ? to.options.group.name : from.options.group.name);
             return value === true || typeof value === 'string' && value === otherGroup || value.join && value.indexOf(otherGroup) > -1;
           }
         };
@@ -1126,7 +1126,7 @@
       dataIdAttr: 'data-id',
       delay: 0,
       delayOnTouchOnly: false,
-      touchStartThreshold: (Number.parseInt ? Number : window).parseInt(window.devicePixelRatio, 10) || 1,
+      touchStartThreshold: (Number.parseInt ? Number.parseInt(window.devicePixelRatio, 10) : window.parseInt(window.devicePixelRatio, 10)) || 1,
       forceFallback: false,
       fallbackClass: 'sortable-fallback',
       fallbackOnBody: false,
@@ -1197,7 +1197,7 @@
         preventOnFilter = options.preventOnFilter,
         type = evt.type,
         touch = evt.touches && evt.touches[0] || evt.pointerType && evt.pointerType === 'touch' && evt,
-        target = (touch || evt).target,
+        target = (touch.target || evt.target),
         originalTarget = evt.target.shadowRoot && (evt.path && evt.path[0] || evt.composedPath && evt.composedPath()[0]) || target,
         filter = options.filter;
       _saveInputCheckedState(el);
@@ -1296,13 +1296,13 @@
         Sortable.dragged = dragEl;
         tapEvt = {
           target: dragEl,
-          clientX: (touch || evt).clientX,
-          clientY: (touch || evt).clientY
+          clientX: (touch.clientX || evt.clientX),
+          clientY: (touch.clientY || evt.clientY)
         };
         tapDistanceLeft = tapEvt.clientX - dragRect.left;
         tapDistanceTop = tapEvt.clientY - dragRect.top;
-        this._lastX = (touch || evt).clientX;
-        this._lastY = (touch || evt).clientY;
+        this._lastX = (touch.clientX || evt.clientX);
+        this._lastY = (touch.clientY || evt.clientY);
         dragEl.style['will-change'] = 'all';
         dragStartFn = function dragStartFn() {
           pluginEvent('delayEnded', _this, {
@@ -2491,8 +2491,8 @@
       },
       _handleAutoScroll: function _handleAutoScroll(evt, fallback) {
         var _this = this;
-        var x = (evt.touches ? evt.touches[0] : evt).clientX,
-          y = (evt.touches ? evt.touches[0] : evt).clientY,
+        var x = (evt.touches ? evt.touches[0].clientX : evt.clientX),
+          y = (evt.touches ? evt.touches[0].clientY : evt.clientY),
           elem = document.elementFromPoint(x, y);
         touchEvt$1 = evt;
 
@@ -2546,8 +2546,8 @@
   var autoScroll = throttle(function (evt, options, rootEl, isFallback) {
     // Bug: https://bugzilla.mozilla.org/show_bug.cgi?id=505521
     if (!options.scroll) return;
-    var x = (evt.touches ? evt.touches[0] : evt).clientX,
-      y = (evt.touches ? evt.touches[0] : evt).clientY,
+    var x = (evt.touches ? evt.touches[0].clientX : evt.clientX),
+      y = (evt.touches ? evt.touches[0].clientY : evt.clientY),
       sens = options.scrollSensitivity,
       speed = options.scrollSpeed,
       winScroller = getWindowScrollingElement();
