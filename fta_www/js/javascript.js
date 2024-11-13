@@ -170,7 +170,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                     message:'erreur 0092 sur return'
                                 }));
                             }
-                        }else if((tab[i + 1][2] === 'f') && (tab[i + 1][1] === 'new')){
+                        }else if((tab[i+1][2] === 'f') && ( (tab[i+1][1] === 'new') || (tab[i+1][1] === 'affecte') )){
                             t+=espcLigne;
                             var objtestLi = js_tabTojavascript1(tab,(i + 1),false,true,niveau,false);
                             if(objtestLi.__xst === true){
@@ -211,7 +211,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                          || (tab[i + 1][1] === 'divi')
                          || (tab[i + 1][1] === 'concat')
                          || (tab[i + 1][1] === 'ou_bin')
-                         || (tab[i + 1][1] === 'nonBin')
+                         || (tab[i + 1][1] === 'oppose_binaire')
                          || (tab[i + 1][1] === 'decalDroite')
                          || (tab[i + 1][1] === 'decal_droite_non_signe')
                          || (tab[i + 1][1] === 'puissance')
@@ -266,10 +266,9 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                 }));
                             }
 
-
                         }else{
                             debugger
-                            return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript non traité 0083 "' + tab[i + 1][1] + '"'}));
+                            return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript retour non traité 0083 "' + tab[i + 1][1] + '"'}));
                         }
                     }else{
                         return(logerreur({
@@ -1490,6 +1489,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                    || (tabdeclare[1][1] === 'egal')
                                    || (tabdeclare[1][1] === 'diffstricte')
                                    || (tabdeclare[1][1] === 'infeg')
+                                   || (tabdeclare[1][1] === 'Typeof')
                                    
                                    )
                                   ){
@@ -1797,7 +1797,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
             }else if( tab[i][2] === 'c'){
                     t+=maConstante(tab[i]);
             }else{
-                return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript.js traitement non prévu 1057 ' + JSON.stringify(tab[i])}));
+             
+                var objOperation = TraiteOperations1(tab,i,niveau+1);
+                if(objOperation.__xst === true){
+                    if(objOperation.hasOwnProperty('annuler_terminateur') && objOperation.annuler_terminateur===true){
+                        t+=objOperation.__xva ;
+                    }else{
+                        t+=objOperation.__xva + terminateur;
+                    }
+                }else{
+                    return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript.js traitement non prévu 1057 ' + JSON.stringify(tab[i])}));
+                }
+             
+             
             }
         }
     }
@@ -2204,7 +2216,7 @@ function js_traiteInstruction1(tab,niveau,id){
      || (tab[id][1] === 'etBin')
      || (tab[id][1] === 'ou_ex_bin')
      || (tab[id][1] === 'ou_bin')
-     || (tab[id][1] === 'nonBin')
+     || (tab[id][1] === 'oppose_binaire')
      || (tab[id][1] === 'puissance')
      || (tab[id][1] === 'decalDroite')
      || (tab[id][1] === 'decal_droite_non_signe')
@@ -2367,6 +2379,7 @@ function js_traiteInstruction1(tab,niveau,id){
     }else if(('inf' === tab[id][1])
      || ('non' === tab[id][1])
      || ('supeg' === tab[id][1])
+     || ('sup' === tab[id][1])
      || ('infeg' === tab[id][1])
      || ('diffstricte' === tab[id][1])
      || ('egalstricte' === tab[id][1])
@@ -2593,13 +2606,13 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                                 }
                                 textObj+=maConstante(tab[j + 1]) + ':' + objfnt1.__xva;
                             }else{
-                                logerreur({
+                                return(logerreur({
                                     __xst:false,
                                     __xva:t,
                                     id:j,
                                     tab:tab,
                                     __xme:'1069 erreur sur appel de fonction nom "' + tab[j][1] + '"'
-                                });
+                                }));
                             }
                         }else if(tab[j + 2][1] === 'tableau'){
                             var objTableau = js_traiteTableau1(tab,(j + 2),true,0,false);
@@ -3214,7 +3227,7 @@ function recupere_operateur(n){
         return '&';
     }else if(n === 'ou_ex_bin'){
         return '^';
-    }else if(n === 'nonBin'){
+    }else if(n === 'oppose_binaire'){
         return '~';
     }else if(n === 'ou_bin'){
         return '|';
@@ -3256,7 +3269,26 @@ function TraiteOperations1(tab,id,niveau){
       opération simple avec qu'un operande
       moins(117)
     */
+    
+    
     if(tab[id][8] === 1){
+        if(tab[id][1]==='' && tab[id][2]==='f' && tab[id][10]>0 && tab[id+1][1]==='appelf'){
+          console.log('%cappel fonction initialisation ','color:red;background:yellow;');
+          var obj = js_traiteAppelFonction(tab,id+1,true,niveau,false);
+          if(obj.__xst === true){
+              return({__xva:'('+obj.__xva+')',__xst:true,annuler_terminateur:true});
+          }else{
+              return(logerreur({
+                  __xst:false,
+                  __xva:t,
+                  id:id,
+                  tab:tab,
+                  message:'erreur TraiteOperations1 3283'
+              }));
+          }
+         
+         
+        }
         var operateur = recupere_operateur(tab[id][1]);
         if(tab[id + 1][2] === 'c'){
             if(operateur==='void'){
@@ -3276,7 +3308,7 @@ function TraiteOperations1(tab,id,niveau){
              || (tab[id + 1][1] === 'etBin')
              || (tab[id + 1][1] === 'ou_ex_bin')
              || (tab[id + 1][1] === 'ou_bin')
-             || (tab[id + 1][1] === 'nonBin')
+             || (tab[id + 1][1] === 'oppose_binaire')
              || (tab[id + 1][1] === 'decalDroite')
              || (tab[id + 1][1] === 'decalGauche')
              || (tab[id + 1][1] === 'decal_droite_non_signe')
@@ -3334,11 +3366,13 @@ function TraiteOperations1(tab,id,niveau){
                  || (tab[i][1] === 'etBin')
                  || (tab[i][1] === 'ou_ex_bin')
                  || (tab[i][1] === 'ou_bin')
-                 || (tab[i][1] === 'nonBin')
+                 || (tab[i][1] === 'oppose_binaire')
                  || (tab[i][1] === 'decalDroite')
                  || (tab[i][1] === 'decal_droite_non_signe')
                  || (tab[i][1] === 'decalGauche')
                  || (tab[i][1] === 'void')
+                 || (tab[i][1] === 'Typeof')
+                 || (tab[i][1] === 'non')
                 ){
                     var objOperation = TraiteOperations1(tab,i,niveau);
                     if(objOperation.__xst === true){
@@ -3423,10 +3457,9 @@ function TraiteOperations1(tab,id,niveau){
                             message:'3424 erreur dans TraiteOperations1'
                         }));
                     }
-                 debugger
                  
                 }else{
-                    return(logerreur({__xst:false,__xme:'fonction du premier paramètre non reconnue TraiteOperations1 2361 "' + tab[i][1] + '"'}));
+                    return(logerreur({__xst:false,__xme:'fonction du premier paramètre non reconnue TraiteOperations1 2361 "' + JSON.stringify(tab[i]) + '"',tab:tab,id,i}));
                 }
             }
             /* si c'est le dernier enfant */
@@ -3475,6 +3508,7 @@ function js_condition1(tab,id,niveau){
     }else{
         /* todo à faire : virer les reprises */
         for(i=id;i < max;i=i + 1){
+
             if(((tab[i][1] === 'non') ||  (tab[i][1] === 'et') || (tab[i][1] === 'ou') || ((premiereCondition === true) && (tab[i][1] === ''))) && (tab[i][8] > 0) && (tab[i][2] === 'f')){
                 if(tab[i][1] === 'non'){
                     t+=' !';
@@ -3560,176 +3594,248 @@ function js_condition1(tab,id,niveau){
                     }));
                 }
                 i=max - 1;
-            }else if(((tab[i][1] === 'egal') || (tab[i][1] === 'plus') || (tab[i][1] === 'modulo') || (tab[i][1] === 'egalstricte') || (tab[i][1] === 'diff') || (tab[i][1] === 'diffstricte') || (tab[i][1] === 'sup') || (tab[i][1] === 'inf') || (tab[i][1] === 'supeg') || (tab[i][1] === 'infeg') || (tab[i][1] === 'Instanceof') || (tab[i][1] === 'in') || (tab[i][1] === 'ou_bin')) && (tab[i][2] === 'f')){
-                if(tab[i][8] === 2){
+            }else if(
+              (
+                    (tab[i][1] === 'egal')
+                 || (tab[i][1] === 'plus')
+                 || (tab[i][1] === 'moins')
+                 || (tab[i][1] === 'modulo')
+                 || (tab[i][1] === 'egalstricte')
+                 || (tab[i][1] === 'diff')
+                 || (tab[i][1] === 'diffstricte')
+                 || (tab[i][1] === 'sup')
+                 || (tab[i][1] === 'inf')
+                 || (tab[i][1] === 'supeg')
+                 || (tab[i][1] === 'infeg')
+                 || (tab[i][1] === 'Instanceof')
+                 || (tab[i][1] === 'in')
+                 || (tab[i][1] === 'ou_bin')
+                 || (tab[i][1] === 'oppose_binaire')
+              )
+               && (tab[i][2] === 'f')
+            ){
+
+                if(tab[i][8] === 2 || ( (tab[i][1] === 'plus') && tab[i][8]>=2 ) ){
                     tabPar=[];
                     for(j=id + 1;j <= max;j=j + 1){
                         if(tab[j][3] === (tab[i][3] + 1)){
                             tabPar.push(j);
                         }
                     }
-                    if(tab[tabPar[0]][2] === 'c'){
-                        t+=maConstante(tab[tabPar[0]]);
-                    }else{
-                        if((tab[tabPar[0]][2] === 'f') && (tab[tabPar[0]][1] === 'appelf')){
-                            obj=js_traiteAppelFonction(tab,tabPar[0],true,niveau,false);
-                            if(obj.__xst === true){
-                                t+=obj.__xva;
+                    var precedent_est_commentaire=false;
+                    for(j=0;j<tabPar.length;j++){
+                     if(j===0){
+                         /* premier paramètre */
+                         if(tab[tabPar[j]][2] === 'f' && tab[tabPar[j]][1] === '#'){
+                           /* si on a un commentaire */
+                           precedent_est_commentaire=true;
+                           continue;
+                         }else{
+                           precedent_est_commentaire=false;
+                         }
+
+                         if(tab[tabPar[j]][2] === 'c'){
+                             t+=maConstante(tab[tabPar[j]]);
+                         }else{
+                             if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'appelf')){
+                                 obj=js_traiteAppelFonction(tab,tabPar[j],true,niveau,false);
+                                 if(obj.__xst === true){
+                                     t+=obj.__xva;
+                                 }else{
+                                     return(logerreur({
+                                         __xst:false,
+                                         __xva:t,
+                                         id:id,
+                                         tab:tab,
+                                         message:'il faut un nom de fonction à appeler n(xxxx)'
+                                     }));
+                                 }
+                             }else if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'Typeof')){
+                                 t+='typeof ' + tab[tabPar[j] + 1][1];
+                             }else if((tab[tabPar[j]][2] === 'f') && ((tab[tabPar[j]][1] === 'divi') || (tab[tabPar[j]][1] === 'plus') || (tab[tabPar[j]][1] === 'concat') || (tab[tabPar[j]][1] === 'moins') || (tab[tabPar[j]][1] === 'modulo'))){
+                                 var objOperation = TraiteOperations1(tab,tab[tabPar[j]][0]);
+                                 if(objOperation.__xst === true){
+                                     t+=objOperation.__xva;
+                                 }else{
+                                     return(logerreur({
+                                         __xst:false,
+                                         __xva:t,
+                                         'id':tabAffecte['par1'][0],
+                                         tab:tab,
+                                         message:'erreur 1607 sur js_condition1 '
+                                     }));
+                                 }
+                             }else if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'tableau')){
+                                 var objTableau = js_traiteTableau1(tab,tab[tabPar[j]][0],true,niveau,false);
+                                 if(objTableau.__xst === true){
+                                     t+=objTableau.__xva;
+                                 }else{
+                                     return(logerreur({
+                                         __xst:false,
+                                         __xva:t,
+                                         id:j,
+                                         tab:tab,
+                                         message:'erreur 1007 sur js_condition1 '
+                                     }));
+                                 }
+                             }else if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'obj')){
+                                 obj=js_traiteDefinitionObjet(tab,tab[tabPar[j]][0],true,niveau);
+                                 if(obj.__xst === true){
+                                     t+=obj.__xva;
+                                 }else{
+                                     return(logerreur({
+                                         __xst:false,
+                                         __xva:t,
+                                         id:i,
+                                         tab:tab,
+                                         message:'1964 js_condition1 '
+                                     }));
+                                 }
+                             }else if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'affecte')){
+                                 var obj = js_tabTojavascript1(tab,tab[tabPar[j]][0],false,true,niveau,false); // (tab,id,dansFonction,dansInitialisation,niveau,dansCascade){
+                                  
+                                 if(obj.__xst === true){
+                                     t+=obj.__xva;
+                                 }else{
+                                     return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3933 dans une condition pour un affecte "' + tab[tabPar[j]][1] + '"'}));
+                                 }
+                                 
+                             }else if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'condition')){
+                                 
+                                 obj=js_condition0(tab,tab[tabPar[j]][0],niveau+1);
+                                 if(obj.__xst === true){
+                                     t+=obj.__xva;
+                                 }else{
+                                     return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3657 dans une condition pour un affecte "' + tab[tabPar[j]][1] + '"'}));
+                                 }
+                                 
+                             }else{
+                                 return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 1528 dans une condition pour un test egal, diff... cas à traiter : "' + tab[tabPar[j]][1] + '"'}));
+                             }
+                         }                      
+                      
+                      
+                     }else{
+                        /* paramètre suivant */
+
+                        if(precedent_est_commentaire===false){
+                            if(tab[i][1] === 'egal'){
+                                t+=' '+'=='+' ';
+                            }else if(tab[i][1] === 'egalstricte'){
+                                t+=' === ';
+                            }else if(tab[i][1] === 'diff'){
+                                t+=' '+'!='+' ';
+                            }else if(tab[i][1] === 'diffstricte'){
+                                t+=' !== ';
+                            }else if(tab[i][1] === 'sup'){
+                                t+=' > ';
+                            }else if(tab[i][1] === 'inf'){
+                                t+=' < ';
+                            }else if(tab[i][1] === 'supeg'){
+                                t+=' >= ';
+                            }else if(tab[i][1] === 'infeg'){
+                                t+=' <= ';
+                            }else if(tab[i][1] === 'Instanceof'){
+                                t+=' instanceof ';
+                            }else if(tab[i][1] === 'in'){
+                                t+=' in ';
+                            }else if(tab[i][1] === 'ou_bin'){
+                                t+=' | ';
+                            }else if(tab[i][1] === 'plus'){
+                                t+=' + ';
+                            }else if(tab[i][1] === 'moins'){
+                                t+=' - ';
+                            }else if(tab[i][1] === 'modulo'){
+                                t+=' % ';
                             }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:id,
-                                    tab:tab,
-                                    message:'il faut un nom de fonction à appeler n(xxxx)'
-                                }));
-                            }
-                        }else if((tab[tabPar[0]][2] === 'f') && (tab[tabPar[0]][1] === 'Typeof')){
-                            t+='typeof ' + tab[tabPar[0] + 1][1];
-                        }else if((tab[tabPar[0]][2] === 'f') && ((tab[tabPar[0]][1] === 'divi') || (tab[tabPar[0]][1] === 'plus') || (tab[tabPar[0]][1] === 'concat') || (tab[tabPar[0]][1] === 'moins') || (tab[tabPar[0]][1] === 'modulo'))){
-                            var objOperation = TraiteOperations1(tab,tab[tabPar[0]][0]);
-                            if(objOperation.__xst === true){
-                                t+=objOperation.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    'id':tabAffecte['par1'][0],
-                                    tab:tab,
-                                    message:'erreur 1607 sur js_condition1 '
-                                }));
-                            }
-                        }else if((tab[tabPar[0]][2] === 'f') && (tab[tabPar[0]][1] === 'tableau')){
-                            var objTableau = js_traiteTableau1(tab,tab[tabPar[0]][0],true,niveau,false);
-                            if(objTableau.__xst === true){
-                                t+=objTableau.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:j,
-                                    tab:tab,
-                                    message:'erreur 1007 sur js_condition1 '
-                                }));
-                            }
-                        }else if((tab[tabPar[0]][2] === 'f') && (tab[tabPar[0]][1] === 'obj')){
-                            obj=js_traiteDefinitionObjet(tab,tab[tabPar[0]][0],true,niveau);
-                            if(obj.__xst === true){
-                                t+=obj.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:i,
-                                    tab:tab,
-                                    message:'1964 js_condition1 '
-                                }));
-                            }
-                        }else if((tab[tabPar[0]][2] === 'f') && (tab[tabPar[0]][1] === 'affecte')){
-                            var obj = js_tabTojavascript1(tab,tab[tabPar[0]][0],false,true,niveau,false); // (tab,id,dansFonction,dansInitialisation,niveau,dansCascade){
-                             
-                            if(obj.__xst === true){
-                                t+=obj.__xva;
-                            }else{
-                                return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3933 dans une condition pour un affecte "' + tab[tabPar[0]][1] + '"'}));
-                            }
-                            
-                        }else{
-                            return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 1528 dans une condition pour un test egal, diff... cas à traiter : "' + tab[tabPar[0]][1] + '"'}));
-                        }
-                    }
-                    if(tab[i][1] === 'egal'){
-                        t+=' '+'=='+' ';
-                    }else if(tab[i][1] === 'egalstricte'){
-                        t+=' === ';
-                    }else if(tab[i][1] === 'diff'){
-                        t+=' '+'!='+' ';
-                    }else if(tab[i][1] === 'diffstricte'){
-                        t+=' !== ';
-                    }else if(tab[i][1] === 'sup'){
-                        t+=' > ';
-                    }else if(tab[i][1] === 'inf'){
-                        t+=' < ';
-                    }else if(tab[i][1] === 'supeg'){
-                        t+=' >= ';
-                    }else if(tab[i][1] === 'infeg'){
-                        t+=' <= ';
-                    }else if(tab[i][1] === 'Instanceof'){
-                        t+=' instanceof ';
-                    }else if(tab[i][1] === 'in'){
-                        t+=' in ';
-                    }else if(tab[i][1] === 'ou_bin'){
-                        t+=' | ';
-                    }else if(tab[i][1] === 'plus'){
-                        t+=' + ';
-                    }else if(tab[i][1] === 'modulo'){
-                        t+=' % ';
-                    }
-                    if(tab[tabPar[1]][2] === 'c'){
-                        t+=maConstante(tab[tabPar[1]]);
-                    }else{
-                        if((tab[tabPar[1]][2] === 'f') && (tab[tabPar[1]][1] === 'appelf')){
-                            obj=js_traiteAppelFonction(tab,tabPar[1],true,niveau,false);
-                            if(obj.__xst === true){
-                                t+=obj.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:id,
-                                    tab:tab,
-                                    message:'il faut un nom de fonction à appeler n(xxxx)'
-                                }));
-                            }
-                        }else if((tab[tabPar[1]][2] === 'f') && ((tab[tabPar[1]][1] === 'moins') || (tab[tabPar[1]][1] === 'plus') || (tab[tabPar[1]][1] === 'mult') || (tab[tabPar[1]][1] === 'divi') || (tab[tabPar[1]][1] === 'concat') || (tab[tabPar[1]][1] === 'Typeof'))){
-                            var objOperation = TraiteOperations1(tab,tab[tabPar[1]][0]);
-                            if(objOperation.__xst === true){
-                                t+=objOperation.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    'id':tabAffecte['par1'][0],
-                                    tab:tab,
-                                    message:'erreur 824 sur des opérations '
-                                }));
-                            }
-                        }else if((tab[tabPar[1]][2] === 'f') && (tab[tabPar[1]][1] === 'tableau')){
-                            var objTableau = js_traiteTableau1(tab,tab[tabPar[1]][0],true,niveau,false);
-                            if(objTableau.__xst === true){
-                                t+=objTableau.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:i,
-                                    tab:tab,
-                                    message:'erreur 2065 sur condition '
-                                }));
-                            }
-                        }else{
-                            var obj = js_tabTojavascript1(tab,tab[tabPar[1]][0],true,true,niveau);
-                            if(obj.__xst === true){
-                                t+=obj.__xva;
-                            }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:i,
-                                    tab:tab,
-                                    message:'erreur 2173 sur condition '
-                                }));
+                                return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3699 dans une condition l\'opération ' + tab[i][1] + '" n\'est pas prévue !'}));
                             }
                         }
+                        
+                         if(tab[tabPar[j]][2] === 'f' && tab[tabPar[j]][1] === '#'){
+                           /* si on a un commentaire */
+                           precedent_est_commentaire=true;
+                           continue;
+                         }else{
+                           precedent_est_commentaire=false;
+                         }
+                        
+                        
+                        if(tab[tabPar[j]][2] === 'c'){
+                            t+=maConstante(tab[tabPar[j]]);
+                        }else{
+                            if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'appelf')){
+                                obj=js_traiteAppelFonction(tab,tabPar[j],true,niveau,false);
+                                if(obj.__xst === true){
+                                    t+=obj.__xva;
+                                }else{
+                                    return(logerreur({
+                                        __xst:false,
+                                        __xva:t,
+                                        id:id,
+                                        tab:tab,
+                                        message:'il faut un nom de fonction à appeler n(xxxx)'
+                                    }));
+                                }
+                            }else if((tab[tabPar[j]][2] === 'f') && ((tab[tabPar[j]][1] === 'moins') || (tab[tabPar[j]][1] === 'plus') || (tab[tabPar[j]][1] === 'mult') || (tab[tabPar[j]][1] === 'divi') || (tab[tabPar[j]][1] === 'concat') || (tab[tabPar[j]][1] === 'Typeof'))){
+                                var objOperation = TraiteOperations1(tab,tab[tabPar[j]][0]);
+                                if(objOperation.__xst === true){
+                                    t+=objOperation.__xva;
+                                }else{
+                                    return(logerreur({
+                                        __xst:false,
+                                        __xva:t,
+                                        'id':tabAffecte['par1'][0],
+                                        tab:tab,
+                                        message:'erreur 824 sur des opérations '
+                                    }));
+                                }
+                            }else if((tab[tabPar[j]][2] === 'f') && (tab[tabPar[j]][1] === 'tableau')){
+                                var objTableau = js_traiteTableau1(tab,tab[tabPar[j]][0],true,niveau,false);
+                                if(objTableau.__xst === true){
+                                    t+=objTableau.__xva;
+                                }else{
+                                    return(logerreur({
+                                        __xst:false,
+                                        __xva:t,
+                                        id:i,
+                                        tab:tab,
+                                        message:'erreur 2065 sur condition '
+                                    }));
+                                }
+                            }else{
+                                var obj = js_tabTojavascript1(tab,tab[tabPar[j]][0],true,true,niveau);
+                                if(obj.__xst === true){
+                                    t+=obj.__xva;
+                                }else{
+                                    return(logerreur({
+                                        __xst:false,
+                                        __xva:t,
+                                        id:i,
+                                        tab:tab,
+                                        message:'erreur 2173 sur condition '
+                                    }));
+                                }
+                            }
+                        }
+                     }
+                     
                     }
+
+
                     i=max - 1;
                 }else{
-                    return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 2077 dans une condition ' + tab[i][1]}));
+                    var objOperation = TraiteOperations1(tab,i,niveau+1);
+                    if(objOperation.__xst === true){
+                        t+=objOperation.__xva ;
+                    }else{
+                        return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript.js erreur 3809 sur condition ' + JSON.stringify(tab[i])}));
+                    }
+                    i=max - 1;
+                 
                 }
             }else if((tab[i][1] === 'condition') && (tab[i][2] === 'f')){
-                niveau=niveau + 1;
-                obj=js_condition0(tab,i,niveau);
-                niveau=niveau - 1;
+                obj=js_condition0(tab,i,niveau+1);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
@@ -3763,8 +3869,8 @@ function js_condition1(tab,id,niveau){
                 }
                 var commt = traiteCommentaire2(tab[i][13],niveau,i);
                 t+='/*' + commt + '*/';
-            }else if((tab[i][1] === 'affecte' || tab[i][1] === 'testEnLigne' || tab[i][1] === 'new'  ) && (tab[i][2] === 'f')){
-             
+            }else if((tab[i][1] === 'postdec' || tab[i][1] === 'affecte' || tab[i][1] === 'testEnLigne' || tab[i][1] === 'new'  || tab[i][1] === 'oppose_binaire'  ) && (tab[i][2] === 'f')){
+
                 var obj = js_tabTojavascript1(tab,i,false,true,niveau,false); // (tab,id,dansFonction,dansInitialisation,niveau,dansCascade){
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -3805,7 +3911,7 @@ function js_condition0(tab,id,niveau){
     var obj={};
     for(i=id + 1;(i < tab.length) && (tab[i][3] > tab[id][3]);i=i + 1){
         if(tab[i][7] === tab[id][0]){
-            if((tab[i][1] === '') || (tab[i][1] === 'non')){
+            if((tab[i][1] === '') || (tab[i][1] === 'non')  ){
                 if(premiereCondition){
                     obj=js_condition1(tab,i,niveau);
                     if(obj.__xst === false){

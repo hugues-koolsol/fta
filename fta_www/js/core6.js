@@ -96,6 +96,12 @@ function logerreur(o){
     if(o.hasOwnProperty('plage')){
         global_messages['plages'].push(o.plage);
     }
+    /**
+    if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){
+         //* à faire ? , à voir 
+    }
+    */
+    
     return o;
 }
 /*
