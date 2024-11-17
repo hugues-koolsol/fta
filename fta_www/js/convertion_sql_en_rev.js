@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 function recupere_element_de_ast_sql(element,niveau,parent,options){
  var t='';
  var esp0 = ' '.repeat(NBESPACESREV*(niveau));

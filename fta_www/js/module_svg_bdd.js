@@ -2443,7 +2443,9 @@ class module_svg_bdd{
         
         document.getElementById('__contenu_modale').innerHTML=t;
         
-        new Sortable(ordre_modifie,{animation:150,ghostClass:'blue-background-class'});
+        var tt=new Sortable(ordre_modifie,{animation:150,ghostClass:'blue-background-class'});
+
+        
         __gi1.global_modale2.showModal();
     }
     /*
