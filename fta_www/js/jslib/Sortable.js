@@ -766,12 +766,11 @@
                         _this.eventCanceled=true;
                     };
                     var eventNameGlobal = eventName + 'Global';
-                    console.log('hugues eventNameGlobal=',eventNameGlobal,'eventName="' + eventName + '"');
+                    /* console.log('hugues eventNameGlobal=',eventNameGlobal , 'eventName="' + eventName+'"'); */
                     plugins.forEach(function(plugin){
                         if(!(sortable[plugin.pluginName])){
                             return;
                         }
-                        
                         if(sortable[plugin.pluginName][eventNameGlobal]){
                             sortable[plugin.pluginName][eventNameGlobal](_objectSpread2({sortable:sortable},evt));
                         }
@@ -870,8 +869,7 @@
                     options[onName].call(sortable,evt);
                 }
             }
-//            var _excluded = new Array("evt");
-            var _excluded = ["evt"];
+            var _excluded = new Array("evt");
             var pluginEvent = function pluginEvent(eventName,sortable){
                 var _ref = (arguments.length > 2 && arguments[2] !== undefined ? ( arguments[2] ) : ( {} ));
                 var originalEvent=_ref.evt;
@@ -1076,13 +1074,17 @@
                         event.target=event.rootEl=nearest;
                         event.preventDefault=void(0);
                         event.stopPropagation=void(0);
-                        nearest[expando]._onDragOver(event);
+                        nearest[expando][_onDragOver](event);
                     }
                 }
             };
             var _checkOutsideTargetEl = function _checkOutsideTargetEl(evt){
                 if(dragEl){
-                    dragEl.parentNode[expando]._isOutsideThisEl(evt.target);
+                    try{
+                        dragEl.parentNode[expando][_isOutsideThisEl](evt.target);
+                    }catch(e){
+                    }
+                    /*un point virgule est-il en trop ?*/
                 }
             };
 /*#
@@ -1325,7 +1327,7 @@
                 _delayedDragTouchMoveHandler:
                 function _delayedDragTouchMoveHandler( /* # TouchEvent|PointerEvent * */ e){
                     var touch = (e.touches ? ( e.touches[0] ) : ( e ));
-                    console.log('hugues formule à vérifier');
+                    /* console.log('hugues formule à vérifier') */
                     if(Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) >= Math.floor(this.options.touchStartThreshold / (this.nativeDraggable
                      && window.devicePixelRatio
                      || 1))
@@ -1408,12 +1410,12 @@
                             }
                             parent=target;
                         }
-                        dragEl.parentNode[expando]._isOutsideThisEl(target);
+                        dragEl.parentNode[expando][_isOutsideThisEl](target);
                         if(parent){
                             do{
                                 if(parent[expando]){
                                     var inserted = void(0);
-                                    inserted=parent[expando]._onDragOver({clientX:touchEvt.clientX,clientY:touchEvt.clientY,target:target,rootEl:parent});
+                                    inserted=parent[expando][_onDragOver]({clientX:touchEvt.clientX,clientY:touchEvt.clientY,target:target,rootEl:parent});
                                     if(inserted && !(this.options.dragoverBubble)){
                                         break;
                                     }
@@ -1647,7 +1649,11 @@
                             lastTarget=null;
                         }
                         if(!(options.dragoverBubble) && !(evt.rootEl) && target !== document){
-                            dragEl.parentNode[expando]._isOutsideThisEl(evt.target);
+                            try{
+                                dragEl.parentNode[expando][_isOutsideThisEl](evt.target);
+                            }catch(e){
+                            }
+                            /*un point virgule est-il en trop ?*/
                             !(insertion) && nearestEmptyInsertDetectEvent(evt);
                         }
                         !(options.dragoverBubble) && evt.stopPropagation && evt.stopPropagation();
@@ -1673,7 +1679,7 @@
                     if(Sortable.eventCanceled){
                         return completedFired;
                     }
-                    console.log('hugues dragEl=',dragEl);
+                    /* console.log('hugues dragEl=',dragEl); */
                     if(dragEl.contains(evt.target)
                      || target.animated
                      && target.animatingX

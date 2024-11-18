@@ -145,7 +145,7 @@ class interface1{
         }catch(e){
             console.log(e);
         }
-        window.parent[this.#nom_de_la_variable].fermerModale2();
+        window.parent[this.#nom_de_la_variable]['fermerModale2']();
     }
     /*
       =============================================================================================================
