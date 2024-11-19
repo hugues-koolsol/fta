@@ -25,6 +25,26 @@ class interface1{
     */
     #globale_timeout_serveur_lent=1500;
     #globale_timeout_reference_timer_serveur_lent=null;
+    
+    
+    #global_enteteTableau = [
+        ['id','id'],                             //  0
+        ['val','valeur'],                        //  1
+        ['typ','type'],                          //  2
+        ['niv','niveau'],                        //  3
+        ['coQ','constante quotée'],              //  4
+        ['pre','position du premier caractère'], //  5
+        ['der','position du dernier caractère'], //  6
+        ['pId','Id du parent'],                  //  7
+        ['nbE','nombre d\'enfants'],             //  8
+        ['nuE','numéro enfants'],                //  9
+        ['pro','profondeur'],                    // 10
+        ['pop','position ouverture parenthese'], // 11
+        ['pfp','position fermeture parenthese'], // 12
+        ['com','commentaire']                    // 13
+    ]
+
+    
     /*
       =============================================================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
@@ -53,11 +73,146 @@ class interface1{
     }
     /*
       =============================================================================================================
+      on remplir_et_afficher_les_messages1
+    */
+    afficher_les_erreurs_masquees(){
+         var est_masque=parseInt(document.getElementById('bouton_voir_les_messages_masques').getAttribute('data-masque'),10);
+         var div_parent=document.getElementById(this.#nom_div_des_messages1);
+         var lst=div_parent.getElementsByTagName('div');
+         for(var i=0;i<lst.length;i++){
+              if(lst[i].parentElement===div_parent && lst[i].getAttribute('data-masquable') && lst[i].getAttribute('data-masquable')==='1' ){
+               if(est_masque===1){
+                  lst[i].style.display='';
+               }else{
+                  lst[i].style.display='none';
+               }
+              }
+         }
+         if(est_masque===1){
+          document.getElementById('bouton_voir_les_messages_masques').setAttribute('data-masque','0');
+          document.getElementById('bouton_voir_les_messages_masques').innerHTML='masquer';
+          document.getElementById('message_masquer_les_details').innerHTML='le détail des erreurs est visible ';
+         }else{
+          document.getElementById('bouton_voir_les_messages_masques').setAttribute('data-masque','1');
+          document.getElementById('bouton_voir_les_messages_masques').innerHTML='voir';
+          document.getElementById('message_masquer_les_details').innerHTML='le détail des erreurs n\'est pas visible ';
+         }
+    }
+    
+    /*
+      =============================================================================================================
+      on remplir_et_afficher_les_messages1
+    */
+    remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
+        this.reactiver_les_boutons1();
+        var i=0;
+        var affichagesPresents=false;
+        var zon = document.getElementById(nomZone);
+        var temp='';
+        var numLignePrecedente=-1;
+        var nombre_de_boutons_affiches=0;
+        var il_existe_des_messages_masques=false;
+
+        while(global_messages.errors.length > 0){
+
+            if(global_messages.errors[i].hasOwnProperty('__xme')){
+                if(global_messages.errors[i].hasOwnProperty('masquee') && global_messages.errors[i].masquee===true){
+                    il_existe_des_messages_masques=true;
+                    zon.innerHTML+='<div class="yyerreur" style="display:none;" data-masquable="1">' + global_messages.errors[i].__xme + '</div>';
+                }else{
+                    zon.innerHTML+='<div class="yyerreur" >' + global_messages.errors[i].__xme + '</div>';
+                }
+            }else{
+                zon.innerHTML+='<div class="yyerreur">' + global_messages.errors[i] + '</div>';
+            }
+            global_messages.errors.splice(0,1);
+            affichagesPresents=true;
+        }
+        if(il_existe_des_messages_masques===true){
+          zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
+        }
+        while(global_messages.warnings.length > 0){
+            if( global_messages.warnings[i].hasOwnProperty('__xme')){
+                if(global_messages.warnings[i].hasOwnProperty('masquee') && global_messages.warnings[i].masquee===true){
+                    zon.innerHTML+='<div class="yyavertissement" style="display:none;" data-masquable="1">' + global_messages.warnings[i].__xme + '</div>';
+                    il_existe_des_messages_masques=true;
+                }else{
+                    zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i].__xme + '</div>';
+                }
+            }else{
+                zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i] + '</div>';
+            }
+            global_messages.warnings.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.infos.length > 0){
+         
+            if( global_messages.infos[i].hasOwnProperty('__xme')){
+                if(global_messages.infos[i].hasOwnProperty('masquee') && global_messages.infos[i].masquee===true){
+                    zon.innerHTML+='<div class="yysucces" style="display:none;" data-masquable="1">' + global_messages.infos[i].__xme + '</div>';
+                    il_existe_des_messages_masques=true;
+                }else{
+                    zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i].__xme + '</div>';
+                }
+            }else{
+                zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i] + '</div>';
+            }
+         
+            global_messages.infos.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.lines.length > 0){
+            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
+            global_messages.lines.splice(0,1);
+            affichagesPresents=true;
+        }
+        if((global_messages.data.matrice) && (global_messages.data.matrice.__xva)){
+            for(i=0;(i < global_messages.ids.length) && (nombre_de_boutons_affiches <= 3);i++){
+                var id=global_messages.ids[i];
+                if((global_messages.data.matrice) && (id < global_messages.data.matrice.__xva.length)){
+                    var ligneMatrice=global_messages.data.matrice.__xva[id];
+                    var caractereDebut=ligneMatrice[5];
+                    var numeroDeLigne=0;
+                    var j=caractereDebut;
+                    for(j=caractereDebut;j >= 0;j--){
+                        if(global_messages.data.tableau.out[j][0] == '\n'){
+                            numeroDeLigne=numeroDeLigne + 1;
+                        }
+                    }
+                }
+                if(numeroDeLigne >= 0){
+                    if(numeroDeLigne != numLignePrecedente){
+                        zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML;
+                        affichagesPresents=true;
+                        numLignePrecedente=numeroDeLigne;
+                        nombre_de_boutons_affiches++;
+                    }
+                }
+            }
+            global_messages.ids=[];
+        }
+        while(global_messages.ranges.length > 0){
+            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML;
+            global_messages.ranges.splice(0,1);
+            affichagesPresents=true;
+        }
+        while(global_messages.plages.length > 0){
+            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML;
+            global_messages.plages.splice(0,1);
+            affichagesPresents=true;
+        }
+        if(zon.innerHTML !== ''){
+            zon.style.visibility='visible';
+        }
+    }    
+    /*
+      =============================================================================================================
       function recupérer_un_fetch
     */
     async recupérer_un_fetch(url,donnees){
         
         var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis?donnees.call.opt.delais_admis:6000;
+        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur')?donnees.call.opt.masquer_les_messages_du_serveur:true;
         var en_entree={
             'signal':AbortSignal.timeout(delais_admis),
             'method':"POST",
@@ -74,18 +229,18 @@ class interface1{
             var t= await response.text();
             try{
                 var le_json = JSON.parse(t);
-                if(le_json.hasOwnProperty('__xms')){
+                if(le_json.hasOwnProperty('__xms') ){
                     for(var i in le_json.__xms){
-                        logerreur({__xst:le_json.__xst,__xme:le_json.__xms[i]});
+                        logerreur({__xst:le_json.__xst,__xme:le_json.__xms[i],"masquee":masquer_les_messages_du_serveur});
                     }
                 }
                 return le_json;
             }catch(e){
-                logerreur({__xst:false,__xme:'erreur sur convertion json, texte non json=' + t});
-                logerreur({__xst:false,__xme:'url=' + url});
-                logerreur({__xst:false,__xme:JSON.stringify(en_entree)});
-                logerreur({__xst:false,__xme:JSON.stringify(donnees)});
-                return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t});
+                logerreur({__xst:false,__xme:'erreur sur convertion json, texte non json=' + t,"masquee":masquer_les_messages_du_serveur});
+                logerreur({__xst:false,__xme:'url=' + url,"masquee":masquer_les_messages_du_serveur});
+                logerreur({__xst:false,__xme:JSON.stringify(en_entree),"masquee":masquer_les_messages_du_serveur});
+                logerreur({__xst:false,__xme:JSON.stringify(donnees),"masquee":masquer_les_messages_du_serveur});
+                return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t,"masquee":masquer_les_messages_du_serveur});
             }
         }catch(e){
             console.log(e);
@@ -1022,13 +1177,13 @@ class interface1{
           entête du tableau
           =====================================================================================================
         */
-        l01=global_enteteTableau.length;
+        l01=this.#global_enteteTableau.length;
         for(i=0;i < l01;i++){
             var td1={};
             td1=document.createElement('th');
-            td1.innerHTML=i+global_enteteTableau[i][0];
+            td1.innerHTML=i+this.#global_enteteTableau[i][0];
             /**/
-            td1.setAttribute('title',global_enteteTableau[i][1]+'('+i+')');
+            td1.setAttribute('title',this.#global_enteteTableau[i][1]+'('+i+')');
             tr1.appendChild(td1);
         }
         t1.appendChild(tr1);
@@ -1073,8 +1228,8 @@ class interface1{
                 }else{
                     td1.innerHTML=String(matriceFonction.__xva[i][j]);
                 }
-                temp=global_enteteTableau[j][1]+'('+j+')';
-                td1.setAttribute('title',temp);
+                
+                td1.setAttribute('title',this.#global_enteteTableau[j][1]+'('+j+')');
                 tr1.appendChild(td1);
             }
             t1.appendChild(tr1);
@@ -1555,13 +1710,15 @@ class interface1{
         zoneSource.scrollTo(0,9999999);
         var nouveauScroll=zoneSource.scrollTop;
         zoneSource.value=texteDebut + texteFin;
-        if(nouveauScroll > 50){
-            zoneSource.scrollTo(0,(nouveauScroll + 50));
-        }else{
-            zoneSource.scrollTo(0,0);
-        }
+        zoneSource.scrollTo(0,nouveauScroll);
         zoneSource.selectionStart=debut;
         zoneSource.selectionEnd=fin;
+        if(this.#global_tableau_des_textareas.hasOwnProperty(nomDeZoneSource)){
+         this.#global_tableau_des_textareas[nomDeZoneSource].mon_decallage_haut=nouveauScroll;
+        }
+        
+        
+        
     }
     /*
       =============================================================================================================
@@ -1590,137 +1747,42 @@ class interface1{
             'data':{'matrice':[],'tableau':[],'sourceGenere':''}
         };
     }
-    /*
-      =============================================================================================================
-      on remplir_et_afficher_les_messages1
-    */
-    remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
-        this.reactiver_les_boutons1();
-        var i=0;
-        var affichagesPresents=false;
-        var zon = document.getElementById(nomZone);
-        var zone_message_est_vide=true;
-        var numero_message=0;
-        var temp='';
-        if(zon.innerHTML !== ''){
-            zone_message_est_vide=false;
-        }
-        var numLignePrecedente=-1;
-        var nombre_de_boutons_affiches=0;
-        while(global_messages.errors.length > 0){
-            if((zone_message_est_vide) && (numero_message === 0)){
-                zon.innerHTML+='<div class="yyerreur">' + global_messages.errors[i] + '</div>';
-                numero_message++;
-            }else{
-                zon.innerHTML+='<div class="yyerreur">' + global_messages.errors[i] + '</div>';
-            }
-            global_messages.errors.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.warnings.length > 0){
-            if((zone_message_est_vide) && (numero_message === 0)){
-                zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i] + '</div>';
-                numero_message++;
-            }else{
-                zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i] + '</div>';
-            }
-            global_messages.warnings.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.infos.length > 0){
-            if((zone_message_est_vide) && (numero_message === 0)){
-                zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i] + '</div>';
-                numero_message++;
-            }else{
-                zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i] + '</div>';
-            }
-            global_messages.infos.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.lines.length > 0){
-            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
-            global_messages.lines.splice(0,1);
-            affichagesPresents=true;
-        }
-        if((global_messages.data.matrice) && (global_messages.data.matrice.__xva)){
-            for(i=0;(i < global_messages.ids.length) && (nombre_de_boutons_affiches <= 3);i++){
-                var id=global_messages.ids[i];
-                if((global_messages.data.matrice) && (id < global_messages.data.matrice.__xva.length)){
-                    var ligneMatrice=global_messages.data.matrice.__xva[id];
-                    var caractereDebut=ligneMatrice[5];
-                    var numeroDeLigne=0;
-                    var j=caractereDebut;
-                    for(j=caractereDebut;j >= 0;j--){
-                        if(global_messages.data.tableau.out[j][0] == '\n'){
-                            numeroDeLigne=numeroDeLigne + 1;
-                        }
-                    }
-                }
-                if(numeroDeLigne >= 0){
-                    if(numeroDeLigne != numLignePrecedente){
-                        zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + ((numeroDeLigne + 1)) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + ((numeroDeLigne + 1)) + '</a>&nbsp;' + zon.innerHTML;
-                        affichagesPresents=true;
-                        numLignePrecedente=numeroDeLigne;
-                        nombre_de_boutons_affiches++;
-                    }
-                }
-            }
-            global_messages.ids=[];
-        }
-        while(global_messages.ranges.length > 0){
-            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML;
-            global_messages.ranges.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.plages.length > 0){
-            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML;
-            global_messages.plages.splice(0,1);
-            affichagesPresents=true;
-        }
-        if(zon.innerHTML !== ''){
-            zon.style.visibility='visible';
-        }
-    }
+
     /*
       =============================================================================================================
     */
     #ne_rien_faire1(par){
-      // rien ici
+      /*
+        on ne fait rien mais on le fait bien ici
+        console.log('#ne_rien_faire1 par=',par);
+      */
     }
-/*#
-  on ne fait rien mais on le fait bien ici
-  console.log('#ne_rien_faire1 par=',par);
-
-
-
-      
-      
-*/
     #global_tableau_des_textareas={};
     /*
       =============================================================================================================
     */
-    /*
-      =============================================================================================================
-    */
     #mouse_up_sur_editeur1(e){
-        console.log(e.target.scrollTop);
+//        console.log(e.target.scrollTop);
 //        this.#global_tableau_des_textareas[e.target.id].mon_decallage_haut=e.target.scrollTop;
         return false;
     }
+    /*
+      =============================================================================================================
+    */
+    #analyse_scroll_editeur1(e){
+//        console.log(e.target.scrollTop);
+//        this.#global_tableau_des_textareas[e.target.id].mon_decallage_haut=e.target.scrollTop;
+        return false;
+    }
+    
     /*
       =============================================================================================================
     */
     #keydown_sur_editeur1(e){
 //        console.log(e.target.scrollTop);
         this.#global_tableau_des_textareas[e.target.id].mon_decallage_haut=e.target.scrollTop;
-        return false;
     }
-    #analyse_scroll_editeur1(e){
-        console.log(e.target.scrollTop);
-//        this.#global_tableau_des_textareas[e.target.id].mon_decallage_haut=e.target.scrollTop;
-        return false;
-    }
+    
     /*
       =============================================================================================================
     */
@@ -1736,6 +1798,9 @@ class interface1{
             /* touche home : on décale le scroll au début et toute la page aussi */
             zoneSource.scrollTo({left:0});
             window.scrollTo({left:0});
+//            console.log(e.keyCode);
+
+            
         }else if(e.keyCode == 13){
             /* retour chariot*/
             var scroll_initial=zoneSource.scrollTop;
@@ -1762,25 +1827,29 @@ class interface1{
                         j++;
                     }
                 }
-                if(contenu.substr((startPos - 2),1) === '('){
-                    if(elem.mode && elem.mode === 'rev'){
+//                console.log(j);
+                if(elem.mode && elem.mode === 'rev'){
+                    if(contenu.substr((startPos - 2),1) === '('){
                         a_inserer=' '.repeat((j + NBESPACESREV));
                     }else{
-                        a_inserer=' '.repeat((j + NBESPACESSOURCEPRODUIT));
+                        a_inserer=' '.repeat((j));
                     }
                 }else{
-                    if(j > 0){
-                        a_inserer=' '.repeat(j);
+                    if(contenu.substr((startPos - 2),1) === '{'){
+                        a_inserer=' '.repeat((j + NBESPACESSOURCEPRODUIT));
+                    }else{
+                        a_inserer=' '.repeat((j));
                     }
                 }
-                zoneSource.value=contenu.substring(0,startPos) + a_inserer + contenu.substring(endPos);
+                var nouveau_contenu=contenu.substring(0,startPos) + a_inserer + contenu.substring(endPos);;
+                zoneSource.value=nouveau_contenu;
                 zoneSource.selectionStart=startPos + a_inserer.length;
                 zoneSource.selectionEnd=startPos + a_inserer.length;
-//                zoneSource.scrollTo({'left':0});
+
 //                console.log('à la fin scroll_initial=',scroll_initial , elem , elem.mon_decallage_haut )
-                zoneSource.scrollTo(0,elem.mon_decallage_haut);
+//                zoneSource.scrollTo(0,elem.mon_decallage_haut);
             }
-            return;
+
         }else if((e.keyCode == 86) && (e.ctrlKey == true)){
             /*
               pour une raison que je ne comprends pas, 
@@ -1793,12 +1862,13 @@ class interface1{
                 zoneSource.scrollTop=this.#global_tableau_des_textareas[e.target.id].mon_decallage_haut;
             }
         }
-        return false;
+        
     }
     /*
       =============================================================================================================
     */
     #initialiser_editeur_pour_une_textarea1(obj){
+
         var id_de_la_text_area='';
         var mode='';
         if(obj.hasOwnProperty('nom')){

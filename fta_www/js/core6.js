@@ -11,6 +11,7 @@ var global_messages={
     "errors" : [],
     "warnings" : [],
     "infos" : [],
+    "masquees":[],
     "lines" : [],
     "tabs" : [],
     "ids" : [],
@@ -32,6 +33,7 @@ function raz_messages(zone_message){
         "errors" : [],
         "warnings" : [],
         "infos" : [],
+        "masquees":[],
         "lines" : [],
         "tabs" : [],
         "ids" : [],
@@ -48,30 +50,32 @@ function raz_messages(zone_message){
   =====================================================================================================================
 */
 function logerreur(o){
+    var masquee=o.hasOwnProperty('masquee')?o.masquee:false;
+    
     if(o.hasOwnProperty(__xst)){
         if(o.__xst === false){
             if(o.hasOwnProperty('__xme')){
-                global_messages['errors'].push(o.__xme);
+                global_messages['errors'].push({ "__xme":o.__xme , "masquee":masquee });
             }
             if(o.hasOwnProperty('message')){
-                global_messages['errors'].push(o.message);
+                global_messages['errors'].push({ "__xme":o.message , "masquee":masquee });
             }
             if(o.hasOwnProperty('id')){
                 global_messages['ids'].push(o.id);
             }
             if(o.hasOwnProperty('__xms')){
                 for(var i in o.__xms){
-                    global_messages['errors'].push(o.__xms[i]);
+                    global_messages['errors'].push({ "__xme":o.o.__xms[i] , "masquee":masquee });
                 }
             }
         }else{
             if(o.hasOwnProperty(__xme)){
                 if(o.__xme !== ''){
-                    global_messages['infos'].push(o.__xme);
+                    global_messages['infos'].push({ "__xme":o.__xme , "masquee":masquee });
                 }
             }else if(o.hasOwnProperty('warning')){
                 if(o.warning !== ''){
-                    global_messages['warnings'].push(o.warning);
+                    global_messages['warnings'].push({ "__xme":o.warning , "masquee":masquee });
                 }
             }else{
                 /*on ne fait rien */
@@ -894,15 +898,16 @@ function iterateCharacters2(str){
   =====================================================================================================================
   =====================================================================================================================
   reconstruit une chaine à partir du tableau
-  c'est utile en cas d'erreur !
+  c'est utile seulement en cas d'erreur !
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
 */
 function reconstruitChaine(tab,debut,fin){
     var t='';
-    var i=debut;
-    for( i=debut ; i <= fin && i < tab.length ; i++ ){
+    var i=0;
+    var l01=tab.length;
+    for( i=debut ; i <= fin && i < l01 ; i++ ){
         t+=tab[i][0];
     }
     return t;
@@ -1007,37 +1012,28 @@ function formaterErreurRev(obj){
     }
     return({"__xst" : obj.__xst,"__xva" : T,"id" : obj.ind,"__xme" : obj.__xme + message_ajoute,"line" : line});
 }
-/*
+/**
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
-  tableau retourné par l'analyse syntaxique 
-  du texte en entrée de la fonction functionToArray2
-  =====================================================================================================================
-  =====================================================================================================================
-  =====================================================================================================================
-*/
-var global_enteteTableau = [
-    ['id','id'],
-    ['val','valeur'],
-    ['typ','type'],
-    ['niv','niveau'],
-    ['coQ','constante quotée'],
-    ['pre','position du premier caractère'],
-    ['der','position du dernier caractère'],
-    ['pId','Id du parent'],
-    ['nbE','nombre d\'enfants'],
-    ['nuE','numéro enfants'],
-    ['pro','profondeur'],
-    ['pop','position ouverture parenthese'],
-    ['pfp','position fermeture parenthese'],
-    ['com','commentaire']
-];
-/*
-  =====================================================================================================================
-  =====================================================================================================================
-  =====================================================================================================================
-  fonction d'analyse syntaxique d'un programme source
+  fonction d'analyse syntaxique d'un programme source, retourne un tableau
+  entête[
+      ['id','id'],                             //  0
+      ['val','valeur'],                        //  1
+      ['typ','type'],                          //  2
+      ['niv','niveau'],                        //  3
+      ['coQ','constante quotée'],              //  4
+      ['pre','position du premier caractère'], //  5
+      ['der','position du dernier caractère'], //  6
+      ['pId','Id du parent'],                  //  7
+      ['nbE','nombre d\'enfants'],             //  8
+      ['nuE','numéro enfants'],                //  9
+      ['pro','profondeur'],                    // 10
+      ['pop','position ouverture parenthese'], // 11
+      ['pfp','position fermeture parenthese'], // 12
+      ['com','commentaire']                    // 13
+  ];
+  
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
@@ -1260,23 +1256,16 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         })));
                     }
                 }else{
-                    if(!(autoriserCstDansRacine === true)){
+                    if(autoriserCstDansRacine === false){
                         if(i > 100){
                             var presDe = reconstruitChaine(tableauEntree,i - 100,i + 110);
                         }else{
                             var presDe = reconstruitChaine(tableauEntree,0,i + 10);
                         }
-                        return(logerreur({"__xst" : false,"id" : i,"__xva" : T,"__xme" : '1172 la racine ne peut pas contenir des constantes près de ' + presDe}));
-                    }
-                }
-                dansCstDouble=false;
-                if(autoriserCstDansRacine !== true){
-                    if(niveau === 0){
-                        /* cas d'erreur = "" */
                         return(logerreur(formaterErreurRev({
                             "__xst" : false,
                             "ind" : i,
-                            "__xme" : 'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',
+                            "__xme" : 'core 1264 la racine ne peut pas contenir des constantess ',
                             "type" : 'rev',
                             "texte" : texte,
                             "chaineTableau" : chaineTableau,
@@ -1285,7 +1274,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
                         })));
+                        
+                        return(logerreur({"__xst" : false,"id" : i,"__xva" : T,"__xme" : '1172 la racine ne peut pas contenir des constantes près de ' + presDe}));
                     }
+                }
+                dansCstDouble=false;
+                if(autoriserCstDansRacine === false && niveau===0 ){
+                    /* cas d'erreur = "" */
+                    return(logerreur(formaterErreurRev({
+                        "__xst" : false,
+                        "ind" : i,
+                        "__xme" : 'core 1194 functionToArray2 la racine ne peut pas contenir des constantes ',
+                        "type" : 'rev',
+                        "texte" : texte,
+                        "chaineTableau" : chaineTableau,
+                        "tabComment" : tabCommentaireEtFinParentheses,
+                        "tableauEntree" : tableauEntree,
+                        "quitterSiErreurNiveau" : quitterSiErreurNiveau,
+                        "autoriserCstDansRacine" : autoriserCstDansRacine
+                    })));
                 }
                 constanteQuotee=3;
                 constanteQuoteePrecedente=3;

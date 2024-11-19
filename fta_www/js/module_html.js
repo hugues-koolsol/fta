@@ -1,5 +1,5 @@
 /*
-var global_enteteTableau=[
+entête[
  ['id','id'                                 ,''], // 00
  ['val','__xva'                             ,''],
  ['typ','type'                              ,''],

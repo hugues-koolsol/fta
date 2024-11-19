@@ -303,6 +303,13 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
         }
     }else if("SequenceExpression" === element.type){
 
+        if(element.expressions.length>1 && parent.computed && parent.computed===true){
+            /*
+              tab[1,1] ne feut rien dire en js
+            */
+            return(astjs_logerreur({__xst:false,__xme:'0311 erreur traiteUneComposante un tableau t[1,2] n\'a pas de signification en js pour ' + element.type,element:element}));
+          
+        }
         for(i=0;i < element.expressions.length;i++){
             var obj1 = traiteUneComposante(element.expressions[i],niveau+2,parentEstCrochet,dansSiOuBoucle,element);
             if(obj1.__xst === true){
@@ -3317,28 +3324,32 @@ function analyse_fichier_log_acorn(jsonRet){
       }
      }
     }
-    if(jsonRet.fichier_erreur.indexOf('pos: ')>=0){
-     var temp=jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('pos: ')+5);
-     if(temp.indexOf(',')>=0){
-      temp=temp.substr(0,temp.indexOf(','));
-      try{
-          position=parseInt(temp,10);
-          if(jsonRet.__entree && jsonRet.__entree.texteSource){
-           if(jsonRet.__entree.texteSource.length>=position){
-            caractere_incorrecte=jsonRet.__entree.texteSource.substr(position,1);
-            logerreur({__xst:false,__xme:'erreur dans un source javascript caractere_incorrecte="'+caractere_incorrecte+'"'});
-            if(position-15>0){
-             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(position-15,30).replace(/\n/g,'\\n')+'"',plage:[position,position]});
-            }else{
-             logerreur({__xst:false,__xme:'erreur dans un source javascript proche de="'+jsonRet.__entree.texteSource.substr(0,30)+'"',plage:[position,position]});
-            }
-            return({__xst:true});
-           }
-          }
+    logerreur({__xst:false,__xme:'<b style="font-size:1rem;">- - - Détail des erreurs  du compilateur - - - </b><br />'+jsonRet.fichier_erreur , masquee:true});
 
-      }catch(e){
-      }
-     }
+    if(jsonRet.fichier_erreur.indexOf('pos: ')>=0){
+        var temp=jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('pos: ')+5);
+        if(temp.indexOf(',')>=0){
+            temp=temp.substr(0,temp.indexOf(','));
+            try{
+                position=parseInt(temp,10);
+                if(jsonRet.__entree && jsonRet.__entree.texteSource){
+                    if(jsonRet.__entree.texteSource.length>=position){
+                        caractere_incorrecte=jsonRet.__entree.texteSource.substr(position,1);
+                        var chaine='';
+                        if(position-15>0){
+                         chaine='proche de="'+jsonRet.__entree.texteSource.substr(position-15,30).replace(/\n/g,'\\n')+'"';
+                        }else{
+                         chaine='proche de="'+jsonRet.__entree.texteSource.substr(0,30)+'"';
+                        }
+                        logerreur({__xst:false,__xme:'erreur dans un source javascript en position '+position+' caractere_incorrecte="'+caractere_incorrecte+'" '+chaine});
+                        logerreur({__xst:true,plage:[position,position]});
+                        return({__xst:false});
+                    }
+                }
+
+            }catch(e){
+            }
+        }
     }
     
 
@@ -3409,6 +3420,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
             return({__xst:true,'__xva':JSON.parse(jsonRet.__xva),'commentaires':JSON.parse(jsonRet.commentaires)});
         }else{
             if(jsonRet.fichier_erreur){
+
                var obj=analyse_fichier_log_acorn(jsonRet);
                if(obj.__xst===true){
                }else{
@@ -3538,7 +3550,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
 
 
     
-    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs'},'texteSource':texteSource,'options':options};
+    var ajax_param={'call':{'lib':'js','file':'ast','funct':'recupererAstDeJs',opt:{"masquer_les_messages_du_serveur":true}},'texteSource':texteSource,'options':options};
     
     async function recupererAstDeJs1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
@@ -3555,13 +3567,18 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
      }else{
          var elem={};
          for(elem in donnees.__xms){
+/*
              logerreur({__xst:false,__xme:'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
+*/             
          }
          if(donnees.fichier_erreur){
+
              var obj=analyse_fichier_log_acorn(donnees);
              if(obj.__xst===true){
              }else{
+/*
               logerreur({__xst:false,__xme:'<pre>' + donnees.fichier_erreur.replace(/&/g,'&lt;').replace(/\n/,'<br />') + '</pre>'});
+*/
              }
              
 

@@ -29,7 +29,7 @@ input{
   font-size:var(--yyvtrt);
  }
 .yyfilterForm input:not([value=""]){background:yellow;}
-input:focus,textarea:focus,select:focus,button:focus{box-shadow:inset 0px 0px 7px;outline:none;}
+input:focus,select:focus,button:focus{box-shadow:inset 0px 0px 7px;outline:none;}
 input[type="radio"]{transform:translateY(-4px)scale(1.3);vertical-align:bottom;cursor:pointer;} 
 input[type="checkbox"]{transform:translateY(-2px)scale(1.4);vertical-align:sub;cursor:pointer;}
 input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:var(--yyvtrp);border;0;}
@@ -38,9 +38,9 @@ div{min-height:var(--yyvhmc);line-height:var(--yyvhmc);}
 /* table{border-collapse:collapse;border-spacing:1px 6px;} */
 textarea{
  width:90%;
- padding: var(--yyvtrp) var(--yyvtrp) var(--yyvtrp) 5px;
+ padding:  var(--yyvtrp) var(--yyvtrp) var(--yyvtrp) 5px;
  border-radius:4px;
- border:0px inset white; /* var(--yyvtrb) inset #DAE2E5; */
+ border:2px inset #DAE2E5; /* var(--yyvtrb) inset #DAE2E5; */
  box-shadow: #000 inset -5px -5px 14px;
  background-color:#ECEFF1;
  margin:var(--yyvtrm);
@@ -51,6 +51,7 @@ textarea{
  max-height: 80vh;
  white-space: pre;
  overflow:scroll;
+ 
 }
 
 a,button{
@@ -162,7 +163,7 @@ a:hover,button:hover{
  border:0;
 }
 dialog::backdrop{
- background-color:rgba(0,0,0,0.8);
+ background-color:rgba(0,0,0,0.5);
 }
 #__fermerModale1{
   position:absolute;

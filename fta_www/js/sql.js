@@ -7,7 +7,7 @@
   PRAGMA table_info('tbl_cibles')
   PRAGMA foreign_key_list('tbl_dossiers');
   
-  var global_enteteTableau=[
+entête[
   ['id','id'                                 ,''], // 00
   ['val','valeur'                            ,''],
   ['typ','type'                              ,''],

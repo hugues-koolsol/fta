@@ -2782,7 +2782,7 @@ function traitement_apres_recuperation_ast_de_php(ret){
   =====================================================================================================================
 */
 function recupereAstDePhp(texteSource,opt,f_traitement_apres_recuperation_ast_de_php){
-    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp'},'texteSource':texteSource,'opt':opt};
+    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp',opt:{masquer_les_messages_du_serveur:false}},'texteSource':texteSource,'opt':opt};
     async function recupererAstDePhp1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
@@ -2807,6 +2807,7 @@ function recupereAstDePhp(texteSource,opt,f_traitement_apres_recuperation_ast_de
                     astphp_logerreur({__xst:false,line:line});
                 }
             }
+
             if((donnees.__entree) && (donnees.__entree.hasOwnProperty('opt')) && (donnees.__entree.opt.hasOwnProperty('zone_php'))){
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.__entree.opt.zone_php);
             }else{
@@ -2832,9 +2833,7 @@ function transform_text_area_php_en_rev(nom_de_la_text_area_php,nom_de_la_text_a
 
     try{
         var ret = recupereAstDePhp(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php);
-        if(ret.__xst === true){
-            astphp_logerreur({__xst:true,__xme:'Le fichier php a été converti en rev'});
-        }else{
+        if(ret.__xst === false){
             astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});
             ret=false;
         }
