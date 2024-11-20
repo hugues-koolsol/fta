@@ -1830,6 +1830,7 @@ class interface1{
 //                console.log(j);
                 if(elem.mode && elem.mode === 'rev'){
                     if(contenu.substr((startPos - 2),1) === '('){
+                        /* 1833 hugues à vérifier */
                         a_inserer=' '.repeat((j + NBESPACESREV));
                     }else{
                         a_inserer=' '.repeat((j));

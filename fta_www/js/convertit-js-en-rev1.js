@@ -136,7 +136,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
             return(astjs_logerreur({__xst:false,__xme:'erreur traiteUneComposante 0095 pour ' + element.type,element:element}));
         }
     }else if('MemberExpression' === element.type){
-
+        debugger
         var obj1 = traiteMemberExpression1(element,niveau+1,element,'');
         if(obj1.__xst === true){
 
@@ -1308,17 +1308,21 @@ function traiteCallExpression1(element,niveau,parent,opt){
         esp1='';
     }
     var contenu='';
+    var le_contenu='';
     if(element.body){
 
-        niveau+=2;
-        var obj = TransformAstEnRev(element.body,niveau);
+        
+        var obj = TransformAstEnRev(element.body,niveau+2);
         if(obj.__xst === true){
 
             contenu=obj.__xva;
+            if(contenu!==''){
+             le_contenu=',contenu('+contenu+')'
+            }
         }else{
             return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteCallExpression1 pour body',element:element}));
         }
-        niveau-=2;
+        
     }
     var lesArguments='';
     if((element.arguments) && (element.arguments.length > 0)){
@@ -1395,12 +1399,20 @@ function traiteCallExpression1(element,niveau,parent,opt){
                 
                 if((element.callee.object) && (element.callee.object.type === 'Identifier')){
 
-                    if(contenu === ''){
+                    if(element.callee.property.type === 'Literal'){ // Symbol.iterator
+                        /* a['Symbol.iterator'](); => appelf(nomf(tableau(nomt(a),p('element.callee.property')))) */
+                        if(element.callee.object.type ==='Identifier'){ // a
+                            if(element.callee.hasOwnProperty('computed') && element.callee.computed===true){
+                                 t+='appelf(nomf(tableau(nomt('+element.callee.object.name+'),p('+element.callee.property.raw+'))))';
+                            }else{
+                                return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteCallExpression1 1411 ',element:element}));
+                            }
+                        }
 
-                        t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + ')';
                     }else{
-                        t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + '))';
+                        t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
                     }
+                    
                 }else if((element.callee.object) && (element.callee.object.type === 'Literal')){
 
                     if(contenu === ''){
@@ -1440,6 +1452,9 @@ function traiteCallExpression1(element,niveau,parent,opt){
                         }
                     }
                 }
+            }else if((element.callee.property.type === 'MemberExpression') ){
+
+
             }else if((element.callee.property.type === 'Literal') ){
                 debugger
             }else if((element.callee.property.type === 'ConditionalExpression') ){
@@ -1527,6 +1542,25 @@ function traiteCallExpression1(element,niveau,parent,opt){
                     */
                 }
             }else if(element.callee.object.type === 'Identifier'){
+                 var nom_de_l_objet=element.callee.object.name;
+                 if(element.callee.property && element.callee.property.type ==='MemberExpression'){
+                    var obj = traiteMemberExpression1(element.callee.property,niveau,element,'');
+                    if(obj.__xst===true){
+                        if(element.callee.hasOwnProperty('computed') && element.callee.computed===true){
+                         /* a[Symbol.iterator](); => appelf(nomf(a[Symbol.iterator])) */
+                             t+='appelf(nomf('+nom_de_l_objet+'['+obj.__xva+'])' + lesArguments + '' + le_contenu + ')';
+                        }else{
+                            return(astjs_logerreur({__xst:false,__xme:'1539 erreur dans traiteCallExpression1 ' + element.callee.property.type,element:element}));
+                        }
+
+                    }else{
+                        return(astjs_logerreur({__xst:false,__xme:'1538 erreur dans traiteCallExpression1 ' + element.callee.property.type,element:element}));
+                    }
+                  
+
+                 }
+                 
+
 
             }else if(element.callee.object.type === 'Literal'){
 
@@ -1764,7 +1798,7 @@ function traiteArrayExpression1(element,niveau){
             }else{
                 return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteArrayExpression1 1103 ',element:element}));
             }
-        }else if((element.elements[i].type === "BinaryExpression") || (element.elements[i].type === "UnaryExpression") || (element.elements[i].type === "ObjectExpression")){
+        }else if( (element.elements[i].type === "ConditionalExpression") ||  (element.elements[i].type === "BinaryExpression") || (element.elements[i].type === "UnaryExpression") || (element.elements[i].type === "ObjectExpression")){
 
             var obj1 = traiteUneComposante(element.elements[i],niveau,true,false,element);
             if(obj1.__xst === true){
@@ -2032,6 +2066,28 @@ function traiteMemberExpression1(element,niveau,parent){
                     return(astjs_logerreur({__xst:false,__xme:'erreur traiteMemberExpression1 1916 pour ' + element.object.type,element:element}));
 
                 }
+                
+            }else if(element.object.type === "AssignmentExpression"){
+                var objass = traiteAssignmentExpress1(element.object,niveau+1,{'sansLF':true});
+                if(objass.__xst === true){
+                    objTxt=objass.__xva;
+                    var prop = recupProp(element.property);
+                    if(prop.__xst === true){
+                        if(prop.__xva !== ''){
+                            t+=objTxt.substr(0,(objTxt.length - 1)) + ',prop(' + prop.__xva + '))';
+                        }else{
+                            t+=objTxt;
+                        }
+
+                    }else{
+                        return(astjs_logerreur({__xst:false,__xme:'erreur traiteAssignmentExpress1 2082 pour ' + element.type,element:element}));
+                    }
+
+                }else{
+                    return(astjs_logerreur({__xst:false,__xme:'erreur traiteAssignmentExpress1 1020 pour ' + element.type,element:element}));
+                }
+             
+                
             }else if(element.object.type === "ConditionalExpression"){
                 return(astjs_logerreur({__xst:false,__xme:'erreur traiteMemberExpression1 1897 : veuillez réécrire cette ligne ' + element.object.type,element:element}));
             }else{
@@ -2802,7 +2858,7 @@ function traiteDeclaration1(element,niveau){
                 }else{
                     return(astjs_logerreur({__xst:false,__xme:'erreur dans traiteUneComposante 0147 ',element:element}));
                 }
-            }else if(('UpdateExpression' === element.declarations[decl].init.type) || ("ThisExpression" === element.declarations[decl].init.type) || ("AssignmentExpression" === element.declarations[decl].init.type) || ("AwaitExpression" === element.declarations[decl].init.type)){
+            }else if(('SequenceExpression' === element.declarations[decl].init.type) || ('UpdateExpression' === element.declarations[decl].init.type) || ("ThisExpression" === element.declarations[decl].init.type) || ("AssignmentExpression" === element.declarations[decl].init.type) || ("AwaitExpression" === element.declarations[decl].init.type)){
 
                 var obj1 = traiteUneComposante(element.declarations[decl],niveau+1,false,false,element);
                 if(obj1.__xst === true){
@@ -3126,7 +3182,21 @@ function TransformAstEnRev(les_elements,niveau){
                     }else{
                         return(astjs_logerreur({__xst:false,__xme:'erreur dans TransformAstEnRev 1963',element:element}));
                     }
-                }else if((element.argument) && ((element.argument.type === 'ArrayExpression') || (element.argument.type === 'AssignmentExpression') || (element.argument.type === 'FunctionExpression') || (element.argument.type === 'ConditionalExpression') || (element.argument.type === 'LogicalExpression') || (element.argument.type === 'Identifier') || (element.argument.type === 'Literal') || (element.argument.type === 'BinaryExpression') || (element.argument.type === 'MemberExpression') || (element.argument.type === 'NewExpression') || (element.argument.type === 'UnaryExpression'))){
+                }else if(
+                   (element.argument) && (
+                    (element.argument.type === 'SequenceExpression') || 
+                    (element.argument.type === 'ArrayExpression') || 
+                    (element.argument.type === 'AssignmentExpression') || 
+                    (element.argument.type === 'FunctionExpression') || 
+                    (element.argument.type === 'ConditionalExpression') || 
+                    (element.argument.type === 'LogicalExpression') || 
+                    (element.argument.type === 'Identifier') || 
+                    (element.argument.type === 'Literal') || 
+                    (element.argument.type === 'BinaryExpression') || 
+                    (element.argument.type === 'MemberExpression') || 
+                    (element.argument.type === 'NewExpression') || 
+                    (element.argument.type === 'UnaryExpression')
+                    )){
 
                     var obj1 = traiteUneComposante(element.argument,niveau+1,false,false,element);
                     if(obj1.__xst === true){
@@ -3178,6 +3248,16 @@ function TransformAstEnRev(les_elements,niveau){
                     if(obj1.__xst === true){
 
                         t+='\n' + esp0 + 'throw(new(' + obj1.__xva + '))';
+                    }else{
+                        return(astjs_logerreur({__xst:false,__xme:'erreur pour TransformAstEnRev 1994 ' + element.argument.type,element:element}));
+                    }
+                }else if(element.argument.type === 'SequenceExpression'){
+
+                    var obj1 = traiteUneComposante(element.argument,niveau+1,false,false,element);
+                    if(obj1.__xst === true){
+
+                        t+='\n' + esp0 + 'throw(new(' + obj1.__xva + '))';
+
                     }else{
                         return(astjs_logerreur({__xst:false,__xme:'erreur pour TransformAstEnRev 1994 ' + element.argument.type,element:element}));
                     }

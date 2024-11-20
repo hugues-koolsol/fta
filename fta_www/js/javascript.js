@@ -1553,7 +1553,8 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
     var tabAffecte={};
     var signe='=';
     var numeroPar=0;
-    var j = (i + 1);
+    var j =0;
+
     for(j=i + 1;j < l01 && tab[j][3] > tab[i][3];j++){
         if(tab[j][7] === tab[i][0]){
             if((tab[j][1] === '#') && (tab[j][2] === 'f')){
@@ -1600,25 +1601,30 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
                 t+='' + objInstructionGauche.__xva + '+=' + droite;
             }else{
                 var droite=objInstructionDroite.__xva;
-                if((droite.length >= 2) && (droite.substr(0,1) === '(') && (droite.substr((droite.length - 1),1) === ')') && ((tab[tabAffecte['par1'][0]][1] === 'concat') || (tab[tabAffecte['par1'][0]][1] === 'plus') || (tab[tabAffecte['par1'][0]][1] === 'moins'))){
-                    /*
-                      pas besoin de parenthèses en plus pour un concat
-                    */
-                    droite=droite.substr(1,(droite.length - 2));
-                }
                 t+=objInstructionGauche.__xva + signe + droite;
+            }
+            
+            if(tabAffecte['par2'] ){
+                 debugger
+                 if(tabAffecte['par2'][1]==='prop' ){
+                     if(tabAffecte['par2'][2]==='f'){
+                          if(tab[tabAffecte['par2'][0]+1][2]==='c'){
+                            t='('+t+').'+tab[tabAffecte['par2'][0]+1][1];
+                          }else{
+                            return(logerreur({__xst:false,__xva:t,id:i,tab:tab,message:'1610 dans js_traite_affecte '}));
+                          }
+                     }else{
+                         return(logerreur({__xst:false,__xva:t,id:i,tab:tab,message:'1613 dans js_traite_affecte '}));
+                     }
+                 }else{
+                     return(logerreur({__xst:false,__xva:t,id:i,tab:tab,message:'1616 dans js_traite_affecte '}));
+                 }
             }
             if( !(dansInitialisation)){
                 t+='' + terminateur + '';
             }
         }else{
-            return(logerreur({
-                __xst:false,
-                __xva:t,
-                id:i,
-                tab:tab,
-                message:'dans appelf de "affecte" ou "dans" 0802 '
-            }));
+            return(logerreur({__xst:false,__xva:t,id:i,tab:tab,message:'1611 dans js_traite_affecte de "affecte" ou "dans" '}));
         }
     }else{
         return(logerreur({
@@ -2341,8 +2347,15 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                 }else{
                     logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'1069 erreur sur appel de fonction nom "' + tab[j][1] + '"'});
                 }
+            }else if((tab[j + 1][1] === 'tableau') && (tab[j + 1][2] === 'f')){
+                var objTableau = js_traiteTableau1(tab,j+1,true,niveau,false);
+                if(objTableau.__xst === true){
+                    nomFonction=objTableau.__xva;
+                }else{
+                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'2349 erreur sur appel de fonction nom "' + tab[j][1] + '"'});
+                }
             }else{
-             debugger
+                debugger
             }
             break;
         }else if((tab[j][1] === 'flechee') && (tab[j][2] === 'f') && (tab[j][3] === (tab[i][3] + 1))){
