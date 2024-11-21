@@ -9,7 +9,7 @@ const NBESPACESSOURCEPRODUIT=4;
 var globale_LangueCourante='fr';
 var global_messages={
     "errors" : [],
-    "warnings" : [],
+    "avertissements" : [],
     "infos" : [],
     "masquees":[],
     "lines" : [],
@@ -31,7 +31,7 @@ function raz_messages(zone_message){
     }
     global_messages={
         "errors" : [],
-        "warnings" : [],
+        "avertissements" : [],
         "infos" : [],
         "masquees":[],
         "lines" : [],
@@ -55,7 +55,11 @@ function logerreur(o){
     if(o.hasOwnProperty(__xst)){
         if(o.__xst === false){
             if(o.hasOwnProperty('__xme')){
-                global_messages['errors'].push({ "__xme":o.__xme , "masquee":masquee });
+                if(o.hasOwnProperty('__xav') && o.__xav===true){
+                  global_messages['avertissements'].push({ "__xme":o.__xme , "masquee":masquee });
+                }else{
+                  global_messages['errors'].push({ "__xme":o.__xme , "masquee":masquee });
+                }
             }
             if(o.hasOwnProperty('message')){
                 global_messages['errors'].push({ "__xme":o.message , "masquee":masquee });
@@ -73,9 +77,9 @@ function logerreur(o){
                 if(o.__xme !== ''){
                     global_messages['infos'].push({ "__xme":o.__xme , "masquee":masquee });
                 }
-            }else if(o.hasOwnProperty('warning')){
-                if(o.warning !== ''){
-                    global_messages['warnings'].push({ "__xme":o.warning , "masquee":masquee });
+            }else if(o.hasOwnProperty('__xav')){
+                if(o.__xav !== ''){
+                    global_messages['avertissements'].push({ "__xav":o.__xav , "masquee":masquee });
                 }
             }else{
                 /*on ne fait rien */
@@ -1769,7 +1773,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte !== ''){
                     if(niveau === 0){
                         return(logerreur(formaterErreurRev({
-                            "erreur_conversion_chaineTableau_en_json" : true,
                             "__xst" : false,
                             "ind" : i,
                             "__xme" : '1786 une fermeture de parenthése ne doit pas être au niveau 0',

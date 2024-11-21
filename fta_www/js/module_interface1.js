@@ -131,18 +131,18 @@ class interface1{
         if(il_existe_des_messages_masques===true){
           zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:'+this.#nom_de_la_variable+'.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
         }
-        while(global_messages.warnings.length > 0){
-            if( global_messages.warnings[i].hasOwnProperty('__xme')){
-                if(global_messages.warnings[i].hasOwnProperty('masquee') && global_messages.warnings[i].masquee===true){
-                    zon.innerHTML+='<div class="yyavertissement" style="display:none;" data-masquable="1">' + global_messages.warnings[i].__xme + '</div>';
+        while(global_messages.avertissements.length > 0){
+            if( global_messages.avertissements[i].hasOwnProperty('__xav')){
+                if(global_messages.avertissements[i].hasOwnProperty('masquee') && global_messages.avertissements[i].masquee===true){
+                    zon.innerHTML+='<div class="yyavertissement" style="display:none;" data-masquable="1">' + global_messages.avertissements[i].__xav + '</div>';
                     il_existe_des_messages_masques=true;
                 }else{
-                    zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i].__xme + '</div>';
+                    zon.innerHTML+='<div class="yyavertissement">' + global_messages.avertissements[i].__xav + '</div>';
                 }
             }else{
-                zon.innerHTML+='<div class="yyavertissement">' + global_messages.warnings[i] + '</div>';
+                zon.innerHTML+='<div class="yyavertissement">' + global_messages.avertissements[i] + '</div>';
             }
-            global_messages.warnings.splice(0,1);
+            global_messages.avertissements.splice(0,1);
             affichagesPresents=true;
         }
         while(global_messages.infos.length > 0){
@@ -1735,7 +1735,7 @@ class interface1{
         }
         global_messages={
             'errors':[],
-            'warnings':[],
+            'avertissements':[],
             'infos':[],
             'lines':[],
             'tabs':[],

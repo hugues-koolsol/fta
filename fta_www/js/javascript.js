@@ -44,7 +44,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
         espcLigne='';
         dansInitialisation=false;
     }
-    for(i=id;(i < l01) && (tab[i][3] >= tab[id][3]);i=i + 1){
+    for(i=id;i < l01 && (tab[i][3] >= tab[id][3]);i++){
         if(tab[i][7] === id_du_parent){
          
          
@@ -58,22 +58,24 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 t+=espcLigne;
                 t+=maConstante(tab[i + 1])+ terminateur;             
                 t+=espcLigne;
-            }else if(((tab[i][1] === 'break') || (tab[i][1] === 'continue') || ('useStrict' === tab[i][1]) || ('debugger' === tab[i][1])) && (tab[i][2] === 'f')){
+            }else if((tab[i][1] === 'break'
+                     || tab[i][1] === 'continue'
+                     || 'useStrict' === tab[i][1]
+                     || 'debugger' === tab[i][1])
+                     && tab[i][2] === 'f'
+            ){
+                
                 if('useStrict' === tab[i][1]){
                     t+=espcLigne;
                     t+='"use strict"' + terminateur + '';
                 }else{
+                    t+=espcLigne;
                     if(tab[i][8] === 0){
-                        t+=espcLigne;
                         t+=tab[i][1] + '' + terminateur + '';
+                    }else if(tab[i][8] === 1 && tab[i][1] === 'break' && tab[i+1][2]==='c' ){
+                        t+=tab[i][1] + ' '+tab[i+1][1]+' ' + terminateur + '';
                     }else{
-                        return(logerreur({
-                            __xst:false,
-                            __xva:t,
-                            id:i,
-                            tab:tab,
-                            __xme:'erreur dans un ' + tab[i][1] + ' qui doit être sous le format ' + tab[i][1] + '() strictement'
-                        }));
+                        return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'erreur dans un ' + tab[i][1] + ' qui doit être sous le format ' + tab[i][1] + '() strictement'}));
                     }
                 }
             }else if((tab[i][1] === 'revenir') && (tab[i][2] === 'f')){
@@ -1340,19 +1342,36 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
             }else if((tab[i][1] === 'throw') && (tab[i][2] === 'f')){
                 /* todo trouver un mot pour throw */
                 t+=espcLigne;
-                if((tab[i + 1][1] === 'new') && (tab[i + 1][8] === 1) && (tab[i + 2][1] === 'appelf')){
-                    obj=js_traiteAppelFonction(tab,(i + 2),true,niveau,false);
-                    if(obj.__xst === true){
-                        t+='throw new ' + obj.__xva;
-                    }else{
-                        return(logerreur({
-                            __xst:false,
-                            __xva:t,
-                            id:i,
-                            tab:tab,
-                            message:'erreur dans une déclaration'
-                        }));
-                    }
+                if((tab[i + 1][1] === 'new') ){
+                   if((tab[i + 1][8] === 1) && (tab[i + 2][1] === 'appelf')){
+                        obj=js_traiteAppelFonction(tab,(i + 2),true,niveau,false);
+                        if(obj.__xst === true){
+                            t+='throw new ' + obj.__xva;
+                        }else{
+                            return(logerreur({
+                                __xst:false,
+                                __xva:t,
+                                id:i,
+                                tab:tab,
+                                message:'erreur dans une déclaration'
+                            }));
+                        }
+                   }
+                }else if(( tab[i + 1][1] === 'virgule' || 'testEnLigne' === tab[i + 1][1] ) && (tab[i + 1][2] === 'f')){
+
+                   var objOperation = TraiteOperations2(tab,tab[i + 1][0],niveau,0);
+                   if(objOperation.__xst === true){
+                       t+='throw ' + objOperation.__xva ;
+                   }else{
+                       return(logerreur({
+                           __xst:false,
+                           __xva:t,
+                           id:i,
+                           tab:tab,
+                           message:'erreur 1371 sur throw '
+                       }));
+                   }
+                 
                 }else if((tab[i + 1][1] === 'appelf') && (tab[i + 1][2] === 'f')){
                     obj=js_traiteAppelFonction(tab,(i + 1),true,niveau,false);
                     if(obj.__xst === true){
@@ -1517,6 +1536,35 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 }
              
              
+            }else if( ("etiquette" === tab[i][1]) && (tab[i][2] === 'f')){
+                var nom_etiquette='';
+                var contenu_etiquette='';
+                for(j=i + 1;j < l01 && tab[j][3] > tab[i][3];j++){
+                    if(tab[j][7] === tab[i][0]){
+                     
+                        if(tab[j][2]==='c'){
+                             nom_etiquette=tab[j][1];
+                        }else if(tab[j][1]==='contenu' && tab[j][2]==='f'){
+                            if(tab[j][8]>0){
+                                var obj = js_tabTojavascript1(tab,j+1,false,false,(niveau + 1));
+                                if(obj.__xst === true){
+                                    contenu_etiquette+=obj.__xva;
+                                }else{
+                                    return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript.js traitement etiquette contenu mauvais ' + JSON.stringify(tab[i])}));
+                                }
+                            }
+                        }
+                    }
+                }
+                if(nom_etiquette!==''){
+                    t+=espcLigne;
+                    t+=nom_etiquette+':'+contenu_etiquette ;
+                 
+                }else{
+                    return(logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'javascript.js traitement etiquette contenu mauvais ' + JSON.stringify(tab[i])}));
+                }
+             
+             
             }else if( tab[i][2] === 'c'){
                     t+=maConstante(tab[i]);
             }else{
@@ -1588,6 +1636,7 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
     var objInstructionGauche = js_traiteInstruction1(tab,niveau,tabAffecte['par0'][0]);
     if(objInstructionGauche.__xst === true){
 
+
         var objInstructionDroite = js_traiteInstruction1(tab,niveau,tabAffecte['par1'][0]);
         if(objInstructionDroite.__xst === true){
             /*
@@ -1605,7 +1654,7 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
             }
             
             if(tabAffecte['par2'] ){
-                 debugger
+
                  if(tabAffecte['par2'][1]==='prop' ){
                      if(tabAffecte['par2'][2]==='f'){
                           if(tab[tabAffecte['par2'][0]+1][2]==='c'){
@@ -2127,13 +2176,8 @@ function js_traiteInstruction1(tab,niveau,id){
      }
      
     }else{
-        return(logerreur({
-            __xst:false,
-            __xva:t,
-            id:id,
-            tab:tab,
-            __xme:'erreur sur js_traiteInstruction1 1412 pour ' + tab[id][1]
-        }));
+     
+        return(logerreur({__xst:false,__xva:t,id:id,tab:tab,__xme:'erreur sur js_traiteInstruction1 1412 pour ' + tab[id][1]}));
     }
     return({__xst:true,__xva:t});
 }
@@ -2248,36 +2292,29 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                             if(obj.__xst === true){
                                 textObj+='"' + tab[j + 1][1] + '" : ' + obj.__xva;
                             }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:id,
-                                    tab:tab,
-                                    message:'dans js_traiteDefinitionObjet il y a un problème'
-                                }));
+                                return(logerreur({__xst:false,__xva:t,id:id,tab:tab,message:'dans js_traiteDefinitionObjet il y a un problème'}));
                             }
+                        }else if(tab[j+2][1] === 'new'){
+
+                            obj=js_traiteAppelFonction(tab,(j + 3),true,niveau,false);
+                            if(obj.__xst === true){
+                                textObj+=' new ' + obj.__xva;
+                            }else{
+                                return(logerreur({__xst:false,__xva:t,id:i,tab:tab,message:'2367 erreur dans TraiteOperations2'}));
+                            }
+                         
                         }else if(tableau_des_opérateurs_js.hasOwnProperty(tab[j+2][1])){
                             var objOperation = TraiteOperations2(tab,(j + 2),0,0);
                             if(objOperation.__xst === true){
                                 var droite=objOperation.__xva;
                                 textObj+='"' + tab[j + 1][1] + '" : ' + droite;
                             }else{
-                                return(logerreur({
-                                    __xst:false,
-                                    __xva:t,
-                                    id:j,
-                                    tab:tab,
-                                    message:'erreur js_traiteDefinitionObjet 1496 sur des opérations '
-                                }));
+                                return(logerreur({__xst:false,__xva:t,id:j,tab:tab,message:'erreur js_traiteDefinitionObjet 1496 sur des opérations '}));
                             }
+                            
+                            
                         }else{
-                            return(logerreur({
-                                __xst:false,
-                                __xva:t,
-                                id:id,
-                                tab:tab,
-                                __xme:'dans js_traiteDefinitionObjet, 1492 "' + tab[j + 2][1] + '"'
-                            }));
+                            return(logerreur({__xst:false,__xva:t,id:id,tab:tab,__xme:'1492 dans js_traiteDefinitionObjet "' + tab[j + 2][1] + '"'}));
                         }
                     }else{
                         textObj+='"'+tab[j + 1][1]+ '" : ' + maConstante(tab[j + 2]);
@@ -2345,15 +2382,31 @@ function js_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau,recursi
                     enfantTermineParUnePropriete=obj1.termineParUnePropriete;
                     aDesAppelsRecursifs=true;
                 }else{
-                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'1069 erreur sur appel de fonction nom "' + tab[j][1] + '"'});
+                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'1069 erreur sur appel de fonction "' + tab[j][1] + '"'});
                 }
             }else if((tab[j + 1][1] === 'tableau') && (tab[j + 1][2] === 'f')){
                 var objTableau = js_traiteTableau1(tab,j+1,true,niveau,false);
                 if(objTableau.__xst === true){
                     nomFonction=objTableau.__xva;
                 }else{
-                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'2349 erreur sur appel de fonction nom "' + tab[j][1] + '"'});
+                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'2349 erreur sur appel de tableau "' + tab[j][1] + '"'});
                 }
+            }else if((tab[j + 1][1] === 'testEnLigne') && (tab[j + 1][2] === 'f')){
+                var objTableau = js_traiteInstruction1(tab,niveau,j+1)
+                if(objTableau.__xst === true){
+                    nomFonction='('+objTableau.__xva+')';
+                }else{
+                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'2401 erreur sur test en ligne "' + tab[j][1] + '"'});
+                }
+             
+            }else if((tab[j + 1][1] === 'virgule') && (tab[j + 1][2] === 'f')){
+                var objOperation = TraiteOperations2(tab,j+1,niveau,0);
+                if(objOperation.__xst === true){
+                    nomFonction='('+objOperation.__xva+')';
+                }else{
+                    logerreur({__xst:false,__xva:t,id:i,tab:tab,__xme:'2409 erreur sur test en ligne "' + tab[j][1] + '"'});
+                }
+             
             }else{
                 debugger
             }
@@ -2789,7 +2842,8 @@ https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Operato
 type_operateur=1  => un seul    : il ne doit y avoir qu'une seule opérande , exemple : non(x), typeof(y), void(z) ...
 type_operateur=2  => deux       : il ne doit y avoir 2 opérandes strictement exemple : modulo(x,y), puissance(x,y)....
 type_operateur=m2 => multiple 2 : il doit y avoir au moins 2 opérandes exemple : mult(2,3,4) = 24
-type_operateur=m1 => multiple 1 : il doit y avoir au moins 1 opérande exemple : moins(1) = -1, moins(2,1,1)=2-1-1=0
+type_operateur=m1 => multiple 1 : il doit y avoir au moins 1 opérande  exemple : moins(1) = -1, moins(2,1,1)=2-1-1=0
+type_operateur=m0 => multiple 0 : les opérandes ne sont pas obligatoires exemple : condition()
 */
 var tableau_des_opérateurs_js={
  'mult'                   : {__xva:'*',type_operateur:'m2',precedence:13},
@@ -2798,6 +2852,7 @@ var tableau_des_opérateurs_js={
  'plus'                   : {__xva:'+',type_operateur:'m1',precedence:12},
  'moins'                  : {__xva:'-',type_operateur:'m1',precedence:12},
  'concat'                 : {__xva:'+',type_operateur:'m2',precedence:12},
+ 'virgule'                : {__xva:',',type_operateur:'m2',precedence:1},
  'puissance'              : {__xva:'**',type_operateur:2,precedence:14},
  'etBin'                  : {__xva:'&',type_operateur:2,precedence:8},
  'ou_ex_bin'              : {__xva:'^',type_operateur:2,precedence:7},
@@ -2817,8 +2872,9 @@ var tableau_des_opérateurs_js={
  /* opérateurs unaires */
  'void'                   : {__xva:'void'       ,type_operateur:1,precedence:15},        
  'Typeof'                 : {__xva:'typeof '    ,type_operateur:1,precedence:15},
+ 'new'                    : {__xva:'new '    ,type_operateur:1,precedence:18},
  'non'                    : {__xva:'!'      ,type_operateur:1,precedence:15},
- 'condition'              : {__xva:''       ,type_operateur:1,precedence:19},
+ 'condition'              : {__xva:''       ,type_operateur:'m0',precedence:19},
  /* opérateurs comparaison */
  'egalstricte'            : {__xva:'===',type_operateur:2,precedence:9},
  'egal'                   : {__xva:'==',type_operateur:2,precedence:9},
@@ -2829,12 +2885,15 @@ var tableau_des_opérateurs_js={
  'infeg'                  : {__xva:'<=',type_operateur:2,precedence:10},
  'supeg'                  : {__xva:'>=',type_operateur:2,precedence:10},
  'cle_dans_objet'         : {__xva:'in',type_operateur:2,precedence:10},
+ 
  /* cas spéciaux */
  'appelf'                 : {__xva:'@',type_operateur:-1,precedence:18},
  'defTab'                 : {__xva:'@',type_operateur:-1,precedence:18},
  'tableau'                : {__xva:'@',type_operateur:-1,precedence:18},
  'testEnLigne'            : {__xva:'@',type_operateur:-1,precedence:3},
  'affecte'                : {__xva:'@',type_operateur:-1,precedence:2},
+ 'affectop'               : {__xva:'@',type_operateur:-1,precedence:2},
+ 'obj'                    : {__xva:'@',type_operateur:-1,precedence:2},
  
 };
 
@@ -2876,7 +2935,7 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
             debugger
         }else{
          
-            if(tab[id][2]==='f' && ( tab[id][1]==='appelf' ||  tab[id][1]==='defTab' ||  tab[id][1]==='tableau' ||  tab[id][1]==='testEnLigne'  ||  tab[id][1]==='affecte' )){ //  
+            if(tab[id][2]==='f' && ( tab[id][1]==='appelf' ||  tab[id][1]==='defTab' ||  tab[id][1]==='tableau' ||  tab[id][1]==='testEnLigne'  ||  tab[id][1]==='affecte'  ||  tab[id][1]==='affectop' ||  tab[id][1]==='obj' )){ //  
                 if(tab[id][1]==='appelf'){
                     var objfnt = js_traiteAppelFonction(tab,id,true,niveau,false);
                     if(objfnt.__xst === true){
@@ -2905,12 +2964,20 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                     }else{
                         return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3279 dans une operation pour un testEnLigne "' + tab[id][1] + '"'}));
                     }
-                }else if(tab[id][1]==='affecte'){
+                }else if(tab[id][1]==='affecte' || tab[id][1]==='affectop'  ){
                     var obj = js_traite_affecte(tab,id,niveau,true,'','');
                     if(obj.__xst === true){
                         return({__xva:obj.__xva,__xst:true});
                     }else{
-                        return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3493 dans une operation pour un affecte "' + tab[id][1] + '"'}));
+                        return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3493 dans une operation pour un affecte ou affectop "' + tab[id][1] + '"'}));
+                    }
+                }else if( tab[id][1]==='obj'  ){
+
+                    var obj = js_traiteDefinitionObjet(tab,id,true,niveau);
+                    if(obj.__xst === true){
+                        return({__xva:obj.__xva,__xst:true});
+                    }else{
+                        return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3493 dans une operation pour un affecte ou affectop "' + tab[id][1] + '"'}));
                     }
                  
                 }
@@ -2920,6 +2987,11 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
         }
     }
     var operateur_principal=oop.__xva;
+    if(operateur_principal===','){ // 'virgule' est une plaie
+
+        logerreur({__xst:true,__xav:'2972 l\'opérateur virgule est une plaie'})
+    }
+
     
     for(i=id + 1;(i < l01) && (tab[i][3] > tab[id][3]);i++){
         if(tab[i][7] === id){
@@ -2929,6 +3001,7 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                       || (oop.type_operateur===2 && tab[id][8]===2) 
                       || (oop.type_operateur==='m2' && tab[id][8]>=2)
                       || (oop.type_operateur==='m1' && tab[id][8]>=1)
+                      || (oop.type_operateur==='m0' && tab[id][8]>=0)
                      )
                  ){
                      debugger
@@ -2978,10 +3051,14 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                              if(objOperation.__xst === false){
                                  return(logerreur({__xst:false,__xme:' erreur sur TraiteOperations2 4248'}));
                              }
-                             if(tab[tab[i][7]][8]===1 && operateur_principal==='' ){
+                             if(tab[tab[i][7]][8]===1 && ( operateur_principal===''  ) ){
                                  t+=objOperation.__xva;
                              }else{
-                                 t+=operateur_principal+'('+objOperation.__xva+')';
+                                 if( operateur_principal==='new '){
+                                     t+=operateur_principal+objOperation.__xva;
+                                 }else{
+                                     t+=operateur_principal+'('+objOperation.__xva+')';
+                                 }
                              }
                          }
                      }
@@ -2993,6 +3070,15 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                  premier_operande=false;
             }else{
                 t+=' ' + operateur_principal + ' ';
+                if(operateur_principal==='' && tab[tab[i][7]][1]==='condition' && tab[tab[i][7]][8]>=2 ){
+                    /* 
+                      une condition peut être de la forme : 
+                      for(i=0;i<5,j<3;i++,j++){} 
+                      dans ce cas, à la fin j=3, ce n'est pas un ou car les 2 instructions sont exécutées 
+                      l'opérateur virgule n'est vraiment pas à conseiller
+                    */
+                    t+=',';
+                }
             }
             if(tab[i][2] === 'c'){
                 t+=maConstante(tab[i]);
@@ -3017,7 +3103,11 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                         t+='('+objOperation.__xva+')';
                     }else{
                         if(tableau_des_opérateurs_js[tab[i][1]].__xva===''){
-                            t+='('+objOperation.__xva+')';
+                            if(tab[id][1]==='condition' && tab[i][1]==='condition'){
+                                t+=objOperation.__xva;
+                            }else{
+                                t+='('+objOperation.__xva+')';
+                            }
                         }else{
                             t+=objOperation.__xva;
                         }
@@ -3091,16 +3181,26 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                     }));
                 }
              
-            }else if(tab[i][1] === 'affecte'){
+            }else if(tab[i][1] === 'affecte' || tab[i][1] === 'affectop'){
                 var obj = js_traite_affecte(tab,i,niveau,true,'','');
                 if(obj.__xst === true){
                     t+='('+obj.__xva+')';
                 }else{
-                    return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3434 dans une operation pour un affecte "' + tab[i][1] + '"'}));
+                    return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3434 dans une operation pour un affecte ou affectop "' + tab[i][1] + '"'}));
+                }
+            }else if( tab[i][1] === 'obj'  ){
+
+                var obj = js_traiteDefinitionObjet(tab,i,true,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(logerreur({__xst:false,__xva:t,id:id,__xme:'erreur 3493 dans une operation pour un obj "' + tab[id][1] + '"'}));
                 }
              
              
+             
             }else{
+                debugger
                 return(logerreur({__xst:false,__xme:'fonction du premier paramètre non reconnue TraiteOperations2 4392 "' + JSON.stringify(tab[i]) + '"',tab:tab,id,i}));
             }
         }

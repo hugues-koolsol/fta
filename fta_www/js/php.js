@@ -1058,7 +1058,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
           // 
           if(php_contexte_commentaire_html===true){
            t+=espacesn(true,niveau)+'<!-- '+traiteCommentaire2(tab[i][13],niveau,i)+' -->';
-           php_logerr({__xst:true,id:i,tab:tab,warning:'Attention, danger, un commentaire est directement dans la racine de source <pre>'+tab[i][13]+'</pre>'});
+           php_logerr({__xst:true,id:i,tab:tab,__xav:'Attention, danger, un commentaire est directement dans la racine de source <pre>'+tab[i][13]+'</pre>'});
           }else{
            t+=espacesn(true,niveau)+'/*'+traiteCommentaire2(tab[i][13],niveau,i)+'*/';
           }

@@ -58,7 +58,7 @@ function reprendreEtRecompiler(){
     enregistrer2();
 }
 function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommentairesOK){
-    var lienReprendre='<div class="yywarning">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre</a> </div>';
+    var lienReprendre='<div class="yyinfo">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre</a> </div>';
     var tab1 = document.getElementById(zoneSource).value.split('\n');
     var tab2 = document.getElementById(zoneNormalisee).value.split('\n');
     if(tab1.length == tab2.length){
