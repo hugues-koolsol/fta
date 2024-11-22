@@ -531,6 +531,7 @@ class traitements_sur_html{
      /*
      on retourne du html "pur"
      */
+     t=t.replace(/'¶LF¶'/g,'\n').replace(/'¶CR¶'/g,'\n');
      return({__xst:true,__xva:t,'dernierEstTexte':dernierEstTexte});
     }
     /*
