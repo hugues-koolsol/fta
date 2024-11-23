@@ -6,7 +6,7 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
     __gi1.raz_des_messages();
     var a = document.getElementById(chp_rev_source);
     var startMicro = performance.now();
-    var tableau1 = iterateCharacters2(a.__xva);
+    var tableau1 = iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
     var endMicro = performance.now();
     var startMicro = performance.now();

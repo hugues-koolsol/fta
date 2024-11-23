@@ -238,6 +238,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
                     recharger_la_page(BNF.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
                 }
+                
 
 
             }
@@ -246,13 +247,33 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             if($fd=fopen($nomCompletSource,'w')){
 
-                /*       echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] , true ) . '</pre>' ; exit(0);*/
+//                echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
                 $ret=fwrite($fd,$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
 
                 if($ret !== false){
 
                     fclose($fd);
+                    
                     ajouterMessage('succes',__LINE__.' : Le généré a bien été écrit sur le disque');
+                    
+                    /* si on est dans fta, que l'utilisateur=1 et que le dossier =1, on écrit le source rev aussi */
+//                    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+                    if(APP_KEY==='fta' && $_SESSION[APP_KEY]['sess_id_utilisateur_init']===1 && $__valeurs['T0.chx_dossier_id_source'] === 1){
+                        $nomCompletSource.='.rev';
+                        if($fd=fopen($nomCompletSource,'w')){
+                            $ret=fwrite($fd,$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']);
+                            if($ret !== false){
+
+                                fclose($fd);
+                                ajouterMessage('succes',__LINE__.' : le rev aussi a été écrit sur disque');
+                            }else{
+                                ajouterMessage('erreur',__LINE__.' le fichier rev n\'a pas pu être écrit');
+                            }
+                        }else{
+                            ajouterMessage('erreur',__LINE__.' le fichier rev n\'a pas pu être ouvert');
+                        }
+                    }
+                    
 
                 }else{
 

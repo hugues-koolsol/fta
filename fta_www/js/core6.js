@@ -1,3 +1,4 @@
+
 "use strict";
 const DEBUTCOMMENTAIRE='#';
 const DEBUTBLOC='@';
@@ -11,7 +12,7 @@ var global_messages={
     "errors" : [],
     "avertissements" : [],
     "infos" : [],
-    "masquees":[],
+    "masquees" : [],
     "lines" : [],
     "tabs" : [],
     "ids" : [],
@@ -30,19 +31,19 @@ function raz_messages(zone_message){
         document.getElementById(zone_message).innerHTML='';
     }
     global_messages={
-        "errors" : [],
-        "avertissements" : [],
-        "infos" : [],
-        "masquees":[],
-        "lines" : [],
-        "tabs" : [],
-        "ids" : [],
-        "ranges" : [],
-        "plages" : [],
-        "positions_caracteres" : [],
-        "calls" : '',
-        "data" : {"matrice" : [],"tableau" : [],"sourceGenere" : ''}
-    };
+    "errors" : [],
+    "avertissements" : [],
+    "infos" : [],
+    "masquees" : [],
+    "lines" : [],
+    "tabs" : [],
+    "ids" : [],
+    "ranges" : [],
+    "plages" : [],
+    "positions_caracteres" : [],
+    "calls" : '',
+    "data" : {"matrice" : [],"tableau" : [],"sourceGenere" : ''}
+};
 }
 /*
   =====================================================================================================================
@@ -50,36 +51,35 @@ function raz_messages(zone_message){
   =====================================================================================================================
 */
 function logerreur(o){
-    var masquee=o.hasOwnProperty('masquee')?o.masquee:false;
-    
+    var masquee = o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false );
     if(o.hasOwnProperty(__xst)){
         if(o.__xst === false){
             if(o.hasOwnProperty('__xme')){
-                if(o.hasOwnProperty('__xav') && o.__xav===true){
-                  global_messages['avertissements'].push({ "__xme":o.__xme , "masquee":masquee });
+                if(o.hasOwnProperty('__xav') && o.__xav === true){
+                    global_messages['avertissements'].push({"__xme" : o.__xme,"masquee" : masquee});
                 }else{
-                  global_messages['errors'].push({ "__xme":o.__xme , "masquee":masquee });
+                    global_messages['errors'].push({"__xme" : o.__xme,"masquee" : masquee});
                 }
             }
             if(o.hasOwnProperty('message')){
-                global_messages['errors'].push({ "__xme":o.message , "masquee":masquee });
+                global_messages['errors'].push({"__xme" : o.message,"masquee" : masquee});
             }
             if(o.hasOwnProperty('id')){
                 global_messages['ids'].push(o.id);
             }
             if(o.hasOwnProperty('__xms')){
                 for(var i in o.__xms){
-                    global_messages['errors'].push({ "__xme":o.o.__xms[i] , "masquee":masquee });
+                    global_messages['errors'].push({"__xme" : o.o.__xms[i],"masquee" : masquee});
                 }
             }
         }else{
             if(o.hasOwnProperty(__xme)){
                 if(o.__xme !== ''){
-                    global_messages['infos'].push({ "__xme":o.__xme , "masquee":masquee });
+                    global_messages['infos'].push({"__xme" : o.__xme,"masquee" : masquee});
                 }
             }else if(o.hasOwnProperty('__xav')){
                 if(o.__xav !== ''){
-                    global_messages['avertissements'].push({ "__xav":o.__xav , "masquee":masquee });
+                    global_messages['avertissements'].push({"__xav" : o.__xav,"masquee" : masquee});
                 }
             }else{
                 /*on ne fait rien */
@@ -106,6 +106,9 @@ function logerreur(o){
        //* à faire ? , à voir 
   }
   
+
+
+
 */
     return o;
 }
@@ -485,11 +488,11 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             }
             /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
             if(fichierRev0){
-                ligne=tab[tab.length - 1].replace(/ /g,'');
+                ligne=tab[tab.length-1].replace(/ /g,'');
                 if(ligne !== ''){
                     tab.push(unBloc);
                 }else{
-                    tab[tab.length - 1]=unBloc;
+                    tab[tab.length-1]=unBloc;
                 }
             }
             /**/
@@ -562,7 +565,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             if(ne_contient_que_des_egals === true){
                 calcul=117 - 2 * niveau * nbEspacesSrc1;
                 if(calcul > 0){
-                    newTab[i]='  ' + ' '.repeat(niveau * nbEspacesSrc1) + '='.repeat(calcul);
+                    newTab[i]='  ' + (' '.repeat(niveau * nbEspacesSrc1)) + ('='.repeat(calcul));
                 }
             }
         }
@@ -702,7 +705,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t+='\'' + strToHtml(chaine) + '\'';
+                    t+='\'' + (strToHtml(chaine)) + '\'';
                 }else{
                     t+='\'' + chaine + '\'';
                 }
@@ -712,7 +715,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t+='`' + strToHtml(chaine) + '`';
+                    t+='`' + (strToHtml(chaine)) + '`';
                 }else{
                     t+='`' + chaine + '`';
                 }
@@ -722,7 +725,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
                 if(coloration){
-                    t+='"' + strToHtml(chaine) + '"';
+                    t+='"' + (strToHtml(chaine)) + '"';
                 }else{
                     t+='"' + chaine + '"';
                 }
@@ -730,7 +733,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 /* methode3regex */
                 chaine=arr[i][1];
                 if(coloration){
-                    t+='/' + strToHtml(chaine) + '/' + arr[i][13];
+                    t+='/' + (strToHtml(chaine)) + '/' + arr[i][13];
                 }else{
                     t+='/' + chaine + '/' + arr[i][13];
                 }
@@ -814,7 +817,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         if(obj.__xst === true){
             /*on ajoute le nom de la fonction et on ouvre la parenthèse*/
             if(coloration){
-                t+=strToHtml(arr[i][1]) + '(';
+                t+=(strToHtml(arr[i][1])) + '(';
             }else{
                 if(obj.forcerRetourLigne === true
                  && arr[i][9] === 1
@@ -963,7 +966,7 @@ function formaterErreurRev(obj){
                     if(obj.chaineTableau.substr(i,1) === '['){
                         for( j=i ; j < obj.chaineTableau.length && message_ajoute === '' ; j++ ){
                             if(obj.chaineTableau.substr(j,1) === ']'){
-                                message_ajoute='près de `' + obj.chaineTableau.substr(i,j - i + 1) + '`';
+                                message_ajoute='près de `' + (obj.chaineTableau.substr(i,j - i + 1)) + '`';
                                 break;
                             }
                         }
@@ -1016,7 +1019,7 @@ function formaterErreurRev(obj){
     }
     return({"__xst" : obj.__xst,"__xva" : T,"id" : obj.ind,"__xme" : obj.__xme + message_ajoute,"line" : line});
 }
-/**
+/*#
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
@@ -1041,6 +1044,9 @@ function formaterErreurRev(obj){
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
+
+
+
 */
 function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine,rechercheParentheseCorrespondante){
     /*
@@ -1092,7 +1098,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var dsBloc=false;
     var constanteQuotee=0;
     var constanteQuoteePrecedente=0;
-    var drapeauParenthese = (rechercheParentheseCorrespondante === '' ? ( false ) : ( true ));
+    var drapeauParenthese = rechercheParentheseCorrespondante === '' ? ( false ) : ( true );
     /* quand on fait une recherche de parenthèses correspondantes, on se sert de ce tableau */
     var tab_pour_recherche_parentheses = [];
     /*
@@ -1175,14 +1181,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                               alors c'est une recherche de parenthèse ouvrante correspondante
                               =============================================================
                             */
-                            return({"__xst" : true,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
+                            return({"__xst" : true,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length-1]][2]});
                         }
                         tab_pour_recherche_parentheses.pop();
                     }
                 }else{
                     if(drapeauParenthese){
                         if(i === l01 - 1){
-                            return({"__xst" : true,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
+                            return({"__xst" : true,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length-1]][2]});
                         }
                         tab_pour_recherche_parentheses.pop();
                     }
@@ -1261,11 +1267,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }else{
                     if(autoriserCstDansRacine === false){
-                        if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i - 100,i + 110);
-                        }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,i + 10);
-                        }
                         return(logerreur(formaterErreurRev({
                             "__xst" : false,
                             "ind" : i,
@@ -1278,12 +1279,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
                         })));
-                        
-                        return(logerreur({"__xst" : false,"id" : i,"__xva" : T,"__xme" : '1172 la racine ne peut pas contenir des constantes près de ' + presDe}));
                     }
                 }
                 dansCstDouble=false;
-                if(autoriserCstDansRacine === false && niveau===0 ){
+                if(autoriserCstDansRacine === false && niveau === 0){
                     /* cas d'erreur = "" */
                     return(logerreur(formaterErreurRev({
                         "__xst" : false,
@@ -1799,23 +1798,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                       ce n'est pas réellement à traiter car la virgule sera supprimée silencieusement
                       mais on peut éventuellement le signaler ... à voir
                     */
-/*#
-  if(niveauPrecedent === niveau && textePrecedent===''  && constanteQuoteePrecedente===0 ){
-      return(logerreur(formaterErreurRev({
-          __xst:false,
-          ind:premier,
-          __xme:'1803 une virgule ne doit terminer une fonction ',
-          type:'rev',
-          texte:texte,
-          chaineTableau:chaineTableau,
-          tabComment:tabCommentaireEtFinParentheses,
-          tableauEntree:tableauEntree,
-          quitterSiErreurNiveau:quitterSiErreurNiveau,
-          autoriserCstDansRacine:autoriserCstDansRacine
-      })));
-  }
-  
-*/
                 }
                 niveau--;
                 if(drapeauParenthese){
@@ -1846,7 +1828,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             return({"__xst" : true,"posFerPar" : tableauEntree[i][2]});
                         }else{
                             for( j=T.length - 1 ; j >= 0 ; j-- ){
-                                if(T[j][3] < T[T.length - 1][3]){
+                                if(T[j][3] < T[T.length-1][3]){
                                     return({"__xst" : true,"posOuvPar" : tableauEntree[T[j][11]][2]});
                                     break;
                                 }

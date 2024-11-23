@@ -1,0 +1,61 @@
+html(
+   (doctype),
+   #(
+     Il y a un outil qui génère un fichier rev  à partir d'un fichier html
+     Il y a un outil qui génère un fichier html à partir d'un fichier rev
+   ),
+   #(
+     ===============================================================================================================
+     exemple de programme html simple avec une redirection 
+     ===============================================================================================================
+   ),
+   head(
+      meta(('http-equiv' , "refresh") , ('content' , "10; url='./fta_www/'")),
+      meta(('charset' , "utf-8")),
+      title('page non valide'),
+      meta(('name' , "viewport") , ('content' , "width=device-width, initial-scale=1")),
+      style(('type' , "text/css"),
+         '
+            :root{ 
+--yyvtrg:40px; 
+--yyvtrt:12px; /* taille de référence du texte */ 
+--yyvtrp:2px; /* taille de référence du espaces ( padding ) */ 
+--yyvtrb:1px; /* taille de référence des bordures */ 
+--yyvtrm:1px; /* taille de référence dus marges */ 
+--yyvhmb:22px; /* hauteur minimales des boutons */ 
+--yyvhal:14px; /* hauteur de ligne */ 
+--yyvhmd:35px; /* hauteur du menu à défilement */ 
+--yyvhgb:32px; /* hauteur des grands boutons ( quitter et index ) */ 
+--yyvhmc:24px; /* hauteur minimale de conteneur ( div ) */ 
+}
+        '
+      ),
+      #( Comme on a défini la valeur css root plus haut, on peut utiliser le fichier 6.css ),
+      link(('rel' , "stylesheet") , ('as' , "style") , ('type' , "text/css") , ('href' , "fta_www/6.css"))
+   ),
+   body(
+      #( redirection vers la page d'accueil ),
+      h1('racine de l\'application'),
+      p(('style' , "text-align:center;font-size:1.3rem;") , 'Dans 10 secondes, vous serez redirigé automatiquement vers la la page principale de l\'application'),
+      div(('style' , "text-align:center;font-size:1.2em;") , ('id' , "decompte") , '10'),
+      div(('style' , "text-align:center;") , a(('class' , "yyinfo") , ('href' , "fta_www/") , 'y aller maintenant')),
+      div(('style' , "text-align:center;") , a(('class' , "yyinfo") , ('href' , "tictactoe.html") , 'aller sur tictactoe')),
+      javascriptDansHtml(
+         #(
+           ===================================================================================================
+           programme javascript d'affichage de décompte 
+           ===================================================================================================
+         ),
+         declare(decompte , 10),
+         fonction(
+            definition(nom(maj_decompte)),
+            contenu(
+               postdec(decompte),
+               affecte(appelf(element(document) , nomf(getElementById) , p('decompte') , prop(innerHTML)) , decompte),
+               appelf(nomf(setTimeout) , p(maj_decompte) , p(1000))
+            )
+         ),
+         appelf(nomf(setTimeout) , p(maj_decompte) , p(1000))
+      )
+   )
+)

@@ -1,0 +1,22 @@
+sélectionner(
+   valeurs(
+      'exemple de commande sql',
+      '  Il y a un outil qui génère un fichier rev à partir d\'un fichier sql',
+      '  Il y a un outil qui génère un fichier sql à partir d\'un fichier rev',
+      champ(`client` , `id`),
+      champ(`client` , `nom`),
+      champ(`commande` , `id`),
+      champ(`commande` , `produit`),
+      champ(`commande` , `id_client`)
+   ),
+   provenance(
+      table_reference(
+         source(nom_de_la_table(client , alias(client)))
+      ),
+      jointure_gauche(
+         source(nom_de_la_table(commande , alias(commande))),
+         contrainte(egal(champ(`commande` , `id_client`) , champ(`client` , `id`)))
+      )
+   ),
+   conditions(egal(champ(`client` , `id_client`) , 1))
+)
