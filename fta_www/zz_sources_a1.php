@@ -985,6 +985,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1.='   <a class="yyinfo" href="javascript:__gi1.remplacer_la_selection_par(&quot;chp_rev_source&quot;)">remplacer la sélection</a>'.PHP_EOL;
     $o1.='   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_rev_source&quot;);" title="agrandir la zone">🖐</a>'.PHP_EOL;
     $o1.='   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_source&quot;);" title="réduire la zone">👊</a>'.PHP_EOL;
+    $o1.='   &nbsp;&nbsp;<a href="javascript:__gi1.raz_la_text_area(&quot;chp_rev_source&quot;);" title="raz de la zone">🚫</a>'.PHP_EOL;
     
     $o1.='  </div></div>'.PHP_EOL;
     $o1.=' </div>'.PHP_EOL;

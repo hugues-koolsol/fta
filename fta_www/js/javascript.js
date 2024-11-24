@@ -1035,11 +1035,17 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     t+=espcLigne;
                 }
                 var commt = traiteCommentaire2(tab[i][13],niveau,i);
-                t+='/*' + commt;
-                if(tab[i][13].substr(0,1) === '#'){
-                    t+='\n';
+                if(tab[i][13].length>0 && tab[i][13].substr(0,1) === '#'){
+                    if(tab[i][13].length>1 && tab[i][13].substr(1,1) === '#'){
+                        /* double commentaire, décalé à gauche*/
+                        t+='/*' + commt+'\n'+'*/';
+                    }else{
+                        t+=' '.repeat(niveau*NBESPACESSOURCEPRODUIT)+'/*' + commt;
+                        t+='\n'+' '.repeat(niveau*NBESPACESSOURCEPRODUIT)+'*/';
+                    }
+                }else{
+                    t+='/*' + commt + '*/';
                 }
-                t+='*/';
             }else if((tab[i][1] === 'postinc'
              || tab[i][1] === 'postdec'
              || tab[i][1] === 'preinc'

@@ -1,4 +1,3 @@
-
 "use strict";
 /*
   var a=0;
@@ -3257,11 +3256,17 @@ function convertit_source_javascript_en_rev(sourceDuJavascript){
         var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript);
         if(obj1.__xst === true){
             tabComment=obj1.commentaires;
-            var obj = TransformAstEnRev(obj1.__xva.body,0);
-            if(obj.__xst === true){
-                t=obj.__xva;
+            if(obj1.__xva===''){
+                    t='';
+            }else if(obj1.__xva.hasOwnProperty('body') && Array.isArray(obj1.__xva.body) && obj1.__xva.body.length===0 ){
+                    t='';
             }else{
-                return(logerreur({"__xst" : false,"__xme" : 'erreur convertit_source_javascript_en_rev 2733'}));
+                var obj = TransformAstEnRev(obj1.__xva.body,0);
+                if(obj.__xst === true){
+                    t=obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false,"__xme" : 'erreur convertit_source_javascript_en_rev 2733'}));
+                }
             }
         }else{
             return(logerreur({"__xst" : false,"__xme" : 'erreur convertit_source_javascript_en_rev 2611'}));

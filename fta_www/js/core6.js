@@ -1,4 +1,3 @@
-
 "use strict";
 const DEBUTCOMMENTAIRE='#';
 const DEBUTBLOC='@';
@@ -31,19 +30,19 @@ function raz_messages(zone_message){
         document.getElementById(zone_message).innerHTML='';
     }
     global_messages={
-    "errors" : [],
-    "avertissements" : [],
-    "infos" : [],
-    "masquees" : [],
-    "lines" : [],
-    "tabs" : [],
-    "ids" : [],
-    "ranges" : [],
-    "plages" : [],
-    "positions_caracteres" : [],
-    "calls" : '',
-    "data" : {"matrice" : [],"tableau" : [],"sourceGenere" : ''}
-};
+        "errors"         : [],
+        "avertissements" : [],
+        "infos"          : [],
+        "masquees"       : [],
+        "lines"          : [],
+        "tabs" : [],
+        "ids" : [],
+        "ranges" : [],
+        "plages" : [],
+        "positions_caracteres" : [],
+        "calls" : '',
+        "data" : {"matrice" : [],"tableau" : [],"sourceGenere" : ''}
+    };
 }
 /*
   =====================================================================================================================
@@ -446,6 +445,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var newTab = [];
     var tab = [];
     var ne_contient_que_des_egals=false;
+    var double_commentaire=false;
     /**/
     unBloc=' '.repeat(nbEspacesSrc1 * niveau);
     tab=texte.split('\n');
@@ -454,6 +454,12 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     if(texte.length > 1){
         temps=texte.substr(0,1);
         if(temps === '#'){
+            if(texte.length > 2 && texte.substr(1,1)==='#'){
+                 /*
+                  un commentaire qui commence par ## sera décalé à gauche
+                 */
+                 double_commentaire=true;
+            }
             /*
               on a un commentaire de type bloc non formaté 
               car le premier caractère = #.
@@ -494,10 +500,34 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                 }else{
                     tab[tab.length-1]=unBloc;
                 }
+                if(double_commentaire===false){
+                    t=' '.repeat(nbEspacesSrc1 * niveau);
+                    for( i=1 ; i < l01-1 ; i++ ){
+                        tab[i]=t+tab[i];
+                    }
+                }
+                texte=tab.join('\n');
+            }else{
+                /* on retire les lignes vierges de la fin */
+                for(i=tab.length-1;i>=1;i--){
+                  if(tab[i]===''){
+                   tab.splice(i,1);
+                  }else{
+                   break;
+                  }
+                }
+                
+                if(double_commentaire===false){
+                  t=' '.repeat(nbEspacesSrc1 * niveau);
+                  for( i=1 ; i < l01-1 ; i++ ){
+                      tab[i]=t+tab[i];
+                  }
+                }
+                texte=tab.join('\n');
             }
-            /**/
-            texte=tab.join('\n');
             return texte;
+             
+
         }
     }
     /*

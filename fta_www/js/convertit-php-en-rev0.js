@@ -2275,7 +2275,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                           
                         */
                         var obj1 = __module_html1.mapDOM(stmts[i].value);
-                        if((obj1) && (obj1.__xst === true) && (obj1.parfait === true) && (obj1.__xva.type.toLowerCase() === 'html')){
+                        if(obj1.__xst === true && obj1.parfait === true && obj1.__xva.type.toLowerCase() === 'html'){
                             /*
                               si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
                             */
@@ -2315,7 +2315,8 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                                                             t+='\n' + esp0 + 'html(script(' + lesProprietes + '))';
                                                         }
                                                     }else{
-                                                        var obj = __module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'');
+                                                        var tableau_de_javascripts_a_convertir=[];
+                                                        var obj = __module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'',tableau_de_javascripts_a_convertir);
                                                         if(obj.__xst === true){
                                                             t+='\n' + esp0 + 'html(' + obj.__xva + ')';
                                                         }else{

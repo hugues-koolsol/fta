@@ -45,9 +45,24 @@ class traitements_sur_html{
          return ob;
     }
 
+    /*
+      function #construit_cle
+    */
+    #construit_cle(length) {
+        let resultat='';
+        /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un)*/
+        const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+        const longueur=lettres.length;
+        let counter=0;
+        while(counter < length){
+            resultat+=lettres.charAt(Math.floor(Math.random() * longueur));
+            counter++;
+        }
+        return('_' + resultat);
+    }
 
 
-    /* 
+    /*#
       =======================================================================================
       function traiteAstDeHtml
       
@@ -64,7 +79,7 @@ class traitements_sur_html{
       pas renseignés
       =======================================================================================  
     */
-    traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent){
+    traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent,tableau_des_javascript_a_convertir){
         var i=0;
         var j=0;
         var k=0;
@@ -77,462 +92,477 @@ class traitements_sur_html{
         var obj={dernierEstTexte:false};
         var type='';
         var typeScriptNonTraite=false;
-     
-     
-    // console.log('jsonDeHtml=',jsonDeHtml);
-     if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
-         type=jsonDeHtml.type.toLowerCase();
-         if(jsonDeHtml.type!==''){
-             if(type==='script'){ // , text/javascript
-                 if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
+           
+        
+        
+       // console.log('jsonDeHtml=',jsonDeHtml);
+        if(jsonDeHtml.type || ( jsonDeHtml.type==='' && jsonDeHtml.content && jsonDeHtml.content.length>0 ) ){
+            type=jsonDeHtml.type.toLowerCase();
+            if(jsonDeHtml.type!==''){
+                if(type==='script'){ // , text/javascript
+                    if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
 
-                      if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
-                          t+='\n'+esp0+'ldPlusJsonDansHtml(';
-                          type='ldPlusJsonDansHtml'
-                      }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && jsonDeHtml.hasOwnProperty('content')){
-                          /*
-                           si il y a du contenu ( content existe ), 
-                          */
-                          t+='\n'+esp0+'javascriptDansHtml(';
-                          type='javascriptDansHtml'
-                      }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
-                          /*
-                           c'est un tag script avec src=""
-                          */
+                         if(jsonDeHtml.attributes.type.toLowerCase()==='application/ld+json'){
+                             t+='\n'+esp0+'ldPlusJsonDansHtml(';
+                             type='ldPlusJsonDansHtml'
+                         }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && jsonDeHtml.hasOwnProperty('content')){
+                             /*
+                              si il y a du contenu ( content existe ), 
+                             */
+                             t+='\n'+esp0+'javascriptDansHtml(';
+                             type='javascriptDansHtml'
+                         }else if(jsonDeHtml.attributes.type.toLowerCase()==='text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
+                             /*
+                              c'est un tag script avec src=""
+                             */
 
-                          typeScriptNonTraite=false;
-                          type='script';
-                          t+='\n'+esp0+'script(';
-                      }else{
-                          typeScriptNonTraite=true;
-                          type='script';
-                          t+='\n'+esp0+'script(';
-                          logerreur({__xst:false,__xme:'module_html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
-                      }
-                 }else{
-                  /*
-                   sans aucun type renseigné, c'est un javascript
-                  */
-                  t+='\n'+esp0+'javascriptDansHtml(';
-                  type='javascriptDansHtml'
-                 }
-             }else{
-                 if("#comment"===type){
-
-                     t+='\n'+esp0+'#(';
-                 }else{
-                     if(type.toLowerCase()==='#text'){
-                         t+='';
-                     }else{
-                         t+='\n'+esp0+type+'(';
-                     }
-                     
-                 }
-             }
-         }
-         
-         if(jsonDeHtml.attributes){
-             for(var attr in jsonDeHtml.attributes){
-                 if(attributs!==''){
-                  attributs+=','
-                 }
-                 attributs+='(\''+attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
-/*                 
-                 for(var j in jsonDeHtml.attributes[attr]){
-                     attributs+='(\''+j.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',"'+jsonDeHtml.attributes[attr][j].replace(/"/g,'&quot;')+'")';
-                 }
-*/                 
-             }
-
-         }
-         
-         /*
-          ajout des attributs
-         */
-         t+=attributs;
-         
-         if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length>0 ){
-          
-
-           contenu=jsonDeHtml.content[0];
-           contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
-           if(attributs!==''){
-            t+=',';
-           }
-           t+='@('+contenu+')';
-           t+=')';
-
-          
-          
-         }else if(type.toLowerCase()==='ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
-
-             if(jsonDeHtml.content[0].content){
-                 var chaineJsEquivalente='var a='+jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
-             }else{
-                 var chaineJsEquivalente='var a='+jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
-             }
-             var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
-             if(obj.__xst===true){
-                 t+=''+obj.__xva+'';
-             }else{
-                 return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0142 '+jsonDeHtml.type}));
-             }
-             t+='\n'+esp0+')';
-             
-         }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
-
-             if(Array.isArray(jsonDeHtml.content)){
-                 for(var i=0;i<jsonDeHtml.content.length;i++){
-                   if(jsonDeHtml.content[i].type && jsonDeHtml.content[i].type==='#text' || jsonDeHtml.content[i].type==='#cdata-section' ){
-                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].content);
-                       if(obj.__xst===true){
-                           contenu+=obj.__xva;
-                       }else{
-                           return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
-                       }
-                   }else if( !jsonDeHtml.content[i].hasOwnProperty('type') ){
-                       /*
-                          il n'y a pas la propriété type, on suppose que c'est un text/javascript
-                       */
-                       var obj=convertit_source_javascript_en_rev(jsonDeHtml.content[i].replace(/&amp;/g,'&'));
-                       if(obj.__xst===true){
-                           if(t.indexOf('text/javascript')>=0){
-                               contenu+=obj.__xva;
-                           }else{
-                               contenu+='(\'type\' , "text/javascript")'+obj.__xva;
-                           }
-                       }else{
-                           return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
-                       }
-
-                   }else{
-                       return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0190 '+jsonDeHtml.type}));
-                   }
-                 }
-             }else{
-                  var obj=convertit_source_javascript_en_rev(jsonDeHtml.content);
-                  if(obj.__xst===true){
-                      contenu+='<![CDATA['+obj.__xva+']]>';
-                  }else{
-                      return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0198 '+jsonDeHtml.type}));
-                  }
-
-             }
-             t+='\n'+esp0+contenu+')';
-             
-         }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
-             if(Array.isArray(jsonDeHtml.content)){
-                 for(var i=0;i<jsonDeHtml.content.length;i++){
-                     /*
-                       =======================
-                       entree dans le récursif
-                       =======================
-                     */
-                     obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau+1,retirerHtmlHeadEtBody,type);
-                     if(obj.__xst===true){
-                         if((attributs!=='' || contenu!=='') && obj.__xva!==''){
-                          contenu+=',';
-                         }
-                         contenu+=obj.__xva;
-                     }else{
-                         return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
-                     }
-                 }
-             }else{
-                 contenu+=jsonDeHtml.content;
-             }
-             if(type.toLowerCase()==='#text'){
-                 if(typeParent==='style'){
-                     if(contenu!==''){
-                         contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
-                         if(contenu.substr(0,1)!=='\n'){
-                          debugger
-                          contenu='\n'+contenu;
-                         }
-                         /*
-                           on supprime les espace en début de ligne
-                         */
-                         var contenuTab=contenu.split('\n');
-                         k=9999;
-                         for(i=1;i<contenuTab.length;i++){
-                             for(j=0;j<contenuTab[i].length;j++){
-                                 if(contenuTab[i].substr(j,1)!==' '){
-                                     if(j<k){
-                                         k=j;
-                                     }
-                                     break;
-                                 }
-                             }
-                             
-                         }
-                         if(k<999 && k>0){
-                            for(i=1;i<contenuTab.length;i++){
-                                contenuTab[i]=contenuTab[i].substr(k);
-                            }
-                            contenu=contenuTab.join('\n');
-                         }
-                         t+='\''+contenu+'\'';
-                         
-                     }
-                 }else{
-                     contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
-                     if(contenu!==''){
-                         t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
-                     }
-                 }
-             }else{
-                 t+=contenu;
-                 if(jsonDeHtml.type!==''){
-                     if(obj && obj.dernierEstTexte){
-                         t+=')';
-                     }else{
-                         if(contenu===''){
-                             t+=')';
+                             typeScriptNonTraite=false;
+                             type='script';
+                             t+='\n'+esp0+'script(';
                          }else{
-                             if(jsonDeHtml.type.toLowerCase()==='#comment'){
-                                 t+=')';
-                             }else{
-                                 t+='\n'+esp0+')';
-                             }
+                             typeScriptNonTraite=true;
+                             type='script';
+                             t+='\n'+esp0+'script(';
+                             logerreur({__xst:false,__xme:'module_html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
                          }
-                     }
-                 }
-             }
-         }else{
-             if(type.toLowerCase()==='#text'){
-             }else{
-                 if(jsonDeHtml.type!==''){
-                     t+=')';
-                 }
-             }
-         }
-      
-     }else{
-      
-         if(typeParent==='#comment'){
+                    }else{
+                        /*
+                          sans aucun type renseigné, c'est un javascript
+                        */
+                        t+='\n'+esp0+'javascriptDansHtml(';
+                        type='javascriptDansHtml'
+                    }
+                }else{
+                    if("#comment"===type){
 
-             if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
-                 contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
-                 t+=contenu;
-             }else{
-                 if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
-                     /*
-                     c'est un commentaire vide
-                     */
-                 }else{
-                     contenu=jsonDeHtml;
-                     t+=contenu;
-                 }
-             }
-             dernierEstTexte=true;
-         }else if(typeParent==='@'){
-             contenu=jsonDeHtml;
-             // debugger
-             t+=contenu;
-         }else if(typeParent==='script'){
-             var obj=convertit_source_javascript_en_rev(jsonDeHtml);
-             if(obj.__xst===true){
-                 t+=''+obj.__xva+'';
-             }else{
-                 t+='#(Erreur de conversion du javascript 0113 )';
-             }
-
-         }else{
-             try{
-                 if(jsonDeHtml.hasOwnProperty('content')){
-                     if(typeof jsonDeHtml.content === 'string'){
-                         if(typeParent==='style'){
-                           contenu=jsonDeHtml.content;
-                         }else{
-                           contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
-                         }
-                     }else{
-                         debugger
-                     }
-                 }else{
-                     if(typeParent==='style'){
-                         contenu=jsonDeHtml;
-                     }else{
-                         contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
-                     }
-                 }
-             }catch(e){
-                 /*
-                 dans le cas où le jsonDeHtml n'existe pas
-                 */
-                 contenu='';
-             }
-             if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
-//                 contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-             }
-             if(contenu!=='' ){
-                 //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
-                 contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
-             }
-             t+=contenu;
-             if(contenu!=''){
-                 dernierEstTexte=true;
-             }
-         }
-     }
-     
-     if(retirerHtmlHeadEtBody && niveau===0){
-         /*
-         le rev retourné inclut toujours une balise html et/ou body et/ou head
-         Si ces balises ne contiennent pas d'éléments, on les retire 
-         */
-
-         var tableau1 = iterateCharacters2(t);
-         var matriceFonction = functionToArray2(tableau1.out,false,true,'');
-         if(matriceFonction.__xst===true){
-            // console.log('matriceFonction.__xva=',JSON.stringify(matriceFonction.__xva).replace(/\],/g,'],\n'));
-
-            if(matriceFonction.__xva[1][1]==='html' && matriceFonction.__xva[1][8]<=2){
-                
-                /* 
-                  l'élément html est en première position
-                  si il n'a aucune propriété, on peut le supprimer
-                */
-                var aDesProps=false;
-                for(var i=0;i<matriceFonction.__xva.length && aDesProps===false;i++){
-                    if(matriceFonction.__xva[i][7]===1){
-                        if(matriceFonction.__xva[i][1]===''){
-                            aDesProps=true;
-                            break;
+                        t+='\n'+esp0+'#(';
+                    }else{
+                        if(type.toLowerCase()==='#text'){
+                            t+='';
+                        }else{
+                            t+='\n'+esp0+type+'(';
                         }
+                        
                     }
                 }
-                if(aDesProps===false){
-                    var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.__xva,1,0);
-                    /*
-                     si le head n'a aucun enfant
-                    */
-                    if(nouveauTableau1.length>=2 && nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
-                     
-                        var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
+            }
+            
+            if(jsonDeHtml.attributes){
+                for(var attr in jsonDeHtml.attributes){
+                    if(attributs!==''){
+                     attributs+=','
+                    }
+                    attributs+='(\''+attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\',"'+jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')+'")';
+                }
+            }
+            
+            /*
+             ajout des attributs
+            */
+            t+=attributs;
+            
+            if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length>0 ){
+                 contenu=jsonDeHtml.content[0];
+                 contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
+                 if(attributs!==''){
+                  t+=',';
+                 }
+                 t+='@('+contenu+')';
+                 t+=')';
+            }else if(type.toLowerCase()==='ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
 
-                        
-                        if(nouveauTableau2[1][1]==='body'){
-                            var aDesProps=false;
-                            for(var i=0;i<nouveauTableau2.length && aDesProps===false;i++){
-                                if(nouveauTableau2[i][7]===1){
-                                    if(nouveauTableau2[i][1]===''){
-                                        aDesProps=true;
+                if(jsonDeHtml.content[0].content){
+                    var chaineJsEquivalente='var a='+jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
+                }else{
+                    var chaineJsEquivalente='var a='+jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')+';' // 
+                }
+                tableau_des_javascript_a_convertir.push({"type" : "ldplusjsondanshtml" , "__xva":chaineJsEquivalente , "cas":"ldjson"});
+                var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
+                if(obj.__xst===true){
+                    t+=''+obj.__xva+'';
+                }else{
+                    return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0142 '+jsonDeHtml.type}));
+                }
+                t+='\n'+esp0+')';
+                
+            }else if(type.toLowerCase()==='javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length>0){
+
+                if(Array.isArray(jsonDeHtml.content)){
+                    for(var i=0;i<jsonDeHtml.content.length;i++){
+                      if(jsonDeHtml.content[i].type && jsonDeHtml.content[i].type==='#text' || jsonDeHtml.content[i].type==='#cdata-section' ){
+                       
+                          var source_js=jsonDeHtml.content[i].content;
+                          if(!( source_js==='\n//' || source_js === '\n' )){
+                              var cle=this.#construit_cle(10);
+                              tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" , "__xva":source_js,"cas":"js1","cle":cle});
+                              contenu+='#(cle_javascript_a_remplacer,'+cle+')';
+                          }
+                          
+                          /*
+                            bloc à commenter debut
+                            la fonction convertit_source_javascript_en_rev 
+                            fait un appel ajax synchrone, on la garde pour l'instant
+                          */
+                          var obj = convertit_source_javascript_en_rev(source_js);
+                          if(obj.__xst === true){
+                              contenu+=obj.__xva;
+                          }else{
+                              return(logerreur({"__xst" : false,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type}));
+                          }
+                          /*
+                            bloc à commenter fin
+                          */
+
+
+                      }else if( !jsonDeHtml.content[i].hasOwnProperty('type') ){
+                          /*
+                             il n'y a pas la propriété type, on suppose que c'est un text/javascript
+                          */
+                          var source_js=jsonDeHtml.content[i].replace(/&amp;/g,'&');
+                          tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" , "__xva":source_js,"cas":"js2"});
+                          var obj=convertit_source_javascript_en_rev(source_js);
+                          if(obj.__xst===true){
+                              if(t.indexOf('text/javascript')>=0){
+                                  contenu+=obj.__xva;
+                              }else{
+                                  contenu+='(\'type\' , "text/javascript")'+obj.__xva;
+                              }
+                          }else{
+                              return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0187 '+jsonDeHtml.type}));
+                          }
+
+                      }else{
+                          return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0190 '+jsonDeHtml.type}));
+                      }
+                    }
+                }else{
+                     tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" , "__xva":source_js,"cas":"js3"});
+                     var obj=convertit_source_javascript_en_rev(jsonDeHtml.content);
+                     if(obj.__xst===true){
+                         contenu+='<![CDATA['+obj.__xva+']]>';
+                     }else{
+                         return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0198 '+jsonDeHtml.type}));
+                     }
+
+                }
+                t+='\n'+esp0+contenu+')';
+                
+            }else if(jsonDeHtml.content && jsonDeHtml.content.length>0){
+                if(Array.isArray(jsonDeHtml.content)){
+                    for(var i=0;i<jsonDeHtml.content.length;i++){
+                        /*
+                          =======================
+                          entree dans le récursif
+                          =======================
+                        */
+                        obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau+1,retirerHtmlHeadEtBody,type,tableau_des_javascript_a_convertir);
+                        if(obj.__xst===true){
+                            if((attributs!=='' || contenu!=='') && obj.__xva!==''){
+                             contenu+=',';
+                            }
+                            contenu+=obj.__xva;
+                        }else{
+                            return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0.129 '+jsonDeHtml.type}));
+                        }
+                    }
+                }else{
+                    contenu+=jsonDeHtml.content;
+                }
+                if(type.toLowerCase()==='#text'){
+                    if(typeParent==='style'){
+                        if(contenu!==''){
+                            contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
+                            if(contenu.substr(0,1)!=='\n'){
+                             debugger
+                             contenu='\n'+contenu;
+                            }
+                            /*
+                              on supprime les espace en début de ligne
+                            */
+                            var contenuTab=contenu.split('\n');
+                            k=9999;
+                            for(i=1;i<contenuTab.length;i++){
+                                for(j=0;j<contenuTab[i].length;j++){
+                                    if(contenuTab[i].substr(j,1)!==' '){
+                                        if(j<k){
+                                            k=j;
+                                        }
                                         break;
                                     }
                                 }
+                                
                             }
-                            if(aDesProps===false){
-
-                                /*
-                                 si le body n'a aucune propriété
-                                */
-
-                                var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
-
-                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
-                                if(nouveauJsonDeHtml.__xst===true){
-                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
-                                    if(obj1.__xst===true){
-                                     t=obj1.__xva;
-                                    }else{
-                                     return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0314 '}));
-                                    }
-                                }else{
-                                    return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0317 '}));
-                                }
-
-                            }else{
-                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
-                                if(nouveauJsonDeHtml.__xst===true){
-                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
-                                    if(obj.__xst===true){
-                                        t=obj.__xva;
-                                    }else{
-                                        return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
-                                    }
-                                }else{
-                                    return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0317 '}));
-                                }
+                            if(k<999 && k>0){
+                               for(i=1;i<contenuTab.length;i++){
+                                   contenuTab[i]=contenuTab[i].substr(k);
+                               }
+                               contenu=contenuTab.join('\n');
                             }
-                        }else{
-                            var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
-                            if(nouveauJsonDeHtml===true){
-                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
-                                if(obj1.__xst===true){
-                                    t=obj1.__xva;
-                                }else{
-                                    return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0340 '}));
-                                }
-                            }else{
-                                return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0343 '}));
-                            }
+                            t+='\''+contenu+'\'';
+                            
                         }
                     }else{
-                           /*
-                             la balise head contient des éléments, 
-                           */
-                           /* si la balise body ne contient rien, */
-                           var body_est_vide=false;
-                           for(var i=nouveauTableau1.length-1;i>=0 && body_est_vide===false ; i--){
-                               if(nouveauTableau1[i][1].toLowerCase()==='body' && nouveauTableau1[i][2]==='f'  && nouveauTableau1[i][3]===0){
-                                   body_est_vide=true;
-                                   nouveauTableau1.splice(i,1);
-
-                                   t='';
-                                   for(var j=0;j<nouveauTableau1.length;j++){
-                                       if(nouveauTableau1[j][7]===1){
-                                           var obj=a2F1(nouveauTableau1,1,true,j,false);
-                                           if(obj.__xst===true){
-                                               t+=','+obj.__xva+'\n';
-                                           }else{
-                                               return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
-                                           }
-                                       }
-                                   }
-                                   if(t!==false){
-                                    t=t.substr(1);
-                                   }
-                                   
-                               }
-                           }
-                           if(body_est_vide===true){
-                           }else{
-                           
-                               /*on reconstruit le source à partir de matriceFonction.__xva
-                                 avec des retours de lignes et sans coloration
-                               */
-                               var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
-                               var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'');
-                               
-                               
-                               if(obj1.__xst===true){
-                                t=obj1.__xva;
-                               }else{
-                                return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
-                               }
-                           }
+                        contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
+                        if(contenu!==''){
+                            t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                        }
                     }
                 }else{
-                      /*
-                        on ne change rien car il y a des propriétés dans la balise html
-                      */
+                    t+=contenu;
+                    if(jsonDeHtml.type!==''){
+                        if(obj && obj.dernierEstTexte){
+                            t+=')';
+                        }else{
+                            if(contenu===''){
+                                t+=')';
+                            }else{
+                                if(jsonDeHtml.type.toLowerCase()==='#comment'){
+                                    t+=')';
+                                }else{
+                                    t+='\n'+esp0+')';
+                                }
+                            }
+                        }
+                    }
                 }
-                 
             }else{
-                 /*
-                   on ne change rien
-                 */
+                if(type.toLowerCase()==='#text'){
+                }else{
+                    if(jsonDeHtml.type!==''){
+                        t+=')';
+                    }
+                }
             }
+         
         }else{
-                return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0168 '+jsonDeHtml.type}));
+         
+            if(typeParent==='#comment'){
+
+                if(jsonDeHtml.length>=2 && jsonDeHtml.substr(0,1)===' ' && jsonDeHtml.substr(jsonDeHtml.length-1,1)===' '){
+                    contenu=jsonDeHtml.substr(1,jsonDeHtml.length-2);
+                    t+=contenu;
+                }else{
+                    if(jsonDeHtml.length==1 && jsonDeHtml.substr(0,1)===' '){
+                        /*
+                        c'est un commentaire vide
+                        */
+                    }else{
+                        contenu=jsonDeHtml;
+                        t+=contenu;
+                    }
+                }
+                dernierEstTexte=true;
+            }else if(typeParent==='@'){
+                contenu=jsonDeHtml;
+                // debugger
+                t+=contenu;
+            }else if(typeParent==='script'){
+                tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" , "__xva":source_js,"cas":"js4"});
+                var obj=convertit_source_javascript_en_rev(jsonDeHtml);
+                if(obj.__xst===true){
+                    t+=''+obj.__xva+'';
+                }else{
+                    t+='#(Erreur de conversion du javascript 0113 )';
+                }
+
+            }else{
+                try{
+                    if(jsonDeHtml.hasOwnProperty('content')){
+                        if(typeof jsonDeHtml.content === 'string'){
+                            if(typeParent==='style'){
+                              contenu=jsonDeHtml.content;
+                            }else{
+                              contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                            }
+                        }else{
+                            debugger
+                        }
+                    }else{
+                        if(typeParent==='style'){
+                            contenu=jsonDeHtml;
+                        }else{
+                            contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                        }
+                    }
+                }catch(e){
+                    /*
+                    dans le cas où le jsonDeHtml n'existe pas
+                    */
+                    contenu='';
+                }
+                if(contenu.indexOf('&')>=0 || contenu.indexOf('>')>=0 || contenu.indexOf('<')>=0 || contenu.indexOf('"')>=0){
+   //                 contenu=contenu.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+                }
+                if(contenu!=='' ){
+                    //contenu='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\'';
+                    contenu='"'+contenu.replace(/"/g,'&quot;')+'"';
+                }
+                t+=contenu;
+                if(contenu!=''){
+                    dernierEstTexte=true;
+                }
+            }
         }
-     }
-     /*
-     on retourne du html "pur"
-     */
-     t=t.replace(/'¶LF¶'/g,'\n').replace(/'¶CR¶'/g,'\n');
-     return({__xst:true,__xva:t,'dernierEstTexte':dernierEstTexte});
+        
+        if(retirerHtmlHeadEtBody && niveau===0){
+            /*
+            le rev retourné inclut toujours une balise html et/ou body et/ou head
+            Si ces balises ne contiennent pas d'éléments, on les retire 
+            */
+
+            var tableau1 = iterateCharacters2(t);
+            var matriceFonction = functionToArray2(tableau1.out,false,true,'');
+            if(matriceFonction.__xst===true){
+               // console.log('matriceFonction.__xva=',JSON.stringify(matriceFonction.__xva).replace(/\],/g,'],\n'));
+
+               if(matriceFonction.__xva[1][1]==='html' && matriceFonction.__xva[1][8]<=2){
+                   
+                   /* 
+                     l'élément html est en première position
+                     si il n'a aucune propriété, on peut le supprimer
+                   */
+                   var aDesProps=false;
+                   for(var i=0;i<matriceFonction.__xva.length && aDesProps===false;i++){
+                       if(matriceFonction.__xva[i][7]===1){
+                           if(matriceFonction.__xva[i][1]===''){
+                               aDesProps=true;
+                               break;
+                           }
+                       }
+                   }
+                   if(aDesProps===false){
+                       var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.__xva,1,0);
+                       /*
+                        si le head n'a aucun enfant
+                       */
+                       if(nouveauTableau1.length>=2 && nouveauTableau1[1][1]==='head' && nouveauTableau1[1][8]==0){
+                        
+                           var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
+
+                           
+                           if(nouveauTableau2[1][1]==='body'){
+                               var aDesProps=false;
+                               for(var i=0;i<nouveauTableau2.length && aDesProps===false;i++){
+                                   if(nouveauTableau2[i][7]===1){
+                                       if(nouveauTableau2[i][1]===''){
+                                           aDesProps=true;
+                                           break;
+                                       }
+                                   }
+                               }
+                               if(aDesProps===false){
+
+                                   /*
+                                    si le body n'a aucune propriété
+                                   */
+
+                                   var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
+
+                                   var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
+                                   if(nouveauJsonDeHtml.__xst===true){
+                                       var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                       if(obj1.__xst===true){
+                                        t=obj1.__xva;
+                                       }else{
+                                        return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0314 '}));
+                                       }
+                                   }else{
+                                       return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0317 '}));
+                                   }
+
+                               }else{
+                                   var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                                   if(nouveauJsonDeHtml.__xst===true){
+                                       var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                       
+                                       if(obj.__xst===true){
+                                           t=obj.__xva;
+                                       }else{
+                                           return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
+                                       }
+                                   }else{
+                                       return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0317 '}));
+                                   }
+                               }
+                           }else{
+                               var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                               if(nouveauJsonDeHtml===true){
+                                   var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                   if(obj1.__xst===true){
+                                       t=obj1.__xva;
+                                   }else{
+                                       return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0340 '}));
+                                   }
+                               }else{
+                                   return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0343 '}));
+                               }
+                           }
+                       }else{
+                              /*
+                                la balise head contient des éléments, 
+                              */
+                              /* si la balise body ne contient rien, */
+                              var body_est_vide=false;
+                              for(var i=nouveauTableau1.length-1;i>=0 && body_est_vide===false ; i--){
+                                  if(nouveauTableau1[i][1].toLowerCase()==='body' && nouveauTableau1[i][2]==='f'  && nouveauTableau1[i][3]===0){
+                                      body_est_vide=true;
+                                      nouveauTableau1.splice(i,1);
+
+                                      t='';
+                                      for(var j=0;j<nouveauTableau1.length;j++){
+                                          if(nouveauTableau1[j][7]===1){
+                                              var obj=a2F1(nouveauTableau1,1,true,j,false);
+                                              if(obj.__xst===true){
+                                                  t+=','+obj.__xva+'\n';
+                                              }else{
+                                                  return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
+                                              }
+                                          }
+                                      }
+                                      if(t!==false){
+                                       t=t.substr(1);
+                                      }
+                                      
+                                  }
+                              }
+                              if(body_est_vide===true){
+                              }else{
+                              
+                                  /*on reconstruit le source à partir de matriceFonction.__xva
+                                    avec des retours de lignes et sans coloration
+                                  */
+                                  var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
+                                  var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                  
+                                  
+                                  if(obj1.__xst===true){
+                                   t=obj1.__xva;
+                                  }else{
+                                   return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0217 '}));
+                                  }
+                              }
+                       }
+                   }else{
+                         /*
+                           on ne change rien car il y a des propriétés dans la balise html
+                         */
+                   }
+                    
+               }else{
+                    /*
+                      on ne change rien
+                    */
+               }
+           }else{
+                   return(logerreur({__xst:false,__xme:'erreur pour traiteJsonDeHtml 0168 '+jsonDeHtml.type}));
+           }
+        }
+        
+        /*
+        on retourne du html "pur"
+        */
+        t=t.replace(/'¶LF¶'/g,'\n').replace(/'¶CR¶'/g,'\n');
+        return({"__xst":true , "__xva":t,"dernierEstTexte":dernierEstTexte});
     }
     /*
       =======================================================================================
@@ -1081,12 +1111,61 @@ class traitements_sur_html{
         }
      
     }
+    /*
+      =============================================================================================================
+      function recupérer_un_fetch
+    */
+    async recupérer_un_fetch(url,donnees){
+        
+        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis?donnees.call.opt.delais_admis:6000;
+        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur')?donnees.call.opt.masquer_les_messages_du_serveur:true;
+        var en_entree={
+            'signal':AbortSignal.timeout(delais_admis),
+            'method':"POST",
+            'mode':"cors",
+            'cache':"no-cache",
+            'credentials':"same-origin",
+            'headers':{'Content-Type':'application/x-www-form-urlencoded'},
+            'redirect':"follow",
+            'referrerPolicy':"no-referrer",
+            'body':'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
+        };
+        try{
+            var response= await fetch(url,en_entree);
+            var t= await response.text();
+            try{
+                var le_json = JSON.parse(t);
+                if(le_json.hasOwnProperty('__xms') ){
+                    for(var i in le_json.__xms){
+                        logerreur({__xst:le_json.__xst,__xme:le_json.__xms[i],"masquee":masquer_les_messages_du_serveur});
+                    }
+                }
+                return le_json;
+            }catch(e){
+                logerreur({__xst:false,__xme:'erreur sur convertion json, texte non json=' + t,"masquee":masquer_les_messages_du_serveur});
+                logerreur({__xst:false,__xme:'url=' + url,"masquee":masquer_les_messages_du_serveur});
+                logerreur({__xst:false,__xme:JSON.stringify(en_entree),"masquee":masquer_les_messages_du_serveur});
+                logerreur({__xst:false,__xme:JSON.stringify(donnees),"masquee":masquer_les_messages_du_serveur});
+                return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t,"masquee":masquer_les_messages_du_serveur});
+            }
+        }catch(e){
+            console.log(e);
+            if(e.message==='signal timed out'){
+             logerreur({__xst:false,__xme:'les données n\'ont pas pu être récupérées  en moins de '+(parseInt((delais_admis/1000)*10,10)/10)+' secondes '});
+            }else{
+             logerreur({__xst:false,__xme:e.message});
+            }
+
+            return({__xst:false,__xme:e.message});
+        }
+    }
+    
     /* 
       ================================================================================================================
       function TransformHtmlEnRev
     */
 
-    TransformHtmlEnRev(texteHtml,niveau){
+    TransformHtmlEnRev(texteHtml,niveau,options){
         var t='';
         var esp0 = ' '.repeat(NBESPACESREV*(niveau));
         var esp1 = ' '.repeat(NBESPACESREV);
@@ -1122,7 +1201,8 @@ class traitements_sur_html{
                     
                 }
                 try{
-                    var obj=this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'');
+                    var tableau_de_javascripts_a_convertir=[];
+                    var obj=this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir );
                     if(obj.__xst===true){
                         if(obj.__xva.trim().indexOf('html(')==0){
                          if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
@@ -1131,7 +1211,33 @@ class traitements_sur_html{
                             obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
                          }
                         }
-                        t=obj.__xva;
+                        if(tableau_de_javascripts_a_convertir.length>0){
+                         
+                            var ajax_param={'call':{'lib':'js','file':'rev_html_avec_js1','funct':'traiter_des_morceaux_de_js_dans_un_rev1'},"options":options, format_rev:obj.__xva,tableau_de_javascripts_a_convertir:tableau_de_javascripts_a_convertir};
+                            
+                            async function traiter_des_morceaux_de_js_dans_un_rev1(url="",ajax_param){
+                                return(__gi1.recupérer_un_fetch(url,ajax_param));
+                            }
+                            traiter_des_morceaux_de_js_dans_un_rev1('za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',ajax_param).then((donnees) => {
+                                if(donnees.__xst===true){
+                                    console.log(donnees);                                 
+                                    /* pour chaque ast reçu, on va le convertir en rev */
+                                    for( var i in donnees.__entree.tableau_de_javascripts_a_convertir){
+                                     console.log(donnees.__entree.tableau_de_javascripts_a_convertir[i]);
+                                    }
+
+                                    debugger
+                                    return;
+                                }else{
+                                    debugger;
+                                }
+                            });
+                            return({__xst:true,traitements_javascript_integres_en_cours:true});
+                         
+                         
+                        }else{ 
+                           t=obj.__xva;
+                        }
                     }else{
                         return(asthtml_logerreur({__xst:false,__xme:'erreur module_html 0667 '}));
                     }
@@ -1142,6 +1248,7 @@ class traitements_sur_html{
                 
                 
             }
+            debugger;
             return({__xst:true,__xva:t});
 
         }catch(e){
