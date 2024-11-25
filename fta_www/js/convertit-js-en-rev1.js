@@ -3114,12 +3114,12 @@ function TransformAstEnRev(les_elements,niveau){
 /*
   =====================================================================================================================
 */
-function analyse_fichier_log_acorn(jsonRet){
+function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
     var numero_de_ligne=-1;
     var position=-1;
     var caractere_incorrecte='';
-    if(jsonRet.fichier_erreur.indexOf('loc: Position') >= 0){
-        var temp = jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('loc: Position') + 14);
+    if(fichier_erreur.indexOf('loc: Position') >= 0){
+        var temp = fichier_erreur.substr(fichier_erreur.indexOf('loc: Position') + 14);
         if(temp.indexOf('}') >= 0){
             temp=temp.substr(0,temp.indexOf('}') + 1);
             try{
@@ -3134,26 +3134,24 @@ function analyse_fichier_log_acorn(jsonRet){
             }
         }
     }
-    logerreur({"__xst" : false,"__xme" : '<b style="font-size:1rem;">- - - Détail des erreurs  du compilateur - - - </b><br />' + jsonRet.fichier_erreur,"masquee" : true});
-    if(jsonRet.fichier_erreur.indexOf('pos: ') >= 0){
-        var temp = jsonRet.fichier_erreur.substr(jsonRet.fichier_erreur.indexOf('pos: ') + 5);
+    logerreur({"__xst" : false,"__xme" : '<b style="font-size:1rem;">- - - Détail des erreurs  du compilateur - - - </b><br />' + fichier_erreur,"masquee" : true});
+    if(fichier_erreur.indexOf('pos: ') >= 0){
+        var temp = fichier_erreur.substr(fichier_erreur.indexOf('pos: ') + 5);
         if(temp.indexOf(',') >= 0){
             temp=temp.substr(0,temp.indexOf(','));
             try{
                 position=parseInt(temp,10);
-                if(jsonRet.__entree && jsonRet.__entree.texteSource){
-                    if(jsonRet.__entree.texteSource.length >= position){
-                        caractere_incorrecte=jsonRet.__entree.texteSource.substr(position,1);
-                        var chaine='';
-                        if(position - 15 > 0){
-                            chaine='proche de="' + (jsonRet.__entree.texteSource.substr(position - 15,30).replace(/\n/g,'\\n')) + '"';
-                        }else{
-                            chaine='proche de="' + (jsonRet.__entree.texteSource.substr(0,30)) + '"';
-                        }
-                        logerreur({"__xst" : false,"__xme" : 'erreur dans un source javascript en position ' + position + ' caractere_incorrecte="' + caractere_incorrecte + '" ' + chaine});
-                        logerreur({"__xst" : true,"plage" : [position,position]});
-                        return({"__xst" : false});
+                if(texte_source.length >= position){
+                    caractere_incorrecte=texte_source.substr(position,1); // jsonRet.__entree.texteSource
+                    var chaine='';
+                    if(position - 15 > 0){
+                        chaine='proche de="' + (texte_source.substr(position - 15,30).replace(/\n/g,'\\n')) + '"';
+                    }else{
+                        chaine='proche de="' + (texte_source.substr(0,30)) + '"';
                     }
+                    logerreur({"__xst" : false,"__xme" : 'erreur dans un source javascript en position ' + position + ' caractere_incorrecte="' + caractere_incorrecte + '" ' + chaine});
+                    logerreur({"__xst" : true,"plage" : [position,position] , "zone_source":zone_source});
+                    return({"__xst" : false});
                 }
             }catch(e){
             }
@@ -3167,6 +3165,7 @@ function analyse_fichier_log_acorn(jsonRet){
   =====================================================================================================================
 */
 function recupere_ast_de_source_js_en_synchrone(texteSource){
+    debugger
     var texte_source_mini = texteSource.trim();
     if(texte_source_mini === ''){
         return({"__xst" : true,"__xva" : {
@@ -3232,8 +3231,8 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
             }
             return({"__xst" : true,"__xva" : JSON.parse(jsonRet.__xva),"commentaires" : JSON.parse(jsonRet.commentaires)});
         }else{
-            if(jsonRet.fichier_erreur){
-                var obj = analyse_fichier_log_acorn(jsonRet);
+            if(jsonRet.hasOwnProperty('fichier_erreur')){
+                var obj = analyse_fichier_log_acorn(jsonRet.fichier_erreur,jsonRet.__entree.texteSource,null);
                 if(obj.__xst === false){
                     console.error(jsonRet.fichier_erreur);
                     console.error(jsonRet.__entree.texteSource);
@@ -3355,8 +3354,8 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
             return({"__xst" : true});
         }else{
             var elem={};
-            if(donnees.fichier_erreur){
-                var obj = analyse_fichier_log_acorn(donnees);
+            if(donnees.hasOwnProperty('fichier_erreur')){
+                var obj = analyse_fichier_log_acorn(donnees.fichier_erreur , donnees.__entree.texteSource,null);
             }
             if(donnees.hasOwnProperty('__entree')
              && donnees.__entree.hasOwnProperty('options')

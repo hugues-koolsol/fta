@@ -19,6 +19,10 @@
   
   
 */
+var contient_du_javascript_dans_html=false;
+var tableau_de_html_dans_php_a_convertir=[];
+
+
 function astphp_logerreur(o){
     logerreur(o);
     if(global_messages.ranges.length <= 3){
@@ -365,7 +369,7 @@ function php_traite_Expr_FuncCall(element,niveau){
         var source = source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
         var obj = __module_html1.TransformHtmlEnRev(source,0);
         if(obj.__xst === true){
-            t+='html(' + obj.__xva + ')';
+            t+='html_dans_php(' + obj.__xva + ')';
         }else{
             t+='#(erreur convertit-php-en-rev pour htmlDansPhp 0373)';
         }
@@ -2117,7 +2121,27 @@ function ajouteCommentairesAvant(element,niveau){
 /*
   =====================================================================================================================
 */
-function TransformAstPhpEnRev(stmts,niveau,dansFor){
+function php_construit_cle(l) {
+    let resultat='';
+    /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un)*/
+    const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+    const longueur=lettres.length;
+    let c=0;
+    while(c < l){
+        resultat+=lettres.charAt(Math.floor(Math.random() * longueur));
+        c++;
+    }
+    return('_' + resultat);
+}
+/*
+  =====================================================================================================================
+*/
+function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
+ 
+    if(typeof de_racine !== 'undefined'){
+        contient_du_javascript_dans_html=false;
+        tableau_de_html_dans_php_a_convertir=[];
+    }
     var t='';
     var esp0 = ' '.repeat((NBESPACESREV * niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -2135,6 +2159,164 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
             }
             if("Stmt_Nop" === stmts[i].nodeType){
                 t+='';
+            }else if("Stmt_InlineHTML" === stmts[i].nodeType){
+                /*
+                  ==============================================================================================
+                  Quand un php contient du html, ou bien ce dernier est un dom valide qui ne contient pas de php
+                  par exemple ">? <div>que_du_html</div><?php"
+                  ou bien il contient du php, 
+                  par exemple ">? <div> <?php echo '';?> </div> <?php"
+                  Dans ce dernier car la chaine " <div> " n'est pas un html "parfait"
+                  ==============================================================================================
+                */
+                var estTraiteSansErreur=false;
+                debugger
+                
+                var obj = isHTML(stmts[i].value);
+                
+                /* recherche d'au moins un tag dans le texte */
+                var regex=/(<[a-zA-Z0-9\-_]+)/g;
+                var found = stmts[i].value.match(regex);
+                if((obj.__xst === true)
+                 && (stmts[i].value.indexOf('<') >= 0)
+                 && (stmts[i].value.indexOf('<') >= 0)
+                 && (found)
+                 && (found.length > 0)
+                ){
+                    var cle=php_construit_cle(10);
+                    tableau_de_html_dans_php_a_convertir.push({"cle":cle,"valeur":stmts[i].value});
+                    t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,'+cle+'))';
+                    estTraiteSansErreur=true;
+
+                    /*
+                    var obj1 = __module_html1.TransformHtmlEnRev(stmts[i].value,0,{});
+                    if(obj1.__xst === true){
+                        if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
+                         
+                            contient_du_javascript_dans_html=true;
+                        }else{
+
+                            StmtsHtmlPrecedentEstEcho=false;
+                            if(obj1.hasOwnProperty('__xva')){
+                                if(obj1.__xva !== ''){
+                                    t+='\n' + esp0 + 'html_dans_php(' + obj1.__xva + ')';
+                                }
+                                estTraiteSansErreur=true;
+                            }else{
+                                var cle=php_construit_cle(10);
+                                tableau_de_html_dans_php_a_convertir.push({"cle":cle,"valeur":stmts[i].value});
+                                t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,'+cle+'))';
+                            }
+                        }
+                    }else{
+                        
+                        //  On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
+                        //  dans ce cas tout est remplacé par des "echo" plus bas
+                        
+                        estTraiteSansErreur=false;
+                    }
+                    */
+                }else{
+                    /*
+                      On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
+                      dans ce cas tout est remplacé par des "echo" plus bas
+                    */
+                    estTraiteSansErreur=false;
+                }
+                if(estTraiteSansErreur === false){
+                    debugger
+                    numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
+                    numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
+                    if(stmts[i].value.toLowerCase().indexOf('<script') < 0){
+                        /*
+                          =====================================================================
+                          C'est un html incomplet qui ne contient pas de script, on le transforme en echo
+                          =====================================================================
+                        */
+                        if(((numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlStartLine)
+                         || (numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlEndLine))
+                         && (StmtsHtmlPrecedentEstEcho === true)
+                        ){
+                            t=t.substr(0,(t.length - 2)) + ',p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                        }else{
+                            t+='\n' + esp0 + 'appelf(nomf(echo),p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                        }
+                        StmtsHtmlPrecedentEstEcho=true;
+                        numeroLignePrecedentStmtHtmlStartLine=numeroLigneCourantStmtHtmlStartLine;
+                        numeroLignePrecedentStmtHtmlEndLine=numeroLigneCourantStmtHtmlEndLine;
+                    }else{
+                        /*
+                          =====================================================================
+                          cas ou le html contenu contient des scripts, 
+                          =====================================================================
+                          
+                        */
+                        var obj1 = __module_html1.mapDOM(stmts[i].value);
+                        if(obj1.__xst === true && obj1.parfait === true && obj1.__xva.type.toLowerCase() === 'html'){
+                            /*
+                              si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
+                            */
+                            if((obj1.content) && (obj1.content.length >= 0)){
+                                var j=0;
+                                for(j=0;j < obj1.content.length;j++){
+                                    if((obj1.content[j].type === 'BODY') || (obj1.content[j].type === 'HEAD')){
+                                        if((obj1.content[j].content) && (obj1.content[j].content.length > 0)){
+                                            var k=0;
+                                            for(k=0;k < obj1.content[j].content.length;k++){
+                                                if(obj1.content[j].content[k].type){
+                                                    var lesProprietes='';
+                                                    if(obj1.content[j].content[k].attributes){
+                                                        var attr={};
+                                                        for(attr in obj1.content[j].content[k].attributes){
+                                                            if(lesProprietes !== ''){
+                                                                lesProprietes+=',';
+                                                            }
+                                                            lesProprietes+='(\'' + attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + obj1.content[j].content[k].attributes[attr].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+                                                        }
+                                                    }
+                                                    if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
+                                                        if(obj1.content[j].content[k].content){
+                                                            var objScr = convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
+                                                            if(objScr.__xst === true){
+                                                                contient_du_javascript_dans_html=true;
+                                                                if(objScr.__xva === ''){
+                                                                    t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
+                                                                }else{
+                                                                    t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + ',source(' + objScr.__xva + ')))';
+                                                                }
+                                                            }else{
+                                                                console.log('un script KO : ' + obj1.content[j].content[k].content[0]);
+                                                                t+='appelf(nomf(echo),p(\'<script type="text/javascript">\'))';
+                                                                t+='appelf(nomf(echo),p(\'' + obj1.content[j].content[k].content[0].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                                                            }
+                                                        }else{
+                                                            t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
+                                                        }
+                                                    }else{
+                                                        contient_du_javascript_dans_html=true;
+                                                        var obj = __module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'',tableau_de_javascripts_dans_php_a_convertir);
+                                                        if(obj.__xst === true){
+                                                            t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
+                                                        }else{
+                                                            t+='\n' + esp0 + '#(erreur 1679 dans convertit-php-en-rev)';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        t+='\n' + esp0 + '#(cas non traité convertit-php-en-rev 1669)';
+                                    }
+                                }
+                            }
+                        }else{
+                            /*
+                              si le contenu ne contient pas du HTML en racine, on "echo" 
+                            */
+                            t+='appelf(nomf(echo),p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                        }
+                    }
+                }
             }else if("Stmt_Echo" === stmts[i].nodeType){
                 var obj = php_traite_echo(stmts[i],niveau);
                 if(obj.__xst === true){
@@ -2212,133 +2394,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
                 }else{
                     return(astphp_logerreur({__xst:false,'__xme':'2420  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"',element:stmts[i]}));
                 }
-            }else if("Stmt_InlineHTML" === stmts[i].nodeType){
-                /*
-                  =====================================================================================
-                */
-                var estTraiteSansErreur=false;
-                var obj = isHTML(stmts[i].value);
-                /* recherche d'au moins un tag dans le texte */
-                var regex=/(<[a-zA-Z0-9\-_]+)/g;
-                var found = stmts[i].value.match(regex);
-                if((obj.__xst === true)
-                 && (stmts[i].value.indexOf('<') >= 0)
-                 && (stmts[i].value.indexOf('<') >= 0)
-                 && (found)
-                 && (found.length > 0)){
-                    var obj1 = __module_html1.TransformHtmlEnRev(stmts[i].value,0);
-                    if(obj1.__xst === true){
-                        StmtsHtmlPrecedentEstEcho=false;
-                        if(obj1.__xva !== ''){
-                            t+='\n' + esp0 + 'html(' + obj1.__xva + ')';
-                        }
-                        estTraiteSansErreur=true;
-                    }else{
-                        /*
-                          On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
-                          dans ce cas tout est remplacé par des "echo" plus bas
-                        */
-                        estTraiteSansErreur=false;
-                    }
-                }else{
-                    /*
-                      On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
-                      dans ce cas tout est remplacé par des "echo" plus bas
-                    */
-                    estTraiteSansErreur=false;
-                }
-                if(estTraiteSansErreur === false){
-                    numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
-                    numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
-                    if(stmts[i].value.toLowerCase().indexOf('<script') < 0){
-                        /*
-                          =====================================================================
-                          C'est un html incomplet qui ne contient pas de script, on le transforme en echo
-                          =====================================================================
-                        */
-                        if(((numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlStartLine)
-                         || (numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlEndLine))
-                         && (StmtsHtmlPrecedentEstEcho === true)
-                        ){
-                            t=t.substr(0,(t.length - 2)) + ',p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
-                        }else{
-                            t+='\n' + esp0 + 'appelf(nomf(echo),p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
-                        }
-                        StmtsHtmlPrecedentEstEcho=true;
-                        numeroLignePrecedentStmtHtmlStartLine=numeroLigneCourantStmtHtmlStartLine;
-                        numeroLignePrecedentStmtHtmlEndLine=numeroLigneCourantStmtHtmlEndLine;
-                    }else{
-                        /*
-                          =====================================================================
-                          cas ou le html contenu contient des scripts, 
-                          =====================================================================
-                          
-                        */
-                        var obj1 = __module_html1.mapDOM(stmts[i].value);
-                        if(obj1.__xst === true && obj1.parfait === true && obj1.__xva.type.toLowerCase() === 'html'){
-                            /*
-                              si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
-                            */
-                            if((obj1.content) && (obj1.content.length >= 0)){
-                                var j=0;
-                                for(j=0;j < obj1.content.length;j++){
-                                    if((obj1.content[j].type === 'BODY') || (obj1.content[j].type === 'HEAD')){
-                                        if((obj1.content[j].content) && (obj1.content[j].content.length > 0)){
-                                            var k=0;
-                                            for(k=0;k < obj1.content[j].content.length;k++){
-                                                if(obj1.content[j].content[k].type){
-                                                    var lesProprietes='';
-                                                    if(obj1.content[j].content[k].attributes){
-                                                        var attr={};
-                                                        for(attr in obj1.content[j].content[k].attributes){
-                                                            if(lesProprietes !== ''){
-                                                                lesProprietes+=',';
-                                                            }
-                                                            lesProprietes+='(\'' + attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + obj1.content[j].content[k].attributes[attr].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
-                                                        }
-                                                    }
-                                                    if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
-                                                        if(obj1.content[j].content[k].content){
-                                                            var objScr = convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
-                                                            if(objScr.__xst === true){
-                                                                if(objScr.__xva === ''){
-                                                                    t+='\n' + esp0 + 'html(script(' + lesProprietes + '))';
-                                                                }else{
-                                                                    t+='\n' + esp0 + 'html(script(' + lesProprietes + ',source(' + objScr.__xva + ')))';
-                                                                }
-                                                            }else{
-                                                                console.log('un script KO : ' + obj1.content[j].content[k].content[0]);
-                                                                t+='appelf(nomf(echo),p(\'<script type="text/javascript">\'))';
-                                                                t+='appelf(nomf(echo),p(\'' + obj1.content[j].content[k].content[0].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
-                                                            }
-                                                        }else{
-                                                            t+='\n' + esp0 + 'html(script(' + lesProprietes + '))';
-                                                        }
-                                                    }else{
-                                                        var tableau_de_javascripts_a_convertir=[];
-                                                        var obj = __module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'',tableau_de_javascripts_a_convertir);
-                                                        if(obj.__xst === true){
-                                                            t+='\n' + esp0 + 'html(' + obj.__xva + ')';
-                                                        }else{
-                                                            t+='\n' + esp0 + '#(erreur 1679 dans convertit-php-en-rev)';
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }else{
-                                        t+='\n' + esp0 + '#(cas non traité convertit-php-en-rev 1669)';
-                                    }
-                                }
-                            }
-                        }else{
-                            /*
-                              si le contenu ne contient pas du HTML en racine, on "echo" 
-                            */
-                            t+='appelf(nomf(echo),p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
-                        }
-                    }
-                }
+
             }else if("Stmt_Switch" === stmts[i].nodeType){
                 var obj = php_traite_Stmt_Switch(stmts[i],niveau);
                 if(obj.__xst === true){
@@ -2446,7 +2502,14 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor){
     }else if(t.substr(0,1) === '\n'){
         t=t.substr(1);
     }
-    return({__xst:true,__xva:t});
+
+    if(typeof de_racine !== 'undefined'){
+        return({__xst:true,__xva:t,"contient_du_javascript_dans_html":contient_du_javascript_dans_html,"tableau_de_html_dans_php_a_convertir":tableau_de_html_dans_php_a_convertir});
+    }else{
+        return({__xst:true,__xva:t});
+    }
+    
+    
 }
 /*
   =====================================================================================================================
@@ -2483,7 +2546,22 @@ function isHTML(str){
         }else{
             cm1='';
         }
-        if(dansTag){
+        if(dansCdata===true){
+          var j=i;
+          for(j=i;j < l01;j++){
+              if(str.substr(j,3) === (']]' + '>')){
+                  i=j + 2;
+                  break;
+              }
+          }
+          dansCdata=false;
+          nomTag='';
+          dansInner=true;
+          dansTag=false;
+          debugger
+          continue
+         
+        }else if(dansTag){
             if(dansNomPropriete){
                 if((c0 === ' ') || (c0 === '\r') || (c0 === '\n') || (c0 === '\t')){
                     if(i > 50){
@@ -2575,7 +2653,8 @@ function isHTML(str){
                     return({__xst:false,id:i,'__xme':'Erreur 2926 pres de "' + presDe + '"'});
                 }else{
                     nomTag+=c0;
-                    if(nomTag === ('![C' + 'DATA[')){
+                    if(nomTag === '![C' + 'DATA['){
+                        debugger
                         dansCdata=true;
                     }
                 }
@@ -2661,6 +2740,7 @@ function isHTML(str){
                         }else{
                             presDe=str.substr(0,(i + 10));
                         }
+                        
                         return({__xst:false,id:i,'__xme':'Erreur 1982 pres de "' + presDe + '"'});
                     }
                     dansBaliseFermante=true;
@@ -2745,20 +2825,70 @@ function traitement_apres_recuperation_ast_de_php(ret){
     try{
         var startMicro = performance.now();
         var ast = JSON.parse(ret.__xva);
-        var obj = TransformAstPhpEnRev(ast,0,false);
+        var obj = TransformAstPhpEnRev(ast,0,false,true);
+            debugger
         if(obj.__xst === true){
-            var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
-            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-            if(matriceFonction.__xst === true){
-                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
-                if(obj2.__xst === true){
-                    document.getElementById('txtar2').value=obj2.__xva;
-                    
+            if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length>0){
+                /* 
+                  il y a du html dans ce php, on le traite et on le remplace 
+                */
+                try{
+                    document.getElementById('txtar2').value=obj.__xva;
+                }catch(e){
+                    console.error('e=',e)
+                }
+/*                
+                var texte_php=obj.__xva;
+                var a_des_traitements_js=false;
+                
+                for(var i=0;i<obj.tableau_de_html_dans_php_a_convertir.length;i++){
+                    var obj1 = __module_html1.TransformHtmlEnRev(
+                        obj.tableau_de_html_dans_php_a_convertir[i].valeur,
+                        0,
+                        {"html_dans_php":texte_php,"tableau_de_html_dans_php_a_convertir":obj.tableau_de_html_dans_php_a_convertir,"cle":obj.tableau_de_html_dans_php_a_convertir[i].cle}
+                    );
+                    if(obj1.__xst===true){
+                         if(obj1.hasOwnProperty('traitements_javascript_integres_en_cours') && obj1.traitements_javascript_integres_en_cours===true){
+                             a_des_traitements_js=true;
+                         }else{
+                             texte_php=obj1.__xva;
+                         }
+                    }else{
+                        debugger
+                    }
+
+                }
+                if(a_des_traitements_js===false){
+                    try{
+                        document.getElementById('txtar2').value=texte_php;
+                    }catch(e){
+                        console.error('e=',e)
+                    }
+                }
+*/                
+                
+            }else{
+             
+                try{
+                    document.getElementById('txtar2').value=obj.__xva;
+                }catch(e){
+                    console.error('e=',e)
+                }
+             
+                debugger
+                var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
+                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                if(matriceFonction.__xst === true){
+                    var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                    if(obj2.__xst === true){
+                        document.getElementById('txtar2').value=obj2.__xva;
+                        
+                    }else{
+                        document.getElementById('txtar2').value='php(' + obj.__xva + ')';
+                    }
                 }else{
                     document.getElementById('txtar2').value='php(' + obj.__xva + ')';
                 }
-            }else{
-                document.getElementById('txtar2').value='php(' + obj.__xva + ')';
             }
             
         }else{
@@ -2789,6 +2919,7 @@ function recupereAstDePhp(texteSource,opt,f_traitement_apres_recuperation_ast_de
     }
     recupererAstDePhp1('za_ajax.php?recupererAstDePhp',ajax_param).then((donnees) => {
         if(donnees.__xst === true){
+
             var elem={};
             for(elem in donnees.__xms){
                 astphp_logerreur({__xst:true,'__xme':'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
@@ -2834,6 +2965,7 @@ function transform_text_area_php_en_rev(nom_de_la_text_area_php,nom_de_la_text_a
 
     try{
         var ret = recupereAstDePhp(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php);
+
         if(ret.__xst === false){
             astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});
             ret=false;

@@ -56,9 +56,19 @@ function parsePhp0(tab,id,niveau){
  var t='';
  var obj={}; 
  php_contexte_commentaire_html=false;
+ debugger
  var retJS=php_tabToPhp1(tab,id+1,false,false,niveau);
  if(retJS.__xst===true){
   var contenu=retJS.__xva;
+  if(contenu.length>0 && contenu.substr(0,1)==='\r'){
+   contenu=contenu.substr(1);
+  }
+  if(contenu.length>0 && contenu.substr(0,1)==='\n'){
+   contenu=contenu.substr(1);
+  }
+  if(tab.length>=1 && tab[1][1]!=='html_dans_php'){
+   contenu='<?'+'php\n'+contenu;
+  }
   t+=contenu.replace(/<\?php\?>/g,'');
  }else{
   console.error(retJS);
@@ -829,12 +839,13 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          }
           
         
-        }else if(tab[i][1]==='html'  && tab[i][2]==='f'){
+        }else if(tab[i][1]==='html_dans_php'  && tab[i][2]==='f'){
          if(tab[i][8]===0){
           t+='?><?php';
          }else{
           php_contexte_commentaire_html=true;
-          obj=__module_html1.tabToHtml1(tab,i,true,0);
+          obj=__module_html1.tabToHtml1(tab,i,true,niveau);
+          debugger
           if(obj.__xst===true){
            if(obj.__xva.substr(obj.__xva.length-2,2)==='\r\n'){
             obj.__xva=obj.__xva.substr(0,obj.__xva.length-2)
@@ -842,7 +853,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
             obj.__xva=obj.__xva.substr(0,obj.__xva.length-1)
            }
            
-           t+='?>'+obj.__xva+'<?php';
+           t+='?>\n'+obj.__xva+'\n<?php';
           }else{
            return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'erreur ( php.js ) dans un html en 643'});     
           }
@@ -1481,13 +1492,13 @@ function php_traiteElement(tab , ind , niveau,options={}){
       return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'dans array de php_traiteElement 1373 il y a un problème'});
      }
 
- }else if(tab[ind][2]==='f' && tab[ind][1]==='html' ){
+ }else if(tab[ind][2]==='f' && tab[ind][1]==='html_dans_php' ){
 
      php_contexte_commentaire_html=true;
      
      obj=__module_html1.tabToHtml1(tab,ind,true,0);
      if(obj.__xst===true){
-      t='htmlDansPhp(\''+obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
+      t='html_dans_php(\''+obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')';
      }else{
       return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'erreur php_traiteElement dans un html 1195 définit dans un php'});
      }

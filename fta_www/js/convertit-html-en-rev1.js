@@ -68,7 +68,6 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
 
     if(obj.__xst == true){
         if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
-            asthtml_logerreur({__xst:true,__xme:'conversion html OK, conversion scripts inclus en cours, soyez patient!' });
         }else{
             var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
     //                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';

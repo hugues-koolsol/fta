@@ -2207,10 +2207,10 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     'valueOf'                    
                 ];
                 if(tab_mots_cles_a_ne_pas_transformer.includes(nomFonction)){
-                    console.log('%c on prend la forme "." pour '+nomElement , 'background:yellow;color:red;')
+//                    console.log('%c on prend la forme "." pour '+nomElement , 'background:yellow;color:red;')
                     t=nomElement + '.';
                 }else{
-                    console.log('%c => on garde la forme "." pour '+nomElement , 'background:yellow;color:red;')
+                    console.log('%c => on garde la forme "." pour '+nomElement + ' car ce n\'est pas une fonction connue', 'background:yellow;color:red;')
                     transformer_point_en_tableau=true;
                     t=nomElement;
                 }

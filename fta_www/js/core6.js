@@ -98,7 +98,7 @@ function logerreur(o){
         global_messages['ranges'].push(o.range);
     }
     if(o.hasOwnProperty('plage')){
-        global_messages['plages'].push(o.plage);
+        global_messages['plages'].push(o);
     }
 /*#
   if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){

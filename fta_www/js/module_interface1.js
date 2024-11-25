@@ -197,7 +197,9 @@ class interface1{
             affichagesPresents=true;
         }
         while(global_messages.plages.length > 0){
-            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML;
+
+            var zone_source=global_messages.plages[0].hasOwnProperty('zone_source')?global_messages.plages[0].zone_source:nomDeLaTextAreaContenantLeTexteSource
+            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0].plage[0] + ',' + global_messages.plages[0].plage[0] + ',\'' + zone_source + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0].plage[0] + ',' + global_messages.plages[0].plage[0] + '</a>' + zon.innerHTML;
             global_messages.plages.splice(0,1);
             affichagesPresents=true;
         }

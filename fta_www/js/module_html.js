@@ -30,8 +30,11 @@ class traitements_sur_html{
          // recherche du premier tag "html"
          var startId=id;
          for(var i=id;i<tab.length;i++){
-           if(tab[i][1]=='html'){
+           if(tab[i][1]=='html' || tab[i][1]=='html_dans_php' ){
             startId=i;
+            if(tab[i][1]=='html_dans_php'){
+             niveau-=1;
+            }
             break;
            }
          }
@@ -123,7 +126,7 @@ class traitements_sur_html{
                              typeScriptNonTraite=true;
                              type='script';
                              t+='\n'+esp0+'script(';
-                             logerreur({__xst:false,__xme:'module_html.js traiteJsonDeHtml 0073 attention, il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
+                             logerreur({__xst:false,__xme:'module_html.js traiteJsonDeHtml 0073 attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "'+jsonDeHtml.attributes.type+'"'})
                          }
                     }else{
                         /*
@@ -192,7 +195,8 @@ class traitements_sur_html{
                       if(jsonDeHtml.content[i].type && jsonDeHtml.content[i].type==='#text' || jsonDeHtml.content[i].type==='#cdata-section' ){
                        
                           var source_js=jsonDeHtml.content[i].content;
-                          if(!( source_js==='\n//' || source_js === '\n' )){
+
+                          if(!( source_js.trim()==='//' || source_js === '\n' || source_js === '' )){
                               var cle=this.#construit_cle(10);
                               tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" , "__xva":source_js,"cas":"js1","cle":cle});
                               contenu+='#(cle_javascript_a_remplacer,'+cle+')';
@@ -203,12 +207,14 @@ class traitements_sur_html{
                             la fonction convertit_source_javascript_en_rev 
                             fait un appel ajax synchrone, on la garde pour l'instant
                           */
+                          /*
                           var obj = convertit_source_javascript_en_rev(source_js);
                           if(obj.__xst === true){
                               contenu+=obj.__xva;
                           }else{
                               return(logerreur({"__xst" : false,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type}));
                           }
+                          */
                           /*
                             bloc à commenter fin
                           */
@@ -1213,6 +1219,13 @@ class traitements_sur_html{
                         }
                         if(tableau_de_javascripts_a_convertir.length>0){
                          
+                            if(options.hasOwnProperty('html_dans_php')){
+                             debugger
+                            }
+                         
+                            asthtml_logerreur({__xst:true,__xme:'conversion html OK, conversion scripts inclus en cours, soyez patient!' });
+//                            asthtml_logerreur({__xst:true,__xme:'yapluska convertir les JS' });
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                             var ajax_param={'call':{'lib':'js','file':'rev_html_avec_js1','funct':'traiter_des_morceaux_de_js_dans_un_rev1'},"options":options, format_rev:obj.__xva,tableau_de_javascripts_a_convertir:tableau_de_javascripts_a_convertir};
                             
                             async function traiter_des_morceaux_de_js_dans_un_rev1(url="",ajax_param){
@@ -1220,29 +1233,123 @@ class traitements_sur_html{
                             }
                             traiter_des_morceaux_de_js_dans_un_rev1('za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',ajax_param).then((donnees) => {
                                 if(donnees.__xst===true){
-                                    console.log(donnees);                                 
+                                    console.log('donnees=',donnees);
                                     /* pour chaque ast reçu, on va le convertir en rev */
+                                    var source_rev=donnees.__entree.format_rev;
+                                    var une_erreur=false;
                                     for( var i in donnees.__entree.tableau_de_javascripts_a_convertir){
-                                     console.log(donnees.__entree.tableau_de_javascripts_a_convertir[i]);
-                                    }
+                                        try{
+                                            var json_ast=JSON.parse(donnees.__entree.tableau_de_javascripts_a_convertir[i].ast);
+                                            
+                                            if(json_ast.type === 'Program' && json_ast.body){
+                                                try{
+                                                    tabComment=JSON.parse(donnees.__entree.tableau_de_javascripts_a_convertir[i].commentaires);
+                                                    
+                                                    var obj1=TransformAstEnRev(json_ast.body,0);
+                                                    if(obj1.__xst===true){
+                                                        /* puis on remplace la chaine */
+                                                        var phrase_a_remplacer='#(cle_javascript_a_remplacer,'+donnees.__entree.tableau_de_javascripts_a_convertir[i].cle+')';
+                                                        source_rev=source_rev.replace(phrase_a_remplacer,obj1.__xva);
+                                                     
+                                                    }else{
+                                                        console.error('erreur de conversion de ast vers js e=',e);
+                                                    }
+                                                    
+                                                    
+                                                }catch(e){
+                                                    console.error('erreur de conversion d\'un commentaire de programme');
+                                                }
+                                            }else{
+                                                console.error('le ast du programme n\'est pas au bon format',e);
+                                            }
+                                        }catch(e){
+                                             une_erreur=true
+                                             
 
-                                    debugger
-                                    return;
+                                             asthtml_logerreur({__xst:false,__xme:'il y a un problème dans le source source javascript de html n°'+(parseInt(i,10)+1) });
+                                             if(donnees.__entree.tableau_de_javascripts_a_convertir[i].hasOwnProperty('fichier_erreur')){
+
+                                                
+                                                 var zone_source=donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_source') ? donnees.__entree.options.zone_source : null;
+
+                                                 var obj = analyse_fichier_log_acorn(
+                                                     donnees.__entree.tableau_de_javascripts_a_convertir[i].fichier_erreur , 
+                                                     donnees.__entree.tableau_de_javascripts_a_convertir[i].__xva,
+                                                     zone_source
+                                                 );
+                                             }
+
+//                                            console.error('erreur de conversion json e=',e);
+                                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages', 'txtar2');
+
+                                            return({__xst:false,__xme:'il y a un problème dans un source javascript'})
+                                        }
+                                    }
+                                    /*
+                                    ========================================================
+                                    console.log('après transformation, source_rev=',source_rev)
+                                    ========================================================
+                                    */
+                                    
+                                    if(donnees.__entree.options.hasOwnProperty('html_dans_php') && donnees.__entree.options.html_dans_php.length>0 ) {
+                                     
+                                         debugger
+                                     
+                                    }else{
+
+                                    
+                                        if(donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_html_rev')){
+                                            try{
+                                                document.getElementById(donnees.__entree.options.zone_html_rev).value=source_rev;
+                                            }catch(e){
+                                                console.error('la zone "'+donnees.__entree.options.zone_html_rev+'" indiquée en paramètre n\'existe pas dans le document')
+                                            }
+                                        }
+                                        if(une_erreur===false){
+                                            if(donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_html_resultat')){
+                                                var obj1 = functionToArray(source_rev,true,false,'');
+                                                if(obj1.__xst === true){
+                                                    var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
+                                                    if(obj2.__xst===true){
+                                                        document.getElementById(donnees.__entree.options.zone_html_resultat).value=obj2.__xva;
+                                                        return {__xst:true,__xva:source_rev};
+                                                    }else{
+                                                        debugger
+                                                    }
+                                                 
+                                                }else{
+                                                     debugger
+                                                }
+                                            }
+                                        }
+                                        return {__xst:true,__xva:source_rev};
+                                    }
                                 }else{
-                                    debugger;
+                                    console.error('problème de conversion de javascript ');
                                 }
                             });
                             return({__xst:true,traitements_javascript_integres_en_cours:true});
                          
                          
-                        }else{ 
-                           t=obj.__xva;
+                        }else{
+                           if(options.hasOwnProperty('html_dans_php')){
+
+                               for(var i=0;i<options.tableau_de_html_dans_php_a_convertir.length;i++){
+                                   if(options.cle===options.tableau_de_html_dans_php_a_convertir[i].cle){
+                                       var a_remplacer='#(cle_html_dans_php_a_remplacer,'+options.cle+')';
+                                       options.html_dans_php=options.html_dans_php.replace(a_remplacer,obj.__xva);
+                                   }
+                               }
+                               return({__xst:true,__xva:options.html_dans_php});
+                           }else{
+                               t=obj.__xva;
+                           }
                         }
                     }else{
                         return(asthtml_logerreur({__xst:false,__xme:'erreur module_html 0667 '}));
                     }
                 }catch(e){
-                    console.error('e=',e);
+//                    console.error('e=',e);
                         return(asthtml_logerreur({__xst:false,__xme:'erreur module_html 0667 '}));
                 }
                 
@@ -1404,7 +1511,7 @@ class traitements_sur_html{
      }else{
       temp='';
 
-      if(tab[id][1]=='html'){
+      if(tab[id][1]=='html' || tab[id][1]=='html_dans_php' ){
       }else{
        t+=espacesn(true,niveau);
       }
@@ -1427,13 +1534,13 @@ class traitements_sur_html{
       }else if(tab[id][1]=='php'){
        temp+='';
       }else{
-       if(noHead && tab[id][1]=='html'){
+       if(noHead && ( tab[id][1]=='html' ||  tab[id][1]=='html_dans_php'  ) ){
        }else{
         temp+='<'+tab[id][1];
        }
       }
       doctype='';
-      for(i=id+1;i<l01;i++){
+      for(i=id+1;i<l01 && tab[i][3]>tab[id][3];i++){
        if(tab[i][7]==id){
         if( tab[i][2] == 'f' && tab[i][1]==''){
          if( tab[i][8]<=2){// (lang,fr) : 2 enfants
@@ -1471,7 +1578,7 @@ class traitements_sur_html{
         }
        }
       }
-      if(tab[id][1]=='html' && doctype!='' ){
+      if(( tab[id][1]==='html' || tab[id][1]==='html_dans_php' ) && doctype!='' ){
        if(id>0){
         t+=doctype+CRLF;
         t+=temp;
@@ -1483,226 +1590,226 @@ class traitements_sur_html{
       }
       if(contientEnfantsNonVides||contientConstantes){
        if(id>0){
-        if(noHead && tab[id][1]=='html'){
+        if(noHead && ( tab[id][1]=='html' || tab[id][1]==='html_dans_php' ) ){
         }else if(tab[id][1]=='php'){
         }else{
          t+='>';
         }
        }
        var contenuNiveauPlus1='';
-       for(i=id+1;i<l01;i++){
-        if(tab[i][7]==id){ // pour tous les enfants
-         if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
+       for(i=id+1;i<l01  && tab[i][3]>tab[id][3] ; i++){
+        
+        
+           if(tab[i][7]==id){ // pour tous les enfants
+               if(tab[i][2] == 'f' && tab[i][1]!=''){// head(...),body(...),span(), ...
 
-          if(tab[i][1].toLowerCase()==='@'){
-
-
-             t+=tab[i][13];
-           
-           
-           
-           
-          }else if(tab[i][1].toLowerCase()==='ldplusjsondanshtml'){
-    //       debugger
-           
-           /*
-           dans ce cas, c'est un tag <script avec des propriétés 
-           */
-           var lesProprietes='';
-           var indiceDebutJs=-1;
-           for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
-            if(tab[j][7]===i){
-             if(tab[j][2]==='f'){
-              if(tab[j][1]==='' ){
-               lesProprietes+=' '+tab[j+1][1]+'="'+tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
-              }else{
-               if(indiceDebutJs===-1){
-                indiceDebutJs=j;
-               }
-              }
-             }else{
-              if(indiceDebutJs===-1){
-               indiceDebutJs=j;
-              }
-             }
-            }
-           }
-
-
-           if(indiceDebutJs===-1){
-            /*
-             c'est une balise <script src=""></script>
-            */
-
-             t+=CRLF;
-             t+='<script'+lesProprietes+'></script>'+CRLF;
-            
-           }else{
-
-            /*
-             c'est un script dans un html
-            */
-            
-            niveau++;
-            ob=parseJavascript0(tab,indiceDebutJs,niveau);
-            niveau--;
-            
-            if(ob.__xst===true){
-             /*
-              ===========================================================================================
-              ecriture de la valeur dans le cas d'un tag ldplusjsondanshtml
-              ===========================================================================================
-             */
-             t+=CRLF;
-             t+='<script'+lesProprietes+'>'
-    //         debugger
-             var contenu=ob.__xva.substr(ob.__xva.indexOf('=')+1);
-             if(contenu.substr(contenu.length-1,1)===';'){
-              contenu=contenu.substr(0,contenu.length-1);
-             }
-             t+=contenu+'</script>'+CRLF;
-             
-             
-            }else{
-             return logerreur({__xst:false,__xme:'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'});  
-            }
-            
-           }
-
-           var max=l01-1;
-           for(var j=i+1;j<l01;j++){
-            if(tab[j][3]<=tab[i][3]){
-             max=j-1;
-             break;
-            }
-           }
-           i=max;
-           
-           
-           
-           
-          }else if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
-           
-           
-           var obj=this.insere_javascript_dans_html(tab,i,niveau);
-           if(obj.__xst===true){
-               t+=obj.__xva;
-           }else{
-               return logerreur({__xst:false,__xme:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'});  
-           }
-           var max=l01-1;
-           for(var j=i+1;j<l01;j++){
-            if(tab[j][3]<=tab[i][3]){
-             max=j-1;
-             break;
-            }
-           }
-           i=max;
-           
-           
-          }else{
-              /*
-                ===========================================================================================
-                entrée dans le récursif
-                ===========================================================================================
-              */
-              if(tab[i][1]==='script'){
-               /*
-                 dans le cas du script, on le met à la racine
-               */
-               ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
-               
-               
-              }else{
-               niveau++;
-               ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau); // appel récursif
-               niveau--;
-              }
-              
-              if(ob.__xst===true){
-               /*
-                ===========================================================================================
-                ecriture de la valeur dans le cas d'un tag html normal
-                ===========================================================================================
-               */
-               t+=ob.__xva;
-               dansBody=ob.dansBody;
-               dansHead=ob.dansHead;
-               dansJs=ob.dansJs;
-              }else{
-               return logerreur({__xst:false,__xme:'erreur dans un html 0659'});  
-              }
-           
-           
-           
-          }
-          
-         }else{
-             if(tab[i][2] == 'f' && tab[i][1]==''){// propriétés déjà écrites plus haut
-             }else{
-              t+=espacesn(true,niveau+1);
-              /*
-               ===========================================================================================
-               ecriture de la valeur dans le cas d'une constante
-               ===========================================================================================
-              */
-              var indcss=0;
-              if(dansCss===true){
-                for(indcss=t.length-1;indcss>=0;indcss--){
-                    if(t.substr(indcss,1)!==' '){
-                        t=t.substr(0,indcss);
-                        break
+                if(tab[i][1].toLowerCase()==='@'){
+                   t+=tab[i][13];
+                }else if(tab[i][1].toLowerCase()==='ldplusjsondanshtml'){
+             //       debugger
+                    
+                    /*
+                    dans ce cas, c'est un tag <script avec des propriétés 
+                    */
+                    var lesProprietes='';
+                    var indiceDebutJs=-1;
+                    for(var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+                     if(tab[j][7]===i){
+                      if(tab[j][2]==='f'){
+                       if(tab[j][1]==='' ){
+                        lesProprietes+=' '+tab[j+1][1]+'="'+tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')+'"';
+                       }else{
+                        if(indiceDebutJs===-1){
+                         indiceDebutJs=j;
+                        }
+                       }
+                      }else{
+                       if(indiceDebutJs===-1){
+                        indiceDebutJs=j;
+                       }
+                      }
+                     }
                     }
+
+
+                    if(indiceDebutJs===-1){
+                     /*
+                      c'est une balise <script src=""></script>
+                     */
+
+                      t+=CRLF;
+                      t+='<script'+lesProprietes+'></script>'+CRLF;
+                     
+                    }else{
+
+                     /*
+                      c'est un script dans un html
+                     */
+                     
+                     niveau++;
+                     ob=parseJavascript0(tab,indiceDebutJs,niveau);
+                     niveau--;
+                     
+                     if(ob.__xst===true){
+                      /*
+                       ===========================================================================================
+                       ecriture de la valeur dans le cas d'un tag ldplusjsondanshtml
+                       ===========================================================================================
+                      */
+                      t+=CRLF;
+                      t+='<script'+lesProprietes+'>'
+             //         debugger
+                      var contenu=ob.__xva.substr(ob.__xva.indexOf('=')+1);
+                      if(contenu.substr(contenu.length-1,1)===';'){
+                       contenu=contenu.substr(0,contenu.length-1);
+                      }
+                      t+=contenu+'</script>'+CRLF;
+                      
+                      
+                     }else{
+                      return logerreur({__xst:false,__xme:'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'});  
+                     }
+                     
+                    }
+/*
+                    var max=l01-1;
+                    for(var j=i+1;j<l01;j++){
+                     if(tab[j][3]<=tab[i][3]){
+                      max=j-1;
+                      break;
+                     }
+                    }
+                    i=max;
+*/                    
+                }else if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
+                 
+                 
+                    var obj=this.insere_javascript_dans_html(tab,i,niveau);
+                    if(obj.__xst===true){
+                        t+=obj.__xva;
+                    }else{
+                        return logerreur({__xst:false,__xme:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'});  
+                    }
+/*                    
+                    var max=l01-1;
+                    for(var j=i+1;j<l01;j++){
+                     if(tab[j][3]<=tab[i][3]){
+                      max=j-1;
+                      break;
+                     }
+                    }
+                    i=max;
+*/                 
+                 
+                }else{
+                    /*
+                      ===========================================================================================
+                      entrée dans le récursif
+                      ===========================================================================================
+                    */
+                    if(tab[i][1]==='script'){
+                        /*
+                          dans le cas du script, on le met à la racine
+                        */
+                        ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
+                     
+                     
+                    }else{
+                        ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau+1); // appel récursif
+                    }
+                    
+                    if(ob.__xst===true){
+                        /*
+                         ===========================================================================================
+                         ecriture de la valeur dans le cas d'un tag html normal
+                         ===========================================================================================
+                        */
+                        t+=ob.__xva;
+                        dansBody=ob.dansBody;
+                        dansHead=ob.dansHead;
+                        dansJs=ob.dansJs;
+                    }else{
+                        return logerreur({__xst:false,__xme:'erreur dans un html 0659'});  
+                    }
+                 
+                 
+                 
                 }
-                var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-                /*
-                on supprime les espaces de fin
-                */
-                if(contenuCss!==''){
-                 for(var indcss=contenuCss.length-1;indcss>=0;indcss--){
-                  if(!(contenuCss.substr(indcss,1)===' ' || contenuCss.substr(indcss,1)==='\n'  || contenuCss.substr(indcss,1)==='\r' )){
-                   contenuCss=contenuCss.substr(0,indcss+1);
-                   break;
-                  }
-                 }
-                }
-                t+=contenuCss;
-              }else{
-                t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
-              }
-              contenuNiveauPlus1=tab[i][1];
-             }
-         }
-        }
+                
+               }else{
+                   if(tab[i][2] === 'f' && tab[i][1]===''){// propriétés déjà écrites plus haut
+                   }else{
+                       if(tab[i][2]==='c' && tab[tab[i][7]][8]===1){
+                           /* aucune propriété et qu'une constante */
+//                           debugger
+                       }else{
+                           t+=espacesn(true,niveau+1);
+                       }
+                       /*
+                        ===========================================================================================
+                        ecriture de la valeur dans le cas d'une constante
+                        ===========================================================================================
+                       */
+                       var indcss=0;
+                       if(dansCss===true){
+                           for(indcss=t.length-1;indcss>=0;indcss--){
+                               if(t.substr(indcss,1)!==' '){
+                                   t=t.substr(0,indcss);
+                                   break
+                               }
+                           }
+                           var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                           /* on supprime les espaces de fin */
+                           if(contenuCss!==''){
+                               for(var indcss=contenuCss.length-1;indcss>=0;indcss--){
+                                   if(!(contenuCss.substr(indcss,1)===' ' || contenuCss.substr(indcss,1)==='\n'  || contenuCss.substr(indcss,1)==='\r' )){
+                                      contenuCss=contenuCss.substr(0,indcss+1);
+                                      break;
+                                   }
+                               }
+                           }
+                           t+=contenuCss;
+                       }else{
+                           t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+                       }
+                       contenuNiveauPlus1=tab[i][1];
+                   }
+               }
+           }
        }
        if(id>0){
-        if(noHead && tab[id][1]=='html'){
-         t+=CRLF;
-        }else{
-         t+=espacesn(true,niveau);
-         if(tab[id][1]==='php'){
-         }else{
-          t+='</'+tab[id][1]+'>';
-          if((
-               tab[id][1]=='td' 
-            || tab[id][1]=='a' 
-            || tab[id][1]=='span' 
-            || tab[id][1]=='button' 
-            || tab[id][1]=='title' 
-            || tab[id][1]=='h1' 
-            || tab[id][1]=='h2' 
-            || tab[id][1]=='h3' 
-           ) && contenuNiveauPlus1!='' && contenuNiveauPlus1.indexOf('<')<0 ){
-           var tag=tab[id][1];
-           const re1 = new RegExp("\<"+tag+"(.*)\>\r\n[ \t]+","g");
-           const rp1 = '<'+tag+'$1>';
-           t=t.replace(re1,rp1);
-           const re2 = new RegExp("\r\n[ \t]+\<\/"+tag+"\>","g");
-           const rp2 = '</'+tag+'>';
-           t=t.replace(re2,rp2);
-          }
-         }
-        }
+           if(noHead && ( tab[id][1]==='html' || tab[id][1]==='html_dans_php' ) ){
+               t+=CRLF;
+           }else{
+               if(tab[id][2]==='f' && tab[id][8]===1 && tab[id+1][2]==='c'){
+                   /* aucune propriété et qu'une constante */
+//                   debugger
+               }else{
+                   t+=espacesn(true,niveau);
+               }
+               if(tab[id][1]==='php'){
+               }else{
+                   t+='</'+tab[id][1]+'>';
+                   if((
+                        tab[id][1]=='td' 
+                     || tab[id][1]=='a' 
+                     || tab[id][1]=='span' 
+                     || tab[id][1]=='button' 
+                     || tab[id][1]=='title' 
+                     || tab[id][1]=='h1' 
+                     || tab[id][1]=='h2' 
+                     || tab[id][1]=='h3' 
+                    ) && contenuNiveauPlus1!='' && contenuNiveauPlus1.indexOf('<')<0 ){
+                    var tag=tab[id][1];
+                    const re1 = new RegExp("\<"+tag+"(.*)\>\r\n[ \t]+","g");
+                    const rp1 = '<'+tag+'$1>';
+                    t=t.replace(re1,rp1);
+                    const re2 = new RegExp("\r\n[ \t]+\<\/"+tag+"\>","g");
+                    const rp2 = '</'+tag+'>';
+                    t=t.replace(re2,rp2);
+                   }
+               }
+           }
        }
        if('style'==tab[id][1]){
         dansCss=false;
