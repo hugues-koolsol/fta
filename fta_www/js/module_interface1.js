@@ -227,8 +227,24 @@ class interface1{
             'body':'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
-            var response= await fetch(url,en_entree);
-            var t= await response.text();
+            var response= await fetch(url,en_entree).catch(
+             (err) => {
+              console.error('err interface recupérer_un_fetch ',err);
+             }
+            ).finally(
+             ()=>{
+//              console.log('finally interface recupérer_un_fetch ')
+             }
+            );
+            var t= await response.text().catch(
+             (err)=>{
+              console.error('err text interface recupérer_un_fetch ',err);              
+             }
+            ).finally(
+             ()=>{
+//               console.log('finally text interface recupérer_un_fetch ');              
+             }
+            );
             try{
                 var le_json = JSON.parse(t);
                 if(le_json.hasOwnProperty('__xms') ){

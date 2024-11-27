@@ -129,10 +129,13 @@ $data=array (
                 $data[__entree]['tableau_de_javascripts_a_convertir'][$k1][__xst]=true;
             }
         }
+
         sauvegarder_et_supprimer_fichier($nom_de_fichier_contenant_le_source,true);
         sauvegarder_et_supprimer_fichier($nom_de_fichier_contenant_l_ast,true);
         sauvegarder_et_supprimer_fichier($nom_de_fichier_console,true);
         sauvegarder_et_supprimer_fichier($nom_de_fichier_commentaires,true);
+
+        $resultat=null;
 
 
 

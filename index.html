@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
     <!-- 
-      Il y a un outil qui génère un fichier rev  à partir d'un fichier html
-      Il y a un outil qui génère un fichier html à partir d'un fichier rev
-    -->
-    <!-- 
       =============================================================================================================
       exemple de programme html simple avec une redirection 
+      Il y a un outil qui génère un fichier rev  à partir d'un fichier html
+      Il y a un outil qui génère un fichier html à partir d'un fichier rev
       =============================================================================================================
     -->
     <head>
@@ -14,6 +12,9 @@
         <meta charset="utf-8" />
         <title>page non valide</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- 
+          définition du css racine pour utilisation du css principal plus bas
+        -->
         <style type="text/css">
             :root{ 
 --yyvtrg:40px; 
@@ -28,7 +29,7 @@
 --yyvhmc:24px; /* hauteur minimale de conteneur ( div ) */ 
 }
         </style>
-        <!-- Comme on a défini la valeur css root plus haut, on peut utiliser le fichier 6.css -->
+        <!-- Le css root étant défini plus haut, on peut utiliser le fichier 6.css -->
         <link rel="stylesheet" as="style" type="text/css" href="fta_www/6.css" />
     </head>
     <body>

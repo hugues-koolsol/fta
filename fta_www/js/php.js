@@ -52,29 +52,57 @@ function php_logerr(o){
 
 //=====================================================================================================================
 function parsePhp0(tab,id,niveau){
- var i=0;
- var t='';
- var obj={}; 
- php_contexte_commentaire_html=false;
- debugger
- var retJS=php_tabToPhp1(tab,id+1,false,false,niveau);
- if(retJS.__xst===true){
-  var contenu=retJS.__xva;
-  if(contenu.length>0 && contenu.substr(0,1)==='\r'){
-   contenu=contenu.substr(1);
-  }
-  if(contenu.length>0 && contenu.substr(0,1)==='\n'){
-   contenu=contenu.substr(1);
-  }
-  if(tab.length>=1 && tab[1][1]!=='html_dans_php'){
-   contenu='<?'+'php\n'+contenu;
-  }
-  t+=contenu.replace(/<\?php\?>/g,'');
- }else{
-  console.error(retJS);
-  return {__xst:false,__xva:t};
- }
- return {__xst:true,__xva:t};
+    var i=0;
+    var t='';
+    var obj={}; 
+    php_contexte_commentaire_html=false;
+
+    var retJS=php_tabToPhp1(tab,id+1,false,false,niveau);
+    if(retJS.__xst===true){
+        
+        var contenu=retJS.__xva;
+        
+        var indice_a_sauter=0;
+        for(var i=0;i<contenu.length;i++){
+            var c=contenu.substr(i,1);
+            if(c===' ' || c==='\r' || c==='\n'  || c==='\t' ){
+                indice_a_sauter++;
+            }else{
+                if(indice_a_sauter>0){
+                 contenu=contenu.substr(indice_a_sauter);
+                }
+                break;
+            }
+        }
+        if(tab.length>=1 ){
+            if(tab[1][1]==='html_dans_php' && contenu.substr(0,2)==='?'+'>'){
+                contenu=contenu.substr(2);
+            }else{
+                if(contenu.substr(0,5)!=='<?'+'php'){
+                    contenu='<?'+'php\n'+contenu;
+                }
+            }
+        }
+        
+        indice_a_sauter=0;
+        for(var i=0;i<contenu.length;i++){
+            var c=contenu.substr(i,1);
+            if(c===' ' || c==='\r' || c==='\n'  || c==='\t' ){
+                indice_a_sauter++;
+            }else{
+                if(indice_a_sauter>0){
+                 contenu=contenu.substr(indice_a_sauter);
+                }
+                break;
+            }
+        }
+        t+=contenu.replace(/<\?php\?>/g,'');
+        
+    }else{
+        console.error(retJS);
+        return {__xst:false,__xva:t};
+    }
+    return {__xst:true,__xva:t};
 }
 //=====================================================================================================================
 function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
@@ -832,7 +860,12 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          php_contexte_commentaire_html=false;
          obj=php_tabToPhp1(tab,i+1,false,false,niveau); // tab,id,dansFonction,dansInitialisation,niveau){
          if(obj.__xst===true){
-          t+='<?'+'php'+obj.__xva+CRLF+'?>';
+          debugger
+          if(tab[tab[i][7]][1] === 'php' && tab[tab[i][7]][2] === 'f' ){
+              t+=obj.__xva+CRLF;
+          }else{
+              t+='<?'+'php'+obj.__xva+CRLF+'?>';
+          }
           php_contexte_commentaire_html=true;
          }else{
           return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'php.js erreur 621'});     
@@ -845,7 +878,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          }else{
           php_contexte_commentaire_html=true;
           obj=__module_html1.tabToHtml1(tab,i,true,niveau);
-          debugger
+
           if(obj.__xst===true){
            if(obj.__xva.substr(obj.__xva.length-2,2)==='\r\n'){
             obj.__xva=obj.__xva.substr(0,obj.__xva.length-2)

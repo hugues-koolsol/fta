@@ -1121,12 +1121,14 @@ class traitements_sur_html{
       =============================================================================================================
       function recupérer_un_fetch
     */
-    async recupérer_un_fetch(url,donnees){
+    
+    async recupere_un_fetch(url,donnees){
         
         var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis?donnees.call.opt.delais_admis:6000;
         var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur')?donnees.call.opt.masquer_les_messages_du_serveur:true;
+
         var en_entree={
-            'signal':AbortSignal.timeout(delais_admis),
+            'signal':AbortSignal.timeout(delais_admis) ,
             'method':"POST",
             'mode':"cors",
             'cache':"no-cache",
@@ -1137,8 +1139,25 @@ class traitements_sur_html{
             'body':'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
-            var response= await fetch(url,en_entree);
-            var t= await response.text();
+            var response= await fetch(url,en_entree).catch(             
+             (dataerr)=>{
+              console.error('fetch dataerr=',dataerr);
+             }
+            ).finally(
+             (datafinally) => {
+//              console.log('fetch datafinally=',datafinally);
+             }
+            );
+            var t= await response.text().catch(
+             (dataerr)=>{
+              console.error('text dataerr=',dataerr);
+             }
+            ).finally(
+             (datafinally) => {
+//              console.log('text datafinally=',datafinally);
+             }
+            );
+            
             try{
                 var le_json = JSON.parse(t);
                 if(le_json.hasOwnProperty('__xms') ){
@@ -1154,6 +1173,7 @@ class traitements_sur_html{
                 logerreur({__xst:false,__xme:JSON.stringify(donnees),"masquee":masquer_les_messages_du_serveur});
                 return({__xst:false,__xme:'le retour n\'est pas en json pour '+JSON.stringify(donnees) + ' , t='+t,"masquee":masquer_les_messages_du_serveur});
             }
+            
         }catch(e){
             console.log(e);
             if(e.message==='signal timed out'){
@@ -1165,6 +1185,7 @@ class traitements_sur_html{
             return({__xst:false,__xme:e.message});
         }
     }
+    
     
     /* 
       ================================================================================================================
@@ -1219,9 +1240,6 @@ class traitements_sur_html{
                         }
                         if(tableau_de_javascripts_a_convertir.length>0){
                          
-                            if(options.hasOwnProperty('html_dans_php')){
-                             debugger
-                            }
                          
                             asthtml_logerreur({__xst:true,__xme:'conversion html OK, conversion scripts inclus en cours, soyez patient!' });
 //                            asthtml_logerreur({__xst:true,__xme:'yapluska convertir les JS' });
@@ -1229,11 +1247,12 @@ class traitements_sur_html{
                             var ajax_param={'call':{'lib':'js','file':'rev_html_avec_js1','funct':'traiter_des_morceaux_de_js_dans_un_rev1'},"options":options, format_rev:obj.__xva,tableau_de_javascripts_a_convertir:tableau_de_javascripts_a_convertir};
                             
                             async function traiter_des_morceaux_de_js_dans_un_rev1(url="",ajax_param){
-                                return(__gi1.recupérer_un_fetch(url,ajax_param));
+                                return(__module_html1.recupere_un_fetch(url,ajax_param));
                             }
                             traiter_des_morceaux_de_js_dans_un_rev1('za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',ajax_param).then((donnees) => {
                                 if(donnees.__xst===true){
-                                    console.log('donnees=',donnees);
+                                    
+//                                    console.log('donnees=',donnees);
                                     /* pour chaque ast reçu, on va le convertir en rev */
                                     var source_rev=donnees.__entree.format_rev;
                                     var une_erreur=false;
@@ -1291,18 +1310,57 @@ class traitements_sur_html{
                                     ========================================================
                                     */
                                     
-                                    if(donnees.__entree.options.hasOwnProperty('html_dans_php') && donnees.__entree.options.html_dans_php.length>0 ) {
-                                     
-                                         debugger
+                                    if(donnees.__entree.options.hasOwnProperty('en_ligne') && donnees.__entree.options.en_ligne===true){
+                                     sauvegarder_html_en_ligne(source_rev,donnees.__entree.options.donnees);
+                                     return;
+                                    
+                                    }else if(donnees.__entree.options.hasOwnProperty('source_php')){
+                                       console.log('donnees.__entree.options=' , donnees.__entree.options , 'source_rev=' , source_rev );
+
+                                       var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,'+donnees.__entree.options.a_convertir.cle+')';
+                                       
+                                       
+                                       donnees.__entree.options.source_php=donnees.__entree.options.source_php.replace( chaine_a_remplacer , source_rev );
+                                       var nouveau_source=donnees.__entree.options.source_php;
+                                       console.log('nouveau_source=',nouveau_source);
+                                       
+                                       var param={
+                                           "nouveau_source"     : donnees.__entree.options.source_php ,
+                                           "fonction_a_appeler" : donnees.__entree.options.fonction_a_appeler,
+                                           "cle_convertie"      : donnees.__entree.options.a_convertir.cle,
+                                           "convertion_php"     : true,
+                                       }
+                                       document.getElementById('txtar2').value=nouveau_source;
+
+                                       return;
                                      
                                     }else{
 
                                     
                                         if(donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_html_rev')){
                                             try{
-                                                document.getElementById(donnees.__entree.options.zone_html_rev).value=source_rev;
+                                                
+                                                if(document.getElementById(donnees.__entree.options.zone_html_rev)){
+                                                    document.getElementById(donnees.__entree.options.zone_html_rev).value=source_rev;
+                                                }
+                                                var tableau1 = iterateCharacters2(source_rev);
+                                                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                                                if(matriceFonction.__xst === false){
+                                                    logerreur({__xst:false,__xme:'1344 erreur module_html conversion en matrice'});
+                                                    return({__xst:false,__xme:'1345 erreur module_html conversion en matrice'})
+                                                }
+                                                var obj1=a2F1(matriceFonction.__xva,0,true,1,false);
+                                                if(obj1.__xst===true){
+                                                   document.getElementById(donnees.__entree.options.zone_html_rev).value=obj1.__xva;
+                                                }else{
+                                                    logerreur({__xst:false,__xme:'1344 erreur module_html nettoyage en matrice'});
+                                                    return({__xst:false,__xme:'1345 erreur module_html nettoyage en matrice'})
+                                                }
+
+                                                
+                                                
                                             }catch(e){
-                                                console.error('la zone "'+donnees.__entree.options.zone_html_rev+'" indiquée en paramètre n\'existe pas dans le document')
+                                                console.error('la zone "'+donnees.__entree.options.zone_html_rev+'" indiquée en paramètre n\'existe pas dans le document' , e)
                                             }
                                         }
                                         if(une_erreur===false){
@@ -1341,8 +1399,39 @@ class traitements_sur_html{
                                    }
                                }
                                return({__xst:true,__xva:options.html_dans_php});
+                           }else if(options.hasOwnProperty('zone_html_rev')){
+                            
+                               try{
+                                   document.getElementById(options.zone_html_rev).value=obj.__xva;
+                                   
+                                   
+                                   var tableau1 = iterateCharacters2(obj.__xva);
+                                   var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                                   if(matriceFonction.__xst === false){
+                                       logerreur({__xst:false,__xme:'1412 erreur module_html conversion en matrice'});
+                                       return({__xst:false,__xme:'1413 erreur module_html conversion en matrice'})
+                                   }
+                                   var obj1=a2F1(matriceFonction.__xva,0,true,1,false);
+                                   if(obj1.__xst===true){
+                                       document.getElementById(options.zone_html_rev).value=obj1.__xva;
+                                   }else{
+                                       logerreur({__xst:false,__xme:'1419 erreur module_html nettoyage en matrice'});
+                                       return({__xst:false,__xme:'1420 erreur module_html nettoyage en matrice'})
+                                   }
+                               }catch(e){
+                                   console.error('e=',e);
+                                   return({ __xst:false,__xme:'1424 module_html'});
+                                   
+                               }
+                               
+
+                            
+                               return({ __xst:true,__xva:obj.__xva});
+                               
                            }else{
-                               t=obj.__xva;
+                               
+                            
+                               return({ __xst:true,__xva:obj.__xva});
                            }
                         }
                     }else{
@@ -1354,14 +1443,17 @@ class traitements_sur_html{
                 }
                 
                 
+            }else{
+             console.log('elementsJson=',elementsJson)
             }
-            debugger;
-            return({__xst:true,__xva:t});
+            console.log('par ici' , elementsJson);
+            return;
 
         }catch(e){
             console.log('e=',e);
             return(asthtml_logerreur({__xst:false,__xme:'erreur 0098 e='+e.message+'\ne.stack='+e.stack}));
         }
+        console.log('fin');
     }
     
     /* 

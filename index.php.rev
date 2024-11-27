@@ -1,23 +1,35 @@
-php(
-   #(
-     Il y a un outil qui génère un fichier rev à partir d'un fichier php
-     Il y a un outil qui génère un fichier php à partir d'un fichier rev
+#(  exemple de programme très simple en php : on a déjà écrit cette page en html ),
+appelf(nomf(require_once) , p('index.html')),
+#(
+  fonction php qui ne sert à rien mais c'est pour l'exemple
+),
+fonction(
+   definition(nom(ne_sert_a_rien0) , argument($par1 , defaut(defTab())) , adresseArgument($par2)),
+   contenu(appelf(nomf(echo) , p('c\'est pour l\'exemple')))
+),
+html_dans_php(
+   javascriptDansHtml(
+      ('type' , "text/javascript"),
+      fonction(
+         definition(nom(ne_sert_a_rien_1)),
+         contenu(declare(a , 1) , appelf(element(console) , nomf(log) , p('c\'est pour l\'exemple 1')))
+      )
    ),
-   #(
-     ===============================================================================================================
-     exemple de programme très simple en php
-     on a déjà écrit cette page en html 
-     ===============================================================================================================
-   ),
-   appelf(nomf(require_once) , p('index.html')),
-   #(
-     ===============================================================================================================
-     fonction qui ne sert à rien mais c'est pour l'exemple
-     ===============================================================================================================
-   ),
-   fonction(
-      definition(nom(bidon) , argument($par1 , defaut(defTab())) , adresseArgument($par2)),
-      contenu(appelf(nomf(echo) , p('hello, world')))
-   ),
-   appelf(nomf(echo) , p('<!-- petit commentaire html qui ne sert à rien mais c\'est pour l\'exemple -->'))
+   javascriptDansHtml(
+      ('type' , "text/javascript"),
+      fonction(
+         definition(nom(ne_sert_a_rien_2)),
+         contenu(declare(b , 2) , appelf(element(console) , nomf(log) , p('c\'est pour l\'exemple 2')))
+      )
+   )
+),
+appelf(nomf(echo) , p('')),
+html_dans_php(
+   javascriptDansHtml(
+      ('type' , "text/javascript"),
+      fonction(
+         definition(nom(ne_sert_a_rien_3)),
+         contenu(declare(c , 3) , appelf(element(console) , nomf(log) , p('c\'est pour l\'exemple 3')))
+      )
+   )
 )

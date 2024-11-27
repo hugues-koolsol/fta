@@ -2170,7 +2170,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                   ==============================================================================================
                 */
                 var estTraiteSansErreur=false;
-                debugger
+
                 
                 var obj = isHTML(stmts[i].value);
                 
@@ -2178,7 +2178,6 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 var regex=/(<[a-zA-Z0-9\-_]+)/g;
                 var found = stmts[i].value.match(regex);
                 if((obj.__xst === true)
-                 && (stmts[i].value.indexOf('<') >= 0)
                  && (stmts[i].value.indexOf('<') >= 0)
                  && (found)
                  && (found.length > 0)
@@ -2224,7 +2223,8 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                     estTraiteSansErreur=false;
                 }
                 if(estTraiteSansErreur === false){
-                    debugger
+                    logerreur({"__xst":false , "__xme":"ATTENTION, ce php contient du html en ligne qui n'est pas complet"})
+
                     numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                     numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
                     if(stmts[i].value.toLowerCase().indexOf('<script') < 0){
@@ -2558,7 +2558,7 @@ function isHTML(str){
           nomTag='';
           dansInner=true;
           dansTag=false;
-          debugger
+          
           continue
          
         }else if(dansTag){
@@ -2654,7 +2654,7 @@ function isHTML(str){
                 }else{
                     nomTag+=c0;
                     if(nomTag === '![C' + 'DATA['){
-                        debugger
+
                         dansCdata=true;
                     }
                 }
@@ -2817,16 +2817,81 @@ function isHTML(str){
     }
     return({__xst:true});
 }
+
 /*
   =====================================================================================================================
 */
-function traitement_apres_recuperation_ast_de_php(ret){
+async function traiter_html_dans_php1(param){
+ 
+ 
+    console.log('%c on entre dans traiter_html_dans_php1','background:yellow;color:red;');
+
+    if(param.hasOwnProperty('cle_convertie')){
+
+     globale_source_php1=param.nouveau_source;
+     for(var i=0;i<globale_tableau_des_php1.length;i++){
+      if(globale_tableau_des_php1[i].cle===param.cle_convertie){
+       globale_tableau_des_php1.splice(i,1);
+       
+      }
+     }
+     
+    }
+    if(globale_tableau_des_php1.length===0){
+        console.log('termine')
+        globale_tableau_des_php1=[];
+        globale_source_php1='';
+        debugger
+        return;
+    }else{
+      console.log('dans traiter_html_dans_php1, globale_source_php1=' , globale_source_php1);
+    }
+    
+    var a_convertir=globale_tableau_des_php1[0];
+    
+    console.log(a_convertir)
+    
+    var options={
+     "fonction_a_appeler" : "traiter_html_dans_php1",
+     "source_php" : globale_source_php1,
+     "a_convertir" : a_convertir,
+    };
+    
+    setTimeout(
+     function(options){
+      __module_html1.TransformHtmlEnRev(options.a_convertir.valeur,0,options);
+      
+     },
+     1000,
+     options
+    );
+
+    
+/*
+    try{
+     
+     await __module_html1.TransformHtmlEnRev(a_convertir.valeur,0,options);
+     
+    }catch(e){
+     console.error('e=',e);
+    }
+*/
+
+}
+
+var globale_tableau_des_php1=[];
+var globale_source_php1='';
+
+/*
+  =====================================================================================================================
+*/
+function traitement_apres_recuperation_ast_de_php1(ret){
     var une_erreur_catch=false;
     try{
         var startMicro = performance.now();
         var ast = JSON.parse(ret.__xva);
         var obj = TransformAstPhpEnRev(ast,0,false,true);
-            debugger
+
         if(obj.__xst === true){
             if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length>0){
                 /* 
@@ -2837,35 +2902,15 @@ function traitement_apres_recuperation_ast_de_php(ret){
                 }catch(e){
                     console.error('e=',e)
                 }
-/*                
-                var texte_php=obj.__xva;
-                var a_des_traitements_js=false;
+                if(globale_source_php1!==''){
+                    return({__xst:false,__xme:'2870 convertit_php des jobs sont en cours'});
+                }
+                globale_tableau_des_php1=obj.tableau_de_html_dans_php_a_convertir;
+                globale_source_php1=obj.__xva;
+                traiter_html_dans_php1({});
                 
-                for(var i=0;i<obj.tableau_de_html_dans_php_a_convertir.length;i++){
-                    var obj1 = __module_html1.TransformHtmlEnRev(
-                        obj.tableau_de_html_dans_php_a_convertir[i].valeur,
-                        0,
-                        {"html_dans_php":texte_php,"tableau_de_html_dans_php_a_convertir":obj.tableau_de_html_dans_php_a_convertir,"cle":obj.tableau_de_html_dans_php_a_convertir[i].cle}
-                    );
-                    if(obj1.__xst===true){
-                         if(obj1.hasOwnProperty('traitements_javascript_integres_en_cours') && obj1.traitements_javascript_integres_en_cours===true){
-                             a_des_traitements_js=true;
-                         }else{
-                             texte_php=obj1.__xva;
-                         }
-                    }else{
-                        debugger
-                    }
-
-                }
-                if(a_des_traitements_js===false){
-                    try{
-                        document.getElementById('txtar2').value=texte_php;
-                    }catch(e){
-                        console.error('e=',e)
-                    }
-                }
-*/                
+                
+                
                 
             }else{
              
@@ -2875,7 +2920,6 @@ function traitement_apres_recuperation_ast_de_php(ret){
                     console.error('e=',e)
                 }
              
-                debugger
                 var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
                 var matriceFonction = functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
@@ -2909,13 +2953,433 @@ function traitement_apres_recuperation_ast_de_php(ret){
     }
     return({__xst:true,__xva:''});
 }
+
+function     transforme_html_de_php_en_rev(texteHtml,niveau){
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    var supprimer_le_tag_html_et_head=true;
+    var doctype='';
+    var elementsJson={};
+    var i=0;
+    try{
+        var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
+        if(position_doctype>=0){
+            if(position_doctype===0){
+                for(i=1;i<texteHtml.length && doctype=='';i++){
+                 if(texteHtml.substr(i,1)==='>'){
+                  doctype=texteHtml.substr(0,i+1); //<!DOCTYPE html>
+                  texteHtml=texteHtml.substr(i+1);
+                 }
+                }
+            }
+        }
+        
+     
+        elementsJson=__module_html1.mapDOM(texteHtml,false);
+        if(elementsJson.__xst===true){
+            if(elementsJson.parfait===true){
+                supprimer_le_tag_html_et_head=false;
+            }else{
+                /*
+                */
+                var supprimer_le_tag_html_et_head=true;
+                if(texteHtml.indexOf('<html')>=0){
+                    supprimer_le_tag_html_et_head=false;
+                }
+                
+            }
+            try{
+                var tableau_de_javascripts_a_convertir=[];
+                var obj=__module_html1.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir );
+                if(obj.__xst===true){
+                    if(obj.__xva.trim().indexOf('html(')==0){
+                     if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
+                        obj.__xva=obj.__xva.replace(/html\(/,'html((doctype)');
+                     }else{
+                        obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                     }
+                    }
+                    if(tableau_de_javascripts_a_convertir.length>0){
+                        for(var i=0;i<tableau_de_javascripts_a_convertir.length;i++){
+                            globale_tableau_des_js2.push(tableau_de_javascripts_a_convertir[i]);
+                        }
+                    }
+                    return({__xst:true,__xva:obj.__xva});
+                }else{
+                 debugger
+                }
+            }catch(e){
+             debugger
+            }
+        }else{
+         debugger
+        }
+    }catch(e){
+    }
+    return({__xst:false,__xms:'le html dans php n\'est pas convertible'});
+                     
+}
+
+/*
+  ============================================================
+*/
+function traiter_html_dans_php2(options){
+
+    if(globale_tableau_des_php2.length===0){
+        if(globale_tableau_des_js2.length===0){
+            console.log('terminé')
+        }else{
+            console.log('todo')
+        }
+    }
+    var zone_rev=null;
+    if(options && options.hasOwnProperty('zone_rev')){
+        zone_rev=options.zone_rev;
+    }
+    var zone_php=null;
+    if(options && options.hasOwnProperty('zone_php')){ //'txtar1' 'txtar2'
+        zone_php=options.zone_php;
+    }
+    
+    var en_ligne=null;
+    if(options && options.hasOwnProperty('en_ligne') && options.en_ligne === true){
+        en_ligne=true;
+    }
+    
+    var a_convertir=globale_tableau_des_php2[0];
+    for( var i=0;i<globale_tableau_des_php2.length;i++){
+
+       var obj=transforme_html_de_php_en_rev(globale_tableau_des_php2[i].valeur,0,options);
+       if(obj.__xst===true){
+           var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,'+globale_tableau_des_php2[i].cle+')';
+           globale_source_php2=globale_source_php2.replace(chaine_a_remplacer,obj.__xva);
+       }else{
+           return(logerreur({"__xst" : false,"__xme" : '3052 erreur dans la convertion de html dans php'}));           
+       }
+    }
+    if(zone_rev){
+        document.getElementById(zone_rev).value=globale_source_php2;
+    }
+
+    
+    if(globale_tableau_des_js2.length>0){
+        logerreur({"__xst" : true,"__xme" : '3051 <b>veuillez patienter</b>, des javascripts sont en cours de convertion '});           
+        
+        
+        var ajax_param={'call':{'lib':'js','file':'rev_html_avec_js1','funct':'traiter_des_morceaux_de_js_dans_un_rev1'},"options":{}, "format_rev":globale_source_php2,tableau_de_javascripts_a_convertir:globale_tableau_des_js2};
+        
+        var r= new XMLHttpRequest();
+        r.onerror=function(e){  
+            console.error('e=',e);
+            return(logerreur({"__xst" : false , __xms:'erreur AJAX '}));
+        };
+
+        try{
+            /*
+              =====================================================================================================
+              =====================================================================================================
+              =====================================================================================================
+              ATTENTION appel "SYNCHRONE" à la récupération ast, le r.open a comme dernier paramètre : false
+              on fait ceci car quand un html contient du javascript, on convertit ce dernier à la volée
+              Remarque : le html peut aussi être dans un php ....
+              Ce sera à modifier plus tard ...
+              =====================================================================================================
+              =====================================================================================================
+              =====================================================================================================
+            */
+            r.open("POST",'za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',false);
+            r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+            r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
+        }catch(e){
+            console.error('e=',e);
+            logerreur({"__xst" : false,"__xme" : ' conv js 3127  message=' + e.message});
+            return(logerreur({"__xst" : false,"__xme" : ' conv js message=' + e.message}));
+        }
+        if(r.readyState === 4){
+            if(r.status === 404){
+                logerreur({"__xst" : false,"__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée '});
+                return(logerreur({"__xst" : false,"__xme" : 'conv js 3131url non trouvée '}));
+            }
+            try{
+                var json_retour = JSON.parse(r.responseText);
+            }catch(erreur_json){
+                logerreur({"__xst" : false,"__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message});
+                return(logerreur({"__xst" : false,"__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message}));
+            }
+            if(json_retour.__xst === true){
+                var une_erreur=false;
+                for( var i in json_retour.__entree.tableau_de_javascripts_a_convertir){
+                    try{
+                        var json_ast=JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].ast);
+                        
+                        if(json_ast.type === 'Program' && json_ast.body){
+                            try{
+                                tabComment=JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].commentaires);
+                                
+                                var obj1=TransformAstEnRev(json_ast.body,0);
+                                if(obj1.__xst===true){
+                                    var phrase_a_remplacer='#(cle_javascript_a_remplacer,'+json_retour.__entree.tableau_de_javascripts_a_convertir[i].cle+')';
+                                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj1.__xva);
+                                 
+                                }else{
+                                    une_erreur=true;
+                                    console.error('erreur de conversion de ast vers js e=',e);
+                                }
+                                
+                                
+                            }catch(e){
+                                globale_source_php2='';
+                                console.error('erreur de conversion d\'un commentaire de programme');
+                            }
+                        }else{
+                            une_erreur=true;
+                            globale_source_php2='';
+                            console.error('le ast du programme n\'est pas au bon format',e);
+                        }
+                    }catch(e){
+                        if(json_retour.__entree.tableau_de_javascripts_a_convertir[i].hasOwnProperty('fichier_erreur')){
+                            analyse_fichier_log_acorn(
+                                json_retour.__entree.tableau_de_javascripts_a_convertir[i].fichier_erreur,
+                                json_retour.__entree.tableau_de_javascripts_a_convertir[i].__xva,
+                                null
+                            );
+                        }
+                     
+                        globale_tableau_des_js2=[];
+                        debugger
+                        une_erreur=true;
+                        if(zone_rev){
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages', zone_rev);
+                        }
+
+                        globale_source_php2='';
+                        return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))
+                    }
+                }
+
+                globale_tableau_des_js2=[];
+                if(zone_rev){
+                    if( une_erreur===false){
+                        var tableau1 = iterateCharacters2(globale_source_php2);
+                        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                        if(matriceFonction.__xst === true){
+                            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                            if(obj2.__xst === true){
+                                document.getElementById(zone_rev).value=obj2.__xva;
+                            }else{
+                                document.getElementById(zone_rev).value=globale_source_php2;
+                            }
+                        }else{
+                            document.getElementById(zone_rev).value=globale_source_php2;
+                        }
+
+                    }else{
+                        document.getElementById(zone_rev).value=globale_source_php2;
+                    }
+                }
+                
+                if(en_ligne===true){
+                    if( une_erreur===true){
+                        globale_source_php2='';
+                        return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
+                    }else{
+
+                        sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
+                        globale_source_php2='';
+                        return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}));
+                    }
+                }else{
+                    if( une_erreur===true){
+                        globale_source_php2='';
+                        return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
+                    }else{
+                        globale_source_php2='';
+                        return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}))                 
+                    }
+                }
+
+             
+            }else{
+              debugger
+              globale_source_php2='';
+            }
+             
+        }
+
+
+
+        globale_source_php2='';
+        return(logerreur({__xst:true}));
+        
+        
+    }else{
+        globale_source_php2='';
+        return({"__xst" : true});    
+    }
+
+}
+/*
+  ============================================================
+*/
+var globale_tableau_des_php2=[];
+var globale_source_php2='';
+var globale_tableau_des_js2=[];
+/*
+  ============================================================
+*/
+function traitement_apres_recuperation_ast_de_php2(ret){
+    var ast = JSON.parse(ret.__xva);
+    var obj = TransformAstPhpEnRev(ast,0,false,true);
+    var options={};
+    if(ret.__entree.hasOwnProperty('opt')){
+      options=ret.__entree.opt;
+    }
+    var zone_rev=null;
+    var zone_php=null;
+    if(options && options.hasOwnProperty('zone_rev')){
+        zone_rev=options.zone_rev;
+    }
+    
+    if(options && options.hasOwnProperty('zone_php')){
+        zone_php=options.zone_php;
+    }
+    
+    if(obj.__xst === true){
+        console.log('2982',obj);
+
+        if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length > 0){
+            /*
+              il y a du html dans ce php, on le traite et on le remplace 
+            */
+            try{
+                
+                if(zone_rev!==null){
+                    document.getElementById(zone_rev).value=obj.__xva;
+                }
+                
+                if(globale_source_php2 !== ''){
+                    return({"__xst" : false,"__xme" : '2870 convertit_php des jobs sont en cours'});
+                }
+                globale_tableau_des_php2=obj.tableau_de_html_dans_php_a_convertir;
+                globale_source_php2=obj.__xva;
+                var obj=traiter_html_dans_php2(options);
+                if(obj.status===true){
+                   if(zone_rev!==null){
+                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
+                   }
+
+                  return({__xst:true});
+                }else{
+                   if(zone_php!==null){
+                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
+                   }
+                }
+                
+                
+            }catch(e){
+                console.error('e=',e);
+            }
+        }else{
+            /*
+            if(zone_rev!==null){
+                document.getElementById(zone_rev).value=obj.__xva;
+            }
+            */
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
+            var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
+            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            if(matriceFonction.__xst === true){
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                if(obj2.__xst === true){
+                    if(zone_rev!==null){
+                        document.getElementById(zone_rev).value=obj2.__xva;
+                    }
+                }else{
+                    if(zone_rev!==null){
+                        document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
+                    }
+                }
+            }else{
+                if(zone_rev!==null){
+                    document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
+                }
+            }
+        }
+    }else{
+        if(zone_php!==null){
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
+        }
+    }
+}
+/*
+  ============================================================
+*/
+function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_de_php2){
+
+
+    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp',opt:{masquer_les_messages_du_serveur:false}},'texteSource':texteSource,'opt':opt};
+    var r= new XMLHttpRequest();
+    r.onerror=function(e){  
+        console.error('e=',e);
+        return({"__xst" : false});
+    };
+
+    try{
+        r.open("POST",'za_ajax.php?recupererAstDeJs',true);
+        r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+        
+        r.onreadystatechange = function () {
+          if (r.readyState != 4 || r.status != 200){
+              if(r.status === 404){
+                  logerreur({"__xst" : false,"__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée '});
+                  return({"__xst" : false,"__xme" : 'conv js 3131url non trouvée '});
+              }else{
+                  return;
+              }
+          }
+          try{
+           
+            var json_retour=JSON.parse(r.responseText);
+            
+            console.log('json_retour=' , json_retour );
+            
+            
+            if(json_retour.__xst===true){
+              traitement_apres_recuperation_ast_de_php2(json_retour);
+            }else{
+              return({"__xst" : false,"__xme" : 'erreur json'});
+            }
+           
+          }catch(e){
+              console.error('e=',e);
+              return({"__xst" : false,"__xme" : ' conv js message=' + e.message});
+           
+          }
+        };        
+        r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
+    }catch(e){
+        console.error('e=',e);
+        logerreur({"__xst" : false,"__xme" : ' conv js 3127  message=' + e.message});
+        return({"__xst" : false,"__xme" : ' conv js message=' + e.message});
+    }
+
+
+
+    return({__xst:true});
+}
+
+
 /*
   =====================================================================================================================
 */
-function recupereAstDePhp(texteSource,opt,f_traitement_apres_recuperation_ast_de_php){
+function recupereAstDePhp1(texteSource,opt,f_traitement_apres_recuperation_ast_de_php1){
     var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp',opt:{masquer_les_messages_du_serveur:false}},'texteSource':texteSource,'opt':opt};
     async function recupererAstDePhp1(url="",ajax_param){
-        return(__gi1.recupérer_un_fetch(url,ajax_param));
+         var ttt= await __gi1.recupérer_un_fetch(url,ajax_param);
+//         console.log('ttt=',ttt)
+         return ttt;
+//        return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
     recupererAstDePhp1('za_ajax.php?recupererAstDePhp',ajax_param).then((donnees) => {
         if(donnees.__xst === true){
@@ -2925,7 +3389,7 @@ function recupereAstDePhp(texteSource,opt,f_traitement_apres_recuperation_ast_de
                 astphp_logerreur({__xst:true,'__xme':'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
             }
             try{
-               f_traitement_apres_recuperation_ast_de_php({__xst:true,__xva:donnees.__xva,__entree:donnees.__entree,opt:opt});
+               f_traitement_apres_recuperation_ast_de_php1({__xst:true,__xva:donnees.__xva,__entree:donnees.__entree,opt:opt});
             }catch(e){
                debugger
             }
@@ -2955,7 +3419,7 @@ function recupereAstDePhp(texteSource,opt,f_traitement_apres_recuperation_ast_de
 /*
   =====================================================================================================================
 */
-function transform_text_area_php_en_rev(nom_de_la_text_area_php,nom_de_la_text_area_rev){
+function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_area_rev){
     document.getElementById('txtar2').value='Veuillez patienter !';
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area_php);
@@ -2964,7 +3428,31 @@ function transform_text_area_php_en_rev(nom_de_la_text_area_php,nom_de_la_text_a
     var count=lines.length;
 
     try{
-        var ret = recupereAstDePhp(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php);
+        var ret = recupereAstDePhp2(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php2);
+
+        if(ret.__xst === false){
+            astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});
+            ret=false;
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
+    }catch(e){
+        console.log('erreur transform 0178',e);
+        ret=false;
+    }
+}
+/*
+  =====================================================================================================================
+*/
+function transform_text_area_php_en_rev1(nom_de_la_text_area_php,nom_de_la_text_area_rev){
+    document.getElementById('txtar2').value='Veuillez patienter !';
+    __gi1.raz_des_messages();
+    var a = document.getElementById(nom_de_la_text_area_php);
+    localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+    var lines = a.value.split(/\r|\r\n|\n/);
+    var count=lines.length;
+
+    try{
+        var ret = recupereAstDePhp1(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php1);
 
         if(ret.__xst === false){
             astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});

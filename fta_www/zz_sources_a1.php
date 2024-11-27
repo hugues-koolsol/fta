@@ -1010,12 +1010,14 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
         if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
 
             $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R-&gt;J&#8615;</a>'.PHP_EOL;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_js_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;script&quot;)">&#8613;J-&gt;R</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;J-&gt;R</a>'.PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm') !== false){
 
             $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2H&#8615;</a>'.PHP_EOL;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.PHP_EOL;
+//            $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" href="javascript:transform_text_area_Html_en_rev(&quot;chp_genere_source&quot;,&quot;{\'zone_html_rev\':\'chp_rev_source\'}&quot;)" class="yysucces">&#8613;H2R</a>'.PHP_EOL;
+
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
@@ -1026,7 +1028,6 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
             $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">&#8615; rev =&gt; sql &#8615;</a>'.PHP_EOL;
             $o1.='   <a class="yyavertissement" href="javascript:convertir_sqlite_en_rev(\'chp_rev_source\',\'chp_genere_source\')">&#8613; sql =&gt; rev &#8613;</a>'.PHP_EOL;
-            /*       $o1.='   <button class="yyavertissement" name="__convertir_sql_sqlite_en_rev" id="__convertir_sql_sqlite_en_rev" ></button>'.PHP_EOL;*/
 
         }else{
 

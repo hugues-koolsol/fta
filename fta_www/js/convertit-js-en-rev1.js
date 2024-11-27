@@ -3150,7 +3150,9 @@ function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
                         chaine='proche de="' + (texte_source.substr(0,30)) + '"';
                     }
                     logerreur({"__xst" : false,"__xme" : 'erreur dans un source javascript en position ' + position + ' caractere_incorrecte="' + caractere_incorrecte + '" ' + chaine});
-                    logerreur({"__xst" : true,"plage" : [position,position] , "zone_source":zone_source});
+                    if(zone_source!==null){
+                        logerreur({"__xst" : true,"plage" : [position,position] , "zone_source":zone_source});
+                    }
                     return({"__xst" : false});
                 }
             }catch(e){
@@ -3165,7 +3167,7 @@ function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
   =====================================================================================================================
 */
 function recupere_ast_de_source_js_en_synchrone(texteSource){
-    debugger
+
     var texte_source_mini = texteSource.trim();
     if(texte_source_mini === ''){
         return({"__xst" : true,"__xva" : {
@@ -3293,12 +3295,14 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
             tabComment=JSON.parse(donnees_en_entree.__xva.commentaires);
             var obj = TransformAstEnRev(ast_json.body,0);
             if(obj.__xst === true){
-                if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
+                if(donnees_en_entree.__xva.__entree.options.options.hasOwnProperty('en_ligne') && donnees_en_entree.__xva.__entree.options.options.en_ligne===true){
+                 sauvegarder_js_en_ligne(obj.__xva,donnees_en_entree.__xva.__entree.options.options.donnees);
+                }else if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
                     document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
                     var obj1 = functionToArray(obj.__xva,true,false,'');
                     if(obj1.__xst === true){
                         var endMicro = performance.now();
-                        console.log('mise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+//                        console.log('mise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
                         astjs_logerreur({"__xst" : true,"__xme" : 'pas d\'erreur pour le rev ' + (parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'});
                         var resJs = parseJavascript0(obj1.__xva,1,0);
                         if(resJs.__xst === true){
@@ -3314,7 +3318,9 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
                             }else{
                                 document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
                             }
-                            document.getElementById('txtar3').value=resJs.__xva;
+                            if( document.getElementById('txtar3')){
+                                document.getElementById('txtar3').value=resJs.__xva;
+                            }
                         }else{
                             document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
                             astjs_logerreur({"__xst" : true,"__xme" : '2586 erreur de conversion de rev en javascript'});
@@ -3392,7 +3398,7 @@ function transform_source_js_en_rev_avec_acorn(source,options){
 /*
   =====================================================================================================================
 */
-function transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev){
+function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn(nom_de_la_text_area_source,nom_de_la_text_area_rev){
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area_source);
     localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
