@@ -19,8 +19,9 @@ function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textar
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_textarea_rev);
     
-    
-    var obj1 = functionToArray2(a.value,false,true,'');
+
+    var tableau1 = iterateCharacters2(a.value);
+    var obj1 = functionToArray2(tableau1.out,false,true,'');
     if(obj1.__xst === true){
         
         var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
@@ -70,6 +71,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
     var startMicro=performance.now();
 
     var obj=__module_html1.TransformHtmlEnRev(a.value,0,options_json);
+    
 
     if(obj.__xst == true){
         if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
@@ -97,23 +99,6 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
                 }
             }
 
-
-            var obj1 = functionToArray2(obj.__xva,false,true,'');
-            if(obj1.__xst === true){
-                asthtml_logerreur({__xst:true,__xme:'pas d\'erreur pour le rev '+parseInt(((endMicro-startMicro)*1000),10)/1000+' ms' });
-                
-                var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
-                if(obj2.__xst===true){
-                 if(document.getElementById('txtar3')){
-                     document.getElementById('txtar3').value=obj2.__xva;
-                 }
-                 asthtml_logerreur({__xst:true,__xme:'html produit'});
-                }else{
-                 asthtml_logerreur({__xst:false,__xme:'erreur de reconstruction du html'});
-                }
-            }else{
-                asthtml_logerreur({__xst:false,__xme:'erreur pour le rev'});
-            }
             if(options_json.hasOwnProperty('zone_html_rev')){
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages', options_json.zone_html_rev);
             }else{

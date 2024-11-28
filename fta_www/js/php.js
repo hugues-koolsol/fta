@@ -860,7 +860,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
          php_contexte_commentaire_html=false;
          obj=php_tabToPhp1(tab,i+1,false,false,niveau); // tab,id,dansFonction,dansInitialisation,niveau){
          if(obj.__xst===true){
-          debugger
+
           if(tab[tab[i][7]][1] === 'php' && tab[tab[i][7]][2] === 'f' ){
               t+=obj.__xva+CRLF;
           }else{

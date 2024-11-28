@@ -2292,8 +2292,8 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
             /*
             afr hdf faut-il faire ceci ou l'inverse ???
             */
-            if(nom_de_la_fonction_parente === 'forEach' || nom_de_la_fonction_parente === 'then' || nom_de_la_fonction_parente === 'catch' ){
-                t+='{' + contenu + (espacesn(true,niveau)) + '}';
+            if(nom_de_la_fonction_parente === 'forEach' || nom_de_la_fonction_parente === 'then' || nom_de_la_fonction_parente === 'catch' || nom_de_la_fonction_parente === 'finally' ){
+                t+='{' + espacesn(true,niveau+1) + contenu + (espacesn(true,niveau)) + '}';
             }else if(nom_de_la_fonction_parente === 'filter' || nom_de_la_fonction_parente === 'map' ){
                 t+=contenu;
             }else{

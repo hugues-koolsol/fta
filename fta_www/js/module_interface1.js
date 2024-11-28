@@ -922,6 +922,7 @@ class interface1{
         var tableau1 = iterateCharacters2(a.value);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
+
             var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
             if(obj2.__xst === true){
                 a.value=obj2.__xva;

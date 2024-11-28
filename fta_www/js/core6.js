@@ -729,11 +729,19 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         */
         if(arr[i][2] === 'c'){
             chaine='';
+
             if(arr[i][4] === 1){
                 /* methode3' simple quote */
+/*
                 chaine=arr[i][1];
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
+*/                
+                chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
+                  chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
+                  chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
+                }
                 if(coloration){
                     t+='\'' + (strToHtml(chaine)) + '\'';
                 }else{
@@ -741,9 +749,12 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 }
             }else if(arr[i][4] === 2){
                 /* methode3modele ` */
+/*
                 chaine=arr[i][1];
                 chaine=replaceAll(chaine,chLF,'\n');
                 chaine=replaceAll(chaine,chCR,'\r');
+*/
+                chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                 if(coloration){
                     t+='`' + (strToHtml(chaine)) + '`';
                 }else{
@@ -751,9 +762,15 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 }
             }else if(arr[i][4] === 3){
                 /* methode3" double quote */
-                chaine=arr[i][1];
-                chaine=replaceAll(chaine,chLF,'\n');
-                chaine=replaceAll(chaine,chCR,'\r');
+                
+//                chaine=arr[i][1];
+//                chaine=replaceAll(chaine,chLF,'\n');
+//                chaine=replaceAll(chaine,chCR,'\r');
+                chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
+                  chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
+                  chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
+                }
                 if(coloration){
                     t+='"' + (strToHtml(chaine)) + '"';
                 }else{
@@ -1095,6 +1112,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var drapeauRegex='';
     var chCR = '¶' + 'CR' + '¶';
     var chLF = '¶' + 'LF' + '¶';
+    var fonction_non_vide_precedente='';
     /*
       =============================================================================================================
       les entiers
@@ -1330,8 +1348,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=3;
                 constanteQuoteePrecedente=3;
                 /* methode3" */
-                texte=texte.replace(/\\/g,'\\\\');
-                texte=texte.replace(/"/g,'\\"');
+                texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+                if(fonction_non_vide_precedente==='textarea' || fonction_non_vide_precedente==='pre'){
+                    texte=texte.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')
+                }
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
@@ -1663,6 +1683,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /* methode3' */
                 texte=texte.replace(/\\/g,'\\\\');
                 texte=texte.replace(/"/g,'\\"');
+                if(fonction_non_vide_precedente==='textarea' || fonction_non_vide_precedente==='pre'){
+                    texte=texte.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')
+                }
+                
+                
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
@@ -1778,6 +1803,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 niveau=niveau + 1;
                 textePrecedent=texte;
+                if(texte!==''){
+                    fonction_non_vide_precedente=texte.toLowerCase();
+                }
                 texte='';
                 dansCstSimple=false;
                 dansCstDouble=false;

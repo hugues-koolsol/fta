@@ -685,9 +685,11 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
     }
     t+='affecte(' + gauche + ' , ' + operation + '( ' + gauche + ' , ' + droite + ' ))';
     if(droite.substr(0,(operation.length + 1)) === (operation + '(')){
-        var o1 = functionToArray2(droite,false,true,'');
+        var tableau1 = iterateCharacters2(droite);
+        var o1 = functionToArray2(tableau1.out,false,true,'');
         if(o1.__xst === true){
-            var o2 = functionToArray2(gauche,false,true,'');
+            var tableau2 = iterateCharacters2(gauche);
+            var o2 = functionToArray2(tableau2.out,false,true,'');
             if(o2.__xst === true){
                 var i = (o2.__xva.length - 1);
                 for(i=o2.__xva.length - 1;i >= 1;i--){
@@ -1750,7 +1752,8 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
         astphp_logerreur({__xst:false,'__xme':'1918  non prévu ' + element.nodeType + ' dans php_traite_Expr_BinaryOp_General',element:element});
     }
     if(t.substr(0,14) === 'concat(concat('){
-        var o = functionToArray2(t,false,true,'');
+        var tableau1 = iterateCharacters2(t);
+        var o = functionToArray2(tableau1.out,false,true,'');
         if(o.__xst === true){
             var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
             var obj = a2F1(nouveauTableau,0,true,1,false);
@@ -2223,6 +2226,9 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                     estTraiteSansErreur=false;
                 }
                 if(estTraiteSansErreur === false){
+                    
+                    return(astphp_logerreur({__xst:false,'__xme':'2230 ATTENTION, ce php contient du html en ligne qui n\'est pas complet<br /> passez par le menu html pour le nettoyer'}));
+                 
                     logerreur({"__xst":false , "__xme":"ATTENTION, ce php contient du html en ligne qui n'est pas complet"})
 
                     numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
@@ -2531,9 +2537,11 @@ function isHTML(str){
     var tabTags = [];
     var presDe='';
     var dansCdata=false;
+    var dansTextArea=false;
     var l01=str.length;
     var niveau=0;
     var i=0;
+    
     for(i=0;i < l01;i++){
         c0=str.substr(i,1);
         if(i < (l01 - 1)){
@@ -2547,20 +2555,46 @@ function isHTML(str){
             cm1='';
         }
         if(dansCdata===true){
-          var j=i;
-          for(j=i;j < l01;j++){
-              if(str.substr(j,3) === (']]' + '>')){
-                  i=j + 2;
-                  break;
-              }
-          }
-          dansCdata=false;
-          nomTag='';
-          dansInner=true;
-          dansTag=false;
+            /*
+              ==================================================================
+              premier cas spécial : cdata
+              ==================================================================
+            */
+            var j=i;
+            for(j=i;j < l01;j++){
+                if(str.substr(j,3) === (']]' + '>')){
+                    i=j + 2;
+                    break;
+                }
+            }
+            dansCdata=false;
+            nomTag='';
+            dansInner=true;
+            dansTag=false;
+            
+            continue
           
-          continue
+        }else if(dansTextArea===true){
+            /*
+              ==================================================================
+              deuxième cas spécial : textarea
+              ==================================================================
+            */
          
+            var j=i;
+            for(j=i;j < l01;j++){
+                if(str.substr(j,11).toLowerCase() === ('</'+'textarea>')){ // </textarea>
+                    i=j-1;
+                    break;
+                }
+            }
+            dansTextArea=false;
+            nomTag='';
+            dansInner=true;
+            dansTag=false;
+            
+            continue
+
         }else if(dansTag){
             if(dansNomPropriete){
                 if((c0 === ' ') || (c0 === '\r') || (c0 === '\n') || (c0 === '\t')){
@@ -2610,6 +2644,9 @@ function isHTML(str){
                         nomTag='';
                         continue;
                     }else{
+                        if(nomTag.toLowerCase()==='textarea'){
+                            dansTextArea=true;
+                        }
                         tabTags.push(nomTag);
                         dansNomTag=false;
                     }
@@ -2637,6 +2674,9 @@ function isHTML(str){
                                 presDe=str.substr(0,(i + 10));
                             }
                             return({__xst:false,id:i,'__xme':'Erreur 1852 pres de "' + presDe + '"'});
+                        }
+                        if(nomTag.toLowerCase()==='textarea'){
+                            dansTextArea=true;
                         }
                         tabTags.push(nomTag);
                         dansNomTag=false;
@@ -2885,7 +2925,7 @@ var globale_source_php1='';
 /*
   =====================================================================================================================
 */
-function traitement_apres_recuperation_ast_de_php1(ret){
+function traitement_apres_recuperation_ast_de_php1_ancien(ret){
     var une_erreur_catch=false;
     try{
         var startMicro = performance.now();
@@ -2953,6 +2993,9 @@ function traitement_apres_recuperation_ast_de_php1(ret){
     }
     return({__xst:true,__xva:''});
 }
+/*
+  =====================================================================================================================
+*/
 
 function     transforme_html_de_php_en_rev(texteHtml,niveau){
     var t='';
@@ -3061,9 +3104,64 @@ function traiter_html_dans_php2(options){
     if(zone_rev){
         document.getElementById(zone_rev).value=globale_source_php2;
     }
+    
+    function fin_traitement_php(zone_rev,une_erreur,globale_source_php2){
+     
+        globale_tableau_des_js2=[];
+        if(zone_rev){
+            if( une_erreur===false){
+                var tableau1 = iterateCharacters2(globale_source_php2);
+                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                if(matriceFonction.__xst === true){
+                    var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                    if(obj2.__xst === true){
+                        document.getElementById(zone_rev).value=obj2.__xva;
+                        globale_source_php2='';
+
+                        return(logerreur({__xst:true}))                 
+                    }else{
+                        document.getElementById(zone_rev).value=globale_source_php2;
+                        globale_source_php2='';
+                        return(logerreur({__xst:true,__xva:'3079 erreur de formattage de rev'}))                 
+                    }
+                }else{
+                    document.getElementById(zone_rev).value=globale_source_php2;
+                    globale_source_php2='';
+                    return(logerreur({__xst:true,__xva:'3083 erreur mise en matrice'}))                 
+                }
+
+            }else{
+                document.getElementById(zone_rev).value=globale_source_php2;
+                globale_source_php2='';
+                return(logerreur({__xst:true,__xva:'3088 erreur dans un source javascript '}))                 
+            }
+        }
+        
+        if(en_ligne===true){
+            if( une_erreur===true){
+                globale_source_php2='';
+                return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
+            }else{
+
+                sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
+                globale_source_php2='';
+                return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}));
+            }
+        }else{
+            if( une_erreur===true){
+                globale_source_php2='';
+                return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
+            }else{
+                globale_source_php2='';
+                return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}))                 
+            }
+        }
+     
+    }
 
     
     if(globale_tableau_des_js2.length>0){
+        /* il y a du javascript dans le html contenu dans le php */
         logerreur({"__xst" : true,"__xme" : '3051 <b>veuillez patienter</b>, des javascripts sont en cours de convertion '});           
         
         
@@ -3158,46 +3256,7 @@ function traiter_html_dans_php2(options){
                     }
                 }
 
-                globale_tableau_des_js2=[];
-                if(zone_rev){
-                    if( une_erreur===false){
-                        var tableau1 = iterateCharacters2(globale_source_php2);
-                        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-                        if(matriceFonction.__xst === true){
-                            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
-                            if(obj2.__xst === true){
-                                document.getElementById(zone_rev).value=obj2.__xva;
-                            }else{
-                                document.getElementById(zone_rev).value=globale_source_php2;
-                            }
-                        }else{
-                            document.getElementById(zone_rev).value=globale_source_php2;
-                        }
-
-                    }else{
-                        document.getElementById(zone_rev).value=globale_source_php2;
-                    }
-                }
-                
-                if(en_ligne===true){
-                    if( une_erreur===true){
-                        globale_source_php2='';
-                        return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
-                    }else{
-
-                        sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
-                        globale_source_php2='';
-                        return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}));
-                    }
-                }else{
-                    if( une_erreur===true){
-                        globale_source_php2='';
-                        return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
-                    }else{
-                        globale_source_php2='';
-                        return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}))                 
-                    }
-                }
+                return( fin_traitement_php(zone_rev,une_erreur,globale_source_php2) );
 
              
             }else{
@@ -3214,8 +3273,8 @@ function traiter_html_dans_php2(options){
         
         
     }else{
-        globale_source_php2='';
-        return({"__xst" : true});    
+        /* il n'y a pas de javascript dans le html du php */
+        return( fin_traitement_php(zone_rev,une_erreur,globale_source_php2) );
     }
 
 }
@@ -3245,8 +3304,14 @@ function traitement_apres_recuperation_ast_de_php2(ret){
         zone_php=options.zone_php;
     }
     
+    var en_ligne=null;
+    if(options && options.hasOwnProperty('en_ligne') && options.en_ligne === true){
+        en_ligne=true;
+    }
+    
+    
     if(obj.__xst === true){
-        console.log('2982',obj);
+//        console.log('2982',obj);
 
         if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length > 0){
             /*
@@ -3258,9 +3323,6 @@ function traitement_apres_recuperation_ast_de_php2(ret){
                     document.getElementById(zone_rev).value=obj.__xva;
                 }
                 
-                if(globale_source_php2 !== ''){
-                    return({"__xst" : false,"__xme" : '2870 convertit_php des jobs sont en cours'});
-                }
                 globale_tableau_des_php2=obj.tableau_de_html_dans_php_a_convertir;
                 globale_source_php2=obj.__xva;
                 var obj=traiter_html_dans_php2(options);
@@ -3295,6 +3357,10 @@ function traitement_apres_recuperation_ast_de_php2(ret){
                     if(zone_rev!==null){
                         document.getElementById(zone_rev).value=obj2.__xva;
                     }
+                    if(en_ligne===true){
+                        sauvegarder_php_en_ligne(obj2.__xva,options.donnees);                     
+                    }
+                    
                 }else{
                     if(zone_rev!==null){
                         document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
@@ -3342,7 +3408,7 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
            
             var json_retour=JSON.parse(r.responseText);
             
-            console.log('json_retour=' , json_retour );
+//            console.log('json_retour=' , json_retour );
             
             
             if(json_retour.__xst===true){
@@ -3373,7 +3439,7 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
 /*
   =====================================================================================================================
 */
-function recupereAstDePhp1(texteSource,opt,f_traitement_apres_recuperation_ast_de_php1){
+function recupereAstDePhp1_ancien(texteSource,opt,f_traitement_apres_recuperation_ast_de_php1){
     var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp',opt:{masquer_les_messages_du_serveur:false}},'texteSource':texteSource,'opt':opt};
     async function recupererAstDePhp1(url="",ajax_param){
          var ttt= await __gi1.recupérer_un_fetch(url,ajax_param);
@@ -3443,7 +3509,7 @@ function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_
 /*
   =====================================================================================================================
 */
-function transform_text_area_php_en_rev1(nom_de_la_text_area_php,nom_de_la_text_area_rev){
+function transform_text_area_php_en_rev1_ancien(nom_de_la_text_area_php,nom_de_la_text_area_rev){
     document.getElementById('txtar2').value='Veuillez patienter !';
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area_php);
@@ -3452,7 +3518,7 @@ function transform_text_area_php_en_rev1(nom_de_la_text_area_php,nom_de_la_text_
     var count=lines.length;
 
     try{
-        var ret = recupereAstDePhp1(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php1);
+        var ret = recupereAstDePhp1(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php1_ancien);
 
         if(ret.__xst === false){
             astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});

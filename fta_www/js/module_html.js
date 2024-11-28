@@ -307,6 +307,11 @@ class traitements_sur_html{
                             t+='\''+contenu+'\'';
                             
                         }
+                    }else if(typeParent==='textarea' || typeParent==='pre' ){
+                        /* on ne remplace pas les LF dans les textarea et les pre */
+                        if(contenu!==''){
+                            t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')+'\'';
+                        }
                     }else{
                         contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
                         if(contenu!==''){
@@ -386,6 +391,8 @@ class traitements_sur_html{
                     }else{
                         if(typeParent==='style'){
                             contenu=jsonDeHtml;
+                        }else if(typeParent==='textarea' || typeParent==='pre' ){
+                            contenu=jsonDeHtml.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶');
                         }else{
                             contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
                         }
@@ -567,7 +574,7 @@ class traitements_sur_html{
         /*
         on retourne du html "pur"
         */
-        t=t.replace(/'¶LF¶'/g,'\n').replace(/'¶CR¶'/g,'\n');
+        t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\n');
         return({"__xst":true , "__xva":t,"dernierEstTexte":dernierEstTexte});
     }
     /*
@@ -1402,7 +1409,7 @@ class traitements_sur_html{
                            }else if(options.hasOwnProperty('zone_html_rev')){
                             
                                try{
-                                   document.getElementById(options.zone_html_rev).value=obj.__xva;
+                                   document.getElementById(options.zone_html_rev).value=obj.__xva.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
                                    
                                    
                                    var tableau1 = iterateCharacters2(obj.__xva);
@@ -1562,7 +1569,7 @@ class traitements_sur_html{
      }
 
      // on écrit le début du tag ....
-     if(dansPhp&&tab[id][1]=='source'){ // i18
+     if(dansPhp && tab[id][1]==='source'){ // i18
       // analyse de source javascript
       t+='<?php ';
       ob=parseJavascript0(tab,id,0);
@@ -1576,7 +1583,7 @@ class traitements_sur_html{
       
       return {__xst:true,__xva:t,dansHead:dansHead,dansBody:dansBody,dansJs:dansJs,dansPhp:dansPhp,dansCss:dansCss};
 
-     }else if(dansJs&&tab[id][1]=='source'){ // i18
+     }else if(dansJs && tab[id][1]==='source'){
       // analyse de source javascript
     //  console.error('todo')
     //  bug();
@@ -1603,11 +1610,14 @@ class traitements_sur_html{
      }else{
       temp='';
 
-      if(tab[id][1]=='html' || tab[id][1]=='html_dans_php' ){
+      if(id===0 || tab[id][1]==='html' || tab[id][1]==='html_dans_php' ){
+
+      }else if(tab[id][1]=='textarea'   || tab[id][1]=='pre' ){
+       t+=espacesn(true,niveau);
       }else{
        t+=espacesn(true,niveau);
       }
-      if(tab[id][1]=='#'){
+      if(tab[id][1]==='#' && tab[id][2]==='f'){
        if(tab[id][13]===''){
         temp+='<!-- -->';
        }else{
@@ -1623,10 +1633,10 @@ class traitements_sur_html{
         }        
         temp+='<!--'+commentaire;
        }
-      }else if(tab[id][1]=='php'){
+      }else if(tab[id][1]==='php' && tab[id][2]==='f' ){
        temp+='';
       }else{
-       if(noHead && ( tab[id][1]=='html' ||  tab[id][1]=='html_dans_php'  ) ){
+       if(noHead && tab[id][2]==='f' && ( tab[id][1]=='html' ||  tab[id][1]=='html_dans_php'  ) ){
        }else{
         temp+='<'+tab[id][1];
        }
@@ -1763,16 +1773,6 @@ class traitements_sur_html{
                      }
                      
                     }
-/*
-                    var max=l01-1;
-                    for(var j=i+1;j<l01;j++){
-                     if(tab[j][3]<=tab[i][3]){
-                      max=j-1;
-                      break;
-                     }
-                    }
-                    i=max;
-*/                    
                 }else if(tab[i][1].toLowerCase()==='javascriptdanshtml'){
                  
                  
@@ -1782,32 +1782,23 @@ class traitements_sur_html{
                     }else{
                         return logerreur({__xst:false,__xme:'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'});  
                     }
-/*                    
-                    var max=l01-1;
-                    for(var j=i+1;j<l01;j++){
-                     if(tab[j][3]<=tab[i][3]){
-                      max=j-1;
-                      break;
-                     }
-                    }
-                    i=max;
-*/                 
                  
                 }else{
+
                     /*
                       ===========================================================================================
                       entrée dans le récursif
                       ===========================================================================================
                     */
-                    if(tab[i][1]==='script'){
+                    if(tab[i][1]==='script' || id===0 ){
                         /*
-                          dans le cas du script, on le met à la racine
+                          dans le cas du script ou de la racine, on le met à la racine
                         */
                         ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
                      
                      
                     }else{
-                        ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau+1); // appel récursif
+                        ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau+1);
                     }
                     
                     if(ob.__xst===true){
@@ -1835,7 +1826,12 @@ class traitements_sur_html{
                            /* aucune propriété et qu'une constante */
 //                           debugger
                        }else{
-                           t+=espacesn(true,niveau+1);
+                           if(tab[tab[i][7]][2]==='f' && ( tab[tab[i][7]][1]==='textarea' || tab[tab[i][7]][1]==='pre' )){                        
+
+                               t+='';
+                           }else{
+                               t+=espacesn(true,niveau+1);
+                           }
                        }
                        /*
                         ===========================================================================================
@@ -1862,7 +1858,14 @@ class traitements_sur_html{
                            }
                            t+=contenuCss;
                        }else{
-                           t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+
+                           if(tab[tab[i][7]][2]==='f' && ( tab[tab[i][7]][1]==='textarea' || tab[tab[i][7]][1]==='pre' )){
+                               var str01=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+                               str01=str01.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
+                               t+=str01;
+                           }else{
+                               t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+                           }
                        }
                        contenuNiveauPlus1=tab[i][1];
                    }
@@ -1877,7 +1880,11 @@ class traitements_sur_html{
                    /* aucune propriété et qu'une constante */
 //                   debugger
                }else{
-                   t+=espacesn(true,niveau);
+
+                   if(id===0 || ( tab[id][2]==='f' && ( tab[id][1]==='textarea' || tab[id][1]==='pre' ) )){
+                   }else{
+                       t+=espacesn(true,niveau);
+                   }
                }
                if(tab[id][1]==='php'){
                }else{
