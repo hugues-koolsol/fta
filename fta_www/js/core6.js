@@ -115,13 +115,13 @@ function logerreur(o){
   =====================================================================================================================
 */
 function maConstante(eltTab){
+
+/*    
     var t='';
     if(eltTab[4] === 1){
         t='\'' + eltTab[1] + '\'';
     }else if(eltTab[4] === 2){
-        /*
-          constante avec des apostrophes inversées
-        */
+        //      constante avec des apostrophes inversées
         t='`' + eltTab[1] + '`';
         t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
     }else if(eltTab[4] === 3){
@@ -129,9 +129,7 @@ function maConstante(eltTab){
     }else if(eltTab[4] === 4){
         t='/' + eltTab[1] + '/' + eltTab[13];
     }else{
-        /*
-          constante non quotée, généralement une variable
-        */
+        // constante non quotée, généralement une variable
         if(eltTab[1] === 'vrai'){
             t='true';
         }else if(eltTab[1] === 'faux'){
@@ -141,6 +139,39 @@ function maConstante(eltTab){
         }
     }
     return t;
+*/    
+
+    var t='';
+    switch(eltTab[4]){
+        case 1:
+            /* entre simples apostrophes */
+            t='\'' + eltTab[1] + '\'';
+            break;
+       case 2:
+            /* apostrophes inversées */
+            t='`' + eltTab[1] + '`';
+            t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+            break;
+       case 3:
+            /* guillemets */
+            t='"' + eltTab[1] + '"';
+            break
+       case 4:
+            t='/' + eltTab[1] + '/' + eltTab[13];
+            break;
+       default :
+            /* constante non quotée, généralement une variable */
+            if(eltTab[1] === 'vrai'){
+                t='true';
+            }else if(eltTab[1] === 'faux'){
+                t='false';
+            }else{
+                t=eltTab[1];
+            }
+       
+    }
+    return t;
+
 }
 /*
   =====================================================================================================================
@@ -230,26 +261,6 @@ function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacin
 }
 /*
   =====================================================================================================================
-  fonction de remplacement globale
-  =====================================================================================================================
-*/
-function replaceAll(s,chaineAremplacer,chaineQuiRemplace){
-    var r1= new RegExp(chaineAremplacer,'g');
-    var ret = s.replace(r1,chaineQuiRemplace);
-    return ret;
-}
-/*
-  =====================================================================================================================
-  fonction de remplacement NON globale
-  =====================================================================================================================
-*/
-function myReplace(s,chaineAremplacer,chaineQuiRemplace){
-    var r1= new RegExp(chaineAremplacer,'');
-    var ret = s.replace(r1,chaineQuiRemplace);
-    return ret;
-}
-/*
-  =====================================================================================================================
   compte le nombre de caractères dans une chaine
   =====================================================================================================================
 */
@@ -267,7 +278,7 @@ function nbre_caracteres2(lettre,chaine){
   =====================================================================================================================
 */
 function reIndicerLeTableau(tab){
-    var l01=tab.length;
+    const l01=tab.length;
     var i=0;
     var j=0;
     var k=0;
@@ -350,7 +361,11 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
         */
         a_supprimer.push(id);
     }else{
-        /* sinon, on efface recursivement tous ses enfants avant de l'effacer */
+        /*#
+          sinon, on efface recursivement tous ses enfants avant de l'effacer 
+          bien garder  tab.length  çi dessous
+                       VVVVVVVVVV
+        */
         for( i=1 ; i < tab.length ; i++ ){
             if(tab[i][7] === id){
                 supprimer_un_element_de_la_matrice(tab,tab[i][0],niveau + 1,a_supprimer);
@@ -435,7 +450,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     /**/
     var i=0;
     var j=0;
-    var l01=0;
+    let l01=0;
     var min=0;
     var t='';
     var ligne='';
@@ -634,7 +649,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
     var tmpC='';
     var c1='';
     var cm1='';
-    var l01=arr.length;
+    const l01=arr.length;
     var chCR = '¶' + 'CR' + '¶';
     var chLF = '¶' + 'LF' + '¶';
     var chaine='';
@@ -738,10 +753,12 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 chaine=replaceAll(chaine,chCR,'\r');
 */                
                 chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+/*                
                 if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
                   chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
                   chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
                 }
+*/                
                 if(coloration){
                     t+='\'' + (strToHtml(chaine)) + '\'';
                 }else{
@@ -767,10 +784,12 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
 //                chaine=replaceAll(chaine,chLF,'\n');
 //                chaine=replaceAll(chaine,chCR,'\r');
                 chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+/*
                 if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
                   chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
                   chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
                 }
+*/                
                 if(coloration){
                     t+='"' + (strToHtml(chaine)) + '"';
                 }else{
@@ -912,11 +931,11 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
   =====================================================================================================================
 */
 function iterateCharacters2(str){
+    const l01=str.length;
     var out = [];
     var i=0;
     var exceptions=0;
     var numLigne=0;
-    var l01=str.length;
     var codeCaractere='';
     var temp=0;
     var indiceTab=0;
@@ -958,9 +977,9 @@ function iterateCharacters2(str){
   =====================================================================================================================
 */
 function reconstruitChaine(tab,debut,fin){
+    const l01=tab.length;
     var t='';
     var i=0;
-    var l01=tab.length;
     for( i=debut ; i <= fin && i < l01 ; i++ ){
         t+=tab[i][0];
     }
@@ -968,7 +987,7 @@ function reconstruitChaine(tab,debut,fin){
 }
 /*
   =====================================================================================================================
-  todo, à faire plus tard
+  formatter uns erreur dans le rev pour la rendre plus facilement dérectable
   =====================================================================================================================
 */
 function formaterErreurRev(obj){
@@ -1112,7 +1131,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var drapeauRegex='';
     var chCR = '¶' + 'CR' + '¶';
     var chLF = '¶' + 'LF' + '¶';
-    var fonction_non_vide_precedente='';
+//    var fonction_non_vide_precedente='';
     /*
       =============================================================================================================
       les entiers
@@ -1349,12 +1368,17 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuoteePrecedente=3;
                 /* methode3" */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+/*
                 if(fonction_non_vide_precedente==='textarea' || fonction_non_vide_precedente==='pre'){
                     texte=texte.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')
                 }
+*/                
+/*
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
+*/                
+                texte=texte.replace(/\n/g,'¶LF¶').replace(/\r/g,'¶CR¶').replace(/\t/g,'\\t');
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
@@ -1593,11 +1617,15 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 /* methode3m */
+/*
                 texte=texte.replace(/\\/g,'\\\\');
                 texte=texte.replace(/"/g,'\\"');
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
+*/                
+                texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'¶LF¶').replace(/\r/g,'¶CR¶').replace(/\t/g,'\\t');
+                
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
@@ -1681,16 +1709,23 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=1;
                 constanteQuoteePrecedente=1;
                 /* methode3' */
+/*
                 texte=texte.replace(/\\/g,'\\\\');
                 texte=texte.replace(/"/g,'\\"');
+*/                
+/*
                 if(fonction_non_vide_precedente==='textarea' || fonction_non_vide_precedente==='pre'){
                     texte=texte.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')
                 }
-                
-                
+*/                
+/*                
                 texte=replaceAll(texte,'\n',chLF);
                 texte=replaceAll(texte,'\r',chCR);
                 texte=replaceAll(texte,'\t','\\t');
+*/
+                texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'¶LF¶').replace(/\r/g,'¶CR¶').replace(/\t/g,'\\t');
+
+                
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
@@ -1803,9 +1838,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 niveau=niveau + 1;
                 textePrecedent=texte;
+/*                
                 if(texte!==''){
                     fonction_non_vide_precedente=texte.toLowerCase();
                 }
+*/                
                 texte='';
                 dansCstSimple=false;
                 dansCstDouble=false;

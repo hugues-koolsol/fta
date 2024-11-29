@@ -16,7 +16,9 @@
   echo "<pre>$output</pre>";
   
   class MaClasse{}; class PasMaClasse{}; $a = new MaClasse; var_dump($a instanceof MaClasse); var_dump($a instanceof PasMaClasse);
-  
+
+point d'entrée : TransformAstPhpEnRev  
+fonction principale php_traite_Stmt_Expression
   
 */
 var contient_du_javascript_dans_html=false;
@@ -78,7 +80,7 @@ function recupNomOperateur(s){
     }else if(s === '&'){
         return 'etBin';
     }else{
-        astphp_logerreur({__xst:false,'__xme':'0079  erreur recupNomOperateur "' + s + '" ',element:element});
+        return(astphp_logerreur({__xst:false,'__xme':'0079  erreur recupNomOperateur "' + s + '" ',element:element}));
     }
 }
 function php_traite_Expr_Eval(element,niveau){
@@ -236,7 +238,12 @@ function php_traite_Stmt_TryCatch(element,niveau){
                 }
             }
             t+='\n' + esp0 + esp1 + 'sierreur(';
-            t+='\n' + esp0 + esp1 + esp1 + 'err(' + lesTypesErreurs + ',' + leNomErreur + ')';
+            if(lesTypesErreurs.indexOf('\\')>=0){
+                t+='\n' + esp0 + esp1 + esp1 + 'err(\'' + lesTypesErreurs.replace(/\\/g,'\\\\') + '\',' + leNomErreur + ')';
+            }else{
+                t+='\n' + esp0 + esp1 + esp1 + 'err(' + lesTypesErreurs + ',' + leNomErreur + ')';
+            }
+            
             t+='\n' + esp0 + esp1 + esp1 + 'faire(\n';
             t+=contenu;
             t+='\n' + esp0 + esp1 + esp1 + ')';
@@ -321,8 +328,10 @@ function php_traite_Expr_FuncCall(element,niveau){
             nomFonction=element.name.name;
         }else if(element.name.nodeType === "Expr_Variable"){
             nomFonction='$' + element.name.name;
+        }else if(element.name.nodeType === "Name_FullyQualified"){
+            nomFonction='qualification_totale(' + element.name.name + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0364  erreur php_traite_Expr_FuncCall',element:element}));
+            return(astphp_logerreur({__xst:false,__xme:'0364  erreur php_traite_Expr_FuncCall "'+element.name.nodeType+'"',element:element}));
         }
     }else{
         return(astphp_logerreur({__xst:false,__xme:'0367  erreur php_traite_Expr_FuncCall',element:element}));
@@ -380,7 +389,11 @@ function php_traite_Expr_FuncCall(element,niveau){
         t+='' + nomFonction + '(' + lesArgumentsCourts + ')';
     }else{
         if((element.class) && ("Expr_StaticCall" === element.nodeType) && (element.class.nodeType === 'Name')){
-            t+='appelf(element(' + element.class.name + '::),nomf(' + nomFonction + ')' + lesArguments + ')';
+            if(element.class.name.indexOf('\\')>=0){
+                t+='appelf(element(\'' + element.class.name.replace(/\\/g,'\\\\') + '::\'),nomf(' + nomFonction + ')' + lesArguments + ')';
+            }else{
+                t+='appelf(element(' + element.class.name + '::),nomf(' + nomFonction + ')' + lesArguments + ')';
+            }
         }else{
             t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
         }
@@ -582,7 +595,7 @@ function php_traite_Expr_New(element,niveau){
         if(element.class.nodeType === "Name"){
             nomClasse=element.class.name;
         }else{
-            nomClasse+='#(php_traite_Expr_New 0597),';
+            return(astphp_logerreur({__xst:false,__xme:'0589  erreur php_traite_Expr_New ',element:element}));
         }
         var lesArgumentsDeLaClass='';
         if(element.args){
@@ -592,13 +605,18 @@ function php_traite_Expr_New(element,niveau){
                 if(obj.__xst === true){
                     lesArgumentsDeLaClass+=',p(' + obj.__xva + ')';
                 }else{
-                    t+='#(todo dans php_traite_Expr_New 0497)';
+                    return(astphp_logerreur({__xst:false,__xme:'0599  erreur php_traite_Expr_New ',element:element}));
                 }
             }
         }
-        t+='nouveau(appelf(nomf(' + nomClasse + ')' + lesArgumentsDeLaClass + ')),';
+        if(nomClasse.indexOf('\\')>=0){
+            t+='nouveau(appelf(nomf(\'' + nomClasse.replace(/\\/g,'\\\\') + '\')' + lesArgumentsDeLaClass + ')),';
+
+        }else{
+            t+='nouveau(appelf(nomf(' + nomClasse + ')' + lesArgumentsDeLaClass + ')),';
+        }
     }else{
-        t+='nouveau(#(php_traite_Expr_New 0506)),';
+        return(astphp_logerreur({__xst:false,__xme:'0610  erreur php_traite_Expr_New ',element:element}));
     }
     return({__xst:true,__xva:t});
 }
@@ -644,6 +662,8 @@ function php_traite_Expr_MethodCall(element,niveau){
     t+='appelf(' + lelement + 'nomf(' + nomFonction + ')' + lesArguments + ')';
     return({__xst:true,__xva:t});
 }
+
+
 /*
   =====================================================================================================================
 */
@@ -743,6 +763,19 @@ function php_traite_Expr_AssignRef(element,niveau){
     t+='affecte_reference(' + gauche + ' , ' + droite + ')';
     return({__xst:true,__xva:t});
 }
+
+/*
+  =====================================================================================================================
+*/
+function php_traite_Expr_declare(element,niveau){
+    var t='';
+    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp1 = ' '.repeat(NBESPACESREV);
+    debugger;
+    return({__xst:false,__xme:'0775 todo'});
+}
+
+
 /*
   =====================================================================================================================
 */
@@ -982,7 +1015,26 @@ function php_traite_Expr_Array(element,niveau){
   =====================================================================================================================
   =====================================================================================================================
 */
+/*
+var comptage={};
+*/
 function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
+/*
+    if( parent && parent.hasOwnProperty('nodeType')){
+        if(comptage.hasOwnProperty(element.nodeType+'___parent_'+parent.nodeType)){
+            comptage[element.nodeType+'___parent_'+parent.nodeType]++;
+        }else{
+            comptage[element.nodeType+'___parent_'+parent.nodeType]=1;
+        }
+    }else{
+        if(comptage.hasOwnProperty(element.nodeType+'____pas_de_parent')){
+            comptage[element.nodeType+'_no_parent']++;
+        }else{
+            comptage[element.nodeType+'_no_parent']=1;
+        }
+    }
+*/    
+//    console.log('dans php_traite_Stmt_Expression element.nodeType='+element.nodeType)
     var t='';
     var esp0 = ' '.repeat((NBESPACESREV * niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -1042,8 +1094,9 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
         }
         /*===============================================*/
     }else if("Scalar_String" === element.nodeType){
-        if(element.attributes.kind && element.attributes.kind===3){
+        if(element.attributes.kind && (element.attributes.kind===3 || element.attributes.kind===4 ) ){
          // heredoc
+
           t+='heredoc(\''+element.attributes.docLabel+'\',`\n'+element.attributes.rawValue.replace(/`/g,'\\`')+'`)'
          
         }else if((element.attributes.rawValue.substr(0,1) === '\'') || (element.attributes.rawValue.substr(0,1) === '"')){
@@ -1202,7 +1255,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
         if(obj.__xst === true){
             t+='-' + obj.__xva;
         }else{
-            astphp_logerreur({__xst:false,__xme:'0902  dans php_traite_Stmt_Expression  ',element:element});
+            return(astphp_logerreur({__xst:false,__xme:'0902  dans php_traite_Stmt_Expression  ',element:element}));
         }
     }else if("Stmt_Global" === element.nodeType){
         var variables='';
@@ -1225,7 +1278,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
         if(obj.__xst === true){
             t+='+' + obj.__xva;
         }else{
-            astphp_logerreur({__xst:false,__xme:'0902  dans php_traite_Stmt_Expression  ',element:element});
+            return(astphp_logerreur({__xst:false,__xme:'0902  dans php_traite_Stmt_Expression  ',element:element}));
         }
         /*===============================================*/
     }else if("Expr_ArrayDimFetch" === element.nodeType){
@@ -1248,6 +1301,8 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
         t+='__FILE__';
     }else if("Scalar_MagicConst_Line" === element.nodeType){
         t+='__LINE__';
+    }else if("Scalar_MagicConst_Dir" === element.nodeType){
+        t+='__DIR__';
         /*===============================================*/
     }else if("Arg" === element.nodeType){
         if(element.byRef === true){
@@ -1682,7 +1737,7 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
     if(objGauche.__xst === true){
         gauche=objGauche.__xva;
     }else{
-        astphp_logerreur({__xst:false,__xme:'1497  dans php_traite_Expr_BinaryOp_General',element:element});
+        return(astphp_logerreur({__xst:false,__xme:'1497  dans php_traite_Expr_BinaryOp_General',element:element}));
     }
     var droite='';
     var objdroite = php_traite_Stmt_Expression(element.right,niveau,false,element);
@@ -1694,7 +1749,7 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
             droite=objdroite.__xva;
         }
     }else{
-        astphp_logerreur({__xst:false,__xme:'1513  dans php_traite_Expr_BinaryOp_General',element:element});
+        return(astphp_logerreur({__xst:false,__xme:'1513  dans php_traite_Expr_BinaryOp_General',element:element}));
     }
     if(element.nodeType === 'Expr_BinaryOp_BooleanOr'){
         if(parent.nodeType === 'Expr_BinaryOp_BooleanOr'){
@@ -1749,7 +1804,7 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
     }else if(element.nodeType === 'Expr_BinaryOp_Div'){
         t+='divi(' + gauche + ' , ' + droite + ')';
     }else{
-        astphp_logerreur({__xst:false,'__xme':'1918  non prévu ' + element.nodeType + ' dans php_traite_Expr_BinaryOp_General',element:element});
+        return(astphp_logerreur({__xst:false,'__xme':'1918  non prévu ' + element.nodeType + ' dans php_traite_Expr_BinaryOp_General',element:element}));
     }
     if(t.substr(0,14) === 'concat(concat('){
         var tableau1 = iterateCharacters2(t);
@@ -1792,7 +1847,7 @@ function php_traiteCondition1(element,niveau,parent){
                     if(obj1.__xst === true){
                         t+=obj1.__xva;
                     }else{
-                        astphp_logerreur({__xst:false,__xme:'16164334  dans php_traiteCondition1',element:element});
+                        return(astphp_logerreur({__xst:false,__xme:'16164334  dans php_traiteCondition1',element:element}));
                     }
                 }else{
                     t+=obj.__xva;
@@ -1801,10 +1856,10 @@ function php_traiteCondition1(element,niveau,parent){
                 t+=obj.__xva;
             }
         }else{
-            astphp_logerreur({__xst:false,__xme:'1656  dans php_traiteCondition1',element:element});
+            return(astphp_logerreur({__xst:false,__xme:'1656  dans php_traiteCondition1',element:element}));
         }
     }else{
-        astphp_logerreur({__xst:false,__xme:'1665  dans php_traiteCondition1',element:element});
+        return(astphp_logerreur({__xst:false,__xme:'1665  dans php_traiteCondition1',element:element}));
     }
     return({__xst:true,__xva:t});
 }
@@ -1993,10 +2048,10 @@ function php_traite_Stmt_For(element,niveau){
       if(obj1.__xst===true){
       condition+=obj1.__xva;
       }else{
-      astphp_logerreur({__xst:false,__xme:'1508  dans php_traite_Stmt_For condition',element:element});
+      return(astphp_logerreur({__xst:false,__xme:'1508  dans php_traite_Stmt_For condition',element:element}));
       }
       }else{
-      astphp_logerreur({__xst:false,__xme:'1510  dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte',element:element});
+      return(astphp_logerreur({__xst:false,__xme:'1510  dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte',element:element}));
       }
     */
     var increment='';
@@ -2005,7 +2060,7 @@ function php_traite_Stmt_For(element,niveau){
         if(obj1.__xst === true){
             increment+=obj1.__xva;
         }else{
-            astphp_logerreur({__xst:false,__xme:'1519  dans php_traite_Stmt_For erreur dans l\'incrément',element:element});
+            return(astphp_logerreur({__xst:false,__xme:'1519  dans php_traite_Stmt_For erreur dans l\'incrément',element:element}));
         }
     }
     var instructions='';
@@ -2014,7 +2069,7 @@ function php_traite_Stmt_For(element,niveau){
         if(obj1.__xst === true){
             instructions+=obj1.__xva;
         }else{
-            astphp_logerreur({__xst:false,__xme:'1527  dans php_traite_Stmt_For erreur dans les instructions',element:element});
+            return(astphp_logerreur({__xst:false,__xme:'1527  dans php_traite_Stmt_For erreur dans les instructions',element:element}));
         }
     }
     t+='\n' + esp0 + 'boucle(';
@@ -2487,7 +2542,16 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    t+='\n' + esp0 + '#(todo erreur dans TransformAstPhpEnRev 1356)';
+                    return(astphp_logerreur({__xst:false,__xme:'2530  dans TransformAstPhpEnRev  ',element:stmts[i]}));
+                }
+                /*===============================================*/
+            }else if("Stmt_Declare" === stmts[i].nodeType){
+                
+                var obj = php_traite_Expr_declare(stmts[i],niveau);
+                if(obj.__xst === true){
+                    t+='\n' + esp0 + obj.__xva;
+                }else{
+                    return(astphp_logerreur({__xst:false,__xme:'2539  dans TransformAstPhpEnRev  ',element:stmts[i]}));
                 }
                 /*===============================================*/
             }else if("Stmt_HaltCompiler" === stmts[i].nodeType){
@@ -2508,7 +2572,11 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
     }else if(t.substr(0,1) === '\n'){
         t=t.substr(1);
     }
-
+/*    
+    if(niveau===0){
+        console.log('comptage=' , comptage);
+    }
+*/    
     if(typeof de_racine !== 'undefined'){
         return({__xst:true,__xva:t,"contient_du_javascript_dans_html":contient_du_javascript_dans_html,"tableau_de_html_dans_php_a_convertir":tableau_de_html_dans_php_a_convertir});
     }else{
@@ -2980,7 +3048,7 @@ function traitement_apres_recuperation_ast_de_php1_ancien(ret){
         }
     }catch(e){
         console.error('e=',e);
-        astphp_logerreur({__xst:false,'__xme':'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')});
+        return(astphp_logerreur({__xst:false,'__xme':'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')}));
         une_erreur_catch=true;
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
     }
@@ -3287,12 +3355,12 @@ var globale_tableau_des_js2=[];
 /*
   ============================================================
 */
-function traitement_apres_recuperation_ast_de_php2(ret){
-    var ast = JSON.parse(ret.__xva);
+function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
+    var ast = JSON.parse(retour_avec_ast.__xva);
     var obj = TransformAstPhpEnRev(ast,0,false,true);
     var options={};
-    if(ret.__entree.hasOwnProperty('opt')){
-      options=ret.__entree.opt;
+    if(retour_avec_ast.__entree.hasOwnProperty('opt')){
+      options=retour_avec_ast.__entree.opt;
     }
     var zone_rev=null;
     var zone_php=null;
@@ -3343,34 +3411,36 @@ function traitement_apres_recuperation_ast_de_php2(ret){
                 console.error('e=',e);
             }
         }else{
-            /*
-            if(zone_rev!==null){
-                document.getElementById(zone_rev).value=obj.__xva;
-            }
-            */
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
-            var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
-            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-            if(matriceFonction.__xst === true){
-                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
-                if(obj2.__xst === true){
-                    if(zone_rev!==null){
-                        document.getElementById(zone_rev).value=obj2.__xva;
+            
+            if(en_ligne===true){
+                sauvegarder_php_en_ligne('php(' + obj.__xva + ')',options.donnees);                     
+               __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
+            }else{
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
+                var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
+                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                if(matriceFonction.__xst === true){
+                    var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                    if(obj2.__xst === true){
+                        if(zone_rev!==null){
+                            document.getElementById(zone_rev).value=obj2.__xva;
+                            logerreur({"__xst" : true,"__xme" : 'le fichier rev a été produit sans erreurs'});
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
+                        }
+                        
+                    }else{
+                        if(zone_rev!==null){
+                            document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
+                        }
                     }
-                    if(en_ligne===true){
-                        sauvegarder_php_en_ligne(obj2.__xva,options.donnees);                     
-                    }
-                    
                 }else{
                     if(zone_rev!==null){
                         document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
                     }
                 }
-            }else{
-                if(zone_rev!==null){
-                    document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
-                }
             }
+            
+            
         }
     }else{
         if(zone_php!==null){
@@ -3452,7 +3522,7 @@ function recupereAstDePhp1_ancien(texteSource,opt,f_traitement_apres_recuperatio
 
             var elem={};
             for(elem in donnees.__xms){
-                astphp_logerreur({__xst:true,'__xme':'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'});
+                return(astphp_logerreur({__xst:true,'__xme':'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'}));
             }
             try{
                f_traitement_apres_recuperation_ast_de_php1({__xst:true,__xva:donnees.__xva,__entree:donnees.__entree,opt:opt});
@@ -3466,7 +3536,7 @@ function recupereAstDePhp1_ancien(texteSource,opt,f_traitement_apres_recuperatio
                  && (isNumeric(donnees.__xms[elem].substr((donnees.__xms[elem].indexOf('on line ') + 8))))
                 ){
                     var line = parseInt(donnees.__xms[elem].substr((donnees.__xms[elem].indexOf('on line ') + 8)),10);
-                    astphp_logerreur({__xst:false,line:line});
+                    return(astphp_logerreur({__xst:false,line:line}));
                 }
             }
 
@@ -3497,7 +3567,7 @@ function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_
         var ret = recupereAstDePhp2(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php2);
 
         if(ret.__xst === false){
-            astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});
+            return(astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'}));
             ret=false;
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
@@ -3521,7 +3591,7 @@ function transform_text_area_php_en_rev1_ancien(nom_de_la_text_area_php,nom_de_l
         var ret = recupereAstDePhp1(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php1_ancien);
 
         if(ret.__xst === false){
-            astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'});
+            return(astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'}));
             ret=false;
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');

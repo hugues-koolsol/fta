@@ -310,7 +310,8 @@ class traitements_sur_html{
                     }else if(typeParent==='textarea' || typeParent==='pre' ){
                         /* on ne remplace pas les LF dans les textarea et les pre */
                         if(contenu!==''){
-                            t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')+'\'';
+                              t='`'+contenu.replace(/`/g,'\\`')+'`'
+//                            t+='\''+contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'').replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')+'\'';
                         }
                     }else{
                         contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
@@ -392,7 +393,8 @@ class traitements_sur_html{
                         if(typeParent==='style'){
                             contenu=jsonDeHtml;
                         }else if(typeParent==='textarea' || typeParent==='pre' ){
-                            contenu=jsonDeHtml.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶');
+//                            contenu=jsonDeHtml.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶');
+                            contenu=jsonDeHtml;
                         }else{
                             contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
                         }
@@ -1612,8 +1614,8 @@ class traitements_sur_html{
 
       if(id===0 || tab[id][1]==='html' || tab[id][1]==='html_dans_php' ){
 
-      }else if(tab[id][1]=='textarea'   || tab[id][1]=='pre' ){
-       t+=espacesn(true,niveau);
+//      }else if(tab[id][1]=='textarea'   || tab[id][1]=='pre' ){
+//       t+=espacesn(true,niveau);
       }else{
        t+=espacesn(true,niveau);
       }
@@ -1858,11 +1860,16 @@ class traitements_sur_html{
                            }
                            t+=contenuCss;
                        }else{
+/*
+                           if(false && tab[tab[i][7]][2]==='f' && ( tab[tab[i][7]][1]==='textarea' || tab[tab[i][7]][1]==='pre' )){
 
-                           if(tab[tab[i][7]][2]==='f' && ( tab[tab[i][7]][1]==='textarea' || tab[tab[i][7]][1]==='pre' )){
                                var str01=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
                                str01=str01.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
                                t+=str01;
+                               
+*/                               
+                           if(tab[tab[i][7]][2]==='f' && ( tab[tab[i][7]][1]==='textarea' || tab[tab[i][7]][1]==='pre' )){
+                               t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                            }else{
                                t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
                            }

@@ -8,7 +8,7 @@ html(
      ===============================================================================================================
    ),
    head(
-      meta(('http-equiv' , "refresh") , ('content' , "10; url='./fta_www/'")),
+      meta(('http-equiv' , "refresh") , ('content' , "300; url='./fta_www/'")),
       meta(('charset' , "utf-8")),
       title('exemple de page html'),
       meta(('name' , "viewport") , ('content' , "width=device-width, initial-scale=1")),
@@ -37,17 +37,17 @@ html(
    body(
       #( redirection vers la page d'accueil ),
       h1('racine de l\'application'),
-      p(('style' , "text-align:center;font-size:1.3rem;") , 'Dans 10 secondes, vous serez redirigé automatiquement vers la la page principale de l\'application'),
-      div(('style' , "text-align:center;font-size:1.2em;") , ('id' , "decompte") , '10'),
-      div(('style' , "text-align:center;") , a(('class' , "yyinfo") , ('href' , "fta_www/") , 'y aller maintenant')),
-      div(('style' , "text-align:center;") , a(('class' , "yyinfo") , ('href' , "tictactoe.html") , 'aller sur tictactoe')),
+      p(('style' , "text-align:center;font-size:1.3rem;") , 'Dans 300 secondes, vous serez' , b('redirigé automatiquement') , br() , 'vers la la page principale de l\'application'),
+      div(('style' , "text-align:center;font-size:1.2em;") , ('id' , "decompte") , '300'),
+      div(('style' , "text-align:center;") , a(('class' , "yyinfo yytbgrand") , ('style' , "max-width: fit-content;") , ('href' , "fta_www/") , 'y aller maintenant')),
+      div(('style' , "text-align:center;") , a(('class' , "yyinfo yytbgrand") , ('style' , "max-width: fit-content;") , ('href' , "tictactoe.html") , 'aller sur tictactoe')),
       javascriptDansHtml(
          #(
            ===================================================================================================
            programme javascript d'affichage de décompte 
            ===================================================================================================
          ),
-         declare(decompte , 10),
+         declare(decompte , 300),
          fonction(
             definition(nom(maj_decompte)),
             contenu(

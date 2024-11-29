@@ -67,8 +67,8 @@ function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommen
             if(tab1[i] != tab2[i]){
                 global_messages.lines.push(i);
                 document.getElementById('global_messages').innerHTML+='<div class="yywarning">différence dans des sources en ligne '+(i+1)+'</div>';
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+replaceAll(tab1[i],' ','░')+'</div>';
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+replaceAll(tab2[i],' ','░')+'</div>';
+                document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+tab1[i].replace(/ /g,'░')+'</div>';
+                document.getElementById('global_messages').innerHTML+='<div class="yywarning">'+tab2[i].replace(/ /g,'░')+'</div>';
                 if(comparaisonSourcesSansCommentairesOK === true){
                     document.getElementById('global_messages').innerHTML+=lienReprendre;
                 }

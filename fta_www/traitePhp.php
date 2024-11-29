@@ -9,7 +9,7 @@ $o1='';?>
     <h1>Convertir un php en rev</h1>
     <div style="width:90%;">
         <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
-        <a href="javascript:transform_text_area_php_en_rev1(&quot;txtar1&quot;,&quot;txtar2&quot;)" class="yysucces">convertir1</a>
+        <!-- a href="javascript:transform_text_area_php_en_rev1(&quot;txtar1&quot;,&quot;txtar2&quot;)" class="yysucces">convertir1</a -->
         <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;)" class="yysucces">convertir2</a>
         <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar1&quot;,1)">aller à la ligne n°</a>
         <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>

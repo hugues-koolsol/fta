@@ -8,7 +8,7 @@
       =============================================================================================================
     -->
     <head>
-        <meta http-equiv="refresh" content="10; url='./fta_www/'" />
+        <meta http-equiv="refresh" content="300; url='./fta_www/'" />
         <meta charset="utf-8" />
         <title>exemple de page html</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,16 +36,19 @@
         <!-- redirection vers la page d'accueil -->
         <h1>racine de l'application</h1>
         <p style="text-align:center;font-size:1.3rem;">
-            Dans 10 secondes, vous serez redirigé automatiquement vers la la page principale de l'application
+            Dans 300 secondes, vous serez
+            <b>redirigé automatiquement</b>
+            <br />
+            vers la la page principale de l'application
         </p>
         <div style="text-align:center;font-size:1.2em;" id="decompte">
-            10
+            300
         </div>
         <div style="text-align:center;">
-            <a class="yyinfo" href="fta_www/">y aller maintenant</a>
+            <a class="yyinfo yytbgrand" style="max-width: fit-content;" href="fta_www/">y aller maintenant</a>
         </div>
         <div style="text-align:center;">
-            <a class="yyinfo" href="tictactoe.html">aller sur tictactoe</a>
+            <a class="yyinfo yytbgrand" style="max-width: fit-content;" href="tictactoe.html">aller sur tictactoe</a>
         </div>
 <script>
 //<![CDATA[
@@ -56,7 +59,7 @@
   programme javascript d'affichage de décompte 
   =====================================================================================================================
 */
-var decompte=10;
+var decompte=300;
 function maj_decompte(){
     decompte--;
     document.getElementById('decompte').innerHTML=decompte;

@@ -77,7 +77,6 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
         if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
         }else{
             var endMicro=performance.now();  console.log('mise en tableau endMicro=',parseInt(((endMicro-startMicro)*1000),10)/1000+' ms');       
-    //                document.getElementById('resultat1').innerHTML='<pre style="font-size:0.8em;">'+obj.value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</pre>';
 
 
             var tableau1 = iterateCharacters2(obj.__xva);
