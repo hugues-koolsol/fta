@@ -5,17 +5,9 @@
   todo
   $c=$a<=>$b; // echo "a" <=> "b"; // -1 , ,,,, echo "a" <=> "a"; // 0 ,,,,, echo "b" <=> "a"; // 1
   $c=$a ** $b
-  $a= $b|$c;
-  $a= $b&$c;
-  $c=$a ^ $b;
-  $c=~$a;
-  $c=$a << $b;
-  $c=$a >> $b;
-  
   $output = `ls -al`; // Utiliser les guillemets obliques revient à utiliser la fonction shell_exec().
   echo "<pre>$output</pre>";
   
-  class MaClasse{}; class PasMaClasse{}; $a = new MaClasse; var_dump($a instanceof MaClasse); var_dump($a instanceof PasMaClasse);
 
 point d'entrée : TransformAstPhpEnRev  
 fonction principale php_traite_Stmt_Expression
@@ -617,7 +609,6 @@ function php_traite_Expr_New(element,niveau){
         }else if(element.class.nodeType === "Name_FullyQualified"){
             nomClasse=element.class.name; // 'qualification_totale(' +  + ')';
             qualif_totale=true;
-            
         }else{
             return(astphp_logerreur({__xst:false,__xme:'0589  erreur php_traite_Expr_New ',element:element}));
         }
@@ -645,7 +636,11 @@ function php_traite_Expr_New(element,niveau){
             }
 
         }else{
-            t+='nouveau(appelf(nomf(' + nomClasse + ')' + lesArgumentsDeLaClass + ')),';
+            if( qualif_totale===true){
+                t+='nouveau(appelf(nomf(qualification_totale(' + nomClasse + '))' + lesArgumentsDeLaClass + ')),';
+            }else{
+                t+='nouveau(appelf(nomf(' + nomClasse + ')' + lesArgumentsDeLaClass + ')),';
+            }
         }
     }else{
         return(astphp_logerreur({__xst:false,__xme:'0610  erreur php_traite_Expr_New ',element:element}));
@@ -1121,12 +1116,47 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
         t+=element.value;
         /*===============================================*/
     }else if("Expr_Variable" === element.nodeType){
-        t+='$' + element.name + '';
+        t+='$' + element.name;
     }else if("Identifier" === element.nodeType){
-        t+='' + element.name + '';
+        t+=element.name;
     }else if("Name" === element.nodeType){
-        t+='' + element.name + '';
+        t+=element.name;
+    }else if("Stmt_ClassConst" === element.nodeType){
+        var privee='';
+        var constantes='';
+        if(element.flags && element.flags>0){
+            if(element.flags===4){
+               privee='privee()';
+            }else{
+               return(astphp_logerreur({__xst:false,__xme:'1130 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
+            }
+        }
 
+        if(element.consts && element.consts.length>0){
+            for(var i=0;i<element.consts.length;i++){
+                var nom_constante='';
+                var valeur_constante='';
+                
+                if(element.consts[i].name.nodeType==='Identifier'){
+                     nom_constante=element.consts[i].name.name;
+                }else{
+                    return(astphp_logerreur({__xst:false,__xme:'1138 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
+                }
+                var obj=php_traite_Stmt_Expression(element.consts[i].value,niveau,false,element);
+                if(obj.__xst===true){
+                    valeur_constante=obj.__xva;
+                }else{
+                    return(astphp_logerreur({__xst:false,__xme:'1147 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
+                }
+                constantes+=',constante('+nom_constante+',valeur('+valeur_constante+')'+privee+')';
+                
+                
+            }
+        }else{
+            return(astphp_logerreur({__xst:false,__xme:'1136 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
+        }
+        t+=constantes.substr(1);
+        
         /*===============================================*/
     }else if("Stmt_Property" === element.nodeType){
         if((element.props) && (element.props.length > 0)){
@@ -1137,34 +1167,49 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
                  && (element.props[i].name.nodeType === "VarLikeIdentifier")
                 ){
                     if((element.flags) && (element.flags === 4)){
-                        t+='variable_privée($' + element.props[i].name.name;
+                        t+='variable_privée('
                     }else if((element.flags) && (element.flags === 2)){
-                        t+='variable_protégée($' + element.props[i].name.name;
+                        t+='variable_protégée(';
                     }else if((element.flags) && (element.flags === 1)){
-                        t+='variable_publique($' + element.props[i].name.name;
+                        t+='variable_publique(';
                     }else if((element.flags) && (element.flags === 9)){
                         /*
                           public static $embedding_file = __FILE__;
                         */
-                        t+='variable_publique_statique($' + element.props[i].name.name;
+                        t+='variable_publique_statique(';
                     }else if((element.flags) && (element.flags === 12)){
                         /*
                           private static $_resources = array();
                         */
-                        t+='variable_privée_statique($' + element.props[i].name.name;
+                        t+='variable_privée_statique(';
                     }else{
                         return(astphp_logerreur({__xst:false,__xme:'1003 php_traite_Stmt_Expression Stmt_Property ',element:element}));
                     }
+                    if(element.type){
+                      if(element.type.nodeType === 'Identifier'){
+                          t+='type_variable('+element.type.name+ '),';
+                      }else if(element.type.nodeType === "NullableType"){
+                          if(element.type.type.nodeType==='Name_FullyQualified'){
+                              t+='type_variable(\'\\\\'+element.type.type.name+ '\',nullable()),';
+                          }else{
+                              return(astphp_logerreur({__xst:false,__xme:'1198 php_traite_Stmt_Expression Stmt_Property ',element:element}));
+                          }
+                      }else{
+                          return(astphp_logerreur({__xst:false,__xme:'1192 php_traite_Stmt_Expression Stmt_Property "'+element.type.nodeType+'" ',element:element}));
+                      }
+                    }
+                    /* le nom de la variable */
+                    t+='$' + element.props[i].name.name;
+                    /*  */
                     if(element.props[i].default){
                         var obj = php_traite_Stmt_Expression(element.props[i].default,niveau,true,element);
                         if(obj.__xst === true){
-                            t+=',valeur_defaut(' + obj.__xva + '))';
+                            t+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
                             return(astphp_logerreur({__xst:false,__xme:'1033 php_traite_Stmt_Expression Stmt_Property ',element:element}));
                         }
-                    }else{
-                        t+=')';
                     }
+                    t+=')';
                 }else{
                     return(astphp_logerreur({__xst:false,__xme:'0934 php_traite_Stmt_Expression Stmt_Property ',element:element}));
                 }
@@ -2107,23 +2152,56 @@ function php_traite_Stmt_Class(element,niveau){
     var t='';
     var esp0 = ' '.repeat((NBESPACESREV * niveau));
     var esp1 = ' '.repeat(NBESPACESREV);
-    if((element.name) && (element.name.nodeType === "Identifier")){
-        t+='\n' + esp0 + 'definition_de_classe(';
-        t+='\n' + esp0 + esp1 + 'nom_classe(' + element.name.name + ')';
-        t+='\n' + esp0 + esp1 + 'contenu(';
-        if((element.stmts) && (element.stmts.length > 0)){
-            var obj = TransformAstPhpEnRev(element.stmts,(niveau + 2),false);
-            if(obj.__xst === true){
-                t+=obj.__xva;
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1955  dans php_traite_Stmt_Class',element:element}));
-            }
+    var nom_de_classe='';
+    var contenu='';
+    var implemente='';
+    var indicateurs='';
+
+    if(element.implements && element.implements.length>0){
+        for(var i=0;i<element.implements.length;i++){
+         if(element.implements[i].nodeType==='Name'){
+             implemente+=','+element.implements[i].name;
+         }else{
+             return(astphp_logerreur({__xst:false,__xme:'2111 dans php_traite_Stmt_Class',element:element}));
+         }
         }
-        t+='\n' + esp0 + esp1 + ')';
-        t+='\n' + esp0 + ')';
+        implemente='\n' + esp0 + esp1 + ',implemente('+implemente.substr(1)+')';
+    }
+    
+    if(element.flags && element.flags>0){
+     if(element.flags===16){
+      indicateurs+=',abstraite()';
+     }else{
+        return(astphp_logerreur({__xst:false,__xme:'2123 dans php_traite_Stmt_Class',element:element}));
+     }
+    }
+    
+    if((element.name) && (element.name.nodeType === "Identifier")){
+        nom_de_classe=element.name.name;
+    }else{
+        return(astphp_logerreur({__xst:false,__xme:'2108 dans php_traite_Stmt_Class',element:element}));
+    }
+    if((element.stmts) && (element.stmts.length > 0)){
+        var obj = TransformAstPhpEnRev(element.stmts,(niveau + 2),false);
+        if(obj.__xst === true){
+            contenu=obj.__xva;
+        }else{
+            return(astphp_logerreur({__xst:false,__xme:'1955  dans php_traite_Stmt_Class',element:element}));
+        }
     }else{
         return(astphp_logerreur({__xst:false,__xme:'1949  dans php_traite_Stmt_Class',element:element}));
     }
+    
+    
+
+    t+='\n' + esp0 + 'definition_de_classe(';
+    t+='\n' + esp0 + esp1 + 'nom_classe(' + nom_de_classe+ ')';
+    t+=indicateurs;
+    t+=implemente
+    t+='\n' + esp0 + esp1 + 'contenu('+contenu;
+    t+='\n' + esp0 + esp1 + ')';
+    t+='\n' + esp0 + ')';
+
     return({__xst:true,__xva:t});
 }
 /*
@@ -2341,7 +2419,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 */
                 var estTraiteSansErreur=false;
 
-                
+                debugger
                 var obj = isHTML(stmts[i].value);
                 
                 /* recherche d'au moins un tag dans le texte */
@@ -2634,6 +2712,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 /*===============================================*/
             }else if(("Stmt_Continue" === stmts[i].nodeType)
              || ("Stmt_Global" === stmts[i].nodeType)
+             || ("Stmt_ClassConst" === stmts[i].nodeType)
              || ("Expr_Isset" === stmts[i].nodeType)
              || ("Expr_PostDec" === stmts[i].nodeType)
              || ("Expr_PostInc" === stmts[i].nodeType)
@@ -2672,6 +2751,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 }else{
                     t+='\n' + esp0 + '__halt_compiler()';
                 }
+
             }else if("Stmt_Namespace" === stmts[i].nodeType){
                 var nom_de_l_espace='';
                 var faire = '';
@@ -2689,7 +2769,11 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                     }
                  
                 }
-                t+='\n' + esp0 + 'espace_de_noms(nom_espace(\''+nom_de_l_espace+'\'),faire('+faire+'))';
+                if(nom_de_l_espace.indexOf('\\')>=0){
+                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\''+nom_de_l_espace.replace(/\\/g,'\\\\')+'\'),faire('+faire+'))';
+                }else{
+                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\''+nom_de_l_espace+'\'),faire('+faire+'))';
+                }
 
             }else if("Stmt_Interface" === stmts[i].nodeType){
                 var nom_de_l_interface='';
@@ -2710,6 +2794,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                  
                 }
                 t+='\n' + esp0 + 'interface(nom_interface(\''+nom_de_l_interface+'\'),faire('+faire+'))';
+                
             }else{
                 return(astphp_logerreur({__xst:false,'__xme':'2620  dans TransformAstPhpEnRev nodeType non prévu "' + stmts[i].nodeType + '"','element':stmts[i]}));
             }
@@ -3634,6 +3719,31 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
             if(json_retour.__xst===true){
               traitement_apres_recuperation_ast_de_php2(json_retour);
             }else{
+              
+              for(var elem in json_retour.__xms){
+                  if((json_retour.__xms[elem].indexOf('on line ') >= 0)
+                   && (isNumeric(json_retour.__xms[elem].substr((json_retour.__xms[elem].indexOf('on line ') + 8))))
+                  ){
+                      var line = parseInt(json_retour.__xms[elem].substr((json_retour.__xms[elem].indexOf('on line ') + 8)),10);
+                      astphp_logerreur({__xst:false,line:line});
+                  }
+                  astphp_logerreur({"__xst" : false,"__xme" : json_retour.__xms[elem]});
+              }
+              
+              
+              if(json_retour.hasOwnProperty('__entree') && json_retour.__entree.hasOwnProperty('opt')){
+               if(json_retour.__entree.opt.hasOwnProperty('zone_php') && json_retour.__entree.opt.zone_php!==null){
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',json_retour.__entree.opt.zone_php);
+                return({"__xst" : false});
+               }else{
+                if(json_retour.__entree.opt.hasOwnProperty('en_ligne') && json_retour.__entree.opt.en_ligne === true){
+                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                 return({"__xst" : false});
+                }else{
+                 debugger
+                }
+               }
+              }
               return({"__xst" : false,"__xme" : 'erreur json'});
             }
            

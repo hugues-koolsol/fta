@@ -18,7 +18,7 @@ entête[
  
 ];
 
-point d'entrée : parsePhp0 / parsePhp1
+point d'entrée : parsePhp0 / parsePhp1 + php_traiteElement
 
 */
 
@@ -1210,6 +1210,49 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     return {__xst:true,__xva:t};
 }
 
+/*
+  ====================================================================================================================================
+*/
+function php_traiteConstante1(tab , id , niveau){
+    const l01=tab.length;
+    var t='';
+
+    var nom_constante='';
+    var valeur_constante='';
+    var privee_constante='';
+    
+    for(var i=id + 1 ; i < l01 && tab[i][3] > tab[id][3] ; i++ ){
+     if(tab[i][7]===id){
+      if(tab[i][2]==='c'){
+        nom_constante=tab[i][1];
+      }else if(tab[i][2]==='f'){
+          if(tab[i][1]==='valeur'){
+       
+             var obj1=php_traiteElement(tab,i+1,niveau,{});
+             if(obj1.__xst===true){
+              valeur_constante+=obj1.__xva;
+             }else{
+              return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1233 dans php_traiteConstante1 0114'});
+             }
+          }else if(tab[i][1]==='privee'){
+           privee_constante='private ';
+          }else if(tab[i][1]==='#'){
+          }else{
+              return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1239 dans php_traiteConstante1 0114'});
+          }
+       
+      }
+      
+     }
+    }
+    t+=privee_constante+'const '+ nom_constante+' = '+valeur_constante;
+
+    return({__xst:true,__xva:t});
+ 
+}
+/*
+  ====================================================================================================================================
+*/
 
 function php_traiteTableau1(tab,i,niveau){
     var t='';
@@ -1402,43 +1445,62 @@ function php_traiteElement(tab , ind , niveau,options={}){
  }else if(tab[ind][2]==='f' && ( tab[ind][1]==='variable_protégée' || tab[ind][1]==='variable_privée' || tab[ind][1]==='variable_publique' || tab[ind][1]==='variable_publique_statique' || tab[ind][1]==='variable_privée_statique' ) ){
 
     var declaration='';
+    var nom_variable='';
+    var type_variable='';
     for( i=ind+1;i<l01 && tab[i][3]>tab[ind][3];i++){
         if(tab[i][7]===ind){
-            if(tab[i][1]==='valeur_defaut'){
-                var obj1=php_traiteElement(tab,i+1,niveau,{});
-                if(obj1.__xst===true){
-                   if(declaration===''){
-                       return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1410 php_traiteElement'});
-                   }else{
-                       declaration+='='+obj1.__xva;
-                   }
+            if(tab[i][2]==='c'){
+                nom_variable=tab[i][1];
+            }else if(tab[i][2]==='f'){
+            
+                if(tab[i][1]==='valeur_defaut'){
+                    var obj1=php_traiteElement(tab,i+1,niveau,{});
+                    if(obj1.__xst===true){
+                       if(declaration===''){
+                           return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1455 php_traiteElement'});
+                       }else{
+                           declaration+='='+obj1.__xva;
+                       }
+                    }else{
+                        return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1460 php_traiteElement'});
+                    }
+                }else if(tab[i][1]==='type_variable' && tab[i][8]===1 && tab[i+1][2]==='c' ){
+                    type_variable=tab[i+1][1].replace(/\\\\/g,'\\')+' ';
+                }else if(tab[i][1]==='type_variable' && tab[i][8]>1){
+                    var nom_type='';
+                    var est_nullable='';
+
+                    for(var j=i+1;j<l01 && tab[j][3] > tab[i][3] ; j++){
+                       if(tab[j][7]===i){
+                           if(tab[j][2]==='c'){
+                               nom_type=tab[j][1].replace(/\\\\/g,'\\');
+                           }else if(tab[j][2]==='f'){
+                               if(tab[j][1]==='nullable'){
+                                   est_nullable='?';
+                               }else{
+                                   return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1465 php_traiteElement "'+tab[i][1]+'"'});
+                               }
+                           }
+                       }
+                    
+                    }
+                    type_variable=est_nullable+nom_type+' ';
                 }else{
-                    return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1410 php_traiteElement'});
-                }
-            }else{
-                var obj1=php_traiteElement(tab,i,niveau,{});
-                if(obj1.__xst===true){
-                   if(declaration===''){
-                       declaration=obj1.__xva;
-                   }else{
-                       return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1410 php_traiteElement'});
-                   }
-                }else{
-                    return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1410 php_traiteElement'});
+                    return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'1465 php_traiteElement "'+tab[i][1]+'"'});
                 }
             }
         }
     }
     if(tab[ind][1]==='variable_protégée' ){
-        t+='protected '+declaration;
+        t+='protected '+type_variable+nom_variable+declaration;
     }else if( tab[ind][1]==='variable_privée' ){
-        t+='private '+declaration;
+        t+='private '+type_variable+nom_variable+declaration;
     }else if( tab[ind][1]==='variable_publique' ){
-        t+='public '+declaration;
+        t+='public '+type_variable+nom_variable+declaration;
     }else if( tab[ind][1]==='variable_publique_statique' ){
-        t+='public static '+declaration;
+        t+='public static '+type_variable+nom_variable+declaration;
     }else if( tab[ind][1]==='variable_privée_statique' ){
-        t+='private static '+declaration;
+        t+='private static '+type_variable+nom_variable+declaration;
     }
     
   
@@ -1689,7 +1751,7 @@ function php_traiteElement(tab , ind , niveau,options={}){
      if(obj1.__xst===true){
          t+='--'+obj1.__xva;
      }else{
-         return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'php_traiteElement 1465'});
+         return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'php_traiteElement 1739'});
      }
 
  }else if(tab[ind][2]==='f' && tab[ind][1]==='castint' ){
@@ -1931,6 +1993,14 @@ function php_traiteElement(tab , ind , niveau,options={}){
         return(php_logerr({__xst:false,__xva:t,ind:ind,tab:tab,__xme:'1626 php_traiteElement propriété '}));
      }
   
+ }else if(tab[ind][2]==='f' && tab[ind][1]==='constante' ){
+
+     var obj = php_traiteConstante1(tab,ind,niveau);
+     if(obj.__xst===true){
+         t+=obj.__xva;
+     }else{
+         return php_logerr({__xst:false,__xva:t,id:ind,tab:tab,__xme:'1983 php_traiteElement dans interface '});
+     }
 
  }else{
       
@@ -2251,6 +2321,8 @@ function php_traiteAppelDefinition_de_classe(tab,ind,dansConditionOuDansFonction
  
  var nom_de_classe='';
  var contenu='';
+ var abstraite='';
+ var implemente='';
  var l01=tab.length;
  for(var i=ind+1;i<l01 && tab[i][3]>tab[ind][3];i++){
      if( tab[i][7]===ind && tab[i][2]==='f' ){
@@ -2264,13 +2336,31 @@ function php_traiteAppelDefinition_de_classe(tab,ind,dansConditionOuDansFonction
              }else{
                  return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'erreur dans php_traiteAppelDefinition_de_classe 1856'});
              }
+         }else if( tab[i][1] === "abstraite" && tab[i][2]==='f' && tab[i][8]===0){
+             abstraite='abstract ';
+         }else if( tab[i][1] === "implemente" && tab[i][2]==='f' && tab[i][8]>0){
+             for(var j=i+1;j<l01 && tab[j][3] > tab[i][3] ; j++){
+              if(tab[j][7]===i){
+                if(tab[j][2]==='c'){
+                    implemente+=', '+ma_cst_pour_php(tab[j]);
+                }else{
+                    return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'erreur dans php_traiteAppelDefinition_de_classe 2269'});
+                }
+              }
+              
+             }
+             implemente=' implements '+implemente.substr(1);
+          
+          
+         }else{
+             return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'erreur dans php_traiteAppelDefinition_de_classe 2269'});
          }
      }
  }
  if(nom_de_classe===''){
     return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'erreur dans php_traiteAppelDefinition_de_classe 1862'});
  }
- t+='class '+nom_de_classe+'{'+contenu;
+ t+=abstraite+'class '+nom_de_classe+implemente+'{'+contenu;
  t+=espacesn(true,niveau);
  t+='}';
 
