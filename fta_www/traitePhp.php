@@ -16,7 +16,7 @@ $o1='';?>
         <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
         <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
     </div>
-    <textarea class="txtar1" id="txtar1" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea class="txtar1" id="txtar1" rows="25" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
     <div style="width:90%;">
         <a href="javascript:__gi1.formatter_le_source_rev(&quot;txtar2&quot;);" title="formatter le source rev">(😊)</a>
         <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;txtar2&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>
@@ -25,7 +25,7 @@ $o1='';?>
         <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar2&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
         <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar2&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
     </div>
-    <textarea class="txtar1" id="txtar2" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea class="txtar1" id="txtar2" rows="15" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
     <div style="width:90%;">
         <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php(&quot;txtar2&quot;,&quot;txtar3&quot;,true)">R2P↧</a>
         <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar3&quot;,1)">aller à la ligne n°</a>
@@ -35,7 +35,7 @@ $o1='';?>
         
         <a style="float:right;margin-right:15px;" href="javascript:__gi1.raz_la_text_area(&quot;txtar3&quot;);" title="raz de la zone">🚫</a>
     </div>
-    <textarea class="txtar1" id="txtar3" rows="9" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><?php
+    <textarea class="txtar1" id="txtar3" rows="25" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><?php
 $js_a_executer_apres_chargement=array(
     /* fonctions js à éxécuter un fois que tout est chargé */
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar1' , 'mode' => 'source' )),
