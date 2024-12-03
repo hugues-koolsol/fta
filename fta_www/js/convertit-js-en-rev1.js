@@ -1170,7 +1170,7 @@ function traiteIf1(element,niveau,type){
         }else if(element.expression){
             var obj3 = traiteUneComposante(element.expression,niveau + 3,false,false,element);
         }else{
-            return(astjs_logerreur({"__xst" : false,"__xme" : 'erreur traiteIf1 0819 pour ' + element.type,"element" : element}));
+            obj3 = TransformAstEnRev(element,niveau + 3);
         }
     }
     if(obj3.__xst === true){

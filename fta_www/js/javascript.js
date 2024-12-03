@@ -2466,7 +2466,9 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
     }
     var operateur_principal=oop.__xva;
     if(operateur_principal === ','){
+        /*
         logerreur({"__xst" : true,"__xav" : '2972 l\'opérateur virgule est une plaie'});
+        */
     }
     for( i=id + 1 ; i < l01 && tab[i][3] > tab[id][3] ; i++ ){
         if(tab[i][7] === id){
