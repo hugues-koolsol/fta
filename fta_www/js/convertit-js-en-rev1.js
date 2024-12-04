@@ -1,3 +1,4 @@
+
 "use strict";
 /*
   var a=0;
@@ -1170,7 +1171,7 @@ function traiteIf1(element,niveau,type){
         }else if(element.expression){
             var obj3 = traiteUneComposante(element.expression,niveau + 3,false,false,element);
         }else{
-            obj3 = TransformAstEnRev(element,niveau + 3);
+            obj3=TransformAstEnRev(element,niveau + 3);
         }
     }
     if(obj3.__xst === true){
@@ -2712,7 +2713,10 @@ function comm_avant_fin(elem,niveau){
     }
     var commentaire = ajouteCommentaireAvant(elem,niveau + 1);
     if(commentaire !== ''){
-        t+=(commentaire.trim().replace(/\n/g,' ').replace(/\r/g,' ').trim()) + ',';
+        t=commentaire;
+        /*
+          t+=(commentaire.trim().replace(/\n/g,' ').replace(/\r/g,' ').trim()) + ',';
+        */
     }
     return t;
 }
@@ -3114,7 +3118,7 @@ function TransformAstEnRev(les_elements,niveau){
 /*
   =====================================================================================================================
 */
-function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
+function analyse_fichier_log_acorn(fichier_erreur,texte_source,zone_source){
     var numero_de_ligne=-1;
     var position=-1;
     var caractere_incorrecte='';
@@ -3142,7 +3146,7 @@ function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
             try{
                 position=parseInt(temp,10);
                 if(texte_source.length >= position){
-                    caractere_incorrecte=texte_source.substr(position,1); // jsonRet.__entree.texteSource
+                    caractere_incorrecte=texte_source.substr(position,1);
                     var chaine='';
                     if(position - 15 > 0){
                         chaine='proche de="' + (texte_source.substr(position - 15,30).replace(/\n/g,'\\n')) + '"';
@@ -3150,8 +3154,8 @@ function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
                         chaine='proche de="' + (texte_source.substr(0,30)) + '"';
                     }
                     logerreur({"__xst" : false,"__xme" : 'erreur dans un source javascript en position ' + position + ' caractere_incorrecte="' + caractere_incorrecte + '" ' + chaine});
-                    if(zone_source!==null){
-                        logerreur({"__xst" : true,"plage" : [position,position] , "zone_source":zone_source});
+                    if(zone_source !== null){
+                        logerreur({"__xst" : true,"plage" : [position,position],"zone_source" : zone_source});
                     }
                     return({"__xst" : false});
                 }
@@ -3167,7 +3171,6 @@ function analyse_fichier_log_acorn(fichier_erreur , texte_source, zone_source){
   =====================================================================================================================
 */
 function recupere_ast_de_source_js_en_synchrone(texteSource){
-
     var texte_source_mini = texteSource.trim();
     if(texte_source_mini === ''){
         return({"__xst" : true,"__xva" : {
@@ -3257,10 +3260,10 @@ function convertit_source_javascript_en_rev(sourceDuJavascript){
         var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript);
         if(obj1.__xst === true){
             tabComment=obj1.commentaires;
-            if(obj1.__xva===''){
-                    t='';
-            }else if(obj1.__xva.hasOwnProperty('body') && Array.isArray(obj1.__xva.body) && obj1.__xva.body.length===0 ){
-                    t='';
+            if(obj1.__xva === ''){
+                t='';
+            }else if(obj1.__xva.hasOwnProperty('body') && Array.isArray(obj1.__xva.body) && obj1.__xva.body.length === 0){
+                t='';
             }else{
                 var obj = TransformAstEnRev(obj1.__xva.body,0);
                 if(obj.__xst === true){
@@ -3295,14 +3298,15 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
             tabComment=JSON.parse(donnees_en_entree.__xva.commentaires);
             var obj = TransformAstEnRev(ast_json.body,0);
             if(obj.__xst === true){
-                if(donnees_en_entree.__xva.__entree.options.options.hasOwnProperty('en_ligne') && donnees_en_entree.__xva.__entree.options.options.en_ligne===true){
-                 sauvegarder_js_en_ligne(obj.__xva,donnees_en_entree.__xva.__entree.options.options.donnees);
+                if(donnees_en_entree.__xva.__entree.options.options.hasOwnProperty('en_ligne')
+                 && donnees_en_entree.__xva.__entree.options.options.en_ligne === true
+                ){
+                    sauvegarder_js_en_ligne(obj.__xva,donnees_en_entree.__xva.__entree.options.options.donnees);
                 }else if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
                     document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
                     var obj1 = functionToArray(obj.__xva,true,false,'');
                     if(obj1.__xst === true){
                         var endMicro = performance.now();
-//                        console.log('mise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
                         astjs_logerreur({"__xst" : true,"__xme" : 'pas d\'erreur pour le rev ' + (parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'});
                         var resJs = parseJavascript0(obj1.__xva,1,0);
                         if(resJs.__xst === true){
@@ -3318,7 +3322,7 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
                             }else{
                                 document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
                             }
-                            if( document.getElementById('txtar3')){
+                            if(document.getElementById('txtar3')){
                                 document.getElementById('txtar3').value=resJs.__xva;
                             }
                         }else{
@@ -3351,6 +3355,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
     recupererAstDeJs1('za_ajax.php?recupererAstDeJs',ajax_param).then((donnees) => {
+        
         if(donnees.__xst === true){
             var elem={};
             for(elem in donnees.__xms){
@@ -3361,7 +3366,7 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
         }else{
             var elem={};
             if(donnees.hasOwnProperty('fichier_erreur')){
-                var obj = analyse_fichier_log_acorn(donnees.fichier_erreur , donnees.__entree.texteSource,null);
+                var obj = analyse_fichier_log_acorn(donnees.fichier_erreur,donnees.__entree.texteSource,null);
             }
             if(donnees.hasOwnProperty('__entree')
              && donnees.__entree.hasOwnProperty('options')

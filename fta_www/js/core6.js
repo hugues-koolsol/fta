@@ -30,19 +30,19 @@ function raz_messages(zone_message){
         document.getElementById(zone_message).innerHTML='';
     }
     global_messages={
-        "errors"         : [],
-        "avertissements" : [],
-        "infos"          : [],
-        "masquees"       : [],
-        "lines"          : [],
-        "tabs" : [],
-        "ids" : [],
-        "ranges" : [],
-        "plages" : [],
-        "positions_caracteres" : [],
-        "calls" : '',
-        "data" : {"matrice" : [],"tableau" : [],"sourceGenere" : ''}
-    };
+    "errors" : [],
+    "avertissements" : [],
+    "infos" : [],
+    "masquees" : [],
+    "lines" : [],
+    "tabs" : [],
+    "ids" : [],
+    "ranges" : [],
+    "plages" : [],
+    "positions_caracteres" : [],
+    "calls" : '',
+    "data" : {"matrice" : [],"tableau" : [],"sourceGenere" : ''}
+};
 }
 /*
   =====================================================================================================================
@@ -100,67 +100,42 @@ function logerreur(o){
     if(o.hasOwnProperty('plage')){
         global_messages['plages'].push(o);
     }
-/*#
-  if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){
-       //* à faire ? , à voir 
-  }
-  
-
-
-
-*/
+    /*#
+      if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){
+           //* à faire ? , à voir 
+      }
+    */
     return o;
 }
 /*
   =====================================================================================================================
 */
 function maConstante(eltTab){
-
-/*    
     var t='';
-    if(eltTab[4] === 1){
-        t='\'' + eltTab[1] + '\'';
-    }else if(eltTab[4] === 2){
-        //      constante avec des apostrophes inversées
-        t='`' + eltTab[1] + '`';
-        t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-    }else if(eltTab[4] === 3){
-        t='"' + eltTab[1] + '"';
-    }else if(eltTab[4] === 4){
-        t='/' + eltTab[1] + '/' + eltTab[13];
-    }else{
-        // constante non quotée, généralement une variable
-        if(eltTab[1] === 'vrai'){
-            t='true';
-        }else if(eltTab[1] === 'faux'){
-            t='false';
-        }else{
-            t=eltTab[1];
-        }
-    }
-    return t;
-*/    
-
-    var t='';
-    switch(eltTab[4]){
+    switch (eltTab[4]){
         case 1:
             /* entre simples apostrophes */
             t='\'' + eltTab[1] + '\'';
             break;
-       case 2:
+            
+        case 2:
             /* apostrophes inversées */
             t='`' + eltTab[1] + '`';
             t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
             break;
-       case 3:
+            
+        case 3:
             /* guillemets */
             t='"' + eltTab[1] + '"';
-            break
-       case 4:
+            break;
+            
+        case 4:
+            /* regex */
             t='/' + eltTab[1] + '/' + eltTab[13];
             break;
-       default :
-            /* constante non quotée, généralement une variable */
+            
+        default:
+            /* constante non quotée, généralement une variable ou une valeur numérique ou une constante */
             if(eltTab[1] === 'vrai'){
                 t='true';
             }else if(eltTab[1] === 'faux'){
@@ -168,10 +143,9 @@ function maConstante(eltTab){
             }else{
                 t=eltTab[1];
             }
-       
+            
     }
     return t;
-
 }
 /*
   =====================================================================================================================
@@ -179,9 +153,9 @@ function maConstante(eltTab){
 function espacesn(optionCRLF,i){
     var t='';
     if(optionCRLF){
-        t='\r\n';
+        t=CRLF;
     }else{
-        t='\n';
+        t=LF;
     }
     if(i > 0){
         t+=' '.repeat(NBESPACESSOURCEPRODUIT * i);
@@ -379,6 +353,7 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
           et on recalcul les indices
         */
         a_supprimer.sort(function(a,b){
+        
             return(b - a);
         });
         for( i=0 ; i < a_supprimer.length ; i++ ){
@@ -463,87 +438,83 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var double_commentaire=false;
     /**/
     unBloc=' '.repeat(nbEspacesSrc1 * niveau);
-    tab=texte.split('\n');
+    tab=texte.replace(/\r/g,'').split('\n');
     l01=tab.length;
     /**/
-    if(texte.length > 1){
-        temps=texte.substr(0,1);
-        if(temps === '#'){
-            if(texte.length > 2 && texte.substr(1,1)==='#'){
-                 /*
-                  un commentaire qui commence par ## sera décalé à gauche
-                 */
-                 double_commentaire=true;
-            }
+    if(texte.length > 1 && texte.substr(0,1) === '#'){
+        if(texte.length > 2 && texte.substr(1,1) === '#'){
             /*
-              on a un commentaire de type bloc non formaté 
-              car le premier caractère = #.
-              On supprime les espaces inutiles en début de ligne.
+              un commentaire qui commence par ## sera décalé à gauche
             */
-            t='';
-            /* minimim d'espaces au début de chaque ligne */
-            min=120;
-            for( i=1 ; i < l01 ; i++ ){
-                ligne=tab[i];
-                for( j=0 ; j < ligne.length ; j++ ){
-                    /*
-                      on balaye toutes les lignes pour détecter 
-                      le nombre d'espaces minimal à gauche
-                    */
-                    temps=ligne.substr(j,1);
-                    if(temps !== ' '){
-                        if(j < min){
-                            /*on réajuste le minimum d'espaces au début de chaque ligne */
-                            min=j;
-                        }
-                        /* et on passe à la ligne suivante*/
-                        break;
-                    }
-                }
-            }
-            if(min > 2){
-                /*tout décaler à gauche*/
-                for( i=1 ; i < l01 ; i++ ){
-                    tab[i]=tab[i].substr(min - 2);
-                }
-            }
-            /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
-            if(fichierRev0){
-                ligne=tab[tab.length-1].replace(/ /g,'');
-                if(ligne !== ''){
-                    tab.push(unBloc);
-                }else{
-                    tab[tab.length-1]=unBloc;
-                }
-                if(double_commentaire===false){
-                    t=' '.repeat(nbEspacesSrc1 * niveau);
-                    for( i=1 ; i < l01-1 ; i++ ){
-                        tab[i]=t+tab[i];
-                    }
-                }
-                texte=tab.join('\n');
-            }else{
-                /* on retire les lignes vierges de la fin */
-                for(i=tab.length-1;i>=1;i--){
-                  if(tab[i]===''){
-                   tab.splice(i,1);
-                  }else{
-                   break;
-                  }
-                }
-                
-                if(double_commentaire===false){
-                  t=' '.repeat(nbEspacesSrc1 * niveau);
-                  for( i=1 ; i < l01-1 ; i++ ){
-                      tab[i]=t+tab[i];
-                  }
-                }
-                texte=tab.join('\n');
-            }
-            return texte;
-             
-
+            double_commentaire=true;
         }
+        /*
+          on a un commentaire de type bloc non formaté 
+          car le premier caractère = #.
+          On supprime les espaces inutiles en début de ligne.
+        */
+        t='';
+        /* minimim d'espaces au début de chaque ligne */
+        min=120;
+        for( i=1 ; i < l01 ; i++ ){
+            ligne=tab[i];
+            for( j=0 ; j < ligne.length ; j++ ){
+                /*
+                  on balaye toutes les lignes pour détecter 
+                  le nombre d'espaces minimal à gauche
+                */
+                temps=ligne.substr(j,1);
+                if(temps !== ' '){
+                    if(j < min){
+                        /*on réajuste le minimum d'espaces au début de chaque ligne */
+                        min=j;
+                    }
+                    /* et on passe à la ligne suivante*/
+                    break;
+                }
+            }
+        }
+        if(min > 2){
+            /*tout décaler à gauche*/
+            for( i=1 ; i < l01 ; i++ ){
+                tab[i]=tab[i].substr(min - 2);
+            }
+        }
+        /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
+        if(fichierRev0){
+            ligne=tab[tab.length-1];
+            if(ligne !== ''){
+                tab.push(unBloc);
+            }else{
+                tab[tab.length-1]=unBloc;
+            }
+            if(double_commentaire === false){
+                l01=tab.length;
+                t=' '.repeat(nbEspacesSrc1 * niveau);
+                for( i=1 ; i < l01 - 1 ; i++ ){
+                    tab[i]=t + tab[i];
+                }
+            }
+            texte=tab.join(CRLF);
+        }else{
+            /* on retire les lignes vierges de la fin */
+            for( i=tab.length - 1 ; i >= 1 ; i-- ){
+                if(tab[i] === ''){
+                    tab.splice(i,1);
+                }else{
+                    break;
+                }
+            }
+            l01=tab.length;
+            if(double_commentaire === false){
+                t=' '.repeat(nbEspacesSrc1 * niveau);
+                for( i=1 ; i < l01 ; i++ ){
+                    tab[i]=t + tab[i];
+                }
+            }
+            texte=tab.join(CRLF) + CRLF + ' '.repeat(niveau * nbEspacesSrc1);
+        }
+        return texte;
     }
     /*
       si on est ici, c'est qu'on a un commentaire multiligne
@@ -744,21 +715,20 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
         */
         if(arr[i][2] === 'c'){
             chaine='';
-
             if(arr[i][4] === 1){
                 /* methode3' simple quote */
-/*
-                chaine=arr[i][1];
-                chaine=replaceAll(chaine,chLF,'\n');
-                chaine=replaceAll(chaine,chCR,'\r');
-*/                
+                /*
+                  chaine=arr[i][1];
+                  chaine=replaceAll(chaine,chLF,'\n');
+                  chaine=replaceAll(chaine,chCR,'\r');
+                */
                 chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-/*                
-                if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
+                /*
+                  if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
                   chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
                   chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
-                }
-*/                
+                  }
+                */
                 if(coloration){
                     t+='\'' + (strToHtml(chaine)) + '\'';
                 }else{
@@ -766,11 +736,11 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 }
             }else if(arr[i][4] === 2){
                 /* methode3modele ` */
-/*
-                chaine=arr[i][1];
-                chaine=replaceAll(chaine,chLF,'\n');
-                chaine=replaceAll(chaine,chCR,'\r');
-*/
+                /*
+                  chaine=arr[i][1];
+                  chaine=replaceAll(chaine,chLF,'\n');
+                  chaine=replaceAll(chaine,chCR,'\r');
+                */
                 chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                 if(coloration){
                     t+='`' + (strToHtml(chaine)) + '`';
@@ -779,17 +749,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
                 }
             }else if(arr[i][4] === 3){
                 /* methode3" double quote */
-                
-//                chaine=arr[i][1];
-//                chaine=replaceAll(chaine,chLF,'\n');
-//                chaine=replaceAll(chaine,chCR,'\r');
                 chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-/*
-                if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
-                  chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
-                  chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
-                }
-*/                
                 if(coloration){
                     t+='"' + (strToHtml(chaine)) + '"';
                 }else{
@@ -1110,9 +1070,6 @@ function formaterErreurRev(obj){
   =====================================================================================================================
   =====================================================================================================================
   =====================================================================================================================
-
-
-
 */
 function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine,rechercheParentheseCorrespondante){
     /*
@@ -1131,7 +1088,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var drapeauRegex='';
     var chCR = '¶' + 'CR' + '¶';
     var chLF = '¶' + 'LF' + '¶';
-//    var fonction_non_vide_precedente='';
     /*
       =============================================================================================================
       les entiers
@@ -1368,17 +1324,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuoteePrecedente=3;
                 /* methode3" */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
-/*
-                if(fonction_non_vide_precedente==='textarea' || fonction_non_vide_precedente==='pre'){
-                    texte=texte.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')
-                }
-*/                
-/*
-                texte=replaceAll(texte,'\n',chLF);
-                texte=replaceAll(texte,'\r',chCR);
-                texte=replaceAll(texte,'\t','\\t');
-*/                
-                texte=texte.replace(/\n/g,'¶LF¶').replace(/\r/g,'¶CR¶').replace(/\t/g,'\\t');
+                texte=texte.replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
@@ -1617,15 +1563,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 /* methode3m */
-/*
-                texte=texte.replace(/\\/g,'\\\\');
-                texte=texte.replace(/"/g,'\\"');
-                texte=replaceAll(texte,'\n',chLF);
-                texte=replaceAll(texte,'\r',chCR);
-                texte=replaceAll(texte,'\t','\\t');
-*/                
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'¶LF¶').replace(/\r/g,'¶CR¶').replace(/\t/g,'\\t');
-                
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
@@ -1709,23 +1647,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=1;
                 constanteQuoteePrecedente=1;
                 /* methode3' */
-/*
-                texte=texte.replace(/\\/g,'\\\\');
-                texte=texte.replace(/"/g,'\\"');
-*/                
-/*
-                if(fonction_non_vide_precedente==='textarea' || fonction_non_vide_precedente==='pre'){
-                    texte=texte.replace(/¶LF¶/g,'\\\\¶\\\\LF\\\\¶').replace(/¶CR¶/g,'\\\\¶\\\\CR\\\\¶')
-                }
-*/                
-/*                
-                texte=replaceAll(texte,'\n',chLF);
-                texte=replaceAll(texte,'\r',chCR);
-                texte=replaceAll(texte,'\t','\\t');
-*/
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'¶LF¶').replace(/\r/g,'¶CR¶').replace(/\t/g,'\\t');
-
-                
                 indice++;
                 chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
                 /*
@@ -1838,11 +1760,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 niveauPrecedent=niveau;
                 niveau=niveau + 1;
                 textePrecedent=texte;
-/*                
-                if(texte!==''){
-                    fonction_non_vide_precedente=texte.toLowerCase();
-                }
-*/                
                 texte='';
                 dansCstSimple=false;
                 dansCstDouble=false;
