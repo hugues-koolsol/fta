@@ -248,37 +248,71 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             if($fd=fopen($nomCompletSource,'w')){
 
 //                echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);
-                $ret=fwrite($fd,$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
+                $texte_source=$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'];
+                $alea1=texte_aleatoire(10);
+                if(strpos($texte_source,$alea1)!==false){
+                        ajouterMessage('erreur',__LINE__.' : il y a eu un léger problème lors de l\'écriture , veuillez réessayer');
+                }else{
+                    if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+                        /*
+                          Les zones textarea ne contiennent que des \n pour terminer une ligne
+                          mais windows impose \r\n
+                        */
+                        $CHAINE_CR=$alea1.'CR'.$alea1;
+                        $CHAINE_LF=$alea1.'LF'.$alea1;
+                        if(strpos($texte_source,"\n")!==false && strpos($texte_source,"\r")!==false){
+                            /*
+                                si il y a des \r et de \n
+                            */
+                            $texte_source=str_replace("\n",$CHAINE_LF,$texte_source);
+                            $texte_source=str_replace("\r",'',$texte_source);
+                            $texte_source=str_replace($CHAINE_LF,"\r\n",$texte_source);
+                         
+                        }else if(strpos($texte_source,"\n")===false && strpos($texte_source,"\r")!==false){
 
-                if($ret !== false){
-
-                    fclose($fd);
-                    
-                    ajouterMessage('succes',__LINE__.' : Le généré a bien été écrit sur le disque');
-                    
-                    /* si on est dans fta, que l'utilisateur=1 et que le dossier =1, on écrit le source rev aussi */
-//                    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
-                    if(APP_KEY==='fta' && $_SESSION[APP_KEY]['sess_id_utilisateur_init']===1 && $__valeurs['T0.chx_dossier_id_source'] === 1){
-                        $nomCompletSource.='.rev';
-                        if($fd=fopen($nomCompletSource,'w')){
-                            $ret=fwrite($fd,$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']);
-                            if($ret !== false){
-
-                                fclose($fd);
-                                ajouterMessage('succes',__LINE__.' : le rev aussi a été écrit sur disque');
-                            }else{
-                                ajouterMessage('erreur',__LINE__.' le fichier rev n\'a pas pu être écrit');
-                            }
-                        }else{
-                            ajouterMessage('erreur',__LINE__.' le fichier rev n\'a pas pu être ouvert');
+                            $texte_source=str_replace("\r","\r\n",$texte_source);
+                         
+                        }else if(strpos($texte_source,"\n")!==false && strpos($texte_source,"\r")===false){
+                            $texte_source=str_replace("\n","\r\n",$texte_source);
+                         
+                        }else if(strpos($texte_source,"\n")===false && strpos($texte_source,"\r")===false){
+                            /* on ne remplace rien */
                         }
                     }
-                    
+                 
+                    $ret=fwrite($fd,$texte_source);
 
-                }else{
+                    if($ret !== false){
 
-                    ajouterMessage('erreur',__LINE__.' : il y a eu un problème lors de l\'écriture ');
+                        fclose($fd);
+                        
+                        ajouterMessage('succes',__LINE__.' : Le généré a bien été écrit sur le disque');
+                        
+                        /* si on est dans fta, que l'utilisateur=1 et que le dossier =1, on écrit le source rev aussi */
+    //                    echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);
+                        if(APP_KEY==='fta' && $_SESSION[APP_KEY]['sess_id_utilisateur_init']===1 && $__valeurs['T0.chx_dossier_id_source'] === 1){
+                            $nomCompletSource.='.rev';
+                            if($fd=fopen($nomCompletSource,'w')){
+                                $ret=fwrite($fd,$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']);
+                                if($ret !== false){
+
+                                    fclose($fd);
+                                    ajouterMessage('succes',__LINE__.' : le rev aussi a été écrit sur disque');
+                                }else{
+                                    ajouterMessage('erreur',__LINE__.' le fichier rev n\'a pas pu être écrit');
+                                }
+                            }else{
+                                ajouterMessage('erreur',__LINE__.' le fichier rev n\'a pas pu être ouvert');
+                            }
+                        }
+                        
+
+                    }else{
+
+                        ajouterMessage('erreur',__LINE__.' : il y a eu un problème lors de l\'écriture ');
+                    }
                 }
+                
 
 
             }else{

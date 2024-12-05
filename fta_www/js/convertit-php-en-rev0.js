@@ -1,4 +1,3 @@
-
 "use strict";
 /*
   
@@ -8,28 +7,26 @@
   $output = `ls -al`; // Utiliser les guillemets obliques revient à utiliser la fonction shell_exec().
   echo "<pre>$output</pre>";
   
-
-point d'entrée : TransformAstPhpEnRev  
-fonction principale php_traite_Stmt_Expression
+  
+  point d'entrée : TransformAstPhpEnRev  
+  fonction principale php_traite_Stmt_Expression
   
 */
 var contient_du_javascript_dans_html=false;
-var tableau_de_html_dans_php_a_convertir=[];
-
-
+var tableau_de_html_dans_php_a_convertir = [];
 function astphp_logerreur(o){
     logerreur(o);
     if(global_messages.ranges.length <= 3){
-        if((o.element)
-         && (o.element.hasOwnProperty('attributes'))
-         && (o.element.attributes.hasOwnProperty('startTokenPos'))
-         && (o.element.attributes.hasOwnProperty('endTokenPos'))
+        if(o.element
+         && o.element.hasOwnProperty('attributes')
+         && o.element.attributes.hasOwnProperty('startTokenPos')
+         && o.element.attributes.hasOwnProperty('endTokenPos')
         ){
             global_messages['ranges'].push([o.element.attributes.startFilePos,o.element.attributes.endFilePos]);
         }
     }
     if(o.hasOwnProperty('element')){
-      console.log('%cerreur element=','background:yellow;color:hotpink;',o.element)
+        console.log('%cerreur element=','background:yellow;color:hotpink;',o.element);
     }
     return o;
 }
@@ -75,7 +72,7 @@ function recupNomOperateur(s){
     }else if(s === '&'){
         return 'etBin';
     }else{
-        return(astphp_logerreur({__xst:false,'__xme':'0079  erreur recupNomOperateur "' + s + '" ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0079  erreur recupNomOperateur "' + s + '" ' , "element" : element }));
     }
 }
 function php_traite_Expr_Eval(element,niveau){
@@ -86,10 +83,10 @@ function php_traite_Expr_Eval(element,niveau){
     if(obj.__xst === true){
         t+=',p(' + obj.__xva + ')';
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0094  erreur php_traite_Expr_Eval',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0094  erreur php_traite_Expr_Eval' , "element" : element }));
     }
     t+=')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 function php_traite_Expr_Include(element,niveau){
     var t='';
@@ -107,31 +104,31 @@ function php_traite_Expr_Include(element,niveau){
     if(obj.__xst === true){
         t+=',p(' + obj.__xva + ')';
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0118  erreur php_traite_Expr_Include',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0118  erreur php_traite_Expr_Include' , "element" : element }));
     }
     t+=')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-function php_traite_Stmt_Switch(element,niveau){
+function php_traite_Stmt_Switch(element,niveau,dansFor,de_racine,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var leTest='';
     var tabSw = [];
     if(element.cond){
-        var obj = php_traite_Stmt_Expression(element.cond,niveau,false,element);
+        var obj = php_traite_Stmt_Expression(element.cond,niveau,false,element,options_traitement);
         if(obj.__xst === true){
             leTest=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0140  erreur php_traite_Stmt_Switch',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0140  erreur php_traite_Stmt_Switch' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0145  erreur php_traite_Stmt_Switch',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0145  erreur php_traite_Stmt_Switch' , "element" : element }));
     }
     if(element.cases){
         if(element.cases.length > 0){
             var i=0;
-            for(i=0;i < element.cases.length;i++){
+            for( i=0 ; i < element.cases.length ; i++ ){
                 var leSw=element.cases[i];
                 var laCondition='';
                 if(leSw.cond){
@@ -139,7 +136,7 @@ function php_traite_Stmt_Switch(element,niveau){
                     if(obj.__xst === true){
                         laCondition=obj.__xva;
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'0160  erreur php_traite_Stmt_Switch',element:element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '0160  erreur php_traite_Stmt_Switch' , "element" : element }));
                     }
                 }else{
                     laCondition=null;
@@ -148,27 +145,27 @@ function php_traite_Stmt_Switch(element,niveau){
                 if(leSw.stmts){
                     if(leSw.stmts.length > 0){
                         niveau+=3;
-                        var obj1 = TransformAstPhpEnRev(leSw.stmts,niveau,false);
+                        var obj1 = TransformAstPhpEnRev(leSw.stmts,niveau,false,false,options_traitement);
                         niveau-=3;
                         if(obj1.__xst === true){
                             lesInstructions=obj1.__xva;
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0175  erreur php_traite_Stmt_TryCatch',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0175  erreur php_traite_Stmt_TryCatch' , "element" : element }));
                         }
                     }
                 }
                 tabSw.push([laCondition,lesInstructions]);
             }
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0182  erreur php_traite_Stmt_Switch',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0182  erreur php_traite_Stmt_Switch' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0185  erreur php_traite_Stmt_Switch',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0185  erreur php_traite_Stmt_Switch' , "element" : element }));
     }
     t+='\n' + esp0 + 'bascule(';
     t+='\n' + esp0 + esp1 + 'quand(' + leTest + ')';
     var i=0;
-    for(i=0;i < tabSw.length;i++){
+    for( i=0 ; i < tabSw.length ; i++ ){
         t+=',\n' + esp0 + esp1 + 'est(';
         if(tabSw[i][0] === null){
             t+='\n' + esp0 + esp1 + esp1 + 'valeurNonPrevue()';
@@ -180,63 +177,65 @@ function php_traite_Stmt_Switch(element,niveau){
         t+='\n' + esp0 + esp1 + ')';
     }
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-function php_traite_Stmt_TryCatch(element,niveau){
+/*
+  =====================================================================================================================
+*/
+function php_traite_Stmt_TryCatch(element,niveau,dansFor,de_racine,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var contenu='';
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj = TransformAstPhpEnRev(element.stmts,niveau+2,false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false,false,options_traitement);
         if(obj.__xst === true){
             contenu+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0220  erreur php_traite_Stmt_TryCatch',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0220  erreur php_traite_Stmt_TryCatch' , "element" : element }));
         }
     }
     t+='\n' + esp0 + 'essayer(';
     t+='\n' + esp0 + esp1 + 'faire(\n';
     t+=contenu;
     t+='\n' + esp0 + esp1 + '),';
-    if((element.catches) && (element.catches.length > 0)){
+    if(element.catches && element.catches.length > 0){
         var numc=0;
-        for(numc=0;numc < element.catches.length;numc++){
+        for( numc=0 ; numc < element.catches.length ; numc++ ){
             contenu='';
             var lesTypesErreurs='';
-            if((element.catches[numc].types) && (element.catches[numc].types.length > 0)){
+            if(element.catches[numc].types && element.catches[numc].types.length > 0){
                 var i=0;
-                for(i=0;i < element.catches[numc].types.length;i++){
+                for( i=0 ; i < element.catches[numc].types.length ; i++ ){
                     if(element.catches[numc].types[i].nodeType === 'Name'){
                         lesTypesErreurs+=element.catches[numc].types[i].name + ' ';
                     }
                 }
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0242  erreur php_traite_Stmt_TryCatch',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0242  erreur php_traite_Stmt_TryCatch' , "element" : element }));
             }
             var leNomErreur='';
-            if((element.catches[numc].var) && (element.catches[numc].var.nodeType === "Expr_Variable")){
+            if(element.catches[numc].var && element.catches[numc].var.nodeType === "Expr_Variable"){
                 leNomErreur='$' + element.catches[numc].var.name;
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0249  erreur php_traite_Stmt_TryCatch',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0249  erreur php_traite_Stmt_TryCatch' , "element" : element }));
             }
-            if((element.catches[numc].stmts) && (element.catches[numc].stmts.length > 0)){
+            if(element.catches[numc].stmts && element.catches[numc].stmts.length > 0){
                 niveau+=3;
-                var obj = TransformAstPhpEnRev(element.catches[numc].stmts,niveau,false);
+                var obj = TransformAstPhpEnRev(element.catches[numc].stmts,niveau,false,false,options_traitement);
                 niveau-=3;
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'0259  erreur php_traite_Stmt_TryCatch',element:element}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0259  erreur php_traite_Stmt_TryCatch' , "element" : element }));
                 }
             }
             t+='\n' + esp0 + esp1 + 'sierreur(';
-            if(lesTypesErreurs.indexOf('\\')>=0){
-                t+='\n' + esp0 + esp1 + esp1 + 'err(\'' + lesTypesErreurs.replace(/\\/g,'\\\\') + '\',' + leNomErreur + ')';
+            if(lesTypesErreurs.indexOf('\\') >= 0){
+                t+='\n' + esp0 + esp1 + esp1 + 'err(\'' + (lesTypesErreurs.replace(/\\/g,'\\\\')) + '\',' + leNomErreur + ')';
             }else{
                 t+='\n' + esp0 + esp1 + esp1 + 'err(' + lesTypesErreurs + ',' + leNomErreur + ')';
             }
-            
             t+='\n' + esp0 + esp1 + esp1 + 'faire(\n';
             t+=contenu;
             t+='\n' + esp0 + esp1 + esp1 + ')';
@@ -244,41 +243,41 @@ function php_traite_Stmt_TryCatch(element,niveau){
         }
     }
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 function php_traite_Stmt_Use(element,niveau){
     var t='';
     var i=0;
-    for(i=0;i < element.uses.length;i++){
+    for( i=0 ; i < element.uses.length ; i++ ){
         if("UseItem" === element.uses[i].nodeType){
             if(element.uses[i].name.nodeType === "Name"){
-                t+='appelf(nomf(use),p(\'' + element.uses[i].name.name.replace(/\\/g,'\\\\') + '\'))';
+                t+='appelf(nomf(use),p(\'' + (element.uses[i].name.name.replace(/\\/g,'\\\\')) + '\'))';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0259  erreur php_traite_Stmt_Use',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0259  erreur php_traite_Stmt_Use' , "element" : element }));
             }
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0294  erreur php_traite_Stmt_Use',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0294  erreur php_traite_Stmt_Use' , "element" : element }));
         }
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 function php_traite_Expr_Isset(element,niveau){
     var t='';
     var nomFonction='isset';
     var lesArguments='';
-    if((element.vars) && (element.vars.length > 0)){
+    if(element.vars && element.vars.length > 0){
         var i=0;
-        for(i=0;i < element.vars.length;i++){
+        for( i=0 ; i < element.vars.length ; i++ ){
             var obj = php_traite_Stmt_Expression(element.vars[i],niveau,false,element);
             if(obj.__xst === true){
                 lesArguments+=',p(' + obj.__xva + ')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0314  erreur php_traite_Expr_Isset',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0314  erreur php_traite_Expr_Isset' , "element" : element }));
             }
         }
     }
     t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
@@ -287,21 +286,20 @@ function php_traite_Expr_Unset(element,niveau){
     var t='';
     var nomFonction='unset';
     var lesArguments='';
-    if((element.vars) && (element.vars.length > 0)){
+    if(element.vars && element.vars.length > 0){
         var i=0;
-        for(i=0;i < element.vars.length;i++){
+        for( i=0 ; i < element.vars.length ; i++ ){
             var obj = php_traite_Stmt_Expression(element.vars[i],niveau,false,element);
             if(obj.__xst === true){
                 lesArguments+=',p(' + obj.__xva + ')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0388  erreur php_traite_Expr_Isset',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0388  erreur php_traite_Expr_Isset' , "element" : element }));
             }
         }
     }
     t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
 /*
   =====================================================================================================================
 */
@@ -309,81 +307,80 @@ function php_traite_Expr_FuncCall(element,niveau){
     var t='';
     var nomFonction='';
     var prefixStatic='';
-    if(element.nodeType==="Expr_StaticCall"){
-     if(element.class.nodeType==='Name'){
-       prefixStatic=element.class.name+'::';
-     }else{
-      return(astphp_logerreur({__xst:false,__xme:'0359  erreur php_traite_Expr_FuncCall pour Expr_StaticCall ',element:element}));
-     }
+    if(element.nodeType === "Expr_StaticCall"){
+        if(element.class.nodeType === 'Name'){
+            prefixStatic=element.class.name + '::';
+        }else{
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0359  erreur php_traite_Expr_FuncCall pour Expr_StaticCall ' , "element" : element }));
+        }
     }
-    
     if(element.name){
         if(element.name.nodeType === 'Name'){
-            nomFonction=prefixStatic+element.name.name;
+            nomFonction=prefixStatic + element.name.name;
         }else if(element.name.nodeType === "Expr_ArrayDimFetch"){
             var obj = php_traite_Expr_ArrayDimFetch(element.name,niveau,0);
             if(obj.__xst === true){
-                nomFonction=prefixStatic+obj.__xva;
+                nomFonction=prefixStatic + obj.__xva;
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0359  erreur php_traite_Expr_FuncCall',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0359  erreur php_traite_Expr_FuncCall' , "element" : element }));
             }
         }else if("Identifier" === element.name.nodeType){
-            nomFonction=prefixStatic+element.name.name;
+            nomFonction=prefixStatic + element.name.name;
         }else if(element.name.nodeType === "Expr_Variable"){
-            nomFonction=prefixStatic+'$' + element.name.name;
+            nomFonction=prefixStatic + '$' + element.name.name;
         }else if(element.name.nodeType === "Name_FullyQualified"){
-            nomFonction=prefixStatic+'qualification_totale(' + element.name.name + ')';
+            nomFonction=prefixStatic + 'qualification_totale(' + element.name.name + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0364  erreur php_traite_Expr_FuncCall "'+element.name.nodeType+'"',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0364  erreur php_traite_Expr_FuncCall "' + element.name.nodeType + '"' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0367  erreur php_traite_Expr_FuncCall',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0367  erreur php_traite_Expr_FuncCall' , "element" : element }));
     }
     var lesArgumentsCourts='';
     var lesArguments='';
     var tabArgs = [];
-    if((element.args) && (element.args.length > 0)){
+    if(element.args && element.args.length > 0){
         var i=0;
-        for(i=0;i < element.args.length;i++){
+        for( i=0 ; i < element.args.length ; i++ ){
             var obj = php_traite_Stmt_Expression(element.args[i],niveau,false,element);
             if(obj.__xst === true){
                 lesArguments+=',p(' + obj.__xva + ')';
                 tabArgs.push([obj.__xva,element.args[i].value.nodeType]);
                 lesArgumentsCourts+=',' + obj.__xva;
             }else{
-               return(astphp_logerreur({__xst:false,__xme:'0349  erreur php_traite_Expr_FuncCall ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0349  erreur php_traite_Expr_FuncCall ' , "element" : element }));
             }
         }
     }
     if('cst' === nomFonction){
-        t+='cst(' + lesArgumentsCourts.substr(1) + ')';
+        t+='cst(' + (lesArgumentsCourts.substr(1)) + ')';
     }else if('sql_inclure_source' === nomFonction){
-        t+='sql_inclure_source(' + lesArgumentsCourts.substr(1) + ')';
+        t+='sql_inclure_source(' + (lesArgumentsCourts.substr(1)) + ')';
     }else if('sql_inclure_reference' === nomFonction){
-        t+='sql_inclure_reference(' + lesArgumentsCourts.substr(1) + ')';
+        t+='sql_inclure_reference(' + (lesArgumentsCourts.substr(1)) + ')';
     }else if('sql_dans_php' === nomFonction){
         if(lesArgumentsCourts.substr(0,1) === ','){
             lesArgumentsCourts=lesArgumentsCourts.substr(1);
         }
-        var source = lesArgumentsCourts.substr(1,(lesArgumentsCourts.length - 2));
+        var source = lesArgumentsCourts.substr(1,lesArgumentsCourts.length - 2);
         var source = source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
         var obj = convertion_texte_sql_en_rev(source);
         if(obj.__xst === true){
             t+='sql(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0369  erreur sql_dans_php ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0369  erreur sql_dans_php ' , "element" : element }));
         }
     }else if('htmlDansPhp' === nomFonction){
         if(lesArgumentsCourts.substr(0,1) === ','){
             lesArgumentsCourts=lesArgumentsCourts.substr(1);
         }
-        var source = lesArgumentsCourts.substr(1,(lesArgumentsCourts.length - 2));
+        var source = lesArgumentsCourts.substr(1,lesArgumentsCourts.length - 2);
         var source = source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
         var obj = __module_html1.TransformHtmlEnRev(source,0);
         if(obj.__xst === true){
             t+='html_dans_php(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0381  erreur htmlDansPhp ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0381  erreur htmlDansPhp ' , "element" : element }));
         }
     }else if('concat' === nomFonction){
         if(lesArgumentsCourts.substr(0,1) === ','){
@@ -391,13 +388,13 @@ function php_traite_Expr_FuncCall(element,niveau){
         }
         t+='' + nomFonction + '(' + lesArgumentsCourts + ')';
     }else{
-        if(nomFonction.indexOf('\\')>=0){
-            t+='appelf(nomf(\'' + nomFonction.replace(/\\/g,'\\\\') + '\')' + lesArguments + ')';
+        if(nomFonction.indexOf('\\') >= 0){
+            t+='appelf(nomf(\'' + (nomFonction.replace(/\\/g,'\\\\')) + '\')' + lesArguments + ')';
         }else{
             t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
         }
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*=====================================================================================================================*/
 function php_traite_printOuEcho(element,niveau,nomFonction){
@@ -405,12 +402,12 @@ function php_traite_printOuEcho(element,niveau,nomFonction){
     var lesArguments='';
     if(element.exprs){
         var i=0;
-        for(i=0;i < element.exprs.length;i++){
+        for( i=0 ; i < element.exprs.length ; i++ ){
             var obj = php_traite_Stmt_Expression(element.exprs[i],niveau,false,element);
             if(obj.__xst === true){
                 lesArguments+=',p(' + obj.__xva + ')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0412  erreur php_traite_printOuEcho ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0412  erreur php_traite_printOuEcho ' , "element" : element }));
             }
         }
     }
@@ -419,12 +416,12 @@ function php_traite_printOuEcho(element,niveau,nomFonction){
         if(obj.__xst === true){
             lesArguments+=',p(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0421  erreur php_traite_printOuEcho ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0421  erreur php_traite_printOuEcho ' , "element" : element }));
         }
     }
     t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
     /*un point virgule est-il en trop ?*/
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*=====================================================================================================================*/
 function php_traite_print(element,niveau){
@@ -437,30 +434,30 @@ function php_traite_echo(element,niveau){
 /*
   =====================================================================================================================
 */
-function php_traite_Stmt_ClassMethod(element,niveau){
+function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var lesArguments='';
     var contenu='';
     var type_retour='';
     t+='\n' + esp0 + 'méthode(';
     t+='\n' + esp0 + esp1 + 'definition(';
-    if((element.name) && ("Identifier" === element.name.nodeType)){
+    if(element.name && "Identifier" === element.name.nodeType){
         t+='\n' + esp0 + esp1 + esp1 + 'nomm(' + element.name.name + ')';
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0464  erreur php_traite_Stmt_ClassMethod ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0464  erreur php_traite_Stmt_ClassMethod ' , "element" : element }));
     }
-    if((element.params) && (element.params.length > 0)){
+    if(element.params && element.params.length > 0){
         var i=0;
-        for(i=0;i < element.params.length;i++){
-            if((element.params[i].var) && ("Expr_Variable" === element.params[i].var.nodeType)){
-                if((element.params[i].byRef) && (element.params[i].byRef === true)){
+        for( i=0 ; i < element.params.length ; i++ ){
+            if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
+                if(element.params[i].byRef && element.params[i].byRef === true){
                     lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument(';
                 }else{
-                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(';
+                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(';
                 }
-                if((element.params[i].variadic) && (element.params[i].variadic === true)){
+                if(element.params[i].variadic && element.params[i].variadic === true){
                     lesArguments+='...$' + element.params[i].var.name;
                 }else{
                     lesArguments+='$' + element.params[i].var.name;
@@ -470,45 +467,43 @@ function php_traite_Stmt_ClassMethod(element,niveau){
                     if(obj.__xst === true){
                         lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'0487  erreur php_traite_Stmt_ClassMethod ',element:element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '0487  erreur php_traite_Stmt_ClassMethod ' , "element" : element }));
                     }
                 }
                 if(element.params[i].type){
                     var obj = php_traite_Stmt_Expression(element.params[i].type,niveau,false,element);
                     if(obj.__xst === true){
-                         if(obj.__xva.indexOf('\\')>=0){
-                             lesArguments+=',type_argument(valeur_constante(\'' + obj.__xva.replace(/\\/g,'\\\\') + '\'))';
-                         }else{
-                             lesArguments+=',type_argument(' + obj.__xva + ')';
-                         }
+                        if(obj.__xva.indexOf('\\') >= 0){
+                            lesArguments+=',type_argument(valeur_constante(\'' + (obj.__xva.replace(/\\/g,'\\\\')) + '\'))';
+                        }else{
+                            lesArguments+=',type_argument(' + obj.__xva + ')';
+                        }
                     }else{
-                         return(astphp_logerreur({__xst:false,__xme:'0483  erreur php_traite_Stmt_ClassMethod ',element:element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '0483  erreur php_traite_Stmt_ClassMethod ' , "element" : element }));
                     }
                 }
                 lesArguments+=')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0488  erreur php_traite_Stmt_ClassMethod ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0488  erreur php_traite_Stmt_ClassMethod ' , "element" : element }));
             }
         }
     }
     if(element.returnType){
-       if(element.returnType.nodeType === 'Name'){
-            type_retour=element.returnType.name
-       }else if(element.returnType.nodeType === 'Identifier'){
-            type_retour=element.returnType.name
-       }else if(element.returnType.nodeType === 'NullableType'){
-
-            if(element.returnType.type.nodeType==='Identifier'){
-                type_retour='?'+element.returnType.type.name
-            }else if(element.returnType.type.nodeType==='Name'){
-                type_retour='?'+element.returnType.type.name
-                
+        if(element.returnType.nodeType === 'Name'){
+            type_retour=element.returnType.name;
+        }else if(element.returnType.nodeType === 'Identifier'){
+            type_retour=element.returnType.name;
+        }else if(element.returnType.nodeType === 'NullableType'){
+            if(element.returnType.type.nodeType === 'Identifier'){
+                type_retour='?' + element.returnType.type.name;
+            }else if(element.returnType.type.nodeType === 'Name'){
+                type_retour='?' + element.returnType.type.name;
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0494  erreur php_traite_Stmt_ClassMethod return_type "'+element.returnType.nodeType+'"',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0494  erreur php_traite_Stmt_ClassMethod return_type "' + element.returnType.nodeType + '"' , "element" : element }));
             }
-       }else{
-            return(astphp_logerreur({__xst:false,__xme:'0497  erreur php_traite_Stmt_ClassMethod return_type "'+element.returnType.nodeType+'"',element:element}));
-       }
+        }else{
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0497  erreur php_traite_Stmt_ClassMethod return_type "' + element.returnType.nodeType + '"' , "element" : element }));
+        }
     }
     t+=lesArguments;
     if(element.flags === 18){
@@ -528,76 +523,67 @@ function php_traite_Stmt_ClassMethod(element,niveau){
         t+='\n' + esp0 + esp1 + esp1 + 'publique(),';
     }else if(element.flags === 0){
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0507  erreur php_traite_Stmt_ClassMethod element.flags='+element.flags,element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0507  erreur php_traite_Stmt_ClassMethod element.flags=' + element.flags , "element" : element }));
     }
     t+='\n' + esp0 + esp1 + '),';
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj = TransformAstPhpEnRev(element.stmts,(niveau + 2),false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false,false,options_traitement);
         if(obj.__xst === true){
             contenu+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0514  erreur php_traite_Stmt_ClassMethod ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0514  erreur php_traite_Stmt_ClassMethod ' , "element" : element }));
         }
     }
-    if(type_retour!==''){
-        t+='\n' + esp0 + esp1 + 'type_retour(\''+type_retour.replace(/\\/g,'\\\\')+'\'),';
+    if(type_retour !== ''){
+        t+='\n' + esp0 + esp1 + 'type_retour(\'' + (type_retour.replace(/\\/g,'\\\\')) + '\'),';
     }
-    if(contenu!==''){
+    if(contenu !== ''){
         t+='\n' + esp0 + esp1 + 'contenu(' + contenu + ')';
     }
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
 /*
   =====================================================================================================================
 */
 function php_traite_Expr_Clone(element,niveau){
- 
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    
-    if(element.expr && element.expr.nodeType==="Expr_Variable"){
-
-        t+='appelf(nomf(clone),p($'+element.expr.name+'))';     
-     
+    if(element.expr && element.expr.nodeType === "Expr_Variable"){
+        t+='appelf(nomf(clone),p($' + element.expr.name + '))';
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0560  erreur php_traite_Stmt_Function ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0560  erreur php_traite_Stmt_Function ' , "element" : element }));
     }
-
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
 /*
   =====================================================================================================================
 */
 function php_traite_Expr_Closure(element,niveau){
- 
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var lesArguments='';
     var les_utilisations='';
     var contenu='';
-    
-    if((element.params) && (element.params.length > 0)){
+    if(element.params && element.params.length > 0){
         var i=0;
-        for(i=0;i < element.params.length;i++){
-            if((element.params[i].var) && ("Expr_Variable" === element.params[i].var.nodeType)){
-                if((element.params[i].byRef) && (element.params[i].byRef === true)){
+        for( i=0 ; i < element.params.length ; i++ ){
+            if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
+                if(element.params[i].byRef && element.params[i].byRef === true){
                     lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name;
                     if(element.params[i].default){
                         var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
                         if(obj.__xst === true){
                             lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0555  erreur php_traite_Stmt_Function ',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0555  erreur php_traite_Stmt_Function ' , "element" : element }));
                         }
                     }
                     lesArguments+=')';
                 }else{
-                    if((element.params[i].variadic) && (element.params[i].variadic === true)){
+                    if(element.params[i].variadic && element.params[i].variadic === true){
                         lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;
                     }else{
                         lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument($' + element.params[i].var.name;
@@ -607,38 +593,36 @@ function php_traite_Expr_Closure(element,niveau){
                         if(obj.__xst === true){
                             lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0570  erreur php_traite_Stmt_Function ',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0570  erreur php_traite_Stmt_Function ' , "element" : element }));
                         }
                     }
                     lesArguments+=')';
                 }
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0576  erreur php_traite_Stmt_Function ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0576  erreur php_traite_Stmt_Function ' , "element" : element }));
             }
         }
-        if(lesArguments.length>1){
+        if(lesArguments.length > 1){
             lesArguments=lesArguments.substr(1);
         }
     }
-    
-    
-    if((element.uses) && (element.uses.length > 0)){
+    if(element.uses && element.uses.length > 0){
         var i=0;
-        for(i=0;i < element.uses.length;i++){
-            if((element.uses[i].var) && ("Expr_Variable" === element.uses[i].var.nodeType)){
-                if((element.uses[i].byRef) && (element.uses[i].byRef === true)){
+        for( i=0 ; i < element.uses.length ; i++ ){
+            if(element.uses[i].var && "Expr_Variable" === element.uses[i].var.nodeType){
+                if(element.uses[i].byRef && element.uses[i].byRef === true){
                     les_utilisations+=',\n' + esp0 + esp1 + esp1 + 'utilise_par_adresse($' + element.uses[i].var.name;
                     if(element.uses[i].default){
                         var obj = php_traite_Stmt_Expression(element.uses[i].default,niveau,false,element);
                         if(obj.__xst === true){
                             les_utilisations+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0555  erreur php_traite_Stmt_Function ',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0555  erreur php_traite_Stmt_Function ' , "element" : element }));
                         }
                     }
                     les_utilisations+=')';
                 }else{
-                    if((element.uses[i].variadic) && (element.uses[i].variadic === true)){
+                    if(element.uses[i].variadic && element.uses[i].variadic === true){
                         les_utilisations+=',\n' + esp0 + esp1 + esp1 + 'utilise(...$' + element.uses[i].var.name;
                     }else{
                         les_utilisations+=',\n' + esp0 + esp1 + esp1 + 'utilise($' + element.uses[i].var.name;
@@ -648,26 +632,24 @@ function php_traite_Expr_Closure(element,niveau){
                         if(obj.__xst === true){
                             les_utilisations+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0570  erreur php_traite_Stmt_Function ',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0570  erreur php_traite_Stmt_Function ' , "element" : element }));
                         }
                     }
                     les_utilisations+=')';
                 }
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0576  erreur php_traite_Stmt_Function ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0576  erreur php_traite_Stmt_Function ' , "element" : element }));
             }
         }
     }
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj = TransformAstPhpEnRev(element.stmts,niveau+2,false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false);
         if(obj.__xst === true){
             contenu+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0587  erreur php_traite_Stmt_Function ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0587  erreur php_traite_Stmt_Function ' , "element" : element }));
         }
     }
-    
-    
     t='cloturée(';
     t+=lesArguments;
     t+=les_utilisations;
@@ -675,43 +657,40 @@ function php_traite_Expr_Closure(element,niveau){
     t+=contenu;
     t+='\n' + esp0 + esp1 + ')';
     t+=')';
-
-    
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
 /*
   =====================================================================================================================
 */
 function php_traite_Stmt_Function(element,niveau){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var nomFonction='';
     var lesArguments='';
     var contenu='';
-    if((element.name) && (element.name.nodeType === "Identifier")){
+    if(element.name && element.name.nodeType === "Identifier"){
         nomFonction=element.name.name;
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0542  erreur php_traite_Stmt_Function ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0542  erreur php_traite_Stmt_Function ' , "element" : element }));
     }
-    if((element.params) && (element.params.length > 0)){
+    if(element.params && element.params.length > 0){
         var i=0;
-        for(i=0;i < element.params.length;i++){
-            if((element.params[i].var) && ("Expr_Variable" === element.params[i].var.nodeType)){
-                if((element.params[i].byRef) && (element.params[i].byRef === true)){
+        for( i=0 ; i < element.params.length ; i++ ){
+            if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
+                if(element.params[i].byRef && element.params[i].byRef === true){
                     lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name;
                     if(element.params[i].default){
                         var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
                         if(obj.__xst === true){
                             lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0555  erreur php_traite_Stmt_Function ',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0555  erreur php_traite_Stmt_Function ' , "element" : element }));
                         }
                     }
                     lesArguments+=')';
                 }else{
-                    if((element.params[i].variadic) && (element.params[i].variadic === true)){
+                    if(element.params[i].variadic && element.params[i].variadic === true){
                         lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;
                     }else{
                         lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument($' + element.params[i].var.name;
@@ -721,22 +700,22 @@ function php_traite_Stmt_Function(element,niveau){
                         if(obj.__xst === true){
                             lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({__xst:false,__xme:'0570  erreur php_traite_Stmt_Function ',element:element}));
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0570  erreur php_traite_Stmt_Function ' , "element" : element }));
                         }
                     }
                     lesArguments+=')';
                 }
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0576  erreur php_traite_Stmt_Function ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0576  erreur php_traite_Stmt_Function ' , "element" : element }));
             }
         }
     }
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj = TransformAstPhpEnRev(element.stmts,niveau+2,false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false);
         if(obj.__xst === true){
             contenu+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0587  erreur php_traite_Stmt_Function ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0587  erreur php_traite_Stmt_Function ' , "element" : element }));
         }
     }
     t+='\n' + esp0 + 'fonction(';
@@ -748,7 +727,7 @@ function php_traite_Stmt_Function(element,niveau){
     t+=contenu;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
@@ -762,45 +741,44 @@ function php_traite_Expr_New(element,niveau){
         if(element.class.nodeType === "Name"){
             nomClasse=element.class.name;
         }else if(element.class.nodeType === "Name_FullyQualified"){
-            nomClasse=element.class.name; // 'qualification_totale(' +  + ')';
+            nomClasse=element.class.name;
             qualif_totale=true;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0589  erreur php_traite_Expr_New ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0589  erreur php_traite_Expr_New ' , "element" : element }));
         }
         var lesArgumentsDeLaClass='';
         if(element.args){
             var i=0;
-            for(i=0;i < element.args.length;i++){
+            for( i=0 ; i < element.args.length ; i++ ){
                 var obj = php_traite_Stmt_Expression(element.args[i],niveau,false,element);
                 if(obj.__xst === true){
                     lesArgumentsDeLaClass+=',p(' + obj.__xva + ')';
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'0599  erreur php_traite_Expr_New ',element:element}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0599  erreur php_traite_Expr_New ' , "element" : element }));
                 }
             }
         }
-        if(nomClasse.indexOf('\\')>=0){
-            if(qualif_totale===true){
-                t+='nouveau(appelf(nomf(qualification_totale(\'' + nomClasse.replace(/\\/g,'\\\\') + '\'))' + lesArgumentsDeLaClass + ')),';
+        if(nomClasse.indexOf('\\') >= 0){
+            if(qualif_totale === true){
+                t+='nouveau(appelf(nomf(qualification_totale(\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\'))' + lesArgumentsDeLaClass + ')),';
             }else{
-                if(qualif_totale===true){
-                    t+='nouveau(appelf(nomf(qualification_totale\'' + nomClasse.replace(/\\/g,'\\\\') + '\'))' + lesArgumentsDeLaClass + ')),';
+                if(qualif_totale === true){
+                    t+='nouveau(appelf(nomf(qualification_totale\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\'))' + lesArgumentsDeLaClass + ')),';
                 }else{
-                    t+='nouveau(appelf(nomf(\'' + nomClasse.replace(/\\/g,'\\\\') + '\')' + lesArgumentsDeLaClass + ')),';
+                    t+='nouveau(appelf(nomf(\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\')' + lesArgumentsDeLaClass + ')),';
                 }
             }
-
         }else{
-            if( qualif_totale===true){
+            if(qualif_totale === true){
                 t+='nouveau(appelf(nomf(qualification_totale(' + nomClasse + '))' + lesArgumentsDeLaClass + ')),';
             }else{
                 t+='nouveau(appelf(nomf(' + nomClasse + ')' + lesArgumentsDeLaClass + ')),';
             }
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0610  erreur php_traite_Expr_New ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0610  erreur php_traite_Expr_New ' , "element" : element }));
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
@@ -815,10 +793,10 @@ function php_traite_Expr_MethodCall(element,niveau){
         if(obj.__xst === true){
             lelement+='element(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0583  erreur php_traite_Expr_MethodCall ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0583  erreur php_traite_Expr_MethodCall ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0653  erreur php_traite_Expr_MethodCall ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0653  erreur php_traite_Expr_MethodCall ' , "element" : element }));
     }
     if(element.name){
         if(element.name.nodeType === "Identifier"){
@@ -828,29 +806,27 @@ function php_traite_Expr_MethodCall(element,niveau){
             if(obj.__xst === true){
                 nomFonction+=obj.__xva;
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0806  erreur php_traite_Expr_MethodCall ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0806  erreur php_traite_Expr_MethodCall ' , "element" : element }));
             }
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0663  erreur php_traite_Expr_MethodCall ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0663  erreur php_traite_Expr_MethodCall ' , "element" : element }));
     }
     var lesArguments='';
-    if((element.args) && (element.args.length > 0)){
+    if(element.args && element.args.length > 0){
         var i=0;
-        for(i=0;i < element.args.length;i++){
+        for( i=0 ; i < element.args.length ; i++ ){
             var obj = php_traite_Stmt_Expression(element.args[i],niveau,false,element);
             if(obj.__xst === true){
                 lesArguments+=',p(' + obj.__xva + ')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0673  erreur php_traite_Expr_MethodCall ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0673  erreur php_traite_Expr_MethodCall ' , "element" : element }));
             }
         }
     }
     t+='appelf(' + lelement + 'nomf(' + nomFonction + ')' + lesArguments + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
-
 /*
   =====================================================================================================================
 */
@@ -865,7 +841,7 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
     }else if("Expr_AssignOp_Minus" === nodeType){
         operation='moins';
     }else{
-        return(astphp_logerreur({__xst:false,'__xme':'0706  php_traite_Expr_AssignOp_General "' + nodeType + '"',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0706  php_traite_Expr_AssignOp_General "' + nodeType + '"' , "element" : element }));
     }
     var t='';
     var gauche='';
@@ -874,10 +850,10 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0716  php_traite_Expr_AssignOp_General ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0716  php_traite_Expr_AssignOp_General ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0720  php_traite_Expr_AssignOp_General ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0720  php_traite_Expr_AssignOp_General ' , "element" : element }));
     }
     var droite='';
     if(element.expr){
@@ -885,28 +861,28 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0729  php_traite_Expr_AssignOp_General ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0729  php_traite_Expr_AssignOp_General ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0732  php_traite_Expr_AssignOp_General ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0732  php_traite_Expr_AssignOp_General ' , "element" : element }));
     }
     t+='affecte(' + gauche + ' , ' + operation + '( ' + gauche + ' , ' + droite + ' ))';
-    if(droite.substr(0,(operation.length + 1)) === (operation + '(')){
+    if(droite.substr(0,operation.length + 1) === operation + '('){
         var tableau1 = iterateCharacters2(droite);
         var o1 = functionToArray2(tableau1.out,false,true,'');
         if(o1.__xst === true){
             var tableau2 = iterateCharacters2(gauche);
             var o2 = functionToArray2(tableau2.out,false,true,'');
             if(o2.__xst === true){
-                var i = (o2.__xva.length - 1);
-                for(i=o2.__xva.length - 1;i >= 1;i--){
+                var i = o2.__xva.length - 1;
+                for( i=o2.__xva.length - 1 ; i >= 1 ; i-- ){
                     o1.__xva.splice(2,0,o2.__xva[i]);
                     o1.__xva[2][3]=o1.__xva[2][3] + 1;
                     o1.__xva[2][0]=o1.__xva[2][0] + 1;
                 }
-                var i = (1 + o2.__xva.length);
-                for(i=1 + o2.__xva.length;i < o1.__xva.length;i++){
-                    o1.__xva[i][0]=((o1.__xva[i][0] + o2.__xva.length)) - 1;
+                var i = 1 + o2.__xva.length;
+                for( i=1 + o2.__xva.length ; i < o1.__xva.length ; i++ ){
+                    o1.__xva[i][0]=o1.__xva[i][0] + o2.__xva.length - 1;
                 }
                 var nouveauTableau = reIndicerLeTableau(o1.__xva);
                 var obj = a2F1(nouveauTableau,0,true,1,false);
@@ -916,14 +892,14 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
             }
         }
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
 */
 function php_traite_Expr_AssignRef(element,niveau){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var gauche='';
     var droite='';
@@ -932,115 +908,107 @@ function php_traite_Expr_AssignRef(element,niveau){
         if(obj.__xst === true){
             gauche=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0763  erreur php_traite_Expr_AssignRef ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0763  erreur php_traite_Expr_AssignRef ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0766  erreur php_traite_Expr_AssignRef ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0766  erreur php_traite_Expr_AssignRef ' , "element" : element }));
     }
     if(element.expr){
         var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element);
         if(obj.__xst === true){
             droite=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0733  erreur php_traite_Expr_AssignRef ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0733  erreur php_traite_Expr_AssignRef ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0776  erreur php_traite_Expr_AssignRef ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0776  erreur php_traite_Expr_AssignRef ' , "element" : element }));
     }
     t+='affecte_reference(' + gauche + ' , ' + droite + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
 /*
   =====================================================================================================================
 */
 function php_traite_Expr_declare(element,niveau){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    
-
     var texte_des_directives='';
     var instructions='';
-    for(var i=0;i<element.declares.length;i++){
-        if(element.declares[i].nodeType==='DeclareItem'){
-           if(element.declares[i].key.nodeType==='Identifier' ){
-               if(element.declares[i].value.nodeType==='Scalar_Int'){
-                   texte_des_directives+=','+element.declares[i].key.name+'='+element.declares[i].value.value;
-               }else if(element.declares[i].value.nodeType==='Scalar_String'){
-                   texte_des_directives+=','+element.declares[i].key.name+'=\''+element.declares[i].value.value+'\'';
-               }else{
-                   return({__xst:false,__xme:'0783 type de valeur non prédue dans une valeur de directive',element:element});
-               }
-           }else{
-               return({__xst:false,__xme:'0789 clé de directive non traitée "'+element.declares[i].key.nodeType+'"',element:element});
-           }
+    for( var i=0 ; i < element.declares.length ; i++ ){
+        if(element.declares[i].nodeType === 'DeclareItem'){
+            if(element.declares[i].key.nodeType === 'Identifier'){
+                if(element.declares[i].value.nodeType === 'Scalar_Int'){
+                    texte_des_directives+=',' + element.declares[i].key.name + '=' + element.declares[i].value.value;
+                }else if(element.declares[i].value.nodeType === 'Scalar_String'){
+                    texte_des_directives+=',' + element.declares[i].key.name + '=\'' + element.declares[i].value.value + '\'';
+                }else{
+                    return({ "__xst" : false , "__xme" : '0783 type de valeur non prédue dans une valeur de directive' , "element" : element });
+                }
+            }else{
+                return({ "__xst" : false , "__xme" : '0789 clé de directive non traitée "' + element.declares[i].key.nodeType + '"' , "element" : element });
+            }
         }else{
-            return({__xst:false,__xme:'0781 il faut un element DeclareItem',element:element});
+            return({ "__xst" : false , "__xme" : '0781 il faut un element DeclareItem' , "element" : element });
         }
     }
-    if( element.stmts && element.stmts.length>0){
-     
-        var obj = TransformAstPhpEnRev(element.stmts,niveau+2,false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false);
         if(obj.__xst === true){
             instructions+=obj.__xva;
         }else{
-            return({__xst:false,__xme:'0801 erreut sur les instructions dans le directive',element:element});
+            return({ "__xst" : false , "__xme" : '0801 erreut sur les instructions dans le directive' , "element" : element });
         }
-     
     }
-    if(texte_des_directives===''){
-         return({__xst:false,__xme:'0795 texte de directive non trouvé',element:element});
+    if(texte_des_directives === ''){
+        return({ "__xst" : false , "__xme" : '0795 texte de directive non trouvé' , "element" : element });
     }
     texte_des_directives=texte_des_directives.substr(1);
-    if(instructions!==''){
-      t+='directive(texte(\'' + texte_des_directives.replace(/\'/g,'\\\'') + '\'),faire('+instructions+'))';
+    if(instructions !== ''){
+        t+='directive(texte(\'' + (texte_des_directives.replace(/\'/g,'\\\'')) + '\'),faire(' + instructions + '))';
     }else{
-      t+='directive(texte(\'' + texte_des_directives.replace(/\'/g,'\\\'') + '\'))';
+        t+='directive(texte(\'' + (texte_des_directives.replace(/\'/g,'\\\'')) + '\'))';
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-
-
 /*
   =====================================================================================================================
 */
 function php_traite_Expr_Assign(element,niveau){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var gauche='';
     var droite='';
     if(element.var){
-
         var obj = php_traite_Stmt_Expression(element.var,niveau,false,element);
         if(obj.__xst === true){
             gauche=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0847  erreur php_traite_Expr_Assign ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0847  erreur php_traite_Expr_Assign ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0850  erreur php_traite_Expr_Assign ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0850  erreur php_traite_Expr_Assign ' , "element" : element }));
     }
     if(element.expr){
         var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element);
         if(obj.__xst === true){
             droite=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0733  erreur dans une assignation ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0733  erreur dans une assignation ' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'0860  erreur php_traite_Expr_Assign ',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '0860  erreur php_traite_Expr_Assign ' , "element" : element }));
     }
     t+='affecte(' + gauche + ' , ' + droite + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
 */
 function php_traite_Expr_ArrayDimFetch(element,niveau,num){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var nomTableau='';
     var nom_variable='';
@@ -1049,18 +1017,18 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
         if("Expr_Variable" === element.var.nodeType){
             nom_variable='nomt($' + element.var.name + ')';
         }else if("Expr_ArrayDimFetch" === element.var.nodeType){
-            var obj = php_traite_Expr_ArrayDimFetch(element.var,niveau,(num + 1));
+            var obj = php_traite_Expr_ArrayDimFetch(element.var,niveau,num + 1);
             if(obj.__xst === true){
                 nom_variable+=obj.__xva;
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0884 php_traite_Expr_ArrayDimFetch ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0884 php_traite_Expr_ArrayDimFetch ' , "element" : element }));
             }
         }else{
             var obj = php_traite_Stmt_Expression(element.var,niveau,true,element);
             if(obj.__xst === true){
                 nom_variable+='nomt(' + obj.__xva + ')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'0870 php_traite_Expr_ArrayDimFetch ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0870 php_traite_Expr_ArrayDimFetch ' , "element" : element }));
             }
         }
     }
@@ -1069,25 +1037,25 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
         if(obj.__xst === true){
             parametres+=',p(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'0881 php_traite_Expr_ArrayDimFetch ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0881 php_traite_Expr_ArrayDimFetch ' , "element" : element }));
         }
     }else{
         parametres+=',p()';
     }
     if(num === 0){
-        if(("Expr_Variable" === element.var.nodeType) || ("Expr_ArrayDimFetch" === element.var.nodeType)){
+        if("Expr_Variable" === element.var.nodeType || "Expr_ArrayDimFetch" === element.var.nodeType){
             t=simplifie_tableau(nom_variable,parametres,num);
         }else{
             t='tableau(' + nom_variable + parametres + ')';
         }
     }else{
-        if(("Expr_Variable" === element.var.nodeType) || ("Expr_ArrayDimFetch" === element.var.nodeType)){
+        if("Expr_Variable" === element.var.nodeType || "Expr_ArrayDimFetch" === element.var.nodeType){
             t=simplifie_tableau(nom_variable,parametres,num);
         }else{
             t=nom_variable + parametres;
         }
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
@@ -1096,10 +1064,10 @@ function simplifie_tableau(nom_variable,parametres,num){
     var t='';
     var obj_nom_tableau = functionToArray(nom_variable,true,true,'');
     if(obj_nom_tableau.__xst === true){
-        if((obj_nom_tableau.__xva.length === 2)
-         && (obj_nom_tableau.__xva[1][2] === 'c')
-         && (obj_nom_tableau.__xva[1][4] === 0)
-         && (obj_nom_tableau.__xva[1][1].substr(0,1) === '$')
+        if(obj_nom_tableau.__xva.length === 2
+         && obj_nom_tableau.__xva[1][2] === 'c'
+         && obj_nom_tableau.__xva[1][4] === 0
+         && obj_nom_tableau.__xva[1][1].substr(0,1) === '$'
         ){
             /*
               cas $xxx
@@ -1108,19 +1076,22 @@ function simplifie_tableau(nom_variable,parametres,num){
                 parametres=parametres.substr(1);
             }
             var obj_indice_tableau = functionToArray(parametres,true,true,'');
-            if((obj_indice_tableau.__xst === true)
-             && ((obj_indice_tableau.__xva.length === 3)
-             && (obj_indice_tableau.__xva[1][1] === 'p')
-             && (obj_indice_tableau.__xva[1][2] === 'f')
-             && (obj_indice_tableau.__xva[1][8] === 1)
-             && (obj_indice_tableau.__xva[2][2] === 'c')
-             && (obj_indice_tableau.__xva[2][4] === 0))
-            ){
+            if(obj_indice_tableau.__xst === true
+             && obj_indice_tableau.__xva.length === 3
+             && obj_indice_tableau.__xva[1][1] === 'p'
+             && obj_indice_tableau.__xva[1][2] === 'f'
+             && obj_indice_tableau.__xva[1][8] === 1
+             && obj_indice_tableau.__xva[2][2] === 'c'
+             && obj_indice_tableau.__xva[2][4] === 0){
                 t=obj_nom_tableau.__xva[1][1] + '[' + obj_indice_tableau.__xva[2][1] + ']';
             }else{
                 t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
             }
-        }else if((obj_nom_tableau.__xva.length === 3) && (obj_nom_tableau.__xva[2][2] === 'c') && (obj_nom_tableau.__xva[1][8] === 1) && (obj_nom_tableau.__xva[1][1] === 'nomt')){
+        }else if(obj_nom_tableau.__xva.length === 3
+         && obj_nom_tableau.__xva[2][2] === 'c'
+         && obj_nom_tableau.__xva[1][8] === 1
+         && obj_nom_tableau.__xva[1][1] === 'nomt'
+        ){
             /*
               cas nomt($xxx)
             */
@@ -1128,31 +1099,30 @@ function simplifie_tableau(nom_variable,parametres,num){
                 parametres=parametres.substr(1);
             }
             var obj_indice_tableau = functionToArray(parametres,true,true,'');
-            if((obj_indice_tableau.__xst === true)
-             && ((obj_indice_tableau.__xva.length === 3)
-             && (obj_indice_tableau.__xva[1][1] === 'p')
-             && (obj_indice_tableau.__xva[1][2] === 'f')
-             && (obj_indice_tableau.__xva[1][8] === 1)
-             && (obj_indice_tableau.__xva[2][2] === 'c')
-             && (obj_indice_tableau.__xva[2][4] === 0))
-            ){
+            if(obj_indice_tableau.__xst === true
+             && obj_indice_tableau.__xva.length === 3
+             && obj_indice_tableau.__xva[1][1] === 'p'
+             && obj_indice_tableau.__xva[1][2] === 'f'
+             && obj_indice_tableau.__xva[1][8] === 1
+             && obj_indice_tableau.__xva[2][2] === 'c'
+             && obj_indice_tableau.__xva[2][4] === 0){
                 t=obj_nom_tableau.__xva[2][1] + '[' + obj_indice_tableau.__xva[2][1] + ']';
             }else{
                 t='tableau(' + nom_variable + '' + parametres + ')';
             }
         }else{
             /* si */
-            if(nom_variable.substr(0,4)==='nomt'){
+            if(nom_variable.substr(0,4) === 'nomt'){
                 var ne_contient_que_des_nomt_et_p=true;
-                for(var i=1;i<obj_nom_tableau.__xva.length;i++){
-                    if(obj_nom_tableau.__xva[i][7]===0){
-                        if(obj_nom_tableau.__xva[i][2]==='f' && ( obj_nom_tableau.__xva[i][1]==='nomt' ||  obj_nom_tableau.__xva[i][1]==='p' ) ){
+                for( var i=1 ; i < obj_nom_tableau.__xva.length ; i++ ){
+                    if(obj_nom_tableau.__xva[i][7] === 0){
+                        if(obj_nom_tableau.__xva[i][2] === 'f' && (obj_nom_tableau.__xva[i][1] === 'nomt' || obj_nom_tableau.__xva[i][1] === 'p')){
                         }else{
                             ne_contient_que_des_nomt_et_p=false;
                         }
                     }
                 }
-                if(ne_contient_que_des_nomt_et_p===true){
+                if(ne_contient_que_des_nomt_et_p === true){
                     t='tableau(' + nom_variable + '' + parametres + ')';
                 }else{
                     t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
@@ -1171,12 +1141,12 @@ function simplifie_tableau(nom_variable,parametres,num){
 */
 function php_traite_Expr_List(element,niveau){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var lesElements='';
     if(element.items){
         var i=0;
-        for(i=0;i < element.items.length;i++){
+        for( i=0 ; i < element.items.length ; i++ ){
             if(null === element.items[i]){
                 lesElements+='p()';
             }else if("ArrayItem" === element.items[i].nodeType){
@@ -1189,16 +1159,16 @@ function php_traite_Expr_List(element,niveau){
                         }
                         lesElements+='p(' + objValeur.__xva + ')';
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'1001  erreur php_traite_Expr_List ',element:element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1001  erreur php_traite_Expr_List ' , "element" : element }));
                     }
                 }
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'1005  erreur php_traite_Expr_List ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '1005  erreur php_traite_Expr_List ' , "element" : element }));
             }
         }
     }
     t+='liste(' + lesElements + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
@@ -1208,7 +1178,7 @@ function php_traite_Expr_Array(element,niveau){
     var lesElements='';
     if(element.items){
         var i=0;
-        for(i=0;i < element.items.length;i++){
+        for( i=0 ; i < element.items.length ; i++ ){
             if("ArrayItem" === element.items[i].nodeType){
                 var cle='';
                 if(element.items[i].key){
@@ -1216,7 +1186,7 @@ function php_traite_Expr_Array(element,niveau){
                     if(objcle.__xst === true){
                         cle=objcle.__xva;
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'1005  erreur php_traite_Expr_Array ',element:element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1005  erreur php_traite_Expr_Array ' , "element" : element }));
                     }
                 }
                 if(element.items[i].value){
@@ -1225,17 +1195,17 @@ function php_traite_Expr_Array(element,niveau){
                         if(lesElements !== ''){
                             lesElements+=' , ';
                         }
-                        if((element.items[i].attributes.hasOwnProperty('comments')) && (element.items[i].attributes.comments.length > 0)){
+                        if(element.items[i].attributes.hasOwnProperty('comments') && element.items[i].attributes.comments.length > 0){
                             lesElements+=ajouteCommentairesAvant(element.items[i],niveau);
                         }
                         if(cle !== ''){
-                            if((element.items[i].byRef) && (element.items[i].byRef === true)){
+                            if(element.items[i].byRef && element.items[i].byRef === true){
                                 lesElements+='(' + cle + ' , &' + objValeur.__xva + ')';
                             }else{
                                 lesElements+='(' + cle + ' , ' + objValeur.__xva + ')';
                             }
                         }else{
-                            if((element.items[i].byRef) && (element.items[i].byRef === true)){
+                            if(element.items[i].byRef && element.items[i].byRef === true){
                                 lesElements+='(&' + objValeur.__xva + ')';
                             }else{
                                 lesElements+='(' + objValeur.__xva + ')';
@@ -1243,16 +1213,16 @@ function php_traite_Expr_Array(element,niveau){
                         }
                         cle=objValeur.__xva;
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'ERREUR dans php_traite_Expr_Array 869','element':element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : 'ERREUR dans php_traite_Expr_Array 869' , "element" : element }));
                     }
                 }
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'1059  erreur php_traite_Expr_Array ',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '1059  erreur php_traite_Expr_Array ' , "element" : element }));
             }
         }
     }
     t+='defTab(' + lesElements + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
@@ -1264,870 +1234,942 @@ function php_traite_Expr_Array(element,niveau){
   =====================================================================================================================
 */
 /*
-var comptage={};
+  var comptage={};
 */
-
-/*
-  todo remplacer par un switch
-*/
-function php_traite_Stmt_Expression(element,niveau,dansFor,parent){
-/*
-    if( parent && parent.hasOwnProperty('nodeType')){
-        if(comptage.hasOwnProperty(element.nodeType+'___parent_'+parent.nodeType)){
-            comptage[element.nodeType+'___parent_'+parent.nodeType]++;
-        }else{
-            comptage[element.nodeType+'___parent_'+parent.nodeType]=1;
-        }
-    }else{
-        if(comptage.hasOwnProperty(element.nodeType+'____pas_de_parent')){
-            comptage[element.nodeType+'_no_parent']++;
-        }else{
-            comptage[element.nodeType+'_no_parent']=1;
-        }
-    }
-*/    
-//    console.log('dans php_traite_Stmt_Expression element.nodeType='+element.nodeType)
+function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traitement){
+    /*
+      if( parent && parent.hasOwnProperty('nodeType')){
+      if(comptage.hasOwnProperty(element.nodeType+'___parent_'+parent.nodeType)){
+      comptage[element.nodeType+'___parent_'+parent.nodeType]++;
+      }else{
+      comptage[element.nodeType+'___parent_'+parent.nodeType]=1;
+      }
+      }else{
+      if(comptage.hasOwnProperty(element.nodeType+'____pas_de_parent')){
+      comptage[element.nodeType+'_no_parent']++;
+      }else{
+      comptage[element.nodeType+'_no_parent']=1;
+      }
+      }
+    */
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    /*===============================================*/
-    if("Scalar_Int" === element.nodeType){
-        t+=element.value;
-        /*===============================================*/
-    }else if("Scalar_Float" === element.nodeType){
-        t+=element.value;
-        /*===============================================*/
-    }else if("Expr_Variable" === element.nodeType){
-        t+='$' + element.name;
-        
-        
-    }else if("Identifier" === element.nodeType){
-        t+=element.name;
-    }else if("Name" === element.nodeType){
-        t+=element.name;
-    }else if("NullableType" === element.nodeType){
-        if(element.type.nodeType==='Name'){
-            t+='?'+element.type.name+'';
-        }else if(element.type.nodeType==='Identifier'){
-            t+='?'+element.type.name+'';
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1132 php_traite_Stmt_Expression NullableType ',element:element}));
-        }
-
-    }else if("Expr_ClassConstFetch" === element.nodeType){
-        /* aaa\bbb::ccc */
-        if(element.class.nodeType==='Name' && element.name.nodeType==='Identifier'){
-            t+='valeur_constante(\''+element.class.name.replace(/\\/g,'\\\\')+'::'+element.name.name+'\')';
-        }
-    }else if("Stmt_ClassConst" === element.nodeType){
-        var privee='';
-        var constantes='';
-        var protegee='';
-        var publique='';
-        if(element.flags && element.flags>0){
-            if(element.flags===1){
-               publique=',publique()';
-            }else if(element.flags===4){
-               privee=',privee()';
-
-            }else if(element.flags===2){
-               protegee=',protégée()'
-               
-            }else{
-               debugger
-               return(astphp_logerreur({__xst:false,__xme:'1130 php_traite_Stmt_Expression Stmt_ClassConst class="'+element.flags+'" ',element:element}));
-            }
-        }
-
-        if(element.consts && element.consts.length>0){
-            for(var i=0;i<element.consts.length;i++){
-                var nom_constante='';
-                var valeur_constante='';
-                
-                if(element.consts[i].name.nodeType==='Identifier'){
-                     nom_constante=element.consts[i].name.name;
-                }else{
-                    return(astphp_logerreur({__xst:false,__xme:'1138 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
-                }
-                var obj=php_traite_Stmt_Expression(element.consts[i].value,niveau,false,element);
-                if(obj.__xst===true){
-                    valeur_constante=obj.__xva;
-                }else{
-                    return(astphp_logerreur({__xst:false,__xme:'1147 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
-                }
-                constantes+=',constante('+nom_constante+',valeur('+valeur_constante+')'+privee+protegee+publique+')';
-                
-                
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1136 php_traite_Stmt_Expression Stmt_ClassConst ',element:element}));
-        }
-        t+=constantes.substr(1);
-        
-        /*===============================================*/
-    }else if("Stmt_Property" === element.nodeType){
-        if((element.props) && (element.props.length > 0)){
-            var i=0;
-            for(i=0;i < element.props.length;i++){
-                if(("PropertyItem" === element.props[i].nodeType)
-                 && (element.props[i].name)
-                 && (element.props[i].name.nodeType === "VarLikeIdentifier")
-                ){
-                    if((element.flags) && (element.flags === 4)){
-                        t+='variable_privée('
-                    }else if((element.flags) && (element.flags === 2)){
-                        t+='variable_protégée(';
-                    }else if((element.flags) && (element.flags === 1)){
-                        t+='variable_publique(';
-                    }else if((element.flags) && (element.flags === 9)){
-                        /*
-                          public static $embedding_file = __FILE__;
-                        */
-                        t+='variable_publique_statique(';
-                    }else if((element.flags) && (element.flags === 12)){
-                        /*
-                          private static $_resources = array();
-                        */
-                        t+='variable_privée_statique(';
-                    }else{
-                        return(astphp_logerreur({__xst:false,__xme:'1003 php_traite_Stmt_Expression Stmt_Property ',element:element}));
-                    }
-                    if(element.type){
-                      if(element.type.nodeType === 'Identifier'){
-                          t+='type_variable('+element.type.name+ '),';
-                      }else if(element.type.nodeType === 'Name'){
-
-                          t+='type_variable('+element.type.name+ '),';
-                      }else if(element.type.nodeType === "NullableType"){
-                          if(element.type.type.nodeType==='Name_FullyQualified'){
-                              t+='type_variable(\'\\\\'+element.type.type.name+ '\',nullable()),';
-                          }else if(element.type.type.nodeType==='Identifier'){
-                              t+='type_variable(\''+element.type.type.name+ '\',nullable()),';
-                          }else if(element.type.type.nodeType==='Name'){
-                              t+='type_variable(\''+element.type.type.name+ '\',nullable()),';
-                          }else{
-                              return(astphp_logerreur({__xst:false,__xme:'1198 php_traite_Stmt_Expression Stmt_Property ',element:element}));
-                          }
-                      }else{
-                          return(astphp_logerreur({__xst:false,__xme:'1192 php_traite_Stmt_Expression Stmt_Property "'+element.type.nodeType+'" ',element:element}));
-                      }
-                    }
-                    /* le nom de la variable */
-                    t+='$' + element.props[i].name.name;
-                    /*  */
-                    if(element.props[i].default){
-                        var obj = php_traite_Stmt_Expression(element.props[i].default,niveau,true,element);
-                        if(obj.__xst === true){
-                            t+=',valeur_defaut(' + obj.__xva + ')';
-                        }else{
-                            return(astphp_logerreur({__xst:false,__xme:'1033 php_traite_Stmt_Expression Stmt_Property ',element:element}));
-                        }
-                    }
-                    t+=')';
-                }else{
-                    return(astphp_logerreur({__xst:false,__xme:'0934 php_traite_Stmt_Expression Stmt_Property ',element:element}));
-                }
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'0931 php_traite_Stmt_Expression Stmt_Property ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Scalar_String" === element.nodeType){
-        if(element.attributes.kind && (element.attributes.kind===3 || element.attributes.kind===4 ) ){
-         // heredoc
-
-          t+='heredoc(\''+element.attributes.docLabel+'\',`\n'+element.attributes.rawValue.replace(/`/g,'\\`')+'`)'
-         
-        }else if((element.attributes.rawValue.substr(0,1) === '\'') || (element.attributes.rawValue.substr(0,1) === '"')){
-            /*
-              en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
-              mais pour les fichiers rev, c'est pas excellent, 
-              on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
-              petite analyse et on remonte une erreur si on n'est pas dans ces cas
-            */
-            var rv=element.attributes.rawValue;
-            var l01 = (rv.length - 2);
-            var probablement_dans_une_regex=element.attributes.rawValue.substr(1,1)==='/'?true:false;
-            /*
-              la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
-              on les retire pour l'analyse, donc on part de l'avant dernier caractère 
-              et on redescend jusqu'à l'indice 1
-            */
-            var nouvelle_chaine='';
-            var i=l01;
-            for(i=l01;i > 0;i--){
-                if(rv.substr(i,1) === '\\'){
-                    /* on remonte à partir du dernier caractère */
-                    if(i === l01){
-                        /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
-                        if((rv.length > 2) && (l01 > 1) && (i > 1) && (rv.substr((i - 1),1) === '\\')){
-                            nouvelle_chaine='\\\\';
-                            i--;
-                        }else{
-                            /* position du \ en dernier */
-                            return(astphp_logerreur({__xst:false,__xme:'0925  une chaine ne doit pas contenir un simple \\ en dernière position  ',element:element}));
-                        }
-                    }else{
-                        if(i > 1){
-                            /*
-                              si on est avant le dernier caractère;
-                            */
-                            if(rv.substr((i - 1),1) === '\\'){
-                                nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                i--;
-                            }else{
-                                if((rv.substr((i + 1),1) === 'r')
-                                 || (rv.substr((i + 1),1) === 'n')
-                                 || (rv.substr((i + 1),1) === 't')
-                                 || (rv.substr((i + 1),1) === '\'')
-                                 || (rv.substr((i + 1),1) === '.')
-                                 || (rv.substr((i + 1),1) === '-')
-                                 || (rv.substr((i + 1),1) === 'A')
-                                 || (rv.substr((i + 1),1) === '?')
-                                 || (rv.substr((i + 1),1) === 'd')
-                                 || (rv.substr((i + 1),1) === '/')
-                                 || (rv.substr((i + 1),1) === 'x')
-                                 || (rv.substr((i + 1),1) === 'o')
-                                 || (rv.substr((i + 1),1) === 'b')
-                                 || (rv.substr((i + 1),1) === 'B')
-                                 || (rv.substr((i + 1),1) === '"')
-                                 || (rv.substr((i + 1),1) === '$')
-                                 || (rv.substr((i + 1),1) === 'w')
-                                 || (rv.substr((i + 1),1) === 's')
-                                 || (rv.substr((i + 1),1) === 'z')
-                                 || (rv.substr((i + 1),1) === 'Z')
-                                 || (rv.substr((i + 1),1) === '(')
-                                 || (rv.substr((i + 1),1) === ')')
-                                 || (rv.substr((i + 1),1) === '[')
-                                 || (rv.substr((i + 1),1) === ']')){
-                                    if((rv.substr((i + 1),1) === 'r')
-                                     || (rv.substr((i + 1),1) === 't')
-                                     || (rv.substr((i + 1),1) === 'n')
-                                     || ((rv.substr((i + 1),1) === '\'')
-                                     && (rv.substr(0,1) === "'"))
-                                     || ((rv.substr((i + 1),1) === '"')
-                                     && (rv.substr(0,1) === '"'))){
-                                        nouvelle_chaine='\\' + nouvelle_chaine;
-                                    }else{
-                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                    }
-                                }else{
-                                    if(probablement_dans_une_regex===false){
-                                         if(i>0 && rv.substr(i-1,1)!=='\\' ){
-                                           nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                         }else{
-                                            return(astphp_logerreur({__xst:false,'__xme':'1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr((i + 1),1) + '" ',element:element}));
-                                         }
-                                    }else{
-                                        return(astphp_logerreur({__xst:false,'__xme':'0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr((i + 1),1) + '" ',element:element}));
-                                    }
-                                }
-                            }
-                        }else{
-                            /*
-                              si on est au premier caractère;
-                            */
-                            if(rv.substr(i,1) === '\\'){
-                                var c = nouvelle_chaine.substr(0,1);
-                                if((c === '.')
-                                 || (c === '-')
-                                 || (c === 'd')
-                                 || (c === '/')
-                                 || (c === 'x')
-                                 || (c === 'o')
-                                 || (c === 'b')
-                                 || (c === 's')
-                                 || (c === '\\')
-                                 || (c === ']')
-                                 || (c === '[')
-                                 || (c === '$')
-                                 || ((c === '"')
-                                 && (rv.substr(0,1) === '\''))){
-                                    nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                }else if((c === 'r')
-                                 || (c === 'n')
-                                 || (c === 't')
-                                 || ((c === '\'')
-                                 && (rv.substr(0,1) === '\''))
-                                 || ((c === '"')
-                                 && (rv.substr(0,1) === '"'))){
-                                    nouvelle_chaine='\\' + nouvelle_chaine;
-                                }else{
-                                    return(astphp_logerreur({__xst:false,__xme:'0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ',element:element}));
-                                }
-                            }else{
-                                nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
-                            }
-                        }
-                    }
-                }else if((rv.substr(i,1) === '\'') && (rv.substr(0,1) === '\'')){
-                    if((i >= 2) && (rv.substr((i - 1),1) === '\\')){
-                        nouvelle_chaine='\\\'' + nouvelle_chaine;
-                        i--;
-                    }else{
-                        return(astphp_logerreur({__xst:false,__xme:'0983 il doit y avoir un backslash avant un apostrophe ',element:element}));
-                    }
-                }else if((rv.substr(i,1) === '"') && (rv.substr(0,1) === '"')){
-                    if((i >= 2) && (rv.substr((i - 1),1) === '\\')){
-                        nouvelle_chaine='\\"' + nouvelle_chaine;
-                        i--;
-                    }else{
-                        return(astphp_logerreur({__xst:false,__xme:'0994 il doit y avoir un backslash avant un guillemet ',element:element}));
-                    }
-                }else{
-                    nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
-                }
-            }
-            t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
-        }else{
-            t+=element.attributes.rawValue;
-        }
-        /*===============================================*/
-    }else if("Stmt_ClassMethod" === element.nodeType){
-        var obj = php_traite_Stmt_ClassMethod(element,niveau);
-        if(obj.__xst === true){
-            t+='\n' + esp0 + obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1051  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Stmt_Continue" === element.nodeType){
-        if(element.num === null){
-            t+='\n' + esp0 + 'continue()';
-        }else{
-            var obj = php_traite_Stmt_Expression(element.num,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='\n' + esp0 + 'continue(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'0999  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }
-        /*===============================================*/
-    }else if("Expr_UnaryMinus" === element.nodeType){
-        var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-        if(obj.__xst === true){
-            t+='-' + obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'0902  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-    }else if("Stmt_Global" === element.nodeType){
-        var variables='';
-        var i={};
-        for(i in element.vars){
-            if(element.vars[i].nodeType === "Expr_Variable"){
-                variables+=',$' + element.vars[i].name;
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1325  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }
-        if(variables !== ''){
-            variables=variables.substr(1);
-            t+='globale(' + variables + ')';
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1065  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-    }else if("Expr_UnaryPlus" === element.nodeType){
-        var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-        if(obj.__xst === true){
-            t+='+' + obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'0902  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_ArrayDimFetch" === element.nodeType){
-        var obj = php_traite_Expr_ArrayDimFetch(element,niveau,0);
+    if('Expr_BinaryOp_' === element.nodeType.substr(0,14)){
+        var obj = php_traite_Expr_BinaryOp_General(element,niveau,parent,options_traitement);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1242  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_MethodCall" === element.nodeType){
-        var obj = php_traite_Expr_MethodCall(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1252  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Scalar_MagicConst_File" === element.nodeType){
-        t+='__FILE__';
-    }else if("Scalar_MagicConst_Line" === element.nodeType){
-        t+='__LINE__';
-    }else if("Scalar_MagicConst_Dir" === element.nodeType){
-        t+='__DIR__';
-        /*===============================================*/
-    }else if("Arg" === element.nodeType){
-        if(element.byRef === true){
-            t+='&';
-        }
-        var obj = php_traite_Stmt_Expression(element.value,niveau,dansFor,element);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1270  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Assign" === element.nodeType){
-        var obj = php_traite_Expr_Assign(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'erreur dans php_traite_Stmt_Expression 0512 ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_AssignRef" === element.nodeType){
-        var obj = php_traite_Expr_AssignRef(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'erreur dans php_traite_Stmt_Expression 0512 ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_FuncCall" === element.nodeType){
-        var obj = php_traite_Expr_FuncCall(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1304  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Include" === element.nodeType){
-        var obj = php_traite_Expr_Include(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1317  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Eval" === element.nodeType){
-        var obj = php_traite_Expr_Eval(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1327  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Ternary" === element.nodeType){
-        var obj = php_traite_Expr_Ternary(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1338  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if(element.nodeType.substr(0,14) === 'Expr_BinaryOp_'){
-        var obj = php_traite_Expr_BinaryOp_General(element,niveau,parent);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1349  dans php_traite_Stmt_Expression  ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1349  dans php_traite_Stmt_Expression  ' , "element" : element }));
         }
         /*===============================================*/
     }else if('Expr_Boolean' === element.nodeType.substr(0,12)){
-        var obj = php_traite_Expr_BooleanOp_General(element,niveau);
+        var obj = php_traite_Expr_BooleanOp_General(element,niveau,options_traitement);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1362  dans php_traite_Stmt_Expression  ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1362  dans php_traite_Stmt_Expression  ' , "element" : element }));
         }
         /*===============================================*/
-    }else if(element.nodeType === 'Expr_Isset'){
-        var obj = php_traite_Expr_Isset(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1375  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if(element.nodeType === 'Expr_Array'){
-        var obj = php_traite_Expr_Array(element,niveau,0);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'erreur dans php_traite_Stmt_Expression 1117','element':element}));
-        }
-        /*===============================================*/
-    }else if("Expr_List" === element.nodeType){
-        var obj = php_traite_Expr_List(element,niveau,0);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'erreur dans php_traite_Stmt_Expression 0492',element:element}));
-        }
-        /*===============================================*/
-    }else if(element.nodeType === "Expr_Exit"){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='sortir(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1411  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }else{
-            t+='sortir()';
-        }
-        /*===============================================*/
-    }else if(element.nodeType === "Expr_ConstFetch"){
-        if(element.name){
-            if(element.name.nodeType === 'Name'){
-                if(element.name.name === 'true'){
-                    t+='vrai';
-                }else if(element.name.name === 'false'){
-                    t+='faux';
-                }else{
-                    t+=element.name.name;
-                }
-            }else if(element.name.nodeType === 'Name_FullyQualified'){
-                t+='valeur_constante(\'\\\\'+element.name.name+'\')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1430  dans php_traite_Stmt_Expression "'+element.name.nodeType+'" ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1433  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if(element.nodeType === "Expr_ErrorSuppress"){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='supprimeErreur(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1446  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1449  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if(element.nodeType.substr(0,14) === "Expr_AssignOp_"){
+    }else if("Expr_AssignOp_" === element.nodeType.substr(0,14)){
         var obj = php_traite_Expr_AssignOp_General(element,niveau,element.nodeType);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1460  dans php_traite_Stmt_Expression  ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1460  dans php_traite_Stmt_Expression  ' , "element" : element }));
         }
         /*===============================================*/
-    }else if("Expr_Print" === element.nodeType){
-        var obj = php_traite_print(element,niveau);
-        if(obj.__xst === true){
-            t+='\n' + esp0 + obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1471  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_New" === element.nodeType){
-        var obj = php_traite_Expr_New(element,niveau);
-        if(obj.__xst === true){
-            t+='\n' + esp0 + obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1483  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_PostInc" === element.nodeType){
-        if((element.var) && (element.var.nodeType === "Expr_Variable")){
-            t+='postinc($' + element.var.name + ')';
-        }else{
-            var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='postinc(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1497  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }
-        /*===============================================*/
-    }else if("Expr_PostDec" === element.nodeType){
-        if((element.var) && (element.var.nodeType === "Expr_Variable")){
-            t+='postdec($' + element.var.name + ')';
-        }else{
-            var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='postdec(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1510  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }
-        /*===============================================*/
-    }else if("Expr_PreDec" === element.nodeType){
-        if((element.var) && (element.var.nodeType === "Expr_Variable")){
-            t+='predec($' + element.var.name + ')';
-        }else{
-            var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='predec(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1527  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }
-        /*===============================================*/
-    }else if("Expr_PreInc" === element.nodeType){
-        if((element.var) && (element.var.nodeType === "Expr_Variable")){
-            t+='preinc($' + element.var.name + ')';
-        }else{
-            var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='preinc(' + obj.__xva + ' , 1)';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1538  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }
-        /*===============================================*/
-    }else if("Expr_Cast_Array" === element.nodeType){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='casttableau(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1403  dans php_traite_Stmt_Expression "' + element.nodeType + '" ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,'__xme':'1406  dans php_traite_Stmt_Expression "' + element.nodeType + '" ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Cast_Double" === element.nodeType){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='castfloat(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1540  dans php_traite_Stmt_Expression "' + element.nodeType + '"',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,'__xme':'1543  dans php_traite_Stmt_Expression "' + element.nodeType + '"',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Cast_String" === element.nodeType){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='caststring(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1555  dans php_traite_Stmt_Expression "' + element.nodeType + '"',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,'__xme':'1558  dans php_traite_Stmt_Expression "' + element.nodeType + '"',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Empty" === element.nodeType){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='appelf(nomf(empty),p(' + obj.__xva + '))';
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1546  dans php_traite_Stmt_Expression "' + element.nodeType + '" ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,'__xme':'1549  dans php_traite_Stmt_Expression "' + element.nodeType + '" ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_Cast_Int" === element.nodeType){
-        if(element.expr){
-            var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='castint(' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1561  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1564  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_StaticCall" === element.nodeType){
-        var obj = php_traite_Expr_FuncCall(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1576  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        /*===============================================*/
-    }else if("Expr_PropertyFetch" === element.nodeType){
-        var variable='';
-        if(element.var){
-            var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
-            if(obj.__xst === true){
-                variable=obj.__xva;
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1890  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1450  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
-        }
-        var propriete='';
-        if(element.name){
-            if(element.name.nodeType === 'Identifier'){
-                propriete=element.name.name;
-            }else if(element.name.nodeType === 'Expr_Variable'){
-                propriete='$'+element.name.name;
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1900  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1454  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
-        }
-        t+='propriete(' + variable + ',' + propriete + ')';
-        /*===============================================*/
-    }else if("Scalar_InterpolatedString" === element.nodeType){
-        if(element.parts){
-            var chaine_concat='';
-            var i=0;
-            for(i=0;i < element.parts.length;i++){
-                if("InterpolatedStringPart" === element.parts[i].nodeType){
-                    chaine_concat+=',"' + element.parts[i].value.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-                }else if("Expr_Variable" === element.parts[i].nodeType){
-                    chaine_concat+=',$' + element.parts[i].name + '';
-                }else if("Expr_PropertyFetch" === element.parts[i].nodeType){
-                 
-                    var obj = php_traite_Stmt_Expression(element.parts[i],niveau,dansFor,element);
-                    if(obj.__xst === true){
-                        chaine_concat+=',' + obj.__xva + '';
-
-                    }else{
-                        return(astphp_logerreur({__xst:false,__xme:'1890  dans php_traite_Stmt_Expression Expr_PropertyFetch ',element:element}));
-                    }
-                 
-                }else if("Expr_MethodCall" === element.parts[i].nodeType){
-                    var obj = php_traite_Expr_MethodCall(element.parts[i],niveau);
-                    if(obj.__xst === true){
-                        chaine_concat+=',' + obj.__xva + '';
-                    }else{
-                        return(astphp_logerreur({__xst:false,__xme:'1252  dans php_traite_Stmt_Expression  ',element:element}));
-                    }
-
-                }else{
-                    return(astphp_logerreur({__xst:false,__xme:'1475  dans php_traite_Stmt_Expression "'+element.parts[i].nodeType+'" ',element:element}));
-                }
-            }
-            if(chaine_concat !== ''){
-                chaine_concat=chaine_concat.substr(1);
-                t+='concat(' + chaine_concat + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1484  dans php_traite_Stmt_Expression Scalar_InterpolatedString ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1472  dans php_traite_Stmt_Expression Scalar_InterpolatedString ',element:element}));
-        }
-    }else if("Expr_ClassConstFetch" === element.nodeType){
-        if((element.class) && (element.class.nodeType === "Name") && (element.name) && (element.name.nodeType === "Identifier")){
-            t+=element.class.name + '::' + element.name.name;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1653  dans php_traite_Stmt_Expression Expr_ClassConstFetch ',element:element}));
-        }
-    }else if("Expr_StaticPropertyFetch" === element.nodeType){
-        /* $filename = self::$embedding_file;  */
-        if((element.class)
-         && (element.class.nodeType === 'Name')
-         && (element.name)
-         && (element.name.nodeType === "VarLikeIdentifier")
-        ){
-            t+=element.class.name + '::$' + element.name.name;
-        }else{
-            return(astphp_logerreur({__xst:false,'__xme':'1702  dans php_traite_Stmt_Expression "' + element.nodeType + '" ',element:element}));
-        }
-    }else if("StaticVar" === element.nodeType){
-        var variable="";
-        if(element.var){
-            var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element);
-            if(obj.__xst === true){
-                variable+=obj.__xva;
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1465  dans php_traite_Stmt_Expression ' + element.nodeType + ' ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,'__xme':'1197  dans php_traite_Stmt_Expression pas de ' + element.nodeType + ' ',element:element}));
-        }
-        var valeurDef="";
-        if((element.default) && (element.default !== null)){
-            var obj = php_traite_Stmt_Expression(element.default,niveau,dansFor,element);
-            if(obj.__xst === true){
-                t+='\n' + esp0 + 'static(' + variable + ' , ' + obj.__xva + ')';
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1200  dans php_traite_Stmt_Expression ' + element.nodeType + ' ',element:element}));
-            }
-        }else{
-            t+='\n' + esp0 + 'static(' + variable + ')';
-        }
-        
-    }else if("Expr_Instanceof" === element.nodeType){
-        if(element.class && element.class.nodeType==='Name' && element.expr && element.expr.nodeType==='Expr_Variable'){
-            if(element.class.name.indexOf('\\')>=0){
-                t+='instance_de($' + element.expr.name + ' , valeur_constante(\''+element.class.name.replace(/\\/g,'\\\\') + '\'))';
-            }else{
-                t+='instance_de($' + element.expr.name + ' , '+element.class.name + ')';
-            }
-        }else if(element.class && element.class.nodeType==='Name' && element.expr && element.expr.nodeType==="Expr_PropertyFetch"){
-         
-            var obj=php_traite_Stmt_Expression(element.expr,niveau,dansFor,element);
-            if(obj.__xst === true){
-                if(element.class.name.indexOf('\\')>=0){
-                    t+='instance_de(' + obj.__xva + ' , valeur_constante(\''+element.class.name.replace(/\\/g,'\\\\') + '\'))';
-                }else{
-                    t+='instance_de(' + obj.__xva + ' , '+element.class.name + ')';
-                }
-            }else{
-                return(astphp_logerreur({__xst:false,'__xme':'1465  dans php_traite_Stmt_Expression ' + element.nodeType + ' ',element:element}));
-            }
-
-        }else if(element.class && element.class.nodeType==='Name' && element.expr && element.expr.nodeType==="Expr_ArrayDimFetch"){
-         
-            var obj = php_traite_Expr_ArrayDimFetch(element.expr,niveau,0);
-            if(obj.__xst === true){
-                if(element.class.name.indexOf('\\')>=0){
-                    t+='instance_de('+obj.__xva + ' , valeur_constante(\''+element.class.name.replace(/\\/g,'\\\\') + '\'))';
-                }else{
-                    t+='instance_de('+obj.__xva + ' , '+element.class.name + ')';
-                }
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'0359  erreur php_traite_Stmt_Expression Expr_Instanceof',element:element}));
-            }
-        }else if(element.class && element.class.nodeType==='Name_FullyQualified' && element.expr && element.expr.nodeType==="Expr_Variable"){
-            t+='instance_de($' + element.expr.name + ' , valeur_constante(\'\\\\'+element.class.name.replace(/\\/g,'\\\\') + '\'))';
-        }else{
-            debugger
-            return(astphp_logerreur({__xst:false,'__xme':'1736  dans php_traite_Stmt_Expression ' + element.nodeType + ' ',element:element}));
-        }
-
-    }else if("Expr_Throw" === element.nodeType){
-     
-        if(element.expr && element.expr.nodeType==="Expr_New"){
-            var obj = php_traite_Expr_New(element.expr,niveau);
-            if(obj.__xst === true){
-                t+='throw('+ obj.__xva+')';
-            }else{
-                return(astphp_logerreur({__xst:false,__xme:'1748  dans php_traite_Stmt_Expression  ',element:element}));
-            }
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1751  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        
-        /*===============================================*/
-    }else if("Expr_Closure" === element.nodeType){
-        
-        var obj = php_traite_Expr_Closure(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1576  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        
-        /*===============================================*/
-    }else if("Expr_Clone" === element.nodeType){
-        
-        var obj = php_traite_Expr_Clone(element,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(astphp_logerreur({__xst:false,__xme:'1576  dans php_traite_Stmt_Expression  ',element:element}));
-        }
-        
-     
     }else{
-        return(astphp_logerreur({__xst:false,'__xme':'1392  dans php_traite_Stmt_Expression "' + element.nodeType + '"',element:element}));
+        switch (element.nodeType){
+            case "Scalar_Int":
+                t+=element.value;
+                break;
+                
+            case "Scalar_Float":
+                t+=element.value;
+                break;
+                
+            case "Expr_Variable":
+                t+='$' + element.name;
+                break;
+                
+            case "Identifier":
+                
+            case "Name":
+                t+=element.name;
+                break;
+                
+            case "NullableType":
+                if(element.type.nodeType === 'Name'){
+                    t+='?' + element.type.name + '';
+                }else if(element.type.nodeType === 'Identifier'){
+                    t+='?' + element.type.name + '';
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1132 php_traite_Stmt_Expression NullableType ' , "element" : element }));
+                }
+                break;
+                
+            case "Expr_ClassConstFetch":
+                /* aaa\bbb::ccc */
+                if(element.class.nodeType === 'Name' && element.name.nodeType === 'Identifier'){
+                    t+='valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '::' + element.name.name + '\')';
+                }
+                break;
+                
+            case "Stmt_ClassConst":
+                var privee='';
+                var constantes='';
+                var protegee='';
+                var publique='';
+                if(element.flags && element.flags > 0){
+                    if(element.flags === 1){
+                        publique=',publique()';
+                    }else if(element.flags === 4){
+                        privee=',privee()';
+                    }else if(element.flags === 2){
+                        protegee=',protégée()';
+                    }else{
+                        debugger;
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1130 php_traite_Stmt_Expression Stmt_ClassConst class="' + element.flags + '" ' , "element" : element }));
+                    }
+                }
+                if(element.consts && element.consts.length > 0){
+                    for( var i=0 ; i < element.consts.length ; i++ ){
+                        var nom_constante='';
+                        var valeur_constante='';
+                        if(element.consts[i].name.nodeType === 'Identifier'){
+                            nom_constante=element.consts[i].name.name;
+                        }else{
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '1138 php_traite_Stmt_Expression Stmt_ClassConst ' , "element" : element }));
+                        }
+                        var obj = php_traite_Stmt_Expression(element.consts[i].value,niveau,false,element,options_traitement);
+                        if(obj.__xst === true){
+                            valeur_constante=obj.__xva;
+                        }else{
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '1147 php_traite_Stmt_Expression Stmt_ClassConst ' , "element" : element }));
+                        }
+                        constantes+=',constante(' + nom_constante + ',valeur(' + valeur_constante + ')' + privee + protegee + publique + ')';
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1136 php_traite_Stmt_Expression Stmt_ClassConst ' , "element" : element }));
+                }
+                t+=constantes.substr(1);
+                break;
+                
+            case "Stmt_Property":
+                if(element.props && element.props.length > 0){
+                    var i=0;
+                    for( i=0 ; i < element.props.length ; i++ ){
+                        if("PropertyItem" === element.props[i].nodeType
+                         && element.props[i].name
+                         && element.props[i].name.nodeType === "VarLikeIdentifier"
+                        ){
+                            if(element.flags && element.flags === 4){
+                                t+='variable_privée(';
+                            }else if(element.flags && element.flags === 2){
+                                t+='variable_protégée(';
+                            }else if(element.flags && element.flags === 1){
+                                t+='variable_publique(';
+                            }else if(element.flags && element.flags === 9){
+                                /*
+                                  public static $embedding_file = __FILE__;
+                                */
+                                t+='variable_publique_statique(';
+                            }else if(element.flags && element.flags === 12){
+                                /*
+                                  private static $_resources = array();
+                                */
+                                t+='variable_privée_statique(';
+                            }else{
+                                return(astphp_logerreur({ "__xst" : false , "__xme" : '1003 php_traite_Stmt_Expression Stmt_Property ' , "element" : element }));
+                            }
+                            if(element.type){
+                                if(element.type.nodeType === 'Identifier'){
+                                    t+='type_variable(' + element.type.name + '),';
+                                }else if(element.type.nodeType === 'Name'){
+                                    t+='type_variable(' + element.type.name + '),';
+                                }else if(element.type.nodeType === "NullableType"){
+                                    if(element.type.type.nodeType === 'Name_FullyQualified'){
+                                        t+='type_variable(\'\\\\' + element.type.type.name + '\',nullable()),';
+                                    }else if(element.type.type.nodeType === 'Identifier'){
+                                        t+='type_variable(\'' + element.type.type.name + '\',nullable()),';
+                                    }else if(element.type.type.nodeType === 'Name'){
+                                        t+='type_variable(\'' + element.type.type.name + '\',nullable()),';
+                                    }else{
+                                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1198 php_traite_Stmt_Expression Stmt_Property ' , "element" : element }));
+                                    }
+                                }else{
+                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1192 php_traite_Stmt_Expression Stmt_Property "' + element.type.nodeType + '" ' , "element" : element }));
+                                }
+                            }
+                            /* le nom de la variable */
+                            t+='$' + element.props[i].name.name;
+                            /*  */
+                            if(element.props[i].default){
+                                var obj = php_traite_Stmt_Expression(element.props[i].default,niveau,true,element,options_traitement);
+                                if(obj.__xst === true){
+                                    t+=',valeur_defaut(' + obj.__xva + ')';
+                                }else{
+                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1033 php_traite_Stmt_Expression Stmt_Property ' , "element" : element }));
+                                }
+                            }
+                            t+=')';
+                        }else{
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0934 php_traite_Stmt_Expression Stmt_Property ' , "element" : element }));
+                        }
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0931 php_traite_Stmt_Expression Stmt_Property ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Scalar_String":
+                if(element.attributes.kind && (element.attributes.kind === 3 || element.attributes.kind === 4)){
+                    t+='heredoc(\'' + element.attributes.docLabel + '\',`\n' + (element.attributes.rawValue.replace(/`/g,'\\`')) + '`)';
+                }else if(element.attributes.rawValue.substr(0,1) === '\'' || element.attributes.rawValue.substr(0,1) === '"'){
+                    /*
+                      en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
+                      mais pour les fichiers rev, c'est pas excellent, 
+                      on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
+                      petite analyse et on remonte une erreur si on n'est pas dans ces cas
+                    */
+                    var rv=element.attributes.rawValue;
+                    var l01 = rv.length - 2;
+                    var probablement_dans_une_regex = element.attributes.rawValue.substr(1,1) === '/' ? ( true ) : ( false );
+                    /*
+                      la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
+                      on les retire pour l'analyse, donc on part de l'avant dernier caractère 
+                      et on redescend jusqu'à l'indice 1
+                    */
+                    var nouvelle_chaine='';
+                    var i=l01;
+                    for( i=l01 ; i > 0 ; i-- ){
+                        if(rv.substr(i,1) === '\\'){
+                            /* on remonte à partir du dernier caractère */
+                            if(i === l01){
+                                /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
+                                if(rv.length > 2 && l01 > 1 && i > 1 && rv.substr(i - 1,1) === '\\'){
+                                    nouvelle_chaine='\\\\';
+                                    i--;
+                                }else{
+                                    /* position du \ en dernier */
+                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0925  une chaine ne doit pas contenir un simple \\ en dernière position  ' , "element" : element }));
+                                }
+                            }else{
+                                if(i > 1){
+                                    /*
+                                      si on est avant le dernier caractère;
+                                    */
+                                    if(rv.substr(i - 1,1) === '\\'){
+                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                        i--;
+                                    }else{
+                                        if(rv.substr(i + 1,1) === 'r'
+                                         || rv.substr(i + 1,1) === 'n'
+                                         || rv.substr(i + 1,1) === 't'
+                                         || rv.substr(i + 1,1) === '\''
+                                         || rv.substr(i + 1,1) === '.'
+                                         || rv.substr(i + 1,1) === '-'
+                                         || rv.substr(i + 1,1) === 'A'
+                                         || rv.substr(i + 1,1) === '?'
+                                         || rv.substr(i + 1,1) === 'd'
+                                         || rv.substr(i + 1,1) === '/'
+                                         || rv.substr(i + 1,1) === 'x'
+                                         || rv.substr(i + 1,1) === 'o'
+                                         || rv.substr(i + 1,1) === 'b'
+                                         || rv.substr(i + 1,1) === 'B'
+                                         || rv.substr(i + 1,1) === '"'
+                                         || rv.substr(i + 1,1) === '$'
+                                         || rv.substr(i + 1,1) === 'w'
+                                         || rv.substr(i + 1,1) === 's'
+                                         || rv.substr(i + 1,1) === 'z'
+                                         || rv.substr(i + 1,1) === 'Z'
+                                         || rv.substr(i + 1,1) === '('
+                                         || rv.substr(i + 1,1) === ')'
+                                         || rv.substr(i + 1,1) === '['
+                                         || rv.substr(i + 1,1) === ']'){
+                                            if(rv.substr(i + 1,1) === 'r'
+                                             || rv.substr(i + 1,1) === 't'
+                                             || rv.substr(i + 1,1) === 'n'
+                                             || rv.substr(i + 1,1) === '\''
+                                             && rv.substr(0,1) === "'"
+                                             || rv.substr(i + 1,1) === '"'
+                                             && rv.substr(0,1) === '"'){
+                                                nouvelle_chaine='\\' + nouvelle_chaine;
+                                            }else{
+                                                nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                            }
+                                        }else{
+                                            if(probablement_dans_une_regex === false){
+                                                if(i > 0 && rv.substr(i - 1,1) !== '\\'){
+                                                    nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                                }else{
+                                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' , "element" : element }));
+                                                }
+                                            }else{
+                                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' , "element" : element }));
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    /*
+                                      si on est au premier caractère;
+                                    */
+                                    if(rv.substr(i,1) === '\\'){
+                                        var c = nouvelle_chaine.substr(0,1);
+                                        if(c === '.'
+                                         || c === '-'
+                                         || c === 'd'
+                                         || c === '/'
+                                         || c === 'x'
+                                         || c === 'o'
+                                         || c === 'b'
+                                         || c === 's'
+                                         || c === '\\'
+                                         || c === ']'
+                                         || c === '['
+                                         || c === '$'
+                                         || c === '"'
+                                         && rv.substr(0,1) === '\''){
+                                            nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                        }else if(c === 'r'
+                                         || c === 'n'
+                                         || c === 't'
+                                         || c === '\''
+                                         && rv.substr(0,1) === '\''
+                                         || c === '"'
+                                         && rv.substr(0,1) === '"'){
+                                            nouvelle_chaine='\\' + nouvelle_chaine;
+                                        }else{
+                                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' , "element" : element }));
+                                        }
+                                    }else{
+                                        nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
+                                    }
+                                }
+                            }
+                        }else if(rv.substr(i,1) === '\'' && rv.substr(0,1) === '\''){
+                            if(i >= 2 && rv.substr(i - 1,1) === '\\'){
+                                nouvelle_chaine='\\\'' + nouvelle_chaine;
+                                i--;
+                            }else{
+                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0983 il doit y avoir un backslash avant un apostrophe ' , "element" : element }));
+                            }
+                        }else if(rv.substr(i,1) === '"' && rv.substr(0,1) === '"'){
+                            if(i >= 2 && rv.substr(i - 1,1) === '\\'){
+                                nouvelle_chaine='\\"' + nouvelle_chaine;
+                                i--;
+                            }else{
+                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0994 il doit y avoir un backslash avant un guillemet ' , "element" : element }));
+                            }
+                        }else{
+                            nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
+                        }
+                    }
+                    t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
+                }else{
+                    t+=element.attributes.rawValue;
+                }
+                /*===============================================*/
+                break;
+                
+            case "Stmt_ClassMethod":
+                var obj = php_traite_Stmt_ClassMethod(element,niveau,options_traitement);
+                if(obj.__xst === true){
+                    t+='\n' + esp0 + obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1051  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Stmt_Continue":
+                if(element.num === null){
+                    t+='\n' + esp0 + 'continue()';
+                }else{
+                    var obj = php_traite_Stmt_Expression(element.num,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='\n' + esp0 + 'continue(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '0999  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_UnaryMinus":
+                var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                if(obj.__xst === true){
+                    t+='-' + obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0902  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                break;
+                
+            case "Stmt_Global":
+                var variables='';
+                var i={};
+                for(i in element.vars){
+                    if(element.vars[i].nodeType === "Expr_Variable"){
+                        variables+=',$' + element.vars[i].name;
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1325  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }
+                if(variables !== ''){
+                    variables=variables.substr(1);
+                    t+='globale(' + variables + ')';
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1065  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                break;
+                
+            case "Expr_UnaryPlus":
+                var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                if(obj.__xst === true){
+                    t+='+' + obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0902  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_ArrayDimFetch":
+                var obj = php_traite_Expr_ArrayDimFetch(element,niveau,0);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1242  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_MethodCall":
+                var obj = php_traite_Expr_MethodCall(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1252  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Scalar_MagicConst_File":
+                t+='__FILE__';
+                break;
+                
+            case "Scalar_MagicConst_Line":
+                t+='__LINE__';
+                break;
+                
+            case "Scalar_MagicConst_Dir":
+                t+='__DIR__';
+                break;
+                
+            case "Arg":
+                /*===============================================*/
+                if(element.byRef === true){
+                    t+='&';
+                }
+                var obj = php_traite_Stmt_Expression(element.value,niveau,dansFor,element,options_traitement);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1270  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Assign":
+                var obj = php_traite_Expr_Assign(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'erreur dans php_traite_Stmt_Expression 0512 ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_AssignRef":
+                var obj = php_traite_Expr_AssignRef(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'erreur dans php_traite_Stmt_Expression 0512 ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_FuncCall":
+                var obj = php_traite_Expr_FuncCall(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1304  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Include":
+                var obj = php_traite_Expr_Include(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1317  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Eval":
+                var obj = php_traite_Expr_Eval(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1327  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Ternary":
+                var obj = php_traite_Expr_Ternary(element,niveau,options_traitement);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1338  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case 'Expr_Isset':
+                var obj = php_traite_Expr_Isset(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1375  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case 'Expr_Array':
+                var obj = php_traite_Expr_Array(element,niveau,0);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'erreur dans php_traite_Stmt_Expression 1117' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_List":
+                var obj = php_traite_Expr_List(element,niveau,0);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'erreur dans php_traite_Stmt_Expression 0492' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Exit":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='sortir(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1411  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }else{
+                    t+='sortir()';
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_ConstFetch":
+                if(element.name){
+                    if(element.name.nodeType === 'Name'){
+                        if(element.name.name === 'true'){
+                            t+='vrai';
+                        }else if(element.name.name === 'false'){
+                            t+='faux';
+                        }else{
+                            t+=element.name.name;
+                        }
+                    }else if(element.name.nodeType === 'Name_FullyQualified'){
+                        t+='valeur_constante(\'\\\\' + element.name.name + '\')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1430  dans php_traite_Stmt_Expression "' + element.name.nodeType + '" ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1433  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_ErrorSuppress":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='supprimeErreur(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1446  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1449  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Print":
+                var obj = php_traite_print(element,niveau);
+                if(obj.__xst === true){
+                    t+='\n' + esp0 + obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1471  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_New":
+                var obj = php_traite_Expr_New(element,niveau);
+                if(obj.__xst === true){
+                    t+='\n' + esp0 + obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1483  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_PostInc":
+                if(element.var && element.var.nodeType === "Expr_Variable"){
+                    t+='postinc($' + element.var.name + ')';
+                }else{
+                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='postinc(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1497  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_PostDec":
+                if(element.var && element.var.nodeType === "Expr_Variable"){
+                    t+='postdec($' + element.var.name + ')';
+                }else{
+                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='postdec(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1510  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_PreDec":
+                if(element.var && element.var.nodeType === "Expr_Variable"){
+                    t+='predec($' + element.var.name + ')';
+                }else{
+                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='predec(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1527  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_PreInc":
+                if(element.var && element.var.nodeType === "Expr_Variable"){
+                    t+='preinc($' + element.var.name + ')';
+                }else{
+                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='preinc(' + obj.__xva + ' , 1)';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1538  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Cast_Array":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='casttableau(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1403  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1406  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Cast_Double":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='castfloat(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1540  dans php_traite_Stmt_Expression "' + element.nodeType + '"' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1543  dans php_traite_Stmt_Expression "' + element.nodeType + '"' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Cast_String":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='caststring(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1555  dans php_traite_Stmt_Expression "' + element.nodeType + '"' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1558  dans php_traite_Stmt_Expression "' + element.nodeType + '"' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Empty":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='appelf(nomf(empty),p(' + obj.__xva + '))';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1546  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1549  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Cast_Int":
+                if(element.expr){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='castint(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1561  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1564  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_StaticCall":
+                var obj = php_traite_Expr_FuncCall(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1576  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_PropertyFetch":
+                var variable='';
+                if(element.var){
+                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        variable=obj.__xva;
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1890  dans php_traite_Stmt_Expression Expr_PropertyFetch ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1450  dans php_traite_Stmt_Expression Expr_PropertyFetch ' , "element" : element }));
+                }
+                var propriete='';
+                if(element.name){
+                    if(element.name.nodeType === 'Identifier'){
+                        propriete=element.name.name;
+                    }else if(element.name.nodeType === 'Expr_Variable'){
+                        propriete='$' + element.name.name;
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1900  dans php_traite_Stmt_Expression Expr_PropertyFetch ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1454  dans php_traite_Stmt_Expression Expr_PropertyFetch ' , "element" : element }));
+                }
+                t+='propriete(' + variable + ',' + propriete + ')';
+                /*===============================================*/
+                break;
+                
+            case "Scalar_InterpolatedString":
+                if(element.parts){
+                    var chaine_concat='';
+                    var i=0;
+                    for( i=0 ; i < element.parts.length ; i++ ){
+                        if("InterpolatedStringPart" === element.parts[i].nodeType){
+                            chaine_concat+=',"' + (element.parts[i].value.replace(/\\/g,'\\\\').replace(/"/g,'\\"')) + '"';
+                        }else if("Expr_Variable" === element.parts[i].nodeType){
+                            chaine_concat+=',$' + element.parts[i].name + '';
+                        }else if("Expr_PropertyFetch" === element.parts[i].nodeType){
+                            var obj = php_traite_Stmt_Expression(element.parts[i],niveau,dansFor,element,options_traitement);
+                            if(obj.__xst === true){
+                                chaine_concat+=',' + obj.__xva + '';
+                            }else{
+                                return(astphp_logerreur({ "__xst" : false , "__xme" : '1890  dans php_traite_Stmt_Expression Expr_PropertyFetch ' , "element" : element }));
+                            }
+                        }else if("Expr_MethodCall" === element.parts[i].nodeType){
+                            var obj = php_traite_Expr_MethodCall(element.parts[i],niveau);
+                            if(obj.__xst === true){
+                                chaine_concat+=',' + obj.__xva + '';
+                            }else{
+                                return(astphp_logerreur({ "__xst" : false , "__xme" : '1252  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                            }
+                        }else{
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '1475  dans php_traite_Stmt_Expression "' + element.parts[i].nodeType + '" ' , "element" : element }));
+                        }
+                    }
+                    if(chaine_concat !== ''){
+                        chaine_concat=chaine_concat.substr(1);
+                        t+='concat(' + chaine_concat + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1484  dans php_traite_Stmt_Expression Scalar_InterpolatedString ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1472  dans php_traite_Stmt_Expression Scalar_InterpolatedString ' , "element" : element }));
+                }
+                break;
+                
+            case "Expr_ClassConstFetch":
+                if(element.class && element.class.nodeType === "Name" && element.name && element.name.nodeType === "Identifier"){
+                    t+=element.class.name + '::' + element.name.name;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1653  dans php_traite_Stmt_Expression Expr_ClassConstFetch ' , "element" : element }));
+                }
+                break;
+                
+            case "Expr_StaticPropertyFetch":
+                /* $filename = self::$embedding_file;  */
+                if(element.class && element.class.nodeType === 'Name' && element.name && element.name.nodeType === "VarLikeIdentifier"){
+                    t+=element.class.name + '::$' + element.name.name;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1702  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' , "element" : element }));
+                }
+                break;
+                
+            case "StaticVar":
+                var variable="";
+                if(element.var){
+                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        variable+=obj.__xva;
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1465  dans php_traite_Stmt_Expression ' + element.nodeType + ' ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1197  dans php_traite_Stmt_Expression pas de ' + element.nodeType + ' ' , "element" : element }));
+                }
+                var valeurDef="";
+                if(element.default && element.default !== null){
+                    var obj = php_traite_Stmt_Expression(element.default,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        t+='\n' + esp0 + 'static(' + variable + ' , ' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1200  dans php_traite_Stmt_Expression ' + element.nodeType + ' ' , "element" : element }));
+                    }
+                }else{
+                    t+='\n' + esp0 + 'static(' + variable + ')';
+                }
+                break;
+                
+            case "Expr_Instanceof":
+                if(element.class && element.class.nodeType === 'Name' && element.expr && element.expr.nodeType === 'Expr_Variable'){
+                    if(element.class.name.indexOf('\\') >= 0){
+                        t+='instance_de($' + element.expr.name + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                    }else{
+                        t+='instance_de($' + element.expr.name + ' , ' + element.class.name + ')';
+                    }
+                }else if(element.class && element.class.nodeType === 'Name' && element.expr && element.expr.nodeType === "Expr_PropertyFetch"){
+                    var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
+                    if(obj.__xst === true){
+                        if(element.class.name.indexOf('\\') >= 0){
+                            t+='instance_de(' + obj.__xva + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                        }else{
+                            t+='instance_de(' + obj.__xva + ' , ' + element.class.name + ')';
+                        }
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1465  dans php_traite_Stmt_Expression ' + element.nodeType + ' ' , "element" : element }));
+                    }
+                }else if(element.class && element.class.nodeType === 'Name' && element.expr && element.expr.nodeType === "Expr_ArrayDimFetch"){
+                    var obj = php_traite_Expr_ArrayDimFetch(element.expr,niveau,0);
+                    if(obj.__xst === true){
+                        if(element.class.name.indexOf('\\') >= 0){
+                            t+='instance_de(' + obj.__xva + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                        }else{
+                            t+='instance_de(' + obj.__xva + ' , ' + element.class.name + ')';
+                        }
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '0359  erreur php_traite_Stmt_Expression Expr_Instanceof' , "element" : element }));
+                    }
+                }else if(element.class
+                 && element.class.nodeType === 'Name_FullyQualified'
+                 && element.expr
+                 && element.expr.nodeType === "Expr_Variable"
+                ){
+                    t+='instance_de($' + element.expr.name + ' , valeur_constante(\'\\\\' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                }else{
+                    debugger;
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1736  dans php_traite_Stmt_Expression ' + element.nodeType + ' ' , "element" : element }));
+                }
+                break;
+                
+            case "Expr_Throw":
+                if(element.expr && element.expr.nodeType === "Expr_New"){
+                    var obj = php_traite_Expr_New(element.expr,niveau);
+                    if(obj.__xst === true){
+                        t+='throw(' + obj.__xva + ')';
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1748  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                    }
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1751  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Closure":
+                var obj = php_traite_Expr_Closure(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1576  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                /*===============================================*/
+                break;
+                
+            case "Expr_Clone":
+                var obj = php_traite_Expr_Clone(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1576  dans php_traite_Stmt_Expression  ' , "element" : element }));
+                }
+                break;
+                
+            default:
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '1392  dans php_traite_Stmt_Expression "' + element.nodeType + '"' , "element" : element }));
+                break;
+                
+        }
     }
-    return({__xst:true,__xva:t,'nodeType':element.nodeType});
+    return({ "__xst" : true , "__xva" : t , "nodeType" : element.nodeType });
 }
 /*
-=============================================================================
+  =====================================================================================================================
 */
-function php_traite_Expr_Ternary(element,niveau){
+function php_traite_Expr_Ternary(element,niveau,options_traitement){
     var t='';
     var conditionIf='';
     if(element.cond){
@@ -2135,80 +2177,78 @@ function php_traite_Expr_Ternary(element,niveau){
         if(obj.__xst === true){
             conditionIf=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1744 erreur php_traite_Expr_Ternary','element':element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1744 erreur php_traite_Expr_Ternary' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1705 erreur php_traite_Expr_Ternary','element':element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1705 erreur php_traite_Expr_Ternary' , "element" : element }));
     }
     var siVrai='';
-    
     if(element.if){
-        var objSiVrai = php_traite_Stmt_Expression(element.if,niveau,false,element);
+        var objSiVrai = php_traite_Stmt_Expression(element.if,niveau,false,element,options_traitement);
         if(objSiVrai.__xst === true){
             siVrai=objSiVrai.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1758 erreur php_traite_Expr_Ternary','element':element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1758 erreur php_traite_Expr_Ternary' , "element" : element }));
         }
     }else{
         siVrai=conditionIf;
-//        return(astphp_logerreur({__xst:false,__xme:'1761 erreur php_traite_Expr_Ternary','element':element}));
     }
     var siFaux='';
     if(element.else){
-        var objsiFaux = php_traite_Stmt_Expression(element.else,niveau,false,element);
+        var objsiFaux = php_traite_Stmt_Expression(element.else,niveau,false,element,options_traitement);
         if(objsiFaux.__xst === true){
             siFaux=objsiFaux.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1769 erreur php_traite_Expr_Ternary','element':element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1769 erreur php_traite_Expr_Ternary' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1772 erreur php_traite_Expr_Ternary','element':element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1772 erreur php_traite_Expr_Ternary' , "element" : element }));
     }
     t+='testEnLigne(condition((' + conditionIf + ')),siVrai(' + siVrai + '),siFaux(' + siFaux + '))';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
-=============================================================================
+  =====================================================================================================================
 */
-function php_traite_Expr_BooleanOp_General(element,niveau){
+function php_traite_Expr_BooleanOp_General(element,niveau,options_traitement){
     var t='';
     if(element.expr){
-        var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element);
+        var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element,options_traitement);
         if(obj.__xst === true){
             if(element.nodeType === 'Expr_BooleanNot'){
                 t+='non(' + obj.__xva + ')';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'1788 erreur php_traite_Expr_BooleanOp_General','element':element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '1788 erreur php_traite_Expr_BooleanOp_General' , "element" : element }));
             }
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1791 erreur php_traite_Expr_BooleanOp_General','element':element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1791 erreur php_traite_Expr_BooleanOp_General' , "element" : element }));
         }
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
-=============================================================================
+  =====================================================================================================================
 */
-function php_traite_Expr_BinaryOp_General(element,niveau,parent){
+function php_traite_Expr_BinaryOp_General(element,niveau,parent,options_traitement){
     var t='';
     var gauche='';
-    var objGauche = php_traite_Stmt_Expression(element.left,niveau,false,element);
+    var objGauche = php_traite_Stmt_Expression(element.left,niveau,false,element,options_traitement);
     if(objGauche.__xst === true){
         gauche=objGauche.__xva;
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1497  dans php_traite_Expr_BinaryOp_General',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1497  dans php_traite_Expr_BinaryOp_General' , "element" : element }));
     }
     var droite='';
-    var objdroite = php_traite_Stmt_Expression(element.right,niveau,false,element);
+    var objdroite = php_traite_Stmt_Expression(element.right,niveau,false,element,options_traitement);
     if(objdroite.__xst === true){
-        if((objdroite.__xva.substr(0,7) === 'concat(') && ("Expr_BinaryOp_Concat" === element.nodeType)){
+        if(objdroite.__xva.substr(0,7) === 'concat(' && "Expr_BinaryOp_Concat" === element.nodeType){
             droite=objdroite.__xva.substr(7);
-            droite=droite.substr(0,(droite.length - 1));
+            droite=droite.substr(0,droite.length - 1);
         }else{
             droite=objdroite.__xva;
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1513  dans php_traite_Expr_BinaryOp_General',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1513  dans php_traite_Expr_BinaryOp_General' , "element" : element }));
     }
     if(element.nodeType === 'Expr_BinaryOp_BooleanOr'){
         if(parent.nodeType === 'Expr_BinaryOp_BooleanOr'){
@@ -2265,7 +2305,7 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
     }else if(element.nodeType === 'Expr_BinaryOp_Div'){
         t+='divi(' + gauche + ' , ' + droite + ')';
     }else{
-        return(astphp_logerreur({__xst:false,'__xme':'1918  non prévu ' + element.nodeType + ' dans php_traite_Expr_BinaryOp_General',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1918  non prévu ' + element.nodeType + ' dans php_traite_Expr_BinaryOp_General' , "element" : element }));
     }
     if(t.substr(0,14) === 'concat(concat('){
         var tableau1 = iterateCharacters2(t);
@@ -2278,9 +2318,12 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent){
             }
         }
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-function php_traiteCondition1(element,niveau,parent){
+/*
+  =====================================================================================================================
+*/
+function php_traiteCondition1(element,niveau,parent,options_traitement){
     var t='';
     var obj = php_traite_Stmt_Expression(element,niveau,false,parent);
     if(obj.__xst === true){
@@ -2291,12 +2334,12 @@ function php_traiteCondition1(element,niveau,parent){
           - tous les autres niveaux sont >=1
         */
         var matrice = functionToArray(obj.__xva,true,true,'');
-        if((matrice.__xst === true) && (matrice.__xva.length >= 2)){
+        if(matrice.__xst === true && matrice.__xva.length >= 2){
             if(matrice.__xva[1][1] === ''){
                 var l01=matrice.__xva.length;
                 var tout_est_superieur=true;
                 var j=2;
-                for(j=2;j < l01;j++){
+                for( j=2 ; j < l01 ; j++ ){
                     if(matrice.__xva[j][3] < 1){
                         tout_est_superieur=false;
                         break;
@@ -2308,7 +2351,7 @@ function php_traiteCondition1(element,niveau,parent){
                     if(obj1.__xst === true){
                         t+=obj1.__xva;
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'16164334  dans php_traiteCondition1',element:element}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '16164334  dans php_traiteCondition1' , "element" : element }));
                     }
                 }else{
                     t+=obj.__xva;
@@ -2317,41 +2360,41 @@ function php_traiteCondition1(element,niveau,parent){
                 t+=obj.__xva;
             }
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1656  dans php_traiteCondition1',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1656  dans php_traiteCondition1' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1665  dans php_traiteCondition1',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1665  dans php_traiteCondition1' , "element" : element }));
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
-  ====================================================================================================
+  =====================================================================================================================
 */
-function php_traite_Stmt_While(element,niveau,unElseIfOuUnElse){
+function php_traite_Stmt_While(element,niveau,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var conditionWhile='';
     if(element.cond){
-        var obj = php_traiteCondition1(element.cond,niveau,element);
+        var obj = php_traiteCondition1(element.cond,niveau,element,options_traitement);
         if(obj.__xst === true){
             conditionWhile=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1497  dans php_traite_Stmt_While',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1497  dans php_traite_Stmt_While' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1948  dans php_traite_Stmt_While',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1948  dans php_traite_Stmt_While' , "element" : element }));
     }
     var instructionsDansWhile='';
     if(element.stmts){
-        var obj = TransformAstPhpEnRev(element.stmts,niveau+2,false);
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false,false,options_traitement);
         if(obj.__xst === true){
             instructionsDansWhile+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1956  dans php_traite_Stmt_While',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1956  dans php_traite_Stmt_While' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1959  dans php_traite_Stmt_While',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1959  dans php_traite_Stmt_While' , "element" : element }));
     }
     t+='\n' + esp0 + 'tantQue(';
     t+='\n' + esp0 + esp1 + 'condition((' + conditionWhile + '))';
@@ -2359,23 +2402,23 @@ function php_traite_Stmt_While(element,niveau,unElseIfOuUnElse){
     t+=instructionsDansWhile;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
-  ====================================================================================================
+  =====================================================================================================================
 */
-function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
+function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var conditionIf='';
     var instructionsDansElseOuElseifIf='';
     if(element.cond){
-        var obj = php_traiteCondition1(element.cond,niveau,element);
+        var obj = php_traiteCondition1(element.cond,niveau,element,options_traitement);
         if(obj.__xst === true){
             conditionIf=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2081  dans php_traite_Stmt_If',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2081  dans php_traite_Stmt_If' , "element" : element }));
         }
     }else{
         conditionIf='';
@@ -2383,15 +2426,15 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
     var instructionsDansIf='';
     if(element.stmts){
         niveau+=3;
-        var obj = TransformAstPhpEnRev(element.stmts,niveau,false);
+        var obj = TransformAstPhpEnRev(element.stmts,niveau,false,false,options_traitement);
         niveau-=3;
         if(obj.__xst === true){
             instructionsDansIf+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2096  dans php_traite_Stmt_If',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2096  dans php_traite_Stmt_If' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1999  dans php_traite_Stmt_If',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1999  dans php_traite_Stmt_If' , "element" : element }));
     }
     if(unElseIfOuUnElse){
         t+='\n' + esp0 + esp1 + 'sinonsi(';
@@ -2412,26 +2455,26 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
     if(element.elseifs){
         var j={};
         for(j in element.elseifs){
-            var objElseIf = php_traite_Stmt_If(element.elseifs[j],niveau,true);
+            var objElseIf = php_traite_Stmt_If(element.elseifs[j],niveau,true,options_traitement);
             if(objElseIf.__xst === true){
                 t+='' + objElseIf.__xva + '';
             }else{
-                return(astphp_logerreur({__xst:false,__xme:'2126  dans php_traite_Stmt_If',element:element}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '2126  dans php_traite_Stmt_If' , "element" : element }));
             }
         }
     }
     if(element.else){
         if(element.else.stmts){
-            if((element.else.stmts.length === 1) && (element.else.stmts[0].nodeType === "Stmt_If")){
-                var objElseIf = php_traite_Stmt_If(element.else.stmts[0],niveau,true);
+            if(element.else.stmts.length === 1 && element.else.stmts[0].nodeType === "Stmt_If"){
+                var objElseIf = php_traite_Stmt_If(element.else.stmts[0],niveau,true,options_traitement);
                 if(objElseIf.__xst === true){
                     t+='' + objElseIf.__xva + '';
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2140  dans php_traite_Stmt_If',element:element}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2140  dans php_traite_Stmt_If' , "element" : element }));
                 }
             }else{
                 niveau+=3;
-                var obj = TransformAstPhpEnRev(element.else.stmts,niveau,false);
+                var obj = TransformAstPhpEnRev(element.else.stmts,niveau,false,false,options_traitement);
                 niveau-=3;
                 if(obj.__xst === true){
                     t+='\n' + esp0 + esp1 + 'sinon(';
@@ -2440,7 +2483,7 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
                     t+='\n' + esp0 + esp1 + esp1 + ')';
                     t+='\n' + esp0 + esp1 + ')';
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2154  dans php_traite_Stmt_If',element:element}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2154  dans php_traite_Stmt_If' , "element" : element }));
                 }
             }
         }
@@ -2449,166 +2492,154 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse){
     }else{
         t+='\n' + esp0 + ')';
     }
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
 */
-function php_traite_Stmt_Class(element,niveau){
+function php_traite_Stmt_Class(element,niveau,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var nom_de_classe='';
     var contenu='';
     var implemente='';
     var indicateurs='';
-
-    if(element.implements && element.implements.length>0){
-        for(var i=0;i<element.implements.length;i++){
-         if(element.implements[i].nodeType==='Name'){
-             implemente+=','+element.implements[i].name;
-         }else{
-             return(astphp_logerreur({__xst:false,__xme:'2111 dans php_traite_Stmt_Class',element:element}));
-         }
+    if(element.implements && element.implements.length > 0){
+        for( var i=0 ; i < element.implements.length ; i++ ){
+            if(element.implements[i].nodeType === 'Name'){
+                implemente+=',' + element.implements[i].name;
+            }else{
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '2111 dans php_traite_Stmt_Class' , "element" : element }));
+            }
         }
-        implemente='\n' + esp0 + esp1 + ',implemente('+implemente.substr(1)+')';
+        implemente='\n' + esp0 + esp1 + ',implemente(' + (implemente.substr(1)) + ')';
     }
-    
-    if(element.flags && element.flags>0){
-     if(element.flags===16){
-      indicateurs+=',abstraite()';
-     }else if(element.flags===32){
-      indicateurs+=',finale()';     
-     }else{
-        debugger
-        return(astphp_logerreur({__xst:false,__xme:'2123 dans php_traite_Stmt_Class',element:element}));
-     }
+    if(element.flags && element.flags > 0){
+        if(element.flags === 16){
+            indicateurs+=',abstraite()';
+        }else if(element.flags === 32){
+            indicateurs+=',finale()';
+        }else{
+            debugger;
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2123 dans php_traite_Stmt_Class' , "element" : element }));
+        }
     }
-    
-    if((element.name) && (element.name.nodeType === "Identifier")){
+    if(element.name && element.name.nodeType === "Identifier"){
         nom_de_classe=element.name.name;
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'2108 dans php_traite_Stmt_Class',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '2108 dans php_traite_Stmt_Class' , "element" : element }));
     }
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj = TransformAstPhpEnRev(element.stmts,(niveau + 2),false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false,false,options_traitement);
         if(obj.__xst === true){
             contenu=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1955  dans php_traite_Stmt_Class',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1955  dans php_traite_Stmt_Class' , "element" : element }));
         }
     }else{
-        return(astphp_logerreur({__xst:false,__xme:'1949  dans php_traite_Stmt_Class',element:element}));
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1949  dans php_traite_Stmt_Class' , "element" : element }));
     }
-    
-    
-
     t+='\n' + esp0 + 'definition_de_classe(';
-    t+='\n' + esp0 + esp1 + 'nom_classe(' + nom_de_classe+ ')';
+    t+='\n' + esp0 + esp1 + 'nom_classe(' + nom_de_classe + ')';
     t+=indicateurs;
-    t+=implemente
-    t+='\n' + esp0 + esp1 + 'contenu('+contenu;
+    t+=implemente;
+    t+='\n' + esp0 + esp1 + 'contenu(' + contenu;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + ')';
-
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
 */
-function php_traite_Stmt_DoWhile(element,niveau){
+function php_traite_Stmt_DoWhile(element,niveau,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    
-    
     var condition='';
-    if((element.cond) && (element.cond.length === 1)){
+    if(element.cond && element.cond.length === 1){
         var obj = php_traiteCondition1(element.cond[0],niveau,element);
         if(obj.__xst === true){
-            condition+='('+obj.__xva+')';
+            condition+='(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2265 dans php_traite_Stmt_For ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2265 dans php_traite_Stmt_For ' , "element" : element }));
         }
-    }else if((element.cond) && (element.cond.length === 0)){
+    }else if(element.cond && element.cond.length === 0){
         condition='';
-    }else if((element.cond) && (element.cond.nodeType)){
+    }else if(element.cond && element.cond.nodeType){
         var obj = php_traiteCondition1(element.cond,niveau,element);
         if(obj.__xst === true){
-            condition+='('+obj.__xva+')';
+            condition+='(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2265 dans php_traite_Stmt_For ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2265 dans php_traite_Stmt_For ' , "element" : element }));
         }
     }else{
-        debugger
-        return(astphp_logerreur({__xst:false,__xme:'1963 dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte',element:element}));
+        debugger;
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1963 dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte' , "element" : element }));
     }
-
     var instructions='';
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj1 = TransformAstPhpEnRev(element.stmts,niveau,false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj1 = TransformAstPhpEnRev(element.stmts,niveau,false,false,options_traitement);
         if(obj1.__xst === true){
             instructions+=obj1.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1527  dans php_traite_Stmt_For erreur dans les instructions',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1527  dans php_traite_Stmt_For erreur dans les instructions' , "element" : element }));
         }
     }
-    
     t+='\n' + esp0 + 'faire_tant_que(';
     t+='\n' + esp0 + esp1 + 'faire(';
     t+='\n' + instructions;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + esp1 + 'condition(' + condition + '),';
     t+='\n' + esp0 + ')';
-    
-    return({__xst:true,__xva:t});
-}    
+    return({ "__xst" : true , "__xva" : t });
+}
 /*
   =====================================================================================================================
 */
-function php_traite_Stmt_For(element,niveau){
+function php_traite_Stmt_For(element,niveau,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var initialisation='';
-    if((element.init) && (element.init.length > 0)){
-        var obj1 = TransformAstPhpEnRev(element.init,niveau,true);
+    if(element.init && element.init.length > 0){
+        var obj1 = TransformAstPhpEnRev(element.init,niveau,true,false,options_traitement);
         if(obj1.__xst === true){
             initialisation+=obj1.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1495  dans php_traite_Stmt_For erreur dans l\'initialisation',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1495  dans php_traite_Stmt_For erreur dans l\'initialisation' , "element" : element }));
         }
     }
     var condition='';
-    if((element.cond) && (element.cond.length === 1)){
+    if(element.cond && element.cond.length === 1){
         var obj = php_traiteCondition1(element.cond[0],niveau,element);
         if(obj.__xst === true){
-            condition+='('+obj.__xva+')';
+            condition+='(' + obj.__xva + ')';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2265 dans php_traite_Stmt_For ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2265 dans php_traite_Stmt_For ' , "element" : element }));
         }
-    }else if((element.cond) && (element.cond.length === 0)){
+    }else if(element.cond && element.cond.length === 0){
         condition='';
     }else{
-        debugger
-        return(astphp_logerreur({__xst:false,__xme:'1963 dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte',element:element}));
+        debugger;
+        return(astphp_logerreur({ "__xst" : false , "__xme" : '1963 dans php_traite_Stmt_For il y a plusieurs instructions dans la condition mais seule la dernière est prise en compte' , "element" : element }));
     }
     var increment='';
-    if((element.loop) && (element.loop.length > 0)){
-        var obj1 = TransformAstPhpEnRev(element.loop,niveau,true);
+    if(element.loop && element.loop.length > 0){
+        var obj1 = TransformAstPhpEnRev(element.loop,niveau,true,false,options_traitement);
         if(obj1.__xst === true){
             increment+=obj1.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1519  dans php_traite_Stmt_For erreur dans l\'incrément',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1519  dans php_traite_Stmt_For erreur dans l\'incrément' , "element" : element }));
         }
     }
     var instructions='';
-    if((element.stmts) && (element.stmts.length > 0)){
-        var obj1 = TransformAstPhpEnRev(element.stmts,niveau,false);
+    if(element.stmts && element.stmts.length > 0){
+        var obj1 = TransformAstPhpEnRev(element.stmts,niveau,false,false,options_traitement);
         if(obj1.__xst === true){
             instructions+=obj1.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'1527  dans php_traite_Stmt_For erreur dans les instructions',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '1527  dans php_traite_Stmt_For erreur dans les instructions' , "element" : element }));
         }
     }
     t+='\n' + esp0 + 'boucle(';
@@ -2619,48 +2650,50 @@ function php_traite_Stmt_For(element,niveau){
     t+='\n' + instructions;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
-function php_traite_Stmt_Foreach(element,niveau){
+/*
+  =====================================================================================================================
+*/
+function php_traite_Stmt_Foreach(element,niveau,options_traitement){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var cleValeur='';
     if(element.keyVar){
-        var obj = php_traite_Stmt_Expression(element.keyVar,niveau,false,element);
+        var obj = php_traite_Stmt_Expression(element.keyVar,niveau,false,element,options_traitement);
         if(obj.__xst === true){
             cleValeur=obj.__xva + ' , ';
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2165  dans php_traite_Stmt_Foreach',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2165  dans php_traite_Stmt_Foreach' , "element" : element }));
         }
     }
     if(element.valueVar){
-        var obj = php_traite_Stmt_Expression(element.valueVar,niveau,false,element);
+        var obj = php_traite_Stmt_Expression(element.valueVar,niveau,false,element,options_traitement);
         if(obj.__xst === true){
             cleValeur+=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2173  dans php_traite_Stmt_Foreach',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2173  dans php_traite_Stmt_Foreach' , "element" : element }));
         }
     }
     var nomVariable='';
     if(element.expr){
-        var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element);
+        var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element,options_traitement);
         if(obj.__xst === true){
             nomVariable=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2182  dans php_traite_Stmt_Foreach',element:element}));
-
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2182  dans php_traite_Stmt_Foreach' , "element" : element }));
         }
     }
     var instructions='';
     if(element.stmts){
         niveau+=2;
-        var obj = TransformAstPhpEnRev(element.stmts,niveau,false);
+        var obj = TransformAstPhpEnRev(element.stmts,niveau,false,false,options_traitement);
         niveau-=2;
         if(obj.__xst === true){
             instructions=obj.__xva;
         }else{
-            return(astphp_logerreur({__xst:false,__xme:'2194 dans php_traite_Stmt_Foreach 1905 ',element:element}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '2194 dans php_traite_Stmt_Foreach 1905 ' , "element" : element }));
         }
     }
     t+='\n' + esp0 + 'boucleSurTableau(';
@@ -2669,35 +2702,35 @@ function php_traite_Stmt_Foreach(element,niveau){
     t+='\n' + instructions;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + ')';
-    return({__xst:true,__xva:t});
+    return({ "__xst" : true , "__xva" : t });
 }
 /*
   =====================================================================================================================
 */
 function ajouteCommentairesAvant(element,niveau){
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     if(element.attributes.comments){
         var j=0;
-        for(j=0;j < element.attributes.comments.length;j++){
-            if(("Comment" === element.attributes.comments[j].nodeType) || ("Comment_Doc" === element.attributes.comments[j].nodeType)){
+        for( j=0 ; j < element.attributes.comments.length ; j++ ){
+            if("Comment" === element.attributes.comments[j].nodeType || "Comment_Doc" === element.attributes.comments[j].nodeType){
                 var txtComment = element.attributes.comments[j].text.substr(2);
                 if(element.attributes.comments[j].text.substr(0,2) === '/*'){
                     var c1 = nbre_caracteres2('(',txtComment);
                     var c2 = nbre_caracteres2(')',txtComment);
-                    var val = txtComment.substr(0,(txtComment.length - 2));
+                    var val = txtComment.substr(0,txtComment.length - 2);
                     if(c1 === c2){
-                        if((val.substr(0,1) === '*') || (val.substr(0,1) === '#')){
-                            t+='\n' + esp0 + '#(#' + val.substr(1) + ')';
+                        if(val.substr(0,1) === '*' || val.substr(0,1) === '#'){
+                            t+='\n' + esp0 + '#(#' + (val.substr(1)) + ')';
                         }else{
                             t+='\n' + esp0 + '#(' + val + ')';
                         }
                     }else{
-                        if((val.substr(0,1) === '*') || (val.substr(0,1) === '#')){
-                            t+='\n' + esp0 + '#(#' + val.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                        if(val.substr(0,1) === '*' || val.substr(0,1) === '#'){
+                            t+='\n' + esp0 + '#(#' + (val.substr(1).replace(/\(/g,'[').replace(/\)/g,']')) + ')';
                         }else{
-                            t+='\n' + esp0 + '#(' + val.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                            t+='\n' + esp0 + '#(' + (val.replace(/\(/g,'[').replace(/\)/g,']')) + ')';
                         }
                     }
                     element.attributes.comments[j].text='';
@@ -2707,7 +2740,7 @@ function ajouteCommentairesAvant(element,niveau){
                     if(c1 === c2){
                         t+='\n' + esp0 + '#(' + txtComment + ')';
                     }else{
-                        t+='\n' + esp0 + '#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                        t+='\n' + esp0 + '#(' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ')';
                     }
                     element.attributes.comments[j].text='';
                 }
@@ -2719,7 +2752,7 @@ function ajouteCommentairesAvant(element,niveau){
 /*
   =====================================================================================================================
 */
-function php_construit_cle(l) {
+function php_construit_cle(l){
     let resultat='';
     /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un)*/
     const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
@@ -2734,14 +2767,13 @@ function php_construit_cle(l) {
 /*
   =====================================================================================================================
 */
-function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
- 
-    if(typeof de_racine !== 'undefined'){
+function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine,options_traitement){
+    if(typeof de_racine !== 'undefined' && de_racine === true){
         contient_du_javascript_dans_html=false;
         tableau_de_html_dans_php_a_convertir=[];
     }
     var t='';
-    var esp0 = ' '.repeat((NBESPACESREV * niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var numeroLignePrecedentStmtHtmlStartLine=0;
     var numeroLigneCourantStmtHtmlStartLine=0;
@@ -2750,77 +2782,63 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
     var StmtsHtmlPrecedentEstEcho=false;
     if(stmts.length > 0){
         var i=0;
-        for(i=0;i < stmts.length;i++){
+        for( i=0 ; i < stmts.length ; i++ ){
             t+=ajouteCommentairesAvant(stmts[i],niveau);
-            if((t !== '') && ("Stmt_Nop" !== stmts[i].nodeType)){
+            if(t !== '' && "Stmt_Nop" !== stmts[i].nodeType){
                 t+=',';
             }
             if("Stmt_Nop" === stmts[i].nodeType){
                 t+='';
             }else if("Stmt_InlineHTML" === stmts[i].nodeType){
                 /*
-                  ==============================================================================================
+                  =====================================================================================
                   Quand un php contient du html, ou bien ce dernier est un dom valide qui ne contient pas de php
                   par exemple ">? <div>que_du_html</div><?php"
                   ou bien il contient du php, 
                   par exemple ">? <div> <?php echo '';?> </div> <?php"
                   Dans ce dernier car la chaine " <div> " n'est pas un html "parfait"
-                  ==============================================================================================
+                  =====================================================================================
                 */
                 var estTraiteSansErreur=false;
-
                 var obj = isHTML(stmts[i].value);
-                
-                if(obj.__xst===true){
-                 var nettoye=stmts[i].value.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim();
+                if(obj.__xst === true){
+                    var nettoye = stmts[i].value.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim();
                 }
-                
                 /* recherche d'au moins un tag dans le texte */
                 var regex=/(<[a-zA-Z0-9\-_]+)/g;
                 var found = stmts[i].value.match(regex);
-                if((obj.__xst === true)
-                 && 
-                 (
-                   (
-                       (stmts[i].value.indexOf('<') >= 0)
-                    && (found)
-                    && (found.length > 0)
-                    )
-                   || nettoye===''
-                 )
-                ){
-                    var cle=php_construit_cle(10);
-                    tableau_de_html_dans_php_a_convertir.push({"cle":cle,"valeur":stmts[i].value});
-                    t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,'+cle+'))';
+                if(obj.__xst === true && (stmts[i].value.indexOf('<') >= 0 && found && found.length > 0 || nettoye === '')){
+                    var cle = php_construit_cle(10);
+                    tableau_de_html_dans_php_a_convertir.push({ "cle" : cle , "valeur" : stmts[i].value });
+                    t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,' + cle + '))';
                     estTraiteSansErreur=true;
-
                     /*
-                    var obj1 = __module_html1.TransformHtmlEnRev(stmts[i].value,0,{});
-                    if(obj1.__xst === true){
-                        if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
-                         
-                            contient_du_javascript_dans_html=true;
-                        }else{
-
-                            StmtsHtmlPrecedentEstEcho=false;
-                            if(obj1.hasOwnProperty('__xva')){
-                                if(obj1.__xva !== ''){
-                                    t+='\n' + esp0 + 'html_dans_php(' + obj1.__xva + ')';
-                                }
-                                estTraiteSansErreur=true;
-                            }else{
-                                var cle=php_construit_cle(10);
-                                tableau_de_html_dans_php_a_convertir.push({"cle":cle,"valeur":stmts[i].value});
-                                t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,'+cle+'))';
-                            }
-                        }
-                    }else{
-                        
-                        //  On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
-                        //  dans ce cas tout est remplacé par des "echo" plus bas
-                        
-                        estTraiteSansErreur=false;
-                    }
+                      var obj1 = __module_html1.TransformHtmlEnRev(stmts[i].value,0,{});
+                      if(obj1.__xst === true){
+                      if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
+                      
+                      contient_du_javascript_dans_html=true;
+                      }else{
+                      
+                      StmtsHtmlPrecedentEstEcho=false;
+                      if(obj1.hasOwnProperty('__xva')){
+                      if(obj1.__xva !== ''){
+                      t+='\n' + esp0 + 'html_dans_php(' + obj1.__xva + ')';
+                      }
+                      estTraiteSansErreur=true;
+                      }else{
+                      var cle=php_construit_cle(10);
+                      tableau_de_html_dans_php_a_convertir.push({"cle":cle,"valeur":stmts[i].value});
+                      t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,'+cle+'))';
+                      }
+                      }
+                      }else{
+                      
+                      //  On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
+                      //  dans ce cas tout est remplacé par des "echo" plus bas
+                      
+                      estTraiteSansErreur=false;
+                      }
                     */
                 }else{
                     /*
@@ -2830,11 +2848,11 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                     estTraiteSansErreur=false;
                 }
                 if(estTraiteSansErreur === false){
-                    
-                    return(astphp_logerreur({__xst:false,'__xme':'2230 ATTENTION, ce php contient du html en ligne qui n\'est pas complet<br /> passez par le menu html pour le nettoyer'}));
-                 
-                    logerreur({"__xst":false , "__xme":"ATTENTION, ce php contient du html en ligne qui n'est pas complet"})
-
+                    if(options_traitement && options_traitement.hasOwnProperty('nettoyer_html') && options_traitement.nettoyer_html === true){
+                    }else{
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '2230 ATTENTION, ce php contient du html en ligne qui n\'est pas complet<br /> passez par le menu html pour le nettoyer <br />ou bien utilisez le bouton "convertir3" du menu php' }));
+                    }
+                    logerreur({ "__xst" : false , "__xme" : "ATTENTION, ce php contient du html en ligne qui n'est pas complet et qui est converti en echo !" });
                     numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                     numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
                     if(stmts[i].value.toLowerCase().indexOf('<script') < 0){
@@ -2843,13 +2861,13 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                           C'est un html incomplet qui ne contient pas de script, on le transforme en echo
                           =====================================================================
                         */
-                        if(((numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlStartLine)
-                         || (numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlEndLine))
-                         && (StmtsHtmlPrecedentEstEcho === true)
+                        if((numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlStartLine
+                         || numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlEndLine)
+                         && StmtsHtmlPrecedentEstEcho === true
                         ){
-                            t=t.substr(0,(t.length - 2)) + ',p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                            t=(t.substr(0,t.length - 2)) + ',p(\'' + (stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'))';
                         }else{
-                            t+='\n' + esp0 + 'appelf(nomf(echo),p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                            t+='\n' + esp0 + 'appelf(nomf(echo),p(\'' + (stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'))';
                         }
                         StmtsHtmlPrecedentEstEcho=true;
                         numeroLignePrecedentStmtHtmlStartLine=numeroLigneCourantStmtHtmlStartLine;
@@ -2866,13 +2884,13 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                             /*
                               si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
                             */
-                            if((obj1.content) && (obj1.content.length >= 0)){
+                            if(obj1.content && obj1.content.length >= 0){
                                 var j=0;
-                                for(j=0;j < obj1.content.length;j++){
-                                    if((obj1.content[j].type === 'BODY') || (obj1.content[j].type === 'HEAD')){
-                                        if((obj1.content[j].content) && (obj1.content[j].content.length > 0)){
+                                for( j=0 ; j < obj1.content.length ; j++ ){
+                                    if(obj1.content[j].type === 'BODY' || obj1.content[j].type === 'HEAD'){
+                                        if(obj1.content[j].content && obj1.content[j].content.length > 0){
                                             var k=0;
-                                            for(k=0;k < obj1.content[j].content.length;k++){
+                                            for( k=0 ; k < obj1.content[j].content.length ; k++ ){
                                                 if(obj1.content[j].content[k].type){
                                                     var lesProprietes='';
                                                     if(obj1.content[j].content[k].attributes){
@@ -2881,7 +2899,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                                                             if(lesProprietes !== ''){
                                                                 lesProprietes+=',';
                                                             }
-                                                            lesProprietes+='(\'' + attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\' , \'' + obj1.content[j].content[k].attributes[attr].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+                                                            lesProprietes+='(\'' + (attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\' , \'' + (obj1.content[j].content[k].attributes[attr].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\')';
                                                         }
                                                     }
                                                     if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
@@ -2897,7 +2915,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                                                             }else{
                                                                 console.log('un script KO : ' + obj1.content[j].content[k].content[0]);
                                                                 t+='appelf(nomf(echo),p(\'<script type="text/javascript">\'))';
-                                                                t+='appelf(nomf(echo),p(\'' + obj1.content[j].content[k].content[0].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                                                                t+='appelf(nomf(echo),p(\'' + (obj1.content[j].content[k].content[0].replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'))';
                                                             }
                                                         }else{
                                                             t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
@@ -2908,14 +2926,14 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                                                         if(obj.__xst === true){
                                                             t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
                                                         }else{
-                                                            return(astphp_logerreur({__xst:false,__xme:'2433 dans TransformAstPhpEnRev ',element:stmts[i]}));
+                                                            return(astphp_logerreur({ "__xst" : false , "__xme" : '2433 dans TransformAstPhpEnRev ' , "element" : stmts[i] }));
                                                         }
                                                     }
                                                 }
                                             }
                                         }
                                     }else{
-                                        return(astphp_logerreur({__xst:false,__xme:'2440 dans TransformAstPhpEnRev ',element:stmts[i]}));
+                                        return(astphp_logerreur({ "__xst" : false , "__xme" : '2440 dans TransformAstPhpEnRev ' , "element" : stmts[i] }));
                                     }
                                 }
                             }
@@ -2923,7 +2941,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                             /*
                               si le contenu ne contient pas du HTML en racine, on "echo" 
                             */
-                            t+='appelf(nomf(echo),p(\'' + stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'))';
+                            t+='appelf(nomf(echo),p(\'' + (stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'))';
                         }
                     }
                 }
@@ -2932,15 +2950,15 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 if(obj.__xst === true){
                     numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                     numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
-                    if(((numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlStartLine)
-                     || (numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlEndLine))
-                     && (StmtsHtmlPrecedentEstEcho === true)
+                    if((numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlStartLine
+                     || numeroLigneCourantStmtHtmlStartLine === numeroLignePrecedentStmtHtmlEndLine)
+                     && StmtsHtmlPrecedentEstEcho === true
                     ){
                         /*
                           t finit par appelf(nomf(echo),p($d)),"
                         */
                         if('appelf(nomf(echo),' === obj.__xva.substr(0,18)){
-                            t=t.substr(0,(t.length - 2)) + obj.__xva.substr(17);
+                            t=t.substr(0,t.length - 2) + obj.__xva.substr(17);
                         }else{
                             t+='\n' + esp0 + obj.__xva;
                         }
@@ -2950,42 +2968,42 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                         t+='\n' + esp0 + obj.__xva;
                     }
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'dans TransformAstPhpEnRev 2342 "' + stmts[i].nodeType + '" ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev 2342 "' + stmts[i].nodeType + '" ' , "element" : stmts[i] }));
                 }
             }else if("Stmt_If" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_If(stmts[i],niveau,false);
+                var obj = php_traite_Stmt_If(stmts[i],niveau,false,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'dans TransformAstPhpEnRev 2024 "' + stmts[i].nodeType + '" ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev 2024 "' + stmts[i].nodeType + '" ' , "element" : stmts[i] }));
                 }
             }else if("Stmt_Expression" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_Expression(stmts[i].expr,niveau,dansFor,stmts);
+                var obj = php_traite_Stmt_Expression(stmts[i].expr,niveau,dansFor,stmts,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'dans TransformAstPhpEnRev 1922 "' + stmts[i].nodeType + '" ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev 1922 "' + stmts[i].nodeType + '" ' , "element" : stmts[i] }));
                 }
             }else if("Stmt_Function" === stmts[i].nodeType){
                 var obj = php_traite_Stmt_Function(stmts[i],niveau);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'2376  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2376  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"' , "element" : stmts[i] }));
                 }
             }else if("Stmt_Use" === stmts[i].nodeType){
                 var obj = php_traite_Stmt_Use(stmts[i],niveau);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'2387  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '" ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2387  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '" ' , "element" : stmts[i] }));
                 }
             }else if("Stmt_TryCatch" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_TryCatch(stmts[i],niveau);
+                var obj = php_traite_Stmt_TryCatch(stmts[i],niveau,false,false,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'2398  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2398  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"' , "element" : stmts[i] }));
                 }
             }else if("Stmt_Return" === stmts[i].nodeType){
                 if(stmts[i].expr === null){
@@ -2995,25 +3013,23 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                     if(obj.__xst === true){
                         t+='\n' + esp0 + 'retourner(' + obj.__xva + ')';
                     }else{
-                        return(astphp_logerreur({__xst:false,'__xme':'2411  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"',element:stmts[i]}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '2411  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"' , "element" : stmts[i] }));
                     }
                 }
             }else if("Stmt_Break" === stmts[i].nodeType){
-
                 if(stmts[i].num === null){
                     t+='\n' + esp0 + 'break()';
                 }else if(stmts[i].num.nodeType === 'Scalar_Int'){
-                    t+='\n' + esp0 + 'break('+stmts[i].num.value+')';
+                    t+='\n' + esp0 + 'break(' + stmts[i].num.value + ')';
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'2420  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2420  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"' , "element" : stmts[i] }));
                 }
-
             }else if("Stmt_Switch" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_Switch(stmts[i],niveau);
+                var obj = php_traite_Stmt_Switch(stmts[i],niveau,false,false,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Stmt_Switch 2215 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Stmt_Switch 2215 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if(stmts[i].nodeType === 'Stmt_Unset'){
@@ -3021,31 +3037,31 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Stmt_Unset 2226 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Stmt_Unset 2226 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_Foreach" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_Foreach(stmts[i],niveau);
+                var obj = php_traite_Stmt_Foreach(stmts[i],niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Stmt_Foreach 2237 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Stmt_Foreach 2237 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_Do" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_DoWhile(stmts[i],niveau);
+                var obj = php_traite_Stmt_DoWhile(stmts[i],niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Stmt_For 2248 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Stmt_For 2248 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_For" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_For(stmts[i],niveau);
+                var obj = php_traite_Stmt_For(stmts[i],niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Stmt_For 2248 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Stmt_For 2248 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if(stmts[i].nodeType.substr(0,14) === "Expr_AssignOp_"){
@@ -3053,7 +3069,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Expr_AssignOp_ 2261 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Expr_AssignOp_ 2261 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Expr_Assign" === stmts[i].nodeType){
@@ -3061,112 +3077,105 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2541 dans TransformAstPhpEnRev pour Expr_Assign  ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2541 dans TransformAstPhpEnRev pour Expr_Assign  ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_Class" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_Class(stmts[i],niveau);
+                var obj = php_traite_Stmt_Class(stmts[i],niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'dans TransformAstPhpEnRev pour Stmt_Class 2436 ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : 'dans TransformAstPhpEnRev pour Stmt_Class 2436 ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_ClassMethod" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_ClassMethod(stmts[i],niveau);
+                var obj = php_traite_Stmt_ClassMethod(stmts[i],niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'1051  dans php_traite_Stmt_Expression  ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1051  dans php_traite_Stmt_Expression  ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
-            }else if(("Stmt_Continue" === stmts[i].nodeType)
-             || ("Stmt_Global" === stmts[i].nodeType)
-             || ("Stmt_ClassConst" === stmts[i].nodeType)
-             || ("Expr_Isset" === stmts[i].nodeType)
-             || ("Expr_PostDec" === stmts[i].nodeType)
-             || ("Expr_PostInc" === stmts[i].nodeType)
-             || ("Expr_PreDec" === stmts[i].nodeType)
-             || ("Expr_PreInc" === stmts[i].nodeType)
-             || ("Stmt_Property" === stmts[i].nodeType)
-             || ("Stmt_Static" === stmts[i].nodeType)
-             || ('Expr_BinaryOp_' === stmts[i].nodeType.substr(0,14))){
-                var obj = php_traite_Stmt_Expression(stmts[i],niveau,dansFor,stmts);
+            }else if("Stmt_Continue" === stmts[i].nodeType
+             || "Stmt_Global" === stmts[i].nodeType
+             || "Stmt_ClassConst" === stmts[i].nodeType
+             || "Expr_Isset" === stmts[i].nodeType
+             || "Expr_PostDec" === stmts[i].nodeType
+             || "Expr_PostInc" === stmts[i].nodeType
+             || "Expr_PreDec" === stmts[i].nodeType
+             || "Expr_PreInc" === stmts[i].nodeType
+             || "Stmt_Property" === stmts[i].nodeType
+             || "Stmt_Static" === stmts[i].nodeType
+             || 'Expr_BinaryOp_' === stmts[i].nodeType.substr(0,14)){
+                var obj = php_traite_Stmt_Expression(stmts[i],niveau,dansFor,stmts,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,'__xme':'2013  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"','element':stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2013  dans TransformAstPhpEnRev "' + stmts[i].nodeType + '"' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_While" === stmts[i].nodeType){
-                var obj = php_traite_Stmt_While(stmts[i],niveau);
+                var obj = php_traite_Stmt_While(stmts[i],niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2530  dans TransformAstPhpEnRev  ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2530  dans TransformAstPhpEnRev  ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_Declare" === stmts[i].nodeType){
-                
                 var obj = php_traite_Expr_declare(stmts[i],niveau);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2539  dans TransformAstPhpEnRev  ',element:stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2539  dans TransformAstPhpEnRev  ' , "element" : stmts[i] }));
                 }
                 /*===============================================*/
             }else if("Stmt_HaltCompiler" === stmts[i].nodeType){
-                if((stmts[i].remaining) && (stmts[i].remaining !== '')){
-                    t+='\n' + esp0 + '__halt_compiler(\'' + stmts[i].remaining.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
+                if(stmts[i].remaining && stmts[i].remaining !== ''){
+                    t+='\n' + esp0 + '__halt_compiler(\'' + (stmts[i].remaining.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\')';
                 }else{
                     t+='\n' + esp0 + '__halt_compiler()';
                 }
-
             }else if("Stmt_Namespace" === stmts[i].nodeType){
                 var nom_de_l_espace='';
-                var faire = '';
+                var faire='';
                 if("Name" === stmts[i].name.nodeType){
                     nom_de_l_espace=stmts[i].name.name;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2604 dans TransformAstPhpEnRev  ',"element" : stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2604 dans TransformAstPhpEnRev  ' , "element" : stmts[i] }));
                 }
-                if(stmts[i].stmts && stmts[i].stmts.length>0){
-                    var obj = TransformAstPhpEnRev(stmts[i].stmts,niveau+2,false);
+                if(stmts[i].stmts && stmts[i].stmts.length > 0){
+                    var obj = TransformAstPhpEnRev(stmts[i].stmts,niveau + 2,false,false,options_traitement);
                     if(obj.__xst === true){
                         faire+=obj.__xva;
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'2613  erreur php_traite_Stmt_TryCatch',"element":stmts[i]}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '2613  erreur php_traite_Stmt_TryCatch' , "element" : stmts[i] }));
                     }
-                 
                 }
-                if(nom_de_l_espace.indexOf('\\')>=0){
-                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\''+nom_de_l_espace.replace(/\\/g,'\\\\')+'\'),faire('+faire+'))';
+                if(nom_de_l_espace.indexOf('\\') >= 0){
+                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\'' + (nom_de_l_espace.replace(/\\/g,'\\\\')) + '\'),faire(' + faire + '))';
                 }else{
-                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\''+nom_de_l_espace+'\'),faire('+faire+'))';
+                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\'' + nom_de_l_espace + '\'),faire(' + faire + '))';
                 }
-
             }else if("Stmt_Interface" === stmts[i].nodeType){
                 var nom_de_l_interface='';
-                var faire = '';
+                var faire='';
                 if("Identifier" === stmts[i].name.nodeType){
                     nom_de_l_interface=stmts[i].name.name;
                 }else{
-                    return(astphp_logerreur({__xst:false,__xme:'2626  dans TransformAstPhpEnRev  ',"element" : stmts[i]}));
+                    return(astphp_logerreur({ "__xst" : false , "__xme" : '2626  dans TransformAstPhpEnRev  ' , "element" : stmts[i] }));
                 }
-                if(stmts[i].stmts && stmts[i].stmts.length>0){
-
-                    var obj = TransformAstPhpEnRev(stmts[i].stmts,niveau+2,false);
+                if(stmts[i].stmts && stmts[i].stmts.length > 0){
+                    var obj = TransformAstPhpEnRev(stmts[i].stmts,niveau + 2,false,false,options_traitement);
                     if(obj.__xst === true){
                         faire+=obj.__xva;
                     }else{
-                        return(astphp_logerreur({__xst:false,__xme:'2633 erreur php_traite_Stmt_TryCatch',"element":stmts[i]}));
+                        return(astphp_logerreur({ "__xst" : false , "__xme" : '2633 erreur php_traite_Stmt_TryCatch' , "element" : stmts[i] }));
                     }
-                 
                 }
-                t+='\n' + esp0 + 'interface(nom_interface(\''+nom_de_l_interface+'\'),faire('+faire+'))';
-                
+                t+='\n' + esp0 + 'interface(nom_interface(\'' + nom_de_l_interface + '\'),faire(' + faire + '))';
             }else{
-                return(astphp_logerreur({__xst:false,'__xme':'2620  dans TransformAstPhpEnRev nodeType non prévu "' + stmts[i].nodeType + '"','element':stmts[i]}));
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '2620  dans TransformAstPhpEnRev nodeType non prévu "' + stmts[i].nodeType + '"' , "element" : stmts[i] }));
             }
         }
     }
@@ -3177,18 +3186,16 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine){
     }else if(t.substr(0,1) === '\n'){
         t=t.substr(1);
     }
-/*    
-    if(niveau===0){
-        console.log('comptage=' , comptage);
-    }
-*/    
+    /*
+      if(niveau===0){
+      console.log('comptage=' , comptage);
+      }
+    */
     if(typeof de_racine !== 'undefined'){
-        return({__xst:true,__xva:t,"contient_du_javascript_dans_html":contient_du_javascript_dans_html,"tableau_de_html_dans_php_a_convertir":tableau_de_html_dans_php_a_convertir});
+        return({ "__xst" : true , "__xva" : t , "contient_du_javascript_dans_html" : contient_du_javascript_dans_html , "tableau_de_html_dans_php_a_convertir" : tableau_de_html_dans_php_a_convertir });
     }else{
-        return({__xst:true,__xva:t});
+        return({ "__xst" : true , "__xva" : t });
     }
-    
-    
 }
 /*
   =====================================================================================================================
@@ -3214,28 +3221,27 @@ function isHTML(str){
     var l01=str.length;
     var niveau=0;
     var i=0;
-    
-    for(i=0;i < l01;i++){
+    for( i=0 ; i < l01 ; i++ ){
         c0=str.substr(i,1);
-        if(i < (l01 - 1)){
-            cp1=str.substr((i + 1),1);
+        if(i < l01 - 1){
+            cp1=str.substr(i + 1,1);
         }else{
             cp1='';
         }
-        if((i > 0) && (l01 > 0)){
-            cm1=str.substr((i - 1),1);
+        if(i > 0 && l01 > 0){
+            cm1=str.substr(i - 1,1);
         }else{
             cm1='';
         }
-        if(dansCdata===true){
+        if(dansCdata === true){
             /*
-              ==================================================================
+              =============================================================================================
               premier cas spécial : cdata
-              ==================================================================
+              =============================================================================================
             */
             var j=i;
-            for(j=i;j < l01;j++){
-                if(str.substr(j,3) === (']]' + '>')){
+            for( j=i ; j < l01 ; j++ ){
+                if(str.substr(j,3) === ']]' + '>'){
                     i=j + 2;
                     break;
                 }
@@ -3244,20 +3250,17 @@ function isHTML(str){
             nomTag='';
             dansInner=true;
             dansTag=false;
-            
-            continue
-          
-        }else if(dansTextArea===true){
+            continue;
+        }else if(dansTextArea === true){
             /*
-              ==================================================================
+              =============================================================================================
               deuxième cas spécial : textarea
-              ==================================================================
+              =============================================================================================
             */
-         
             var j=i;
-            for(j=i;j < l01;j++){
-                if(str.substr(j,11).toLowerCase() === ('</'+'textarea>')){ // </textarea>
-                    i=j-1;
+            for( j=i ; j < l01 ; j++ ){
+                if(str.substr(j,11).toLowerCase() === '</' + 'textarea>'){
+                    i=j - 1;
                     break;
                 }
             }
@@ -3265,31 +3268,29 @@ function isHTML(str){
             nomTag='';
             dansInner=true;
             dansTag=false;
-            
-            continue
-
+            continue;
         }else if(dansTag){
             if(dansNomPropriete){
-                if((c0 === ' ') || (c0 === '\r') || (c0 === '\n') || (c0 === '\t')){
+                if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
                     if(i > 50){
-                        presDe=str.substr((i - 50),(i + 10));
+                        presDe=str.substr(i - 50,i + 10);
                     }else{
-                        presDe=str.substr(0,(i + 10));
+                        presDe=str.substr(0,i + 10);
                     }
-                    return({__xst:false,id:i,'__xme':'Erreur 1785 pres de "' + presDe + '"'});
+                    return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1785 pres de "' + presDe + '"' });
                 }else if(c0 === '='){
-                    if((cp1 === "'") || (cp1 === '"')){
+                    if(cp1 === "'" || cp1 === '"'){
                         dansValeurPropriete=true;
                         dansNomPropriete=false;
                         caractereDebutProp=cp1;
                         i++;
                     }else{
                         if(i > 50){
-                            presDe=str.substr((i - 50),(i + 10));
+                            presDe=str.substr(i - 50,i + 10);
                         }else{
-                            presDe=str.substr(0,(i + 10));
+                            presDe=str.substr(0,i + 10);
                         }
-                        return({__xst:false,id:i,'__xme':'Erreur 2864 pres de "' + presDe + '"'});
+                        return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 2864 pres de "' + presDe + '"' });
                     }
                 }else{
                 }
@@ -3302,11 +3303,11 @@ function isHTML(str){
                 }else{
                 }
             }else if(dansNomTag){
-                if((c0 === ' ') || (c0 === '\r') || (c0 === '\n') || (c0 === '\t')){
+                if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
                     if(dansCdata === true){
                         var j=i;
-                        for(j=i;j < l01;j++){
-                            if(str.substr(j,3) === (']]' + '>')){
+                        for( j=i ; j < l01 ; j++ ){
+                            if(str.substr(j,3) === ']]' + '>'){
                                 i=j + 2;
                                 break;
                             }
@@ -3317,7 +3318,7 @@ function isHTML(str){
                         nomTag='';
                         continue;
                     }else{
-                        if(nomTag.toLowerCase()==='textarea'){
+                        if(nomTag.toLowerCase() === 'textarea'){
                             dansTextArea=true;
                         }
                         tabTags.push(nomTag);
@@ -3328,13 +3329,13 @@ function isHTML(str){
                         dansNomTag=false;
                         dansInner=true;
                         dansTag=false;
-                        if(nomTag === tabTags[tabTags.length - 1]){
+                        if(nomTag === tabTags[tabTags.length-1]){
                             /*
                               on a bien une balise fermante correspondant à la palise ouvrante précédente
                             */
                             tabTags.pop();
                         }else{
-                            return({__xst:false,id:i,__xme:'Erreur 2266 les balises html ne sont pas équilibrées'});
+                            return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 2266 les balises html ne sont pas équilibrées' });
                         }
                         nomTag='';
                         dansBaliseFermante=false;
@@ -3342,13 +3343,13 @@ function isHTML(str){
                     }else{
                         if(nomTag === ''){
                             if(i > 50){
-                                presDe=str.substr((i - 50),(i + 10));
+                                presDe=str.substr(i - 50,i + 10);
                             }else{
-                                presDe=str.substr(0,(i + 10));
+                                presDe=str.substr(0,i + 10);
                             }
-                            return({__xst:false,id:i,'__xme':'Erreur 1852 pres de "' + presDe + '"'});
+                            return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1852 pres de "' + presDe + '"' });
                         }
-                        if(nomTag.toLowerCase()==='textarea'){
+                        if(nomTag.toLowerCase() === 'textarea'){
                             dansTextArea=true;
                         }
                         tabTags.push(nomTag);
@@ -3357,29 +3358,28 @@ function isHTML(str){
                         dansTag=false;
                         nomTag='';
                     }
-                }else if((c0 === '=') || (c0 === '"') || (c0 === '\'')){
+                }else if(c0 === '=' || c0 === '"' || c0 === '\''){
                     if(i > 50){
-                        presDe=str.substr((i - 50),(i + 10));
+                        presDe=str.substr(i - 50,i + 10);
                     }else{
-                        presDe=str.substr(0,(i + 10));
+                        presDe=str.substr(0,i + 10);
                     }
-                    return({__xst:false,id:i,'__xme':'Erreur 2926 pres de "' + presDe + '"'});
+                    return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 2926 pres de "' + presDe + '"' });
                 }else{
                     nomTag+=c0;
                     if(nomTag === '![C' + 'DATA['){
-
                         dansCdata=true;
                     }
                 }
             }else{
                 if(nomTag === ''){
-                    if((c0 === ' ') || (c0 === '\r') || (c0 === '\n') || (c0 === '\t')){
+                    if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
                         if(i > 50){
-                            presDe=str.substr((i - 50),(i + 10));
+                            presDe=str.substr(i - 50,i + 10);
                         }else{
-                            presDe=str.substr(0,(i + 10));
+                            presDe=str.substr(0,i + 10);
                         }
-                        return({__xst:false,id:i,'__xme':'Erreur 1865 pres de "' + presDe + '"'});
+                        return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1865 pres de "' + presDe + '"' });
                     }else{
                         dansNomTag=true;
                         nomTag+=c0;
@@ -3389,17 +3389,17 @@ function isHTML(str){
                       le tag a été fait, maintenant, c'est les propriétés 
                       ou la fin des propriétés ou un / pour une balise auto fermante ( <br /> )
                     */
-                    if((c0 === ' ') || (c0 === '\r') || (c0 === '\n') || (c0 === '\t')){
+                    if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
                     }else if(c0 === '/'){
                         if(cp1 === '>'){
                             nomTag='';
                             if(tabTags.length === 0){
                                 if(i > 50){
-                                    presDe=str.substr((i - 50),(i + 10));
+                                    presDe=str.substr(i - 50,i + 10);
                                 }else{
-                                    presDe=str.substr(0,(i + 10));
+                                    presDe=str.substr(0,i + 10);
                                 }
-                                return({__xst:false,id:i,'__xme':'Erreur 1902 pres de "' + presDe + '"'});
+                                return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1902 pres de "' + presDe + '"' });
                             }
                             tabTags.pop();
                             niveau--;
@@ -3410,34 +3410,34 @@ function isHTML(str){
                     }else if(c0 === '>'){
                         if(nomTag === ''){
                             if(i > 50){
-                                presDe=str.substr((i - 50),(i + 10));
+                                presDe=str.substr(i - 50,i + 10);
                             }else{
-                                presDe=str.substr(0,(i + 10));
+                                presDe=str.substr(0,i + 10);
                             }
-                            return({__xst:false,id:i,'__xme':'Erreur 1896 pres de "' + presDe + '"'});
+                            return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1896 pres de "' + presDe + '"' });
                         }
                         dansTag=false;
                         dansInner=true;
                         if(tabTags.length === 0){
                             if(i > 50){
-                                presDe=str.substr((i - 50),(i + 10));
+                                presDe=str.substr(i - 50,i + 10);
                             }else{
-                                presDe=str.substr(0,(i + 10));
+                                presDe=str.substr(0,i + 10);
                             }
-                            return({__xst:false,id:i,'__xme':'Erreur 1929 pres de "' + presDe + '"'});
+                            return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1929 pres de "' + presDe + '"' });
                         }
                         /*
                           pas de pop ici, dans <a b="c">d</a>, on est sur le > avant le d
                         */
                         nomTag='';
                     }else{
-                        if((c0 === '=') || (c0 === '"') || (c0 === '\'')){
+                        if(c0 === '=' || c0 === '"' || c0 === '\''){
                             if(i > 50){
-                                presDe=str.substr((i - 50),(i + 10));
+                                presDe=str.substr(i - 50,i + 10);
                             }else{
-                                presDe=str.substr(0,(i + 10));
+                                presDe=str.substr(0,i + 10);
                             }
-                            return({__xst:false,id:i,'__xme':'Erreur 1910 pres de "' + presDe + '"'});
+                            return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1910 pres de "' + presDe + '"' });
                         }else{
                             dansNomPropriete=true;
                         }
@@ -3449,24 +3449,23 @@ function isHTML(str){
                 if(cp1 === '/'){
                     if(tabTags.length === 0){
                         if(i > 50){
-                            presDe=str.substr((i - 50),(i + 10));
+                            presDe=str.substr(i - 50,i + 10);
                         }else{
-                            presDe=str.substr(0,(i + 10));
+                            presDe=str.substr(0,i + 10);
                         }
-                        
-                        return({__xst:false,id:i,'__xme':'Erreur 1982 pres de "' + presDe + '"'});
+                        return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1982 pres de "' + presDe + '"' });
                     }
                     dansBaliseFermante=true;
                     i++;
                     dansInner=false;
                     dansTag=true;
                 }else{
-                    if((cp1 === '!') && (i < (l01 - 4)) && (str.substr((i + 2),1) === '-') && (str.substr((i + 3),1) === '-')){
+                    if(cp1 === '!' && i < l01 - 4 && str.substr(i + 2,1) === '-' && str.substr(i + 3,1) === '-'){
                         /*
                           on est dans un commentaire
                         */
                         var fin_de_commentaire_trouve=-1;
-                        for(j=i + 4;(j < (l01 - 3)) && (fin_de_commentaire_trouve === -1);j++){
+                        for( j=i + 4 ; j < l01 - 3 && fin_de_commentaire_trouve === -1 ; j++ ){
                             if(str.substr(j,3) === '-->'){
                                 fin_de_commentaire_trouve=j;
                             }
@@ -3488,11 +3487,11 @@ function isHTML(str){
             }else if(c0 === '>'){
                 if(niveau === 0){
                     if(i > 50){
-                        presDe=str.substr((i - 50),(i + 10));
+                        presDe=str.substr(i - 50,i + 10);
                     }else{
-                        presDe=str.substr(0,(i + 10));
+                        presDe=str.substr(0,i + 10);
                     }
-                    return({__xst:false,id:i,'__xme':'Erreur 1935 pres de "' + presDe + '"'});
+                    return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1935 pres de "' + presDe + '"' });
                 }
             }else{
             }
@@ -3503,250 +3502,148 @@ function isHTML(str){
                 niveau-=1;
                 if(niveau < 0){
                     if(i > 50){
-                        presDe=str.substr((i - 50),(i + 10));
+                        presDe=str.substr(i - 50,i + 10);
                     }else{
-                        presDe=str.substr(0,(i + 10));
+                        presDe=str.substr(0,i + 10);
                     }
-                    return({__xst:false,id:i,'__xme':'Erreur 1952 pres de "' + presDe + '"'});
+                    return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1952 pres de "' + presDe + '"' });
                 }
             }
         }
     }
     if(tabTags.length > 0){
         if(i > 50){
-            presDe=str.substr((i - 50),(i + 10));
+            presDe=str.substr(i - 50,i + 10);
         }else{
-            presDe=str.substr(0,(i + 10));
+            presDe=str.substr(0,i + 10);
         }
-        return({__xst:false,id:i,'__xme':'Erreur 1964 pres de "' + presDe + '"'});
+        return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1964 pres de "' + presDe + '"' });
     }
     if(dansTag){
         if(i > 50){
-            presDe=str.substr((i - 50),(i + 10));
+            presDe=str.substr(i - 50,i + 10);
         }else{
-            presDe=str.substr(0,(i + 10));
+            presDe=str.substr(0,i + 10);
         }
-        return({__xst:false,id:i,'__xme':'Erreur 1972 pres de "' + presDe + '"'});
+        return({ "__xst" : false , "id" : i , "__xme" : 'Erreur 1972 pres de "' + presDe + '"' });
     }
-    return({__xst:true});
+    return({ "__xst" : true });
 }
-
 /*
   =====================================================================================================================
 */
 async function traiter_html_dans_php1(param){
- 
- 
     console.log('%c on entre dans traiter_html_dans_php1','background:yellow;color:red;');
-
     if(param.hasOwnProperty('cle_convertie')){
-
-     globale_source_php1=param.nouveau_source;
-     for(var i=0;i<globale_tableau_des_php1.length;i++){
-      if(globale_tableau_des_php1[i].cle===param.cle_convertie){
-       globale_tableau_des_php1.splice(i,1);
-       
-      }
-     }
-     
+        globale_source_php1=param.nouveau_source;
+        for( var i=0 ; i < globale_tableau_des_php1.length ; i++ ){
+            if(globale_tableau_des_php1[i].cle === param.cle_convertie){
+                globale_tableau_des_php1.splice(i,1);
+            }
+        }
     }
-    if(globale_tableau_des_php1.length===0){
-        console.log('termine')
+    if(globale_tableau_des_php1.length === 0){
+        console.log('termine');
         globale_tableau_des_php1=[];
         globale_source_php1='';
-        debugger
+        debugger;
         return;
     }else{
-      console.log('dans traiter_html_dans_php1, globale_source_php1=' , globale_source_php1);
+        console.log('dans traiter_html_dans_php1, globale_source_php1=',globale_source_php1);
     }
-    
     var a_convertir=globale_tableau_des_php1[0];
+    console.log(a_convertir);
+    var options={ "fonction_a_appeler" : "traiter_html_dans_php1" , "source_php" : globale_source_php1 , "a_convertir" : a_convertir };
+    setTimeout(function(options){
     
-    console.log(a_convertir)
-    
-    var options={
-     "fonction_a_appeler" : "traiter_html_dans_php1",
-     "source_php" : globale_source_php1,
-     "a_convertir" : a_convertir,
-    };
-    
-    setTimeout(
-     function(options){
-      __module_html1.TransformHtmlEnRev(options.a_convertir.valeur,0,options);
-      
-     },
-     1000,
-     options
-    );
-
-    
-/*
-    try{
-     
-     await __module_html1.TransformHtmlEnRev(a_convertir.valeur,0,options);
-     
-    }catch(e){
-     console.error('e=',e);
-    }
-*/
-
+        __module_html1.TransformHtmlEnRev(options.a_convertir.valeur,0,options);
+    },1000,options);
 }
-
-var globale_tableau_des_php1=[];
+/*
+  try{
+  
+  await __module_html1.TransformHtmlEnRev(a_convertir.valeur,0,options);
+  
+  }catch(e){
+  console.error('e=',e);
+  }
+*/
+var globale_tableau_des_php1 = [];
 var globale_source_php1='';
-
 /*
   =====================================================================================================================
 */
-function traitement_apres_recuperation_ast_de_php1_ancien(ret){
-    var une_erreur_catch=false;
-    try{
-        var startMicro = performance.now();
-        var ast = JSON.parse(ret.__xva);
-        var obj = TransformAstPhpEnRev(ast,0,false,true);
-
-        if(obj.__xst === true){
-            if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length>0){
-                /* 
-                  il y a du html dans ce php, on le traite et on le remplace 
-                */
-                try{
-                    document.getElementById('txtar2').value=obj.__xva;
-                }catch(e){
-                    console.error('e=',e)
-                }
-                if(globale_source_php1!==''){
-                    return({__xst:false,__xme:'2870 convertit_php des jobs sont en cours'});
-                }
-                globale_tableau_des_php1=obj.tableau_de_html_dans_php_a_convertir;
-                globale_source_php1=obj.__xva;
-                traiter_html_dans_php1({});
-                
-                
-                
-                
-            }else{
-             
-                try{
-                    document.getElementById('txtar2').value=obj.__xva;
-                }catch(e){
-                    console.error('e=',e)
-                }
-             
-                var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
-                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-                if(matriceFonction.__xst === true){
-                    var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
-                    if(obj2.__xst === true){
-                        document.getElementById('txtar2').value=obj2.__xva;
-                        
-                    }else{
-                        document.getElementById('txtar2').value='php(' + obj.__xva + ')';
-                    }
-                }else{
-                    document.getElementById('txtar2').value='php(' + obj.__xva + ')';
-                }
-            }
-            
-        }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
-        }
-    }catch(e){
-        console.error('e=',e);
-        return(astphp_logerreur({__xst:false,'__xme':'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')}));
-        une_erreur_catch=true;
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
-    }
-    if(une_erreur_catch === false){
-        if((ret.opt) && (ret.opt.zone_rev)){
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.opt.zone_rev);
-        }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-        }
-    }
-    return({__xst:true,__xva:''});
-}
-/*
-  =====================================================================================================================
-*/
-
-function     transforme_html_de_php_en_rev(texteHtml,niveau){
+function transforme_html_de_php_en_rev(texteHtml,niveau){
     var t='';
-    var esp0 = ' '.repeat(NBESPACESREV*(niveau));
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var supprimer_le_tag_html_et_head=true;
     var doctype='';
     var elementsJson={};
     var i=0;
     try{
-        var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
-        if(position_doctype>=0){
-            if(position_doctype===0){
-                for(i=1;i<texteHtml.length && doctype=='';i++){
-                 if(texteHtml.substr(i,1)==='>'){
-                  doctype=texteHtml.substr(0,i+1); //<!DOCTYPE html>
-                  texteHtml=texteHtml.substr(i+1);
-                 }
+        var position_doctype = texteHtml.toUpperCase().indexOf('<!DOCTYPE');
+        if(position_doctype >= 0){
+            if(position_doctype === 0){
+                for( i=1 ; i < texteHtml.length && doctype == '' ; i++ ){
+                    if(texteHtml.substr(i,1) === '>'){
+                        doctype=texteHtml.substr(0,i + 1);
+                        texteHtml=texteHtml.substr(i + 1);
+                    }
                 }
             }
         }
-        
-     
         elementsJson=__module_html1.mapDOM(texteHtml,false);
-        if(elementsJson.__xst===true){
-            if(elementsJson.parfait===true){
+        if(elementsJson.__xst === true){
+            if(elementsJson.parfait === true){
                 supprimer_le_tag_html_et_head=false;
             }else{
                 /*
                 */
                 var supprimer_le_tag_html_et_head=true;
-                if(texteHtml.indexOf('<html')>=0){
+                if(texteHtml.indexOf('<html') >= 0){
                     supprimer_le_tag_html_et_head=false;
                 }
-                
             }
             try{
-                var tableau_de_javascripts_a_convertir=[];
-                var obj=__module_html1.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir );
-                if(obj.__xst===true){
-                    if(obj.__xva.trim().indexOf('html(')==0){
-                     if(doctype.toUpperCase()==='<!DOCTYPE HTML>'){
-                        obj.__xva=obj.__xva.replace(/html\(/,'html((doctype)');
-                     }else{
-                        obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
-                     }
+                var tableau_de_javascripts_a_convertir = [];
+                var obj = __module_html1.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
+                if(obj.__xst === true){
+                    if(obj.__xva.trim().indexOf('html(') == 0){
+                        if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
+                            obj.__xva=obj.__xva.replace(/html\(/,'html((doctype)');
+                        }else{
+                            obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                        }
                     }
-                    if(tableau_de_javascripts_a_convertir.length>0){
-                        for(var i=0;i<tableau_de_javascripts_a_convertir.length;i++){
+                    if(tableau_de_javascripts_a_convertir.length > 0){
+                        for( var i=0 ; i < tableau_de_javascripts_a_convertir.length ; i++ ){
                             globale_tableau_des_js2.push(tableau_de_javascripts_a_convertir[i]);
                         }
                     }
-                    return({__xst:true,__xva:obj.__xva});
+                    return({ "__xst" : true , "__xva" : obj.__xva });
                 }else{
-                 debugger
+                    debugger;
                 }
             }catch(e){
-             debugger
+                debugger;
             }
         }else{
-         debugger
+            debugger;
         }
     }catch(e){
     }
-    return({__xst:false,__xms:'le html dans php n\'est pas convertible'});
-                     
+    return({ "__xst" : false , "__xms" : 'le html dans php n\'est pas convertible' });
 }
-
 /*
-  ============================================================
+  =====================================================================================================================
 */
 function traiter_html_dans_php2(options){
-
-    if(globale_tableau_des_php2.length===0){
-        if(globale_tableau_des_js2.length===0){
-            console.log('terminé')
+    if(globale_tableau_des_php2.length === 0){
+        if(globale_tableau_des_js2.length === 0){
+            console.log('terminé');
         }else{
-            console.log('todo')
+            console.log('todo');
         }
     }
     var zone_rev=null;
@@ -3754,35 +3651,30 @@ function traiter_html_dans_php2(options){
         zone_rev=options.zone_rev;
     }
     var zone_php=null;
-    if(options && options.hasOwnProperty('zone_php')){ //'txtar1' 'txtar2'
+    if(options && options.hasOwnProperty('zone_php')){
         zone_php=options.zone_php;
     }
-    
     var en_ligne=null;
     if(options && options.hasOwnProperty('en_ligne') && options.en_ligne === true){
         en_ligne=true;
     }
-    
     var a_convertir=globale_tableau_des_php2[0];
-    for( var i=0;i<globale_tableau_des_php2.length;i++){
-
-       var obj=transforme_html_de_php_en_rev(globale_tableau_des_php2[i].valeur,0,options);
-       if(obj.__xst===true){
-           var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,'+globale_tableau_des_php2[i].cle+')';
-           globale_source_php2=globale_source_php2.replace(chaine_a_remplacer,obj.__xva);
-       }else{
-           return(logerreur({"__xst" : false,"__xme" : '3052 erreur dans la convertion de html dans php'}));           
-       }
+    for( var i=0 ; i < globale_tableau_des_php2.length ; i++ ){
+        var obj = transforme_html_de_php_en_rev(globale_tableau_des_php2[i].valeur,0,options);
+        if(obj.__xst === true){
+            var chaine_a_remplacer = '#(cle_html_dans_php_a_remplacer,' + globale_tableau_des_php2[i].cle + ')';
+            globale_source_php2=globale_source_php2.replace(chaine_a_remplacer,obj.__xva);
+        }else{
+            return(logerreur({ "__xst" : false , "__xme" : '3052 erreur dans la convertion de html dans php' }));
+        }
     }
     if(zone_rev){
         document.getElementById(zone_rev).value=globale_source_php2;
     }
-    
     function fin_traitement_php(zone_rev,une_erreur,globale_source_php2){
-     
         globale_tableau_des_js2=[];
         if(zone_rev){
-            if( une_erreur===false){
+            if(une_erreur === false){
                 var tableau1 = iterateCharacters2(globale_source_php2);
                 var matriceFonction = functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
@@ -3790,115 +3682,99 @@ function traiter_html_dans_php2(options){
                     if(obj2.__xst === true){
                         document.getElementById(zone_rev).value=obj2.__xva;
                         globale_source_php2='';
-
-                        return(logerreur({__xst:true}))                 
+                        return(logerreur({ "__xst" : true }));
                     }else{
                         document.getElementById(zone_rev).value=globale_source_php2;
                         globale_source_php2='';
-                        return(logerreur({__xst:true,__xva:'3079 erreur de formattage de rev'}))                 
+                        return(logerreur({ "__xst" : true , "__xva" : '3079 erreur de formattage de rev' }));
                     }
                 }else{
                     document.getElementById(zone_rev).value=globale_source_php2;
                     globale_source_php2='';
-                    return(logerreur({__xst:true,__xva:'3083 erreur mise en matrice'}))                 
+                    return(logerreur({ "__xst" : true , "__xva" : '3083 erreur mise en matrice' }));
                 }
-
             }else{
                 document.getElementById(zone_rev).value=globale_source_php2;
                 globale_source_php2='';
-                return(logerreur({__xst:true,__xva:'3088 erreur dans un source javascript '}))                 
+                return(logerreur({ "__xst" : true , "__xva" : '3088 erreur dans un source javascript ' }));
             }
         }
-        
-        if(en_ligne===true){
-            if( une_erreur===true){
+        if(en_ligne === true){
+            if(une_erreur === true){
                 globale_source_php2='';
-                return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
+                return(logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' }));
             }else{
-
                 sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
                 globale_source_php2='';
-                return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}));
+                return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
             }
         }else{
-            if( une_erreur===true){
+            if(une_erreur === true){
                 globale_source_php2='';
-                return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))                 
+                return(logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' }));
             }else{
                 globale_source_php2='';
-                return(logerreur({__xst:true,__xme:'3154 le source a été converti en rev'}))                 
+                return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
             }
         }
-     
     }
-
-    
-    if(globale_tableau_des_js2.length>0){
+    if(globale_tableau_des_js2.length > 0){
         /* il y a du javascript dans le html contenu dans le php */
-        logerreur({"__xst" : true,"__xme" : '3051 <b>veuillez patienter</b>, des javascripts sont en cours de convertion '});           
-        
-        
-        var ajax_param={'call':{'lib':'js','file':'rev_html_avec_js1','funct':'traiter_des_morceaux_de_js_dans_un_rev1'},"options":{}, "format_rev":globale_source_php2,tableau_de_javascripts_a_convertir:globale_tableau_des_js2};
-        
+        logerreur({ "__xst" : true , "__xme" : '3051 <b>veuillez patienter</b>, des javascripts sont en cours de convertion ' });
+        var ajax_param={ "call" : { "lib" : 'js' , "file" : 'rev_html_avec_js1' , "funct" : 'traiter_des_morceaux_de_js_dans_un_rev1' } , "options" : {} , "format_rev" : globale_source_php2 , "tableau_de_javascripts_a_convertir" : globale_tableau_des_js2 };
         var r= new XMLHttpRequest();
-        r.onerror=function(e){  
+        r.onerror=function(e){
+        
             console.error('e=',e);
-            return(logerreur({"__xst" : false , __xms:'erreur AJAX '}));
-        };
-
+            return(logerreur({ "__xst" : false , "__xms" : 'erreur AJAX ' }));};
         try{
             /*
-              =====================================================================================================
-              =====================================================================================================
-              =====================================================================================================
+              =============================================================================================
+              =============================================================================================
+              =============================================================================================
               ATTENTION appel "SYNCHRONE" à la récupération ast, le r.open a comme dernier paramètre : false
               on fait ceci car quand un html contient du javascript, on convertit ce dernier à la volée
               Remarque : le html peut aussi être dans un php ....
               Ce sera à modifier plus tard ...
-              =====================================================================================================
-              =====================================================================================================
-              =====================================================================================================
+              =============================================================================================
+              =============================================================================================
+              =============================================================================================
             */
             r.open("POST",'za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',false);
             r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
             r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
         }catch(e){
             console.error('e=',e);
-            logerreur({"__xst" : false,"__xme" : ' conv js 3127  message=' + e.message});
-            return(logerreur({"__xst" : false,"__xme" : ' conv js message=' + e.message}));
+            logerreur({ "__xst" : false , "__xme" : ' conv js 3127  message=' + e.message });
+            return(logerreur({ "__xst" : false , "__xme" : ' conv js message=' + e.message }));
         }
         if(r.readyState === 4){
             if(r.status === 404){
-                logerreur({"__xst" : false,"__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée '});
-                return(logerreur({"__xst" : false,"__xme" : 'conv js 3131url non trouvée '}));
+                logerreur({ "__xst" : false , "__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée ' });
+                return(logerreur({ "__xst" : false , "__xme" : 'conv js 3131url non trouvée ' }));
             }
             try{
                 var json_retour = JSON.parse(r.responseText);
             }catch(erreur_json){
-                logerreur({"__xst" : false,"__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message});
-                return(logerreur({"__xst" : false,"__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message}));
+                logerreur({ "__xst" : false , "__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message });
+                return(logerreur({ "__xst" : false , "__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message }));
             }
             if(json_retour.__xst === true){
                 var une_erreur=false;
-                for( var i in json_retour.__entree.tableau_de_javascripts_a_convertir){
+                for(var i in json_retour.__entree.tableau_de_javascripts_a_convertir){
                     try{
-                        var json_ast=JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].ast);
-                        
+                        var json_ast = JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].ast);
                         if(json_ast.type === 'Program' && json_ast.body){
                             try{
                                 tabComment=JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].commentaires);
-                                
-                                var obj1=TransformAstEnRev(json_ast.body,0);
-                                if(obj1.__xst===true){
-                                    var phrase_a_remplacer='#(cle_javascript_a_remplacer,'+json_retour.__entree.tableau_de_javascripts_a_convertir[i].cle+')';
+                                var obj1 = TransformAstEnRev(json_ast.body,0);
+                                if(obj1.__xst === true){
+                                    var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + json_retour.__entree.tableau_de_javascripts_a_convertir[i].cle + ')';
                                     globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj1.__xva);
-                                 
                                 }else{
                                     une_erreur=true;
                                     console.error('erreur de conversion de ast vers js e=',e);
                                 }
-                                
-                                
                             }catch(e){
                                 globale_source_php2='';
                                 console.error('erreur de conversion d\'un commentaire de programme');
@@ -3910,116 +3786,88 @@ function traiter_html_dans_php2(options){
                         }
                     }catch(e){
                         if(json_retour.__entree.tableau_de_javascripts_a_convertir[i].hasOwnProperty('fichier_erreur')){
-                            analyse_fichier_log_acorn(
-                                json_retour.__entree.tableau_de_javascripts_a_convertir[i].fichier_erreur,
-                                json_retour.__entree.tableau_de_javascripts_a_convertir[i].__xva,
-                                null
-                            );
+                            analyse_fichier_log_acorn(json_retour.__entree.tableau_de_javascripts_a_convertir[i].fichier_erreur,json_retour.__entree.tableau_de_javascripts_a_convertir[i].__xva,null);
                         }
-                     
                         globale_tableau_des_js2=[];
-                        debugger
+                        debugger;
                         une_erreur=true;
                         if(zone_rev){
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages', zone_rev);
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
                         }
-
                         globale_source_php2='';
-                        return(logerreur({__xst:false,__xme:'il y a un problème dans un source javascript'}))
+                        return(logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' }));
                     }
                 }
-
-                return( fin_traitement_php(zone_rev,une_erreur,globale_source_php2) );
-
-             
+                return(fin_traitement_php(zone_rev,une_erreur,globale_source_php2));
             }else{
-              debugger
-              globale_source_php2='';
+                debugger;
+                globale_source_php2='';
             }
-             
         }
-
-
-
         globale_source_php2='';
-        return(logerreur({__xst:true}));
-        
-        
+        return(logerreur({ "__xst" : true }));
     }else{
         /* il n'y a pas de javascript dans le html du php */
-        return( fin_traitement_php(zone_rev,une_erreur,globale_source_php2) );
+        return(fin_traitement_php(zone_rev,une_erreur,globale_source_php2));
     }
-
 }
 /*
-  ============================================================
+  =====================================================================================================================
 */
-var globale_tableau_des_php2=[];
+var globale_tableau_des_php2 = [];
 var globale_source_php2='';
-var globale_tableau_des_js2=[];
+var globale_tableau_des_js2 = [];
 /*
-  ============================================================
+  =====================================================================================================================
 */
 function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
     var ast = JSON.parse(retour_avec_ast.__xva);
-    var obj = TransformAstPhpEnRev(ast,0,false,true);
+    var obj = TransformAstPhpEnRev(ast,0,false,true,retour_avec_ast.__entree.opt.options_traitement);
     var options={};
     if(retour_avec_ast.__entree.hasOwnProperty('opt')){
-      options=retour_avec_ast.__entree.opt;
+        options=retour_avec_ast.__entree.opt;
     }
     var zone_rev=null;
     var zone_php=null;
     if(options && options.hasOwnProperty('zone_rev')){
         zone_rev=options.zone_rev;
     }
-    
     if(options && options.hasOwnProperty('zone_php')){
         zone_php=options.zone_php;
     }
-    
     var en_ligne=null;
     if(options && options.hasOwnProperty('en_ligne') && options.en_ligne === true){
         en_ligne=true;
     }
-    
-    
     if(obj.__xst === true){
-//        console.log('2982',obj);
-
         if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length > 0){
             /*
               il y a du html dans ce php, on le traite et on le remplace 
             */
             try{
-                
-                if(zone_rev!==null){
+                if(zone_rev !== null){
                     document.getElementById(zone_rev).value=obj.__xva;
                 }
-                
                 globale_tableau_des_php2=obj.tableau_de_html_dans_php_a_convertir;
                 globale_source_php2=obj.__xva;
-                var obj=traiter_html_dans_php2(options);
-                if(obj.status===true){
-                   if(zone_rev!==null){
-                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
-                   }
-
-                  return({__xst:true});
+                var obj = traiter_html_dans_php2(options);
+                if(obj.status === true){
+                    if(zone_rev !== null){
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
+                    }
+                    return({ "__xst" : true });
                 }else{
-                   if(zone_php!==null){
-                     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
-                   }
+                    if(zone_php !== null){
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
+                    }
                 }
-                
-                
             }catch(e){
                 console.error('e=',e);
             }
         }else{
-            
-            if(en_ligne===true){
-                sauvegarder_php_en_ligne('php(' + obj.__xva + ')',options.donnees);                     
-               __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
+            if(en_ligne === true){
+                sauvegarder_php_en_ligne('php(' + obj.__xva + ')',options.donnees);
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
             }else{
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
                 var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
@@ -4027,177 +3875,151 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
                 if(matriceFonction.__xst === true){
                     var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
                     if(obj2.__xst === true){
-                        if(zone_rev!==null){
+                        if(zone_rev !== null){
                             document.getElementById(zone_rev).value=obj2.__xva;
-                            logerreur({"__xst" : true,"__xme" : 'le fichier rev a été produit sans erreurs'});
+                            logerreur({ "__xst" : true , "__xme" : 'le fichier rev a été produit sans erreurs' });
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
                         }
-                        
                     }else{
-                        if(zone_rev!==null){
+                        if(zone_rev !== null){
                             document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
                         }
                     }
                 }else{
-                    if(zone_rev!==null){
+                    if(zone_rev !== null){
                         document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
                     }
                 }
             }
-            
-            
         }
     }else{
-        if(zone_php!==null){
+        if(zone_php !== null){
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
         }
     }
 }
 /*
-  ============================================================
+  =====================================================================================================================
 */
 function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_de_php2){
-
-
-    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp',opt:{masquer_les_messages_du_serveur:false}},'texteSource':texteSource,'opt':opt};
+    var ajax_param={ "call" : { "lib" : 'php' , "file" : 'ast' , "funct" : 'recupererAstDePhp' , "opt" : { "masquer_les_messages_du_serveur" : false } } , "texteSource" : texteSource , "opt" : opt };
     var r= new XMLHttpRequest();
-    r.onerror=function(e){  
+    r.onerror=function(e){
+    
         console.error('e=',e);
-        return({"__xst" : false});
-    };
-
+        return({ "__xst" : false });};
     try{
         r.open("POST",'za_ajax.php?recupererAstDeJs',true);
         r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+        r.onreadystatechange=function(){
         
-        r.onreadystatechange = function () {
-          if (r.readyState != 4 || r.status != 200){
-              if(r.status === 404){
-                  logerreur({"__xst" : false,"__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée '});
-                  return({"__xst" : false,"__xme" : 'conv js 3131url non trouvée '});
-              }else{
-                  return;
-              }
-          }
-          try{
-           
-            var json_retour=JSON.parse(r.responseText);
-            
-//            console.log('json_retour=' , json_retour );
-            
-            
-            if(json_retour.__xst===true){
-              traitement_apres_recuperation_ast_de_php2(json_retour);
-            }else{
-              
-              for(var elem in json_retour.__xms){
-                  if((json_retour.__xms[elem].indexOf('on line ') >= 0)
-                   && (isNumeric(json_retour.__xms[elem].substr((json_retour.__xms[elem].indexOf('on line ') + 8))))
-                  ){
-                      var line = parseInt(json_retour.__xms[elem].substr((json_retour.__xms[elem].indexOf('on line ') + 8)),10);
-                      astphp_logerreur({__xst:false,line:line});
-                  }
-                  astphp_logerreur({"__xst" : false,"__xme" : json_retour.__xms[elem]});
-              }
-              
-              
-              if(json_retour.hasOwnProperty('__entree') && json_retour.__entree.hasOwnProperty('opt')){
-               if(json_retour.__entree.opt.hasOwnProperty('zone_php') && json_retour.__entree.opt.zone_php!==null){
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',json_retour.__entree.opt.zone_php);
-                return({"__xst" : false});
-               }else{
-                if(json_retour.__entree.opt.hasOwnProperty('en_ligne') && json_retour.__entree.opt.en_ligne === true){
-                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                 return({"__xst" : false});
+            if(r.readyState != 4 || r.status != 200){
+                if(r.status === 404){
+                    logerreur({ "__xst" : false , "__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée ' });
+                    return({ "__xst" : false , "__xme" : 'conv js 3131url non trouvée ' });
                 }else{
-                 debugger
+                    return;
                 }
-               }
-              }
-              return({"__xst" : false,"__xme" : 'erreur json'});
             }
-           
-          }catch(e){
-              console.error('e=',e);
-              return({"__xst" : false,"__xme" : ' conv js message=' + e.message});
-           
-          }
-        };        
+            try{
+                var json_retour = JSON.parse(r.responseText);
+                if(json_retour.__xst === true){
+                    traitement_apres_recuperation_ast_de_php2(json_retour);
+                }else{
+                    for(var elem in json_retour.__xms){
+                        if(json_retour.__xms[elem].indexOf('on line ') >= 0
+                         && isNumeric(json_retour.__xms[elem].substr(json_retour.__xms[elem].indexOf('on line ') + 8))
+                        ){
+                            var line = parseInt(json_retour.__xms[elem].substr(json_retour.__xms[elem].indexOf('on line ') + 8),10);
+                            astphp_logerreur({ "__xst" : false , "line" : line });
+                        }
+                        astphp_logerreur({ "__xst" : false , "__xme" : json_retour.__xms[elem] });
+                    }
+                    if(json_retour.hasOwnProperty('__entree') && json_retour.__entree.hasOwnProperty('opt')){
+                        if(json_retour.__entree.opt.hasOwnProperty('zone_php') && json_retour.__entree.opt.zone_php !== null){
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',json_retour.__entree.opt.zone_php);
+                            return({ "__xst" : false });
+                        }else{
+                            if(json_retour.__entree.opt.hasOwnProperty('en_ligne') && json_retour.__entree.opt.en_ligne === true){
+                                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                                return({ "__xst" : false });
+                            }else{
+                                debugger;
+                            }
+                        }
+                    }
+                    return({ "__xst" : false , "__xme" : 'erreur json' });
+                }
+            }catch(e){
+                console.error('e=',e);
+                return({ "__xst" : false , "__xme" : ' conv js message=' + e.message });
+            }};
         r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
     }catch(e){
         console.error('e=',e);
-        logerreur({"__xst" : false,"__xme" : ' conv js 3127  message=' + e.message});
-        return({"__xst" : false,"__xme" : ' conv js message=' + e.message});
+        logerreur({ "__xst" : false , "__xme" : ' conv js 3127  message=' + e.message });
+        return({ "__xst" : false , "__xme" : ' conv js message=' + e.message });
     }
-
-
-
-    return({__xst:true});
+    return({ "__xst" : true });
 }
-
-
 /*
   =====================================================================================================================
 */
 function recupereAstDePhp1_ancien(texteSource,opt,f_traitement_apres_recuperation_ast_de_php1){
-    var ajax_param={'call':{'lib':'php','file':'ast','funct':'recupererAstDePhp',opt:{masquer_les_messages_du_serveur:false}},'texteSource':texteSource,'opt':opt};
+    var ajax_param={ "call" : { "lib" : 'php' , "file" : 'ast' , "funct" : 'recupererAstDePhp' , "opt" : { "masquer_les_messages_du_serveur" : false } } , "texteSource" : texteSource , "opt" : opt };
     async function recupererAstDePhp1(url="",ajax_param){
-         var ttt= await __gi1.recupérer_un_fetch(url,ajax_param);
-//         console.log('ttt=',ttt)
-         return ttt;
-//        return(__gi1.recupérer_un_fetch(url,ajax_param));
+        var ttt= await __gi1.recupérer_un_fetch(url,ajax_param);
+        return ttt;
     }
     recupererAstDePhp1('za_ajax.php?recupererAstDePhp',ajax_param).then((donnees) => {
+        
         if(donnees.__xst === true){
-
             var elem={};
             for(elem in donnees.__xms){
-                return(astphp_logerreur({__xst:true,'__xme':'<pre>' + donnees.__xms[elem].replace(/&/g,'&lt;') + '</pre>'}));
+                return(astphp_logerreur({ "__xst" : true , "__xme" : '<pre>' + (donnees.__xms[elem].replace(/&/g,'&lt;')) + '</pre>' }));
             }
             try{
-               f_traitement_apres_recuperation_ast_de_php1({__xst:true,__xva:donnees.__xva,__entree:donnees.__entree,opt:opt});
+                f_traitement_apres_recuperation_ast_de_php1({ "__xst" : true , "__xva" : donnees.__xva , "__entree" : donnees.__entree , "opt" : opt });
             }catch(e){
-               debugger
+                debugger;
             }
         }else{
             var elem={};
             for(elem in donnees.__xms){
-                if((donnees.__xms[elem].indexOf('on line ') >= 0)
-                 && (isNumeric(donnees.__xms[elem].substr((donnees.__xms[elem].indexOf('on line ') + 8))))
+                if(donnees.__xms[elem].indexOf('on line ') >= 0
+                 && isNumeric(donnees.__xms[elem].substr(donnees.__xms[elem].indexOf('on line ') + 8))
                 ){
-                    var line = parseInt(donnees.__xms[elem].substr((donnees.__xms[elem].indexOf('on line ') + 8)),10);
-                    return(astphp_logerreur({__xst:false,line:line}));
+                    var line = parseInt(donnees.__xms[elem].substr(donnees.__xms[elem].indexOf('on line ') + 8),10);
+                    return(astphp_logerreur({ "__xst" : false , "line" : line }));
                 }
             }
-
-            if((donnees.__entree) && (donnees.__entree.hasOwnProperty('opt')) && (donnees.__entree.opt.hasOwnProperty('zone_php'))){
+            if(donnees.__entree && donnees.__entree.hasOwnProperty('opt') && donnees.__entree.opt.hasOwnProperty('zone_php')){
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.__entree.opt.zone_php);
             }else{
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
             }
-            return({__xst:true,__xme:'3372'});
+            return({ "__xst" : true , "__xme" : '3372' });
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-        return({__xst:false,__xme:'2806'});
+        return({ "__xst" : false , "__xme" : '2806' })
     });
-    return({__xst:true,__xme:'2806'});
+    return({ "__xst" : true , "__xme" : '2806' });
 }
 /*
   =====================================================================================================================
 */
-function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_area_rev){
+function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
+    var options_traitement = JSON.parse(options_traitement.replace(/\'/g,'"'));
     document.getElementById('txtar2').value='Veuillez patienter !';
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area_php);
     localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
     var lines = a.value.split(/\r|\r\n|\n/);
     var count=lines.length;
-
     try{
-        var ret = recupereAstDePhp2(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php2);
-
+        var ret = recupereAstDePhp2(a.value,{ "zone_php" : nom_de_la_text_area_php , "zone_rev" : nom_de_la_text_area_rev , "options_traitement" : options_traitement },traitement_apres_recuperation_ast_de_php2);
         if(ret.__xst === false){
-            return(astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : 'il y a une erreur d\'envoie du source php à convertir' }));
             ret=false;
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
@@ -4216,12 +4038,10 @@ function transform_text_area_php_en_rev1_ancien(nom_de_la_text_area_php,nom_de_l
     localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
     var lines = a.value.split(/\r|\r\n|\n/);
     var count=lines.length;
-
     try{
-        var ret = recupereAstDePhp1(a.value,{zone_php:nom_de_la_text_area_php,zone_rev:nom_de_la_text_area_rev},traitement_apres_recuperation_ast_de_php1_ancien);
-
+        var ret = recupereAstDePhp1(a.value,{ "zone_php" : nom_de_la_text_area_php , "zone_rev" : nom_de_la_text_area_rev },traitement_apres_recuperation_ast_de_php1_ancien);
         if(ret.__xst === false){
-            return(astphp_logerreur({__xst:false,__xme:'il y a une erreur d\'envoie du source php à convertir'}));
+            return(astphp_logerreur({ "__xst" : false , "__xme" : 'il y a une erreur d\'envoie du source php à convertir' }));
             ret=false;
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
@@ -4255,7 +4075,24 @@ function recupererAstDePhp(&$data){
        return;
     }
 }
-?>hello<?php echo ' world';?> and others<?php
+/* si vous devez intégrer du javascript dans du html dans du php, mettez la partie javascript dans des CDATA */
+$i=0;
+while($i<5){
+  if(1===1){
+    for($i=0;$i<10;$i++){
+      ?>hello<?php echo ' world';?> and others
+<script type="text/javascript">
+//<![CDATA[
+  alert(1);
+  for(var i=0;i<10;i++){
+      console.log('on est dans du javascript dans du html dans du php :-]');
+  }
+//]]>  
+</script>
+<?php
+    }
+  }
+}
 
 `;
     document.getElementById('txtar1').value=t;

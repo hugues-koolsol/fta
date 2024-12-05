@@ -82,6 +82,17 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
       session_start();
   }
 }
+/*===================================================================================================================*/
+
+function texte_aleatoire($lng){
+
+    $str=random_bytes($lng);
+    $str=base64_encode($str);
+    $str=str_replace(array( "+", "/", "="),"",$str);
+    $str=substr($str,0,$lng);
+    return($str);
+
+}
 
 /*===================================================================================================================*/
 

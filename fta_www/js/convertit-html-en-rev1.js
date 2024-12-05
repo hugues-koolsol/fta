@@ -132,11 +132,15 @@ function chargerSourceDeTestHtml(){
  <a href="www.example.com" style="" class>lien</a>
 
   </div>
+<!-- commentaire html : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA -->
 <script>
+//<![CDATA[
+/* commentaire javascript : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA */
 function monAlerte(a){
   alert(a);
 }
-monAlerte(0)
+monAlerte(0);
+//]]>
 </script>  
 </body></head>`;
     document.getElementById('txtar1').value=t;

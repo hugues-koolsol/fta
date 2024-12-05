@@ -19,17 +19,6 @@ function supprimerLesValeursDeSession(){
     unset($_SESSION[APP_KEY]);
 
 }
-/*===================================================================================================================*/
-
-function texte_aleatoire($length){
-
-    $str=random_bytes($length);
-    $str=base64_encode($str);
-    $str=str_replace(array( "+", "/", "="),"",$str);
-    $str=substr($str,0,$length);
-    return($str);
-
-}
 /*
   =====================================================================================================================
   si on est en post ...

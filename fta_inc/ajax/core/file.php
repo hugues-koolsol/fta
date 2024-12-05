@@ -28,20 +28,53 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         ));
 
         if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
-                $data[__xst]=false;
-                $data[__xms][]=__LINE__. ' ' . __FILE__ . ' KO';
-                return;
+            $data[__xst]=false;
+            $data[__xms][]=__LINE__. ' ' . __FILE__ . ' KO';
+            return;
         }
         $__valeurs=$tt[__xva][0];
 
-        
-        
-        
         $chemin_fichier='../../'.$__valeurs['T1.chp_dossier_cible'].$__valeurs['T2.chp_nom_dossier'].'/'.$__valeurs['T0.chp_nom_source'];
         
         
+        $texte_source=$data[__entree]['source'];
+        $alea1=texte_aleatoire(10);
+        if(strpos($texte_source,$alea1)!==false){
+            $data[__xst]=false;
+            $data[__xms][]=__LINE__. ' ' . __FILE__ . ' KO';
+            return;
+        }else{
+            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+                 /*
+                   Les zones textarea ne contiennent que des \n pour terminer une ligne
+                   mais windows impose \r\n
+                 */
+                 $CHAINE_CR=$alea1.'CR'.$alea1;
+                 $CHAINE_LF=$alea1.'LF'.$alea1;
+                 if(strpos($texte_source,"\n")!==false && strpos($texte_source,"\r")!==false){
+                     /*
+                         si il y a des \r et de \n
+                     */
+                     $texte_source=str_replace("\n",$CHAINE_LF,$texte_source);
+                     $texte_source=str_replace("\r",'',$texte_source);
+                     $texte_source=str_replace($CHAINE_LF,"\r\n",$texte_source);
+                  
+                 }else if(strpos($texte_source,"\n")===false && strpos($texte_source,"\r")!==false){
+
+                     $texte_source=str_replace("\r","\r\n",$texte_source);
+                  
+                 }else if(strpos($texte_source,"\n")!==false && strpos($texte_source,"\r")===false){
+                     $texte_source=str_replace("\n","\r\n",$texte_source);
+                  
+                 }else if(strpos($texte_source,"\n")===false && strpos($texte_source,"\r")===false){
+                     /* on ne remplace rien */
+                 }
+            }
+        }
+        
+        
         if($fd=fopen($chemin_fichier,'w')){
-            fwrite($fd,$data[__entree]['source']);
+            fwrite($fd,$texte_source);
             fclose($fd);
             $data[__xst]=true;
             
