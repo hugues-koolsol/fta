@@ -14,6 +14,9 @@
 */
 var contient_du_javascript_dans_html=false;
 var tableau_de_html_dans_php_a_convertir = [];
+/*
+  =====================================================================================================================
+*/
 function astphp_logerreur(o){
     logerreur(o);
     if(global_messages.ranges.length <= 3){
@@ -30,51 +33,39 @@ function astphp_logerreur(o){
     }
     return o;
 }
+/*
+  =====================================================================================================================
+*/
 function recupNomOperateur(s){
-    if(s === 'typeof'){
-        return 'Typeof';
-    }else if(s === 'instanceof'){
-        return 'Instanceof';
-    }else if(s === '++'){
-        return 'incr1';
-    }else if(s === '--'){
-        return 'decr1';
-    }else if(s === '+'){
-        return 'plus';
-    }else if(s === '-'){
-        return 'moins';
-    }else if(s === '*'){
-        return 'mult';
-    }else if(s === '/'){
-        return 'divi';
-    }else if(s === '=='){
-        return 'egal';
-    }else if(s === '==='){
-        return 'egalstricte';
-    }else if(s === '!='){
-        return 'diff';
-    }else if(s === '!=='){
-        return 'diffstricte';
-    }else if(s === '>'){
-        return 'sup';
-    }else if(s === '<'){
-        return 'inf';
-    }else if(s === '>='){
-        return 'supeg';
-    }else if(s === '<='){
-        return 'infeg';
-    }else if(s === '!'){
-        return 'non';
-    }else if(s === '&&'){
-        return 'et';
-    }else if(s === '||'){
-        return 'ou';
-    }else if(s === '&'){
-        return 'etBin';
-    }else{
-        return(astphp_logerreur({ "__xst" : false , "__xme" : '0079  erreur recupNomOperateur "' + s + '" ' , "element" : element }));
+    switch (s){
+        case 'typeof' : return 'Typeof';
+        case 'instanceof' : return 'Instanceof';
+        case '++' : return 'incr1';
+        case '--' : return 'decr1';
+        case '+' : return 'plus';
+        case '-' : return 'moins';
+        case '*' : return 'mult';
+        case '/' : return 'divi';
+        case '==' : return 'egal';
+        case '===' : return 'egalstricte';
+        case '!=' : return 'diff';
+        case '!==' : return 'diffstricte';
+        case '>' : return 'sup';
+        case '<' : return 'inf';
+        case '>=' : return 'supeg';
+        case '<=' : return 'infeg';
+        case '!' : return 'non';
+        case '&&' : return 'et';
+        case '||' : return 'ou';
+        case '&' : return 'etBin';
+        default:
+            return(astphp_logerreur({ "__xst" : false , "__xme" : '0079  erreur recupNomOperateur "' + s + '" ' , "element" : element }));
+            
     }
 }
+/*
+  =====================================================================================================================
+*/
 function php_traite_Expr_Eval(element,niveau){
     var t='';
     t+='appelf(';
@@ -88,6 +79,9 @@ function php_traite_Expr_Eval(element,niveau){
     t+=')';
     return({ "__xst" : true , "__xva" : t });
 }
+/*
+  =====================================================================================================================
+*/
 function php_traite_Expr_Include(element,niveau){
     var t='';
     t+='appelf(';
@@ -109,6 +103,9 @@ function php_traite_Expr_Include(element,niveau){
     t+=')';
     return({ "__xst" : true , "__xva" : t });
 }
+/*
+  =====================================================================================================================
+*/
 function php_traite_Stmt_Switch(element,niveau,dansFor,de_racine,options_traitement){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
@@ -245,6 +242,9 @@ function php_traite_Stmt_TryCatch(element,niveau,dansFor,de_racine,options_trait
     t+='\n' + esp0 + ')';
     return({ "__xst" : true , "__xva" : t });
 }
+/*
+  =====================================================================================================================
+*/
 function php_traite_Stmt_Use(element,niveau){
     var t='';
     var i=0;
@@ -261,6 +261,9 @@ function php_traite_Stmt_Use(element,niveau){
     }
     return({ "__xst" : true , "__xva" : t });
 }
+/*
+  =====================================================================================================================
+*/
 function php_traite_Expr_Isset(element,niveau){
     var t='';
     var nomFonction='isset';
@@ -396,7 +399,9 @@ function php_traite_Expr_FuncCall(element,niveau){
     }
     return({ "__xst" : true , "__xva" : t });
 }
-/*=====================================================================================================================*/
+/*
+  =====================================================================================================================
+*/
 function php_traite_printOuEcho(element,niveau,nomFonction){
     var t='';
     var lesArguments='';
@@ -423,11 +428,15 @@ function php_traite_printOuEcho(element,niveau,nomFonction){
     /*un point virgule est-il en trop ?*/
     return({ "__xst" : true , "__xva" : t });
 }
-/*=====================================================================================================================*/
+/*
+  =====================================================================================================================
+*/
 function php_traite_print(element,niveau){
     return(php_traite_printOuEcho(element,niveau,'print'));
 }
-/*=====================================================================================================================*/
+/*
+  =====================================================================================================================
+*/
 function php_traite_echo(element,niveau){
     return(php_traite_printOuEcho(element,niveau,'echo'));
 }
@@ -981,11 +990,19 @@ function php_traite_Expr_Assign(element,niveau){
     var gauche='';
     var droite='';
     if(element.var){
-        var obj = php_traite_Stmt_Expression(element.var,niveau,false,element);
-        if(obj.__xst === true){
-            gauche=obj.__xva;
+        if(element.var.nodeType==='Expr_Variable'){
+            /* 
+              comme il y a beaucoup d'affectation à une variable simple,
+              on fait une affectation directe ici
+            */
+            gauche='$'+element.var.name;
         }else{
-            return(astphp_logerreur({ "__xst" : false , "__xme" : '0847  erreur php_traite_Expr_Assign ' , "element" : element }));
+            var obj = php_traite_Stmt_Expression(element.var,niveau,false,element);
+            if(obj.__xst === true){
+                gauche=obj.__xva;
+            }else{
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '0847  erreur php_traite_Expr_Assign ' , "element" : element }));
+            }
         }
     }else{
         return(astphp_logerreur({ "__xst" : false , "__xme" : '0850  erreur php_traite_Expr_Assign ' , "element" : element }));
@@ -1428,146 +1445,160 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 if(element.attributes.kind && (element.attributes.kind === 3 || element.attributes.kind === 4)){
                     t+='heredoc(\'' + element.attributes.docLabel + '\',`\n' + (element.attributes.rawValue.replace(/`/g,'\\`')) + '`)';
                 }else if(element.attributes.rawValue.substr(0,1) === '\'' || element.attributes.rawValue.substr(0,1) === '"'){
-                    /*
-                      en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
-                      mais pour les fichiers rev, c'est pas excellent, 
-                      on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
-                      petite analyse et on remonte une erreur si on n'est pas dans ces cas
-                    */
                     var rv=element.attributes.rawValue;
-                    var l01 = rv.length - 2;
-                    var probablement_dans_une_regex = element.attributes.rawValue.substr(1,1) === '/' ? ( true ) : ( false );
-                    /*
-                      la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
-                      on les retire pour l'analyse, donc on part de l'avant dernier caractère 
-                      et on redescend jusqu'à l'indice 1
-                    */
-                    var nouvelle_chaine='';
-                    var i=l01;
-                    for( i=l01 ; i > 0 ; i-- ){
-                        if(rv.substr(i,1) === '\\'){
-                            /* on remonte à partir du dernier caractère */
-                            if(i === l01){
-                                /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
-                                if(rv.length > 2 && l01 > 1 && i > 1 && rv.substr(i - 1,1) === '\\'){
-                                    nouvelle_chaine='\\\\';
-                                    i--;
-                                }else{
-                                    /* position du \ en dernier */
-                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0925  une chaine ne doit pas contenir un simple \\ en dernière position  ' , "element" : element }));
-                                }
-                            }else{
-                                if(i > 1){
-                                    /*
-                                      si on est avant le dernier caractère;
-                                    */
-                                    if(rv.substr(i - 1,1) === '\\'){
-                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
+                    var contenu=rv.substr(1,rv.length-2);
+                    if(
+                      (rv.substr(0,1)==='\'' && contenu.indexOf('\'')<0 && contenu.indexOf('\\')<0 )
+                      || (rv.substr(0,1)==='"' && contenu.indexOf('"')<0 && contenu.indexOf('\\')<0 ) 
+                    ){
+                        /* 
+                          si c'est une chaine "simple" cad ne contenant ni terminateur ni antislash
+                        */
+                        t+=element.attributes.rawValue;
+
+                    }else{
+                     
+                        /*
+                          en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
+                          mais pour les fichiers rev, c'est pas excellent, 
+                          on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
+                          petite analyse et on remonte une erreur si on n'est pas dans ces cas
+                        */
+                        var l01 = rv.length - 2;
+                        var probablement_dans_une_regex = element.attributes.rawValue.substr(1,1) === '/' ? ( true ) : ( false );
+                        /*
+                          la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
+                          on les retire pour l'analyse, donc on part de l'avant dernier caractère 
+                          et on redescend jusqu'à l'indice 1
+                        */
+                        var nouvelle_chaine='';
+                        var i=l01;
+                        for( i=l01 ; i > 0 ; i-- ){
+                            if(rv.substr(i,1) === '\\'){
+                                /* on remonte à partir du dernier caractère */
+                                if(i === l01){
+                                    /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
+                                    if(rv.length > 2 && l01 > 1 && i > 1 && rv.substr(i - 1,1) === '\\'){
+                                        nouvelle_chaine='\\\\';
                                         i--;
                                     }else{
-                                        if(rv.substr(i + 1,1) === 'r'
-                                         || rv.substr(i + 1,1) === 'n'
-                                         || rv.substr(i + 1,1) === 't'
-                                         || rv.substr(i + 1,1) === '\''
-                                         || rv.substr(i + 1,1) === '.'
-                                         || rv.substr(i + 1,1) === '-'
-                                         || rv.substr(i + 1,1) === 'A'
-                                         || rv.substr(i + 1,1) === '?'
-                                         || rv.substr(i + 1,1) === 'd'
-                                         || rv.substr(i + 1,1) === '/'
-                                         || rv.substr(i + 1,1) === 'x'
-                                         || rv.substr(i + 1,1) === 'o'
-                                         || rv.substr(i + 1,1) === 'b'
-                                         || rv.substr(i + 1,1) === 'B'
-                                         || rv.substr(i + 1,1) === '"'
-                                         || rv.substr(i + 1,1) === '$'
-                                         || rv.substr(i + 1,1) === 'w'
-                                         || rv.substr(i + 1,1) === 's'
-                                         || rv.substr(i + 1,1) === 'z'
-                                         || rv.substr(i + 1,1) === 'Z'
-                                         || rv.substr(i + 1,1) === '('
-                                         || rv.substr(i + 1,1) === ')'
-                                         || rv.substr(i + 1,1) === '['
-                                         || rv.substr(i + 1,1) === ']'){
+                                        /* position du \ en dernier */
+                                        return(astphp_logerreur({ "__xst" : false , "__xme" : '0925  une chaine ne doit pas contenir un simple \\ en dernière position  ' , "element" : element }));
+                                    }
+                                }else{
+                                    if(i > 1){
+                                        /*
+                                          si on est avant le dernier caractère;
+                                        */
+                                        if(rv.substr(i - 1,1) === '\\'){
+                                            nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                            i--;
+                                        }else{
                                             if(rv.substr(i + 1,1) === 'r'
-                                             || rv.substr(i + 1,1) === 't'
                                              || rv.substr(i + 1,1) === 'n'
+                                             || rv.substr(i + 1,1) === 't'
                                              || rv.substr(i + 1,1) === '\''
-                                             && rv.substr(0,1) === "'"
+                                             || rv.substr(i + 1,1) === '.'
+                                             || rv.substr(i + 1,1) === '-'
+                                             || rv.substr(i + 1,1) === 'A'
+                                             || rv.substr(i + 1,1) === '?'
+                                             || rv.substr(i + 1,1) === 'd'
+                                             || rv.substr(i + 1,1) === '/'
+                                             || rv.substr(i + 1,1) === 'x'
+                                             || rv.substr(i + 1,1) === 'o'
+                                             || rv.substr(i + 1,1) === 'b'
+                                             || rv.substr(i + 1,1) === 'B'
                                              || rv.substr(i + 1,1) === '"'
+                                             || rv.substr(i + 1,1) === '$'
+                                             || rv.substr(i + 1,1) === 'w'
+                                             || rv.substr(i + 1,1) === 's'
+                                             || rv.substr(i + 1,1) === 'z'
+                                             || rv.substr(i + 1,1) === 'Z'
+                                             || rv.substr(i + 1,1) === '('
+                                             || rv.substr(i + 1,1) === ')'
+                                             || rv.substr(i + 1,1) === '['
+                                             || rv.substr(i + 1,1) === ']'){
+                                                if(rv.substr(i + 1,1) === 'r'
+                                                 || rv.substr(i + 1,1) === 't'
+                                                 || rv.substr(i + 1,1) === 'n'
+                                                 || rv.substr(i + 1,1) === '\''
+                                                 && rv.substr(0,1) === "'"
+                                                 || rv.substr(i + 1,1) === '"'
+                                                 && rv.substr(0,1) === '"'){
+                                                    nouvelle_chaine='\\' + nouvelle_chaine;
+                                                }else{
+                                                    nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                                }
+                                            }else{
+                                                if(probablement_dans_une_regex === false){
+                                                    if(i > 0 && rv.substr(i - 1,1) !== '\\'){
+                                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                                    }else{
+                                                        return(astphp_logerreur({ "__xst" : false , "__xme" : '1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' , "element" : element }));
+                                                    }
+                                                }else{
+                                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' , "element" : element }));
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        /*
+                                          si on est au premier caractère;
+                                        */
+                                        if(rv.substr(i,1) === '\\'){
+                                            var c = nouvelle_chaine.substr(0,1);
+                                            if(c === '.'
+                                             || c === '-'
+                                             || c === 'd'
+                                             || c === '/'
+                                             || c === 'x'
+                                             || c === 'o'
+                                             || c === 'b'
+                                             || c === 's'
+                                             || c === '\\'
+                                             || c === ']'
+                                             || c === '['
+                                             || c === '$'
+                                             || c === '"'
+                                             && rv.substr(0,1) === '\''){
+                                                nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                            }else if(c === 'r'
+                                             || c === 'n'
+                                             || c === 't'
+                                             || c === '\''
+                                             && rv.substr(0,1) === '\''
+                                             || c === '"'
                                              && rv.substr(0,1) === '"'){
                                                 nouvelle_chaine='\\' + nouvelle_chaine;
                                             }else{
-                                                nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' , "element" : element }));
                                             }
                                         }else{
-                                            if(probablement_dans_une_regex === false){
-                                                if(i > 0 && rv.substr(i - 1,1) !== '\\'){
-                                                    nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                                }else{
-                                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' , "element" : element }));
-                                                }
-                                            }else{
-                                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' , "element" : element }));
-                                            }
+                                            nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
                                         }
-                                    }
-                                }else{
-                                    /*
-                                      si on est au premier caractère;
-                                    */
-                                    if(rv.substr(i,1) === '\\'){
-                                        var c = nouvelle_chaine.substr(0,1);
-                                        if(c === '.'
-                                         || c === '-'
-                                         || c === 'd'
-                                         || c === '/'
-                                         || c === 'x'
-                                         || c === 'o'
-                                         || c === 'b'
-                                         || c === 's'
-                                         || c === '\\'
-                                         || c === ']'
-                                         || c === '['
-                                         || c === '$'
-                                         || c === '"'
-                                         && rv.substr(0,1) === '\''){
-                                            nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                        }else if(c === 'r'
-                                         || c === 'n'
-                                         || c === 't'
-                                         || c === '\''
-                                         && rv.substr(0,1) === '\''
-                                         || c === '"'
-                                         && rv.substr(0,1) === '"'){
-                                            nouvelle_chaine='\\' + nouvelle_chaine;
-                                        }else{
-                                            return(astphp_logerreur({ "__xst" : false , "__xme" : '0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' , "element" : element }));
-                                        }
-                                    }else{
-                                        nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
                                     }
                                 }
-                            }
-                        }else if(rv.substr(i,1) === '\'' && rv.substr(0,1) === '\''){
-                            if(i >= 2 && rv.substr(i - 1,1) === '\\'){
-                                nouvelle_chaine='\\\'' + nouvelle_chaine;
-                                i--;
+                            }else if(rv.substr(i,1) === '\'' && rv.substr(0,1) === '\''){
+                                if(i >= 2 && rv.substr(i - 1,1) === '\\'){
+                                    nouvelle_chaine='\\\'' + nouvelle_chaine;
+                                    i--;
+                                }else{
+                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0983 il doit y avoir un backslash avant un apostrophe ' , "element" : element }));
+                                }
+                            }else if(rv.substr(i,1) === '"' && rv.substr(0,1) === '"'){
+                                if(i >= 2 && rv.substr(i - 1,1) === '\\'){
+                                    nouvelle_chaine='\\"' + nouvelle_chaine;
+                                    i--;
+                                }else{
+                                    return(astphp_logerreur({ "__xst" : false , "__xme" : '0994 il doit y avoir un backslash avant un guillemet ' , "element" : element }));
+                                }
                             }else{
-                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0983 il doit y avoir un backslash avant un apostrophe ' , "element" : element }));
+                                nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
                             }
-                        }else if(rv.substr(i,1) === '"' && rv.substr(0,1) === '"'){
-                            if(i >= 2 && rv.substr(i - 1,1) === '\\'){
-                                nouvelle_chaine='\\"' + nouvelle_chaine;
-                                i--;
-                            }else{
-                                return(astphp_logerreur({ "__xst" : false , "__xme" : '0994 il doit y avoir un backslash avant un guillemet ' , "element" : element }));
-                            }
-                        }else{
-                            nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
                         }
+                        t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);                     
                     }
-                    t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
+
                 }else{
                     t+=element.attributes.rawValue;
                 }
@@ -2333,34 +2364,38 @@ function php_traiteCondition1(element,niveau,parent,options_traitement){
           - la première entrée est une fonction vide
           - tous les autres niveaux sont >=1
         */
-        var matrice = functionToArray(obj.__xva,true,true,'');
-        if(matrice.__xst === true && matrice.__xva.length >= 2){
-            if(matrice.__xva[1][1] === ''){
-                var l01=matrice.__xva.length;
-                var tout_est_superieur=true;
-                var j=2;
-                for( j=2 ; j < l01 ; j++ ){
-                    if(matrice.__xva[j][3] < 1){
-                        tout_est_superieur=false;
-                        break;
+        if(obj.__xva.substr(0,1)==='(' && obj.__xva.substr(obj.__xva.length-1,1)===')'){
+            var matrice = functionToArray(obj.__xva,true,true,'');
+            if(matrice.__xst === true && matrice.__xva.length >= 2){
+                if(matrice.__xva[1][1] === ''){
+                    var l01=matrice.__xva.length;
+                    var tout_est_superieur=true;
+                    var j=2;
+                    for( j=2 ; j < l01 ; j++ ){
+                        if(matrice.__xva[j][3] < 1){
+                            tout_est_superieur=false;
+                            break;
+                        }
                     }
-                }
-                if(tout_est_superieur === true){
-                    var nouveauTableau = baisserNiveauEtSupprimer(matrice.__xva,1,0);
-                    var obj1 = a2F1(nouveauTableau,0,true,1,false);
-                    if(obj1.__xst === true){
-                        t+=obj1.__xva;
+                    if(tout_est_superieur === true){
+                        var nouveauTableau = baisserNiveauEtSupprimer(matrice.__xva,1,0);
+                        var obj1 = a2F1(nouveauTableau,0,true,1,false);
+                        if(obj1.__xst === true){
+                            t+=obj1.__xva;
+                        }else{
+                            return(astphp_logerreur({ "__xst" : false , "__xme" : '16164334  dans php_traiteCondition1' , "element" : element }));
+                        }
                     }else{
-                        return(astphp_logerreur({ "__xst" : false , "__xme" : '16164334  dans php_traiteCondition1' , "element" : element }));
+                        t+=obj.__xva;
                     }
                 }else{
                     t+=obj.__xva;
                 }
             }else{
-                t+=obj.__xva;
+                return(astphp_logerreur({ "__xst" : false , "__xme" : '1656  dans php_traiteCondition1' , "element" : element }));
             }
         }else{
-            return(astphp_logerreur({ "__xst" : false , "__xme" : '1656  dans php_traiteCondition1' , "element" : element }));
+            t+=obj.__xva;
         }
     }else{
         return(astphp_logerreur({ "__xst" : false , "__xme" : '1665  dans php_traiteCondition1' , "element" : element }));
@@ -2709,9 +2744,9 @@ function php_traite_Stmt_Foreach(element,niveau,options_traitement){
 */
 function ajouteCommentairesAvant(element,niveau){
     var t='';
-    var esp0 = ' '.repeat(NBESPACESREV * niveau);
-    var esp1 = ' '.repeat(NBESPACESREV);
     if(element.attributes.comments){
+        var esp0 = ' '.repeat(NBESPACESREV * niveau);
+        var esp1 = ' '.repeat(NBESPACESREV);
         var j=0;
         for( j=0 ; j < element.attributes.comments.length ; j++ ){
             if("Comment" === element.attributes.comments[j].nodeType || "Comment_Doc" === element.attributes.comments[j].nodeType){

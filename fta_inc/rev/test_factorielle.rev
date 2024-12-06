@@ -86,25 +86,26 @@ src_html(
                   affecte(zone , appelf(nomf(document.getElementById) , p('zoneResultat'))),
                   affecte(zone.innerHTML , resultat),
                   #(#
-  en lisp la fonction factorielle est ecrite comme ça :
-  =================================================
-  (
-    defun factorial (n) ( 
-     if (<= n 1) 
-      (1) 
-      ( * n ( factorial (- n 1) ) ) 
-    ) 
-  )
-  =================================================
-  Je trouve cette syntaxe un peu bizarre car le if qui contient 
-  -une condition
-  -une valeur si frai
-  -une valeur si faux
-  n'inclut pas ces 3 éléments dans des parenthèses
-
-  Même si la définition de la fonction factorielle plus haut est plus verbeuse que
-  celle écrite en lisp, je la préfère. 
-  Ce n'est que mon avis et ce n'est qu'une question de goût !
+                    en lisp la fonction factorielle est ecrite comme ça :
+                    =================================================
+                    (
+                      defun factorial (n) ( 
+                       if (<= n 1) 
+                        (1) 
+                        ( * n ( factorial (- n 1) ) ) 
+                      ) 
+                    )
+                    =================================================
+                    Je trouve cette syntaxe un peu bizarre car le if qui contient 
+                    -une condition
+                    -une valeur si frai
+                    -une valeur si faux
+                    n'inclut pas ces 3 éléments dans des parenthèses
+                  
+                    Même si la définition de la fonction factorielle plus haut est plus verbeuse que
+                    celle écrite en lisp, je la préfère. 
+                    Ce n'est que mon avis et ce n'est qu'une question de goût !
+                                    
                   )
                )
             ),

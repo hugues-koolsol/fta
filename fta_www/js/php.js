@@ -1017,9 +1017,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                      }
                                  }else if(tab[k][1]==='faire' && tab[k][2]==='f' ){
                                      if(tab[k][8]>=1){
-                                         niveau+=2;
-                                         obj=php_tabToPhp1(tab,k+1,false,false,niveau);
-                                         niveau-=2;
+                                         obj=php_tabToPhp1(tab,k+1,false,false,niveau+2);
                                          if(obj.__xst===true){
                                           InstructionsCas=obj.__xva;
                                          }else{
@@ -2762,11 +2760,15 @@ function php_traiteAffecte(tab,i,dansConditionOuDansFonction,niveau){
             if(tab[j][7]===i){
              
                 var elt='';
-                var obj1=php_traiteElement(tab,j,niveau,{});
-                if(obj1.__xst===true){
-                    elt=obj1.__xva;
+                if( tab[j][2] === 'c' ){
+                    elt=ma_cst_pour_php(tab[j]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                 }else{
-                    return php_logerr({__xst:false,__xva:t,id:id,tab:tab,__xme:'dans affecte 0804'});
+                    var obj1=php_traiteElement(tab,j,niveau,{});
+                    if(obj1.__xst===true){
+                        elt=obj1.__xva;
+                    }else{
+                        return php_logerr({__xst:false,__xva:t,id:id,tab:tab,__xme:'dans affecte 0804'});
+                    }
                 }
                 /* enfant 1 ou 2 */
                 if(tab[j][9]===1){ 
@@ -2774,6 +2776,7 @@ function php_traiteAffecte(tab,i,dansConditionOuDansFonction,niveau){
                 }else{
                     apresEgal=elt;
                 }
+                
             }
         }
         if(apresEgal.substr(0,avantEgal.length)===avantEgal && apresEgal.substr(avantEgal.length,1)==='.'){

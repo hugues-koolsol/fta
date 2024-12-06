@@ -430,10 +430,15 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                             if(valeurCas === null){
                                 valeursCase+='default:';
                             }else{
-                                valeursCase+='case ' + valeurCas + ':';
+                                valeursCase+='case ' + valeurCas + ' :';
                             }
-                            valeursCase+=InstructionsCas;
-                            valeursCase+=espacesn(true,niveau + 2);
+                            if(InstructionsCas.length<120){
+                                InstructionsCas=InstructionsCas.trim();
+                                valeursCase+=' '+InstructionsCas;
+                            }else{
+                                valeursCase+=InstructionsCas;
+                                valeursCase+=espacesn(true,niveau + 2);
+                            }
                         }else{
                             return(logerreur({ "__xst" : false , "__xva" : t , "id" : i , "tab" : tab , "message" : 'javascript dans bascule 0307 ' }));
                         }
@@ -1252,6 +1257,9 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
     }
     return({ "__xst" : true , "__xva" : t });
 }
+/*
+  =====================================================================================================================
+*/
 function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne){
     const l01=tab.length;
     var t='';
@@ -1293,6 +1301,7 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
     }
     var objInstructionGauche = js_traiteInstruction1(tab,niveau,tabAffecte['par0'][0]);
     if(objInstructionGauche.__xst === true){
+
         var objInstructionDroite = js_traiteInstruction1(tab,niveau,tabAffecte['par1'][0]);
         if(objInstructionDroite.__xst === true){
             /*
@@ -1311,6 +1320,7 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
                 }
                 t+='' + objInstructionGauche.__xva + '+=' + droite;
             }else{
+
                 var droite=objInstructionDroite.__xva;
                 t+=objInstructionGauche.__xva + signe + droite;
             }
@@ -2297,7 +2307,11 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 */
                 t+='{' + (espacesn(true,niveau)) + contenu + (espacesn(true,niveau)) + '}';
             }else{
-                t+='{' + (espacesn(true,niveau)) + contenu + '}';
+                if(tab[tab[id][7]][1]==='affecte' && tab[tab[id][7]][2]==='f'){
+                    t+='{' + (espacesn(true,niveau)) + contenu + (espacesn(true,niveau)) + '}';
+                }else{
+                    t+='{' + (espacesn(true,niveau)) + contenu + '}';
+                }
             }
         }else{
             if(contenu.substr(contenu.length - 1,1) === ';'){
