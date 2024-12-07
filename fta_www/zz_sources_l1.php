@@ -228,6 +228,7 @@ $par=array(
  'js_a_inclure' => array( 
   'js/pour_zz_source1.js', 
   'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js',  'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 
+  'js/jslib/acorn.js',
 
   'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js' ), 
  'module_a_inclure' => array('js/module_html.js'), 

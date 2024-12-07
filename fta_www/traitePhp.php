@@ -53,7 +53,9 @@ $par=array(
             'js/php.js' ,
             'js/sql.js' , 
             'js/convertion_sql_en_rev.js' ,
-            'js/jslib/sqlite_parser_from_demo.js'),
+            'js/jslib/sqlite_parser_from_demo.js',
+            'js/jslib/acorn.js'
+            ),
     'module_a_inclure' => array( 'js/module_interface1.js', 'js/module_html.js'),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.='<script type="text/javascript">

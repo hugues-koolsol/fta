@@ -1,14 +1,5 @@
 "use strict";
-/* =================================================================================== */
-function astjs_logerreur(o){
-    logerreur(o);
-    if(global_messages['ranges'].length <= 3){
-        if(o.hasOwnProperty('element') && o.element.hasOwnProperty('range')){
-            global_messages['ranges'].push(JSON.parse(JSON.stringify(o.element.range)));
-        }
-    }
-    return o;
-}
+
 /*
   =====================================================================================================================
   point d'entrée = TransformAstEnRev
@@ -34,10 +25,20 @@ function astjs_logerreur(o){
   'ThisExpression'             
   'UpdateExpression'      
   'UnaryExpression'       
-  'VariableDeclarator'    
-  
+  'VariableDeclarator'      
   =====================================================================================================================
-  
+*/
+function astjs_logerreur(o){
+    logerreur(o);
+    if(global_messages['ranges'].length <= 3){
+        if(o.hasOwnProperty('element') && o.element.hasOwnProperty('range')){
+            global_messages['ranges'].push(JSON.parse(JSON.stringify(o.element.range)));
+        }
+    }
+    return o;
+}
+/*
+  =====================================================================================================================
 */
 function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,parent){
     var t='';
@@ -411,7 +412,9 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
     }
     return({ "__xst" : true , "__xva" : t });
 }
-/* =================================================================================== */
+/*
+  =====================================================================================================================
+*/
 function recupNomOperateur(s){
     if(s === 'typeof'){
         return 'Typeof';
@@ -1760,7 +1763,7 @@ function traiteObjectExpression1(element,niveau){
          || 'ThisExpression' === val.value.type
          || 'UnaryExpression' === val.value.type
          || 'UpdateExpression' === val.value.type){
-            var obj1 = traiteUneComposante(val.value,niveau,false,false,val);
+            var obj1 = traiteUneComposante(val.value,niveau+1,false,false,val);
             if(obj1.__xst === true){
                 t+=obj1.__xva + ')';
             }else{
@@ -2814,7 +2817,7 @@ function TransformAstEnRev(les_elements,niveau){
             }else{
                 debugger;
             }
-            t+=ajouteCommentaireAvant(element,niveau + 1);
+            t+=ajouteCommentaireAvant(element,niveau);
             var bodyTrouve=false;
             if(t !== ''){
                 t+=',';
@@ -2836,7 +2839,7 @@ function TransformAstEnRev(les_elements,niveau){
                             t+=element.params[j].name;
                             t+=')';
                         }else if(element.params[j].type === "AssignmentPattern"){
-                            var obj = traiteAssignmentPattern(element.params[j],niveau + 1,{});
+                            var obj = traiteAssignmentPattern(element.params[j],niveau+1,{});
                             if(obj.__xst === true){
                                 t+='\n' + esp0 + esp1 + esp1 + 'argument(';
                                 t+=comm_avant_debut(element.params[j],niveau);
@@ -2859,7 +2862,7 @@ function TransformAstEnRev(les_elements,niveau){
                 for(prop in element){
                     if(prop === 'body'){
                         bodyTrouve=true;
-                        var obj = TransformAstEnRev(element[prop],niveau + 1);
+                        var obj = TransformAstEnRev(element[prop],niveau+1);
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
@@ -2870,42 +2873,42 @@ function TransformAstEnRev(les_elements,niveau){
                 t+='\n' + esp0 + esp1 + ')';
                 t+='\n' + esp0 + ')';
             }else if(element.type === 'VariableDeclaration'){
-                var objDecl = traiteDeclaration1(element,niveau + 1);
+                var objDecl = traiteDeclaration1(element,niveau);
                 if(objDecl.__xst === true){
                     t+=objDecl.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 471 ' + element.type , "element" : element }));
                 }
             }else if('IfStatement' === element.type){
-                var objif = traiteIf1(element,niveau + 1,'if');
+                var objif = traiteIf1(element,niveau,'if');
                 if(objif.__xst === true){
                     t+=objif.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 261 ' + element.type , "element" : element }));
                 }
             }else if('ForInStatement' === element.type){
-                var objFor = traiteForIn1(element,niveau + 1);
+                var objFor = traiteForIn1(element,niveau);
                 if(objFor.__xst === true){
                     t+=objFor.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 2442 ' + element.type , "element" : element }));
                 }
             }else if('ForOfStatement' === element.type){
-                var objFor = traiteForOf1(element,niveau + 1);
+                var objFor = traiteForOf1(element,niveau);
                 if(objFor.__xst === true){
                     t+=objFor.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 2442 ' + element.type , "element" : element }));
                 }
             }else if('DoWhileStatement' === element.type){
-                var objDo = traiteDo1(element,niveau + 1);
+                var objDo = traiteDo1(element,niveau);
                 if(objDo.__xst === true){
                     t+=objDo.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 02449 ' + element.type , "element" : element }));
                 }
             }else if('ForStatement' === element.type){
-                var objFor = traiteFor1(element,niveau + 1);
+                var objFor = traiteFor1(element,niveau);
                 if(objFor.__xst === true){
                     t+=objFor.__xva;
                 }else{
@@ -2922,14 +2925,14 @@ function TransformAstEnRev(les_elements,niveau){
                 if(element.argument === null){
                     t+='\n' + esp0 + 'revenir()';
                 }else if(element.argument && element.argument.type === 'CallExpression'){
-                    var obj1 = traiteCallExpression1(element.argument,niveau + 1,element,{ "sansLF" : true });
+                    var obj1 = traiteCallExpression1(element.argument,niveau+1,element,{ "sansLF" : true });
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + 'retourner(' + obj1.__xva + ')';
                     }else{
                         return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur TransformAstEnRev 1221 ' , "element" : element }));
                     }
                 }else if(element.argument && element.argument.type === 'ObjectExpression'){
-                    var obj1 = traiteObjectExpression1(element.argument,niveau + 1);
+                    var obj1 = traiteObjectExpression1(element.argument,niveau+1);
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + 'retourner(' + obj1.__xva + ')';
                     }else{
@@ -2950,7 +2953,7 @@ function TransformAstEnRev(les_elements,niveau){
                  || element.argument.type === 'NewExpression'
                  || element.argument.type === 'UnaryExpression')
                 ){
-                    var obj1 = traiteUneComposante(element.argument,niveau + 1,false,false,element);
+                    var obj1 = traiteUneComposante(element.argument,niveau,false,false,element);
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + 'retourner(' + obj1.__xva + ')';
                     }else{
@@ -2960,7 +2963,7 @@ function TransformAstEnRev(les_elements,niveau){
                     return(astjs_logerreur({ "__xst" : false , "__xme" : '1044 erreur pour TransformAstEnRev ' + element.argument.type , "element" : element }));
                 }
             }else if('TryStatement' === element.type){
-                var objtry1 = traiteTry1(element,niveau + 1);
+                var objtry1 = traiteTry1(element,niveau);
                 if(objtry1.__xst === true){
                     t+=objtry1.__xva;
                 }else{
@@ -2986,21 +2989,21 @@ function TransformAstEnRev(les_elements,niveau){
                 }else if(element.argument.type === 'Literal'){
                     t+='\n' + esp0 + 'throw(' + element.argument.raw + ')';
                 }else if(element.argument.type === 'CallExpression'){
-                    var obj1 = traiteCallExpression1(element.argument,niveau + 1,element,{});
+                    var obj1 = traiteCallExpression1(element.argument,niveau,element,{});
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + 'throw(' + obj1.__xva + ')';
                     }else{
                         return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 1994 ' + element.argument.type , "element" : element }));
                     }
                 }else if(element.argument.type === 'NewExpression'){
-                    var obj1 = traiteCallExpression1(element.argument,niveau + 1,element,{});
+                    var obj1 = traiteCallExpression1(element.argument,niveau,element,{});
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + 'throw(new(' + obj1.__xva + '))';
                     }else{
                         return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 1994 ' + element.argument.type , "element" : element }));
                     }
                 }else if(element.argument.type === 'SequenceExpression' || 'ConditionalExpression' === element.argument.type){
-                    var obj1 = traiteUneComposante(element.argument,niveau + 1,false,false,element);
+                    var obj1 = traiteUneComposante(element.argument,niveau,false,false,element);
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + 'throw(' + obj1.__xva + ')';
                     }else{
@@ -3012,14 +3015,14 @@ function TransformAstEnRev(les_elements,niveau){
             }else if('EmptyStatement' === element.type){
                 t+='\n' + esp0 + '#(un point virgule est-il en trop ?)';
             }else if('WhileStatement' === element.type){
-                var objWhile = traiteWhile1(element,niveau + 1);
+                var objWhile = traiteWhile1(element,niveau);
                 if(objWhile.__xst === true){
                     t+=objWhile.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour TransformAstEnRev 1929 ' + element.type , "element" : element }));
                 }
             }else if('SwitchStatement' === element.type){
-                var objSwitch = traiteSwitch1(element,niveau + 1);
+                var objSwitch = traiteSwitch1(element,niveau);
                 if(objSwitch.__xst === true){
                     t+=objSwitch.__xva;
                 }else{
@@ -3029,7 +3032,7 @@ function TransformAstEnRev(les_elements,niveau){
                 if(Array.isArray(element.body) && element.body.length === 0){
                     t+='';
                 }else{
-                    var obj = TransformAstEnRev(element.body,niveau + 1);
+                    var obj = TransformAstEnRev(element.body,niveau+1);
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
@@ -3052,7 +3055,7 @@ function TransformAstEnRev(les_elements,niveau){
                 if(element.body && element.body.type === "ClassBody" && element.body.body && element.body.body.length > 0){
                     var j=0;
                     for( j=0 ; j < element.body.body.length ; j++ ){
-                        var obj = TransformAstEnRev(element.body.body[j],niveau + 1);
+                        var obj = TransformAstEnRev(element.body.body[j],niveau+1);
                         if(obj.__xst === true){
                             corps_de_la_classe+=obj.__xva;
                         }else{
@@ -3065,14 +3068,14 @@ function TransformAstEnRev(les_elements,niveau){
              || "PropertyDefinition" === element.type
              || "ExportNamedDeclaration" === element.type
             ){
-                var obj1 = traiteUneComposante(element,niveau + 1,false,false,null);
+                var obj1 = traiteUneComposante(element,niveau,false,false,null);
                 if(obj1.__xst === true){
                     t+=obj1.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur dans traiteUneComposante 0076' , "element" : element }));
                 }
             }else if('LabeledStatement' === element.type){
-                var obj1 = traiteUneComposante(element,niveau + 1,false,false,element);
+                var obj1 = traiteUneComposante(element,niveau,false,false,element);
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + obj1.__xva;
                 }else{
@@ -3085,7 +3088,7 @@ function TransformAstEnRev(les_elements,niveau){
                 for(prop in element){
                     if(prop === 'body'){
                         bodyTrouve=true;
-                        var obj = TransformAstEnRev(element[prop],niveau + 1);
+                        var obj = TransformAstEnRev(element[prop],niveau+1);
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
@@ -3098,14 +3101,12 @@ function TransformAstEnRev(les_elements,niveau){
     }else{
         if(les_elements.type === 'BlockStatement'){
             if(les_elements.body){
-                niveau=niveau + 1;
-                var obj = TransformAstEnRev(les_elements.body,niveau);
+                var obj = TransformAstEnRev(les_elements.body,niveau+1);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
                     return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour ' + les_elements , "element" : element }));
                 }
-                niveau=niveau - 1;
             }else{
                 console.log('Pas de body pour ' + les_elements.type);
             }
@@ -3121,7 +3122,7 @@ function TransformAstEnRev(les_elements,niveau){
 /*
   =====================================================================================================================
 */
-function analyse_fichier_log_acorn(fichier_erreur,texte_source,zone_source){
+function analyse_fichier_log_acorn_ancien(fichier_erreur,texte_source,zone_source){
     var numero_de_ligne=-1;
     var position=-1;
     var caractere_incorrecte='';
@@ -3173,7 +3174,7 @@ function analyse_fichier_log_acorn(fichier_erreur,texte_source,zone_source){
   Appel SYNCHRONE à la transformation de source js en ast
   =====================================================================================================================
 */
-function recupere_ast_de_source_js_en_synchrone(texteSource){
+function recupere_ast_de_source_js_en_synchrone_ancien(texteSource){
     var texte_source_mini = texteSource.trim();
     if(texte_source_mini === ''){
         return({ "__xst" : true , "__xva" : {
@@ -3257,39 +3258,7 @@ function recupere_ast_de_source_js_en_synchrone(texteSource){
 /*
   =====================================================================================================================
 */
-function convertit_source_javascript_en_rev(sourceDuJavascript){
-    var t='';
-    try{
-        var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript);
-        if(obj1.__xst === true){
-            tabComment=obj1.commentaires;
-            if(obj1.__xva === ''){
-                t='';
-            }else if(obj1.__xva.hasOwnProperty('body') && Array.isArray(obj1.__xva.body) && obj1.__xva.body.length === 0){
-                t='';
-            }else{
-                var obj = TransformAstEnRev(obj1.__xva.body,0);
-                if(obj.__xst === true){
-                    t=obj.__xva;
-                }else{
-                    return(logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 2733' }));
-                }
-            }
-        }else{
-            return(logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 2611' }));
-        }
-        return({ "__xst" : true , "__xva" : t });
-    }catch(e){
-        console.log('erreur de conversion de source',e);
-        return(logerreur({ "__xst" : false , "__xme" : 'erreurconvertit_source_javascript_en_rev e=' + e.message }));
-    }
-    return({ "__xst" : true , "__xva" : t });
-}
-var tabComment = [];
-/*
-  =====================================================================================================================
-*/
-function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
+function traitement_apres_recuperation_ast_de_js_avec_acorn_ancien(donnees_en_entree){
     if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
         document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value='';
     }
@@ -3352,7 +3321,7 @@ function traitement_apres_recuperation_ast_de_js_avec_acorn(donnees_en_entree){
 /*
   =====================================================================================================================
 */
-function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apres_traitement){
+function recupere_ast_de_js_avec_acorn_ancien(texteSource,options,fonction_a_lancer_apres_traitement){
     var ajax_param={ "call" : { "lib" : 'js' , "file" : 'ast' , "funct" : 'recupererAstDeJs' , "opt" : { "masquer_les_messages_du_serveur" : true } } , "texteSource" : texteSource , "options" : options };
     async function recupererAstDeJs1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
@@ -3388,7 +3357,82 @@ function recupere_ast_de_js_avec_acorn(texteSource,options,fonction_a_lancer_apr
 /*
   =====================================================================================================================
 */
+
 function transform_source_js_en_rev_avec_acorn(source,options){
+    var parseur_javascript = window.acorn.Parser;
+    try{
+        tabComment=[];
+        var obj=parseur_javascript.parse(source, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+        if(obj === ''){
+            t='';
+        }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
+            t='';
+        }else{
+            var startMicro = performance.now();
+            var obj0 = TransformAstEnRev(obj.body,0);
+            if(obj0.__xst === true){
+//                return( { "__xst" : true, "__xva" : obj1.__xva });
+
+
+                if(options.hasOwnProperty('en_ligne') && options.en_ligne === true  ){
+                    sauvegarder_js_en_ligne(obj0.__xva,options.donnees);
+                }else if(options.nom_de_la_text_area_rev){
+                    document.getElementById(options.nom_de_la_text_area_rev).value=obj0.__xva;
+                    var obj1 = functionToArray(obj0.__xva,true,false,'');
+                    if(obj1.__xst === true){
+                        var endMicro = performance.now();
+                        astjs_logerreur({ "__xst" : true , "__xme" : 'pas d\'erreur pour le rev ' + (parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms' });
+                        var resJs = parseJavascript0(obj1.__xva,1,0);
+                        if(resJs.__xst === true){
+                            var tableau1 = iterateCharacters2(obj0.__xva);
+                            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                            if(matriceFonction.__xst === true){
+                                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                                if(obj2.__xst === true){
+                                    document.getElementById(options.nom_de_la_text_area_rev).value=obj2.__xva;
+                                }else{
+                                    document.getElementById(options.nom_de_la_text_area_rev).value=obj0.__xva;
+                                }
+                            }else{
+                                document.getElementById(options.nom_de_la_text_area_rev).value=obj0.__xva;
+                            }
+                            if(document.getElementById('txtar3')){
+                                document.getElementById('txtar3').value=resJs.__xva;
+                            }
+                        }else{
+                            document.getElementById(options.nom_de_la_text_area_rev).value=obj0.__xva;
+                            astjs_logerreur({ "__xst" : true , "__xme" : '2586 erreur de conversion de rev en javascript' });
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
+                            return;
+                        }
+                    }else{
+                        document.getElementById(options.nom_de_la_text_area_rev).value=obj0.__xva;
+                    }
+                }
+
+
+            }else{
+                logerreur({ "__xst" : false , "__xme" : 'erreur transform_source_js_en_rev_avec_acorn 3375' });
+            }
+        }
+    
+    }catch(e){
+        console.error('e=',e);
+
+        if(e.pos){
+            logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3382' , plage:[e.pos,e.pos]});
+        }else{
+            logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3385' });
+        }
+    }
+    return({ "__xst" : true } );
+
+}
+/*
+  =====================================================================================================================
+*/
+function transform_source_js_en_rev_avec_acorn_ancien(source,options){
+    debugger
     var ret={ "__xst" : true , "__xme" : true };
     try{
         var ret = recupere_ast_de_js_avec_acorn(source,{ "options" : options },traitement_apres_recuperation_ast_de_js_avec_acorn);
@@ -3402,6 +3446,116 @@ function transform_source_js_en_rev_avec_acorn(source,options){
         ret.__xst=false;
     }
     return ret;
+}
+
+/*
+  =====================================================================================================================
+*/
+function convertit_source_javascript_en_rev_old(sourceDuJavascript){
+    var t='';
+    try{
+        var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript);
+        if(obj1.__xst === true){
+            tabComment=obj1.commentaires;
+            if(obj1.__xva === ''){
+                t='';
+            }else if(obj1.__xva.hasOwnProperty('body') && Array.isArray(obj1.__xva.body) && obj1.__xva.body.length === 0){
+                t='';
+            }else{
+                var obj = TransformAstEnRev(obj1.__xva.body,0);
+                if(obj.__xst === true){
+                    t=obj.__xva;
+                }else{
+                    return(logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 2733' }));
+                }
+            }
+        }else{
+            return(logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 2611' }));
+        }
+        return({ "__xst" : true , "__xva" : t });
+    }catch(e){
+        console.log('erreur de conversion de source',e);
+        return(logerreur({ "__xst" : false , "__xme" : 'erreurconvertit_source_javascript_en_rev e=' + e.message }));
+    }
+    return({ "__xst" : true , "__xva" : t });
+}
+
+function convertit_source_javascript_en_rev(sourceDuJavascript){
+    var parseur_javascript = window.acorn.Parser;
+    try{
+        tabComment=[];
+        var obj=parseur_javascript.parse(sourceDuJavascript, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+        if(obj === ''){
+            t='';
+        }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
+            t='';
+        }else{
+            var obj1 = TransformAstEnRev(obj.body,0);
+            if(obj1.__xst === true){
+                return( { "__xst" : true, "__xva" : obj1.__xva });
+            }else{
+                logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3433' });
+            }
+        }
+    
+    }catch(e){
+        console.error('e=',e);
+
+        if(e.pos){
+            logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3441' , plage:[e.pos,e.pos]});
+        }else{
+            logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3443' });
+        }
+    }
+    return({ "__xst" : true, "__xva" : obj1.__xva } );
+    
+}
+
+var tabComment = [];
+
+
+/*
+  =====================================================================================================================
+*/
+function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2(nom_de_la_text_area_source,nom_de_la_text_area_rev){
+    __gi1.raz_des_messages();
+    var a = document.getElementById(nom_de_la_text_area_source);
+    localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
+    var parseur_javascript = window.acorn.Parser;
+    try{
+        tabComment=[];
+        var obj=parseur_javascript.parse(a.value, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+//        console.log(obj);
+//        console.log(tabComment);
+        
+        
+            if(obj === ''){
+                t='';
+            }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
+                t='';
+            }else{
+                var obj1 = TransformAstEnRev(obj.body,0);
+                if(obj1.__xst === true){
+                    document.getElementById(nom_de_la_text_area_rev).value=obj1.__xva;
+                }else{
+                    logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3433' });
+                }
+            }
+        
+    }catch(e){
+        console.error('e=',e);
+//        debugger
+        if(e.pos){
+            logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3441' , plage:[e.pos,e.pos]});
+        }else{
+            logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 3443' });
+        }
+    }
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+    
+    
+    
+    
 }
 /*
   =====================================================================================================================

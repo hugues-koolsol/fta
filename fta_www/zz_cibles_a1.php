@@ -141,6 +141,7 @@ function recupere_une_donnees_des_cibles($id){
       /*https://github.com/codeschool/sqlite-parser*/
       'fta_www/js/jslib/sqlite_parser_from_demo.js' => array('chp_type_source' => 'bibliotheque'),
       'fta_www/js/jslib/Sortable.js' => array(),
+      'fta_www/js/jslib/acorn.js' => array('chp_type_source' => 'bibliotheque'),
       
    );
 

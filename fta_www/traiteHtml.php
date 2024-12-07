@@ -46,7 +46,9 @@ $par=array( 'js_a_inclure' => array(
             'js/compile1.js',
             'js/javascript.js',
             'js/convertit-html-en-rev1.js',
-            'js/convertit-js-en-rev1.js'), 'module_a_inclure' => array( 'js/module_interface1.js', 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+            'js/convertit-js-en-rev1.js',
+            'js/jslib/acorn.js'
+            ), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   chargerLeDernierSourceHTML();

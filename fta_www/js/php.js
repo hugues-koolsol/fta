@@ -2388,7 +2388,7 @@ function php_traiteOperation(tab,id,niveau){
                                 return(php_logerr({__xst:false,__xva:t,id:id,tab:tab,__xme:'erreur php_traiteOperation 1351'}));
                             }
 
-                        }else if(tab[i][1] === 'testEnLigne' || tab[i][1] === 'castfloat' || tab[i][1] === 'caststring' ||  tab[i][1] === 'castint' || tab[i][1] === 'postinc' || tab[i][1] === 'propriete' ){
+                        }else if(tab[i][1] === 'testEnLigne' || tab[i][1] === 'castfloat' || tab[i][1] === 'caststring' ||  tab[i][1] === 'castint' || tab[i][1] === 'postinc' || tab[i][1] === 'propriete' || tab[i][1] === 'heredoc' ){
                             var obj1=php_traiteElement(tab , i , niveau,{});
                             if(obj1.__xst===true){
                               t+=obj1.__xva;
@@ -2767,7 +2767,7 @@ function php_traiteAffecte(tab,i,dansConditionOuDansFonction,niveau){
                     if(obj1.__xst===true){
                         elt=obj1.__xva;
                     }else{
-                        return php_logerr({__xst:false,__xva:t,id:id,tab:tab,__xme:'dans affecte 0804'});
+                        return php_logerr({__xst:false,__xva:t,id:i,tab:tab,__xme:'dans affecte 0804'});
                     }
                 }
                 /* enfant 1 ou 2 */

@@ -2073,16 +2073,16 @@ class interface1{
 
         setTimeout(
             function(){
-                if(this.__gi1.#programme_en_arriere_plan === null){
+                if(__gi1.#programme_en_arriere_plan === null){
                     console.log('on charge le worker 1111');
-                    this.__gi1.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
+                    __gi1.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
                 }
-                var that=this.__gi1;
-                this.__gi1.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+                var that=__gi1;
+                __gi1.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
                     console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
                     that.traite_message_recupere_du_worker(message_recu_du_worker);
                 };
-                this.__gi1.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
+                __gi1.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
                 console.log('pas d\'erreur !');
             },
             1500
@@ -2153,4 +2153,4 @@ class interface1{
         }
     }
 }
-export{interface1};
+//export{interface1};

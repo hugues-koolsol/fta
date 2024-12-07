@@ -783,26 +783,82 @@ function html_header1($parametres){
     $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].'; /* hauteur du menu à défilement */'.PHP_EOL;
     $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].'; /* hauteur des grands boutons ( quitter et index ) */'.PHP_EOL;
     $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.PHP_EOL;
-    $texte_base_css.='}</style>'.PHP_EOL;
-    $o1.=$texte_base_css;
-    $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.PHP_EOL;
+    $texte_base_css.='}'.PHP_EOL;
+    if(true){
+        /* dans le cas ou on met tout dans le html reçu */
+        $o1.=$texte_base_css;
+        $o1.=file_get_contents('6.css');
+        $o1.='</style>'.PHP_EOL;
+    }else{
+        /* dans le cas ou ou on met le css en lien externe */
+        $o1.='</style>'.PHP_EOL;
+        $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.PHP_EOL;
+    }
+    if(false){
+        $o1.='<script type="module" src="js/module_interface1.js"></script>'.PHP_EOL;
+    }else{
+        $o1.='<script type="text/javascript">'.PHP_EOL;
+        $o1.=file_get_contents('js/module_interface1.js');
+        $o1.='</script>'.PHP_EOL;
+    }
     $o1.='<script type="text/javascript">'.PHP_EOL;
-    $o1.=' const __debut_execution=performance.now();'.PHP_EOL;
+    $o1.='//<![CDATA['.PHP_EOL;
+    $o1.='"use strict";'.PHP_EOL;
+
+    /* les constantes qui sont définies au niveau du serveur */
     $o1.=' const APP_KEY=\''.APP_KEY.'\';'.PHP_EOL;
-    $o1.=' const __xst=\'__xst\';'.PHP_EOL;
-    $o1.=' const __xme=\'__xme\';'.PHP_EOL;
-    $o1.=' const __xms=\'__xms\';'.PHP_EOL;
-    $o1.=' const __xva=\'__xva\';'.PHP_EOL;
-    $o1.=' const __entree=\'__entree\';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.PHP_EOL;
-    $o1.='</script>'.PHP_EOL;
-    $o1.='<script type="text/javascript" rel="preload" as="script" src="js/interface0.js"></script>'.PHP_EOL;
-    $o1.='<script type="module" src="js/module_interface1.js"></script>'.PHP_EOL;
-    $o1.=''.PHP_EOL;
+    $o1.=<<<EOT
+     const __debut_execution=performance.now();
+     const __xst='__xst';
+     const __xme='__xme';
+     const __xms='__xms';
+     const __xva='__xva';
+     const __entree='__entree';
+     let __gi1=null;
+     /*
+       =====================================================================================================================
+     */
+     let __module_html1=null;
+     let __module_svg1=null;
+     let __module_requete_sql1=null;
+     /*       document.addEventListener("DOMContentLoaded",function(event){});     */
+     /*
+       =====================================================================================================================
+     */
+     window.addEventListener('load',function(){
+             __gi1=new interface1('__gi1','zone_global_messages');
+             __gi1.deplace_la_zone_de_message();
+             fonctionDeLaPageAppeleeQuandToutEstCharge();
+             setTimeout(function(){
+             
+                 __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
+             },500);
+         /*
+         import('./js/module_interface1.js').then(function(Module){
+         
+         });
+         */
+         let liste_des_scripts = document.getElementsByTagName('script');
+         let i=0;
+         for( i=0 ; i < liste_des_scripts.length ; i++ ){
+             var element=liste_des_scripts[i];
+             if(element.type && element.type === 'module'){
+                 if(element.src && element.src.indexOf("js/module_html.js") >= 0){
+                     import('./js/module_html.js').then(function(Module){
+                         __module_html1=new Module.traitements_sur_html('__module_html1');
+                     });
+                 }
+             }
+         }
+     });     
+    //]]>
+    </script>
+    EOT;
     $o1.=' </head>'.PHP_EOL;
     $o1.=' <body>'.PHP_EOL;
     /*

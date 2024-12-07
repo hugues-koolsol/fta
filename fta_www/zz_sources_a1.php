@@ -1200,6 +1200,7 @@ $par=array( 'js_a_inclure' => array(
             'js/jslib/sqlite_parser_from_demo.js',
             'js/convertion_sql_en_rev.js',
             'js/convertit-html-en-rev1.js',
+            'js/jslib/acorn.js'            
             ), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 
 $nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';

@@ -2,14 +2,11 @@
 /*
   =====================================================================================================================
 */
-var __gi1=null;
-var __module_html1=null;
-var __module_svg1=null;
-var __module_requete_sql1=null;
+let __module_html1=null;
+let __module_svg1=null;
+let __module_requete_sql1=null;
 /*
-  document.addEventListener("DOMContentLoaded", function(event) { 
-  
-  });
+  document.addEventListener("DOMContentLoaded",function(event){});
 */
 /*
   =====================================================================================================================
@@ -26,8 +23,8 @@ window.addEventListener('load',function(){
             __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
         },500);
     });
-    var liste_des_scripts = document.getElementsByTagName('script');
-    var i=0;
+    let liste_des_scripts = document.getElementsByTagName('script');
+    let i=0;
     for( i=0 ; i < liste_des_scripts.length ; i++ ){
         var element=liste_des_scripts[i];
         if(element.type && element.type === 'module'){

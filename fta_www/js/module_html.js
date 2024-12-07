@@ -64,7 +64,7 @@ class traitements_sur_html{
     }
     /*#
       =======================================================================================
-      function traiteAstDeHtml
+      function traiteAstDeHtml(
       
       Construit texte html à partir d'un AST html qui ressemble à ça :
       {"type":"BODY",
@@ -173,10 +173,15 @@ class traitements_sur_html{
                 }
                 t+='\n' + esp0 + ')';
             }else if(type.toLowerCase() === 'javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
+
                 if(Array.isArray(jsonDeHtml.content)){
                     for( var i=0 ; i < jsonDeHtml.content.length ; i++ ){
-                        if(jsonDeHtml.content[i].type && jsonDeHtml.content[i].type === '#text' || jsonDeHtml.content[i].type === '#cdata-section'){
-                            var source_js=jsonDeHtml.content[i].content;
+                        if(typeof jsonDeHtml.content[i]==='string' || ( jsonDeHtml.content[i].type && (jsonDeHtml.content[i].type === '#text' || jsonDeHtml.content[i].type === '#cdata-section' ))){
+                            if(typeof jsonDeHtml.content[i]==='string'){
+                                var source_js=jsonDeHtml.content[i];
+                            }else{
+                                var source_js=jsonDeHtml.content[i].content;
+                            }
                             if(!(source_js.trim() === '//' || source_js === '\n' || source_js === '')){
                                 var cle = this.#construit_cle(10);
                                 tableau_des_javascript_a_convertir.push({ "type" : "javascriptdanshtml" , "__xva" : source_js , "cas" : "js1" , "cle" : cle });
@@ -1066,6 +1071,7 @@ class traitements_sur_html{
                 }
                 try{
                     var tableau_de_javascripts_a_convertir = [];
+
                     var obj = this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
                     if(obj.__xst === true){
                         if(obj.__xva.trim().indexOf('html(') == 0){
@@ -1075,114 +1081,84 @@ class traitements_sur_html{
                                 obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
                             }
                         }
+
                         if(tableau_de_javascripts_a_convertir.length > 0){
-                            asthtml_logerreur({ "__xst" : true , "__xme" : 'conversion html OK, conversion scripts inclus en cours, soyez patient!' });
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                            var ajax_param={ "call" : { "lib" : 'js' , "file" : 'rev_html_avec_js1' , "funct" : 'traiter_des_morceaux_de_js_dans_un_rev1' } , "options" : options , "format_rev" : obj.__xva , "tableau_de_javascripts_a_convertir" : tableau_de_javascripts_a_convertir };
-                            async function traiter_des_morceaux_de_js_dans_un_rev1(url="",ajax_param){
-                                return(__module_html1.recupere_un_fetch(url,ajax_param));
-                            }
-                            traiter_des_morceaux_de_js_dans_un_rev1('za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',ajax_param).then((donnees) => {
-                                
-                                if(donnees.__xst === true){
-                                    /* pour chaque ast reçu, on va le convertir en rev */
-                                    var source_rev=donnees.__entree.format_rev;
-                                    var une_erreur=false;
-                                    for(var i in donnees.__entree.tableau_de_javascripts_a_convertir){
-                                        try{
-                                            var json_ast = JSON.parse(donnees.__entree.tableau_de_javascripts_a_convertir[i].ast);
-                                            if(json_ast.type === 'Program' && json_ast.body){
-                                                try{
-                                                    tabComment=JSON.parse(donnees.__entree.tableau_de_javascripts_a_convertir[i].commentaires);
-                                                    var obj1 = TransformAstEnRev(json_ast.body,0);
-                                                    if(obj1.__xst === true){
-                                                        /* puis on remplace la chaine */
-                                                        var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + donnees.__entree.tableau_de_javascripts_a_convertir[i].cle + ')';
-                                                        source_rev=source_rev.replace(phrase_a_remplacer,obj1.__xva);
-                                                    }else{
-                                                        console.error('erreur de conversion de ast vers js e=',e);
-                                                    }
-                                                }catch(e){
-                                                    console.error('erreur de conversion d\'un commentaire de programme');
-                                                }
-                                            }else{
-                                                console.error('le ast du programme n\'est pas au bon format',e);
-                                            }
-                                        }catch(e){
-                                            une_erreur=true;
-                                            asthtml_logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans le source source javascript de html n°' + (parseInt(i,10) + 1) });
-                                            if(donnees.__entree.tableau_de_javascripts_a_convertir[i].hasOwnProperty('fichier_erreur')){
-                                                var zone_source = (donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_source')) ? ( donnees.__entree.options.zone_source ) : ( null );
-                                                var obj = analyse_fichier_log_acorn(donnees.__entree.tableau_de_javascripts_a_convertir[i].fichier_erreur,donnees.__entree.tableau_de_javascripts_a_convertir[i].__xva,zone_source);
-                                            }
-                                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
-                                            return({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' });
-                                        }
+                            var parseur_javascript = window.acorn.Parser;
+                            for(var indjs=0;indjs<tableau_de_javascripts_a_convertir.length;indjs++){
+                                try{
+                                    tabComment=[];
+                                    var obj0=parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+                                }catch(e){
+                                    console.error('erreur de conversion js e=',e);
+
+                                    if(e.pos){
+                                        logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 1094'+e.message , plage:[e.pos,e.pos]});
                                     }
-                                    /*
-                                      =============================================
-                                      console.log('après transformation, source_rev=',source_rev)
-                                      =============================================
-                                    */
-                                    if(donnees.__entree.options.hasOwnProperty('en_ligne') && donnees.__entree.options.en_ligne === true){
-                                        sauvegarder_html_en_ligne(source_rev,donnees.__entree.options.donnees);
-                                        return;
-                                    }else if(donnees.__entree.options.hasOwnProperty('source_php')){
-                                        console.log('donnees.__entree.options=',donnees.__entree.options,'source_rev=',source_rev);
-                                        var chaine_a_remplacer = '#(cle_html_dans_php_a_remplacer,' + donnees.__entree.options.a_convertir.cle + ')';
-                                        donnees.__entree.options.source_php=donnees.__entree.options.source_php.replace(chaine_a_remplacer,source_rev);
-                                        var nouveau_source=donnees.__entree.options.source_php;
-                                        console.log('nouveau_source=',nouveau_source);
-                                        var param={ "nouveau_source" : donnees.__entree.options.source_php , "fonction_a_appeler" : donnees.__entree.options.fonction_a_appeler , "cle_convertie" : donnees.__entree.options.a_convertir.cle , "convertion_php" : true };
-                                        document.getElementById('txtar2').value=nouveau_source;
-                                        return;
-                                    }else{
-                                        if(donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_html_rev')){
-                                            try{
-                                                if(document.getElementById(donnees.__entree.options.zone_html_rev)){
-                                                    document.getElementById(donnees.__entree.options.zone_html_rev).value=source_rev;
-                                                }
-                                                var tableau1 = iterateCharacters2(source_rev);
-                                                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-                                                if(matriceFonction.__xst === false){
-                                                    logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html conversion en matrice' });
-                                                    return({ "__xst" : false , "__xme" : '1345 erreur module_html conversion en matrice' });
-                                                }
-                                                var obj1 = a2F1(matriceFonction.__xva,0,true,1,false);
-                                                if(obj1.__xst === true){
-                                                    document.getElementById(donnees.__entree.options.zone_html_rev).value=obj1.__xva;
-                                                }else{
-                                                    logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html nettoyage en matrice' });
-                                                    return({ "__xst" : false , "__xme" : '1345 erreur module_html nettoyage en matrice' });
-                                                }
-                                            }catch(e){
-                                                console.error('la zone "' + donnees.__entree.options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document',e);
-                                            }
-                                        }
-                                        if(une_erreur === false){
-                                            if(donnees.__entree.hasOwnProperty('options') && donnees.__entree.options.hasOwnProperty('zone_html_resultat')){
-                                                var obj1 = functionToArray(source_rev,true,false,'');
-                                                if(obj1.__xst === true){
-                                                    var obj2 = __module_html1.tabToHtml1(obj1.__xva,0,false,0);
-                                                    if(obj2.__xst === true){
-                                                        document.getElementById(donnees.__entree.options.zone_html_resultat).value=obj2.__xva;
-                                                        return({ "__xst" : true , "__xva" : source_rev });
-                                                    }else{
-                                                        debugger;
-                                                    }
-                                                }else{
-                                                    debugger;
-                                                }
-                                            }
-                                        }
-                                        return({ "__xst" : true , "__xva" : source_rev });
-                                    }
-                                }else{
-                                    console.error('problème de conversion de javascript ');
+                                    
+                                    return(logerreur({ "__xst" : false , "__xme" : '1093 il y a un problème dans un source javascript' }));
                                 }
-                            });
-                            return({ "__xst" : true , "traitements_javascript_integres_en_cours" : true });
+                                
+                                var obj1 = TransformAstEnRev(obj0.body,0);
+                                if(obj1.__xst === true){
+                                    /* puis on remplace la chaine */
+                                    var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';
+                                    obj.__xva=obj.__xva.replace(phrase_a_remplacer,obj1.__xva);
+                                }else{
+                                    console.error('erreur de conversion de ast vers js e=',e);
+                                    return({ "__xst" : false , "__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript' });
+                                }
+                                
+                             
+                             
+                            }
+                            var source_rev=obj.__xva;
+                            var une_erreur=false;
+                            /*
+                              =============================================
+                              console.log('après transformation, source_rev=',source_rev)
+                              =============================================
+                            */
+                            if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
+                                sauvegarder_html_en_ligne(source_rev,options.donnees);
+                                return;
+                            }else if(options.hasOwnProperty('source_php')){
+                                console.log('options=',options,'source_rev=',source_rev);
+                                var chaine_a_remplacer = '#(cle_html_dans_php_a_remplacer,' + options.a_convertir.cle + ')';
+                                options.source_php=options.source_php.replace(chaine_a_remplacer,source_rev);
+                                var nouveau_source=options.source_php;
+                                console.log('nouveau_source=',nouveau_source);
+                                var param={ "nouveau_source" : options.source_php , "fonction_a_appeler" : options.fonction_a_appeler , "cle_convertie" : options.a_convertir.cle , "convertion_php" : true };
+                                document.getElementById('txtar2').value=nouveau_source;
+                                return;
+                            }else{
+                                if(options.hasOwnProperty('zone_html_rev')){
+                                    try{
+                                        if(document.getElementById(options.zone_html_rev)){
+                                            document.getElementById(options.zone_html_rev).value=source_rev;
+                                        }
+                                        var tableau1 = iterateCharacters2(source_rev);
+                                        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                                        if(matriceFonction.__xst === false){
+                                            logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html conversion en matrice' });
+                                            return({ "__xst" : false , "__xme" : '1345 erreur module_html conversion en matrice' });
+                                        }
+                                        var obj1 = a2F1(matriceFonction.__xva,0,true,1,false);
+                                        if(obj1.__xst === true){
+                                            document.getElementById(options.zone_html_rev).value=obj1.__xva;
+                                        }else{
+                                            logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html nettoyage en matrice' });
+                                            return({ "__xst" : false , "__xme" : '1345 erreur module_html nettoyage en matrice' });
+                                        }
+                                    }catch(e){
+                                        console.error('la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document',e);
+                                    }
+                                }
+                                return({ "__xst" : true , "__xva" : source_rev });
+                            }                            
+                            
+                            
                         }else{
+                         
                             if(options.hasOwnProperty('html_dans_php')){
                                 for( var i=0 ; i < options.tableau_de_html_dans_php_a_convertir.length ; i++ ){
                                     if(options.cle === options.tableau_de_html_dans_php_a_convertir[i].cle){
