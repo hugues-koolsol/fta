@@ -3706,145 +3706,74 @@ function traiter_html_dans_php2(options){
     if(zone_rev){
         document.getElementById(zone_rev).value=globale_source_php2;
     }
-    function fin_traitement_php(zone_rev,une_erreur,globale_source_php2){
+    function fin_traitement_php(zone_rev,globale_source_php2){
         globale_tableau_des_js2=[];
         if(zone_rev){
-            if(une_erreur === false){
-                var tableau1 = iterateCharacters2(globale_source_php2);
-                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-                if(matriceFonction.__xst === true){
-                    var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
-                    if(obj2.__xst === true){
-                        document.getElementById(zone_rev).value=obj2.__xva;
-                        globale_source_php2='';
-                        return(logerreur({ "__xst" : true }));
-                    }else{
-                        document.getElementById(zone_rev).value=globale_source_php2;
-                        globale_source_php2='';
-                        return(logerreur({ "__xst" : true , "__xva" : '3079 erreur de formattage de rev' }));
-                    }
+
+            var tableau1 = iterateCharacters2(globale_source_php2);
+            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            if(matriceFonction.__xst === true){
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                if(obj2.__xst === true){
+                    document.getElementById(zone_rev).value=obj2.__xva;
+                    globale_source_php2='';
+                    return(logerreur({ "__xst" : true }));
                 }else{
                     document.getElementById(zone_rev).value=globale_source_php2;
                     globale_source_php2='';
-                    return(logerreur({ "__xst" : true , "__xva" : '3083 erreur mise en matrice' }));
+                    return(logerreur({ "__xst" : true , "__xva" : '3079 erreur de formattage de rev' }));
                 }
             }else{
                 document.getElementById(zone_rev).value=globale_source_php2;
                 globale_source_php2='';
-                return(logerreur({ "__xst" : true , "__xva" : '3088 erreur dans un source javascript ' }));
+                return(logerreur({ "__xst" : true , "__xva" : '3083 erreur mise en matrice' }));
             }
+
         }
         if(en_ligne === true){
-            if(une_erreur === true){
-                globale_source_php2='';
-                return(logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' }));
-            }else{
-                sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
-                globale_source_php2='';
-                return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
-            }
+            sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
+            globale_source_php2='';
+            return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
         }else{
-            if(une_erreur === true){
-                globale_source_php2='';
-                return(logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' }));
-            }else{
-                globale_source_php2='';
-                return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
-            }
+            globale_source_php2='';
+            return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
         }
     }
     if(globale_tableau_des_js2.length > 0){
-        /* il y a du javascript dans le html contenu dans le php */
-        logerreur({ "__xst" : true , "__xme" : '3051 <b>veuillez patienter</b>, des javascripts sont en cours de convertion ' });
-        var ajax_param={ "call" : { "lib" : 'js' , "file" : 'rev_html_avec_js1' , "funct" : 'traiter_des_morceaux_de_js_dans_un_rev1' } , "options" : {} , "format_rev" : globale_source_php2 , "tableau_de_javascripts_a_convertir" : globale_tableau_des_js2 };
-        var r= new XMLHttpRequest();
-        r.onerror=function(e){
-        
-            console.error('e=',e);
-            return(logerreur({ "__xst" : false , "__xms" : 'erreur AJAX ' }));};
-        try{
-            /*
-              =============================================================================================
-              =============================================================================================
-              =============================================================================================
-              ATTENTION appel "SYNCHRONE" à la récupération ast, le r.open a comme dernier paramètre : false
-              on fait ceci car quand un html contient du javascript, on convertit ce dernier à la volée
-              Remarque : le html peut aussi être dans un php ....
-              Ce sera à modifier plus tard ...
-              =============================================================================================
-              =============================================================================================
-              =============================================================================================
-            */
-            r.open("POST",'za_ajax.php?traiter_des_morceaux_de_js_dans_un_rev1',false);
-            r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-            r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
-        }catch(e){
-            console.error('e=',e);
-            logerreur({ "__xst" : false , "__xme" : ' conv js 3127  message=' + e.message });
-            return(logerreur({ "__xst" : false , "__xme" : ' conv js message=' + e.message }));
-        }
-        if(r.readyState === 4){
-            if(r.status === 404){
-                logerreur({ "__xst" : false , "__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée ' });
-                return(logerreur({ "__xst" : false , "__xme" : 'conv js 3131url non trouvée ' }));
+     
+        var parseur_javascript = window.acorn.Parser;
+        for(var i =0; i<globale_tableau_des_js2.length;i++){
+
+            try{         
+                tabComment=[];
+                var obj=parseur_javascript.parse(globale_tableau_des_js2[i].__xva, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+            }catch(e){
+                globale_tableau_des_js2=[];
+                return(logerreur({ "__xst" : false , "__xme" : '3770 il y a un problème dans un source javascript dans le php' }));
             }
-            try{
-                var json_retour = JSON.parse(r.responseText);
-            }catch(erreur_json){
-                logerreur({ "__xst" : false , "__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message });
-                return(logerreur({ "__xst" : false , "__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message }));
-            }
-            if(json_retour.__xst === true){
-                var une_erreur=false;
-                for(var i in json_retour.__entree.tableau_de_javascripts_a_convertir){
-                    try{
-                        var json_ast = JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].ast);
-                        if(json_ast.type === 'Program' && json_ast.body){
-                            try{
-                                tabComment=JSON.parse(json_retour.__entree.tableau_de_javascripts_a_convertir[i].commentaires);
-                                var obj1 = TransformAstEnRev(json_ast.body,0);
-                                if(obj1.__xst === true){
-                                    var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + json_retour.__entree.tableau_de_javascripts_a_convertir[i].cle + ')';
-                                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj1.__xva);
-                                }else{
-                                    une_erreur=true;
-                                    console.error('erreur de conversion de ast vers js e=',e);
-                                }
-                            }catch(e){
-                                globale_source_php2='';
-                                console.error('erreur de conversion d\'un commentaire de programme');
-                            }
-                        }else{
-                            une_erreur=true;
-                            globale_source_php2='';
-                            console.error('le ast du programme n\'est pas au bon format',e);
-                        }
-                    }catch(e){
-                        if(json_retour.__entree.tableau_de_javascripts_a_convertir[i].hasOwnProperty('fichier_erreur')){
-                            analyse_fichier_log_acorn(json_retour.__entree.tableau_de_javascripts_a_convertir[i].fichier_erreur,json_retour.__entree.tableau_de_javascripts_a_convertir[i].__xva,null);
-                        }
-                        globale_tableau_des_js2=[];
-                        debugger;
-                        une_erreur=true;
-                        if(zone_rev){
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
-                        }
-                        globale_source_php2='';
-                        return(logerreur({ "__xst" : false , "__xme" : 'il y a un problème dans un source javascript' }));
-                    }
-                }
-                return(fin_traitement_php(zone_rev,une_erreur,globale_source_php2));
+            var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + globale_tableau_des_js2[i].cle + ')';
+            if(obj === '' || ( obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0 ) ){
+                globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'');
             }else{
-                debugger;
-                globale_source_php2='';
+
+                var obj0 = TransformAstEnRev(obj.body,0);
+                if(obj0.__xst === true){
+                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
+                }else{
+                    globale_tableau_des_js2=[];
+                    return(logerreur({ "__xst" : true , "__xme" : '3154 le source a été converti en rev' }));
+                }
             }
         }
-        globale_source_php2='';
-        return(logerreur({ "__xst" : true }));
+        
+        return(fin_traitement_php(zone_rev,globale_source_php2));
+        
     }else{
-        /* il n'y a pas de javascript dans le html du php */
-        return(fin_traitement_php(zone_rev,une_erreur,globale_source_php2));
+    
+        return(fin_traitement_php(zone_rev,globale_source_php2));
     }
+        
+
 }
 /*
   =====================================================================================================================
@@ -3856,6 +3785,7 @@ var globale_tableau_des_js2 = [];
   =====================================================================================================================
 */
 function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
+
     var ast = JSON.parse(retour_avec_ast.__xva);
     var obj = TransformAstPhpEnRev(ast,0,false,true,retour_avec_ast.__entree.opt.options_traitement);
     var options={};
@@ -3944,7 +3874,7 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
         console.error('e=',e);
         return({ "__xst" : false });};
     try{
-        r.open("POST",'za_ajax.php?recupererAstDeJs',true);
+        r.open("POST",'za_ajax.php?recupererAstDePhp',true);
         r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
         r.onreadystatechange=function(){
         
@@ -4000,49 +3930,6 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
 /*
   =====================================================================================================================
 */
-function recupereAstDePhp1_ancien(texteSource,opt,f_traitement_apres_recuperation_ast_de_php1){
-    var ajax_param={ "call" : { "lib" : 'php' , "file" : 'ast' , "funct" : 'recupererAstDePhp' , "opt" : { "masquer_les_messages_du_serveur" : false } } , "texteSource" : texteSource , "opt" : opt };
-    async function recupererAstDePhp1(url="",ajax_param){
-        var ttt= await __gi1.recupérer_un_fetch(url,ajax_param);
-        return ttt;
-    }
-    recupererAstDePhp1('za_ajax.php?recupererAstDePhp',ajax_param).then((donnees) => {
-        
-        if(donnees.__xst === true){
-            var elem={};
-            for(elem in donnees.__xms){
-                return(astphp_logerreur({ "__xst" : true , "__xme" : '<pre>' + (donnees.__xms[elem].replace(/&/g,'&lt;')) + '</pre>' }));
-            }
-            try{
-                f_traitement_apres_recuperation_ast_de_php1({ "__xst" : true , "__xva" : donnees.__xva , "__entree" : donnees.__entree , "opt" : opt });
-            }catch(e){
-                debugger;
-            }
-        }else{
-            var elem={};
-            for(elem in donnees.__xms){
-                if(donnees.__xms[elem].indexOf('on line ') >= 0
-                 && isNumeric(donnees.__xms[elem].substr(donnees.__xms[elem].indexOf('on line ') + 8))
-                ){
-                    var line = parseInt(donnees.__xms[elem].substr(donnees.__xms[elem].indexOf('on line ') + 8),10);
-                    return(astphp_logerreur({ "__xst" : false , "line" : line }));
-                }
-            }
-            if(donnees.__entree && donnees.__entree.hasOwnProperty('opt') && donnees.__entree.opt.hasOwnProperty('zone_php')){
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.__entree.opt.zone_php);
-            }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-            }
-            return({ "__xst" : true , "__xme" : '3372' });
-        }
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-        return({ "__xst" : false , "__xme" : '2806' })
-    });
-    return({ "__xst" : true , "__xme" : '2806' });
-}
-/*
-  =====================================================================================================================
-*/
 function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
     var options_traitement = JSON.parse(options_traitement.replace(/\'/g,'"'));
     document.getElementById('txtar2').value='Veuillez patienter !';
@@ -4053,28 +3940,6 @@ function transform_text_area_php_en_rev2(nom_de_la_text_area_php,nom_de_la_text_
     var count=lines.length;
     try{
         var ret = recupereAstDePhp2(a.value,{ "zone_php" : nom_de_la_text_area_php , "zone_rev" : nom_de_la_text_area_rev , "options_traitement" : options_traitement },traitement_apres_recuperation_ast_de_php2);
-        if(ret.__xst === false){
-            return(astphp_logerreur({ "__xst" : false , "__xme" : 'il y a une erreur d\'envoie du source php à convertir' }));
-            ret=false;
-        }
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
-    }catch(e){
-        console.log('erreur transform 0178',e);
-        ret=false;
-    }
-}
-/*
-  =====================================================================================================================
-*/
-function transform_text_area_php_en_rev1_ancien(nom_de_la_text_area_php,nom_de_la_text_area_rev){
-    document.getElementById('txtar2').value='Veuillez patienter !';
-    __gi1.raz_des_messages();
-    var a = document.getElementById(nom_de_la_text_area_php);
-    localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
-    var lines = a.value.split(/\r|\r\n|\n/);
-    var count=lines.length;
-    try{
-        var ret = recupereAstDePhp1(a.value,{ "zone_php" : nom_de_la_text_area_php , "zone_rev" : nom_de_la_text_area_rev },traitement_apres_recuperation_ast_de_php1_ancien);
         if(ret.__xst === false){
             return(astphp_logerreur({ "__xst" : false , "__xme" : 'il y a une erreur d\'envoie du source php à convertir' }));
             ret=false;
@@ -4118,7 +3983,6 @@ while($i<5){
       ?>hello<?php echo ' world';?> and others
 <script type="text/javascript">
 //<![CDATA[
-  alert(1);
   for(var i=0;i<10;i++){
       console.log('on est dans du javascript dans du html dans du php :-]');
   }
@@ -4128,6 +3992,17 @@ while($i<5){
     }
   }
 }
+?>
+<script type="text/javascript">
+//<![CDATA[
+  var b=2;
+//]]>  
+</script>
+<script type="text/javascript">
+//<![CDATA[
+  var c=2;
+//]]>  
+</script>
 
 `;
     document.getElementById('txtar1').value=t;

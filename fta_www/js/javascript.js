@@ -1929,6 +1929,17 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }else{
                     logerreur({ "__xst" : false , "__xva" : t , "id" : id , "tab" : tab , "__xme" : '2409 erreur sur test en ligne "' + tab[j][1] + '"' });
                 }
+            }else if(tab[j+1][1] === '' && tab[j+1][2] === 'f'){
+             
+                var objtestLi = js_tabTojavascript1(tab,j + 1,false,true,niveau,false);
+                debugger
+                if(objtestLi.__xst === true){
+                    nomFonction= objtestLi.__xva ;
+                }else{
+                    return(logerreur({ "__xst" : false , "__xva" : t , "id" : i , "tab" : tab , "message" : 'erreur 1938 sur return' }));
+                }
+             
+             
             }else{
                 debugger;
             }
@@ -1981,6 +1992,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
             break;
         }
     }
+    var parenthesee = false;
     for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j=j + 1 ){
         if(tab[j][2] === 'f' && tab[j][3] === tab[id][3] + 1){
             if(tab[j][1] === 'element'
@@ -1992,7 +2004,13 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
              || tab[j][1] === '#'
              || tab[j][1] === 'contenu'
              || tab[j][1] === 'id'
-             || tab[j][1] === 'flechee'){
+             || tab[j][1] === 'flechee'
+             || tab[j][1] === 'parenthésée'
+             ){
+                if(tab[j][1]==='parenthésée'){
+                 debugger
+                 parenthesee=true;
+                }
                 continue;
             }else{
                 logerreur({ "__xst" : false , "__xva" : t , "id" : id , "tab" : tab , "__xme" : '1852 les seuls paramètres de appelf sont nomf,p,r,element,flechee et non pas "' + tab[j][1] + '"' });
@@ -2175,6 +2193,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 var tab_mots_cles_a_ne_pas_transformer = [
                     'addEventListener',
                     'appendChild',
+                    'apply',
                     'at',
                     'bind',
                     'call',
@@ -2589,7 +2608,14 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                 }
                 premier_operande=false;
             }else{
-                if(operateur_principal !== ''){
+                if(operateur_principal==='||' && tab[i][1]==='prop'  && tab[i][2]==='f' ){
+                 /*
+                   cas très spécial : on a un 
+                   a=(b||c).d => affecte(a,ou(b,c,prop(d)))
+                 */
+                  t='(' + t + ')';
+
+                }else if(operateur_principal !== ''){
                     t+=' ' + operateur_principal + ' ';
                 }
                 if(operateur_principal === '' && tab[tab[i][7]][1] === 'condition' && tab[tab[i][7]][8] >= 2){

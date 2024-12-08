@@ -182,6 +182,14 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
      }else{
         return(logerreur({__xst:false,__xme:'0137 recupere_element_de_ast_sql pas de expression : "'+JSON.stringify(json_partiel(element))+'"'}));
      }
+ }else if(element.type && 'expression'===element.type && 'operation'===element.variant && element.format === "unary" ){
+     if(element.operator === '-' && element.expression.type === 'literal' ){
+         t+='moins('+element.expression.value+')';
+     }else if(element.operator === '+' && element.expression.type === 'literal' ){
+         t+='plus('+element.expression.value+')';
+     }else{
+         return(logerreur({__xst:false,__xme:'0189 recupere_element_de_ast_sql : '+JSON.stringify(json_partiel(element))}));
+     }
 
  }else if(element.type && 'function'===element.type ){
      var obj1=traite_fonction_dans_ast_sql(element,niveau,null,options);
@@ -234,10 +242,10 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
   if(obj.__xst===true){
       t+='sql('+obj.__xva+')';
   }else{
-      return(logerreur({__xst:false,__xme:'0141 convertion_sql "'+JSON.stringify(json_partiel(element))+'"'}));
+      return(logerreur({__xst:false,__xme:'0237 convertion_sql "'+JSON.stringify(json_partiel(element))+'"'}));
   }
  }else{
-     return(logerreur({__xst:false,__xme:'0141 convertion_sql recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
+     return(logerreur({__xst:false,__xme:'0240 convertion_sql recupere_element_de_ast_sql type non traite : "'+JSON.stringify(json_partiel(element))+'"'}));
  }
  return {__xst:true,__xva:t};
 
@@ -666,7 +674,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
          if(obj1.__xst===true){
              t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.__xva+')),';
          }else{
-           return(logerreur({__xst:false,__xme:'0240 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'}));
+           return(logerreur({__xst:false,__xme:'0669 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'}));
          }
        
      }else{
@@ -674,7 +682,7 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
          if(obj1.__xst===true){
              t+='\n'+esp0+esp1+esp1+'table_reference(source('+obj1.__xva+')),';
          }else{
-           return(logerreur({__xst:false,__xme:'0240 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'}));
+           return(logerreur({__xst:false,__xme:'0677 convertit_sql_select_de_ast_vers_rev  : "'+JSON.stringify(json_partiel(element.from.source))+'"'}));
          }
      }
      
@@ -949,16 +957,22 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                  for(var j=0;j<element.definition[i].definition.length;j++){
                      if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "primary key"){
                          t+=' , primary_key()'
-                     }else if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "not null"){
+                     }
+                     if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].hasOwnProperty('autoIncrement')  && element.definition[i].definition[j].autoIncrement  === true){
+                         t+=' , auto_increment()'
+                     }
+                     if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "not null"){
                          t+=' , not_null()'
-                     }else if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "default" && element.definition[i].definition[j].value){
+                     }
+                     if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "default" && element.definition[i].definition[j].value){
                          if(element.definition[i].definition[j].value.type==='literal'){
                           t+=' , default(\''+element.definition[i].definition[j].value.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')+'\')'
                          }else{
                            return(logerreur({__xst:false,__xme:'0099 contrainte non traitée trouvé value : '+JSON.stringify(json_partiel(element.definition[i]))}));
                          }
                          
-                     }else if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "foreign key" && element.definition[i].definition[j].references){
+                     }
+                     if(element.definition[i].definition[j].type==="constraint" && element.definition[i].definition[j].variant === "foreign key" && element.definition[i].definition[j].references){
                          t+=' , references('
                          if(element.definition[i].definition[j].references.name){
                           t+='`'+element.definition[i].definition[j].references.name+'`,'
@@ -970,8 +984,6 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                          }else{
                          }
                          t+=')'
-                     }else{
-                         return(logerreur({__xst:false,__xme:'0096 contrainte non traitée trouvé field : '+JSON.stringify(json_partiel(element.definition[i]))}));
                      }
                   
                   
@@ -1110,8 +1122,8 @@ function convertion_texte_sql_en_rev(texte_du_sql){
  en conséquence il faut retirer ces derniers
  */
  texte_du_sql=texte_du_sql.replace(/\/\*\*\//g,'');
- var sqliteParser = require('sqlite-parser'); 
- var ast=sqliteParser(texte_du_sql);
+// var sqliteParser = require('sqlite-parser'); 
+ var ast=window.sqliteParser(texte_du_sql);
  console.log('ast=',ast);
 
  var obj1=conversion_de_ast_vers_sql(ast,0,null,{});

@@ -463,7 +463,7 @@ function recupNomOperateur(s){
     }else if(s === '&'){
         return 'etBin';
     }else if(s === '~'){
-        /* ancien nonBin */
+        /* vieux nonBin */
         return 'oppose_binaire';
     }else if(s === '^'){
         return 'ou_ex_bin';
@@ -696,7 +696,6 @@ function traiteForOf1(element,niveau){
     if(element.left.type === 'VariableDeclaration'){
         var objDecl = traiteDeclaration1(element.left,niveau);
         if(objDecl.__xst === true){
-            /* hugues     ancien, faire la même modification pour les autres .nomVariable       nomVariable='declare(' + objDecl.nomVariable + ' , null ),'; */
             nomVariable=objDecl.__xva.replace(/\r/g,'').replace(/\n/g,'');
         }else{
             return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteForIn1 0700 ' + element.left.type , "element" : element }));
@@ -1286,7 +1285,8 @@ function traiteCallExpression1(element,niveau,parent,opt){
                      && parent.callee.type
                      && parent.callee.type === 'FunctionExpression'){
                         console.log('%c ajouter des parenthèses pour les arguments ','color:red;background:pink;');
-                        lesArguments+='p((' + le_commentaire + '' + obj1.__xva + '))';
+//                        lesArguments+='p((' + le_commentaire + '' + obj1.__xva + '))';
+                        lesArguments+='p(' + le_commentaire + '' + obj1.__xva + '),parenthésée()';
                     }else{
                         lesArguments+='p(' + le_commentaire + '' + obj1.__xva + ')';
                     }
@@ -2460,7 +2460,7 @@ function traiteExpression1(element,niveau,parent){
          || 'SequenceExpression' === element.expression.type
          || 'UpdateExpression' === element.expression.type
          || 'UnaryExpression' === element.expression.type){
-            var obj1 = traiteUneComposante(element.expression,niveau + 1,false,false,element);
+            var obj1 = traiteUneComposante(element.expression,niveau + 1,false,false,element.expression);
             if(obj1.__xst === false){
                 return(astjs_logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteExpression1 928 ' + element.type , "element" : element }));
             }
@@ -3122,241 +3122,6 @@ function TransformAstEnRev(les_elements,niveau){
 /*
   =====================================================================================================================
 */
-function analyse_fichier_log_acorn_ancien(fichier_erreur,texte_source,zone_source){
-    var numero_de_ligne=-1;
-    var position=-1;
-    var caractere_incorrecte='';
-    if(fichier_erreur.indexOf('loc: Position') >= 0){
-        var temp = fichier_erreur.substr(fichier_erreur.indexOf('loc: Position') + 14);
-        if(temp.indexOf('}') >= 0){
-            temp=temp.substr(0,temp.indexOf('}') + 1);
-            try{
-                var temp = temp.replace(/ /g,'');
-                var temp = temp.replace(/line/g,'"line"');
-                var temp = temp.replace(/column/g,'"column"');
-                var tt = JSON.parse(temp);
-                if(tt.hasOwnProperty('line')){
-                    numero_de_ligne=tt.line - 1;
-                }
-            }catch(e){
-            }
-        }
-    }
-    logerreur({ "__xst" : false , "__xme" : '<b style="font-size:1rem;">- - - Détail des erreurs  du compilateur - - - </b><br />' + fichier_erreur , "masquee" : true });
-    if(fichier_erreur.indexOf('pos: ') >= 0){
-        var temp = fichier_erreur.substr(fichier_erreur.indexOf('pos: ') + 5);
-        if(temp.indexOf(',') >= 0){
-            temp=temp.substr(0,temp.indexOf(','));
-            try{
-                position=parseInt(temp,10);
-                if(texte_source.length >= position){
-                    caractere_incorrecte=texte_source.substr(position,1);
-                    var chaine='';
-                    if(position - 15 > 0){
-                        chaine='proche de="' + (texte_source.substr(position - 15,30).replace(/\n/g,'\\n')) + '"';
-                    }else{
-                        chaine='proche de="' + (texte_source.substr(0,30)) + '"';
-                    }
-                    logerreur({ "__xst" : false , "__xme" : 'erreur dans un source javascript en position ' + position + ' caractere_incorrecte="' + caractere_incorrecte + '" ' + chaine });
-                    if(zone_source !== null){
-                        logerreur({ "__xst" : true , "plage" : [position,position] , "zone_source" : zone_source });
-                    }
-                    return({ "__xst" : false });
-                }
-            }catch(e){
-            }
-        }
-    }
-    return({ "__xst" : false });
-}
-/*
-  =====================================================================================================================
-  Appel SYNCHRONE à la transformation de source js en ast
-  =====================================================================================================================
-*/
-function recupere_ast_de_source_js_en_synchrone_ancien(texteSource){
-    var texte_source_mini = texteSource.trim();
-    if(texte_source_mini === ''){
-        return({ "__xst" : true , "__xva" : {
-                     "type" : "Program" ,
-                     "start" : 0 ,
-                     "end" : 1 ,
-                     "range" : [0,1] ,
-                     "body" : [] ,
-                     "sourceType" : "module" 
-                } , "commentaires" : [] });
-    }else if(texte_source_mini === '//'){
-        return({ "__xst" : true , "__xva" : {
-                     "type" : "Program" ,
-                     "start" : 0 ,
-                     "end" : 3 ,
-                     "range" : [0,3] ,
-                     "body" : [] ,
-                     "sourceType" : "module" 
-                } , "commentaires" : [{ "type" : "Line" , "value" : "" , "start" : 1 , "end" : 3 , "range" : [1,3] }] });
-    }
-    var r= new XMLHttpRequest();
-    r.onerror=function(e){
-    
-        console.error('e=',e);
-        return({ "__xst" : false });};
-    var ajax_param={ "call" : { "lib" : 'js' , "file" : 'ast' , "funct" : 'recupererAstDeJs' } , "texteSource" : texteSource };
-    try{
-        /*
-          =====================================================================================================
-          =====================================================================================================
-          =====================================================================================================
-          ATTENTION appel "SYNCHRONE" à la récupération ast, le r.open a comme dernier paramètre : false
-          on fait ceci car quand un html contient du javascript, on convertit ce dernier à la volée
-          Remarque : le html peut aussi être dans un php ....
-          Ce sera à modifier plus tard ...
-          =====================================================================================================
-          =====================================================================================================
-          =====================================================================================================
-        */
-        r.open("POST",'za_ajax.php?recupererAstDeJs',false);
-        r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-        r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
-    }catch(e){
-        console.error('e=',e);
-        logerreur({ "__xst" : false , "__xme" : ' conv js 3127  message=' + e.message });
-        return({ "__xst" : false , "__xme" : ' conv js message=' + e.message });
-    }
-    if(r.readyState === 4){
-        if(r.status === 404){
-            logerreur({ "__xst" : false , "__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée ' });
-            return({ "__xst" : false , "__xme" : 'conv js 3131url non trouvée ' });
-        }
-        try{
-            var jsonRet = JSON.parse(r.responseText);
-        }catch(erreur_json){
-            logerreur({ "__xst" : false , "__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message });
-            return({ "__xst" : false , "__xme" : ' conv js 3141 erreur de réception de données, erreur_json= ' + erreur_json.message });
-        }
-        if(jsonRet.__xst === true){
-            var elem={};
-            for(elem in jsonRet.messages){
-                logerreur({ "__xst" : true , "__xme" : '<pre>' + (jsonRet.messages[elem].replace(/&/g,'&lt;')) + '</pre>' });
-            }
-            return({ "__xst" : true , "__xva" : JSON.parse(jsonRet.__xva) , "commentaires" : JSON.parse(jsonRet.commentaires) });
-        }else{
-            if(jsonRet.hasOwnProperty('fichier_erreur')){
-                var obj = analyse_fichier_log_acorn(jsonRet.fichier_erreur,jsonRet.__entree.texteSource,null);
-                if(obj.__xst === false){
-                    console.error(jsonRet.fichier_erreur);
-                    console.error(jsonRet.__entree.texteSource);
-                    logerreur({ "__xst" : false , "__xme" : 'erreur dans un source javascript' });
-                    return(logerreur({ "__xst" : false , "__xme" : jsonRet.fichier_erreur }));
-                }
-            }
-            return({ "__xst" : false , "__xme" : 'convertit js en rev erreur dans le source js ' });
-        }
-    }else{
-        return({ "__xst" : false });
-    }
-}
-/*
-  =====================================================================================================================
-*/
-function traitement_apres_recuperation_ast_de_js_avec_acorn_ancien(donnees_en_entree){
-    if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
-        document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value='';
-    }
-    var texte_source_ast=donnees_en_entree.__xva.__xva;
-    try{
-        var ast_json = JSON.parse(texte_source_ast);
-        if(ast_json.type === 'Program' && ast_json.body){
-            var startMicro = performance.now();
-            tabComment=JSON.parse(donnees_en_entree.__xva.commentaires);
-            var obj = TransformAstEnRev(ast_json.body,0);
-            if(obj.__xst === true){
-                if(donnees_en_entree.__xva.__entree.options.options.hasOwnProperty('en_ligne')
-                 && donnees_en_entree.__xva.__entree.options.options.en_ligne === true
-                ){
-                    sauvegarder_js_en_ligne(obj.__xva,donnees_en_entree.__xva.__entree.options.options.donnees);
-                }else if(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev){
-                    document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
-                    var obj1 = functionToArray(obj.__xva,true,false,'');
-                    if(obj1.__xst === true){
-                        var endMicro = performance.now();
-                        astjs_logerreur({ "__xst" : true , "__xme" : 'pas d\'erreur pour le rev ' + (parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms' });
-                        var resJs = parseJavascript0(obj1.__xva,1,0);
-                        if(resJs.__xst === true){
-                            var tableau1 = iterateCharacters2(obj.__xva);
-                            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-                            if(matriceFonction.__xst === true){
-                                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
-                                if(obj2.__xst === true){
-                                    document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj2.__xva;
-                                }else{
-                                    document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
-                                }
-                            }else{
-                                document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
-                            }
-                            if(document.getElementById('txtar3')){
-                                document.getElementById('txtar3').value=resJs.__xva;
-                            }
-                        }else{
-                            document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
-                            astjs_logerreur({ "__xst" : true , "__xme" : '2586 erreur de conversion de rev en javascript' });
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
-                            return;
-                        }
-                    }else{
-                        document.getElementById(donnees_en_entree.__xva.__entree.options.options.nom_de_la_text_area_rev).value=obj.__xva;
-                    }
-                }
-            }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
-                return;
-            }
-        }else{
-        }
-    }catch(e){
-        console.error('e=',e);
-    }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
-}
-/*
-  =====================================================================================================================
-*/
-function recupere_ast_de_js_avec_acorn_ancien(texteSource,options,fonction_a_lancer_apres_traitement){
-    var ajax_param={ "call" : { "lib" : 'js' , "file" : 'ast' , "funct" : 'recupererAstDeJs' , "opt" : { "masquer_les_messages_du_serveur" : true } } , "texteSource" : texteSource , "options" : options };
-    async function recupererAstDeJs1(url="",ajax_param){
-        return(__gi1.recupérer_un_fetch(url,ajax_param));
-    }
-    recupererAstDeJs1('za_ajax.php?recupererAstDeJs',ajax_param).then((donnees) => {
-        
-        if(donnees.__xst === true){
-            var elem={};
-            for(elem in donnees.__xms){
-                logerreur({ "__xst" : true , "__xme" : '<pre>' + (donnees.__xms[elem].replace(/&/g,'&lt;')) + '</pre>' });
-            }
-            fonction_a_lancer_apres_traitement({ "__xst" : true , "__xva" : donnees });
-            return({ "__xst" : true });
-        }else{
-            var elem={};
-            if(donnees.hasOwnProperty('fichier_erreur')){
-                var obj = analyse_fichier_log_acorn(donnees.fichier_erreur,donnees.__entree.texteSource,null);
-            }
-            if(donnees.hasOwnProperty('__entree')
-             && donnees.__entree.hasOwnProperty('options')
-             && donnees.__entree.options.hasOwnProperty('options')
-             && donnees.__entree.options.options.hasOwnProperty('nom_de_la_text_area_source')
-            ){
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',donnees.__entree.options.options.nom_de_la_text_area_source);
-            }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-            }
-            return({ "__xst" : true , "__xme" : '3372' });
-        }
-    });
-    return({ "__xst" : true });
-}
-/*
-  =====================================================================================================================
-*/
 
 function transform_source_js_en_rev_avec_acorn(source,options){
     var parseur_javascript = window.acorn.Parser;
@@ -3431,54 +3196,6 @@ function transform_source_js_en_rev_avec_acorn(source,options){
 /*
   =====================================================================================================================
 */
-function transform_source_js_en_rev_avec_acorn_ancien(source,options){
-    debugger
-    var ret={ "__xst" : true , "__xme" : true };
-    try{
-        var ret = recupere_ast_de_js_avec_acorn(source,{ "options" : options },traitement_apres_recuperation_ast_de_js_avec_acorn);
-        if(ret.__xst === false){
-            logerreur({ "__xst" : false , "__xme" : 'il y a une erreur d\'envoie du source js à convertir' });
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-            ret.__xst=false;
-        }
-    }catch(e){
-        console.log('erreur transform 2424',e);
-        ret.__xst=false;
-    }
-    return ret;
-}
-
-/*
-  =====================================================================================================================
-*/
-function convertit_source_javascript_en_rev_old(sourceDuJavascript){
-    var t='';
-    try{
-        var obj1 = recupere_ast_de_source_js_en_synchrone(sourceDuJavascript);
-        if(obj1.__xst === true){
-            tabComment=obj1.commentaires;
-            if(obj1.__xva === ''){
-                t='';
-            }else if(obj1.__xva.hasOwnProperty('body') && Array.isArray(obj1.__xva.body) && obj1.__xva.body.length === 0){
-                t='';
-            }else{
-                var obj = TransformAstEnRev(obj1.__xva.body,0);
-                if(obj.__xst === true){
-                    t=obj.__xva;
-                }else{
-                    return(logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 2733' }));
-                }
-            }
-        }else{
-            return(logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 2611' }));
-        }
-        return({ "__xst" : true , "__xva" : t });
-    }catch(e){
-        console.log('erreur de conversion de source',e);
-        return(logerreur({ "__xst" : false , "__xme" : 'erreurconvertit_source_javascript_en_rev e=' + e.message }));
-    }
-    return({ "__xst" : true , "__xva" : t });
-}
 
 function convertit_source_javascript_en_rev(sourceDuJavascript){
     var parseur_javascript = window.acorn.Parser;

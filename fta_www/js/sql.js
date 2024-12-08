@@ -132,6 +132,10 @@ function recuperer_operateur_sqlite(op){
         t=' IN ';
     }else if(op === 'est'){
         t=' IS ';
+    }else if(op === 'max'){
+        t='max';
+    }else if(op === 'min'){
+        t='min';
     }else{
         debugger;
         t=' sql.js 0118 inconnu opérateur "' + op + '"';
@@ -202,7 +206,7 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
     for(i=id + 1;(i < l01) && (tab[i][3] > tab[id][3]);i++){
         if(tab[i][7] === id){
             if(premierChamp === false){
-                if(operateur === 'concat'){
+                if(operateur === 'concat' || operateur === 'max' || operateur === 'min' ){
                     t+=',';
                 }else if(operateur === 'LIMIT'){
 
@@ -229,10 +233,18 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
                                 }
                                 
                             }else{
-                                t+=tab[i][1];
+                                if(operateur_rev==='moins' && tab[tab[i][7]][8]===1){
+                                    t+='-'+tab[i][1];
+                                }else{
+                                    t+=tab[i][1];
+                                }
                             }
                         }else{
-                            t+=tab[i][1];
+                            if(operateur_rev==='moins' && tab[tab[i][7]][8]===1){
+                                t+='-'+tab[i][1];
+                            }else{
+                                t+=tab[i][1];
+                            }
                         }
                     }else{
                         if(options.au_format_php===true){
@@ -290,6 +302,10 @@ function traite_sqlite_fonction_de_champ(tab,id,niveau,options){
         t='count(' + t + ')';
     }else if(operateur === 'tous_les_champs'){
         t='*';
+    }else if(operateur === 'min'){
+        t='min(' + t + ')';
+    }else if(operateur === 'max'){
+        t='max(' + t + ')';
     }else if(operateur === 'concat'){
         t='concat(' + t + ')';
     }else if(operateur === '' && tab[tab[id][7]][1]==='dans' && tab[tab[id][7]][2]==='f' ){

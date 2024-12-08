@@ -83,26 +83,6 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
         }
     }
 }
-/*
-  =====================================================================================================================
-*/
-function ancien_traitement_apres_ajax_pour_conversion_fichier_html(par){
-    var objRev = __module_html1.TransformHtmlEnRev(par.contenu_du_fichier,0);
-    if(objRev.__xst === false){
-
-        logerreur({__xst:false,__xme:'erreur 0092 traitement_apres_ajax_pour_conversion_fichier_html'});
-        return({__xst:false,__xme:'erreur 0092 traitement_apres_ajax_pour_conversion_fichier_html'})
-    }else if(objRev.__xst === true){
-        var tableau1 = iterateCharacters2(objRev.__xva);
-        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-        if(matriceFonction.__xst === true){
-            var objHtml = __module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
-            if(objHtml.__xst === true){
-                sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.__entree.id_source,objRev.__xva,objHtml.__xva,par.__entree.date_de_debut_traitement,matriceFonction.__xva);
-            }
-        }
-    }
-}
 
 /*
   =====================================================================================================================
@@ -200,55 +180,6 @@ function sauvegarder_php_en_ligne(format_rev,donnees){
 
 }
 
-/*
-  =====================================================================================================================
-*/
-function _____ancien_____traitement_apres_ajax_pour_conversion_fichier_php(par){
-    var ast = JSON.parse(par.__xva);
-
-    var objRev = TransformAstPhpEnRev(ast,0,false);
-    try{
-        if(objRev.__xst === true){
-            /*
-              on a obtenu le format rev du php,
-              on peut le convertir en php
-            */
-            var tableau1 = iterateCharacters2(objRev.__xva);
-            try{
-                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-                if(matriceFonction.__xst === false){
-                    logerreur({__xst:false,__xme:'erreur 167 traitement_apres_ajax_pour_conversion_fichier_php'});
-                    return({__xst:false,__xme:'erreur 167 traitement_apres_ajax_pour_conversion_fichier_php'})
-                    
-                }else if(matriceFonction.__xst === true){
-                    var objPhp = parsePhp0(matriceFonction.__xva,0,0);
-                    if(objPhp.__xst === true){
-                        /*
-                          on a obtenu le php à partir du rev,
-                          on peut tout enregistrer
-                        */
-                        sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(
-                             par.__entree.opt.donnees.__entree.id_source,
-                             objRev.__xva,
-                             objPhp.__xva,
-                             par.__entree.opt.donnees.__entree.date_de_debut_traitement,
-                             matriceFonction.__xva
-                        );
-                    }else{
-                        logerreur({__xst:false,__xme:'erreur 252 traitement_apres_ajax_pour_conversion_fichier_php'});
-                    }
-                }
-            }catch(e){
-             debugger
-            }
-        }else{
-            logerreur({__xst:false,__xme:'erreur 254 traitement_apres_ajax_pour_conversion_fichier_php'});
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-        }
-    }catch(e1){
-        debugger
-    }
-}
 
 
 

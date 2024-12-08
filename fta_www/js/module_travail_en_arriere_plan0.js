@@ -1,3 +1,4 @@
+try{importScripts('./jslib/acorn.js');}catch(e){debugger;}
 try{importScripts('./core6.js');}catch(e){debugger;}
 try{importScripts('./convertit-php-en-rev0.js');}catch(e){debugger;}
 try{importScripts('./php.js');}catch(e){debugger;}

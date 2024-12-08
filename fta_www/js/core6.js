@@ -1149,7 +1149,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
     */
     /*
-      l'ancienne version avec push était :
+      la première version avec push était :
       T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
     */
     chaineTableau+='[0,"' + texte + '","INIT",-1,' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
@@ -1188,7 +1188,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     indiceTabCommentaire++;
                     posFerPar=0;
                     /*
-                      l'ancienne version faisait :
+                      la première version version faisait :
                       T[indice][13]=commentaire;
                       T[indice][12]=posFerPar;
                     */

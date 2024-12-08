@@ -44,7 +44,12 @@ $js_a_executer_apres_chargement=array(
     )
 );
 $par=array(
-    'js_a_inclure'=>array('js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite_parser_from_demo.js'),
+    'js_a_inclure'=>array(
+        'js/sql.js' ,
+        'js/convertion_sql_en_rev.js' ,
+//        'js/jslib/sqlite_parser_from_demo.js' ,
+        'js/jslib/sqlite-parser.js' ,
+     ),
     'js_a_executer_apres_chargement'=>$js_a_executer_apres_chargement
 );
 $o1.='<script type="text/javascript">

@@ -66,8 +66,6 @@ function recupere_une_donnees_des_cibles($id){
       'fta_inc/.htaccess' => array(),
       'fta_inc/ajax/core/bdd.php' => array(),
       'fta_inc/ajax/core/file.php' => array(),
-      'fta_inc/ajax/js/ast.php' => array(), 
-      'fta_inc/ajax/js/rev_html_avec_js1.php' => array(),       
       'fta_inc/ajax/php/ast.php' => array(),
       'fta_inc/ajax/php/session.php' => array(),
       'fta_inc/ajax/php/travail_en_arriere_plan1.php' => array(),
