@@ -37,8 +37,16 @@ html(
    body(
       #( redirection vers la page d'accueil ),
       h1('racine de l\'application'),
-      p(('style' , "text-align:center;font-size:1.3rem;") , 'Dans 300 secondes, vous serez' , b('redirigé automatiquement') , br() , 'vers la la page principale de l\'application'),
-      div(('style' , "text-align:center;font-size:1.2em;") , ('id' , "decompte") , '300'),
+      p(
+         ('style' , "text-align:center;font-size:1.3rem;"),
+         ('id' , "phrase"),
+         'Dans',
+         b(span(('id' , "decompte") , '300')),
+         'secondes, vous serez',
+         b('redirigé automatiquement'),
+         br(),
+         'vers la la page principale de l\'application'
+      ),
       div(('style' , "text-align:center;") , a(('class' , "yyinfo yytbgrand") , ('style' , "max-width: fit-content;") , ('href' , "fta_www/") , 'y aller maintenant')),
       div(('style' , "text-align:center;") , a(('class' , "yyinfo yytbgrand") , ('style' , "max-width: fit-content;") , ('href' , "tictactoe.html") , 'aller sur tictactoe')),
       javascriptDansHtml(
@@ -48,6 +56,84 @@ html(
            ===================================================================================================
          ),
          declare(decompte , 300),
+         declare(a , appelf(element(document) , nomf(getElementsByTagName) , p('meta'))),
+         choix(
+            si(
+               condition(et(a , sup(a.length , 0))),
+               alors(
+                  boucle(
+                     initialisation(declare(i , 0)),
+                     condition(inf(i , a.length)),
+                     increment(i++),
+                     faire(
+                        choix(
+                           si(
+                              condition(
+                                 et(
+                                    appelf(element(a[i]) , nomf(getAttribute) , p('http-equiv')),
+                                    egal(appelf(element(a[i]) , nomf(getAttribute) , p('http-equiv')) , "refresh"),
+                                    appelf(element(a[i]) , nomf(getAttribute) , p('content'))
+                                 )
+                              ),
+                              alors(
+                                 declare(contenu , appelf(element(a[i]) , nomf(getAttribute) , p('content'))),
+                                 #( content="300; url='./fta_www/'" ),
+                                 choix(
+                                    si(
+                                       condition(
+                                          supeg(appelf(element(contenu) , nomf(indexOf) , p(';')) , 0)
+                                       ),
+                                       alors(
+                                          declare(
+                                             temps_en_secondes,
+                                             appelf(
+                                                element(contenu),
+                                                nomf(substr),
+                                                p(0),
+                                                p(appelf(element(contenu) , nomf(indexOf) , p(';')))
+                                             )
+                                          ),
+                                          choix(
+                                             si(
+                                                condition(
+                                                   et(
+                                                      non(appelf(nomf(isNaN) , p(temps_en_secondes))),
+                                                      non(
+                                                         appelf(
+                                                            nomf(isNaN),
+                                                            p(appelf(nomf(parseFloat) , p(temps_en_secondes)))
+                                                         )
+                                                      )
+                                                   )
+                                                ),
+                                                alors(
+                                                   affecte(decompte , appelf(nomf(parseInt) , p(temps_en_secondes) , p(10))),
+                                                   affecte(
+                                                      appelf(element(document) , nomf(getElementById) , p('phrase') , prop(innerHTML)),
+                                                      concat(
+                                                         'Dans <b><span id="decompte">',
+                                                         temps_en_secondes,
+                                                         '</span></b> secondes, vous serez ',
+                                                         '<b>redirigé automatiquement</b> ',
+                                                         '<br />',
+                                                         'vers la la page principale de l\'application'
+                                                      )
+                                                   ),
+                                                   break()
+                                                )
+                                             )
+                                          )
+                                       )
+                                    )
+                                 )
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            )
+         ),
          fonction(
             definition(nom(maj_decompte)),
             contenu(

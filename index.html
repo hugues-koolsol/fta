@@ -35,15 +35,16 @@
     <body>
         <!-- redirection vers la page d'accueil -->
         <h1>racine de l'application</h1>
-        <p style="text-align:center;font-size:1.3rem;">
-            Dans 300 secondes, vous serez
+        <p style="text-align:center;font-size:1.3rem;" id="phrase">
+            Dans
+            <b>
+                <span id="decompte">300</span>
+            </b>
+            secondes, vous serez
             <b>redirigé automatiquement</b>
             <br />
             vers la la page principale de l'application
         </p>
-        <div style="text-align:center;font-size:1.2em;" id="decompte">
-            300
-        </div>
         <div style="text-align:center;">
             <a class="yyinfo yytbgrand" style="max-width: fit-content;" href="fta_www/">y aller maintenant</a>
         </div>
@@ -59,6 +60,23 @@
   =====================================================================================================================
 */
 var decompte=300;
+var a = document.getElementsByTagName('meta');
+if(a && a.length > 0){
+    for( var i=0 ; i < a.length ; i++ ){
+        if(a[i].getAttribute('http-equiv') && a[i].getAttribute('http-equiv') == "refresh" && a[i].getAttribute('content')){
+            var contenu = a[i].getAttribute('content');
+            /* content="300; url='./fta_www/'" */
+            if(contenu.indexOf(';') >= 0){
+                var temps_en_secondes = contenu.substr(0,contenu.indexOf(';'));
+                if(!(isNaN(temps_en_secondes)) && !(isNaN(parseFloat(temps_en_secondes)))){
+                    decompte=parseInt(temps_en_secondes,10);
+                    document.getElementById('phrase').innerHTML='Dans <b><span id="decompte">' + temps_en_secondes + '</span></b> secondes, vous serez ' + '<b>redirigé automatiquement</b> ' + '<br />' + 'vers la la page principale de l\'application';
+                    break;
+                }
+            }
+        }
+    }
+}
 function maj_decompte(){
     decompte--;
     document.getElementById('decompte').innerHTML=decompte;
