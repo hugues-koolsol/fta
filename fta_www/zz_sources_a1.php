@@ -1197,7 +1197,7 @@ $par=array( 'js_a_inclure' => array(
             'js/convertit-js-en-rev1.js',
             'js/javascript.js',
             'js/texte.js',
-            'js/jslib/sqlite_parser_from_demo.js',
+            'js/jslib/sqlite-parser.js',
             'js/convertion_sql_en_rev.js',
             'js/convertit-html-en-rev1.js',
             'js/jslib/acorn.js'            

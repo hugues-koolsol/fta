@@ -13,7 +13,7 @@
   
 */
 var contient_du_javascript_dans_html=false;
-var tableau_de_html_dans_php_a_convertir = [];
+var tableau_de_html_dans_php_a_convertir=[];
 /*
   =====================================================================================================================
 */
@@ -111,7 +111,7 @@ function php_traite_Stmt_Switch(element,niveau,dansFor,de_racine,options_traitem
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var leTest='';
-    var tabSw = [];
+    var tabSw=[];
     if(element.cond){
         var obj = php_traite_Stmt_Expression(element.cond,niveau,false,element,options_traitement);
         if(obj.__xst === true){
@@ -341,7 +341,7 @@ function php_traite_Expr_FuncCall(element,niveau){
     }
     var lesArgumentsCourts='';
     var lesArguments='';
-    var tabArgs = [];
+    var tabArgs=[];
     if(element.args && element.args.length > 0){
         var i=0;
         for( i=0 ; i < element.args.length ; i++ ){
@@ -990,12 +990,12 @@ function php_traite_Expr_Assign(element,niveau){
     var gauche='';
     var droite='';
     if(element.var){
-        if(element.var.nodeType==='Expr_Variable'){
-            /* 
+        if(element.var.nodeType === 'Expr_Variable'){
+            /*
               comme il y a beaucoup d'affectation à une variable simple,
               on fait une affectation directe ici
             */
-            gauche='$'+element.var.name;
+            gauche='$' + element.var.name;
         }else{
             var obj = php_traite_Stmt_Expression(element.var,niveau,false,element);
             if(obj.__xst === true){
@@ -1298,25 +1298,16 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
         /*===============================================*/
     }else{
         switch (element.nodeType){
-            case "Scalar_Int":
-                t+=element.value;
+            case "Scalar_Int" : t+=element.value;
                 break;
-                
-            case "Scalar_Float":
-                t+=element.value;
+            case "Scalar_Float" : t+=element.value;
                 break;
-                
-            case "Expr_Variable":
-                t+='$' + element.name;
+            case "Expr_Variable" : t+='$' + element.name;
                 break;
-                
-            case "Identifier":
-                
-            case "Name":
-                t+=element.name;
+            case "Identifier" : 
+            case "Name" : t+=element.name;
                 break;
-                
-            case "NullableType":
+            case "NullableType" :
                 if(element.type.nodeType === 'Name'){
                     t+='?' + element.type.name + '';
                 }else if(element.type.nodeType === 'Identifier'){
@@ -1326,14 +1317,14 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Expr_ClassConstFetch":
+            case "Expr_ClassConstFetch" :
                 /* aaa\bbb::ccc */
                 if(element.class.nodeType === 'Name' && element.name.nodeType === 'Identifier'){
                     t+='valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '::' + element.name.name + '\')';
                 }
                 break;
                 
-            case "Stmt_ClassConst":
+            case "Stmt_ClassConst" :
                 var privee='';
                 var constantes='';
                 var protegee='';
@@ -1373,7 +1364,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 t+=constantes.substr(1);
                 break;
                 
-            case "Stmt_Property":
+            case "Stmt_Property" :
                 if(element.props && element.props.length > 0){
                     var i=0;
                     for( i=0 ; i < element.props.length ; i++ ){
@@ -1441,23 +1432,24 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Scalar_String":
+            case "Scalar_String" :
                 if(element.attributes.kind && (element.attributes.kind === 3 || element.attributes.kind === 4)){
                     t+='heredoc(\'' + element.attributes.docLabel + '\',`\n' + (element.attributes.rawValue.replace(/`/g,'\\`')) + '`)';
                 }else if(element.attributes.rawValue.substr(0,1) === '\'' || element.attributes.rawValue.substr(0,1) === '"'){
                     var rv=element.attributes.rawValue;
-                    var contenu=rv.substr(1,rv.length-2);
-                    if(
-                      (rv.substr(0,1)==='\'' && contenu.indexOf('\'')<0 && contenu.indexOf('\\')<0 )
-                      || (rv.substr(0,1)==='"' && contenu.indexOf('"')<0 && contenu.indexOf('\\')<0 ) 
+                    var contenu = rv.substr(1,rv.length - 2);
+                    if(rv.substr(0,1) === '\''
+                     && contenu.indexOf('\'') < 0
+                     && contenu.indexOf('\\') < 0
+                     || rv.substr(0,1) === '"'
+                     && contenu.indexOf('"') < 0
+                     && contenu.indexOf('\\') < 0
                     ){
-                        /* 
+                        /*
                           si c'est une chaine "simple" cad ne contenant ni terminateur ni antislash
                         */
                         t+=element.attributes.rawValue;
-
                     }else{
-                     
                         /*
                           en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
                           mais pour les fichiers rev, c'est pas excellent, 
@@ -1596,16 +1588,15 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                                 nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
                             }
                         }
-                        t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);                     
+                        t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
                     }
-
                 }else{
                     t+=element.attributes.rawValue;
                 }
                 /*===============================================*/
                 break;
                 
-            case "Stmt_ClassMethod":
+            case "Stmt_ClassMethod" :
                 var obj = php_traite_Stmt_ClassMethod(element,niveau,options_traitement);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
@@ -1615,7 +1606,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Stmt_Continue":
+            case "Stmt_Continue" :
                 if(element.num === null){
                     t+='\n' + esp0 + 'continue()';
                 }else{
@@ -1629,7 +1620,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_UnaryMinus":
+            case "Expr_UnaryMinus" :
                 var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                 if(obj.__xst === true){
                     t+='-' + obj.__xva;
@@ -1638,7 +1629,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Stmt_Global":
+            case "Stmt_Global" :
                 var variables='';
                 var i={};
                 for(i in element.vars){
@@ -1656,7 +1647,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Expr_UnaryPlus":
+            case "Expr_UnaryPlus" :
                 var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                 if(obj.__xst === true){
                     t+='+' + obj.__xva;
@@ -1666,7 +1657,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_ArrayDimFetch":
+            case "Expr_ArrayDimFetch" :
                 var obj = php_traite_Expr_ArrayDimFetch(element,niveau,0);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1676,7 +1667,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_MethodCall":
+            case "Expr_MethodCall" :
                 var obj = php_traite_Expr_MethodCall(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1686,19 +1677,13 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Scalar_MagicConst_File":
-                t+='__FILE__';
+            case "Scalar_MagicConst_File" : t+='__FILE__';
                 break;
-                
-            case "Scalar_MagicConst_Line":
-                t+='__LINE__';
+            case "Scalar_MagicConst_Line" : t+='__LINE__';
                 break;
-                
-            case "Scalar_MagicConst_Dir":
-                t+='__DIR__';
+            case "Scalar_MagicConst_Dir" : t+='__DIR__';
                 break;
-                
-            case "Arg":
+            case "Arg" :
                 /*===============================================*/
                 if(element.byRef === true){
                     t+='&';
@@ -1712,7 +1697,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Assign":
+            case "Expr_Assign" :
                 var obj = php_traite_Expr_Assign(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1722,7 +1707,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_AssignRef":
+            case "Expr_AssignRef" :
                 var obj = php_traite_Expr_AssignRef(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1732,7 +1717,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_FuncCall":
+            case "Expr_FuncCall" :
                 var obj = php_traite_Expr_FuncCall(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1742,7 +1727,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Include":
+            case "Expr_Include" :
                 var obj = php_traite_Expr_Include(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1752,7 +1737,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Eval":
+            case "Expr_Eval" :
                 var obj = php_traite_Expr_Eval(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1762,7 +1747,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Ternary":
+            case "Expr_Ternary" :
                 var obj = php_traite_Expr_Ternary(element,niveau,options_traitement);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1772,7 +1757,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case 'Expr_Isset':
+            case 'Expr_Isset' :
                 var obj = php_traite_Expr_Isset(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1782,7 +1767,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case 'Expr_Array':
+            case 'Expr_Array' :
                 var obj = php_traite_Expr_Array(element,niveau,0);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1792,7 +1777,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_List":
+            case "Expr_List" :
                 var obj = php_traite_Expr_List(element,niveau,0);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -1802,7 +1787,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Exit":
+            case "Expr_Exit" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1816,7 +1801,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_ConstFetch":
+            case "Expr_ConstFetch" :
                 if(element.name){
                     if(element.name.nodeType === 'Name'){
                         if(element.name.name === 'true'){
@@ -1837,7 +1822,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_ErrorSuppress":
+            case "Expr_ErrorSuppress" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1851,7 +1836,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Print":
+            case "Expr_Print" :
                 var obj = php_traite_print(element,niveau);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
@@ -1861,7 +1846,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_New":
+            case "Expr_New" :
                 var obj = php_traite_Expr_New(element,niveau);
                 if(obj.__xst === true){
                     t+='\n' + esp0 + obj.__xva;
@@ -1871,7 +1856,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_PostInc":
+            case "Expr_PostInc" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
                     t+='postinc($' + element.var.name + ')';
                 }else{
@@ -1885,7 +1870,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_PostDec":
+            case "Expr_PostDec" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
                     t+='postdec($' + element.var.name + ')';
                 }else{
@@ -1899,7 +1884,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_PreDec":
+            case "Expr_PreDec" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
                     t+='predec($' + element.var.name + ')';
                 }else{
@@ -1913,7 +1898,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_PreInc":
+            case "Expr_PreInc" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
                     t+='preinc($' + element.var.name + ')';
                 }else{
@@ -1927,7 +1912,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Cast_Array":
+            case "Expr_Cast_Array" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1941,7 +1926,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Cast_Double":
+            case "Expr_Cast_Double" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1955,7 +1940,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Cast_String":
+            case "Expr_Cast_String" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1969,7 +1954,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Empty":
+            case "Expr_Empty" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1983,7 +1968,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Cast_Int":
+            case "Expr_Cast_Int" :
                 if(element.expr){
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -1997,7 +1982,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_StaticCall":
+            case "Expr_StaticCall" :
                 var obj = php_traite_Expr_FuncCall(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2007,7 +1992,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_PropertyFetch":
+            case "Expr_PropertyFetch" :
                 var variable='';
                 if(element.var){
                     var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
@@ -2035,7 +2020,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Scalar_InterpolatedString":
+            case "Scalar_InterpolatedString" :
                 if(element.parts){
                     var chaine_concat='';
                     var i=0;
@@ -2073,7 +2058,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Expr_ClassConstFetch":
+            case "Expr_ClassConstFetch" :
                 if(element.class && element.class.nodeType === "Name" && element.name && element.name.nodeType === "Identifier"){
                     t+=element.class.name + '::' + element.name.name;
                 }else{
@@ -2081,7 +2066,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Expr_StaticPropertyFetch":
+            case "Expr_StaticPropertyFetch" :
                 /* $filename = self::$embedding_file;  */
                 if(element.class && element.class.nodeType === 'Name' && element.name && element.name.nodeType === "VarLikeIdentifier"){
                     t+=element.class.name + '::$' + element.name.name;
@@ -2090,7 +2075,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "StaticVar":
+            case "StaticVar" :
                 var variable="";
                 if(element.var){
                     var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
@@ -2115,7 +2100,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Expr_Instanceof":
+            case "Expr_Instanceof" :
                 if(element.class && element.class.nodeType === 'Name' && element.expr && element.expr.nodeType === 'Expr_Variable'){
                     if(element.class.name.indexOf('\\') >= 0){
                         t+='instance_de($' + element.expr.name + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
@@ -2156,7 +2141,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }
                 break;
                 
-            case "Expr_Throw":
+            case "Expr_Throw" :
                 if(element.expr && element.expr.nodeType === "Expr_New"){
                     var obj = php_traite_Expr_New(element.expr,niveau);
                     if(obj.__xst === true){
@@ -2170,7 +2155,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Closure":
+            case "Expr_Closure" :
                 var obj = php_traite_Expr_Closure(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2180,7 +2165,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /*===============================================*/
                 break;
                 
-            case "Expr_Clone":
+            case "Expr_Clone" :
                 var obj = php_traite_Expr_Clone(element,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2364,7 +2349,7 @@ function php_traiteCondition1(element,niveau,parent,options_traitement){
           - la première entrée est une fonction vide
           - tous les autres niveaux sont >=1
         */
-        if(obj.__xva.substr(0,1)==='(' && obj.__xva.substr(obj.__xva.length-1,1)===')'){
+        if(obj.__xva.substr(0,1) === '(' && obj.__xva.substr(obj.__xva.length - 1,1) === ')'){
             var matrice = functionToArray(obj.__xva,true,true,'');
             if(matrice.__xst === true && matrice.__xva.length >= 2){
                 if(matrice.__xva[1][1] === ''){
@@ -3249,7 +3234,7 @@ function isHTML(str){
     var caractereDebutProp='';
     var nomTag='';
     var dansBaliseFermante=false;
-    var tabTags = [];
+    var tabTags=[];
     var presDe='';
     var dansCdata=false;
     var dansTextArea=false;
@@ -3590,9 +3575,9 @@ async function traiter_html_dans_php1(param){
     console.log(a_convertir);
     var options={ "fonction_a_appeler" : "traiter_html_dans_php1" , "source_php" : globale_source_php1 , "a_convertir" : a_convertir };
     setTimeout(function(options){
-    
-        __module_html1.TransformHtmlEnRev(options.a_convertir.valeur,0,options);
-    },1000,options);
+        
+            __module_html1.TransformHtmlEnRev(options.a_convertir.valeur,0,options);
+        },1000,options);
 }
 /*
   try{
@@ -3603,7 +3588,7 @@ async function traiter_html_dans_php1(param){
   console.error('e=',e);
   }
 */
-var globale_tableau_des_php1 = [];
+var globale_tableau_des_php1=[];
 var globale_source_php1='';
 /*
   =====================================================================================================================
@@ -3641,7 +3626,7 @@ function transforme_html_de_php_en_rev(texteHtml,niveau){
                 }
             }
             try{
-                var tableau_de_javascripts_a_convertir = [];
+                var tableau_de_javascripts_a_convertir=[];
                 var obj = __module_html1.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
                 if(obj.__xst === true){
                     if(obj.__xva.trim().indexOf('html(') == 0){
@@ -3709,7 +3694,6 @@ function traiter_html_dans_php2(options){
     function fin_traitement_php(zone_rev,globale_source_php2){
         globale_tableau_des_js2=[];
         if(zone_rev){
-
             var tableau1 = iterateCharacters2(globale_source_php2);
             var matriceFonction = functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
@@ -3728,7 +3712,6 @@ function traiter_html_dans_php2(options){
                 globale_source_php2='';
                 return(logerreur({ "__xst" : true , "__xva" : '3083 erreur mise en matrice' }));
             }
-
         }
         if(en_ligne === true){
             sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
@@ -3740,22 +3723,19 @@ function traiter_html_dans_php2(options){
         }
     }
     if(globale_tableau_des_js2.length > 0){
-     
-        var parseur_javascript = window.acorn.Parser;
-        for(var i =0; i<globale_tableau_des_js2.length;i++){
-
-            try{         
+        var parseur_javascript=window.acorn.Parser;
+        for( var i=0 ; i < globale_tableau_des_js2.length ; i++ ){
+            try{
                 tabComment=[];
-                var obj=parseur_javascript.parse(globale_tableau_des_js2[i].__xva, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+                var obj = parseur_javascript.parse(globale_tableau_des_js2[i].__xva,{ "ecmaVersion" : 'latest' , "sourceType" : 'module' , "ranges" : true , "onComment" : tabComment });
             }catch(e){
                 globale_tableau_des_js2=[];
                 return(logerreur({ "__xst" : false , "__xme" : '3770 il y a un problème dans un source javascript dans le php' }));
             }
             var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + globale_tableau_des_js2[i].cle + ')';
-            if(obj === '' || ( obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0 ) ){
+            if(obj === '' || obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
                 globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'');
             }else{
-
                 var obj0 = TransformAstEnRev(obj.body,0);
                 if(obj0.__xst === true){
                     globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
@@ -3765,27 +3745,21 @@ function traiter_html_dans_php2(options){
                 }
             }
         }
-        
         return(fin_traitement_php(zone_rev,globale_source_php2));
-        
     }else{
-    
         return(fin_traitement_php(zone_rev,globale_source_php2));
     }
-        
-
 }
 /*
   =====================================================================================================================
 */
-var globale_tableau_des_php2 = [];
+var globale_tableau_des_php2=[];
 var globale_source_php2='';
-var globale_tableau_des_js2 = [];
+var globale_tableau_des_js2=[];
 /*
   =====================================================================================================================
 */
 function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
-
     var ast = JSON.parse(retour_avec_ast.__xva);
     var obj = TransformAstPhpEnRev(ast,0,false,true,retour_avec_ast.__entree.opt.options_traitement);
     var options={};
@@ -3872,7 +3846,8 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
     r.onerror=function(e){
     
         console.error('e=',e);
-        return({ "__xst" : false });};
+        return({ "__xst" : false });
+    };
     try{
         r.open("POST",'za_ajax.php?recupererAstDePhp',true);
         r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
@@ -3918,7 +3893,8 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
             }catch(e){
                 console.error('e=',e);
                 return({ "__xst" : false , "__xme" : ' conv js message=' + e.message });
-            }};
+            }
+        };
         r.send('ajax_param=' + (encodeURIComponent(JSON.stringify(ajax_param))));
     }catch(e){
         console.error('e=',e);

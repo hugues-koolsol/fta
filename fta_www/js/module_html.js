@@ -64,7 +64,7 @@ class traitements_sur_html{
     }
     /*#
       =======================================================================================
-      function traiteAstDeHtml(
+      function traiteAstDeHtml
       
       Construit texte html à partir d'un AST html qui ressemble à ça :
       {"type":"BODY",
@@ -173,11 +173,14 @@ class traitements_sur_html{
                 }
                 t+='\n' + esp0 + ')';
             }else if(type.toLowerCase() === 'javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
-
                 if(Array.isArray(jsonDeHtml.content)){
                     for( var i=0 ; i < jsonDeHtml.content.length ; i++ ){
-                        if(typeof jsonDeHtml.content[i]==='string' || ( jsonDeHtml.content[i].type && (jsonDeHtml.content[i].type === '#text' || jsonDeHtml.content[i].type === '#cdata-section' ))){
-                            if(typeof jsonDeHtml.content[i]==='string'){
+                        if(typeof jsonDeHtml.content[i] === 'string'
+                         || jsonDeHtml.content[i].type
+                         && (jsonDeHtml.content[i].type === '#text'
+                         || jsonDeHtml.content[i].type === '#cdata-section')
+                        ){
+                            if(typeof jsonDeHtml.content[i] === 'string'){
                                 var source_js=jsonDeHtml.content[i];
                             }else{
                                 var source_js=jsonDeHtml.content[i].content;
@@ -606,7 +609,7 @@ class traitements_sur_html{
                 elementNoeud=docNode.firstChild.childNodes;
                 function treeXML(elements,objet,niveau,remplacer_les_nbsp){
                     try{
-                        var les_contenus = [];
+                        var les_contenus=[];
                         for( var i=0 ; i < elements.length ; i++ ){
                             var le_noeud={};
                             var les_attributs={};
@@ -682,7 +685,7 @@ class traitements_sur_html{
         function reconstruit(tab,parentId){
             var l01=tab.length;
             var un_element={};
-            var contenu = [];
+            var contenu=[];
             var attrib={};
             var indice=0;
             var i=0;
@@ -709,7 +712,7 @@ class traitements_sur_html{
                             un_element['attributes']=JSON.parse(JSON.stringify(attrib));
                         }
                         un_element['type']=tab[indice][1];
-                        var le_contenu = [];
+                        var le_contenu=[];
                         for( var i = indice + 1 ; i < l01 ; i++ ){
                             if(tab[i][7] === indice && tab[i][1] !== ''){
                                 if(tab[i][2] === 'c'){
@@ -812,7 +815,7 @@ class traitements_sur_html{
             var l01=tab.length;
             var type='';
             var attributes={};
-            var content = [];
+            var content=[];
             /*
               récupération des attributs
             */
@@ -998,16 +1001,16 @@ class traitements_sur_html{
                 
                 console.error('fetch dataerr=',dataerr)
             }).finally((datafinally) => {
+                
                 /* vide */
             });
-            /* vide */
             var t= await response.text().catch((dataerr) => {
                 
                 console.error('text dataerr=',dataerr)
             }).finally((datafinally) => {
+                
                 /* vide */
             });
-            /* vide */
             try{
                 var le_json = JSON.parse(t);
                 if(le_json.hasOwnProperty('__xms')){
@@ -1070,8 +1073,7 @@ class traitements_sur_html{
                     }
                 }
                 try{
-                    var tableau_de_javascripts_a_convertir = [];
-
+                    var tableau_de_javascripts_a_convertir=[];
                     var obj = this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
                     if(obj.__xst === true){
                         if(obj.__xva.trim().indexOf('html(') == 0){
@@ -1081,23 +1083,19 @@ class traitements_sur_html{
                                 obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
                             }
                         }
-
                         if(tableau_de_javascripts_a_convertir.length > 0){
-                            var parseur_javascript = window.acorn.Parser;
-                            for(var indjs=0;indjs<tableau_de_javascripts_a_convertir.length;indjs++){
+                            var parseur_javascript=window.acorn.Parser;
+                            for( var indjs=0 ; indjs < tableau_de_javascripts_a_convertir.length ; indjs++ ){
                                 try{
                                     tabComment=[];
-                                    var obj0=parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva, {ecmaVersion: 'latest' , sourceType:'module', ranges:true , onComment:tabComment});
+                                    var obj0 = parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{ "ecmaVersion" : 'latest' , "sourceType" : 'module' , "ranges" : true , "onComment" : tabComment });
                                 }catch(e){
                                     console.error('erreur de conversion js e=',e);
-
                                     if(e.pos){
-                                        logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 1094'+e.message , plage:[e.pos,e.pos]});
+                                        logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 1094' + e.message , "plage" : [e.pos,e.pos] });
                                     }
-                                    
                                     return(logerreur({ "__xst" : false , "__xme" : '1093 il y a un problème dans un source javascript' }));
                                 }
-                                
                                 var obj1 = TransformAstEnRev(obj0.body,0);
                                 if(obj1.__xst === true){
                                     /* puis on remplace la chaine */
@@ -1107,16 +1105,13 @@ class traitements_sur_html{
                                     console.error('erreur de conversion de ast vers js e=',e);
                                     return({ "__xst" : false , "__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript' });
                                 }
-                                
-                             
-                             
                             }
                             var source_rev=obj.__xva;
                             var une_erreur=false;
                             /*
-                              =============================================
+                              =============================================================
                               console.log('après transformation, source_rev=',source_rev)
-                              =============================================
+                              =============================================================
                             */
                             if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
                                 sauvegarder_html_en_ligne(source_rev,options.donnees);
@@ -1154,11 +1149,8 @@ class traitements_sur_html{
                                     }
                                 }
                                 return({ "__xst" : true , "__xva" : source_rev });
-                            }                            
-                            
-                            
+                            }
                         }else{
-                         
                             if(options.hasOwnProperty('html_dans_php')){
                                 for( var i=0 ; i < options.tableau_de_html_dans_php_a_convertir.length ; i++ ){
                                     if(options.cle === options.tableau_de_html_dans_php_a_convertir[i].cle){

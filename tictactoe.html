@@ -147,9 +147,9 @@ function recommencer(){
     termine=false;
     document.getElementById('numero_de_joueur').innerHTML=numero_de_joueur + message1;
     setTimeout(function(){
-    
-        document.getElementById('numero_de_joueur').className='';
-    },250);
+        
+            document.getElementById('numero_de_joueur').className='';
+        },250);
 }
 /*================================================================*/
 function monClick(e){
@@ -168,17 +168,17 @@ function monClick(e){
         document.getElementById('numero_de_joueur').className='csb2';
         termine=true;
         setTimeout(function(){
-        
-            document.getElementById('numero_de_joueur').className='';
-        },1250);
+            
+                document.getElementById('numero_de_joueur').className='';
+            },1250);
     }else if(a_gagne === 2){
         numero_de_joueur=numero_de_joueur === 'o' ? ( 'x' ) : ( 'o' );
         document.getElementById('numero_de_joueur').innerHTML=numero_de_joueur + message1;
         document.getElementById('numero_de_joueur').className='csb1';
         setTimeout(function(){
-        
-            document.getElementById('numero_de_joueur').className='';
-        },250);
+            
+                document.getElementById('numero_de_joueur').className='';
+            },250);
     }else if(a_gagne === 0){
         var t=' égalité ! ';
         t+=' <button type="button" onclick="recommencer()">recommencer</button>';
@@ -186,9 +186,9 @@ function monClick(e){
         document.getElementById('numero_de_joueur').className='csb1';
         termine=true;
         setTimeout(function(){
-        
-            document.getElementById('numero_de_joueur').className='';
-        },1250);
+            
+                document.getElementById('numero_de_joueur').className='';
+            },1250);
     }
 }
 /*================================================================*/
@@ -201,15 +201,15 @@ function init(){
     document.getElementById('numero_de_joueur').innerHTML=numero_de_joueur + message1;
     document.getElementById('numero_de_joueur').className='csb1';
     setTimeout(function(){
-    
-        document.getElementById('numero_de_joueur').className='';
-    },1250);
+        
+            document.getElementById('numero_de_joueur').className='';
+        },1250);
 }
 /*================================================================*/
 window.addEventListener('load',function(){
-
-    init();
-});
+    
+        init();
+    });
 /* quelques tests de la phase de développement */
 var a=1;
 console.log(a);

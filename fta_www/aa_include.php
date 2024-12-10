@@ -819,7 +819,12 @@ function html_header1($parametres){
      const __xms='__xms';
      const __xva='__xva';
      const __entree='__entree';
-     let __gi1=null;
+     /* 
+       attention, doit être déclarée en "var" plutôt qu'en "let" sinon lorsqu'on ferme une sous fenêtre,  
+       par l'appel à window.parent[this.#nom_de_la_variable]['fermerModale2']();
+       ça ne fonctionne plus
+     */
+     var __gi1=null;
      /*
        =====================================================================================================================
      */

@@ -10,7 +10,6 @@ print($o1);$o1='';
         <div class="menuScroller">
             <ul>
                 <li><a href="javascript:chargerSourceDeTestJs()">source de test</a>&nbsp;</li>
-                <li><a href="javascript:bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn( 'txtar1' , 'txtar2' )"  class="yysucces">convertir module acorn</a>&nbsp;</li>
                 <li><a href="javascript:bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2( 'txtar1' , 'txtar2' )"  class="yysucces">convertir module acorn 2</a>&nbsp;</li>
 
             </ul>
@@ -60,7 +59,7 @@ $par=array(
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   chargerLeDernierSourceJs();
-//  transformJsDeTextAreaEnRev();
+  bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2("txtar1","txtar2");
  }
 )
 </script>';

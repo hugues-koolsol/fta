@@ -113,27 +113,21 @@ function logerreur(o){
 function maConstante(eltTab){
     var t='';
     switch (eltTab[4]){
-        case 1:
-            /* entre simples apostrophes */
+        case 1 : /* entre simples apostrophes */
             t='\'' + eltTab[1] + '\'';
             break;
-            
-        case 2:
+        case 2 :
             /* apostrophes inversées */
             t='`' + eltTab[1] + '`';
             t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
             break;
             
-        case 3:
-            /* guillemets */
+        case 3 : /* guillemets */
             t='"' + eltTab[1] + '"';
             break;
-            
-        case 4:
-            /* regex */
+        case 4 : /* regex */
             t='/' + eltTab[1] + '/' + eltTab[13];
             break;
-            
         default:
             /* constante non quotée, généralement une variable ou une valeur numérique ou une constante */
             if(eltTab[1] === 'vrai'){
@@ -326,7 +320,7 @@ function reIndicerLeTableau(tab){
 function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
     var i=0;
     if(niveau === 0){
-        var a_supprimer = [];
+        var a_supprimer=[];
     }
     if(tab[id][2] === 'c' || tab[id][2] === 'f' && tab[id][8] === 0){
         /*
@@ -353,9 +347,9 @@ function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
           et on recalcul les indices
         */
         a_supprimer.sort(function(a,b){
-        
-            return(b - a);
-        });
+            
+                return(b - a);
+            });
         for( i=0 ; i < a_supprimer.length ; i++ ){
             tab.splice(a_supprimer[i],1);
         }
@@ -432,8 +426,8 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     var temps='';
     var unBloc='';
     var unBlocPlus1='';
-    var newTab = [];
-    var tab = [];
+    var newTab=[];
+    var tab=[];
     var ne_contient_que_des_egals=false;
     var double_commentaire=false;
     /**/
@@ -892,7 +886,7 @@ function a2F1(arr,parentId,retourLigne,debut,coloration){
 */
 function iterateCharacters2(str){
     const l01=str.length;
-    var out = [];
+    var out=[];
     var i=0;
     var exceptions=0;
     var numLigne=0;
@@ -1123,14 +1117,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var constanteQuoteePrecedente=0;
     var drapeauParenthese = rechercheParentheseCorrespondante === '' ? ( false ) : ( true );
     /* quand on fait une recherche de parenthèses correspondantes, on se sert de ce tableau */
-    var tab_pour_recherche_parentheses = [];
+    var tab_pour_recherche_parentheses=[];
     /*
       =============================================================================================================
       Le tableau en sortie si tout va bien
       =============================================================================================================
     */
-    var tabCommentaireEtFinParentheses = [];
-    var T = [];
+    var tabCommentaireEtFinParentheses=[];
+    var T=[];
     /*
       =============================================================================================================
       initialisation du tableau contenant le source structuré en arborescence
