@@ -45,7 +45,6 @@ $js_a_executer_apres_chargement=array(
 $par=array(
     /* éléments à passer au pied de page */
     'js_a_inclure' => array(
-            'js/compile1.js',
             'js/javascript.js',
             'js/convertit-php-en-rev0.js',
             'js/convertit-html-en-rev1.js',

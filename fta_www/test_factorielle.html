@@ -32,37 +32,28 @@
   =====================================================================================================================
 */
 function factorielle(nombre){
-    var a=0;
-    var b=0;
-    if((nombre <= 0)){
-        a=1;
+    if(nombre <= 0){
+        /* on retourne 1 */
+        return 1;
     }else{
-        b=factorielle(nombre-1);
-        a=nombre * b;
+        /*
+          appel récursif on retourne le nombre multipliée par
+          la fonction factorielle du nombre - 1
+          Remarque, on aurait du écrire dans le format rev
+          "moins(nombre,1)" à la place de "nombre-1"
+          mais le langage rev permet des formes raccourcies
+          quand les expressions sont simples et ne comportents
+          pas des parenthèses
+        */
+        return(nombre * factorielle(nombre - 1));
     }
-    return a;
 }
 /*
   =====================================================================================================================
-  puis on utilise cette fonction
+  puis on utilise cette fonction en affichant le résultat 
   =====================================================================================================================
 */
-var zone={};
-var valeur=5;
-var resultat=0;
-/*
-  =====================================================================================================================
-  on affecte la valeur factorielle(5) à la valeur
-  =====================================================================================================================
-*/
-resultat=factorielle(valeur);
-/*
-  =====================================================================================================================
-  puis on affiche le résultat
-  =====================================================================================================================
-*/
-zone=document.getElementById('zoneResultat');
-zone.innerHTML=resultat;
+document.getElementById('zoneResultat').innerHTML=factorielle(5);
 /*#
   en lisp la fonction factorielle est ecrite comme ça :
   =================================================
@@ -78,7 +69,8 @@ zone.innerHTML=resultat;
   -une condition
   -une valeur si frai
   -une valeur si faux
-  n'inclut pas ces 3 éléments dans des parenthèses
+  n'inclut pas ces 3 éléments dans des parenthèses mais dans une
+  liste qui pourtant ne doit contenir que 3 éléments
 
   Même si la définition de la fonction factorielle plus haut est plus verbeuse que
   celle écrite en lisp, je la préfère. 

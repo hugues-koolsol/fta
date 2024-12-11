@@ -43,7 +43,6 @@ $o1='';?>    <!-- html dans php -->
     <textarea class="txtar1" id="txtar3" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><?php
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar1', 'mode' => 'source')), array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev')));
 $par=array( 'js_a_inclure' => array(
-            'js/compile1.js',
             'js/javascript.js',
             'js/convertit-html-en-rev1.js',
             'js/convertit-js-en-rev1.js',

@@ -111,7 +111,6 @@ function recupere_une_donnees_des_cibles($id){
       'fta_www/phpliteadmin.config.php' => array(),
       'fta_www/phpliteadmin.php' => array(),      
       
-      'fta_www/js/compile1.js' => array(),
       'fta_www/js/convertit-html-en-rev1.js' => array(),
       'fta_www/js/convertit-js-en-rev1.js' => array(),
       'fta_www/js/convertion_sql_en_rev.js' => array(),

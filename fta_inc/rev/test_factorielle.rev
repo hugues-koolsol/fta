@@ -39,6 +39,7 @@ src_html(
             script(
                (type , 'text/javascript'),
                source(
+                  useStrict(),
                   #(
                     =================================================================================
                     dans ce javascript, on définit une fonction factorielle
@@ -47,44 +48,49 @@ src_html(
                   fonction(
                      definition(nom(factorielle) , argument(nombre)),
                      contenu(
-                        declare(a , 0),
-                        declare(b , 0),
                         choix(
                            si(
-                              condition((infeg(nombre , 0))),
-                              alors(affecte(a , 1))
+                              condition(infeg(nombre , 0)),
+                              alors(
+                                 #( on retourne 1 ),
+                                 retourner(1)
+                              )
                            ),
                            sinon(
                               alors(
-                                 affecte(b , appelf(nomf(factorielle) , p(nombre-1))),
-                                 affecte(a , mult(nombre , b))
+                                 #(
+                                   appel récursif on retourne le nombre multipliée par
+                                   la fonction factorielle du nombre - 1
+                                   Remarque, on aurait du écrire dans le format rev
+                                   "moins(nombre,1)" à la place de "nombre-1"
+                                   mais le langage rev permet des formes raccourcies
+                                   quand les expressions sont simples et ne comportents
+                                   pas des parenthèses
+                                 ),
+                                 retourner(
+                                    mult(
+                                       nombre,
+                                       appelf(nomf(factorielle) , p(moins(nombre , 1)))
+                                    )
+                                 )
                               )
                            )
-                        ),
-                        retourner(a)
+                        )
                      )
                   ),
                   #(
                     =================================================================================
-                    puis on utilise cette fonction
+                    puis on utilise cette fonction en affichant le résultat 
                     =================================================================================
                   ),
-                  declare(zone , {}),
-                  declare(valeur , 5),
-                  declare(resultat , 0),
-                  #(
-                    =================================================================================
-                    on affecte la valeur factorielle(5) à la valeur
-                    =================================================================================
+                  affecte(
+                     appelf(element(document) , nomf(getElementById) , p('zoneResultat') , prop(innerHTML)),
+                     appelf(
+                        #(),
+                        nomf(factorielle),
+                        p(5)
+                     )
                   ),
-                  affecte(resultat , appelf(nomf(factorielle) , p(valeur))),
-                  #(
-                    =================================================================================
-                    puis on affiche le résultat
-                    =================================================================================
-                  ),
-                  affecte(zone , appelf(nomf(document.getElementById) , p('zoneResultat'))),
-                  affecte(zone.innerHTML , resultat),
                   #(#
                     en lisp la fonction factorielle est ecrite comme ça :
                     =================================================
@@ -100,7 +106,8 @@ src_html(
                     -une condition
                     -une valeur si frai
                     -une valeur si faux
-                    n'inclut pas ces 3 éléments dans des parenthèses
+                    n'inclut pas ces 3 éléments dans des parenthèses mais dans une
+                    liste qui pourtant ne doit contenir que 3 éléments
                   
                     Même si la définition de la fonction factorielle plus haut est plus verbeuse que
                     celle écrite en lisp, je la préfère. 

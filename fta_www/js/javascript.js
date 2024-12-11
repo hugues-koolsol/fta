@@ -1795,9 +1795,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     var t='';
     var j=0;
     var obj={};
-    var textObj='';
     var a_des_commentaires=false;
-    var longueur_precedent=0;
     var longueur_totale=0;
     var valeur='';
     var propriete='';
@@ -1816,7 +1814,6 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j=j + 1 ){
         if(tab[j][3] === tab[id][3] + 1){
             if(tab[j][1] === '#' && tab[j][2] === 'f'){
-                /* virer textObj */
                 var commt = traiteCommentaire2(tab[j][13],niveau + 1,j);
                 if(commt.indexOf('\n') >= 0){
                     valeur=' /*' + commt + ' ' + '*/';
