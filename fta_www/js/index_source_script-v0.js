@@ -382,7 +382,7 @@ function enregistrer2(){
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.__xst === true){
         var startMicro = performance.now();
-        var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true,false);
+        var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true);
         var endMicro = performance.now();
         console.log('reconstitution du source endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         var diResultatsCompactes = document.createElement('pre');

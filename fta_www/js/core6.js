@@ -188,9 +188,9 @@ function espacesnrev(optionCRLF,i){
   Des fonctions raccourcies
   =====================================================================================================================
 */
-function arrayToFunct1(matrice,retourLigne,coloration){
+function arrayToFunct1(matrice,retourLigne){
     var t='';
-    var obj = a2F1(matrice,0,retourLigne,1,coloration);
+    var obj = a2F1(matrice,0,retourLigne,1);
     return obj;
 }
 /*
@@ -281,6 +281,27 @@ function reIndicerLeTableau(tab){
       numéro d'enfant
       =============================================================================================================
     */
+    
+    var indice_enfant_precedent=0;
+    for( i=0 ; i < l01 ; i++ ){
+        k=0;
+        for( j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+            if(tab[j][7] === tab[i][0]){
+                
+                k++;
+                tab[j][9]=k;
+                /*
+                 pour le dernier, on met lui même
+                */
+                tab[j][12]=j;
+                if(k>1){
+                     tab[indice_enfant_precedent][12]=j;
+                }
+                indice_enfant_precedent=j;
+            }
+        }
+    }
+    
     for( i=0 ; i < l01 ; i++ ){
         k=0;
         for( j=i + 1 ; j < l01 && tab[j][3]>tab[i][3] ; j++ ){
@@ -295,18 +316,25 @@ function reIndicerLeTableau(tab){
       profondeur
       =============================================================================================================
     */
+    
+    var niveau = 0;
+    var id_parent=0;
     for( i=l01 - 1 ; i > 0 ; i-- ){
+        /* si c'est une constante */ 
         if(tab[i][2] === 'c'){
             tab[i][10]=0;
         }
         if(tab[i][7] > 0){
-            k=tab[i][3];
-            l=tab[i][7];
-            for( j=1 ; j <= k ; j++ ){
-                if(tab[l][10] < j){
-                    tab[l][10]=j;
+            /* si l'élément a un parent*/
+            niveau=tab[i][3];
+            id_parent=tab[i][7];
+            /* pour chacun des niveaux enfants */
+            for( j=1 ; j <= niveau ; j++ ){
+                if(tab[id_parent][10] < j){
+                    /* on change la profondeur */
+                    tab[id_parent][10]=j;
                 }
-                l=tab[l][7];
+                id_parent=tab[id_parent][7];
             }
         }
     }
@@ -591,24 +619,33 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
 function strToHtml(s){
     return(s.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;'));
 }
-/*
+/*#
   =====================================================================================================================
   fonction qui reconstitue un texte source à partir du tableau représentant la matrice  du  programme
+  fu(
+     a,
+     f0(
+        nomf(x0),
+        f1( f2( nomf(x1) , p(x2) , p(x3) , p(x4) ))
+     ),
+     f5()
+  )  
   =====================================================================================================================
 */
-function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_parent=0,nom_fonction_parente='',tab_retour_ligne=[]){
+function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null){
+
     /*
-     le parent id=0 et début=1
+      le parent id=0 et début=1
     */
-    
+    if(arr.length<=1){
+        return({ "__xst" : true , __xva : '' });
+    }
     var i=0;
     var j=0;
     var obj={};
     var t='';
     var profondeurLimite=3;
     var nombreEnfantsLimite=5;
-    var forcerRetourLigne=false;
-    var condition1=false;
     var commentaire='';
     var tmpC='';
     var c1='';
@@ -618,56 +655,106 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
     var chLF = '¶' + 'LF' + '¶';
     var chaine='';
     var obj={};
-    var contient_en_commentaire_en_ligne=false;
-    console.log('debut='+debut);
+    var contient_en_commentaire_tbel=false;
+
+
     if(arr[debut][3]>0){
       var les_espaces=espacesnrev(true,arr[debut][3]);
     }else{
       var les_espaces='';
     }
-    var retour_ligne_calcule=retourLigne;
-    console.log(nom_fonction_parente , arr[parentId][10] );
-    if(parentId>0 && arr[parentId][10]<=profondeurLimite){
-        retour_ligne_calcule=false;
-        if(arr[parentId][8]>=5){
-          retour_ligne_calcule=true;
-        }
+    
+    var avant=contient_un_defTab_tbel;
+    
+    var indice_tab=tab_retour_ligne.length;
+    
+    tab_retour_ligne.push([retourLigne,retourLigne,false]);
+/*    
+    if(arr[debut][1]==='f1' || arr[debut][1]==='f2'){
+        debugger;
     }
-    if(retour_ligne_calcule!==retourLigne){
-     if(retourLigne===false && retour_ligne_calcule===true){
-      if(tab_retour_ligne.length>=1){
-       debugger
-       tab_retour_ligne[tab_retour_ligne-1]=true;
-       retourLigne=true;
-      }
-     }else if(retourLigne===true && retour_ligne_calcule===false){
-      if(tab_retour_ligne.length>=1){
-       debugger
-//       tab_retour_ligne[tab_retour_ligne-1]=false;
-       retourLigne=false;
-      }
-     }
+*/   
+    if(retourLigne === true
+     && tab_retour_ligne[indice_tab][2] === false
+     && parentId > 0
+     && arr[parentId][10] <= profondeurLimite
+     && arr[parentId][8] < nombreEnfantsLimite){
+        /* 
+          à priori on supprime le retour de ligne
+        */
+        tab_retour_ligne[indice_tab][1]=false;
+        
+        /*
+          on ne veut pas de retour de ligne mais il faut vérifier
+          que toute les sous fonctions n'aient pas plus de 5 arguments
+        */
+        for(i=debut;i<l01 && arr[i][3] >= arr[debut][3];i++){
+            if(arr[i][8]>=nombreEnfantsLimite){
+              
+              for( var j=i+1;j<l01 && arr[j][3]>arr[i][3];j++){
+               if(arr[j][7]===i){
+                if(arr[j][1]==='#' && arr[j][2]==='f' && arr[j][13].indexOf('tbel')>=0){
+                 contient_un_defTab_tbel=true;
+                 break;
+                }
+               }
+               
+              }
+              if(contient_un_defTab_tbel){
+                  retourLigne=true;
+                  tab_retour_ligne[indice_tab][1]=true;
+                  break;
+              }else{
+                  /* si il y a trop d'enfants, on met les retour de ligne */
+                  retourLigne=true;
+                  tab_retour_ligne[indice_tab][1]=true;
+                  break;
+              }
+            }else if(arr[i][1]==='#' && arr[i][2]==='f'){
+              retourLigne=true;
+              tab_retour_ligne[indice_tab][1]=true;
+              break;
+            }
+        }
+        
+    }
+    
+    retourLigne=tab_retour_ligne[indice_tab][1];
+    if(avant===true){
+        tab_retour_ligne[indice_tab][1]=false;
+        retourLigne=tab_retour_ligne[indice_tab][1];
     }
     
     var count=0;
     for( i=debut;i<l01 && arr[i][3] > arr[parentId][3]; i++){
         if(arr[i][7]===parentId){
             if(t!==''){
-                t+=',';
+                if(retourLigne===false){
+                    t+=' , ';
+                }else{
+                    t+=',';
+                }
+                
+            }else{
+                if(retourLigne===false){
+                    t+=' ';
+                }
             }
-            if(retourLigne){
+            if(retourLigne===true){
                 if(arr[i][3]>0){
                     if(profondeur_parent>1){
                         t+=les_espaces;
                     }
+                }else{
+                    if(count>0){
+                        t+=CRLF;
+                    }
                 }
             }
             /*
-              =====================================================================================================
-              ici, forcerRetourLigne est vrai ou pas
-              =====================================================================================================
-              si  on  doit  traiter  une  constante
-              =====================================================================================================
+              =============================================================================================
+              on insère les données
+              =============================================================================================
             */
             if(arr[i][2] === 'c'){
                 chaine='';
@@ -688,15 +775,19 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                     chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                     t+='"' + chaine + '"';
                     break;
-                  case 4:
-                    /* regex */
-                    chaine=arr[i][1];
-                    t+='/' + chaine + '/' + arr[i][13];
-                  case 0:
-                    t+=arr[i][1];
-                    break;
+                    case 4 :
+                        /* regex */
+                        chaine=arr[i][1];
+                        t+='/' + chaine + '/' + arr[i][13];
+                        break;
+                        
+                    case 0 : t+=arr[i][1];
+                        break;
                 }
                 count++;
+                if(contient_un_defTab_tbel===true && count%10===0){
+                    t+=les_espaces;
+                }
             }else if( arr[i][2] === 'f' && arr[i][1] === DEBUTCOMMENTAIRE){
                 /*
                   =============================================================================================
@@ -707,6 +798,9 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                 /*pas de mise en forme en HTML*/
                 t+=arr[i][1] + '(' + commentaire + ')';
                 count++;
+                if(contient_un_defTab_tbel===true && count%10===0){
+                    t+=les_espaces;
+                }
 
             }else if(arr[i][2] === 'f' && arr[i][1] === DEBUTBLOC){
                 /*
@@ -718,6 +812,9 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                 /*pas de mise en forme en HTML*/
                 t+=arr[i][1] + '(' + commentaire + ')';
                 count++;
+                if(contient_un_defTab_tbel===true && count%10===0){
+                    t+=les_espaces;
+                }
 
             }else if(arr[i][2] === 'f' && arr[i][8] === 0){
                 /*
@@ -727,7 +824,10 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                 */
                     t+=arr[i][1] + '()';
                 count++;
-            }else if(arr[i][2] === 'f' && arr[i][8] === 1  && arr[i+1][2] === 'c' &&  arr[i+1][4] === 0 ){
+                if(contient_un_defTab_tbel===true && count%10===0){
+                    t+=les_espaces;
+                }
+            }else if( arr[i][2] === 'f' && arr[i][8] === 1  && arr[i+1][2] === 'c' &&  arr[i+1][4] === 0 ){
              
                 /*
                   =============================================================================================
@@ -736,6 +836,9 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                 */
                 t+=arr[i][1]+'('+arr[i+1][1]+')';
                 count++;
+                if(contient_un_defTab_tbel===true && count%10===0){
+                    t+=les_espaces;
+                }
 
             }else{
                 /*
@@ -743,38 +846,27 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                   pour toutes les autres fonctions, on fait un appel récursif
                   =====================================================================================================
                 */
-                tab_retour_ligne.push(retourLigne);
-                obj=a2F1(arr,i,retourLigne,i + 1,coloration,arr[i][10],arr[i][1],tab_retour_ligne);
-                var retour_ligne_stoche=tab_retour_ligne.pop();
+                /*#
+                  console.log('t='+t, 'on va dans "'+arr[i][1]+'"');
+                  if(false && ( arr[i][1]==='f2' || arr[i][1]==='f1' ) ){
+                   debugger;
+                  }
+                */                
+                obj=a2F1(arr,i,retourLigne,i + 1,arr[i][10],tab_retour_ligne , contient_un_defTab_tbel);
+                /*#                
+                  if(arr[i][1]==='f1'){
+                   debugger;
+                  }
+                */
                 if(obj.__xst === true){
-                    if(count===0){
-                        if(retourLigne){
-                            if(les_espaces===''){
-                                t+=CRLF;
-                            }else{
-                                if(arr[i][10]>1){
-                                    t+=les_espaces;
-                                }
-                            }
-                        }
-                    }else{
-                        if(retourLigne){
-                            if(les_espaces===''){
-                                t+=CRLF;
-                            }else{
-                                if(arr[i][10]>1){
-                                    t+=les_espaces;
-                                }
-                            }
-                        }
-                    }
-                 
+                    var retour_ligne_stocke=tab_retour_ligne.pop();
                     
                     /*
                       =============================================================================================
                       on ouvre la fonction
                       =============================================================================================
                     */
+                    
                     t+=arr[i][1] + '(';
                     /*
                       =============================================================================================
@@ -789,303 +881,35 @@ function a2F1_nouveau(arr,parentId,retourLigne,debut,coloration,profondeur_paren
                       on ferme la fonction
                       =============================================================================================
                     */
+                    if(retourLigne=== true && retour_ligne_stocke[1]===true ){
+                        if(les_espaces===''){
+                            t+=CRLF;
+                        }else{
+                            if(arr[i][10]>1){
+                                t+=les_espaces;
+                            }
+                        }
+                    }
+                    if(retourLigne===false){
+                        t+=' ';
+                    }
+
                     t+=')';
                 }else{
                     return({"__xst" : false ,"__xme" : 'erreur' ,"id" : i});
                 }
                 count++;
             }
-        }
-    }
-    return({"__xst" : true ,"__xva" : t ,"forcerRetourLigne" : forcerRetourLigne , retour_ligne_parent : retourLigne});    
-}
-/*
-  =====================================================================================================================
-*/
+            /* bidouille performances */
+            if(i!==arr[i][12]){
+                i=arr[i][12]-1;
+            }
 
-/*
-  =====================================================================================================================
-  fonction qui reconstitue un texte source à partir du tableau représentant la matrice  du  programme
-  =====================================================================================================================
-*/
-function a2F1(arr,parentId,retourLigne,debut,coloration){
-    /*
-      =============================================================================================================
-      Attention : cette fonction est récursive
-      =============================================================================================================
-    */
-    var i=0;
-    var j=0;
-    var obj={};
-    var t='';
-    var profondeurLimite=3;
-    var nombreEnfantsLimite=5;
-    var forcerRetourLigne=false;
-    var condition1=false;
-    var commentaire='';
-    var tmpC='';
-    var c1='';
-    var cm1='';
-    const l01=arr.length;
-    var chCR = '¶' + 'CR' + '¶';
-    var chLF = '¶' + 'LF' + '¶';
-    var chaine='';
-    var obj={};
-    /*
-      =============================================================================================================
-      boucle principale qui commence à partir de "debut" passé en paramètre
-      =============================================================================================================
-    */
-    for( i=debut ; i < l01 ; i++ ){
-        /*
-          on ne traite que les enfants et les éléments 
-          dont le niveau est supérieur au niveau du parent
-        */
-        if(arr[i][7] === parentId){
-            /*On va à la suite du programme*/
-        }else if(arr[i][3] <= arr[parentId][3]){
-            break;
-        }else{
-            /*
-              on va dans la ligne suivante de la matrice 
-              et on ne fait pas le traitement ci dessous 
-            */
-            continue;
-        }
-        /*
-          On doit forcer le retour de ligne quand la
-          profondeur est trop importante ou bien
-          qu'il y a trop d'enfants ou bien qu'il
-          y a des commentaires
-        */
-        if(retourLigne === true && arr[parentId][10] > profondeurLimite){
-            forcerRetourLigne=true;
-        }else if(retourLigne === true && arr[parentId][2] === 'f' || arr[parentId][2] === 'INIT'){
-            /*le type du parent est une fonction ou bien c'est la racine*/
-            /*
-              Si c'est la premier enfant d'une fonction, 
-              on teste si il existe des enfants de type commentaires
-            */
-            for( j=debut ; j < l01 && arr[j][3] > arr[parentId][3] ; j++ ){
-                if(arr[j][1] === DEBUTCOMMENTAIRE && arr[j][2] === 'f' && arr[j][3] < arr[parentId][3] + profondeurLimite){
-                    /*
-                      il y a un commentaire
-                      c'est une fonction
-                      niveau inférieur à celui du parent + profondeur limite
-                    */
-                    forcerRetourLigne=true;
-                    break;
-                }
-            }
-            for( j=debut ; j < l01 && arr[j][3] > arr[parentId][3] && forcerRetourLigne === false ; j++ ){
-                if(arr[j][8] > nombreEnfantsLimite){
-                    /*
-                      si le nombre d'enfants est supérieur à 3
-                    */
-                    forcerRetourLigne=true;
-                    break;
-                }
-            }
-        }
-        /*
-          ici la variable forcerRetourLigne est éventuellement mise à true 
-        */
-        if(forcerRetourLigne === false && arr[i][2] === 'c' && arr[i][1].length > 100){
-            forcerRetourLigne=true;
-        }
-        condition1=arr[parentId][2] === 'f' && arr[parentId][8] <= nombreEnfantsLimite && arr[parentId][10] <= profondeurLimite;
-        /* si le numéro enfant ets >1, on ajoute une virgule */
-        if(arr[i][9] > 1){
-            /*!forcerRetourLigne && retourLigne==true && condition1*/
-            if(!(forcerRetourLigne) && retourLigne === true && condition1){
-                t+=' , ';
-            }else{
-                t+=',';
-            }
-        }
-        if(forcerRetourLigne && arr[parentId][2] !== 'INIT'){
-            t+=espacesnrev(true,arr[i][3]);
-        }else if(retourLigne){
-            if(arr[parentId][2] === 'INIT' && arr[i][9] === 1 || condition1){
-                /*on ne fait rien*/
-            }else{
-                t+=espacesnrev(true,arr[i][3]);
-            }
-        }
-        /*
-          =====================================================================================================
-          ici, forcerRetourLigne est vrai ou pas
-          =====================================================================================================
-          si  on  doit  traiter  une  constante
-          =====================================================================================================
-        */
-        if(arr[i][2] === 'c'){
-            chaine='';
-            if(arr[i][4] === 1){
-                /* methode3' simple quote */
-                /*
-                  chaine=arr[i][1];
-                  chaine=replaceAll(chaine,chLF,'\n');
-                  chaine=replaceAll(chaine,chCR,'\r');
-                */
-                chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-                /*
-                  if(arr[arr[i][7]][1]==='textarea' && arr[arr[i][7]][2]==='f'){
-                  chaine=chaine.replace(/\\\\¶\\\\LF\\\\¶/g,'¶LF¶').replace(/\\\\¶\\\\CR\\\\¶/g,'¶CR¶');
-                  chaine=chaine.replace(/\\¶\\LF\\¶/g,'¶LF¶').replace(/\\¶\\CR\\¶/g,'¶CR¶');
-                  }
-                */
-                if(coloration){
-                    t+='\'' + (strToHtml(chaine)) + '\'';
-                }else{
-                    t+='\'' + chaine + '\'';
-                }
-            }else if(arr[i][4] === 2){
-                /* methode3modele ` */
-                /*
-                  chaine=arr[i][1];
-                  chaine=replaceAll(chaine,chLF,'\n');
-                  chaine=replaceAll(chaine,chCR,'\r');
-                */
-                chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-                if(coloration){
-                    t+='`' + (strToHtml(chaine)) + '`';
-                }else{
-                    t+='`' + chaine + '`';
-                }
-            }else if(arr[i][4] === 3){
-                /* methode3" double quote */
-                chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-                if(coloration){
-                    t+='"' + (strToHtml(chaine)) + '"';
-                }else{
-                    t+='"' + chaine + '"';
-                }
-            }else if(arr[i][4] === 4){
-                /* methode3regex */
-                chaine=arr[i][1];
-                if(coloration){
-                    t+='/' + (strToHtml(chaine)) + '/' + arr[i][13];
-                }else{
-                    t+='/' + chaine + '/' + arr[i][13];
-                }
-            }else{
-                if(coloration){
-                    t+=strToHtml(arr[i][1]);
-                }else{
-                    t+=arr[i][1];
-                }
-            }
-            continue;
-        }
-        /*
-          
-          
-          =====================================================================================================
-          si on doit traiter une fonction de type commentaire
-          =====================================================================================================
-        */
-        if(arr[i][2] === 'f' && arr[i][1] === DEBUTCOMMENTAIRE){
-            /*
-              =============================================================================================
-              on est dans un commentaire
-              =============================================================================================
-            */
-            commentaire=ttcomm1(arr[i][13],arr[i][3],i);
-            if(coloration){
-                /*mise en forme en HTML*/
-                commentaire=strToHtml(commentaire);
-                if(retourLigne){
-                    t+='<span style="color:darkgreen;background-color:lightgrey;">' + DEBUTCOMMENTAIRE + '(' + commentaire + ')</span>';
-                }else{
-                    t+='<span style="color:darkgreen;background-color:lightgrey;">' + DEBUTCOMMENTAIRE + '()</span>';
-                }
-            }else{
-                /*pas de mise en forme en HTML*/
-                if(retourLigne){
-                    t+=arr[i][1] + '(' + commentaire + ')';
-                }else{
-                    t+=arr[i][1] + '()';
-                }
-            }
-            continue;
-        }
-        /*
-          =====================================================================================================
-          si on doit traiter une fonction de type bloc
-          =====================================================================================================
-        */
-        if(arr[i][2] === 'f' && arr[i][1] === DEBUTBLOC){
-            /*
-              =============================================================================================
-              on est dans un bloc
-              =============================================================================================
-            */
-            commentaire=arr[i][13];
-            if(coloration){
-                /*mise en forme en HTML*/
-                commentaire=strToHtml(commentaire);
-                if(retourLigne){
-                    t+='<span style="color:navy;background-color:lightgrey;">' + DEBUTBLOC + '(' + commentaire + ')</span>';
-                }else{
-                    t+='<span style="color:navy;background-color:lightgrey;">' + DEBUTBLOC + '()</span>';
-                }
-            }else{
-                /*pas de mise en forme en HTML*/
-                if(retourLigne){
-                    t+=arr[i][1] + '(' + commentaire + ')';
-                }else{
-                    t+=arr[i][1] + '()';
-                }
-            }
-            continue;
-        }
-        /*
-          =====================================================================================================
-          pour toutes les autres fonctions, on fait un appel récursif
-          =====================================================================================================
-        */
-        obj=a2F1(arr,i,retourLigne,i + 1,coloration);
-        if(obj.__xst === true){
-            /*on ajoute le nom de la fonction et on ouvre la parenthèse*/
-            if(coloration){
-                t+=(strToHtml(arr[i][1])) + '(';
-            }else{
-                if(obj.forcerRetourLigne === true
-                 && arr[i][9] === 1
-                 && i > 1
-                 && !(t.length >= arr[i][3] * NBESPACESREV
-                 && t.substr(t.length - arr[i][3] * NBESPACESREV) === ' '.repeat(arr[i][3] * NBESPACESREV))
-                ){
-                    t+=espacesnrev(true,arr[i][3]);
-                }
-                t+=arr[i][1] + '(';
-            }
-            /*
-              =============================================================================================
-              on ajoute le contenu récursif de la fonction
-              =============================================================================================
-            */
-            t+=obj.__xva;
-            /*
-              on met les retours de ligne
-            */
-            if(forcerRetourLigne && obj.forcerRetourLigne === true){
-                t+=espacesnrev(true,arr[i][3]);
-            }else if(retourLigne){
-                if(!(arr[i][8] <= nombreEnfantsLimite && arr[i][10] <= profondeurLimite)){
-                    t+=espacesnrev(true,arr[i][3]);
-                }
-            }
-            /*
-              on ferme la parenthèse
-            */
-            t+=')';
-        }else{
-            return({ "__xst" : false , "__xme" : 'erreur' , "id" : i });
+            
         }
     }
-    return({ "__xst" : true , "__xva" : t , "forcerRetourLigne" : forcerRetourLigne });
+    
+    return({"__xst" : true ,"__xva" : t , retour_ligne_parent : retourLigne});    
 }
 /*
   =====================================================================================================================
@@ -1269,7 +1093,7 @@ function formaterErreurRev(obj){
       ['nuE','numéro enfants'],                //  9
       ['pro','profondeur'],                    // 10
       ['pop','position ouverture parenthese'], // 11
-      ['pfp','position fermeture parenthese'], // 12
+      ['ies','indice enfant suivant'],         // 12
       ['com','commentaire']                    // 13
   ];
   
@@ -1400,7 +1224,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     /*
                       la première version version faisait :
                       T[indice][13]=commentaire;
-                      T[indice][12]=posFerPar;
                     */
                     commentaire='';
                     dsComment=false;
@@ -2461,12 +2284,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       Puis on ajoute les commentaires 
       tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
       T[indice][13]=commentaire;
-      T[indice][12]=posFerPar;
     */
     l01=tabCommentaireEtFinParentheses.length;
     for( i=0 ; i < l01 ; i++ ){
         T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1];
-        T[tabCommentaireEtFinParentheses[i][0]][12]=tabCommentaireEtFinParentheses[i][2];
     }
     /*
       =============================================================================================================
@@ -2488,14 +2309,25 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
       numérotation des enfants
       numenfant = k
+      en position 12, on met l'indice de l'enfant suivant 
       =============================================================================================================
     */
+    var indice_enfant_precedent=0;
     for( i=0 ; i < l01 ; i++ ){
         k=0;
         for( j=i + 1 ; j < l01 && T[j][3] > T[i][3] ; j++ ){
             if(T[j][7] === T[i][0]){
+                
                 k++;
                 T[j][9]=k;
+                /*
+                 pour le dernier, on met lui même
+                */
+                T[j][12]=j;
+                if(k>1){
+                     T[indice_enfant_precedent][12]=j;
+                }
+                indice_enfant_precedent=j;
             }
         }
     }
@@ -2506,18 +2338,26 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       l=idParent
       =============================================================================================================
     */
+    var enfant_suivant=l01;
+    
+    var niveau = 0;
+    var id_parent=0;
     for( i=l01 - 1 ; i > 0 ; i-- ){
+        /* si c'est une constante */ 
         if(T[i][2] === 'c'){
             T[i][10]=0;
         }
         if(T[i][7] > 0){
-            k=T[i][3];
-            l=T[i][7];
-            for( j=1 ; j <= k ; j++ ){
-                if(T[l][10] < j){
-                    T[l][10]=j;
+            /* si l'élément a un parent*/
+            niveau=T[i][3];
+            id_parent=T[i][7];
+            /* pour chacun des niveaux enfants */
+            for( j=1 ; j <= niveau ; j++ ){
+                if(T[id_parent][10] < j){
+                    /* on change la profondeur */
+                    T[id_parent][10]=j;
                 }
-                l=T[l][7];
+                id_parent=T[id_parent][7];
             }
         }
     }

@@ -463,7 +463,7 @@ class requete_sql{
                                         /*
                                           c'est une formule
                                         */
-                                        var obj = a2F1(tab,tab[j][7],true,j,false);
+                                        var obj = a2F1(tab,tab[j][7],true,j);
                                         if(obj.__xst === true){
                                             this.#obj_webs['champs_sortie'].push({ "type_d_element" : 'formule' , "formule" : obj.__xva });
                                         }
@@ -472,7 +472,7 @@ class requete_sql{
                                     /*
                                       c'est une formule
                                     */
-                                    var obj = a2F1(tab,tab[j][7],true,j,false);
+                                    var obj = a2F1(tab,tab[j][7],true,j);
                                     if(obj.__xst === true){
                                         this.#obj_webs['champs_sortie'].push({ "type_d_element" : 'formule' , "formule" : obj.__xva });
                                     }
@@ -480,7 +480,7 @@ class requete_sql{
                             }else{
                                 if(tab[j][1] === 'alias_champ'){
                                 }else{
-                                    var obj = a2F1(tab,j,true,j + 1,false);
+                                    var obj = a2F1(tab,j,true,j + 1);
                                     if(obj.__xst === true){
                                         this.#obj_webs['champs_sortie'].push({ "type_d_element" : 'formule' , "formule" : tab[j][1] + '(' + obj.__xva + ')' });
                                     }
@@ -492,12 +492,12 @@ class requete_sql{
                     }
                 }
             }else if(tab[i][2] === 'f' && 'conditions' === tab[i][1]){
-                var obj = a2F1(tab,tab[i+1][7],true,i + 1,false);
+                var obj = a2F1(tab,tab[i+1][7],true,i + 1);
                 if(obj.__xst === true){
                     this.#obj_webs['conditions'].push({ "type_d_element" : 'formule' , "formule" : obj.__xva });
                 }
             }else if(tab[i][2] === 'f' && 'complements' === tab[i][1]){
-                var obj = a2F1(tab,tab[i+1][7],true,i + 1,false);
+                var obj = a2F1(tab,tab[i+1][7],true,i + 1);
                 if(obj.__xst === true){
                     this.#obj_webs['complements'].push({ "type_d_element" : 'formule' , "formule" : obj.__xva });
                 }
@@ -1467,7 +1467,7 @@ class requete_sql{
         var tableau1 = iterateCharacters2(rev_texte);
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+            var obj2 = arrayToFunct1(matriceFonction.__xva,true);
             if(obj2.__xst === true){
                 rev_texte=obj2.__xva;
             }

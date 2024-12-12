@@ -1,4 +1,4 @@
 php(
    #(  exemple de programme très simple en php : on a déjà écrit cette page en html ),
-   appelf(nomf(require_once) , p('index.html'))
+   appelf( nomf(require_once) , p( 'index.html' ))
 )

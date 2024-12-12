@@ -1078,7 +1078,7 @@ function tabToSql0(tab,id,niveau,options){
                             }
                         }
                         if((tab[j][1] === 'meta') && (tab[j][2] === 'f') && (tab[j][8] > 0)){
-                            var obj = a2F1(tab,j,false,(j + 1),false);
+                            var obj = a2F1(tab,j,false,(j + 1));
                             if(obj.__xst === true){
                                 meta=espacesn(true,(niveau + 2));
                                 meta+='/* meta(' + obj.__xva + ') */';
@@ -1288,7 +1288,7 @@ function tabToSql0(tab,id,niveau,options){
                                 return(logerreur({__xst:false,id:i,__xme:'0271 sql.js erreur dans un field'}));
                             }
                         }else if((tab[j][1] === 'meta') && (tab[j][8] > 0)){
-                            var obj = a2F1(tab,j,false,(j + 1),false);
+                            var obj = a2F1(tab,j,false,(j + 1));
                             if(obj.__xst === true){
                                 meta_du_champ+=espacesn(true,(niveau + 2));
                                 meta_du_champ+='/* meta(' + obj.__xva + ') */';
@@ -1408,7 +1408,7 @@ function tabToSql0(tab,id,niveau,options){
 //                                nom_table_en_cours='';
                                 options.dans_definition_de_table=false;
                             }else if((tab[j][1] === 'meta') && (tab[j][8] > 0)){
-                                var obj = a2F1(tab,j,false,(j + 1),false);
+                                var obj = a2F1(tab,j,false,(j + 1));
                                 if(obj.__xst === true){
 //                                    t+=espacesn(true,(niveau + 1));
 //                                    donnees_table.chaine_meta='/* meta(' + obj.__xva + ') */';
@@ -1517,7 +1517,7 @@ function tabToSql0(tab,id,niveau,options){
                     t+='*/';
                 }
             }else if(tab[i][1] === 'meta'){
-                var obj = a2F1(tab,i,false,(i + 1),false);
+                var obj = a2F1(tab,i,false,(i + 1));
                 if(obj.__xst === true){
                     t+=espacesn(true,niveau);
                     t+='/* meta(' + obj.__xva + ') */';
@@ -1706,7 +1706,7 @@ function traite_le_tableau_de_la_base_sqlite_v2(par){
                     if(elt_meta === 'transform_table_sur_svg'){
                         for(j=1;j < tab.length;j++){
                             if(tab[j][1] === 'transform_table_sur_svg'){
-                                var obj = a2F1(tab,(j + 1),false,(j + 2),false);
+                                var obj = a2F1(tab,(j + 1),false,(j + 2));
                                 if(obj.__xst === true){
                                     liste_meta_table[elt_meta]='transform(' + obj.__xva + ')';
                                     break;

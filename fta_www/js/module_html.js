@@ -484,7 +484,7 @@ class traitements_sur_html{
                                     t='';
                                     for( var j=0 ; j < nouveauTableau1.length ; j++ ){
                                         if(nouveauTableau1[j][7] === 1){
-                                            var obj = a2F1(nouveauTableau1,1,true,j,false);
+                                            var obj = a2F1(nouveauTableau1,1,true,j);
                                             if(obj.__xst === true){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
@@ -1137,7 +1137,7 @@ class traitements_sur_html{
                                             logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html conversion en matrice' });
                                             return({ "__xst" : false , "__xme" : '1345 erreur module_html conversion en matrice' });
                                         }
-                                        var obj1 = a2F1(matriceFonction.__xva,0,true,1,false);
+                                        var obj1 = a2F1(matriceFonction.__xva,0,true,1);
                                         if(obj1.__xst === true){
                                             document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                         }else{
@@ -1168,7 +1168,7 @@ class traitements_sur_html{
                                         logerreur({ "__xst" : false , "__xme" : '1412 erreur module_html conversion en matrice' });
                                         return({ "__xst" : false , "__xme" : '1413 erreur module_html conversion en matrice' });
                                     }
-                                    var obj1 = a2F1(matriceFonction.__xva,0,true,1,false);
+                                    var obj1 = a2F1(matriceFonction.__xva,0,true,1);
                                     if(obj1.__xst === true){
                                         document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                     }else{

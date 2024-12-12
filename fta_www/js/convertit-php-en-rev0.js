@@ -894,7 +894,7 @@ function php_traite_Expr_AssignOp_General(element,niveau,nodeType){
                     o1.__xva[i][0]=o1.__xva[i][0] + o2.__xva.length - 1;
                 }
                 var nouveauTableau = reIndicerLeTableau(o1.__xva);
-                var obj = a2F1(nouveauTableau,0,true,1,false);
+                var obj = a2F1(nouveauTableau,0,true,1);
                 if(obj.__xst === true){
                     t='affecte(' + gauche + ' , ' + obj.__xva + ' )';
                 }
@@ -2328,7 +2328,7 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent,options_traiteme
         var o = functionToArray2(tableau1.out,false,true,'');
         if(o.__xst === true){
             var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-            var obj = a2F1(nouveauTableau,0,true,1,false);
+            var obj = a2F1(nouveauTableau,0,true,1);
             if(obj.__xst === true){
                 t=obj.__xva;
             }
@@ -2364,7 +2364,7 @@ function php_traiteCondition1(element,niveau,parent,options_traitement){
                     }
                     if(tout_est_superieur === true){
                         var nouveauTableau = baisserNiveauEtSupprimer(matrice.__xva,1,0);
-                        var obj1 = a2F1(nouveauTableau,0,true,1,false);
+                        var obj1 = a2F1(nouveauTableau,0,true,1);
                         if(obj1.__xst === true){
                             t+=obj1.__xva;
                         }else{
@@ -3697,7 +3697,7 @@ function traiter_html_dans_php2(options){
             var tableau1 = iterateCharacters2(globale_source_php2);
             var matriceFonction = functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
-                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
                 if(obj2.__xst === true){
                     document.getElementById(zone_rev).value=obj2.__xva;
                     globale_source_php2='';
@@ -3812,7 +3812,7 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
                 var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
                 var matriceFonction = functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                    var obj2 = arrayToFunct1(matriceFonction.__xva,true);
                     if(obj2.__xst === true){
                         if(zone_rev !== null){
                             document.getElementById(zone_rev).value=obj2.__xva;

@@ -135,17 +135,17 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     
 
     var startMicro=performance.now();
-    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.__xva,true,false);
+    var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.__xva,true);
     var diResultatsCompactes=document.createElement('pre');
     
     if(fonctionReecriteAvecRetour1.__xst===true){
     
-     var compacteOriginal=arrayToFunct1(matriceFonction1.__xva,false,false);
+     var compacteOriginal=arrayToFunct1(matriceFonction1.__xva,false);
      
      
      var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
      var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
-     var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
+     var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false);
      
      if(compacteOriginal.__xst===true && compacteReecrit.__xst===true){
       if(compacteOriginal.__xva == compacteReecrit.__xva){
@@ -174,14 +174,13 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
     document.getElementById('resultat1').appendChild(diResultatsCompactes);
     
     
-    
-    var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true,true);
+    var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true);
     var difonctionReecriteAvecRetour1=document.createElement('pre');
     difonctionReecriteAvecRetour1.style.fontSize='0.9em';
     if(fonctionReecriteAvecEtColoration1.__xst===true){
-     difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr />'+fonctionReecriteAvecEtColoration1.__xva;
+     difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr /><textarea class="txtar1" rows="10">'+strToHtml(fonctionReecriteAvecEtColoration1.__xva)+'</textarea>';
     }else{
-     difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:'+fonctionReecriteAvecRetour1.message;
+     difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:<textarea class="txtar1" rows="10">'+strToHtml(fonctionReecriteAvecRetour1.message)+'</textarea>'
     }
     document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
     

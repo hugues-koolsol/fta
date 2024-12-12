@@ -70,7 +70,7 @@ if(a && a.length > 0){
                 var temps_en_secondes = contenu.substr(0,contenu.indexOf(';'));
                 if(!(isNaN(temps_en_secondes)) && !(isNaN(parseFloat(temps_en_secondes)))){
                     decompte=parseInt(temps_en_secondes,10);
-                    document.getElementById('phrase').innerHTML='Dans <b><span id="decompte">' + temps_en_secondes + '</span></b> secondes, vous serez ' + '<b>redirigé automatiquement</b> ' + '<br />' + 'vers la la page principale de l\'application';
+                    document.getElementById('phrase').innerHTML=(('Dans <b><span id="decompte">' + temps_en_secondes + '</span></b> secondes, vous serez ') + '<b>redirigé automatiquement</b> ' + '<br />') + 'vers la la page principale de l\'application';
                     break;
                 }
             }

@@ -18,7 +18,16 @@ function ma_cst_pour_javascript(elt){
 */
 function parseJavascript0(tab,id,niveau){
     var t='';
+/*
+    var startMicro = performance.now();
+*/    
     var retJS = js_tabTojavascript1(tab,id,false,false,niveau);
+/*    
+    var endMicro = performance.now();
+    var temps=parseInt((endMicro - startMicro) * 1000,10) / 1000;
+    console.log(' temps = '+temps +'ms' );
+*/
+    
     if(retJS.__xst === true){
         if(retJS.__xva.length >= 2 && retJS.__xva.substr(0,2) === '\r\n'){
             retJS.__xva=retJS.__xva.substr(2);
@@ -29,6 +38,9 @@ function parseJavascript0(tab,id,niveau){
         if(retJS.__xva.length >= 1 && retJS.__xva.substr(0,1) === '\n'){
             retJS.__xva=retJS.__xva.substr(1);
         }
+        
+        
+        
         return({"__xst" : true ,"__xva" : retJS.__xva});
     }else{
         console.error(retJS);
@@ -1275,6 +1287,12 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'javascript.js traitement non prévu 1057 ' + (JSON.stringify(tab[i]))}));
                 }
             }
+            
+            if(i!==tab[i][12]){
+                i=tab[i][12]-1;
+            };
+            
+            
         }
     }
     if(t !== ''
@@ -1297,7 +1315,7 @@ function js_traite_affecte(tab,i,niveau,dansInitialisation,terminateur,espcLigne
     var numeroPar=0;
     var j=0;
     for( j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
-        if(tab[j][7] === tab[i][0]){
+        if(tab[j][7] === i){
             if(tab[j][1] === '#' && tab[j][2] === 'f'){
             }else{
                 if(tab[i][1] === 'affectop'){
@@ -1387,20 +1405,28 @@ function js_traiteDefinitionTableau(tab,id,niveau,options={}){
     var textObj='';
     const l01=tab.length;
     var mettre_des_sauts=false;
+    var contient_un_tbel=false;
     var precedent_est_commentaire=false;
     var proprietes='';
     var nombre_de_parametres=0;
     var nombre_de_proprietes=0;
     var seule_propriete='';
+    var comptage=0;
     for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
-        if(tab[j][3] === tab[id][3] + 1){
+        if(tab[j][7] === id){
             if(tab[j][1] === '#' && tab[j][2] === 'f'){
-                mettre_des_sauts=true;
+                if(tab[j][13].indexOf('tbel')>=0){
+                   mettre_des_sauts=false;
+                   contient_un_tbel=true;
+                }else{
+                 
+                   mettre_des_sauts=true;
+                }
                 break;
             }
         }
     }
-    if(tab[id][8] > 5){
+    if(tab[id][8] > 5 && contient_un_tbel===false ){
         mettre_des_sauts=true;
     }
     for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
@@ -1456,12 +1482,21 @@ function js_traiteDefinitionTableau(tab,id,niveau,options={}){
                     }
                 }
             }else if(tab[j][1] === '#' && tab[j][2] === 'f'){
-                mettre_des_sauts=true;
+//                mettre_des_sauts=true;
                 textObj+=espacesn(true,niveau + 1);
                 var commt = traiteCommentaire2(tab[j][13],niveau,j);
                 textObj+='/*' + commt + '*/';
                 precedent_est_commentaire=true;
             }
+            comptage++
+            if(contient_un_tbel && comptage%10===0){
+                textObj+=espacesn(true,niveau + 1);
+            }
+            /* bidouille performances */
+            if(j!==tab[j][12]){
+                j=tab[j][12]-1;
+            }
+            
         }
     }
     if(nombre_de_parametres === 1 && nombre_de_proprietes === 0 && seule_propriete !== '' && isNumeric(seule_propriete)){
@@ -1612,139 +1647,163 @@ function js_traiteInstruction1(tab,niveau,id){
     var t='';
     if(tab[id][2] === 'c'){
         t+=ma_cst_pour_javascript(tab[id]);
-    }else if(tab[id][2] === 'f' && tab[id][1] === 'appelf'){
-        var obj = js_traiteAppelFonction(tab,tab[id][0],true,niveau,false,'');
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'dans js_traiteInstruction1 1043 '}));
-        }
-    }else if(tab[id][1] === 'testEnLigne'){
-        var si_faux='';
-        var si_vrai='';
-        var testlignecondition='';
-        var j = id + 1;
-        for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j=j + 1 ){
-            if(tab[j][3] === tab[id][3] + 1){
-                if(tab[j][1] === 'condition'){
-                    var objCondition = TraiteOperations2(tab,j,niveau + 1,0);
-                    if(objCondition.__xst === true){
-                        testlignecondition=objCondition.__xva;
-                    }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '1 js_traiteInstruction1 sur testEnLigne 2297 '}));
-                    }
-                }else if(tab[j][1] === 'siVrai'){
-                    var obj_si = js_tabTojavascript1(tab,j + 1,true,true,niveau,false);
-                    if(obj_si.__xst === true){
-                        if(si_vrai !== ''){
-                            si_vrai+=' , ';
-                        }
-                        si_vrai+=obj_si.__xva;
-                    }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '1 js_traiteInstruction1 sur testEnLigne 2316 '}));
-                    }
-                }else if(tab[j][1] === 'siFaux'){
-                    var obj_si = js_tabTojavascript1(tab,j + 1,true,true,niveau,false);
-                    if(obj_si.__xst === true){
-                        if(si_faux !== ''){
-                            si_faux+=' , ';
-                        }
-                        si_faux+=obj_si.__xva;
-                    }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '1 js_traiteInstruction1 sur testEnLigne 2334 '}));
-                    }
-                }else{
-                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'la syntaxe de test en ligne est  testEnLigne(condition(),siVrai(),siFaux())'}));
-                }
-            }
-        }
-        t=testlignecondition + ' ? ( ' + si_vrai + ' ) : ( ' + si_faux + ' )';
-    }else if(tableau_des_opérateurs_js.hasOwnProperty(tab[id][1])){
-        var obj = TraiteOperations2(tab,tab[id][0],niveau,0);
-        if(obj.__xst === false){
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur js_traiteInstruction1 2268'}));
-        }
-        t+='' + obj.__xva;
-    }else if(tab[id][1] === 'obj'){
-        var obj = js_traiteDefinitionObjet(tab,tab[id][0],true,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur sur js_traiteInstruction1 1064 '}));
-        }
-    }else if(tab[id][1] === 'new'){
-        /* todo faire un traitement de "new" à la place de +1 çi dessous */
-        if(tab[id+1][1] === 'defTab'){
-            var obj1 = js_traiteDefinitionTableau(tab,id + 1,niveau,{});
-            if(obj1.__xst === true){
-                if(obj1.__xva.startsWith('[') && obj1.__xva.str1.endsWith(']')){
-                    t+=' new Array(' + (obj1.__xva.substr(1,obj1.__xva.length - 2)) + ')';
-                }else{
-                    t+=' new ' + obj1.__xva;
-                }
-            }else{
-                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '0803 js_traiteInstruction1 new'}));
-            }
-        }else{
-            obj=js_traiteAppelFonction(tab,id + 1,true,niveau,false,'');
-            if(obj.__xst === true){
-                t+=' new ' + obj.__xva;
-            }else{
-                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1685 js_traiteInstruction1 new'}));
-            }
-        }
-    }else if(tab[id][1] === 'definition_de_classe' && tab[id][2] === 'f'){
-        var obj = js_traiteDefinitionClasse(tab,id,niveau);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur sur js_traiteInstruction1 1064 '}));
-        }
-    }else if(tab[id][1] === 'declare' && tab[id][2] === 'f'){
-        if(tab[tab[id][7]][1] === 'dans'){
-            for( var j = id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
-                if(tab[j][7] === id){
-                    if(tab[j][2] === 'c'){
-                        return({"__xst" : true ,"__xva" : 'var ' + (ma_cst_pour_javascript(tab[j]))});
-                    }
-                }
-            }
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1704 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
-        }else{
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1644 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
-        }
-    }else if(tab[id][1] === 'declare_constante' && tab[id][2] === 'f'){
-        if(tab[tab[id][7]][1] === 'de'){
-            for( var j = id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
-                if(tab[j][7] === id){
-                    if(tab[j][2] === 'c'){
-                        return({"__xst" : true ,"__xva" : 'const ' + (ma_cst_pour_javascript(tab[j]))});
-                    }
-                }
-            }
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1717 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
-        }else if(tab[tab[id][7]][1] === 'dans'){
-            for( var j = id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
-                if(tab[j][7] === id){
-                    if(tab[j][2] === 'c'){
-                        return({"__xst" : true ,"__xva" : 'const ' + (ma_cst_pour_javascript(tab[j]))});
-                    }
-                }
-            }
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2439 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
-        }else{
-            debugger;
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2432 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
-        }
-    }else if(tab[id][1] === '' && tab[id][2] === 'f'){
-        var obj = js_tabTojavascript1(tab,id + 1,true,true,niveau + 1,false);
-        if(obj.__xst === true){
-            t+=obj.__xva;
-        }else{
-            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1736 erreur js_traiteInstruction1 '}));
-        }
     }else{
-        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'erreur sur js_traiteInstruction1 1412 pour ' + tab[id][1]}));
+        /* c'est une 'f' */
+      
+          switch(tab[id][1]){
+            case 'appelf' :
+                var obj = js_traiteAppelFonction(tab,tab[id][0],true,niveau,false,'');
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'dans js_traiteInstruction1 1043 '}));
+                }
+                break;
+                
+            case  'testEnLigne' :
+                var si_faux='';
+                var si_vrai='';
+                var testlignecondition='';
+                var j = id + 1;
+                for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j=j + 1 ){
+                    if(tab[j][3] === tab[id][3] + 1){
+                        if(tab[j][1] === 'condition'){
+                            var objCondition = TraiteOperations2(tab,j,niveau + 1,0);
+                            if(objCondition.__xst === true){
+                                testlignecondition=objCondition.__xva;
+                            }else{
+                                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '1 js_traiteInstruction1 sur testEnLigne 2297 '}));
+                            }
+                        }else if(tab[j][1] === 'siVrai'){
+                            var obj_si = js_tabTojavascript1(tab,j + 1,true,true,niveau,false);
+                            if(obj_si.__xst === true){
+                                if(si_vrai !== ''){
+                                    si_vrai+=' , ';
+                                }
+                                si_vrai+=obj_si.__xva;
+                            }else{
+                                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '1 js_traiteInstruction1 sur testEnLigne 2316 '}));
+                            }
+                        }else if(tab[j][1] === 'siFaux'){
+                            var obj_si = js_tabTojavascript1(tab,j + 1,true,true,niveau,false);
+                            if(obj_si.__xst === true){
+                                if(si_faux !== ''){
+                                    si_faux+=' , ';
+                                }
+                                si_faux+=obj_si.__xva;
+                            }else{
+                                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '1 js_traiteInstruction1 sur testEnLigne 2334 '}));
+                            }
+                        }else{
+                            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'la syntaxe de test en ligne est  testEnLigne(condition(),siVrai(),siFaux())'}));
+                        }
+                    }
+                }
+                t=testlignecondition + ' ? ( ' + si_vrai + ' ) : ( ' + si_faux + ' )';
+                break;
+                
+            case 'obj' :
+                var obj = js_traiteDefinitionObjet(tab,tab[id][0],true,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur sur js_traiteInstruction1 1064 '}));
+                }
+                break;
+                
+            case 'new' :
+                /* todo faire un traitement de "new" à la place de +1 çi dessous */
+                if(tab[id+1][1] === 'defTab'){
+                    var obj1 = js_traiteDefinitionTableau(tab,id + 1,niveau,{});
+                    if(obj1.__xst === true){
+                        if(obj1.__xva.startsWith('[') && obj1.__xva.str1.endsWith(']')){
+                            t+=' new Array(' + (obj1.__xva.substr(1,obj1.__xva.length - 2)) + ')';
+                        }else{
+                            t+=' new ' + obj1.__xva;
+                        }
+                    }else{
+                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '0803 js_traiteInstruction1 new'}));
+                    }
+                }else{
+                    obj=js_traiteAppelFonction(tab,id + 1,true,niveau,false,'');
+                    if(obj.__xst === true){
+                        t+=' new ' + obj.__xva;
+                    }else{
+                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1685 js_traiteInstruction1 new'}));
+                    }
+                }
+                break;
+                
+            case 'definition_de_classe' :
+                var obj = js_traiteDefinitionClasse(tab,id,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur sur js_traiteInstruction1 1064 '}));
+                }
+                break;
+                
+            case 'declare' :
+                if(tab[tab[id][7]][1] === 'dans'){
+                    for( var j = id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
+                        if(tab[j][7] === id){
+                            if(tab[j][2] === 'c'){
+                                return({"__xst" : true ,"__xva" : 'var ' + (ma_cst_pour_javascript(tab[j]))});
+                            }
+                        }
+                    }
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1704 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1644 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
+                }
+                break;
+                
+            case 'declare_constante' :
+                if(tab[tab[id][7]][1] === 'de'){
+                    for( var j = id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
+                        if(tab[j][7] === id){
+                            if(tab[j][2] === 'c'){
+                                return({"__xst" : true ,"__xva" : 'const ' + (ma_cst_pour_javascript(tab[j]))});
+                            }
+                        }
+                    }
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1717 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
+                }else if(tab[tab[id][7]][1] === 'dans'){
+                    for( var j = id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j++ ){
+                        if(tab[j][7] === id){
+                            if(tab[j][2] === 'c'){
+                                return({"__xst" : true ,"__xva" : 'const ' + (ma_cst_pour_javascript(tab[j]))});
+                            }
+                        }
+                    }
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2439 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
+                }else{
+                    debugger;
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2432 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
+                }
+                break;
+                
+            case '' :
+                var obj = js_tabTojavascript1(tab,id + 1,true,true,niveau + 1,false);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1736 erreur js_traiteInstruction1 '}));
+                }
+                break;
+                
+            default :
+            
+                if(tableau_des_opérateurs_js.hasOwnProperty(tab[id][1])){
+                    var obj = TraiteOperations2(tab,tab[id][0],niveau,0);
+                    if(obj.__xst === false){
+                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur js_traiteInstruction1 2268'}));
+                    }
+                    t+='' + obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'erreur sur js_traiteInstruction1 1412 pour ' + tab[id][1]}));
+                }
+      }
     }
     return({"__xst" : true ,"__xva" : t});
 }
@@ -1812,7 +1871,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
     }
     var tableau_prop_objet=[];
     for( j=id + 1 ; j < l01 && tab[j][3] > tab[id][3] ; j=j + 1 ){
-        if(tab[j][3] === tab[id][3] + 1){
+        if(tab[j][7] === id){
             if(tab[j][1] === '#' && tab[j][2] === 'f'){
                 var commt = traiteCommentaire2(tab[j][13],niveau + 1,j);
                 if(commt.indexOf('\n') >= 0){
@@ -1883,6 +1942,11 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                     }
                 }
             }
+            /* bidouille performances */
+            if(j!==tab[j][12]){
+                j=tab[j][12]-1;
+            }
+            
         }
     }
     var tt='{';

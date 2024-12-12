@@ -3,41 +3,41 @@ src_html(
      ===============================================================================================================
      description du fichier produit 
    ),
-   (file_name , test_factorielle),
-   (file_extension , html),
-   (file_path , '.'),
+   ( file_name , test_factorielle),
+   ( file_extension , html),
+   ( file_path , '.'),
    #(
      ===============================================================================================================
      source de ce fichier
    ),
    source(
       html(
-         (lang , fr),
+         ( lang , fr),
          (doctype),
          head(
-            meta((charset , utf8)),
-            meta((name , viewport) , (content , 'width=device-width, initial-scale=1')),
-            title('test factorielle'),
-            meta((name , description) , (content , 'a')),
-            link((rel , 'stylesheet') , (type , 'text/css') , (href , index.css)),
+            meta( ( charset , utf8 )),
+            meta( ( name , viewport ) , ( content , 'width=device-width, initial-scale=1' )),
+            title( 'test factorielle'),
+            meta( ( name , description ) , ( content , 'a' )),
+            link( ( rel , 'stylesheet' ) , ( type , 'text/css' ) , ( href , index.css )),
             #(
               =============================================================================================
               script optionnel ici, c'est seulement pour l'exemple
               =============================================================================================
             ),
             #(test),
-            script((type , 'text/javascript') , (src , 'js/core3.js'))
+            script( ( type , 'text/javascript' ) , ( src , 'js/core3.js' ))
          ),
          body(
-            div('Si cette page fonctionne, il y aura écrit "120" ci dessous !'),
-            div((id , zoneResultat)),
+            div( 'Si cette page fonctionne, il y aura écrit "120" ci dessous !'),
+            div( ( id , zoneResultat )),
             #(
               =============================================================================================
               dans ce html, on écrit du javascript
               =============================================================================================
             ),
             script(
-               (type , 'text/javascript'),
+               ( type , 'text/javascript'),
                source(
                   useStrict(),
                   #(
@@ -46,11 +46,11 @@ src_html(
                     =================================================================================
                   ),
                   fonction(
-                     definition(nom(factorielle) , argument(nombre)),
+                     definition( nom(factorielle) , argument(nombre)),
                      contenu(
                         choix(
                            si(
-                              condition(infeg(nombre , 0)),
+                              condition( infeg( nombre , 0 )),
                               alors(
                                  #( on retourne 1 ),
                                  retourner(1)
@@ -70,7 +70,7 @@ src_html(
                                  retourner(
                                     mult(
                                        nombre,
-                                       appelf(nomf(factorielle) , p(moins(nombre , 1)))
+                                       appelf( nomf(factorielle) , p( moins( nombre , 1 ) ))
                                     )
                                  )
                               )
@@ -84,7 +84,7 @@ src_html(
                     =================================================================================
                   ),
                   affecte(
-                     appelf(element(document) , nomf(getElementById) , p('zoneResultat') , prop(innerHTML)),
+                     appelf( element(document) , nomf(getElementById) , p( 'zoneResultat' ) , prop(innerHTML)),
                      appelf(
                         #(),
                         nomf(factorielle),

@@ -186,7 +186,7 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                             if(provenance==='sql'){
                                var objSource = tabToSql1(tab,0,0,false);
                                if(objSource.__xst===true){
-                                var obj1=a2F1(tab,0,true,1,false);
+                                var obj1=a2F1(tab,0,true,1);
                                 if(obj1.__xst===true){
                                     var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.__xva,id_source);
                                     if(obj2.__xst===true){
@@ -230,7 +230,7 @@ function apres_traite_un_remplacement(id_tache,arg , provenance ){
                                 }
                                 
                                 if(objSource.__xst === true){
-                                    var obj = arrayToFunct1(tab,true,false);
+                                    var obj = arrayToFunct1(tab,true);
                                     if(obj.__xst === true ){
                                         arg[id_source].tab=[];
                                         var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.__xva,'source_genere':objSource.__xva};
@@ -329,7 +329,7 @@ function traite_une_suppression(id_tache,arg){
                                 console.log('%c on traite un php ' , 'color:red;background:yellow;' , objSource.__xst )
                             }
                             if(objSource.__xst === true){
-                                var obj = arrayToFunct1(tab1,true,false);
+                                var obj = arrayToFunct1(tab1,true);
                                 if(obj.__xst === true){
                                     arg[id_source].tab1=[];
                                     var params={'arg':arg,'id_tache':j,'id_source':id_source,'source_rev':obj.__xva,'source_genere':objSource.__xva,provenance:null};

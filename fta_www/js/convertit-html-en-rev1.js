@@ -68,7 +68,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
             var tableau1 = iterateCharacters2(obj.__xva);
             var matriceFonction = functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
-                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
                 if(obj2.__xst === true){
                     if(options_json.hasOwnProperty('zone_html_rev')){
                         document.getElementById(options_json.zone_html_rev).value=obj2.__xva;

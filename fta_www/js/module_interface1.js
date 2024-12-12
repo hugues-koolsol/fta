@@ -908,15 +908,26 @@ class interface1{
     formatter_le_source_rev(nom_de_la_textarea){
         var a = document.getElementById(nom_de_la_textarea);
         var tableau1 = iterateCharacters2(a.value);
+        
         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+/*
+            var startMicro = performance.now();
+*/         
+            var obj2 = arrayToFunct1(matriceFonction.__xva,true);
             if(obj2.__xst === true){
                 a.value=obj2.__xva;
             }
+/*            
+            var endMicro = performance.now();
+            var temps=parseInt((endMicro - startMicro) * 1000,10) / 1000;
+            console.log(' temps = '+temps +'ms pour matriceFonction.length='+matriceFonction.length);
+*/            
+            
         }else{
             this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea);
         }
+        
     }
     /*
       

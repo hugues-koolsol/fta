@@ -584,7 +584,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         var o = functionToArray(t,true,false,'');
         if(o.__xst === true){
             var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-            var obj = a2F1(nouveauTableau,0,false,1,false);
+            var obj = a2F1(nouveauTableau,0,false,1);
             if(obj.__xst === true){
                 t=obj.__xva;
             }
@@ -600,7 +600,7 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
         var o = functionToArray(t,true,false,'');
         if(o.__xst === true){
             var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-            var obj = a2F1(nouveauTableau,0,false,1,false);
+            var obj = a2F1(nouveauTableau,0,false,1);
             if(obj.__xst === true){
                 t=obj.__xva;
             }
@@ -636,7 +636,7 @@ function traiteLogicalExpression1(element,niveau,dansSiOuBoucle){
         var o = functionToArray(t,true,false,'');
         if(o.__xst === true){
             var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-            var obj = a2F1(nouveauTableau,0,false,1,false);
+            var obj = a2F1(nouveauTableau,0,false,1);
             if(obj.__xst === true){
                 t=obj.__xva;
             }
@@ -725,7 +725,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
                   il faut supprimer l'id 2 et baisser de 1 tous les niveaux supérieurs à 1 de l'id 2
                 */
                 var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-                var obj = a2F1(nouveauTableau,0,false,1,false);
+                var obj = a2F1(nouveauTableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }
@@ -1290,6 +1290,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
         }
     }
     var lesArguments='';
+
     if(element.arguments && element.arguments.length > 0){
         var i=0;
         for( i=0 ; i < element.arguments.length ; i++ ){
@@ -3263,7 +3264,7 @@ function transform_source_js_en_rev_avec_acorn(source,options){
                             var tableau1 = iterateCharacters2(obj0.__xva);
                             var matriceFonction = functionToArray2(tableau1.out,true,false,'');
                             if(matriceFonction.__xst === true){
-                                var obj2 = arrayToFunct1(matriceFonction.__xva,true,false);
+                                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
                                 if(obj2.__xst === true){
                                     document.getElementById(options.nom_de_la_text_area_rev).value=obj2.__xva;
                                 }else{
