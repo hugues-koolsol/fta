@@ -291,16 +291,30 @@ function reIndicerLeTableau(tab){
                 k++;
                 tab[j][9]=k;
                 /*
-                 pour le dernier, on met lui même
+                 pour le dernier, on met lui même - 1
                 */
-                tab[j][12]=j;
+                tab[j][12]=-1;
                 if(k>1){
-                     tab[indice_enfant_precedent][12]=j;
+                     tab[indice_enfant_precedent][12]=j-1;
                 }
                 indice_enfant_precedent=j;
             }
         }
     }
+    /* 
+      =============================================================================================================
+      pour ceux dont l'enfant suivant est égal à lui même,
+      on met l01 pour optimiser les boucles plus tard
+      Chercher le commentaire "bidouille performances" pour l'utilisation
+      =============================================================================================================
+    */
+    for( i=1 ; i < l01 ; i++ ){
+        if(tab[i][12]===-1){
+            tab[i][12]=l01;
+        }
+        
+    }
+    
     
     for( i=0 ; i < l01 ; i++ ){
         k=0;
@@ -632,12 +646,12 @@ function strToHtml(s){
   )  
   =====================================================================================================================
 */
-function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null){
+function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null){
 
     /*
       le parent id=0 et début=1
     */
-    if(arr.length<=1){
+    if(tab.length<=1){
         return({ "__xst" : true , __xva : '' });
     }
     var i=0;
@@ -650,7 +664,7 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
     var tmpC='';
     var c1='';
     var cm1='';
-    const l01=arr.length;
+    const l01=tab.length;
     var chCR = '¶' + 'CR' + '¶';
     var chLF = '¶' + 'LF' + '¶';
     var chaine='';
@@ -658,8 +672,8 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
     var contient_en_commentaire_tbel=false;
 
 
-    if(arr[debut][3]>0){
-      var les_espaces=espacesnrev(true,arr[debut][3]);
+    if(tab[debut][3]>0){
+      var les_espaces=espacesnrev(true,tab[debut][3]);
     }else{
       var les_espaces='';
     }
@@ -670,15 +684,15 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
     
     tab_retour_ligne.push([retourLigne,retourLigne,false]);
 /*    
-    if(arr[debut][1]==='f1' || arr[debut][1]==='f2'){
+    if(tab[debut][1]==='f1' || tab[debut][1]==='f2'){
         debugger;
     }
 */   
     if(retourLigne === true
      && tab_retour_ligne[indice_tab][2] === false
      && parentId > 0
-     && arr[parentId][10] <= profondeurLimite
-     && arr[parentId][8] < nombreEnfantsLimite){
+     && tab[parentId][10] <= profondeurLimite
+     && tab[parentId][8] < nombreEnfantsLimite){
         /* 
           à priori on supprime le retour de ligne
         */
@@ -688,12 +702,12 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
           on ne veut pas de retour de ligne mais il faut vérifier
           que toute les sous fonctions n'aient pas plus de 5 arguments
         */
-        for(i=debut;i<l01 && arr[i][3] >= arr[debut][3];i++){
-            if(arr[i][8]>=nombreEnfantsLimite){
+        for(i=debut;i<l01 && tab[i][3] >= tab[debut][3];i++){
+            if(tab[i][8]>=nombreEnfantsLimite){
               
-              for( var j=i+1;j<l01 && arr[j][3]>arr[i][3];j++){
-               if(arr[j][7]===i){
-                if(arr[j][1]==='#' && arr[j][2]==='f' && arr[j][13].indexOf('tbel')>=0){
+              for( var j=i+1;j<l01 && tab[j][3]>tab[i][3];j++){
+               if(tab[j][7]===i){
+                if(tab[j][1]==='#' && tab[j][2]==='f' && tab[j][13].indexOf('tbel')>=0){
                  contient_un_defTab_tbel=true;
                  break;
                 }
@@ -710,7 +724,7 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                   tab_retour_ligne[indice_tab][1]=true;
                   break;
               }
-            }else if(arr[i][1]==='#' && arr[i][2]==='f'){
+            }else if(tab[i][1]==='#' && tab[i][2]==='f'){
               retourLigne=true;
               tab_retour_ligne[indice_tab][1]=true;
               break;
@@ -726,8 +740,8 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
     }
     
     var count=0;
-    for( i=debut;i<l01 && arr[i][3] > arr[parentId][3]; i++){
-        if(arr[i][7]===parentId){
+    for( i=debut;i<l01 && tab[i][3] > tab[parentId][3]; i++){
+        if(tab[i][7]===parentId){
             if(t!==''){
                 if(retourLigne===false){
                     t+=' , ';
@@ -741,7 +755,7 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 }
             }
             if(retourLigne===true){
-                if(arr[i][3]>0){
+                if(tab[i][3]>0){
                     if(profondeur_parent>1){
                         t+=les_espaces;
                     }
@@ -756,85 +770,85 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
               on insère les données
               =============================================================================================
             */
-            if(arr[i][2] === 'c'){
+            if(tab[i][2] === 'c'){
                 chaine='';
-                switch(arr[i][4]){
+                switch(tab[i][4]){
                   case  1:
                     /* simple quote */
-                    chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                    chaine=tab[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                     t+='\'' + chaine + '\'';
                     break;
                     
                   case 2:
                     /* modele apostrophes inversées ` */
-                    chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                    chaine=tab[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                     t+='`' + chaine + '`';
                     break;
                   case 3:
                     /* double quote */
-                    chaine=arr[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                    chaine=tab[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                     t+='"' + chaine + '"';
                     break;
                     case 4 :
                         /* regex */
-                        chaine=arr[i][1];
-                        t+='/' + chaine + '/' + arr[i][13];
+                        chaine=tab[i][1];
+                        t+='/' + chaine + '/' + tab[i][13];
                         break;
                         
-                    case 0 : t+=arr[i][1];
+                    case 0 : t+=tab[i][1];
                         break;
                 }
                 count++;
                 if(contient_un_defTab_tbel===true && count%10===0){
                     t+=les_espaces;
                 }
-            }else if( arr[i][2] === 'f' && arr[i][1] === DEBUTCOMMENTAIRE){
+            }else if( tab[i][2] === 'f' && tab[i][1] === DEBUTCOMMENTAIRE){
                 /*
                   =============================================================================================
                   on est dans un commentaire
                   =============================================================================================
                 */
-                commentaire=ttcomm1(arr[i][13],arr[i][3],i);
+                commentaire=ttcomm1(tab[i][13],tab[i][3],i);
                 /*pas de mise en forme en HTML*/
-                t+=arr[i][1] + '(' + commentaire + ')';
+                t+=tab[i][1] + '(' + commentaire + ')';
                 count++;
                 if(contient_un_defTab_tbel===true && count%10===0){
                     t+=les_espaces;
                 }
 
-            }else if(arr[i][2] === 'f' && arr[i][1] === DEBUTBLOC){
+            }else if(tab[i][2] === 'f' && tab[i][1] === DEBUTBLOC){
                 /*
                   =============================================================================================
                   on est dans un bloc
                   =============================================================================================
                 */
-                commentaire=arr[i][13];
+                commentaire=tab[i][13];
                 /*pas de mise en forme en HTML*/
-                t+=arr[i][1] + '(' + commentaire + ')';
+                t+=tab[i][1] + '(' + commentaire + ')';
                 count++;
                 if(contient_un_defTab_tbel===true && count%10===0){
                     t+=les_espaces;
                 }
 
-            }else if(arr[i][2] === 'f' && arr[i][8] === 0){
+            }else if(tab[i][2] === 'f' && tab[i][8] === 0){
                 /*
                   =============================================================================================
                   fonction sans argument
                   =============================================================================================
                 */
-                    t+=arr[i][1] + '()';
+                    t+=tab[i][1] + '()';
                 count++;
                 if(contient_un_defTab_tbel===true && count%10===0){
                     t+=les_espaces;
                 }
-            }else if( arr[i][2] === 'f' && arr[i][8] === 1  && arr[i+1][2] === 'c' &&  arr[i+1][4] === 0 ){
+            }else if( tab[i][2] === 'f' && tab[i][8] === 1  && tab[i+1][2] === 'c' &&  tab[i+1][4] === 0 ){
              
                 /*
                   =============================================================================================
                   fonction avec 1 argument constant ( permet d'éviter un appel car ce cas est très courant );
                   =============================================================================================
                 */
-                t+=arr[i][1]+'('+arr[i+1][1]+')';
+                t+=tab[i][1]+'('+tab[i+1][1]+')';
                 count++;
                 if(contient_un_defTab_tbel===true && count%10===0){
                     t+=les_espaces;
@@ -847,14 +861,14 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                   =====================================================================================================
                 */
                 /*#
-                  console.log('t='+t, 'on va dans "'+arr[i][1]+'"');
-                  if(false && ( arr[i][1]==='f2' || arr[i][1]==='f1' ) ){
+                  console.log('t='+t, 'on va dans "'+tab[i][1]+'"');
+                  if(false && ( tab[i][1]==='f2' || tab[i][1]==='f1' ) ){
                    debugger;
                   }
                 */                
-                obj=a2F1(arr,i,retourLigne,i + 1,arr[i][10],tab_retour_ligne , contient_un_defTab_tbel);
+                obj=a2F1(tab,i,retourLigne,i + 1,tab[i][10],tab_retour_ligne , contient_un_defTab_tbel);
                 /*#                
-                  if(arr[i][1]==='f1'){
+                  if(tab[i][1]==='f1'){
                    debugger;
                   }
                 */
@@ -867,7 +881,7 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                       =============================================================================================
                     */
                     
-                    t+=arr[i][1] + '(';
+                    t+=tab[i][1] + '(';
                     /*
                       =============================================================================================
                       on ajoute le contenu récursif de la fonction
@@ -885,7 +899,7 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                         if(les_espaces===''){
                             t+=CRLF;
                         }else{
-                            if(arr[i][10]>1){
+                            if(tab[i][10]>1){
                                 t+=les_espaces;
                             }
                         }
@@ -901,9 +915,7 @@ function a2F1(arr,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 count++;
             }
             /* bidouille performances */
-            if(i!==arr[i][12]){
-                i=arr[i][12]-1;
-            }
+            i=tab[i][12];
 
             
         }
@@ -1186,7 +1198,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       la première version avec push était :
       T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
     */
-    chaineTableau+='[0,"' + texte + '","INIT",-1,' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+    chaineTableau+='[0,"' + texte + '","INIT",-1,' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
     typePrecedent='INIT';
     niveauPrecedent=niveau;
     var l01=tableauEntree.length;
@@ -1359,10 +1371,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
                 texte=texte.replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
                 indice++;
-                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
-                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                 */
                 typePrecedent='c';
                 niveauPrecedent=niveau;
@@ -1495,10 +1507,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     })));
                 }
                 indice++;
-                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
-                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                 */
                 /*
                   pour une regex, on met les drapeaux ( g,...) dans la zone commentaire [13]
@@ -1598,10 +1610,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /* methode3m */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
                 indice++;
-                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
-                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                 */
                 typePrecedent='c';
                 niveauPrecedent=niveau;
@@ -1682,10 +1694,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /* methode3' */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
                 indice++;
-                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                 /*
                   version avec push mais c'est très lent sur chrome                
-                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                  T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                 */
                 typePrecedent='c';
                 niveauPrecedent=niveau;
@@ -1785,9 +1797,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   le nom d'une fonction peut être vide , par exemple dans le cas html, on écrit a[[href,'exemple']]
                 */
                 indice++;
-                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"f"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                chaineTableau+=',[' + indice + ',"' + texte + '",' + '"f"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                 /*
-                  T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                  T.push(Array(indice,texte,'f',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                 */
                 typePrecedent='f';
                 niveauPrecedent=niveau;
@@ -1829,7 +1841,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         })));
                     }
                     indice++;
-                    chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                    chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                     /*
                       T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     */
@@ -1942,9 +1954,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }else{
                     if(texte !== ''){
                         indice++;
-                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                         /*
-                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                         */
                         typePrecedent='c';
                         niveauPrecedent=niveau;
@@ -1972,9 +1984,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }else{
                     if(texte !== ''){
                         indice++;
-                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                         /*
-                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                         */
                         typePrecedent='c';
                         niveauPrecedent=niveau;
@@ -2003,9 +2015,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     if(texte !== ''){
                         indice++;
                         /*
-                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                         */
-                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                         typePrecedent='c';
                         niveauPrecedent=niveau;
                         textePrecedent=texte;
@@ -2034,9 +2046,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }else{
                     if(texte !== ''){
                         indice++;
-                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                        chaineTableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                         /*
-                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+                          T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,0,''));
                         */
                         typePrecedent='c';
                         niveauPrecedent=niveau;
@@ -2068,7 +2080,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }
                     }
                     indice++;
-                    chaineTableau+=',[' + indice + ',"' + texte + '","c",' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',' + posFerPar + ',""]';
+                    chaineTableau+=',[' + indice + ',"' + texte + '","c",' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
                     /*
                       T.push(Array(indice,texte,'c',niveau,constanteQuotee,premier,dernier,0,0,0,0,0,0,''));
                     */
@@ -2309,7 +2321,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
       numérotation des enfants
       numenfant = k
-      en position 12, on met l'indice de l'enfant suivant 
+      en position 12, on met l'indice de l'enfant suivant - 1 
       =============================================================================================================
     */
     var indice_enfant_precedent=0;
@@ -2321,16 +2333,30 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 k++;
                 T[j][9]=k;
                 /*
-                 pour le dernier, on met lui même
+                 pour le dernier, on met -1 et on mettre l01 plus tard
                 */
-                T[j][12]=j;
+                T[j][12]=-1;
                 if(k>1){
-                     T[indice_enfant_precedent][12]=j;
+                     T[indice_enfant_precedent][12]=j-1;
                 }
                 indice_enfant_precedent=j;
             }
         }
     }
+    /* 
+      =============================================================================================================
+      Pour ceux dont l'enfant suivant est égal à lui même,
+      on met l01 pour optimiser les boucles plus tard
+      Chercher le commentaire "bidouille performances" pour l'utilisation
+      =============================================================================================================
+    */
+    for( i=1 ; i < l01 ; i++ ){
+        if(T[i][12]===-1){
+            T[i][12]=l01;
+        }
+        
+    }
+    
     /*
       =============================================================================================================
       profondeur des fonctions
@@ -2338,7 +2364,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       l=idParent
       =============================================================================================================
     */
-    var enfant_suivant=l01;
     
     var niveau = 0;
     var id_parent=0;
@@ -2361,6 +2386,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             }
         }
     }
+    
     /*#
       //pour la mesure des performances
       var endMicro = performance.now();

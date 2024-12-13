@@ -175,6 +175,9 @@ dialog::backdrop{
  border-collapse:collapse;
  max-width:1000px;
 }
+.yytableauMatrice1 td,.yytableauMatrice1 th{
+ border:1px red solid;
+}
 
 .tableau2{
  font-size:0.8rem;
