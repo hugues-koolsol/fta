@@ -341,6 +341,8 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
                 astjs_logerreur({"__xst" : true ,"__xav" : '0326 l\'opérateur virgule est dangereux dans un tableau !'});
             }
             for( i=0 ; i < element.expressions.length ; i++ ){
+                positionDebutBloc=element.expressions[i].start;
+                t+=ajouteCommentaireAvant(element.expressions[i],niveau);
                 var obj1 = traiteUneComposante(element.expressions[i],niveau + 2,parentEstCrochet,dansSiOuBoucle,element);
                 if(obj1.__xst === true){
                     if(t !== ''){
@@ -526,7 +528,8 @@ function recupNomOperateur(s){
         case 'void' : return 'void';
         default: return('TODO recupNomOperateur pour "' + s + '"');
     }
-}/*
+}
+/*
   =====================================================================================================================
 */
 function traiteConditionalExpression1(element,niveau){
@@ -573,14 +576,17 @@ function traiteBinaryExpress1(element,niveau,parentEstCrochet,dansSiOuBoucle){
     ){
         t+='concat(' + gauche.__xva + ',' + droite.__xva + ')';
     }else if(parentEstCrochet && (nomDuTest === 'plus' || nomDuTest === 'moins')){
-        t+='' + nomDuTest + '(' + gauche.__xva + ',' + droite.__xva + ')';
+        t+=nomDuTest + '(' + gauche.__xva + ',' + droite.__xva + ')';
     }else{
-        t+='' + nomDuTest + '(' + gauche.__xva + ',' + droite.__xva + ')';
+        t+=nomDuTest + '(' + gauche.__xva + ',' + droite.__xva + ')';
     }
     if(t.substr(0,12) === 'plus(concat('){
         t='concat(' + (t.substr(5));
     }
-    if(t.substr(0,14) === 'concat(concat('){
+    if(t.substr(0,13) === 'plus( concat('){
+        t='concat(' + (t.substr(5));
+    }
+    if(t.substr(0,14) === 'concat(concat(' || t.substr(0,15) === 'concat( concat('){
         var o = functionToArray(t,true,false,'');
         if(o.__xst === true){
             var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
@@ -671,7 +677,8 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
          && o.__xva[2][1] === ''
          && o.__xva[2][2] === 'f'
          && o.__xva[3][1] === ''
-         && o.__xva[3][2] === 'f'){
+         && o.__xva[3][2] === 'f'
+        ){
             var enfantDe2='';
             var onContinue=true;
             for( i=0 ; i < o.__xva.length && onContinue === true ; i++ ){
@@ -928,7 +935,7 @@ function traiteSwitch1(element,niveau){
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     t+='\n' + esp0 + 'bascule(';
-    var obj1 = traiteUneComposante(element.discriminant,niveau,false,false,element);
+    var obj1 = traiteUneComposante(element.discriminant,niveau + 1,false,false,element);
     if(obj1.__xst === true){
         t+='\n' + esp0 + esp1 + 'quand(' + obj1.__xva + ')';
     }else{
@@ -937,7 +944,7 @@ function traiteSwitch1(element,niveau){
     for( i=0 ; i < element.cases.length ; i++ ){
         t+=',\n' + esp0 + esp1 + 'est(';
         if(element.cases[i].test !== null){
-            var obj1 = traiteUneComposante(element.cases[i].test,niveau,false,false,element);
+            var obj1 = traiteUneComposante(element.cases[i].test,niveau + 1,false,false,element);
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + 'valeur(' + obj1.__xva + ')';
             }else{
@@ -948,9 +955,7 @@ function traiteSwitch1(element,niveau){
         }
         t+=',\n' + esp0 + esp1 + esp1 + 'faire(\n';
         if(element.cases[i].consequent && element.cases[i].consequent.length > 0){
-            niveau+=3;
-            var obj1 = ast_de_js_vers_rev1(element.cases[i].consequent,niveau);
-            niveau-=3;
+            var obj1 = ast_de_js_vers_rev1(element.cases[i].consequent,niveau + 3);
             if(obj1.__xst === true){
                 t+=obj1.__xva;
             }else{
@@ -1290,7 +1295,6 @@ function traiteCallExpression1(element,niveau,parent,opt){
         }
     }
     var lesArguments='';
-
     if(element.arguments && element.arguments.length > 0){
         var i=0;
         for( i=0 ; i < element.arguments.length ; i++ ){
@@ -1324,7 +1328,8 @@ function traiteCallExpression1(element,niveau,parent,opt){
                      && parent
                      && parent.callee
                      && parent.callee.type
-                     && parent.callee.type === 'FunctionExpression'){
+                     && parent.callee.type === 'FunctionExpression'
+                    ){
                         console.log('%c ajouter des parenthèses pour les arguments ','color:red;background:pink;');
                         lesArguments+='p(' + le_commentaire + '' + obj1.__xva + '),#(auto_appelee(2))';
                     }else{
@@ -1406,7 +1411,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
                             }
                         }else{
                             console.error('\n\nATTENTION VERIFIER CECI\n\n');
-                            laPropriete='#(verifier convertit_js_en-rev 1230 ),prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + ')))';
+                            laPropriete='#(todo verifier convertit_js_en-rev 1230 ),prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + ')))';
                         }
                     }
                 }
@@ -1623,36 +1628,25 @@ function traiteCallExpression1(element,niveau,parent,opt){
             }
         }else if(element.callee.type === 'Super'){
             t+='appelf(nomf(super)' + lesArguments + laPropriete + ')';
-
-
         }else if(element.callee.type === 'ArrowFunctionExpression'){
-
             var obj1 = traiteUneComposante(element.callee,niveau,false,false,element);
-
             if(obj1.__xst === true){
                 if(contenu === ''){
                     if(obj1.__xva.substr(0,6) === 'appelf'){
                         console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
                         /* cas (()=>{var g=1;})(); */
                         t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
-
                     }else{
                         t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
                     }
                 }else{
                     t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
                 }
-                
-                
-                
-                
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
             }
-
-
         }else{
-            return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type+'"' ,"element" : element}));
+            return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type + '"' ,"element" : element}));
         }
     }
     return({"__xst" : true ,"__xva" : t});
@@ -1715,7 +1709,6 @@ function traiteArrayExpression1(element,niveau){
     for(i in element.elements){
         positionDebutBloc=element.elements[i].start;
         lesPar+=ajouteCommentaireAvant(element.elements[i],niveau);
-     
         if(element.elements[i].type === 'Literal'){
             lesPar+=',p(' + element.elements[i].raw + ')';
             if(element.elements[i].raw.substr(0,1) === '\''
@@ -1778,7 +1771,8 @@ function traiteArrayExpression1(element,niveau){
          || element.elements[i].type === "ConditionalExpression"
          || element.elements[i].type === "BinaryExpression"
          || element.elements[i].type === "UnaryExpression"
-         || element.elements[i].type === "ObjectExpression"){
+         || element.elements[i].type === "ObjectExpression"
+        ){
             var obj1 = traiteUneComposante(element.elements[i],niveau,true,false,element);
             if(obj1.__xst === true){
                 ne_contient_que_des_constantes=false;
@@ -1848,7 +1842,8 @@ function traiteObjectExpression1(element,niveau){
          || 'TemplateLiteral' === val.value.type
          || 'ThisExpression' === val.value.type
          || 'UnaryExpression' === val.value.type
-         || 'UpdateExpression' === val.value.type){
+         || 'UpdateExpression' === val.value.type
+        ){
             var obj1 = traiteUneComposante(val.value,niveau + 1,false,false,val);
             if(obj1.__xst === true){
                 t+=obj1.__xva + ')';
@@ -2345,7 +2340,8 @@ function traiteAssignmentExpress1(element,niveau,opt,parent){
              && element.right.type === 'UnaryExpression'
              && element.right.argument.type === 'Identifier'
              && (element.right.operator === '-'
-             || element.right.operator === '+')){
+             || element.right.operator === '+')
+            ){
                 t+=(valeurLeft + element.right.operator + element.right.argument.name) + ')';
             }else if(element.right && element.right.type === 'Literal' && element.right.argument.type === 'Identifier'){
                 t+=(valeurLeft + nomDuTest) + '(' + nomDuTestUnary + '(' + element.right.argument.name + ')' + ',' + element.right.raw + '))';
@@ -2511,7 +2507,8 @@ function traiteAssignmentExpress1(element,niveau,opt,parent){
              || "AssignmentExpression" === element.right.type
              || "SequenceExpression" === element.right.type
              || "ThisExpression" === element.right.type
-             || "UpdateExpression" === element.right.type){
+             || "UpdateExpression" === element.right.type
+            ){
                 var obj1 = traiteUneComposante(element.right,niveau + 1,false,false,element);
                 if(obj1.__xst === true){
                     t+=obj1.__xva + ')';
@@ -2560,7 +2557,8 @@ function traiteExpression1(element,niveau,parent){
          || 'NewExpression' === element.expression.type
          || 'SequenceExpression' === element.expression.type
          || 'UpdateExpression' === element.expression.type
-         || 'UnaryExpression' === element.expression.type){
+         || 'UnaryExpression' === element.expression.type
+        ){
             var obj1 = traiteUneComposante(element.expression,niveau + 1,false,false,element.expression);
             if(obj1.__xst === false){
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteExpression1 928 ' + element.type ,"element" : element}));
@@ -2582,12 +2580,15 @@ function traiteDeclaration1(element,niveau){
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var nomVariable='';
+    positionDebutBloc=element.start;
     t+=ajouteCommentaireAvant(element,niveau);
     var decl={};
     for(decl in element.declarations){
         if(t !== ''){
             t+=',';
         }
+        positionDebutBloc=element.declarations[decl].start;
+        t+=ajouteCommentaireAvant(element.declarations[decl],niveau);
         var debutDeclaration='';
         if(element.kind && element.kind === 'var'){
             debutDeclaration='\n' + esp0 + 'declare(' + element.declarations[decl].id.name + ' , ';
@@ -2740,7 +2741,8 @@ function traiteDeclaration1(element,niveau){
              || 'UpdateExpression' === element.declarations[decl].init.type
              || "ThisExpression" === element.declarations[decl].init.type
              || "AssignmentExpression" === element.declarations[decl].init.type
-             || "AwaitExpression" === element.declarations[decl].init.type){
+             || "AwaitExpression" === element.declarations[decl].init.type
+            ){
                 var obj1 = traiteUneComposante(element.declarations[decl],niveau + 1,false,false,element);
                 if(obj1.__xst === true){
                     t+=(debutDeclaration + obj1.__xva) + ')';
@@ -2765,7 +2767,8 @@ function traiteTemplateLiteral1(element,niveau){
      && element.quasis.length === 1
      && 'TemplateElement' === element.quasis[0].type
      && element.quasis[0].value
-     && element.quasis[0].value.raw){
+     && element.quasis[0].value.raw
+    ){
         t='`' + element.quasis[0].value.raw + '`';
     }else{
         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteTemplateLiteral1 2131 ' + element.type ,"element" : element}));
@@ -2820,18 +2823,9 @@ function traiteTry1(element,niveau){
 */
 function comm_avant_fin(elem,niveau){
     var t='';
-    if(elem.hasOwnProperty('end')){
-        positionDebutBloc=elem.end;
-    }else{
-        debugger;
-    }
+    positionDebutBloc=elem.end;
     var commentaire = ajouteCommentaireAvant(elem,niveau + 1);
-    if(commentaire !== ''){
-        t=commentaire;
-        /*
-          t+=(commentaire.trim().replace(/\n/g,' ').replace(/\r/g,' ').trim()) + ',';
-        */
-    }
+    t=commentaire;
     return t;
 }
 /*
@@ -2841,9 +2835,7 @@ function comm_avant_debut(elem,niveau){
     var t='';
     positionDebutBloc=elem.start;
     var commentaire = ajouteCommentaireAvant(elem,niveau + 1);
-    if(commentaire !== ''){
-        t+=(commentaire.trim().replace(/\n/g,' ').replace(/\r/g,' ').trim()) + ',';
-    }
+    t+=commentaire;
     return t;
 }
 /*

@@ -278,7 +278,7 @@ function reIndicerLeTableau(tab){
     }
     /*
       =============================================================================================================
-      numéro d'enfant
+      numéro d'enfant + bidouille performances
       =============================================================================================================
     */
     
@@ -293,38 +293,15 @@ function reIndicerLeTableau(tab){
                 /*
                  pour le dernier, on met lui même - 1
                 */
-                tab[j][12]=-1;
+                tab[j][12]=l01;
                 if(k>1){
-                     tab[indice_enfant_precedent][12]=j-1;
+                     tab[indice_enfant_precedent][12]=j;
                 }
                 indice_enfant_precedent=j;
             }
         }
     }
-    /* 
-      =============================================================================================================
-      pour ceux dont l'enfant suivant est égal à lui même,
-      on met l01 pour optimiser les boucles plus tard
-      Chercher le commentaire "bidouille performances" pour l'utilisation
-      =============================================================================================================
-    */
-    for( i=1 ; i < l01 ; i++ ){
-        if(tab[i][12]===-1){
-            tab[i][12]=l01;
-        }
-        
-    }
     
-    
-    for( i=0 ; i < l01 ; i++ ){
-        k=0;
-        for( j=i + 1 ; j < l01 && tab[j][3]>tab[i][3] ; j++ ){
-            if(tab[j][7] === tab[i][0]){
-                k++;
-                tab[j][9]=k;
-            }
-        }
-    }
     /*
       =============================================================================================================
       profondeur
@@ -477,7 +454,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     tab=texte.replace(/\r/g,'').split('\n');
     l01=tab.length;
     /**/
-    if(texte.length > 1 && texte.substr(0,1) === '#'){
+    if(texte.length > 1 && ( texte.substr(0,1) === '#' ||  texte.substr(0,1) === '*' )){
         if(texte.length > 2 && texte.substr(1,1) === '#'){
             /*
               un commentaire qui commence par ## sera décalé à gauche
@@ -518,6 +495,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         }
         /* si c'est un fichierRev0, on doit avoir la dernière ligne vide*/
         if(fichierRev0){
+/*
             ligne=tab[tab.length-1];
             if(ligne !== ''){
                 tab.push(unBloc);
@@ -532,10 +510,30 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
                 }
             }
             texte=tab.join(CRLF);
+*/
+            /* on retire les lignes vierges de la fin */
+            for( i=tab.length - 1 ; i >= 1 ; i-- ){
+                if(tab[i].trim() === ''){
+                    tab.splice(i,1);
+                }else{
+                    break;
+                }
+            }
+            l01=tab.length;
+            if(double_commentaire === false){
+                t=' '.repeat(nbEspacesSrc1 * niveau);
+                for( i=1 ; i < l01 ; i++ ){
+                    tab[i]=t + tab[i];
+                }
+            }
+            texte=tab.join(CRLF) + CRLF + ' '.repeat(niveau * nbEspacesSrc1);
+
+
+            
         }else{
             /* on retire les lignes vierges de la fin */
             for( i=tab.length - 1 ; i >= 1 ; i-- ){
-                if(tab[i] === ''){
+                if(tab[i].trim() === ''){
                     tab.splice(i,1);
                 }else{
                     break;
@@ -740,7 +738,9 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
     }
     
     var count=0;
-    for( i=debut;i<l01 && tab[i][3] > tab[parentId][3]; i++){
+    /* bidouille performances */
+    for( i=debut;i<l01 ; i=tab[i][12]){
+        
         if(tab[i][7]===parentId){
             if(t!==''){
                 if(retourLigne===false){
@@ -914,11 +914,11 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 }
                 count++;
             }
-            /* bidouille performances */
-            i=tab[i][12];
+            
 
             
         }
+
     }
     
     return({"__xst" : true ,"__xva" : t , retour_ligne_parent : retourLigne});    
@@ -2321,7 +2321,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
       numérotation des enfants
       numenfant = k
-      en position 12, on met l'indice de l'enfant suivant - 1 
+      en position 12, on met l'indice de l'enfant suivant ou l01 
       =============================================================================================================
     */
     var indice_enfant_precedent=0;
@@ -2335,28 +2335,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /*
                  pour le dernier, on met -1 et on mettre l01 plus tard
                 */
-                T[j][12]=-1;
+                T[j][12]=l01;
                 if(k>1){
-                     T[indice_enfant_precedent][12]=j-1;
+                     T[indice_enfant_precedent][12]=j;
                 }
                 indice_enfant_precedent=j;
             }
         }
     }
-    /* 
-      =============================================================================================================
-      Pour ceux dont l'enfant suivant est égal à lui même,
-      on met l01 pour optimiser les boucles plus tard
-      Chercher le commentaire "bidouille performances" pour l'utilisation
-      =============================================================================================================
-    */
-    for( i=1 ; i < l01 ; i++ ){
-        if(T[i][12]===-1){
-            T[i][12]=l01;
-        }
-        
-    }
-    
     /*
       =============================================================================================================
       profondeur des fonctions

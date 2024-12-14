@@ -89,7 +89,7 @@ class traitements_sur_html{
         var dernierEstTexte=false;
         var attributs='';
         var contenu='';
-        var obj={ "dernierEstTexte" : false };
+        var obj={"dernierEstTexte" : false};
         var type='';
         var typeScriptNonTraite=false;
         if(jsonDeHtml.type || jsonDeHtml.type === '' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
@@ -117,7 +117,10 @@ class traitements_sur_html{
                             typeScriptNonTraite=true;
                             type='script';
                             t+='\n' + esp0 + 'script(';
-                            logerreur({ "__xst" : false , "__xme" : 'module_html.js traiteJsonDeHtml 0073 attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"' });
+                            logerreur({
+                                    "__xst" : false ,
+                                    "__xme" : 'module_html.js traiteJsonDeHtml 0073 attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"'
+                                });
                         }
                     }else{
                         /*
@@ -164,12 +167,12 @@ class traitements_sur_html{
                 }else{
                     var chaineJsEquivalente = 'var a=' + (jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')) + ';';
                 }
-                tableau_des_javascript_a_convertir.push({ "type" : "ldplusjsondanshtml" , "__xva" : chaineJsEquivalente , "cas" : "ldjson" });
+                tableau_des_javascript_a_convertir.push({"type" : "ldplusjsondanshtml" ,"__xva" : chaineJsEquivalente ,"cas" : "ldjson"});
                 var obj = convertit_source_javascript_en_rev(chaineJsEquivalente);
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
                 }else{
-                    return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0142 ' + jsonDeHtml.type }));
+                    return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0142 ' + jsonDeHtml.type}));
                 }
                 t+='\n' + esp0 + ')';
             }else if(type.toLowerCase() === 'javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
@@ -187,7 +190,7 @@ class traitements_sur_html{
                             }
                             if(!(source_js.trim() === '//' || source_js === '\n' || source_js === '')){
                                 var cle = this.#construit_cle(10);
-                                tableau_des_javascript_a_convertir.push({ "type" : "javascriptdanshtml" , "__xva" : source_js , "cas" : "js1" , "cle" : cle });
+                                tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js1" ,"cle" : cle});
                                 contenu+='#(cle_javascript_a_remplacer,' + cle + ')';
                             }
                             /*
@@ -211,7 +214,7 @@ class traitements_sur_html{
                               il n'y a pas la propriété type, on suppose que c'est un text/javascript
                             */
                             var source_js = jsonDeHtml.content[i].replace(/&amp;/g,'&');
-                            tableau_des_javascript_a_convertir.push({ "type" : "javascriptdanshtml" , "__xva" : source_js , "cas" : "js2" });
+                            tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js2"});
                             var obj = convertit_source_javascript_en_rev(source_js);
                             if(obj.__xst === true){
                                 if(t.indexOf('text/javascript') >= 0){
@@ -220,19 +223,19 @@ class traitements_sur_html{
                                     contenu+='(\'type\' , "text/javascript")' + obj.__xva;
                                 }
                             }else{
-                                return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type }));
+                                return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type}));
                             }
                         }else{
-                            return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0190 ' + jsonDeHtml.type }));
+                            return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0190 ' + jsonDeHtml.type}));
                         }
                     }
                 }else{
-                    tableau_des_javascript_a_convertir.push({ "type" : "javascriptdanshtml" , "__xva" : source_js , "cas" : "js3" });
+                    tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js3"});
                     var obj = convertit_source_javascript_en_rev(jsonDeHtml.content);
                     if(obj.__xst === true){
                         contenu+='<![CDATA[' + obj.__xva + ']]>';
                     }else{
-                        return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0198 ' + jsonDeHtml.type }));
+                        return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0198 ' + jsonDeHtml.type}));
                     }
                 }
                 t+='\n' + esp0 + contenu + ')';
@@ -251,7 +254,7 @@ class traitements_sur_html{
                             }
                             contenu+=obj.__xva;
                         }else{
-                            return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0.129 ' + jsonDeHtml.type }));
+                            return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0.129 ' + jsonDeHtml.type}));
                         }
                     }
                 }else{
@@ -345,7 +348,7 @@ class traitements_sur_html{
                 contenu=jsonDeHtml;
                 t+=contenu;
             }else if(typeParent === 'script'){
-                tableau_des_javascript_a_convertir.push({ "type" : "javascriptdanshtml" , "__xva" : source_js , "cas" : "js4" });
+                tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js4"});
                 var obj = convertit_source_javascript_en_rev(jsonDeHtml);
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
@@ -440,10 +443,10 @@ class traitements_sur_html{
                                         if(obj1.__xst === true){
                                             t=obj1.__xva;
                                         }else{
-                                            return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0314 ' }));
+                                            return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0314 '}));
                                         }
                                     }else{
-                                        return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0317 ' }));
+                                        return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '}));
                                     }
                                 }else{
                                     var nouveauJsonDeHtml = this.mapMatriceVersJsonDeHtml(nouveauTableau2);
@@ -452,10 +455,10 @@ class traitements_sur_html{
                                         if(obj.__xst === true){
                                             t=obj.__xva;
                                         }else{
-                                            return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0217 ' }));
+                                            return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '}));
                                         }
                                     }else{
-                                        return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0317 ' }));
+                                        return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '}));
                                     }
                                 }
                             }else{
@@ -465,10 +468,10 @@ class traitements_sur_html{
                                     if(obj1.__xst === true){
                                         t=obj1.__xva;
                                     }else{
-                                        return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0340 ' }));
+                                        return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0340 '}));
                                     }
                                 }else{
-                                    return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0343 ' }));
+                                    return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0343 '}));
                                 }
                             }
                         }else{
@@ -488,7 +491,7 @@ class traitements_sur_html{
                                             if(obj.__xst === true){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
-                                                return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0217 ' }));
+                                                return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '}));
                                             }
                                         }
                                     }
@@ -508,7 +511,7 @@ class traitements_sur_html{
                                 if(obj1.__xst === true){
                                     t=obj1.__xva;
                                 }else{
-                                    return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0217 ' }));
+                                    return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '}));
                                 }
                             }
                         }
@@ -523,14 +526,14 @@ class traitements_sur_html{
                     */
                 }
             }else{
-                return(logerreur({ "__xst" : false , "__xme" : 'erreur pour traiteJsonDeHtml 0168 ' + jsonDeHtml.type }));
+                return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0168 ' + jsonDeHtml.type}));
             }
         }
         /*
           on retourne du html "pur"
         */
         t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\n');
-        return({ "__xst" : true , "__xva" : t , "dernierEstTexte" : dernierEstTexte });
+        return({"__xst" : true ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
     }
     /*
       =============================================================================================================
@@ -601,7 +604,7 @@ class traitements_sur_html{
                     }
                 }
                 treeHTML(elementNoeud,treeObject);
-                return({ "__xst" : true , "__xva" : treeObject , "parfait" : false });
+                return({"__xst" : true ,"__xva" : treeObject ,"parfait" : false});
             }else{
                 /*
                   c'est un xml parfait, on retire la racine aaaaa et on le traite
@@ -650,7 +653,7 @@ class traitements_sur_html{
                 }else{
                     treeXML(elementNoeud,treeObject,0,false);
                 }
-                return({ "__xst" : true , "__xva" : treeObject , "parfait" : true });
+                return({"__xst" : true ,"__xva" : treeObject ,"parfait" : true});
             }
         }
     }
@@ -704,7 +707,7 @@ class traitements_sur_html{
                                     attrib[tab[i+1][1]]=tab[i+2][1];
                                     a_des_attributs=true;
                                 }else{
-                                    return({ "__xst" : false , "message" : '0547 nombre incorrect pour les attributs' });
+                                    return({"__xst" : false ,"message" : '0547 nombre incorrect pour les attributs'});
                                 }
                             }
                         }
@@ -716,7 +719,7 @@ class traitements_sur_html{
                         for( var i = indice + 1 ; i < l01 ; i++ ){
                             if(tab[i][7] === indice && tab[i][1] !== ''){
                                 if(tab[i][2] === 'c'){
-                                    le_contenu.push({ "content" : tab[i][1] });
+                                    le_contenu.push({"content" : tab[i][1]});
                                 }else{
                                     attrib={};
                                     var a_des_attributs=false;
@@ -729,7 +732,7 @@ class traitements_sur_html{
                                                 attrib[tab[j+1][1]]=tab[j+2][1];
                                                 a_des_attributs=true;
                                             }else{
-                                                return({ "__xst" : false , "message" : '0547 nombre incorrect pour les attributs' });
+                                                return({"__xst" : false ,"message" : '0547 nombre incorrect pour les attributs'});
                                             }
                                         }
                                     }
@@ -746,9 +749,9 @@ class traitements_sur_html{
                                         }
                                         var objContenuJs = parseJavascript0(tab,debut,0);
                                         if(objContenuJs.__xst === true){
-                                            le_contenu.push(JSON.parse(JSON.stringify({ "type" : 'javascriptdanshtml' , "content" : objContenuJs.__xva , "attributes" : attrib })));
+                                            le_contenu.push(JSON.parse(JSON.stringify({"type" : 'javascriptdanshtml' ,"content" : objContenuJs.__xva ,"attributes" : attrib})));
                                         }else{
-                                            return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0635 ' }));
+                                            return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0635 '}));
                                         }
                                     }else if(tab[parentId][1].toLowerCase() === 'ldplusjsondanshtml'){
                                         var debut = indice + 1;
@@ -768,21 +771,21 @@ class traitements_sur_html{
                                                 contenu=contenu.substr(0,contenu.length - 1);
                                             }
                                             content.push(contenu);
-                                            le_contenu.push(JSON.parse(JSON.stringify({ "type" : 'ldplusjsondanshtml' , "content" : contenu , "attributes" : attrib })));
+                                            le_contenu.push(JSON.parse(JSON.stringify({"type" : 'ldplusjsondanshtml' ,"content" : contenu ,"attributes" : attrib})));
                                         }else{
-                                            return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0660 ' }));
+                                            return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0660 '}));
                                         }
                                     }else{
                                         var obj = reconstruit(tab,i);
                                         if(obj.__xst === true){
                                             if(a_des_attributs === true){
-                                                le_contenu.push(JSON.parse(JSON.stringify({ "type" : tab[i][1] , "content" : obj.content , "attributes" : attrib })));
+                                                le_contenu.push(JSON.parse(JSON.stringify({"type" : tab[i][1] ,"content" : obj.content ,"attributes" : attrib})));
                                                 attrib={};
                                             }else{
-                                                le_contenu.push(JSON.parse(JSON.stringify({ "type" : tab[i][1] , "content" : obj.content })));
+                                                le_contenu.push(JSON.parse(JSON.stringify({"type" : tab[i][1] ,"content" : obj.content})));
                                             }
                                         }else{
-                                            return({ "__xst" : false , "message" : '0563 ' });
+                                            return({"__xst" : false ,"message" : '0563 '});
                                         }
                                     }
                                 }
@@ -801,9 +804,9 @@ class traitements_sur_html{
                 }
             }
             if(parentId !== 0){
-                return({ "__xst" : true , "content" : contenu });
+                return({"__xst" : true ,"content" : contenu});
             }else{
-                return({ "__xst" : true , "content" : { "type" : '' , "content" : contenu } });
+                return({"__xst" : true ,"content" : {"type" : '' ,"content" : contenu}});
             }
         }
         /*
@@ -839,7 +842,7 @@ class traitements_sur_html{
                     }
                     content.push(contenu);
                 }else{
-                    return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0477 ' }));
+                    return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0477 '}));
                 }
             }else if(tab[parentId][1].toLowerCase() === 'javascriptdanshtml'){
                 var debut = parentId + 1;
@@ -856,7 +859,7 @@ class traitements_sur_html{
                 if(objContenuJs.__xst === true){
                     content.push(objContenuJs.__xva);
                 }else{
-                    return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0503 ' }));
+                    return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0503 '}));
                 }
                 console.log('objContenuJs=',objContenuJs);
             }else if(tab[parentId][1] === '@'){
@@ -865,7 +868,7 @@ class traitements_sur_html{
                 content.push('');
             }else{
                 for( var indice = parentId + 1 ; indice < l01 ; indice++ ){
-                    var element={ "type" : '' , "attributes" : null , "content" : null };
+                    var element={"type" : '' ,"attributes" : null ,"content" : null};
                     if(tab[indice][7] === parentId){
                         /*
                         */
@@ -886,7 +889,7 @@ class traitements_sur_html{
                                     if(obj.__xst === true){
                                         content.push(obj.__xva);
                                     }else{
-                                        return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0541 ' }));
+                                        return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0541 '}));
                                     }
                                     var max = l01 - 1;
                                     for( var j = indice + 1 ; j < l01 ; j++ ){
@@ -901,7 +904,7 @@ class traitements_sur_html{
                                     if(obj.__xst === true){
                                         content.push(obj.__xva);
                                     }else{
-                                        return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0559 ' }));
+                                        return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
                                     }
                                     var max = l01 - 1;
                                     for( var j = indice + 1 ; j < l01 ; j++ ){
@@ -918,7 +921,7 @@ class traitements_sur_html{
                                     if(obj.__xst === true){
                                         content.push(obj.__xva);
                                     }else{
-                                        return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0559 ' }));
+                                        return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
                                     }
                                     var max = l01 - 1;
                                     for( var j = indice + 1 ; j < l01 ; j++ ){
@@ -934,7 +937,7 @@ class traitements_sur_html{
                                 if(obj.__xst === true){
                                     content.push(obj.__xva);
                                 }else{
-                                    return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0559 ' }));
+                                    return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
                                 }
                             }
                         }
@@ -964,7 +967,7 @@ class traitements_sur_html{
             if(aDesAttributs){
                 leJson['attributes']=attributes;
             }
-            return({ "__xst" : true , "__xva" : leJson });
+            return({"__xst" : true ,"__xva" : leJson});
         }
         /*
           =====================================================================================================
@@ -973,9 +976,9 @@ class traitements_sur_html{
         */
         var obj = reconstruit(matrice,0);
         if(obj.__xst === true){
-            return({ "__xst" : true , "__xva" : obj.content });
+            return({"__xst" : true ,"__xva" : obj.content});
         }else{
-            return(asthtml_logerreur({ "__xst" : false , "__xme" : 'module_html erreur 0606 ' }));
+            return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0606 '}));
         }
     }
     /*
@@ -986,15 +989,15 @@ class traitements_sur_html{
         var delais_admis = (donnees.call.opt && donnees.call.opt.delais_admis) ? ( donnees.call.opt.delais_admis ) : ( 6000 );
         var masquer_les_messages_du_serveur = (donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur')) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
-             "signal" : AbortSignal.timeout(delais_admis) ,
-             "method" : "POST" ,
-             "mode" : "cors" ,
-             "cache" : "no-cache" ,
-             "credentials" : "same-origin" ,
-             "headers" : { "Content-Type" : 'application/x-www-form-urlencoded' } ,
-             "redirect" : "follow" ,
-             "referrerPolicy" : "no-referrer" ,
-             "body" : 'ajax_param=' + (encodeURIComponent(JSON.stringify(donnees))) 
+            "signal" : AbortSignal.timeout(delais_admis) ,
+            "method" : "POST" ,
+            "mode" : "cors" ,
+            "cache" : "no-cache" ,
+            "credentials" : "same-origin" ,
+            "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
+            "redirect" : "follow" ,
+            "referrerPolicy" : "no-referrer" ,
+            "body" : 'ajax_param=' + (encodeURIComponent(JSON.stringify(donnees)))
         };
         try{
             var response= await fetch(url,en_entree).catch((dataerr) => {
@@ -1015,25 +1018,25 @@ class traitements_sur_html{
                 var le_json = JSON.parse(t);
                 if(le_json.hasOwnProperty('__xms')){
                     for(var i in le_json.__xms){
-                        logerreur({ "__xst" : le_json.__xst , "__xme" : le_json.__xms[i] , "masquee" : masquer_les_messages_du_serveur });
+                        logerreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur});
                     }
                 }
                 return le_json;
             }catch(e){
-                logerreur({ "__xst" : false , "__xme" : 'erreur sur convertion json, texte non json=' + t , "masquee" : masquer_les_messages_du_serveur });
-                logerreur({ "__xst" : false , "__xme" : 'url=' + url , "masquee" : masquer_les_messages_du_serveur });
-                logerreur({ "__xst" : false , "__xme" : JSON.stringify(en_entree) , "masquee" : masquer_les_messages_du_serveur });
-                logerreur({ "__xst" : false , "__xme" : JSON.stringify(donnees) , "masquee" : masquer_les_messages_du_serveur });
-                return({ "__xst" : false , "__xme" : 'le retour n\'est pas en json pour ' + (JSON.stringify(donnees)) + ' , t=' + t , "masquee" : masquer_les_messages_du_serveur });
+                logerreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur});
+                logerreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
+                logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
+                logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
+                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + (JSON.stringify(donnees)) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
             }
         }catch(e){
             console.log(e);
             if(e.message === 'signal timed out'){
-                logerreur({ "__xst" : false , "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt(delais_admis / 1000 * 10,10) / 10) + ' secondes ' });
+                logerreur({"__xst" : false ,"__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt(delais_admis / 1000 * 10,10) / 10) + ' secondes '});
             }else{
-                logerreur({ "__xst" : false , "__xme" : e.message });
+                logerreur({"__xst" : false ,"__xme" : e.message});
             }
-            return({ "__xst" : false , "__xme" : e.message });
+            return({"__xst" : false ,"__xme" : e.message});
         }
     }
     /*
@@ -1088,13 +1091,13 @@ class traitements_sur_html{
                             for( var indjs=0 ; indjs < tableau_de_javascripts_a_convertir.length ; indjs++ ){
                                 try{
                                     tabComment=[];
-                                    var obj0 = parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{ "ecmaVersion" : 'latest' , "sourceType" : 'module' , "ranges" : true , "onComment" : tabComment });
+                                    var obj0 = parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tabComment});
                                 }catch(e){
                                     console.error('erreur de conversion js e=',e);
                                     if(e.pos){
-                                        logerreur({ "__xst" : false , "__xme" : 'erreur convertit_source_javascript_en_rev 1094' + e.message , "plage" : [e.pos,e.pos] });
+                                        logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 1094' + e.message ,"plage" : [e.pos,e.pos]});
                                     }
-                                    return(logerreur({ "__xst" : false , "__xme" : '1093 il y a un problème dans un source javascript' }));
+                                    return(logerreur({"__xst" : false ,"__xme" : '1093 il y a un problème dans un source javascript'}));
                                 }
                                 var obj1 = TransformAstEnRev(obj0.body,0);
                                 if(obj1.__xst === true){
@@ -1103,7 +1106,7 @@ class traitements_sur_html{
                                     obj.__xva=obj.__xva.replace(phrase_a_remplacer,obj1.__xva);
                                 }else{
                                     console.error('erreur de conversion de ast vers js e=',e);
-                                    return({ "__xst" : false , "__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript' });
+                                    return({"__xst" : false ,"__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript'});
                                 }
                             }
                             var source_rev=obj.__xva;
@@ -1122,7 +1125,7 @@ class traitements_sur_html{
                                 options.source_php=options.source_php.replace(chaine_a_remplacer,source_rev);
                                 var nouveau_source=options.source_php;
                                 console.log('nouveau_source=',nouveau_source);
-                                var param={ "nouveau_source" : options.source_php , "fonction_a_appeler" : options.fonction_a_appeler , "cle_convertie" : options.a_convertir.cle , "convertion_php" : true };
+                                var param={"nouveau_source" : options.source_php ,"fonction_a_appeler" : options.fonction_a_appeler ,"cle_convertie" : options.a_convertir.cle ,"convertion_php" : true};
                                 document.getElementById('txtar2').value=nouveau_source;
                                 return;
                             }else{
@@ -1134,21 +1137,21 @@ class traitements_sur_html{
                                         var tableau1 = iterateCharacters2(source_rev);
                                         var matriceFonction = functionToArray2(tableau1.out,true,false,'');
                                         if(matriceFonction.__xst === false){
-                                            logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html conversion en matrice' });
-                                            return({ "__xst" : false , "__xme" : '1345 erreur module_html conversion en matrice' });
+                                            logerreur({"__xst" : false ,"__xme" : '1344 erreur module_html conversion en matrice'});
+                                            return({"__xst" : false ,"__xme" : '1345 erreur module_html conversion en matrice'});
                                         }
                                         var obj1 = a2F1(matriceFonction.__xva,0,true,1);
                                         if(obj1.__xst === true){
                                             document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                         }else{
-                                            logerreur({ "__xst" : false , "__xme" : '1344 erreur module_html nettoyage en matrice' });
-                                            return({ "__xst" : false , "__xme" : '1345 erreur module_html nettoyage en matrice' });
+                                            logerreur({"__xst" : false ,"__xme" : '1344 erreur module_html nettoyage en matrice'});
+                                            return({"__xst" : false ,"__xme" : '1345 erreur module_html nettoyage en matrice'});
                                         }
                                     }catch(e){
                                         console.error('la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document',e);
                                     }
                                 }
-                                return({ "__xst" : true , "__xva" : source_rev });
+                                return({"__xst" : true ,"__xva" : source_rev});
                             }
                         }else{
                             if(options.hasOwnProperty('html_dans_php')){
@@ -1158,37 +1161,37 @@ class traitements_sur_html{
                                         options.html_dans_php=options.html_dans_php.replace(a_remplacer,obj.__xva);
                                     }
                                 }
-                                return({ "__xst" : true , "__xva" : options.html_dans_php });
+                                return({"__xst" : true ,"__xva" : options.html_dans_php});
                             }else if(options.hasOwnProperty('zone_html_rev')){
                                 try{
                                     document.getElementById(options.zone_html_rev).value=obj.__xva.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\\\¶\\\\LF\\\\¶/g,'\n').replace(/\\\\¶\\\\CR\\\\¶/g,'\r');
                                     var tableau1 = iterateCharacters2(obj.__xva);
                                     var matriceFonction = functionToArray2(tableau1.out,true,false,'');
                                     if(matriceFonction.__xst === false){
-                                        logerreur({ "__xst" : false , "__xme" : '1412 erreur module_html conversion en matrice' });
-                                        return({ "__xst" : false , "__xme" : '1413 erreur module_html conversion en matrice' });
+                                        logerreur({"__xst" : false ,"__xme" : '1412 erreur module_html conversion en matrice'});
+                                        return({"__xst" : false ,"__xme" : '1413 erreur module_html conversion en matrice'});
                                     }
                                     var obj1 = a2F1(matriceFonction.__xva,0,true,1);
                                     if(obj1.__xst === true){
                                         document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                     }else{
-                                        logerreur({ "__xst" : false , "__xme" : '1419 erreur module_html nettoyage en matrice' });
-                                        return({ "__xst" : false , "__xme" : '1420 erreur module_html nettoyage en matrice' });
+                                        logerreur({"__xst" : false ,"__xme" : '1419 erreur module_html nettoyage en matrice'});
+                                        return({"__xst" : false ,"__xme" : '1420 erreur module_html nettoyage en matrice'});
                                     }
                                 }catch(e){
                                     console.error('e=',e);
-                                    return({ "__xst" : false , "__xme" : '1424 module_html' });
+                                    return({"__xst" : false ,"__xme" : '1424 module_html'});
                                 }
-                                return({ "__xst" : true , "__xva" : obj.__xva });
+                                return({"__xst" : true ,"__xva" : obj.__xva});
                             }else{
-                                return({ "__xst" : true , "__xva" : obj.__xva });
+                                return({"__xst" : true ,"__xva" : obj.__xva});
                             }
                         }
                     }else{
-                        return(asthtml_logerreur({ "__xst" : false , "__xme" : 'erreur module_html 0667 ' }));
+                        return(asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur module_html 0667 '}));
                     }
                 }catch(e){
-                    return(asthtml_logerreur({ "__xst" : false , "__xme" : 'erreur module_html 0667 ' }));
+                    return(asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur module_html 0667 '}));
                 }
             }else{
                 console.log('elementsJson=',elementsJson);
@@ -1197,7 +1200,7 @@ class traitements_sur_html{
             return;
         }catch(e){
             console.log('e=',e);
-            return(asthtml_logerreur({ "__xst" : false , "__xme" : 'erreur 0098 e=' + e.message + '\ne.stack=' + e.stack }));
+            return(asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur 0098 e=' + e.message + '\ne.stack=' + e.stack}));
         }
         console.log('fin');
     }
@@ -1257,10 +1260,10 @@ class traitements_sur_html{
                 t+='//]]>' + CRLF;
                 t+='</script>' + CRLF;
             }else{
-                return(logerreur({ "__xst" : false , "__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0700' }));
+                return(logerreur({"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0700'}));
             }
         }
-        return({ "__xst" : true , "__xva" : t });
+        return({"__xst" : true ,"__xva" : t});
     }
     /* function tabToHtml0 */
     tabToHtml0(tab,id,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau){
@@ -1296,17 +1299,17 @@ class traitements_sur_html{
             if(ob.__xst === true){
                 t+=ob.__xva;
             }else{
-                return(logerreur({ "__xst" : false , "__xva" : t , "__xme" : 'erreur de script dans un html' }));
+                return(logerreur({"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'}));
             }
             t+=' ?>';
             return({
-                     "__xst" : true ,
-                     "__xva" : t ,
-                     "dansHead" : dansHead ,
-                     "dansBody" : dansBody ,
-                     "dansJs" : dansJs ,
-                     "dansPhp" : dansPhp ,
-                     "dansCss" : dansCss 
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "dansHead" : dansHead ,
+                    "dansBody" : dansBody ,
+                    "dansJs" : dansJs ,
+                    "dansPhp" : dansPhp ,
+                    "dansCss" : dansCss
                 });
         }else if(dansJs && tab[id][1] === 'source'){
             php_contexte_commentaire_html=false;
@@ -1324,16 +1327,16 @@ class traitements_sur_html{
                 t+=CRLF + '// = = = = source javascript> = = = =' + CRLF;
                 t+='//]]>' + CRLF;
             }else{
-                return(logerreur({ "__xst" : false , "__xva" : t , "__xme" : 'erreur de script dans un html' }));
+                return(logerreur({"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'}));
             }
             return({
-                     "__xst" : true ,
-                     "__xva" : t ,
-                     "dansHead" : dansHead ,
-                     "dansBody" : dansBody ,
-                     "dansJs" : dansJs ,
-                     "dansPhp" : dansPhp ,
-                     "dansCss" : dansCss 
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "dansHead" : dansHead ,
+                    "dansBody" : dansBody ,
+                    "dansJs" : dansJs ,
+                    "dansPhp" : dansPhp ,
+                    "dansCss" : dansCss
                 });
         }else{
             temp='';
@@ -1387,10 +1390,10 @@ class traitements_sur_html{
                                     temp+=' ' + tab[i+1][1] + '';
                                 }
                             }else{
-                                return(logerreur({ "__xst" : false , "id" : i , "__xva" : t , "__xme" : '1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596' }));
+                                return(logerreur({"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'}));
                             }
                         }else{
-                            return(logerreur({ "__xst" : false , "id" : i , "__xva" : t , "__xme" : '2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599' }));
+                            return(logerreur({"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599'}));
                         }
                     }
                     if(tab[i][2] == 'f' && tab[i][1] != ''){
@@ -1475,7 +1478,7 @@ class traitements_sur_html{
                                         }
                                         t+=contenu + '</script>' + CRLF;
                                     }else{
-                                        return(logerreur({ "__xst" : false , "__xme" : 'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783' }));
+                                        return(logerreur({"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'}));
                                     }
                                 }
                             }else if(tab[i][1].toLowerCase() === 'javascriptdanshtml'){
@@ -1483,7 +1486,7 @@ class traitements_sur_html{
                                 if(obj.__xst === true){
                                     t+=obj.__xva;
                                 }else{
-                                    return(logerreur({ "__xst" : false , "__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943' }));
+                                    return(logerreur({"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'}));
                                 }
                             }else{
                                 /*
@@ -1510,7 +1513,7 @@ class traitements_sur_html{
                                     dansHead=ob.dansHead;
                                     dansJs=ob.dansJs;
                                 }else{
-                                    return(logerreur({ "__xst" : false , "__xme" : 'erreur dans un html 0659' }));
+                                    return(logerreur({"__xst" : false ,"__xme" : 'erreur dans un html 0659'}));
                                 }
                             }
                         }else{
@@ -1630,11 +1633,7 @@ class traitements_sur_html{
                             }else{
                                 t+='-->';
                             }
-                        }else if(tab[id][1] == 'br'
-                         || tab[id][1] == 'hr'
-                         || tab[id][1] == 'meta'
-                         || tab[id][1] == 'link'
-                         || tab[id][1] == 'input'){
+                        }else if(tab[id][1] == 'br' || tab[id][1] == 'hr' || tab[id][1] == 'meta' || tab[id][1] == 'link' || tab[id][1] == 'input'){
                             t+=' />';
                         }else{
                             t+='></' + tab[id][1] + '>';
@@ -1642,7 +1641,7 @@ class traitements_sur_html{
                     }
                 }
             }
-            return({ "__xst" : true , "__xva" : t , "dansHead" : dansHead , "dansBody" : dansBody , "dansJs" : dansJs });
+            return({"__xst" : true ,"__xva" : t ,"dansHead" : dansHead ,"dansBody" : dansBody ,"dansJs" : dansJs});
         }
     }
 }

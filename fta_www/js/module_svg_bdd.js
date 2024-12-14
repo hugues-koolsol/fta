@@ -2821,7 +2821,6 @@ class module_svg_bdd{
                          && elem.id_svg_parent_table === this.#souris_init_objet.id_svg_conteneur_table
                         ){
                             /*
-                              
                               lien sur moi même
                             */
                             var ref_elem = document.getElementById(elem.id_du_path);
