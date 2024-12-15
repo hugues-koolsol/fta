@@ -1188,10 +1188,11 @@ class traitements_sur_html{
                             }
                         }
                     }else{
-                        return(asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur module_html 0667 '}));
+                        return(asthtml_logerreur({"__xst" : false ,"__xme" : '1191 erreur module_html'}));
                     }
                 }catch(e){
-                    return(asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur module_html 0667 '}));
+                    console.error('e=',e);
+                    return(asthtml_logerreur({"__xst" : false ,"__xme" : '1194 erreur module_html'}));
                 }
             }else{
                 console.log('elementsJson=',elementsJson);

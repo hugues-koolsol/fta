@@ -1449,8 +1449,17 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if(i + 1 < l01){
-                    drapeauRegex='';
                     c1=tableauEntree[i+1][0];
+                    if(c1==='+' || c1==='*'){
+                     /* 
+                       cas des caractères gloutons , ça ne correspond pas à un drapeau de regex
+                       voir https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Regular_expressions/Cheatsheet
+                     */
+                     texte+='/'+c1;
+                     i++;
+                     continue
+                    }
+                    drapeauRegex='';
                     if(c1 === ','
                      || c1 === '\t'
                      || c1 === '\n'

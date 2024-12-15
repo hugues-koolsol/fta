@@ -60,7 +60,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
                 }else{
                     valeur=element.raw;
                 }
-                if(niveau <= 1){
+                if(niveau < 1){
                     debugger;
                     t+='directive(' + valeur + ')';
                 }else{
@@ -132,33 +132,18 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
                     var obj = ast_de_js_vers_rev1(element.body.body,niveau + 2);
                     if(obj.__xst === true){
                         contenu+=obj.__xva;
-                        if(element.body.hasOwnProperty('end')){
-                            positionDebutBloc=element.body.end;
-                        }else{
-                            debugger;
-                        }
-                        contenu+=ajouteCommentaireAvant(element.body,niveau + 2);
+                        contenu+=comm_avant_fin(element.body,niveau + 2);
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0116 pour ' + element.type ,"element" : element}));
                     }
                 }else{
-                    if(element.body.hasOwnProperty('end')){
-                        positionDebutBloc=element.body.end;
-                    }else{
-                        debugger;
-                    }
-                    contenu+=ajouteCommentaireAvant(element.body,niveau + 2);
+                    contenu+=comm_avant_fin(element.body,niveau + 2);
                 }
             }else if(element.body && (element.body.type === 'CallExpression' || element.body.type === 'BinaryExpression')){
                 var objass = traiteUneComposante(element.body,niveau + 1,false,false,element);
                 if(objass.__xst === true){
                     contenu+=objass.__xva;
-                    if(element.body.hasOwnProperty('end')){
-                        positionDebutBloc=element.body.end;
-                    }else{
-                        debugger;
-                    }
-                    contenu+=ajouteCommentaireAvant(element.body,niveau + 2);
+                    contenu+=comm_avant_fin(element.body,niveau + 2);
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteUneComposante 0137 pour ' + element.argument.type ,"element" : element}));
                 }
@@ -341,8 +326,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
                 astjs_logerreur({"__xst" : true ,"__xav" : '0326 l\'opérateur virgule est dangereux dans un tableau !'});
             }
             for( i=0 ; i < element.expressions.length ; i++ ){
-                positionDebutBloc=element.expressions[i].start;
-                t+=ajouteCommentaireAvant(element.expressions[i],niveau);
+                t+=comm_avant_debut(element.expressions[i],niveau);
                 var obj1 = traiteUneComposante(element.expressions[i],niveau + 2,parentEstCrochet,dansSiOuBoucle,element);
                 if(obj1.__xst === true){
                     if(t !== ''){
@@ -412,12 +396,7 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
                         var obj = ast_de_js_vers_rev1(element.value[prop],niveau + 2);
                         if(obj.__xst === true){
                             t+=obj.__xva;
-                            if(element.value[prop].hasOwnProperty('end')){
-                                positionDebutBloc=element.value[prop].end;
-                            }else{
-                                debugger;
-                            }
-                            t+=ajouteCommentaireAvant(element.value[prop],niveau + 2);
+                            t+=comm_avant_fin(element.value[prop],niveau + 2);
                         }else{
                             return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pour TransformAstEnRev 2400 ' + element.type ,"element" : element}));
                         }
@@ -745,7 +724,7 @@ function js_traiteCondition1(element,niveau,dansSiOuBoucle){
   =====================================================================================================================
 */
 function traiteForOf1(element,niveau){
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -808,8 +787,7 @@ function traiteForOf1(element,niveau){
             /*
               contenu vide, mais il y a peut être un commentaire
             */
-            positionDebutBloc=element.body.start;
-            t+=ajouteCommentaireAvant(element.body,niveau + 3);
+            t+=comm_avant_debut(element.body,niveau + 3);
         }else{
             var obj3 = ast_de_js_vers_rev1(element.body,niveau);
             if(obj3.__xst === true){
@@ -817,8 +795,7 @@ function traiteForOf1(element,niveau){
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteForIn1 152 pour ' + element.type ,"element" : element}));
             }
-            positionDebutBloc=element.body.start;
-            t+=ajouteCommentaireAvant(element.body,niveau + 3);
+            t+=comm_avant_debut(element.body,niveau + 3);
         }
     }else{
         if(element.expression){
@@ -841,7 +818,7 @@ function traiteForOf1(element,niveau){
   =====================================================================================================================
 */
 function traiteForIn1(element,niveau){
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
@@ -897,8 +874,7 @@ function traiteForIn1(element,niveau){
             /*
               contenu vide, mais il y a peut être un commentaire
             */
-            positionDebutBloc=element.body.start;
-            t+=ajouteCommentaireAvant(element.body,niveau + 3);
+            t+=comm_avant_debut(element.body,niveau + 3);
         }else{
             var obj3 = ast_de_js_vers_rev1(element.body,niveau);
             if(obj3.__xst === true){
@@ -906,8 +882,7 @@ function traiteForIn1(element,niveau){
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteForIn1 152 pour ' + element.type ,"element" : element}));
             }
-            positionDebutBloc=element.body.start;
-            t+=ajouteCommentaireAvant(element.body,niveau + 3);
+            t+=comm_avant_debut(element.body,niveau + 3);
         }
     }else{
         if(element.expression){
@@ -975,7 +950,7 @@ function traiteWhile1(element,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     t+='\n' + esp0 + 'tantQue(';
     t+='\n' + esp0 + esp1 + '';
     var obj2 = js_traiteCondition1(element.test,niveau + 1,true);
@@ -1011,7 +986,7 @@ function traiteDo1(element,niveau){
     var i=0;
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     var body='';
     var test='';
     var bloc_traitement_dans=null;
@@ -1052,7 +1027,7 @@ function traiteFor1(element,niveau){
     var i=0;
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     var pourInit='';
     if(element.init === null){
         pourInit='';
@@ -1226,18 +1201,15 @@ function traiteIf1(element,niveau,type){
         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteIf1 0826 pour ' + element.type ,"element" : element}));
     }
     if(element.alternate){
-        positionDebutBloc=element.alternate.start;
-        t+=ajouteCommentaireAvant(element.alternate,niveau + 3);
+        t+=comm_avant_debut(element.alternate,niveau + 3);
     }else{
         if(type === 'else'){
             /* il n'y a pas d'alternate mais il y a peut être des commentaires à la fin */
-            positionDebutBloc=element.start;
-            t+=ajouteCommentaireAvant(element,niveau + 3);
+            t+=comm_avant_debut(element,niveau + 3);
         }
     }
     if(element.alternate === null){
-        positionDebutBloc=element.start;
-        t+=ajouteCommentaireAvant(element,niveau + 3);
+        t+=comm_avant_debut(element,niveau + 3);
     }
     t+='\n' + esp0 + esp1 + esp1 + ')';
     t+='\n' + esp0 + esp1 + ')';
@@ -1262,6 +1234,9 @@ function traiteCallExpression1(element,niveau,parent,opt){
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var LF='\n';
+    var i=0;
+    var j=0;
+    var k=0;
     var parentProperty='';
     if(parent.property){
         if(parent.computed && parent.computed === true){
@@ -1296,24 +1271,24 @@ function traiteCallExpression1(element,niveau,parent,opt){
     }
     var lesArguments='';
     if(element.arguments && element.arguments.length > 0){
-        var i=0;
         for( i=0 ; i < element.arguments.length ; i++ ){
             lesArguments+=',';
+            var le_commentaire = comm_avant_debut(element.arguments[i],niveau);
             if('CallExpression' === element.arguments[i].type){
                 var obj1 = traiteCallExpression1(element.arguments[i],niveau + 1,element,{"sansLF" : true});
                 if(obj1.__xst === true){
                     if(obj1.__xva.substr(0,6) === 'defTab'){
-                        lesArguments+='p(' + obj1.__xva + ')';
+                        lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
                     }else if(obj1.__xva.substr(0,6) === 'appelf'){
-                        lesArguments+='p(' + obj1.__xva + ')';
+                        lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
                     }else if(false && obj1.__xva.substr(0,7) === '(appelf'){
                         if(obj1.__xva.indexOf('auto_appelee(1)') >= 0){
                             debugger;
                             obj1.__xva=obj1.__xva.replace(/auto_appelee\(1\),/g,'');
                         }
-                        lesArguments+='p(' + obj1.__xva + ')';
+                        lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
                     }else{
-                        lesArguments+='p(' + 'appelf(' + obj1.__xva + '))';
+                        lesArguments+='p(' + le_commentaire + 'appelf(' + obj1.__xva + '))';
                     }
                 }else{
                     console.error('Dans traiteCallExpression1 element=',element);
@@ -1322,8 +1297,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
             }else{
                 var obj1 = traiteUneComposante(element.arguments[i],niveau + 1,false,false,element);
                 if(obj1.__xst === true){
-                    positionDebutBloc=element.start;
-                    var le_commentaire = ajouteCommentaireAvant(element.arguments[i],niveau);
+
                     if('FunctionExpression' === element.arguments[i].type
                      && parent
                      && parent.callee
@@ -1331,9 +1305,9 @@ function traiteCallExpression1(element,niveau,parent,opt){
                      && parent.callee.type === 'FunctionExpression'
                     ){
                         console.log('%c ajouter des parenthèses pour les arguments ','color:red;background:pink;');
-                        lesArguments+='p(' + le_commentaire + '' + obj1.__xva + '),#(auto_appelee(2))';
+                        lesArguments+='p(' + le_commentaire + obj1.__xva + '),#(auto_appelee(2))';
                     }else{
-                        lesArguments+='p(' + le_commentaire + '' + obj1.__xva + ')';
+                        lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
                     }
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0722' ,"element" : element}));
@@ -1645,6 +1619,27 @@ function traiteCallExpression1(element,niveau,parent,opt){
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
             }
+        }else if(element.callee.type === 'ThisExpression'){
+         
+            var obj1 = traiteUneComposante(element.callee,niveau,niveau,false,false,element);
+            if(obj1.__xst === true){
+                if(contenu === ''){
+                    if(obj1.__xva.substr(0,6) === 'appelf'){
+                        console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
+                        /* cas (()=>{var g=1;})(); */
+                        t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
+                    }else{
+                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                    }
+                }else{
+                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
+                }
+
+            }else{
+                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0000 [ todo ajuster ] '}));
+            }
+         
+         
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type + '"' ,"element" : element}));
         }
@@ -1673,14 +1668,13 @@ function traiteFunctionExpression1(element,niveau){
         }
     }
     if(element.body){
-        niveau+=2;
-        var obj = ast_de_js_vers_rev1(element.body,niveau);
+        var obj = ast_de_js_vers_rev1(element.body,niveau+2);
         if(obj.__xst === true){
             contenu=obj.__xva;
+            contenu+=comm_avant_fin(element.body,niveau+2);
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteFunctionExpression1 pour body' ,"element" : element}));
         }
-        niveau-=2;
     }
     if(element.id){
         if(element.id.type === "Identifier"){
@@ -1707,8 +1701,7 @@ function traiteArrayExpression1(element,niveau){
     var lesPar='';
     var i={};
     for(i in element.elements){
-        positionDebutBloc=element.elements[i].start;
-        lesPar+=ajouteCommentaireAvant(element.elements[i],niveau);
+        lesPar+=comm_avant_debut(element.elements[i],niveau);
         if(element.elements[i].type === 'Literal'){
             lesPar+=',p(' + element.elements[i].raw + ')';
             if(element.elements[i].raw.substr(0,1) === '\''
@@ -1803,13 +1796,12 @@ function traiteArrayExpression1(element,niveau){
 function traiteObjectExpression1(element,niveau){
     var t='';
     var i={};
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     for(i in element.properties){
         if(t !== ''){
             t+=',';
         }
-        positionDebutBloc=element.properties[i].start;
-        t+=ajouteCommentaireAvant(element,niveau);
+        t+=comm_avant_debut(element.properties[i],niveau);
         var val=element.properties[i];
         if(val.key.type === 'Identifier'){
             t+='(' + val.key.name + ',';
@@ -1818,16 +1810,6 @@ function traiteObjectExpression1(element,niveau){
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteObjectExpression1 609 ' + val.key.type ,"element" : element}));
         }
-        /*
-          //     || 'AssignmentExpression'  === val.value.type
-          //     || 'NewExpression'         === val.value.type
-          //     || 'SequenceExpression'    === val.value.type
-          //     || 'TemplateLiteral'       === val.value.type
-          //     || 'ThisExpression'        === val.value.type     
-          //     || 'UpdateExpression'      === val.value.type
-          //     || 'UnaryExpression'       === val.value.type
-          //     || 'VariableDeclarator'    === val.value.type
-        */
         if('ArrayExpression' === val.value.type
          || 'BinaryExpression' === val.value.type
          || 'CallExpression' === val.value.type
@@ -2266,7 +2248,7 @@ function traiteAssignmentPattern(element,niveau,opt){
         esp0='';
         esp1='';
     }else{
-        t+=ajouteCommentaireAvant(element,niveau);
+        t+=comm_avant_debut(element,niveau);
     }
     if(element.left && element.right){
         var objgauche = traiteUneComposante(element.left,niveau + 1,false,false,element);
@@ -2294,7 +2276,7 @@ function traiteAssignmentExpress1(element,niveau,opt,parent){
         esp0='';
         esp1='';
     }else{
-        t+=ajouteCommentaireAvant(element,niveau);
+        t+=comm_avant_debut(element,niveau);
     }
     var valeurLeft='';
     if(element.left && element.left.type === 'Identifier'){
@@ -2580,15 +2562,14 @@ function traiteDeclaration1(element,niveau){
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var nomVariable='';
-    positionDebutBloc=element.start;
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     var decl={};
     for(decl in element.declarations){
         if(t !== ''){
             t+=',';
         }
-        positionDebutBloc=element.declarations[decl].start;
-        t+=ajouteCommentaireAvant(element.declarations[decl],niveau);
+        t+=comm_avant_debut(element.declarations[decl],niveau);
+        
         var debutDeclaration='';
         if(element.kind && element.kind === 'var'){
             debutDeclaration='\n' + esp0 + 'declare(' + element.declarations[decl].id.name + ' , ';
@@ -2782,7 +2763,7 @@ function traiteTry1(element,niveau){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
-    t+=ajouteCommentaireAvant(element,niveau);
+    t+=comm_avant_debut(element,niveau);
     t+='\n' + esp0 + 'essayer(';
     t+='\n' + esp0 + esp1 + 'faire(';
     var obj = ast_de_js_vers_rev1(element.block.body,niveau + 2);
@@ -2823,8 +2804,8 @@ function traiteTry1(element,niveau){
 */
 function comm_avant_fin(elem,niveau){
     var t='';
-    positionDebutBloc=elem.end;
-    var commentaire = ajouteCommentaireAvant(elem,niveau + 1);
+    var positionDebutBloc=elem.end;
+    var commentaire = ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc);
     t=commentaire;
     return t;
 }
@@ -2833,23 +2814,25 @@ function comm_avant_fin(elem,niveau){
 */
 function comm_avant_debut(elem,niveau){
     var t='';
-    positionDebutBloc=elem.start;
-    var commentaire = ajouteCommentaireAvant(elem,niveau + 1);
+    var positionDebutBloc=elem.start;
+    var commentaire = ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc);
     t+=commentaire;
     return t;
 }
 /*
   =====================================================================================================================
 */
-function ajouteCommentaireAvant(element,niveau){
+function ajouteCommentaireAvant(element,niveau,positionDebutBloc){
     var t='';
     var esp0 = ' '.repeat(NBESPACESREV * niveau);
     var esp1 = ' '.repeat(NBESPACESREV);
     var i = tabComment.length - 1;
-    for( i=tabComment.length - 1 ; i >= 0 ; i=i - 1 ){
+    var nombre_de_ligne_trouvees=0;
+    for( i=tabComment.length - 1 ; i >= 0 ; i-- ){
         if(tabComment[i].type === 'Block'){
             if(tabComment[i].hasOwnProperty('end')){
                 if(tabComment[i].end <= positionDebutBloc){
+                    nombre_de_ligne_trouvees++;
                     /*
                       Attention, ici on remonte le tableau de caractères
                       donc on ajoute le précédent après en changeant les parenthèses en []
@@ -2877,9 +2860,40 @@ function ajouteCommentaireAvant(element,niveau){
             }
         }
     }
+     /* on ajoute les commentaires de ligne qui n'ont pas été intégrés précédemment */
+    for( i=tabComment.length - 1 ; i >= 0 ; i-- ){
+        if(tabComment[i].type === 'Line' && tabComment[i].end < positionDebutBloc){
+              var txtComment=tabComment[i].value;
+              /* on ne traite pas les commentaires insérés automatiquement dans les js valides */
+              if(!(txtComment==='' || '<![CDATA['===txtComment || '<source_javascript_rev>' === txtComment || '</source_javascript_rev>' === txtComment || ']]>'=== txtComment )){
+                  nombre_de_ligne_trouvees++;
+                  var c1 = nbre_caracteres2('(',txtComment);
+                  var c2 = nbre_caracteres2(')',txtComment);
+                  if(c1 === c2){
+                      t='\n' + esp0 + '#(✍' + txtComment.replace(/\*\//g,'* /') + ')' + t;
+                  }else{
+                      t='\n' + esp0 + '#(✍' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')).replace(/\*\//g,'* /') + ')' + t;
+                  }
+              }
+              tabComment.splice(i,1);
+        }
+    }
+    if(nombre_de_ligne_trouvees>1){
+       /* si on a trouvé plusieurs ligne de commentaires, on les rassemble*/
+       var obj=rev_texte_vers_matrice(t);
+       if(obj.__xst===true){
+        var nouveauCommentaire=obj.__xva[1][13];
+        for(var i=2;i<obj.__xva.length;i++){
+         nouveauCommentaire+=CRLF+obj.__xva[i][13];
+        }
+        t='#(' + nouveauCommentaire + ')';
+
+       }
+    }
+    
     return t;
 }
-var positionDebutBloc=0;
+
 /*
   =====================================================================================================================
 */
@@ -2889,8 +2903,8 @@ function TransformAstEnRev(les_elements,niveau){
         /*
           on va chercher les commentaires en fin de fichier
         */
-        positionDebutBloc=99999999;
-        obj.__xva+=ajouteCommentaireAvant(les_elements,niveau);
+        
+        obj.__xva+=ajouteCommentaireAvant(les_elements,niveau,99999999);
         return({"__xst" : true ,"__xva" : obj.__xva});
     }else{
         return(astjs_logerreur({"__xst" : false ,"__xme" : '2925 conversion ast vers rev'}));
@@ -2910,8 +2924,7 @@ function ast_de_js_vers_rev1(les_elements,niveau){
         var i=0;
         for( i=0 ; i < les_elements.length ; i++ ){
             var element=les_elements[i];
-            positionDebutBloc=element.start;
-            t+=ajouteCommentaireAvant(element,niveau);
+            t+=comm_avant_debut(element,niveau);
             var bodyTrouve=false;
             if(t !== ''){
                 t+=',';
@@ -3391,7 +3404,7 @@ function chargerSourceDeTestJs(){
     var t=`
 var test=a===2;
 var test=a==2;
-test=a===2;test=a==2;/*
+test=a===2;test=a==2;
 
 a.b("c").d += '<e f="g">' + h.i[i] + "</e>";
 
@@ -3400,18 +3413,20 @@ for (var i = 0; i < b; i++) {
 }
 t = " ".repeat(NBESPACESSOURCEPRODUIT * i);
 t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
-
 /*
   =====================================================================================================================
 */
+
 function traiteCommentaire2(texte, niveau, ind) {
   var s = "";
   s = traiteCommentaireSourceEtGenere1(texte, niveau, ind, NBESPACESSOURCEPRODUIT, false);
   return s;
 }
+
 /*
   =====================================================================================================================
 */
+
 function tagada() {
   for (var i = 0; i < global_messages.errors.length; i++) {
     document.getElementById("global_messages").innerHTML += '<div class="yyerreur">' + global_messages.errors[i] + "</div>";
@@ -3441,6 +3456,7 @@ function tagada() {
 /*
   =====================================================================================================================
 */
+
 function espacesn(optionCRLF, i) {
   var t = "";
   if (optionCRLF) {
@@ -3454,7 +3470,7 @@ function espacesn(optionCRLF, i) {
   return t;
 }
 
-*/`;
+`;
     document.getElementById('txtar1').value=t;
 }
 /*

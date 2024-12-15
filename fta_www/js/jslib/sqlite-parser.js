@@ -70,7 +70,8 @@
                             
                                 _classCallCheck(this,SingleNodeTransform);
                                 throw new Error("SingleNodeTransform is not available in this environment");
-                            };},{}] ,
+                            };
+                        },{}] ,
                 "1" : [function(require,module,exports){
                         
                             Object.defineProperty(exports,"__esModule",{"value" : true});
@@ -121,7 +122,8 @@
                             };
                             sqliteParser["NAME"]="sqlite-parser";
                             sqliteParser["VERSION"]="1.0.1";
-                            module.exports=exports["default"];},{"./parser" : 2 ,"./streaming" : "./streaming" ,"./tracer" : 3}] ,
+                            module.exports=exports["default"];
+                        },{"./parser" : 2 ,"./streaming" : "./streaming" ,"./tracer" : 3}] ,
                 "2" : [function(require,module,exports){
                         
                             var _slicedToArray = function(){
@@ -152,19 +154,22 @@
                                             return(sliceIterator(arr,i));
                                         }else{
                                             throw new TypeError("Invalid attempt to destructure non-iterable instance");
-                                        }});
+                                        }
+                                    });
                             }();
                             var _typeof = (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") ? ( function(obj){
                                 
-                                    return(typeof obj);} ) : ( function(obj){
+                                    return(typeof obj);
+                                } ) : ( function(obj){
                                 
-                                    return((obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype) ? ( "symbol" ) : ( typeof obj ));} );
+                                    return((obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype) ? ( "symbol" ) : ( typeof obj ));
+                                } );
                             function peg$subclass(child,parent){
                                 function ctor(){
                                     this.constructor=child;
                                 }
                                 ctor.prototype=parent.prototype;
-                                child.prototype=new ctor();
+                                child.prototype= new ctor();
                             }
                             function peg$SyntaxError(message,expected,found,location){
                                 this.message=message;
@@ -183,6 +188,7 @@
                                     "literal" : function literal(expectation){
                                     
                                         return('"' + (literalEscape(expectation.text)) + '"');
+                                    
                                     } ,
                                     "class" : function _class(expectation){
                                     
@@ -191,18 +197,22 @@
                                             return(Array.isArray(part) ? ( (classEscape(part[0])) + "-" + (classEscape(part[1])) ) : ( classEscape(part) ));
                                         });
                                         return("[" + (expectation.inverted ? ( "^" ) : ( "" )) + escapedParts + "]");
+                                    
                                     } ,
                                     "any" : function any(expectation){
                                     
                                         return "any character";
+                                    
                                     } ,
                                     "end" : function end(expectation){
                                     
                                         return "end of input";
+                                    
                                     } ,
                                     "other" : function other(expectation){
                                     
                                         return expectation.description;
+                                    
                                     }
                                 };
                                 function hex(ch){
@@ -305,20 +315,25 @@
                                 var peg$consts = [
                                     function(s){
                                         
-                                            return s;},
+                                            return s;
+                                        },
                                     function(f,b){
                                         
-                                            return({"type" : "statement" ,"variant" : "list" ,"statement" : flattenAll([f,b])});},
+                                            return({"type" : "statement" ,"variant" : "list" ,"statement" : flattenAll([f,b])});
+                                        },
                                     function(s){
                                         
-                                            return s;},
+                                            return s;
+                                        },
                                     peg$otherExpectation("Type Definition"),
                                     function(t,a){
                                         
-                                            return(Object.assign(t,a));},
+                                            return(Object.assign(t,a));
+                                        },
                                     function(n){
                                         
-                                            return({"type" : "datatype" ,"variant" : n[0] ,"affinity" : n[1]});},
+                                            return({"type" : "datatype" ,"variant" : n[0] ,"affinity" : n[1]});
+                                        },
                                     peg$otherExpectation("Custom Datatype Name"),
                                     function(t,r){
                                         
@@ -333,35 +348,43 @@
                                             }else if(/real|floa|doub/i.test(variant)){
                                                 affinity="real";
                                             }
-                                            return({"type" : "datatype" ,"variant" : variant ,"affinity" : affinity});},
+                                            return({"type" : "datatype" ,"variant" : variant ,"affinity" : affinity});
+                                        },
                                     /^[\t ]/,
                                     peg$classExpectation(["\t"," "],false,false),
                                     function(w){
                                         
-                                            return w;},
+                                            return w;
+                                        },
                                     peg$otherExpectation("Type Definition Arguments"),
                                     function(a1,a2){
                                         
-                                            return({"args" : {"type" : "expression" ,"variant" : "list" ,"expression" : flattenAll([a1,a2])}});},
+                                            return({"args" : {"type" : "expression" ,"variant" : "list" ,"expression" : flattenAll([a1,a2])}});
+                                        },
                                     function(n){
                                         
-                                            return n;},
+                                            return n;
+                                        },
                                     peg$otherExpectation("Null Literal"),
                                     function(n){
                                         
-                                            return({"type" : "literal" ,"variant" : "null" ,"value" : keyNode(n)});},
+                                            return({"type" : "literal" ,"variant" : "null" ,"value" : keyNode(n)});
+                                        },
                                     peg$otherExpectation("Date Literal"),
                                     function(d){
                                         
-                                            return({"type" : "literal" ,"variant" : "date" ,"value" : keyNode(d)});},
+                                            return({"type" : "literal" ,"variant" : "date" ,"value" : keyNode(d)});
+                                        },
                                     peg$otherExpectation("String Literal"),
                                     function(n,s){
                                         
-                                            return({"type" : "literal" ,"variant" : "text" ,"value" : s});},
+                                            return({"type" : "literal" ,"variant" : "text" ,"value" : s});
+                                        },
                                     peg$otherExpectation("Single-quoted String Literal"),
                                     function(s){
                                         
-                                            return(unescape(s,"'"));},
+                                            return(unescape(s,"'"));
+                                        },
                                     "''",
                                     peg$literalExpectation("''",false),
                                     /^[^']/,
@@ -371,27 +394,33 @@
                                     peg$classExpectation(["x"],false,true),
                                     function(b){
                                         
-                                            return({"type" : "literal" ,"variant" : "blob" ,"value" : b});},
+                                            return({"type" : "literal" ,"variant" : "blob" ,"value" : b});
+                                        },
                                     function(n){
                                         
-                                            return({"type" : "literal" ,"variant" : "text" ,"value" : n});},
+                                            return({"type" : "literal" ,"variant" : "text" ,"value" : n});
+                                        },
                                     peg$otherExpectation("Number Sign"),
                                     function(s,n){
                                         
                                             if(isOkay(s)){
                                                 n["value"]=foldStringWord([s,n["value"]]);
                                             }
-                                            return n;},
+                                            return n;
+                                        },
                                     function(d,e){
                                         
-                                            return({"type" : "literal" ,"variant" : "decimal" ,"value" : foldStringWord([d,e])});},
+                                            return({"type" : "literal" ,"variant" : "decimal" ,"value" : foldStringWord([d,e])});
+                                        },
                                     peg$otherExpectation("Decimal Literal"),
                                     function(f,b){
                                         
-                                            return(foldStringWord([f,b]));},
+                                            return(foldStringWord([f,b]));
+                                        },
                                     function(t,d){
                                         
-                                            return(foldStringWord([t,d]));},
+                                            return(foldStringWord([t,d]));
+                                        },
                                     peg$otherExpectation("Decimal Literal Exponent"),
                                     "e",
                                     peg$literalExpectation("E",true),
@@ -399,13 +428,15 @@
                                     peg$classExpectation(["+","-"],false,false),
                                     function(e,s,d){
                                         
-                                            return(foldStringWord([e,s,d]));},
+                                            return(foldStringWord([e,s,d]));
+                                        },
                                     peg$otherExpectation("Hexidecimal Literal"),
                                     "0x",
                                     peg$literalExpectation("0x",true),
                                     function(f,b){
                                         
-                                            return({"type" : "literal" ,"variant" : "hexidecimal" ,"value" : foldStringWord([f,b])});},
+                                            return({"type" : "literal" ,"variant" : "hexidecimal" ,"value" : foldStringWord([f,b])});
+                                        },
                                     /^[0-9a-f]/i,
                                     peg$classExpectation([["0","9"],["a","f"]],false,true),
                                     /^[0-9]/,
@@ -413,22 +444,26 @@
                                     peg$otherExpectation("Bind Parameter"),
                                     function(b){
                                         
-                                            return(Object.assign({"type" : "variable"},b));},
+                                            return(Object.assign({"type" : "variable"},b));
+                                        },
                                     peg$otherExpectation("Numbered Bind Parameter"),
                                     function(q,id){
                                         
-                                            return({"format" : "numbered" ,"name" : foldStringWord([q,id])});},
+                                            return({"format" : "numbered" ,"name" : foldStringWord([q,id])});
+                                        },
                                     /^[1-9]/,
                                     peg$classExpectation([["1","9"]],false,false),
                                     function(f,r){
                                         
-                                            return(foldStringWord([f,r]));},
+                                            return(foldStringWord([f,r]));
+                                        },
                                     peg$otherExpectation("Named Bind Parameter"),
                                     /^[:@]/,
                                     peg$classExpectation([":","@"],false,false),
                                     function(s,name){
                                         
-                                            return({"format" : "named" ,"name" : foldStringWord([s,name])});},
+                                            return({"format" : "named" ,"name" : foldStringWord([s,name])});
+                                        },
                                     peg$otherExpectation("TCL Bind Parameter"),
                                     "$",
                                     peg$literalExpectation("$",false),
@@ -436,208 +471,263 @@
                                     peg$literalExpectation(":",false),
                                     function(d,name,s){
                                         
-                                            return(Object.assign({"format" : "tcl" ,"name" : foldStringWord([d,name])},s));},
+                                            return(Object.assign({"format" : "tcl" ,"name" : foldStringWord([d,name])},s));
+                                        },
                                     function(sfx){
                                         
-                                            return({"suffix" : sfx});},
+                                            return({"suffix" : sfx});
+                                        },
                                     peg$otherExpectation("EXISTS Expression"),
                                     function(n,e){
                                         
                                             if(isOkay(n)){
                                                 return({"type" : "expression" ,"format" : "unary" ,"variant" : "exists" ,"expression" : e ,"operator" : keyNode(n)});
                                             }
-                                            return e;},
+                                            return e;
+                                        },
                                     peg$otherExpectation("EXISTS Keyword"),
                                     function(n,x){
                                         
-                                            return(foldStringKey([n,x]));},
+                                            return(foldStringKey([n,x]));
+                                        },
                                     peg$otherExpectation("RAISE Expression"),
                                     function(s,a){
                                         
-                                            return(Object.assign({"type" : "expression" ,"format" : "unary" ,"variant" : keyNode(s) ,"expression" : a},a));},
+                                            return(Object.assign({"type" : "expression" ,"format" : "unary" ,"variant" : keyNode(s) ,"expression" : a},a));
+                                        },
                                     peg$otherExpectation("RAISE Expression Arguments"),
                                     function(a){
                                         
-                                            return(Object.assign({"type" : "error"},a));},
+                                            return(Object.assign({"type" : "error"},a));
+                                        },
                                     peg$otherExpectation("IGNORE Keyword"),
                                     function(f){
                                         
-                                            return({"action" : keyNode(f)});},
+                                            return({"action" : keyNode(f)});
+                                        },
                                     function(f,m){
                                         
-                                            return({"action" : keyNode(f) ,"message" : m});},
+                                            return({"action" : keyNode(f) ,"message" : m});
+                                        },
                                     function(n){
                                         
-                                            return n;},
+                                            return n;
+                                        },
                                     function(e,c){
                                         
-                                            return(Object.assign(c,{"expression" : e}));},
+                                            return(Object.assign(c,{"expression" : e}));
+                                        },
                                     function(op,e){
                                         
-                                            return({"type" : "expression" ,"format" : "unary" ,"variant" : "operation" ,"expression" : e ,"operator" : keyNode(op)});},
+                                            return({"type" : "expression" ,"format" : "unary" ,"variant" : "operation" ,"expression" : e ,"operator" : keyNode(op)});
+                                        },
                                     peg$otherExpectation("COLLATE Expression"),
                                     function(c){
                                         
-                                            return(Object.assign({"type" : "expression" ,"format" : "unary" ,"variant" : "operation" ,"operator" : "collate"},c));},
+                                            return(Object.assign({"type" : "expression" ,"format" : "unary" ,"variant" : "operation" ,"operator" : "collate"},c));
+                                        },
                                     function(f,rest){
                                         
-                                            return(composeBinary(f,rest));},
+                                            return(composeBinary(f,rest));
+                                        },
                                     function(i){
                                         
-                                            return([null,i,null,{"type" : "literal" ,"variant" : "null" ,"value" : "null"}]);},
+                                            return([null,i,null,{"type" : "literal" ,"variant" : "null" ,"value" : "null"}]);
+                                        },
                                     "not ",
                                     peg$literalExpectation("NOT ",true),
                                     "null",
                                     peg$literalExpectation("NULL",true),
                                     function(){
                                         
-                                            return "not";},
+                                            return "not";
+                                        },
                                     function(){
                                         
-                                            return "is";},
+                                            return "is";
+                                        },
                                     peg$otherExpectation("CAST Expression"),
                                     function(s,e,a){
                                         
-                                            return({"type" : "expression" ,"format" : "unary" ,"variant" : keyNode(s) ,"expression" : e ,"as" : a});},
+                                            return({"type" : "expression" ,"format" : "unary" ,"variant" : keyNode(s) ,"expression" : e ,"as" : a});
+                                        },
                                     peg$otherExpectation("Type Alias"),
                                     function(d){
                                         
-                                            return d;},
+                                            return d;
+                                        },
                                     peg$otherExpectation("CASE Expression"),
                                     function(t,e,w,s){
                                         
-                                            return(Object.assign({"type" : "expression" ,"variant" : keyNode(t) ,"expression" : flattenAll([w,s])},e));},
+                                            return(Object.assign({"type" : "expression" ,"variant" : keyNode(t) ,"expression" : flattenAll([w,s])},e));
+                                        },
                                     function(e){
                                         
-                                            return({"discriminant" : e});},
+                                            return({"discriminant" : e});
+                                        },
                                     peg$otherExpectation("WHEN Clause"),
                                     function(s,w,t){
                                         
-                                            return({"type" : "condition" ,"variant" : keyNode(s) ,"condition" : w ,"consequent" : t});},
+                                            return({"type" : "condition" ,"variant" : keyNode(s) ,"condition" : w ,"consequent" : t});
+                                        },
                                     peg$otherExpectation("ELSE Clause"),
                                     function(s,e){
                                         
-                                            return({"type" : "condition" ,"variant" : keyNode(s) ,"consequent" : e});},
+                                            return({"type" : "condition" ,"variant" : keyNode(s) ,"consequent" : e});
+                                        },
                                     function(v,p){
                                         
-                                            return(Object.assign(p,{"left" : v}));},
+                                            return(Object.assign(p,{"left" : v}));
+                                        },
                                     peg$otherExpectation("Comparison Expression"),
                                     function(n,m,e,x){
                                         
-                                            return(Object.assign({"type" : "expression" ,"format" : "binary" ,"variant" : "operation" ,"operation" : foldStringKey([n,m]) ,"right" : e},x));},
+                                            return(Object.assign({"type" : "expression" ,"format" : "binary" ,"variant" : "operation" ,"operation" : foldStringKey([n,m]) ,"right" : e},x));
+                                        },
                                     peg$otherExpectation("ESCAPE Expression"),
                                     function(s,e){
                                         
-                                            return({"escape" : e});},
+                                            return({"escape" : e});
+                                        },
                                     peg$otherExpectation("BETWEEN Expression"),
                                     function(n,b,tail){
                                         
-                                            return({"type" : "expression" ,"format" : "binary" ,"variant" : "operation" ,"operation" : foldStringKey([n,b]) ,"right" : tail});},
+                                            return({"type" : "expression" ,"format" : "binary" ,"variant" : "operation" ,"operation" : foldStringKey([n,b]) ,"right" : tail});
+                                        },
                                     function(f,rest){
                                         
-                                            return(composeBinary(f,[rest]));},
+                                            return(composeBinary(f,[rest]));
+                                        },
                                     function(n){
                                         
-                                            return(keyNode(n));},
+                                            return(keyNode(n));
+                                        },
                                     peg$otherExpectation("IN Expression"),
                                     function(n,i,e){
                                         
-                                            return({"type" : "expression" ,"format" : "binary" ,"variant" : "operation" ,"operation" : foldStringKey([n,i]) ,"right" : e});},
+                                            return({"type" : "expression" ,"format" : "binary" ,"variant" : "operation" ,"operation" : foldStringKey([n,i]) ,"right" : e});
+                                        },
                                     function(e){
                                         
-                                            return e;},
+                                            return e;
+                                        },
                                     peg$otherExpectation("Expression List"),
                                     function(l){
                                         
-                                            return({"type" : "expression" ,"variant" : "list" ,"expression" : isOkay(l) ? ( l ) : ( [] )});},
+                                            return({"type" : "expression" ,"variant" : "list" ,"expression" : isOkay(l) ? ( l ) : ( [] )});
+                                        },
                                     function(f,rest){
                                         
-                                            return(flattenAll([f,rest]));},
+                                            return(flattenAll([f,rest]));
+                                        },
                                     peg$otherExpectation("Function Call"),
                                     function(n,a){
                                         
-                                            return(Object.assign({"type" : "function" ,"name" : n},a));},
+                                            return(Object.assign({"type" : "function" ,"name" : n},a));
+                                        },
                                     peg$otherExpectation("Function Call Arguments"),
                                     function(s){
                                         
-                                            return({"args" : {"type" : "identifier" ,"variant" : "star" ,"name" : s}});},
+                                            return({"args" : {"type" : "identifier" ,"variant" : "star" ,"name" : s}});
+                                        },
                                     function(d,e){
                                         
-                                            return(!(isOkay(d)) || e["expression"].length > 0);},
+                                            return(!(isOkay(d)) || e["expression"].length > 0);
+                                        },
                                     function(d,e){
                                         
-                                            return({"args" : Object.assign(e,d)});},
+                                            return({"args" : Object.assign(e,d)});
+                                        },
                                     function(s){
                                         
-                                            return({"filter" : keyNode(s)});},
+                                            return({"filter" : keyNode(s)});
+                                        },
                                     peg$otherExpectation("Error Message"),
                                     function(m){
                                         
-                                            return m;},
+                                            return m;
+                                        },
                                     peg$otherExpectation("Statement"),
                                     function(m,s){
                                         
-                                            return(Object.assign(s,m));},
+                                            return(Object.assign(s,m));
+                                        },
                                     peg$otherExpectation("QUERY PLAN"),
                                     function(e,q){
                                         
-                                            return({"explain" : isOkay(e)});},
+                                            return({"explain" : isOkay(e)});
+                                        },
                                     peg$otherExpectation("QUERY PLAN Keyword"),
                                     function(q,p){
                                         
-                                            return(foldStringKey([q,p]));},
+                                            return(foldStringKey([q,p]));
+                                        },
                                     peg$otherExpectation("END Transaction Statement"),
                                     function(s,t){
                                         
-                                            return({"type" : "statement" ,"variant" : "transaction" ,"action" : "commit"});},
+                                            return({"type" : "statement" ,"variant" : "transaction" ,"action" : "commit"});
+                                        },
                                     peg$otherExpectation("BEGIN Transaction Statement"),
                                     function(s,m,t,n){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : "transaction" ,"action" : "begin"},m,n));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : "transaction" ,"action" : "begin"},m,n));
+                                        },
                                     function(t){
                                         
-                                            return t;},
+                                            return t;
+                                        },
                                     function(m){
                                         
-                                            return({"defer" : keyNode(m)});},
+                                            return({"defer" : keyNode(m)});
+                                        },
                                     peg$otherExpectation("ROLLBACK Statement"),
                                     function(s,n){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : "transaction" ,"action" : "rollback"},n));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : "transaction" ,"action" : "rollback"},n));
+                                        },
                                     peg$otherExpectation("TO Clause"),
                                     function(n){
                                         
-                                            return({"savepoint" : n});},
+                                            return({"savepoint" : n});
+                                        },
                                     function(s){
                                         
-                                            return(keyNode(s));},
+                                            return(keyNode(s));
+                                        },
                                     peg$otherExpectation("SAVEPOINT Statement"),
                                     function(s,n){
                                         
-                                            return({"type" : "statement" ,"variant" : s ,"target" : n});},
+                                            return({"type" : "statement" ,"variant" : s ,"target" : n});
+                                        },
                                     peg$otherExpectation("RELEASE Statement"),
                                     function(s,a,n){
                                         
-                                            return({"type" : "statement" ,"variant" : keyNode(s) ,"target" : n});},
+                                            return({"type" : "statement" ,"variant" : keyNode(s) ,"target" : n});
+                                        },
                                     peg$otherExpectation("ALTER TABLE Statement"),
                                     function(s,n,e){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : keyNode(s) ,"target" : n},e));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : keyNode(s) ,"target" : n},e));
+                                        },
                                     peg$otherExpectation("ALTER TABLE Keyword"),
                                     function(a,t){
                                         
-                                            return(foldStringKey([a,t]));},
+                                            return(foldStringKey([a,t]));
+                                        },
                                     peg$otherExpectation("RENAME TO Keyword"),
                                     function(s,n){
                                         
-                                            return({"action" : keyNode(s) ,"name" : n});},
+                                            return({"action" : keyNode(s) ,"name" : n});
+                                        },
                                     peg$otherExpectation("ADD COLUMN Keyword"),
                                     function(s,d){
                                         
-                                            return({"action" : keyNode(s) ,"definition" : d});},
+                                            return({"action" : keyNode(s) ,"definition" : d});
+                                        },
                                     function(w,s){
                                         
-                                            return(Object.assign(s,w));},
+                                            return(Object.assign(s,w));
+                                        },
                                     peg$otherExpectation("WITH Clause"),
                                     function(s,v,t){
                                         
@@ -648,406 +738,511 @@
                                                     return(Object.assign(elem,recursive));
                                                 });
                                             }
-                                            return({"with" : t});},
+                                            return({"with" : t});
+                                        },
                                     function(f,r){
                                         
-                                            return(flattenAll([f,r]));},
+                                            return(flattenAll([f,r]));
+                                        },
                                     peg$otherExpectation("Common Table Expression"),
                                     function(t,s){
                                         
-                                            return(Object.assign({"type" : "expression" ,"format" : "table" ,"variant" : "common" ,"target" : t},s));},
+                                            return(Object.assign({"type" : "expression" ,"format" : "table" ,"variant" : "common" ,"target" : t},s));
+                                        },
                                     function(s){
                                         
-                                            return({"expression" : s});},
+                                            return({"expression" : s});
+                                        },
                                     function(w,s){
                                         
-                                            return(Object.assign(s,w));},
+                                            return(Object.assign(s,w));
+                                        },
                                     peg$otherExpectation("ATTACH Statement"),
                                     function(a,b,e,n){
                                         
-                                            return({"type" : "statement" ,"variant" : keyNode(a) ,"target" : n ,"attach" : e});},
+                                            return({"type" : "statement" ,"variant" : keyNode(a) ,"target" : n ,"attach" : e});
+                                        },
                                     peg$otherExpectation("DETACH Statement"),
                                     function(d,b,n){
                                         
-                                            return({"type" : "statement" ,"variant" : keyNode(d) ,"target" : n});},
+                                            return({"type" : "statement" ,"variant" : keyNode(d) ,"target" : n});
+                                        },
                                     peg$otherExpectation("VACUUM Statement"),
                                     function(v,t){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : "vacuum"},t));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : "vacuum"},t));
+                                        },
                                     function(t){
                                         
-                                            return({"target" : t});},
+                                            return({"target" : t});
+                                        },
                                     peg$otherExpectation("ANALYZE Statement"),
                                     function(s,a){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : keyNode(s)},a));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : keyNode(s)},a));
+                                        },
                                     function(n){
                                         
-                                            return({"target" : n["name"]});},
+                                            return({"target" : n["name"]});
+                                        },
                                     peg$otherExpectation("REINDEX Statement"),
                                     function(a){
                                         
-                                            return({"target" : a["name"]});},
+                                            return({"target" : a["name"]});
+                                        },
                                     peg$otherExpectation("PRAGMA Statement"),
                                     function(s,n,v){
                                         
-                                            return({"type" : "statement" ,"variant" : keyNode(s) ,"target" : n ,"args" : {"type" : "expression" ,"variant" : "list" ,"expression" : v}});},
+                                            return({"type" : "statement" ,"variant" : keyNode(s) ,"target" : n ,"args" : {"type" : "expression" ,"variant" : "list" ,"expression" : v}});
+                                        },
                                     function(v){
                                         
-                                            return v;},
+                                            return v;
+                                        },
                                     function(v){
                                         
-                                            return(/^(yes|no|on|off|false|true|0|1)$/i.test(v));},
+                                            return(/^(yes|no|on|off|false|true|0|1)$/i.test(v));
+                                        },
                                     function(v){
                                         
-                                            return({"type" : "literal" ,"variant" : "boolean" ,"normalized" : /^(yes|on|true|1)$/i.test(v) ? ( "1" ) : ( "0" ) ,"value" : v});},
+                                            return({"type" : "literal" ,"variant" : "boolean" ,"normalized" : /^(yes|on|true|1)$/i.test(v) ? ( "1" ) : ( "0" ) ,"value" : v});
+                                        },
                                     function(n){
                                         
-                                            return(keyNode(n));},
+                                            return(keyNode(n));
+                                        },
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "name" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "name" ,"name" : n});
+                                        },
                                     peg$otherExpectation("SELECT Statement"),
                                     function(s,o,l){
                                         
-                                            return(Object.assign(s,o,l));},
+                                            return(Object.assign(s,o,l));
+                                        },
                                     peg$otherExpectation("ORDER BY Clause"),
                                     function(d){
                                         
-                                            return({"order" : d["result"]});},
+                                            return({"order" : d["result"]});
+                                        },
                                     peg$otherExpectation("LIMIT Clause"),
                                     function(s,e,d){
                                         
-                                            return({"limit" : Object.assign({"type" : "expression" ,"variant" : "limit" ,"start" : e},d)});},
+                                            return({"limit" : Object.assign({"type" : "expression" ,"variant" : "limit" ,"start" : e},d)});
+                                        },
                                     peg$otherExpectation("OFFSET Clause"),
                                     function(o,e){
                                         
-                                            return({"offset" : e});},
+                                            return({"offset" : e});
+                                        },
                                     function(s,u){
                                         
                                             if(isArrayOkay(u)){
                                                 return({"type" : "statement" ,"variant" : "compound" ,"statement" : s ,"compound" : u});
                                             }else{
                                                 return s;
-                                            }},
+                                            }
+                                        },
                                     peg$otherExpectation("Union Operation"),
                                     function(c,s){
                                         
-                                            return({"type" : "compound" ,"variant" : c ,"statement" : s});},
+                                            return({"type" : "compound" ,"variant" : c ,"statement" : s});
+                                        },
                                     function(s,f,w,g){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : "select"},s,f,w,g));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : "select"},s,f,w,g));
+                                        },
                                     peg$otherExpectation("SELECT Results Clause"),
                                     function(d,t){
                                         
-                                            return(Object.assign({"result" : t},d));},
+                                            return(Object.assign({"result" : t},d));
+                                        },
                                     peg$otherExpectation("SELECT Results Modifier"),
                                     function(s){
                                         
-                                            return({"distinct" : true});},
+                                            return({"distinct" : true});
+                                        },
                                     function(s){
                                         
-                                            return({});},
+                                            return({});
+                                        },
                                     peg$otherExpectation("FROM Clause"),
                                     function(f,s){
                                         
-                                            return({"from" : s});},
+                                            return({"from" : s});
+                                        },
                                     peg$otherExpectation("WHERE Clause"),
                                     function(f,e){
                                         
-                                            return({"where" : makeArray(e)});},
+                                            return({"where" : makeArray(e)});
+                                        },
                                     peg$otherExpectation("GROUP BY Clause"),
                                     function(f,e,h){
                                         
-                                            return(Object.assign({"group" : e},h));},
+                                            return(Object.assign({"group" : e},h));
+                                        },
                                     peg$otherExpectation("HAVING Clause"),
                                     function(f,e){
                                         
-                                            return({"having" : e});},
+                                            return({"having" : e});
+                                        },
                                     function(q,s){
                                         
-                                            return({"type" : "identifier" ,"variant" : "star" ,"name" : foldStringWord([q,s])});},
+                                            return({"type" : "identifier" ,"variant" : "star" ,"name" : foldStringWord([q,s])});
+                                        },
                                     function(n,s){
                                         
-                                            return(foldStringWord([n,s]));},
+                                            return(foldStringWord([n,s]));
+                                        },
                                     function(e,a){
                                         
-                                            return(Object.assign(e,a));},
+                                            return(Object.assign(e,a));
+                                        },
                                     function(f,t){
                                         
                                             if(isArrayOkay(t)){
                                                 return({"type" : "map" ,"variant" : "join" ,"source" : f ,"map" : t});
                                             }
-                                            return f;},
+                                            return f;
+                                        },
                                     function(cl,c){
                                         
-                                            return(Object.assign(cl,c));},
+                                            return(Object.assign(cl,c));
+                                        },
                                     peg$otherExpectation("CROSS JOIN Operation"),
                                     function(n){
                                         
-                                            return({"type" : "join" ,"variant" : "cross join" ,"source" : n});},
+                                            return({"type" : "join" ,"variant" : "cross join" ,"source" : n});
+                                        },
                                     peg$otherExpectation("JOIN Operation"),
                                     function(o,n){
                                         
-                                            return({"type" : "join" ,"variant" : keyNode(o) ,"source" : n});},
+                                            return({"type" : "join" ,"variant" : keyNode(o) ,"source" : n});
+                                        },
                                     function(n,l,a){
                                         
-                                            return(Object.assign({"type" : "function" ,"variant" : "table" ,"name" : n ,"args" : l},a));},
+                                            return(Object.assign({"type" : "function" ,"variant" : "table" ,"name" : n ,"args" : l},a));
+                                        },
                                     peg$otherExpectation("Qualified Table"),
                                     function(d,i){
                                         
-                                            return(Object.assign(d,i));},
+                                            return(Object.assign(d,i));
+                                        },
                                     peg$otherExpectation("Qualified Table Identifier"),
                                     function(n,a){
                                         
-                                            return(Object.assign(n,a));},
+                                            return(Object.assign(n,a));
+                                        },
                                     peg$otherExpectation("Qualfied Table Index"),
                                     function(s,n){
                                         
-                                            return({"index" : n});},
+                                            return({"index" : n});
+                                        },
                                     function(n,i){
                                         
-                                            return({"index" : foldStringKey([n,i])});},
+                                            return({"index" : foldStringKey([n,i])});
+                                        },
                                     peg$otherExpectation("SELECT Source"),
                                     function(l,a){
                                         
-                                            return(Object.assign(l,a));},
+                                            return(Object.assign(l,a));
+                                        },
                                     peg$otherExpectation("Subquery"),
                                     function(s,a){
                                         
-                                            return(Object.assign(s,a));},
+                                            return(Object.assign(s,a));
+                                        },
                                     peg$otherExpectation("Alias"),
                                     function(a,n){
                                         
-                                            return({"alias" : n});},
+                                            return({"alias" : n});
+                                        },
                                     peg$otherExpectation("JOIN Operator"),
                                     function(n,t,j){
                                         
-                                            return(foldStringKey([n,t,j]));},
+                                            return(foldStringKey([n,t,j]));
+                                        },
                                     function(t,o){
                                         
-                                            return(foldStringKey([t,o]));},
+                                            return(foldStringKey([t,o]));
+                                        },
                                     function(t){
                                         
-                                            return(keyNode(t));},
+                                            return(keyNode(t));
+                                        },
                                     peg$otherExpectation("JOIN Constraint"),
                                     function(c){
                                         
-                                            return({"constraint" : Object.assign({"type" : "constraint" ,"variant" : "join"},c)});},
+                                            return({"constraint" : Object.assign({"type" : "constraint" ,"variant" : "join"},c)});
+                                        },
                                     peg$otherExpectation("Join ON Clause"),
                                     function(s,e){
                                         
-                                            return({"format" : keyNode(s) ,"on" : e});},
+                                            return({"format" : keyNode(s) ,"on" : e});
+                                        },
                                     peg$otherExpectation("Join USING Clause"),
                                     function(s,e){
                                         
-                                            return({"format" : keyNode(s) ,"using" : e});},
+                                            return({"format" : keyNode(s) ,"using" : e});
+                                        },
                                     peg$otherExpectation("VALUES Clause"),
                                     function(s,l){
                                         
-                                            return({"type" : "statement" ,"variant" : "select" ,"result" : l});},
+                                            return({"type" : "statement" ,"variant" : "select" ,"result" : l});
+                                        },
                                     function(f,b){
                                         
-                                            return({"result" : flattenAll([f,b])});},
+                                            return({"result" : flattenAll([f,b])});
+                                        },
                                     function(i){
                                         
-                                            return i;},
+                                            return i;
+                                        },
                                     peg$otherExpectation("Ordering Expression"),
                                     function(e,d){
                                         
                                             if(isOkay(d)){
                                                 return(Object.assign({"type" : "expression" ,"variant" : "order" ,"expression" : e},d));
                                             }
-                                            return e;},
+                                            return e;
+                                        },
                                     peg$otherExpectation("Star"),
                                     peg$otherExpectation("Fallback Type"),
                                     peg$otherExpectation("INSERT Statement"),
                                     function(k,t){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : "insert"},k,t));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : "insert"},k,t));
+                                        },
                                     peg$otherExpectation("INSERT Keyword"),
                                     function(a,m){
                                         
-                                            return(Object.assign({"action" : keyNode(a)},m));},
+                                            return(Object.assign({"action" : keyNode(a)},m));
+                                        },
                                     peg$otherExpectation("REPLACE Keyword"),
                                     function(a){
                                         
-                                            return({"action" : keyNode(a)});},
+                                            return({"action" : keyNode(a)});
+                                        },
                                     peg$otherExpectation("INSERT OR Modifier"),
                                     function(s,m){
                                         
-                                            return({"or" : keyNode(m)});},
+                                            return({"or" : keyNode(m)});
+                                        },
                                     function(i,r){
                                         
-                                            return(Object.assign({"into" : i},r));},
+                                            return(Object.assign({"into" : i},r));
+                                        },
                                     peg$otherExpectation("INTO Clause"),
                                     function(s,t){
                                         
-                                            return t;},
+                                            return t;
+                                        },
                                     peg$otherExpectation("INTO Keyword"),
                                     function(r){
                                         
-                                            return({"result" : r});},
+                                            return({"result" : r});
+                                        },
                                     peg$otherExpectation("Column List"),
                                     function(f,b){
                                         
-                                            return({"columns" : flattenAll([f,b])});},
+                                            return({"columns" : flattenAll([f,b])});
+                                        },
                                     function(c){
                                         
-                                            return c;},
+                                            return c;
+                                        },
                                     peg$otherExpectation("Column Name"),
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "column" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "column" ,"name" : n});
+                                        },
                                     function(s,r){
                                         
-                                            return r;},
+                                            return r;
+                                        },
                                     peg$otherExpectation("VALUES Keyword"),
                                     function(f,b){
                                         
-                                            return(flattenAll([f,b]));},
+                                            return(flattenAll([f,b]));
+                                        },
                                     peg$otherExpectation("Wrapped Expression List"),
                                     function(e){
                                         
-                                            return e;},
+                                            return e;
+                                        },
                                     peg$otherExpectation("DEFAULT VALUES Clause"),
                                     function(d,v){
                                         
-                                            return({"type" : "values" ,"variant" : "default"});},
+                                            return({"type" : "values" ,"variant" : "default"});
+                                        },
                                     peg$otherExpectation("Compound Operator"),
                                     peg$otherExpectation("UNION Operator"),
                                     function(s,a){
                                         
-                                            return(foldStringKey([s,a]));},
+                                            return(foldStringKey([s,a]));
+                                        },
                                     function(a){
                                         
-                                            return a;},
+                                            return a;
+                                        },
                                     peg$otherExpectation("UPDATE Statement"),
                                     function(s,f,t,u,w,o,l){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : s ,"into" : t},f,u,w,o,l));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : s ,"into" : t},f,u,w,o,l));
+                                        },
                                     peg$otherExpectation("UPDATE Keyword"),
                                     peg$otherExpectation("UPDATE OR Modifier"),
                                     function(t){
                                         
-                                            return({"or" : keyNode(t)});},
+                                            return({"or" : keyNode(t)});
+                                        },
                                     peg$otherExpectation("SET Clause"),
                                     function(c){
                                         
-                                            return({"set" : c});},
+                                            return({"set" : c});
+                                        },
                                     peg$otherExpectation("Column Assignment"),
                                     function(f,e){
                                         
-                                            return({"type" : "assignment" ,"target" : f ,"value" : e});},
+                                            return({"type" : "assignment" ,"target" : f ,"value" : e});
+                                        },
                                     peg$otherExpectation("DELETE Statement"),
                                     function(s,t,w,o,l){
                                         
-                                            return(Object.assign({"type" : "statement" ,"variant" : s ,"from" : t},w,o,l));},
+                                            return(Object.assign({"type" : "statement" ,"variant" : s ,"from" : t},w,o,l));
+                                        },
                                     peg$otherExpectation("DELETE Keyword"),
                                     peg$otherExpectation("CREATE Statement"),
                                     peg$otherExpectation("CREATE TABLE Statement"),
                                     function(s,ne,id,r){
                                         
-                                            return(Object.assign({"type" : "statement" ,"name" : id},s,r,ne));},
+                                            return(Object.assign({"type" : "statement" ,"name" : id},s,r,ne));
+                                        },
                                     function(s,tmp,t){
                                         
-                                            return(Object.assign({"variant" : s ,"format" : keyNode(t)},tmp));},
+                                            return(Object.assign({"variant" : s ,"format" : keyNode(t)},tmp));
+                                        },
                                     function(t){
                                         
-                                            return({"temporary" : isOkay(t)});},
+                                            return({"temporary" : isOkay(t)});
+                                        },
                                     peg$otherExpectation("IF NOT EXISTS Modifier"),
                                     function(i,n,e){
                                         
                                             return({
                                                     "condition" : makeArray({"type" : "condition" ,"variant" : keyNode(i) ,"condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : foldStringKey([n,e])}})
-                                                });},
+                                                });
+                                        },
                                     peg$otherExpectation("Table Definition"),
                                     function(s,t,r){
                                         
-                                            return(Object.assign({"definition" : flattenAll([s,t])},r));},
+                                            return(Object.assign({"definition" : flattenAll([s,t])},r));
+                                        },
                                     function(r,w){
                                         
-                                            return({"optimization" : [{"type" : "optimization" ,"value" : foldStringKey([r,w])}]});},
+                                            return({"optimization" : [{"type" : "optimization" ,"value" : foldStringKey([r,w])}]});
+                                        },
                                     function(f){
                                         
-                                            return f;},
+                                            return f;
+                                        },
                                     peg$otherExpectation("Column Definition"),
                                     function(n,t,c){
                                         
-                                            return(Object.assign({"type" : "definition" ,"variant" : "column" ,"name" : n ,"definition" : isOkay(c) ? ( c ) : ( [] )},t));},
+                                            return(Object.assign({"type" : "definition" ,"variant" : "column" ,"name" : n ,"definition" : isOkay(c) ? ( c ) : ( [] )},t));
+                                        },
                                     peg$otherExpectation("Column Datatype"),
                                     function(t){
                                         
-                                            return({"datatype" : t});},
+                                            return({"datatype" : t});
+                                        },
                                     peg$otherExpectation("Column Constraint"),
                                     function(n,c,ln){
                                         
-                                            return(Object.assign(c,n));},
+                                            return(Object.assign(c,n));
+                                        },
                                     function(cl){
                                         
-                                            return cl[cl.length-1];},
+                                            return cl[cl.length-1];
+                                        },
                                     peg$otherExpectation("CONSTRAINT Name"),
                                     function(n){
                                         
-                                            return({"name" : n});},
+                                            return({"name" : n});
+                                        },
                                     peg$otherExpectation("FOREIGN KEY Column Constraint"),
                                     function(f){
                                         
-                                            return(Object.assign({"variant" : "foreign key"},f));},
+                                            return(Object.assign({"variant" : "foreign key"},f));
+                                        },
                                     peg$otherExpectation("PRIMARY KEY Column Constraint"),
                                     function(p,d,c,a){
                                         
-                                            return(Object.assign(p,c,d,a));},
+                                            return(Object.assign(p,c,d,a));
+                                        },
                                     peg$otherExpectation("PRIMARY KEY Keyword"),
                                     function(s,k){
                                         
-                                            return({"type" : "constraint" ,"variant" : foldStringKey([s,k])});},
+                                            return({"type" : "constraint" ,"variant" : foldStringKey([s,k])});
+                                        },
                                     peg$otherExpectation("AUTOINCREMENT Keyword"),
                                     function(a){
                                         
-                                            return({"autoIncrement" : true});},
+                                            return({"autoIncrement" : true});
+                                        },
                                     function(s,c){
                                         
-                                            return(Object.assign({"type" : "constraint" ,"variant" : s},c));},
+                                            return(Object.assign({"type" : "constraint" ,"variant" : s},c));
+                                        },
                                     peg$otherExpectation("UNIQUE Column Constraint"),
                                     peg$otherExpectation("NULL Column Constraint"),
                                     function(n,l){
                                         
-                                            return(foldStringKey([n,l]));},
+                                            return(foldStringKey([n,l]));
+                                        },
                                     peg$otherExpectation("CHECK Column Constraint"),
                                     peg$otherExpectation("DEFAULT Column Constraint"),
                                     function(s,v){
                                         
-                                            return({"type" : "constraint" ,"variant" : keyNode(s) ,"value" : v});},
+                                            return({"type" : "constraint" ,"variant" : keyNode(s) ,"value" : v});
+                                        },
                                     peg$otherExpectation("COLLATE Column Constraint"),
                                     function(c){
                                         
-                                            return({"type" : "constraint" ,"variant" : "collate" ,"collate" : c});},
+                                            return({"type" : "constraint" ,"variant" : "collate" ,"collate" : c});
+                                        },
                                     peg$otherExpectation("Table Constraint"),
                                     function(n,c,nl){
                                         
-                                            return(Object.assign({"type" : "definition" ,"variant" : "constraint"},c,n));},
+                                            return(Object.assign({"type" : "definition" ,"variant" : "constraint"},c,n));
+                                        },
                                     peg$otherExpectation("CHECK Table Constraint"),
                                     function(c){
                                         
-                                            return({"definition" : makeArray(c)});},
+                                            return({"definition" : makeArray(c)});
+                                        },
                                     peg$otherExpectation("PRIMARY KEY Table Constraint"),
                                     function(k,c,t){
                                         
-                                            return({"definition" : makeArray(Object.assign(k,t,c[1])) ,"columns" : c[0]});},
+                                            return({"definition" : makeArray(Object.assign(k,t,c[1])) ,"columns" : c[0]});
+                                        },
                                     function(s){
                                         
-                                            return({"type" : "constraint" ,"variant" : keyNode(s)});},
+                                            return({"type" : "constraint" ,"variant" : keyNode(s)});
+                                        },
                                     function(p,k){
                                         
-                                            return(foldStringKey([p,k]));},
+                                            return(foldStringKey([p,k]));
+                                        },
                                     peg$otherExpectation("UNIQUE Keyword"),
                                     function(u){
                                         
-                                            return(keyNode(u));},
+                                            return(keyNode(u));
+                                        },
                                     function(f,b){
                                         
-                                            return([f].concat(b));},
+                                            return([f].concat(b));
+                                        },
                                     function(c){
                                         
                                             return(c.map(function(_ref){
@@ -1055,7 +1250,8 @@
                                                 var _ref2 = _slicedToArray(_ref,1);
                                                 var res=_ref2[0];
                                                 return res;
-                                            }));},
+                                            }));
+                                        },
                                     function(c){
                                         
                                             var auto = c.find(function(_ref3){
@@ -1071,7 +1267,8 @@
                                                         var res=_ref6[0];
                                                         var a=_ref6[1];
                                                         return res;
-                                                    }),auto ? ( auto[1] ) : ( null )]);},
+                                                    }),auto ? ( auto[1] ) : ( null )]);
+                                        },
                                     peg$otherExpectation("Indexed Column"),
                                     function(e,d,a){
                                         
@@ -1079,84 +1276,107 @@
                                             if(isOkay(d)){
                                                 res=Object.assign({"type" : "expression" ,"variant" : "order" ,"expression" : e},d);
                                             }
-                                            return([res,a]);},
+                                            return([res,a]);
+                                        },
                                     peg$otherExpectation("Collation"),
                                     function(c){
                                         
-                                            return({"collate" : makeArray(c)});},
+                                            return({"collate" : makeArray(c)});
+                                        },
                                     peg$otherExpectation("Column Direction"),
                                     function(t){
                                         
-                                            return({"direction" : keyNode(t)});},
+                                            return({"direction" : keyNode(t)});
+                                        },
                                     function(s,t){
                                         
-                                            return({"conflict" : keyNode(t)});},
+                                            return({"conflict" : keyNode(t)});
+                                        },
                                     peg$otherExpectation("ON CONFLICT Keyword"),
                                     function(o,c){
                                         
-                                            return(foldStringKey([o,c]));},
+                                            return(foldStringKey([o,c]));
+                                        },
                                     function(k,c){
                                         
-                                            return({"type" : "constraint" ,"variant" : keyNode(k) ,"expression" : c});},
+                                            return({"type" : "constraint" ,"variant" : keyNode(k) ,"expression" : c});
+                                        },
                                     peg$otherExpectation("FOREIGN KEY Table Constraint"),
                                     function(k,l,c){
                                         
-                                            return(Object.assign({"definition" : makeArray(Object.assign(k,c))},l));},
+                                            return(Object.assign({"definition" : makeArray(Object.assign(k,c))},l));
+                                        },
                                     peg$otherExpectation("FOREIGN KEY Keyword"),
                                     function(f,k){
                                         
-                                            return({"type" : "constraint" ,"variant" : foldStringKey([f,k])});},
+                                            return({"type" : "constraint" ,"variant" : foldStringKey([f,k])});
+                                        },
                                     function(r,a,d){
                                         
-                                            return(Object.assign({"type" : "constraint"},r,a,d));},
+                                            return(Object.assign({"type" : "constraint"},r,a,d));
+                                        },
                                     peg$otherExpectation("REFERENCES Clause"),
                                     function(s,t){
                                         
-                                            return({"references" : t});},
+                                            return({"references" : t});
+                                        },
                                     function(f,b){
                                         
-                                            return({"action" : flattenAll([f,b])});},
+                                            return({"action" : flattenAll([f,b])});
+                                        },
                                     peg$otherExpectation("FOREIGN KEY Action Clause"),
                                     function(m,a,n){
                                         
-                                            return({"type" : "action" ,"variant" : keyNode(m) ,"action" : keyNode(n)});},
+                                            return({"type" : "action" ,"variant" : keyNode(m) ,"action" : keyNode(n)});
+                                        },
                                     peg$otherExpectation("FOREIGN KEY Action"),
                                     function(s,v){
                                         
-                                            return(foldStringKey([s,v]));},
+                                            return(foldStringKey([s,v]));
+                                        },
                                     function(c){
                                         
-                                            return(keyNode(c));},
+                                            return(keyNode(c));
+                                        },
                                     function(n,a){
                                         
-                                            return(foldStringKey([n,a]));},
+                                            return(foldStringKey([n,a]));
+                                        },
                                     function(m,n){
                                         
-                                            return({"type" : "action" ,"variant" : keyNode(m) ,"action" : n});},
+                                            return({"type" : "action" ,"variant" : keyNode(m) ,"action" : n});
+                                        },
                                     peg$otherExpectation("DEFERRABLE Clause"),
                                     function(n,d,i){
                                         
-                                            return({"defer" : foldStringKey([n,d,i])});},
+                                            return({"defer" : foldStringKey([n,d,i])});
+                                        },
                                     function(i,d){
                                         
-                                            return(foldStringKey([i,d]));},
+                                            return(foldStringKey([i,d]));
+                                        },
                                     function(s){
                                         
-                                            return({"definition" : makeArray(s)});},
+                                            return({"definition" : makeArray(s)});
+                                        },
                                     peg$otherExpectation("CREATE INDEX Statement"),
                                     function(s,ne,n,o,w){
                                         
-                                            return(Object.assign({"type" : "statement" ,"target" : n ,"on" : o},s,ne,w));},
+                                            return(Object.assign({"type" : "statement" ,"target" : n ,"on" : o},s,ne,w));
+                                        },
                                     function(s,u,i){
                                         
-                                            return(Object.assign({"variant" : keyNode(s) ,"format" : keyNode(i)},u));},
+                                            return(Object.assign({"variant" : keyNode(s) ,"format" : keyNode(i)},u));
+                                        },
                                     function(u){
                                         
-                                            return({"unique" : true});},
+                                            return({"unique" : true});
+                                        },
                                     peg$otherExpectation("ON Clause"),
                                     function(o,t,c){
                                         
-                                            return({"type" : "identifier" ,"variant" : "expression" ,"format" : "table" ,"name" : t["name"] ,"columns" : c});},
+                                            return({"type" : "identifier" ,"variant" : "expression" ,"format" : "table" ,"name" : t["name"] ,"columns" : c});
+                                        },
                                     peg$otherExpectation("CREATE TRIGGER Statement"),
                                     function(s,ne,n,cd,o,me,wh,a){
                                         
@@ -1167,91 +1387,115 @@
                                                 "event" : cd ,
                                                 "by" : isOkay(me) ? ( me ) : ( "row" ) ,
                                                 "action" : makeArray(a)
-                                            },s,ne,wh));},
+                                            },s,ne,wh));
+                                        },
                                     function(s,tmp,t){
                                         
-                                            return(Object.assign({"variant" : keyNode(s) ,"format" : keyNode(t)},tmp));},
+                                            return(Object.assign({"variant" : keyNode(s) ,"format" : keyNode(t)},tmp));
+                                        },
                                     peg$otherExpectation("Conditional Clause"),
                                     function(m,d){
                                         
-                                            return(Object.assign({"type" : "event"},m,d));},
+                                            return(Object.assign({"type" : "event"},m,d));
+                                        },
                                     function(m){
                                         
-                                            return({"occurs" : keyNode(m)});},
+                                            return({"occurs" : keyNode(m)});
+                                        },
                                     function(i,o){
                                         
-                                            return(foldStringKey([i,o]));},
+                                            return(foldStringKey([i,o]));
+                                        },
                                     peg$otherExpectation("Conditional Action"),
                                     function(o){
                                         
-                                            return({"event" : keyNode(o)});},
+                                            return({"event" : keyNode(o)});
+                                        },
                                     function(s,f){
                                         
-                                            return({"event" : keyNode(s) ,"of" : f});},
+                                            return({"event" : keyNode(s) ,"of" : f});
+                                        },
                                     function(s,c){
                                         
-                                            return c;},
+                                            return c;
+                                        },
                                     "statement",
                                     peg$literalExpectation("STATEMENT",true),
                                     function(f,e,r){
                                         
-                                            return(keyNode(r));},
+                                            return(keyNode(r));
+                                        },
                                     function(w,e){
                                         
-                                            return({"when" : e});},
+                                            return({"when" : e});
+                                        },
                                     peg$otherExpectation("Actions Clause"),
                                     function(s,a,e){
                                         
-                                            return a;},
+                                            return a;
+                                        },
                                     function(l){
                                         
-                                            return l;},
+                                            return l;
+                                        },
                                     peg$otherExpectation("CREATE VIEW Statement"),
                                     function(s,ne,n,r){
                                         
-                                            return(Object.assign({"type" : "statement" ,"target" : n ,"result" : r},s,ne));},
+                                            return(Object.assign({"type" : "statement" ,"target" : n ,"result" : r},s,ne));
+                                        },
                                     function(n,a){
                                         
-                                            return(Object.assign({"type" : "identifier" ,"variant" : "expression" ,"format" : "view" ,"name" : n["name"] ,"columns" : []},a));},
+                                            return(Object.assign({"type" : "identifier" ,"variant" : "expression" ,"format" : "view" ,"name" : n["name"] ,"columns" : []},a));
+                                        },
                                     function(s,tmp,v){
                                         
-                                            return(Object.assign({"variant" : keyNode(s) ,"format" : keyNode(v)},tmp));},
+                                            return(Object.assign({"variant" : keyNode(s) ,"format" : keyNode(v)},tmp));
+                                        },
                                     peg$otherExpectation("CREATE VIRTUAL TABLE Statement"),
                                     function(s,ne,n,m){
                                         
-                                            return(Object.assign({"type" : "statement" ,"target" : n ,"result" : m},s,ne));},
+                                            return(Object.assign({"type" : "statement" ,"target" : n ,"result" : m},s,ne));
+                                        },
                                     function(s,v,t){
                                         
-                                            return({"variant" : keyNode(s) ,"format" : keyNode(v)});},
+                                            return({"variant" : keyNode(s) ,"format" : keyNode(v)});
+                                        },
                                     function(m,a){
                                         
-                                            return(Object.assign({"type" : "module" ,"variant" : "virtual" ,"name" : m},a));},
+                                            return(Object.assign({"type" : "module" ,"variant" : "virtual" ,"name" : m},a));
+                                        },
                                     peg$otherExpectation("Module Arguments"),
                                     function(l){
                                         
-                                            return({"args" : {"type" : "expression" ,"variant" : "list" ,"expression" : isOkay(l) ? ( l ) : ( [] )}});},
+                                            return({"args" : {"type" : "expression" ,"variant" : "list" ,"expression" : isOkay(l) ? ( l ) : ( [] )}});
+                                        },
                                     function(f,b){
                                         
                                             return(flattenAll([f,b]).filter(function(arg){
                                             
                                                 return(isOkay(arg));
-                                            }));},
+                                            }));
+                                        },
                                     function(a){
                                         
-                                            return a;},
+                                            return a;
+                                        },
                                     peg$otherExpectation("DROP Statement"),
                                     function(s,q){
                                         
-                                            return(Object.assign({"type" : "statement" ,"target" : Object.assign(q,{"variant" : s["format"]})},s));},
+                                            return(Object.assign({"type" : "statement" ,"target" : Object.assign(q,{"variant" : s["format"]})},s));
+                                        },
                                     peg$otherExpectation("DROP Keyword"),
                                     function(s,t,i){
                                         
-                                            return(Object.assign({"variant" : keyNode(s) ,"format" : t ,"condition" : []},i));},
+                                            return(Object.assign({"variant" : keyNode(s) ,"format" : t ,"condition" : []},i));
+                                        },
                                     peg$otherExpectation("DROP Type"),
                                     peg$otherExpectation("IF EXISTS Keyword"),
                                     function(i,e){
                                         
-                                            return({"condition" : [{"type" : "condition" ,"variant" : keyNode(i) ,"condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : keyNode(e)}}]});},
+                                            return({"condition" : [{"type" : "condition" ,"variant" : keyNode(i) ,"condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : keyNode(e)}}]});
+                                        },
                                     peg$otherExpectation("Or"),
                                     peg$otherExpectation("Add"),
                                     peg$otherExpectation("Subtract"),
@@ -1271,88 +1515,111 @@
                                     peg$otherExpectation("IS"),
                                     function(i,n){
                                         
-                                            return(foldStringKey([i,n]));},
+                                            return(foldStringKey([i,n]));
+                                        },
                                     peg$otherExpectation("Identifier"),
                                     peg$otherExpectation("Database Identifier"),
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "database" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "database" ,"name" : n});
+                                        },
                                     peg$otherExpectation("Function Identifier"),
                                     function(d,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "function" ,"name" : foldStringWord([d,n])});},
+                                            return({"type" : "identifier" ,"variant" : "function" ,"name" : foldStringWord([d,n])});
+                                        },
                                     peg$otherExpectation("Table Identifier"),
                                     function(d,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "table" ,"name" : foldStringWord([d,n])});},
+                                            return({"type" : "identifier" ,"variant" : "table" ,"name" : foldStringWord([d,n])});
+                                        },
                                     function(n,d){
                                         
-                                            return(foldStringWord([n,d]));},
+                                            return(foldStringWord([n,d]));
+                                        },
                                     peg$otherExpectation("Column Identifier"),
                                     function(q,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "column" ,"name" : foldStringWord([q,n])});},
+                                            return({"type" : "identifier" ,"variant" : "column" ,"name" : foldStringWord([q,n])});
+                                        },
                                     function(){
                                         
-                                            return "";},
+                                            return "";
+                                        },
                                     function(d,t){
                                         
-                                            return(foldStringWord([d,t]));},
+                                            return(foldStringWord([d,t]));
+                                        },
                                     peg$otherExpectation("Collation Identifier"),
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "collation" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "collation" ,"name" : n});
+                                        },
                                     peg$otherExpectation("Savepoint Identifier"),
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "savepoint" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "savepoint" ,"name" : n});
+                                        },
                                     peg$otherExpectation("Index Identifier"),
                                     function(d,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "index" ,"name" : foldStringWord([d,n])});},
+                                            return({"type" : "identifier" ,"variant" : "index" ,"name" : foldStringWord([d,n])});
+                                        },
                                     peg$otherExpectation("Trigger Identifier"),
                                     function(d,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "trigger" ,"name" : foldStringWord([d,n])});},
+                                            return({"type" : "identifier" ,"variant" : "trigger" ,"name" : foldStringWord([d,n])});
+                                        },
                                     peg$otherExpectation("View Identifier"),
                                     function(d,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "view" ,"name" : foldStringWord([d,n])});},
+                                            return({"type" : "identifier" ,"variant" : "view" ,"name" : foldStringWord([d,n])});
+                                        },
                                     peg$otherExpectation("Pragma Identifier"),
                                     function(d,n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "pragma" ,"name" : foldStringWord([d,n])});},
+                                            return({"type" : "identifier" ,"variant" : "pragma" ,"name" : foldStringWord([d,n])});
+                                        },
                                     peg$otherExpectation("CTE Identifier"),
                                     function(d){
                                         
-                                            return d;},
+                                            return d;
+                                        },
                                     function(n,a){
                                         
-                                            return(Object.assign({"type" : "identifier" ,"variant" : "expression" ,"format" : "table" ,"name" : n["name"] ,"columns" : []},a));},
+                                            return(Object.assign({"type" : "identifier" ,"variant" : "expression" ,"format" : "table" ,"name" : n["name"] ,"columns" : []},a));
+                                        },
                                     peg$otherExpectation("Table Constraint Identifier"),
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "constraint" ,"format" : "table" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "constraint" ,"format" : "table" ,"name" : n});
+                                        },
                                     peg$otherExpectation("Column Constraint Identifier"),
                                     function(n){
                                         
-                                            return({"type" : "identifier" ,"variant" : "constraint" ,"format" : "column" ,"name" : n});},
+                                            return({"type" : "identifier" ,"variant" : "constraint" ,"format" : "column" ,"name" : n});
+                                        },
                                     peg$otherExpectation("Datatype Name"),
                                     function(t){
                                         
-                                            return([t,"text"]);},
+                                            return([t,"text"]);
+                                        },
                                     function(t){
                                         
-                                            return([t,"real"]);},
+                                            return([t,"real"]);
+                                        },
                                     function(t){
                                         
-                                            return([t,"numeric"]);},
+                                            return([t,"numeric"]);
+                                        },
                                     function(t){
                                         
-                                            return([t,"integer"]);},
+                                            return([t,"integer"]);
+                                        },
                                     function(t){
                                         
-                                            return([t,"none"]);},
+                                            return([t,"none"]);
+                                        },
                                     peg$otherExpectation("TEXT Datatype Name"),
                                     "n",
                                     peg$literalExpectation("N",true),
@@ -1382,7 +1649,8 @@
                                     peg$literalExpectation("PRECISION",true),
                                     function(d,p){
                                         
-                                            return(foldStringWord([d,p]));},
+                                            return(foldStringWord([d,p]));
+                                        },
                                     peg$otherExpectation("NUMERIC Datatype Name"),
                                     "numeric",
                                     peg$literalExpectation("NUMERIC",true),
@@ -1419,7 +1687,8 @@
                                     peg$literalExpectation("POINT",true),
                                     function(f,p){
                                         
-                                            return(foldStringWord([f,p]));},
+                                            return(foldStringWord([f,p]));
+                                        },
                                     peg$otherExpectation("BLOB Datatype Name"),
                                     "blob",
                                     peg$literalExpectation("BLOB",true),
@@ -1431,14 +1700,17 @@
                                     peg$classExpectation([["a","f"],["0","9"]],false,true),
                                     function(u,s){
                                         
-                                            return(foldStringWord([u,s]).toLowerCase());},
+                                            return(foldStringWord([u,s]).toLowerCase());
+                                        },
                                     function(n){
                                         
-                                            return(keyNode(n));},
+                                            return(keyNode(n));
+                                        },
                                     peg$anyExpectation(),
                                     function(n){
                                         
-                                            return(textNode(n));},
+                                            return(textNode(n));
+                                        },
                                     /^[ \t]/,
                                     peg$classExpectation([" ","\t"],false,false),
                                     '"',
@@ -1449,12 +1721,14 @@
                                     peg$classExpectation(['"'],true,false),
                                     function(n){
                                         
-                                            return(unescape(n,'"'));},
+                                            return(unescape(n,'"'));
+                                        },
                                     "'",
                                     peg$literalExpectation("'",false),
                                     function(n){
                                         
-                                            return(unescape(n,"'"));},
+                                            return(unescape(n,"'"));
+                                        },
                                     "`",
                                     peg$literalExpectation("`",false),
                                     "``",
@@ -1463,7 +1737,8 @@
                                     peg$classExpectation(["`"],true,false),
                                     function(n){
                                         
-                                            return(unescape(n,"`"));},
+                                            return(unescape(n,"`"));
+                                        },
                                     peg$otherExpectation("Open Bracket"),
                                     "[",
                                     peg$literalExpectation("[",false),
@@ -1777,10 +2052,12 @@
                                     peg$literalExpectation("WITHOUT",true),
                                     function(r){
                                         
-                                            return(keyNode(r));},
+                                            return(keyNode(r));
+                                        },
                                     function(){
                                         
-                                            return null;},
+                                            return null;
+                                        },
                                     peg$otherExpectation("Line Comment"),
                                     "--",
                                     peg$literalExpectation("--",false),
@@ -2359,1099 +2636,117 @@
                                 var peg$silentFails=0;
                                 var peg$resultsCache={};
                                 var peg$ruleNames = [
-                                    "start",
-                                    "start_streaming",
-                                    "stmt_list",
-                                    "semi_optional",
-                                    "semi_required",
-                                    "stmt_list_tail",
-                                    "type_definition",
-                                    "type_definition_types",
-                                    "datatype_custom",
-                                    "datatype_word_tail",
-                                    "type_definition_args",
-                                    "definition_args_loop",
-                                    "literal_value",
-                                    "literal_null",
-                                    "literal_date",
-                                    "literal_string",
-                                    "literal_string_single",
-                                    "literal_string_schar",
-                                    "literal_blob",
-                                    "literal_text",
-                                    "number_sign",
-                                    "literal_number_signed",
-                                    "literal_number",
-                                    "literal_number_decimal",
-                                    "number_decimal_node",
-                                    "number_decimal_full",
-                                    "number_decimal_fraction",
-                                    "number_decimal_exponent",
-                                    "literal_number_hex",
-                                    "number_hex",
-                                    "number_digit",
-                                    "bind_parameter",
-                                    "bind_parameter_numbered",
-                                    "bind_number_id",
-                                    "bind_parameter_named",
-                                    "bind_parameter_tcl",
-                                    "tcl_suffix",
-                                    "expression_exists",
-                                    "expression_exists_ne",
-                                    "expression_raise",
-                                    "expression_raise_args",
-                                    "raise_args_ignore",
-                                    "raise_args_message",
-                                    "expression_root",
-                                    "expression_wrapped",
-                                    "expression_recur",
-                                    "expression_unary_collate",
-                                    "expression_unary",
-                                    "expression_unary_op",
-                                    "expression_collate",
-                                    "expression_concat",
-                                    "expression_multiply",
-                                    "expression_multiply_op",
-                                    "expression_add",
-                                    "expression_add_op",
-                                    "expression_shift",
-                                    "expression_shift_op",
-                                    "expression_compare",
-                                    "expression_compare_op",
-                                    "expression_equiv",
-                                    "expression_equiv_tails",
-                                    "expression_equiv_null_op",
-                                    "expression_equiv_op",
-                                    "expression_cast",
-                                    "type_alias",
-                                    "expression_case",
-                                    "case_expression",
-                                    "expression_case_when",
-                                    "expression_case_else",
-                                    "expression_postfix",
-                                    "expression_postfix_tail",
-                                    "expression_like",
-                                    "expression_escape",
-                                    "expression_between",
-                                    "expression_between_tail",
-                                    "expression_is_not",
-                                    "expression_in",
-                                    "expression_in_target",
-                                    "expression_list_or_select",
-                                    "expression_and",
-                                    "expression",
-                                    "expression_list",
-                                    "expression_list_loop",
-                                    "expression_list_rest",
-                                    "function_call",
-                                    "function_call_args",
-                                    "args_list_distinct",
-                                    "error_message",
-                                    "stmt",
-                                    "stmt_modifier",
-                                    "modifier_query",
-                                    "stmt_nodes",
-                                    "stmt_commit",
-                                    "stmt_begin",
-                                    "commit_transaction",
-                                    "stmt_begin_modifier",
-                                    "stmt_rollback",
-                                    "rollback_savepoint",
-                                    "savepoint_name",
-                                    "savepoint_alt",
-                                    "stmt_savepoint",
-                                    "stmt_release",
-                                    "stmt_alter",
-                                    "alter_start",
-                                    "alter_action",
-                                    "alter_action_rename",
-                                    "alter_action_add",
-                                    "action_add_modifier",
-                                    "stmt_crud",
-                                    "stmt_core_with",
-                                    "clause_with",
-                                    "clause_with_recursive",
-                                    "clause_with_tables",
-                                    "clause_with_loop",
-                                    "expression_cte",
-                                    "select_alias",
-                                    "select_wrapped",
-                                    "stmt_select_full",
-                                    "stmt_sqlite",
-                                    "stmt_attach",
-                                    "attach_arg",
-                                    "stmt_detach",
-                                    "stmt_vacuum",
-                                    "vacuum_target",
-                                    "stmt_analyze",
-                                    "analyze_arg",
-                                    "stmt_reindex",
-                                    "reindex_arg",
-                                    "stmt_pragma",
-                                    "pragma_expression",
-                                    "pragma_value",
-                                    "pragma_value_literal",
-                                    "pragma_value_bool",
-                                    "pragma_bool_id",
-                                    "pragma_value_name",
-                                    "stmt_crud_types",
-                                    "stmt_select",
-                                    "stmt_core_order",
-                                    "stmt_core_limit",
-                                    "stmt_core_limit_offset",
-                                    "limit_offset_variant",
-                                    "limit_offset_variant_name",
-                                    "select_loop",
-                                    "select_loop_union",
-                                    "select_parts",
-                                    "select_parts_core",
-                                    "select_core_select",
-                                    "select_modifier",
-                                    "select_modifier_distinct",
-                                    "select_modifier_all",
-                                    "select_target",
-                                    "select_target_loop",
-                                    "select_core_from",
-                                    "stmt_core_where",
-                                    "select_core_group",
-                                    "select_core_having",
-                                    "select_node",
-                                    "select_node_star",
-                                    "select_node_star_qualified",
-                                    "select_node_aliased",
-                                    "select_source",
-                                    "source_loop_tail",
-                                    "select_cross_clause",
-                                    "select_join_clause",
-                                    "table_or_sub",
-                                    "table_or_sub_func",
-                                    "table_qualified",
-                                    "table_qualified_id",
-                                    "table_or_sub_index_node",
-                                    "index_node_indexed",
-                                    "index_node_none",
-                                    "table_or_sub_sub",
-                                    "table_or_sub_select",
-                                    "alias",
-                                    "join_operator",
-                                    "join_operator_natural",
-                                    "join_operator_types",
-                                    "operator_types_hand",
-                                    "types_hand_outer",
-                                    "operator_types_misc",
-                                    "join_condition",
-                                    "join_condition_on",
-                                    "join_condition_using",
-                                    "select_parts_values",
-                                    "stmt_core_order_list",
-                                    "stmt_core_order_list_loop",
-                                    "stmt_core_order_list_item",
-                                    "select_star",
-                                    "stmt_fallback_types",
-                                    "stmt_insert",
-                                    "insert_keyword",
-                                    "insert_keyword_ins",
-                                    "insert_keyword_repl",
-                                    "insert_keyword_mod",
-                                    "insert_target",
-                                    "insert_into",
-                                    "insert_into_start",
-                                    "insert_results",
-                                    "loop_columns",
-                                    "loop_column_tail",
-                                    "loop_name",
-                                    "insert_value",
-                                    "insert_value_start",
-                                    "insert_values_list",
-                                    "insert_values_loop",
-                                    "expression_list_wrapped",
-                                    "insert_default",
-                                    "operator_compound",
-                                    "compound_union",
-                                    "compound_union_all",
-                                    "stmt_update",
-                                    "update_start",
-                                    "update_fallback",
-                                    "update_set",
-                                    "update_columns",
-                                    "update_columns_tail",
-                                    "update_column",
-                                    "stmt_delete",
-                                    "delete_start",
-                                    "stmt_create",
-                                    "create_start",
-                                    "create_table_only",
-                                    "create_index_only",
-                                    "create_trigger_only",
-                                    "create_view_only",
-                                    "create_virtual_only",
-                                    "create_table",
-                                    "create_table_start",
-                                    "create_core_tmp",
-                                    "create_core_ine",
-                                    "create_table_source",
-                                    "table_source_def",
-                                    "source_def_rowid",
-                                    "source_def_loop",
-                                    "source_def_tail",
-                                    "source_tbl_loop",
-                                    "source_def_column",
-                                    "source_def_name",
-                                    "column_type",
-                                    "column_constraints",
-                                    "column_constraint_tail",
-                                    "column_constraint",
-                                    "constraint_name",
-                                    "constraint_name_loop",
-                                    "column_constraint_types",
-                                    "column_constraint_foreign",
-                                    "column_constraint_primary",
-                                    "col_primary_start",
-                                    "col_primary_auto",
-                                    "column_constraint_null",
-                                    "constraint_null_types",
-                                    "constraint_null_value",
-                                    "column_constraint_check",
-                                    "column_constraint_default",
-                                    "column_default_values",
-                                    "column_constraint_collate",
-                                    "table_constraint",
-                                    "table_constraint_types",
-                                    "table_constraint_check",
-                                    "table_constraint_primary",
-                                    "primary_start",
-                                    "primary_start_normal",
-                                    "primary_start_unique",
-                                    "primary_columns",
-                                    "primary_columns_index",
-                                    "primary_columns_table",
-                                    "primary_column_tail",
-                                    "primary_column",
-                                    "primary_column_types",
-                                    "column_collate",
-                                    "column_collate_loop",
-                                    "primary_column_dir",
-                                    "primary_conflict",
-                                    "primary_conflict_start",
-                                    "constraint_check",
-                                    "table_constraint_foreign",
-                                    "foreign_start",
-                                    "foreign_clause",
-                                    "foreign_references",
-                                    "foreign_actions",
-                                    "foreign_actions_tail",
-                                    "foreign_action",
-                                    "foreign_action_on",
-                                    "action_on_action",
-                                    "on_action_set",
-                                    "on_action_cascade",
-                                    "on_action_none",
-                                    "foreign_action_match",
-                                    "foreign_deferrable",
-                                    "deferrable_initially",
-                                    "table_source_select",
-                                    "create_index",
-                                    "create_index_start",
-                                    "index_unique",
-                                    "index_on",
-                                    "create_trigger",
-                                    "create_trigger_start",
-                                    "trigger_conditions",
-                                    "trigger_apply_mods",
-                                    "trigger_apply_instead",
-                                    "trigger_do",
-                                    "trigger_do_on",
-                                    "trigger_do_update",
-                                    "do_update_of",
-                                    "do_update_columns",
-                                    "trigger_foreach",
-                                    "trigger_when",
-                                    "trigger_action",
-                                    "action_loop",
-                                    "action_loop_stmt",
-                                    "create_view",
-                                    "id_view_expression",
-                                    "create_view_start",
-                                    "create_as_select",
-                                    "create_virtual",
-                                    "create_virtual_start",
-                                    "virtual_module",
-                                    "virtual_args",
-                                    "virtual_args_loop",
-                                    "virtual_args_tail",
-                                    "virtual_arg_types",
-                                    "virtual_column_name",
-                                    "stmt_drop",
-                                    "drop_start",
-                                    "drop_types",
-                                    "drop_ie",
-                                    "binary_concat",
-                                    "binary_plus",
-                                    "binary_minus",
-                                    "binary_multiply",
-                                    "binary_divide",
-                                    "binary_mod",
-                                    "binary_left",
-                                    "binary_right",
-                                    "binary_and",
-                                    "binary_or",
-                                    "binary_lt",
-                                    "binary_gt",
-                                    "binary_lte",
-                                    "binary_gte",
-                                    "binary_equal",
-                                    "binary_notequal_a",
-                                    "binary_notequal_b",
-                                    "binary_lang_isnt",
-                                    "id_name",
-                                    "id_database",
-                                    "id_function",
-                                    "id_table",
-                                    "id_table_qualified",
-                                    "id_column",
-                                    "column_unqualified",
-                                    "column_qualifiers",
-                                    "id_column_qualified",
-                                    "id_collation",
-                                    "id_savepoint",
-                                    "id_index",
-                                    "id_trigger",
-                                    "id_view",
-                                    "id_pragma",
-                                    "id_cte",
-                                    "id_table_expression",
-                                    "id_constraint_table",
-                                    "id_constraint_column",
-                                    "datatype_types",
-                                    "datatype_text",
-                                    "datatype_real",
-                                    "datatype_real_double",
-                                    "datatype_numeric",
-                                    "datatype_integer",
-                                    "datatype_integer_fp",
-                                    "datatype_none",
-                                    "name_char",
-                                    "unicode_char",
-                                    "name",
-                                    "name_quoted",
-                                    "name_unquoted",
-                                    "name_reserved",
-                                    "name_bracketed",
-                                    "bracket_terminator",
-                                    "name_dblquoted",
-                                    "name_sglquoted",
-                                    "name_backticked",
-                                    "sym_bopen",
-                                    "sym_bclose",
-                                    "sym_popen",
-                                    "sym_pclose",
-                                    "sym_comma",
-                                    "sym_dot",
-                                    "sym_star",
-                                    "sym_quest",
-                                    "sym_sglquote",
-                                    "sym_dblquote",
-                                    "sym_backtick",
-                                    "sym_tilde",
-                                    "sym_plus",
-                                    "sym_minus",
-                                    "sym_equal",
-                                    "sym_amp",
-                                    "sym_pipe",
-                                    "sym_mod",
-                                    "sym_lt",
-                                    "sym_gt",
-                                    "sym_excl",
-                                    "sym_semi",
-                                    "sym_colon",
-                                    "sym_fslash",
-                                    "sym_bslash",
-                                    "ABORT",
-                                    "ACTION",
-                                    "ADD",
-                                    "AFTER",
-                                    "ALL",
-                                    "ALTER",
-                                    "ANALYZE",
-                                    "AND",
-                                    "AS",
-                                    "ASC",
-                                    "ATTACH",
-                                    "AUTOINCREMENT",
-                                    "BEFORE",
-                                    "BEGIN",
-                                    "BETWEEN",
-                                    "BY",
-                                    "CASCADE",
-                                    "CASE",
-                                    "CAST",
-                                    "CHECK",
-                                    "COLLATE",
-                                    "COLUMN",
-                                    "COMMIT",
-                                    "CONFLICT",
-                                    "CONSTRAINT",
-                                    "CREATE",
-                                    "CROSS",
-                                    "CURRENT_DATE",
-                                    "CURRENT_TIME",
-                                    "CURRENT_TIMESTAMP",
-                                    "DATABASE",
-                                    "DEFAULT",
-                                    "DEFERRABLE",
-                                    "DEFERRED",
-                                    "DELETE",
-                                    "DESC",
-                                    "DETACH",
-                                    "DISTINCT",
-                                    "DROP",
-                                    "EACH",
-                                    "ELSE",
-                                    "END",
-                                    "ESCAPE",
-                                    "EXCEPT",
-                                    "EXCLUSIVE",
-                                    "EXISTS",
-                                    "EXPLAIN",
-                                    "FAIL",
-                                    "FOR",
-                                    "FOREIGN",
-                                    "FROM",
-                                    "FULL",
-                                    "GLOB",
-                                    "GROUP",
-                                    "HAVING",
-                                    "IF",
-                                    "IGNORE",
-                                    "IMMEDIATE",
-                                    "IN",
-                                    "INDEX",
-                                    "INDEXED",
-                                    "INITIALLY",
-                                    "INNER",
-                                    "INSERT",
-                                    "INSTEAD",
-                                    "INTERSECT",
-                                    "INTO",
-                                    "IS",
-                                    "ISNULL",
-                                    "JOIN",
-                                    "KEY",
-                                    "LEFT",
-                                    "LIKE",
-                                    "LIMIT",
-                                    "MATCH",
-                                    "NATURAL",
-                                    "NO",
-                                    "NOT",
-                                    "NOTNULL",
-                                    "NULL",
-                                    "OF",
-                                    "OFFSET",
-                                    "ON",
-                                    "OR",
-                                    "ORDER",
-                                    "OUTER",
-                                    "PLAN",
-                                    "PRAGMA",
-                                    "PRIMARY",
-                                    "QUERY",
-                                    "RAISE",
-                                    "RECURSIVE",
-                                    "REFERENCES",
-                                    "REGEXP",
-                                    "REINDEX",
-                                    "RELEASE",
-                                    "RENAME",
-                                    "REPLACE",
-                                    "RESTRICT",
-                                    "RIGHT",
-                                    "ROLLBACK",
-                                    "ROW",
-                                    "ROWID",
-                                    "SAVEPOINT",
-                                    "SELECT",
-                                    "SET",
-                                    "TABLE",
-                                    "TEMP",
-                                    "TEMPORARY",
-                                    "THEN",
-                                    "TO",
-                                    "TRANSACTION",
-                                    "TRIGGER",
-                                    "UNION",
-                                    "UNIQUE",
-                                    "UPDATE",
-                                    "USING",
-                                    "VACUUM",
-                                    "VALUES",
-                                    "VIEW",
-                                    "VIRTUAL",
-                                    "WHEN",
-                                    "WHERE",
-                                    "WITH",
-                                    "WITHOUT",
-                                    "reserved_words",
-                                    "reserved_word_list",
-                                    "reserved_critical_list",
-                                    "comment",
-                                    "comment_line",
-                                    "comment_block",
-                                    "comment_block_start",
-                                    "comment_block_end",
-                                    "comment_block_body",
-                                    "block_body_nodes",
-                                    "comment_block_feed",
-                                    "o",
-                                    "_TODO_"
-                                ];
+                                    /*tbel*/"start","start_streaming","stmt_list","semi_optional","semi_required","stmt_list_tail","type_definition","type_definition_types","datatype_custom"
+                                    ,"datatype_word_tail","type_definition_args","definition_args_loop","literal_value","literal_null","literal_date","literal_string","literal_string_single","literal_string_schar","literal_blob"
+                                    ,"literal_text","number_sign","literal_number_signed","literal_number","literal_number_decimal","number_decimal_node","number_decimal_full","number_decimal_fraction","number_decimal_exponent","literal_number_hex"
+                                    ,"number_hex","number_digit","bind_parameter","bind_parameter_numbered","bind_number_id","bind_parameter_named","bind_parameter_tcl","tcl_suffix","expression_exists","expression_exists_ne"
+                                    ,"expression_raise","expression_raise_args","raise_args_ignore","raise_args_message","expression_root","expression_wrapped","expression_recur","expression_unary_collate","expression_unary","expression_unary_op"
+                                    ,"expression_collate","expression_concat","expression_multiply","expression_multiply_op","expression_add","expression_add_op","expression_shift","expression_shift_op","expression_compare","expression_compare_op"
+                                    ,"expression_equiv","expression_equiv_tails","expression_equiv_null_op","expression_equiv_op","expression_cast","type_alias","expression_case","case_expression","expression_case_when","expression_case_else"
+                                    ,"expression_postfix","expression_postfix_tail","expression_like","expression_escape","expression_between","expression_between_tail","expression_is_not","expression_in","expression_in_target","expression_list_or_select"
+                                    ,"expression_and","expression","expression_list","expression_list_loop","expression_list_rest","function_call","function_call_args","args_list_distinct","error_message","stmt"
+                                    ,"stmt_modifier","modifier_query","stmt_nodes","stmt_commit","stmt_begin","commit_transaction","stmt_begin_modifier","stmt_rollback","rollback_savepoint","savepoint_name"
+                                    ,"savepoint_alt","stmt_savepoint","stmt_release","stmt_alter","alter_start","alter_action","alter_action_rename","alter_action_add","action_add_modifier","stmt_crud"
+                                    ,"stmt_core_with","clause_with","clause_with_recursive","clause_with_tables","clause_with_loop","expression_cte","select_alias","select_wrapped","stmt_select_full","stmt_sqlite"
+                                    ,"stmt_attach","attach_arg","stmt_detach","stmt_vacuum","vacuum_target","stmt_analyze","analyze_arg","stmt_reindex","reindex_arg","stmt_pragma"
+                                    ,"pragma_expression","pragma_value","pragma_value_literal","pragma_value_bool","pragma_bool_id","pragma_value_name","stmt_crud_types","stmt_select","stmt_core_order","stmt_core_limit"
+                                    ,"stmt_core_limit_offset","limit_offset_variant","limit_offset_variant_name","select_loop","select_loop_union","select_parts","select_parts_core","select_core_select","select_modifier","select_modifier_distinct"
+                                    ,"select_modifier_all","select_target","select_target_loop","select_core_from","stmt_core_where","select_core_group","select_core_having","select_node","select_node_star","select_node_star_qualified"
+                                    ,"select_node_aliased","select_source","source_loop_tail","select_cross_clause","select_join_clause","table_or_sub","table_or_sub_func","table_qualified","table_qualified_id","table_or_sub_index_node"
+                                    ,"index_node_indexed","index_node_none","table_or_sub_sub","table_or_sub_select","alias","join_operator","join_operator_natural","join_operator_types","operator_types_hand","types_hand_outer"
+                                    ,"operator_types_misc","join_condition","join_condition_on","join_condition_using","select_parts_values","stmt_core_order_list","stmt_core_order_list_loop","stmt_core_order_list_item","select_star","stmt_fallback_types"
+                                    ,"stmt_insert","insert_keyword","insert_keyword_ins","insert_keyword_repl","insert_keyword_mod","insert_target","insert_into","insert_into_start","insert_results","loop_columns"
+                                    ,"loop_column_tail","loop_name","insert_value","insert_value_start","insert_values_list","insert_values_loop","expression_list_wrapped","insert_default","operator_compound","compound_union"
+                                    ,"compound_union_all","stmt_update","update_start","update_fallback","update_set","update_columns","update_columns_tail","update_column","stmt_delete","delete_start"
+                                    ,"stmt_create","create_start","create_table_only","create_index_only","create_trigger_only","create_view_only","create_virtual_only","create_table","create_table_start","create_core_tmp"
+                                    ,"create_core_ine","create_table_source","table_source_def","source_def_rowid","source_def_loop","source_def_tail","source_tbl_loop","source_def_column","source_def_name","column_type"
+                                    ,"column_constraints","column_constraint_tail","column_constraint","constraint_name","constraint_name_loop","column_constraint_types","column_constraint_foreign","column_constraint_primary","col_primary_start","col_primary_auto"
+                                    ,"column_constraint_null","constraint_null_types","constraint_null_value","column_constraint_check","column_constraint_default","column_default_values","column_constraint_collate","table_constraint","table_constraint_types","table_constraint_check"
+                                    ,"table_constraint_primary","primary_start","primary_start_normal","primary_start_unique","primary_columns","primary_columns_index","primary_columns_table","primary_column_tail","primary_column","primary_column_types"
+                                    ,"column_collate","column_collate_loop","primary_column_dir","primary_conflict","primary_conflict_start","constraint_check","table_constraint_foreign","foreign_start","foreign_clause","foreign_references"
+                                    ,"foreign_actions","foreign_actions_tail","foreign_action","foreign_action_on","action_on_action","on_action_set","on_action_cascade","on_action_none","foreign_action_match","foreign_deferrable"
+                                    ,"deferrable_initially","table_source_select","create_index","create_index_start","index_unique","index_on","create_trigger","create_trigger_start","trigger_conditions","trigger_apply_mods"
+                                    ,"trigger_apply_instead","trigger_do","trigger_do_on","trigger_do_update","do_update_of","do_update_columns","trigger_foreach","trigger_when","trigger_action","action_loop"
+                                    ,"action_loop_stmt","create_view","id_view_expression","create_view_start","create_as_select","create_virtual","create_virtual_start","virtual_module","virtual_args","virtual_args_loop"
+                                    ,"virtual_args_tail","virtual_arg_types","virtual_column_name","stmt_drop","drop_start","drop_types","drop_ie","binary_concat","binary_plus","binary_minus"
+                                    ,"binary_multiply","binary_divide","binary_mod","binary_left","binary_right","binary_and","binary_or","binary_lt","binary_gt","binary_lte"
+                                    ,"binary_gte","binary_equal","binary_notequal_a","binary_notequal_b","binary_lang_isnt","id_name","id_database","id_function","id_table","id_table_qualified"
+                                    ,"id_column","column_unqualified","column_qualifiers","id_column_qualified","id_collation","id_savepoint","id_index","id_trigger","id_view","id_pragma"
+                                    ,"id_cte","id_table_expression","id_constraint_table","id_constraint_column","datatype_types","datatype_text","datatype_real","datatype_real_double","datatype_numeric","datatype_integer"
+                                    ,"datatype_integer_fp","datatype_none","name_char","unicode_char","name","name_quoted","name_unquoted","name_reserved","name_bracketed","bracket_terminator"
+                                    ,"name_dblquoted","name_sglquoted","name_backticked","sym_bopen","sym_bclose","sym_popen","sym_pclose","sym_comma","sym_dot","sym_star"
+                                    ,"sym_quest","sym_sglquote","sym_dblquote","sym_backtick","sym_tilde","sym_plus","sym_minus","sym_equal","sym_amp","sym_pipe"
+                                    ,"sym_mod","sym_lt","sym_gt","sym_excl","sym_semi","sym_colon","sym_fslash","sym_bslash","ABORT","ACTION"
+                                    ,"ADD","AFTER","ALL","ALTER","ANALYZE","AND","AS","ASC","ATTACH","AUTOINCREMENT"
+                                    ,"BEFORE","BEGIN","BETWEEN","BY","CASCADE","CASE","CAST","CHECK","COLLATE","COLUMN"
+                                    ,"COMMIT","CONFLICT","CONSTRAINT","CREATE","CROSS","CURRENT_DATE","CURRENT_TIME","CURRENT_TIMESTAMP","DATABASE","DEFAULT"
+                                    ,"DEFERRABLE","DEFERRED","DELETE","DESC","DETACH","DISTINCT","DROP","EACH","ELSE","END"
+                                    ,"ESCAPE","EXCEPT","EXCLUSIVE","EXISTS","EXPLAIN","FAIL","FOR","FOREIGN","FROM","FULL"
+                                    ,"GLOB","GROUP","HAVING","IF","IGNORE","IMMEDIATE","IN","INDEX","INDEXED","INITIALLY"
+                                    ,"INNER","INSERT","INSTEAD","INTERSECT","INTO","IS","ISNULL","JOIN","KEY","LEFT"
+                                    ,"LIKE","LIMIT","MATCH","NATURAL","NO","NOT","NOTNULL","NULL","OF","OFFSET"
+                                    ,"ON","OR","ORDER","OUTER","PLAN","PRAGMA","PRIMARY","QUERY","RAISE","RECURSIVE"
+                                    ,"REFERENCES","REGEXP","REINDEX","RELEASE","RENAME","REPLACE","RESTRICT","RIGHT","ROLLBACK","ROW"
+                                    ,"ROWID","SAVEPOINT","SELECT","SET","TABLE","TEMP","TEMPORARY","THEN","TO","TRANSACTION"
+                                    ,"TRIGGER","UNION","UNIQUE","UPDATE","USING","VACUUM","VALUES","VIEW","VIRTUAL","WHEN"
+                                    ,"WHERE","WITH","WITHOUT","reserved_words","reserved_word_list","reserved_critical_list","comment","comment_line","comment_block","comment_block_start"
+                                    ,"comment_block_end","comment_block_body","block_body_nodes","comment_block_feed","o","_TODO_"];
                                 var peg$descNames = [
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Type Definition",
-                                    null,
-                                    "Custom Datatype Name",
-                                    null,
-                                    "Type Definition Arguments",
-                                    null,
-                                    null,
-                                    "Null Literal",
-                                    "Date Literal",
-                                    "String Literal",
-                                    "Single-quoted String Literal",
-                                    null,
-                                    "Blob Literal",
-                                    null,
-                                    "Number Sign",
-                                    null,
-                                    null,
-                                    null,
-                                    "Decimal Literal",
-                                    null,
-                                    null,
-                                    "Decimal Literal Exponent",
-                                    "Hexidecimal Literal",
-                                    null,
-                                    null,
-                                    "Bind Parameter",
-                                    "Numbered Bind Parameter",
-                                    null,
-                                    "Named Bind Parameter",
-                                    "TCL Bind Parameter",
-                                    null,
-                                    "EXISTS Expression",
-                                    "EXISTS Keyword",
-                                    "RAISE Expression",
-                                    "RAISE Expression Arguments",
-                                    "IGNORE Keyword",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "COLLATE Expression",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "CAST Expression",
-                                    "Type Alias",
-                                    "CASE Expression",
-                                    null,
-                                    "WHEN Clause",
-                                    "ELSE Clause",
-                                    null,
-                                    null,
-                                    "Comparison Expression",
-                                    "ESCAPE Expression",
-                                    "BETWEEN Expression",
-                                    null,
-                                    null,
-                                    "IN Expression",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Expression List",
-                                    null,
-                                    null,
-                                    "Function Call",
-                                    "Function Call Arguments",
-                                    null,
-                                    "Error Message",
-                                    "Statement",
-                                    "QUERY PLAN",
-                                    "QUERY PLAN Keyword",
-                                    null,
-                                    "END Transaction Statement",
-                                    "BEGIN Transaction Statement",
-                                    null,
-                                    null,
-                                    "ROLLBACK Statement",
-                                    "TO Clause",
-                                    null,
-                                    null,
-                                    "SAVEPOINT Statement",
-                                    "RELEASE Statement",
-                                    "ALTER TABLE Statement",
-                                    "ALTER TABLE Keyword",
-                                    null,
-                                    "RENAME TO Keyword",
-                                    "ADD COLUMN Keyword",
-                                    null,
-                                    null,
-                                    "WITH Clause",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Common Table Expression",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "ATTACH Statement",
-                                    null,
-                                    "DETACH Statement",
-                                    "VACUUM Statement",
-                                    null,
-                                    "ANALYZE Statement",
-                                    null,
-                                    "REINDEX Statement",
-                                    null,
-                                    "PRAGMA Statement",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "SELECT Statement",
-                                    "ORDER BY Clause",
-                                    "LIMIT Clause",
-                                    "OFFSET Clause",
-                                    null,
-                                    null,
-                                    null,
-                                    "Union Operation",
-                                    null,
-                                    null,
-                                    "SELECT Results Clause",
-                                    "SELECT Results Modifier",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "FROM Clause",
-                                    "WHERE Clause",
-                                    "GROUP BY Clause",
-                                    "HAVING Clause",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "CROSS JOIN Operation",
-                                    "JOIN Operation",
-                                    null,
-                                    null,
-                                    "Qualified Table",
-                                    "Qualified Table Identifier",
-                                    "Qualfied Table Index",
-                                    null,
-                                    null,
-                                    "SELECT Source",
-                                    "Subquery",
-                                    "Alias",
-                                    "JOIN Operator",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "JOIN Constraint",
-                                    "Join ON Clause",
-                                    "Join USING Clause",
-                                    "VALUES Clause",
-                                    null,
-                                    null,
-                                    "Ordering Expression",
-                                    "Star",
-                                    "Fallback Type",
-                                    "INSERT Statement",
-                                    null,
-                                    "INSERT Keyword",
-                                    "REPLACE Keyword",
-                                    "INSERT OR Modifier",
-                                    null,
-                                    "INTO Clause",
-                                    "INTO Keyword",
-                                    "VALUES Clause",
-                                    "Column List",
-                                    null,
-                                    "Column Name",
-                                    "VALUES Clause",
-                                    "VALUES Keyword",
-                                    null,
-                                    null,
-                                    "Wrapped Expression List",
-                                    "DEFAULT VALUES Clause",
-                                    "Compound Operator",
-                                    "UNION Operator",
-                                    null,
-                                    "UPDATE Statement",
-                                    "UPDATE Keyword",
-                                    "UPDATE OR Modifier",
-                                    "SET Clause",
-                                    null,
-                                    null,
-                                    "Column Assignment",
-                                    "DELETE Statement",
-                                    "DELETE Keyword",
-                                    "CREATE Statement",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "CREATE TABLE Statement",
-                                    null,
-                                    null,
-                                    "IF NOT EXISTS Modifier",
-                                    null,
-                                    "Table Definition",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Column Definition",
-                                    null,
-                                    "Column Datatype",
-                                    null,
-                                    null,
-                                    "Column Constraint",
-                                    null,
-                                    "CONSTRAINT Name",
-                                    null,
-                                    "FOREIGN KEY Column Constraint",
-                                    "PRIMARY KEY Column Constraint",
-                                    "PRIMARY KEY Keyword",
-                                    "AUTOINCREMENT Keyword",
-                                    null,
-                                    "UNIQUE Column Constraint",
-                                    "NULL Column Constraint",
-                                    "CHECK Column Constraint",
-                                    "DEFAULT Column Constraint",
-                                    null,
-                                    "COLLATE Column Constraint",
-                                    "Table Constraint",
-                                    null,
-                                    "CHECK Table Constraint",
-                                    "PRIMARY KEY Table Constraint",
-                                    null,
-                                    "PRIMARY KEY Keyword",
-                                    "UNIQUE Keyword",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Indexed Column",
-                                    null,
-                                    "Collation",
-                                    null,
-                                    "Column Direction",
-                                    null,
-                                    "ON CONFLICT Keyword",
-                                    null,
-                                    "FOREIGN KEY Table Constraint",
-                                    "FOREIGN KEY Keyword",
-                                    null,
-                                    "REFERENCES Clause",
-                                    null,
-                                    null,
-                                    "FOREIGN KEY Action Clause",
-                                    null,
-                                    "FOREIGN KEY Action",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "DEFERRABLE Clause",
-                                    null,
-                                    null,
-                                    "CREATE INDEX Statement",
-                                    null,
-                                    null,
-                                    "ON Clause",
-                                    "CREATE TRIGGER Statement",
-                                    null,
-                                    "Conditional Clause",
-                                    null,
-                                    null,
-                                    "Conditional Action",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "WHEN Clause",
-                                    "Actions Clause",
-                                    null,
-                                    null,
-                                    "CREATE VIEW Statement",
-                                    null,
-                                    null,
-                                    null,
-                                    "CREATE VIRTUAL TABLE Statement",
-                                    null,
-                                    null,
-                                    "Module Arguments",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "DROP Statement",
-                                    "DROP Keyword",
-                                    "DROP Type",
-                                    "IF EXISTS Keyword",
-                                    "Or",
-                                    "Add",
-                                    "Subtract",
-                                    "Multiply",
-                                    "Divide",
-                                    "Modulo",
-                                    "Shift Left",
-                                    "Shift Right",
-                                    "Logical AND",
-                                    "Logical OR",
-                                    "Less Than",
-                                    "Greater Than",
-                                    "Less Than Or Equal",
-                                    "Greater Than Or Equal",
-                                    "Equal",
-                                    "Not Equal",
-                                    "Not Equal",
-                                    "IS",
-                                    "Identifier",
-                                    "Database Identifier",
-                                    "Function Identifier",
-                                    "Table Identifier",
-                                    null,
-                                    "Column Identifier",
-                                    null,
-                                    null,
-                                    null,
-                                    "Collation Identifier",
-                                    "Savepoint Identifier",
-                                    "Index Identifier",
-                                    "Trigger Identifier",
-                                    "View Identifier",
-                                    "Pragma Identifier",
-                                    "CTE Identifier",
-                                    null,
-                                    "Table Constraint Identifier",
-                                    "Column Constraint Identifier",
-                                    "Datatype Name",
-                                    "TEXT Datatype Name",
-                                    "REAL Datatype Name",
-                                    "DOUBLE Datatype Name",
-                                    "NUMERIC Datatype Name",
-                                    "INTEGER Datatype Name",
-                                    null,
-                                    "BLOB Datatype Name",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Open Bracket",
-                                    "Close Bracket",
-                                    "Open Parenthesis",
-                                    "Close Parenthesis",
-                                    "Comma",
-                                    "Period",
-                                    "Asterisk",
-                                    "Question Mark",
-                                    "Single Quote",
-                                    "Double Quote",
-                                    "Backtick",
-                                    "Tilde",
-                                    "Plus",
-                                    "Minus",
-                                    "Equal",
-                                    "Ampersand",
-                                    "Pipe",
-                                    "Modulo",
-                                    "Less Than",
-                                    "Greater Than",
-                                    "Exclamation",
-                                    "Semicolon",
-                                    "Colon",
-                                    "Forward Slash",
-                                    "Backslash",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Line Comment",
-                                    "Block Comment",
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    "Whitespace",
-                                    null
-                                ];
+                                    /*tbel*/null,null,null,null,null,null,"Type Definition",null,"Custom Datatype Name"
+                                    ,null,"Type Definition Arguments",null,null,"Null Literal","Date Literal","String Literal","Single-quoted String Literal",null,"Blob Literal"
+                                    ,null,"Number Sign",null,null,null,"Decimal Literal",null,null,"Decimal Literal Exponent","Hexidecimal Literal"
+                                    ,null,null,"Bind Parameter","Numbered Bind Parameter",null,"Named Bind Parameter","TCL Bind Parameter",null,"EXISTS Expression","EXISTS Keyword"
+                                    ,"RAISE Expression","RAISE Expression Arguments","IGNORE Keyword",null,null,null,null,null,null,null
+                                    ,"COLLATE Expression",null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,"CAST Expression","Type Alias","CASE Expression",null,"WHEN Clause","ELSE Clause"
+                                    ,null,null,"Comparison Expression","ESCAPE Expression","BETWEEN Expression",null,null,"IN Expression",null,null
+                                    ,null,null,"Expression List",null,null,"Function Call","Function Call Arguments",null,"Error Message","Statement"
+                                    ,"QUERY PLAN","QUERY PLAN Keyword",null,"END Transaction Statement","BEGIN Transaction Statement",null,null,"ROLLBACK Statement","TO Clause",null
+                                    ,null,"SAVEPOINT Statement","RELEASE Statement","ALTER TABLE Statement","ALTER TABLE Keyword",null,"RENAME TO Keyword","ADD COLUMN Keyword",null,null
+                                    ,"WITH Clause",null,null,null,null,"Common Table Expression",null,null,null,null
+                                    ,"ATTACH Statement",null,"DETACH Statement","VACUUM Statement",null,"ANALYZE Statement",null,"REINDEX Statement",null,"PRAGMA Statement"
+                                    ,null,null,null,null,null,null,null,"SELECT Statement","ORDER BY Clause","LIMIT Clause"
+                                    ,"OFFSET Clause",null,null,null,"Union Operation",null,null,"SELECT Results Clause","SELECT Results Modifier",null
+                                    ,null,null,null,"FROM Clause","WHERE Clause","GROUP BY Clause","HAVING Clause",null,null,null
+                                    ,null,null,null,"CROSS JOIN Operation","JOIN Operation",null,null,"Qualified Table","Qualified Table Identifier","Qualfied Table Index"
+                                    ,null,null,"SELECT Source","Subquery","Alias","JOIN Operator",null,null,null,null
+                                    ,null,"JOIN Constraint","Join ON Clause","Join USING Clause","VALUES Clause",null,null,"Ordering Expression","Star","Fallback Type"
+                                    ,"INSERT Statement",null,"INSERT Keyword","REPLACE Keyword","INSERT OR Modifier",null,"INTO Clause","INTO Keyword","VALUES Clause","Column List"
+                                    ,null,"Column Name","VALUES Clause","VALUES Keyword",null,null,"Wrapped Expression List","DEFAULT VALUES Clause","Compound Operator","UNION Operator"
+                                    ,null,"UPDATE Statement","UPDATE Keyword","UPDATE OR Modifier","SET Clause",null,null,"Column Assignment","DELETE Statement","DELETE Keyword"
+                                    ,"CREATE Statement",null,null,null,null,null,null,"CREATE TABLE Statement",null,null
+                                    ,"IF NOT EXISTS Modifier",null,"Table Definition",null,null,null,null,"Column Definition",null,"Column Datatype"
+                                    ,null,null,"Column Constraint",null,"CONSTRAINT Name",null,"FOREIGN KEY Column Constraint","PRIMARY KEY Column Constraint","PRIMARY KEY Keyword","AUTOINCREMENT Keyword"
+                                    ,null,"UNIQUE Column Constraint","NULL Column Constraint","CHECK Column Constraint","DEFAULT Column Constraint",null,"COLLATE Column Constraint","Table Constraint",null,"CHECK Table Constraint"
+                                    ,"PRIMARY KEY Table Constraint",null,"PRIMARY KEY Keyword","UNIQUE Keyword",null,null,null,null,"Indexed Column",null
+                                    ,"Collation",null,"Column Direction",null,"ON CONFLICT Keyword",null,"FOREIGN KEY Table Constraint","FOREIGN KEY Keyword",null,"REFERENCES Clause"
+                                    ,null,null,"FOREIGN KEY Action Clause",null,"FOREIGN KEY Action",null,null,null,null,"DEFERRABLE Clause"
+                                    ,null,null,"CREATE INDEX Statement",null,null,"ON Clause","CREATE TRIGGER Statement",null,"Conditional Clause",null
+                                    ,null,"Conditional Action",null,null,null,null,null,"WHEN Clause","Actions Clause",null
+                                    ,null,"CREATE VIEW Statement",null,null,null,"CREATE VIRTUAL TABLE Statement",null,null,"Module Arguments",null
+                                    ,null,null,null,"DROP Statement","DROP Keyword","DROP Type","IF EXISTS Keyword","Or","Add","Subtract"
+                                    ,"Multiply","Divide","Modulo","Shift Left","Shift Right","Logical AND","Logical OR","Less Than","Greater Than","Less Than Or Equal"
+                                    ,"Greater Than Or Equal","Equal","Not Equal","Not Equal","IS","Identifier","Database Identifier","Function Identifier","Table Identifier",null
+                                    ,"Column Identifier",null,null,null,"Collation Identifier","Savepoint Identifier","Index Identifier","Trigger Identifier","View Identifier","Pragma Identifier"
+                                    ,"CTE Identifier",null,"Table Constraint Identifier","Column Constraint Identifier","Datatype Name","TEXT Datatype Name","REAL Datatype Name","DOUBLE Datatype Name","NUMERIC Datatype Name","INTEGER Datatype Name"
+                                    ,null,"BLOB Datatype Name",null,null,null,null,null,null,null,null
+                                    ,null,null,null,"Open Bracket","Close Bracket","Open Parenthesis","Close Parenthesis","Comma","Period","Asterisk"
+                                    ,"Question Mark","Single Quote","Double Quote","Backtick","Tilde","Plus","Minus","Equal","Ampersand","Pipe"
+                                    ,"Modulo","Less Than","Greater Than","Exclamation","Semicolon","Colon","Forward Slash","Backslash",null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,null,null,null
+                                    ,null,null,null,null,null,null,null,"Line Comment","Block Comment",null
+                                    ,null,null,null,null,"Whitespace",null];
                                 var peg$tracer = "tracer" in options ? ( options.tracer ) : ( new peg$DefaultTracer() );
                                 var peg$result;
                                 if("startRule" in options){
@@ -3881,7 +3176,8 @@
                                     throw peg$buildStructuredError(peg$maxFailExpected,peg$maxFailPos < input.length ? ( input.charAt(peg$maxFailPos) ) : ( null ),peg$maxFailPos < input.length ? ( peg$computeLocation(peg$maxFailPos,peg$maxFailPos + 1) ) : ( peg$computeLocation(peg$maxFailPos,peg$maxFailPos) ));
                                 }
                             }
-                            module.exports={"SyntaxError" : peg$SyntaxError ,"DefaultTracer" : peg$DefaultTracer ,"parse" : peg$parse};},{}] ,
+                            module.exports={"SyntaxError" : peg$SyntaxError ,"DefaultTracer" : peg$DefaultTracer ,"parse" : peg$parse};
+                        },{}] ,
                 "3" : [function(require,module,exports){
                         
                             Object.defineProperty(exports,"__esModule",{"value" : true});
@@ -4005,6 +3301,7 @@
                                             return err;
                                         };
                                         return Tracer;
-                                }();},{}]
+                                }();
+                        },{}]
             },{},[1])(1));
     });
