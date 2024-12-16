@@ -159,7 +159,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         }
                     }else if(tab[i+1][2] === 'f' && tab[i+1][1] === 'new'){
                         t+=espcLigne;
-                        var objtestLi = js_tabTojavascript1(tab,i + 1,false,true,niveau,false);
+                        var objtestLi = js_traite_new(tab,i+1,niveau);
                         if(objtestLi.__xst === true){
                             t+='return(' + objtestLi.__xva + ')';
                             if(!(dansInitialisation)){
@@ -968,14 +968,14 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     t+=(prefixe_declaration + tabdeclare[0][1]) + '=' + cst + '' + terminateur;
                 }else{
                     if(tabdeclare[0][2] === 'c' && tabdeclare[1][2] === 'f'){
-                        if(tabdeclare[1][1] === 'new' && tabdeclare[1][8] === 1 && tab[i+3][1] === 'appelf'){
-                            t+=(prefixe_declaration + tabdeclare[0][1]) + '= new ';
-                            obj=js_traiteAppelFonction(tab,tabdeclare[1][0] + 1,true,niveau,false,'');
+                        if(tabdeclare[1][1] === 'new' && tabdeclare[1][2] === 'f'){
+                            var obj=js_traite_new(tab,tabdeclare[1][0],niveau);
                             if(obj.__xst === true){
-                                t+=obj.__xva + '' + terminateur;
+                                t+=(prefixe_declaration + tabdeclare[0][1]) + ' = ' + obj.__xva + '' + terminateur;
                             }else{
-                                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans une déclaration'}));
+                                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : '0978 declare new '}));
                             }
+
                         }else if(tabdeclare[1][1] === 'null'){
                             t+=(prefixe_declaration + tabdeclare[0][1]) + '' + terminateur;
                         }else if(tabdeclare[1][1] === 'obj'){
@@ -1007,19 +1007,6 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                 }
                             }else{
                                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"__xme" : 'erreur dans une condition'}));
-                            }
-                        }else if(tabdeclare[1][1] === 'new' && tabdeclare[1][2] === 'f'){
-                            var objtestLi = js_tabTojavascript1(tab,tabdeclare[1][0] + 1,false,true,niveau,false);
-                            if(objtestLi.__xst === true){
-                                if(tab[tabdeclare[1][0]+1][1] === 'defTab'){
-                                    t+=(prefixe_declaration + tabdeclare[0][1]) + ' = ' + objtestLi.__xva + '' + terminateur;
-                                }else{
-                                    if(objtestLi.__xva.substr(0,1) === '['){
-                                        t+=(prefixe_declaration + tabdeclare[0][1]) + ' = ' + objtestLi.__xva + '' + terminateur;
-                                    }else{
-                                        t+=(prefixe_declaration + tabdeclare[0][1]) + ' = new ' + objtestLi.__xva + '' + terminateur;
-                                    }
-                                }
                             }
                         }else if(tabdeclare[1][1] === '' && tabdeclare[1][2] === 'f'){
                             var objtestLi = js_tabTojavascript1(tab,tabdeclare[1][0] + 1,false,true,niveau,false);
@@ -1081,15 +1068,18 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
             }
         }else if(tab[i][1] === 'throw' && tab[i][2] === 'f'){
             /* todo trouver un mot pour throw */
-            t+=espcLigne;
+            if(!(dansInitialisation)){
+                t+=espcLigne;
+            }
             if(tab[i+1][1] === 'new'){
+                var obj=js_traite_new(tab,i+1,niveau);
+                if(obj.__xst === true){
+                    t+='throw ' + obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans une déclaration'}));
+                }
                 if(tab[i+1][8] === 1 && tab[i+2][1] === 'appelf'){
                     obj=js_traiteAppelFonction(tab,i + 2,true,niveau,false,'');
-                    if(obj.__xst === true){
-                        t+='throw new ' + obj.__xva;
-                    }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans une déclaration'}));
-                    }
                 }
             }else if((tab[i+1][1] === 'virgule' || 'testEnLigne' === tab[i+1][1]) && tab[i+1][2] === 'f'){
                 var objOperation = TraiteOperations2(tab,tab[i+1][0],niveau,0);
@@ -1121,19 +1111,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans supprimer 0955'}));
             }
         }else if(tab[i][1] === 'new' && tab[i][2] === 'f'){
-            if(tab[i][8] === 1 && tab[i+1][1] === 'appelf'){
-                obj=js_traiteAppelFonction(tab,i + 1,true,niveau,false,'');
-                if(obj.__xst === true){
-                    t+='new ' + obj.__xva;
-                    if(!(dansInitialisation)){
-                        t+=terminateur;
-                    }
-                }else{
-                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans une déclaration'}));
+            var obj=js_traite_new(tab,id,niveau);
+            if(obj.__xst === true){
+                if(!(dansInitialisation)){
+                    t+=espcLigne;
+                }
+                t+=obj.__xva + terminateur;
+                if(!(dansInitialisation)){
+                    t+=terminateur;
                 }
             }else{
-                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans new 1074'}));
+                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur dans une déclaration'}));
             }
+         
         }else if(tab[i][1] === 'defTab' && tab[i][2] === 'f'){
             obj=js_traiteDefinitionTableau(tab,i,niveau,{});
             if(obj.__xst === true){
@@ -1586,6 +1576,67 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
     }
     return({"__xst" : true ,"__xva" : t ,"forcerNvelleLigneEnfant" : forcerNvelleLigneEnfant ,"termineParUnePropriete" : termineParUnePropriete});
 }
+
+/*
+  =====================================================================================================================
+*/
+function js_traite_new(tab,id,niveau){
+
+    var valeur='';
+    var props='';
+    var l01=tab.length;
+    
+    for(var i=id+1;i<l01;i=tab[i][12]){
+        if(tab[i][2]==='c'){
+            valeur+=ma_cst_pour_javascript(tab[i]);
+        }else if(tab[i][1]==='appelf' && tab[i][2]==='f'){
+            var obj=js_traiteAppelFonction(tab,i,true,niveau,false,''); // tab,id,dansConditionOuDansFonction,niveau,recursif,nom_de_la_fonction_parente
+            if(obj.__xst === true){
+                valeur+=obj.__xva;
+            }else{
+                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1694 js_traite_new'}));
+            }
+        }else if(tab[i][1]==='defTab' && tab[i][2]==='f'){
+         
+            var obj1 = js_traiteDefinitionTableau(tab, i,niveau,{});
+            if(obj1.__xst === true){
+                if(obj1.__xva.startsWith('[') && obj1.__xva.endsWith(']')){
+                    debugger
+                    if(obj1.__xva.trim().replace(/\r/g,'').replace(/\n/g,'')==='[]'){
+                        valeur+='[]';
+                    }else{
+                        valeur+='Array(' + (obj1.__xva.substr(1,obj1.__xva.length - 2)) + ')';
+                    }
+                }else{
+                    valeur+=obj1.__xva;
+                }
+            }else{
+                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '0803 js_traiteInstruction1 new'}));
+            }
+         
+        }else if(tab[i][1]==='prop' && tab[i][2]==='f'){
+            for(var j=i+1;j<l01;j=tab[j][12]){
+              var obj2=js_traiteInstruction1(tab,niveau,j);
+              if(obj2.__xst === true){
+               props+='.'+obj2.__xva;
+              }else{
+                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"message" : '1703 js_traite_new propriété : "'+tab[j][1]+'"'}));
+              }
+              
+            }
+        }else{
+            return(logerreur({"__xst" : false ,"id" : id ,"tab" : tab ,"message" : '1699 js_traite_new element non prévu : "'+tab[i][1]+'"'}));
+        }
+    }
+    if(valeur+props==='[]'){
+        return({"__xst" : true , "__xva" : '[]'});
+    }else{
+        return({"__xst" : true , "__xva" : 'new ' + valeur+props});
+    }
+ 
+}
+
+
 /*
   =====================================================================================================================
 */
@@ -1647,7 +1698,7 @@ function js_traiteInstruction1(tab,niveau,id){
                 break;
                 
             case 'obj' :
-                var obj = js_traiteDefinitionObjet(tab,tab[id][0],true,niveau);
+                var obj = js_traiteDefinitionObjet(tab,id,true,niveau);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
@@ -1656,25 +1707,11 @@ function js_traiteInstruction1(tab,niveau,id){
                 break;
                 
             case 'new' :
-                /* todo faire un traitement de "new" à la place de +1 çi dessous */
-                if(tab[id+1][1] === 'defTab'){
-                    var obj1 = js_traiteDefinitionTableau(tab,id + 1,niveau,{});
-                    if(obj1.__xst === true){
-                        if(obj1.__xva.startsWith('[') && obj1.__xva.str1.endsWith(']')){
-                            t+=' new Array(' + (obj1.__xva.substr(1,obj1.__xva.length - 2)) + ')';
-                        }else{
-                            t+=' new ' + obj1.__xva;
-                        }
-                    }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '0803 js_traiteInstruction1 new'}));
-                    }
+                var obj=js_traite_new(tab,id,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
                 }else{
-                    obj=js_traiteAppelFonction(tab,id + 1,true,niveau,false,'');
-                    if(obj.__xst === true){
-                        t+=' new ' + obj.__xva;
-                    }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1685 js_traiteInstruction1 new'}));
-                    }
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : '1723 erreur sur js_traiteInstruction1 pour new '}));
                 }
                 break;
                 
@@ -1839,9 +1876,9 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                         }
                     }else if(tab[j+2][1] === 'new'){
 
-                        obj=js_traiteAppelFonction(tab,j + 3,true,niveau + 1,false,'');
+                        obj=js_traite_new(tab,j + 2,true,niveau + 1,false,'');
                         if(obj.__xst === true){
-                            valeur='new ' + obj.__xva;
+                            valeur=obj.__xva;
                             tableau_prop_objet.push({"type" : 'cv' ,"cle" : tab[j+1][1] ,"valeur" : valeur});
                             longueur_totale+=obj.__xva.length;
                         }else{
@@ -1883,6 +1920,8 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                     tableau_prop_objet.push({"type" : 'cv' ,"cle" : tab[j+1][1] ,"valeur" : valeur});
                     longueur_totale+=valeur.length;
                 }
+            }else{
+                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1492 dans js_traiteDefinitionObjet "' + tab[j+2][1] + '"'}));
             }
         }
     }
@@ -1974,8 +2013,6 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     fonction_dans_tableau_avec_constante=true;
                 }
                 nomFonction=tab[j+2][1];
-            }else if(tab[j][8] === 2 && tab[j+1][1] === 'new'){
-                nomFonction=tab[j+1][1] + ' ' + tab[j+2][1];
             }else if(tab[j+1][1] === 'appelf' && tab[j+1][2] === 'f'){
                 var obj1 = js_traiteAppelFonction(tab,j + 1,true,niveau,true,nom_de_la_fonction_parente);
                 if(obj1.__xst === true){
@@ -2008,6 +2045,19 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }
             }else if(tab[j+1][1] === '' && tab[j+1][2] === 'f'){
                 var objtestLi = js_tabTojavascript1(tab,j + 2,false,true,niveau,false);
+                if(objtestLi.__xst === true){
+                    nomFonction=objtestLi.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'erreur 1938 sur return'}));
+                }
+/*                
+            }else if(tab[j][8] === 2 && tab[j+1][1] === 'new'){
+                debugger
+                // hugues vérifier le cas ou new contient une propriété et une fonction 
+                nomFonction=tab[j+1][1] + ' ' + tab[j+2][1];
+*/                
+            }else if(tab[j+1][1] === 'new' && tab[j+1][2] === 'f'){
+                var objtestLi = js_traite_new(tab,j+1,niveau);
                 if(objtestLi.__xst === true){
                     nomFonction=objtestLi.__xva;
                 }else{
@@ -2798,9 +2848,12 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur TraiteOperations2 1808'}));
             }
         }else if(tab[i][1] === 'new'){
-            obj=js_traiteAppelFonction(tab,i + 1,true,niveau,false,'');
+//            obj=js_traiteAppelFonction(tab,i + 1,true,niveau,false,'');
+            var obj = js_traite_new(tab,i+1,niveau);
             if(obj.__xst === true){
-                t+=' new ' + obj.__xva;
+                t+=obj.__xva;
+                debugger
+                // hugues vérifier le cas ou new contient une propriété et une fonction 
             }else{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : '2367 erreur dans TraiteOperations2'}));
             }

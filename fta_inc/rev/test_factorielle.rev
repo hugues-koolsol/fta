@@ -64,14 +64,11 @@ src_html(
                                    Remarque, on aurait du écrire dans le format rev
                                    "moins(nombre,1)" à la place de "nombre-1"
                                    mais le langage rev permet des formes raccourcies
-                                   quand les expressions sont simples et ne comportents
+                                   quand les expressions sont simples et ne comportent
                                    pas des parenthèses
                                  ),
                                  retourner(
-                                    mult(
-                                       nombre,
-                                       appelf( nomf(factorielle) , p( moins( nombre , 1 ) ))
-                                    )
+                                    mult( nombre , appelf( nomf(factorielle) , p(nombre-1) ))
                                  )
                               )
                            )

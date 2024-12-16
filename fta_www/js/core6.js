@@ -188,6 +188,14 @@ function espacesnrev(optionCRLF,i){
   Des fonctions raccourcies
   =====================================================================================================================
 */
+function matrice_vers_texte(matrice,id){
+    var t='';
+    var obj = a2F1(matrice,id,true,id+1);
+    return obj;
+}
+/*
+  =====================================================================================================================
+*/
 function arrayToFunct1(matrice,retourLigne){
     var t='';
     var obj = a2F1(matrice,0,retourLigne,1);
@@ -291,7 +299,7 @@ function reIndicerLeTableau(tab){
                 k++;
                 tab[j][9]=k;
                 /*
-                 pour le dernier, on met lui même - 1
+                 pour le dernier, on met l01
                 */
                 tab[j][12]=l01;
                 if(k>1){
