@@ -10,8 +10,9 @@ $o1='';?>
     <div style="width:90%;">
         <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
         <!-- a href="javascript:transform_text_area_php_en_rev1(&quot;txtar1&quot;,&quot;txtar2&quot;)" class="yysucces">convertir1</a -->
-        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">convertir2</a>
-        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">convertir3</a>
+        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">convertir2 avec html stricte</a>
+        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">convertir avec html non stricte</a>
+        <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">convertir php-parser</a>
         <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar1&quot;,1)">aller à la ligne n°</a>
         <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
         <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
@@ -53,9 +54,11 @@ $par=array(
             'js/sql.js' , 
             'js/convertion_sql_en_rev.js' ,
             'js/jslib/sqlite_parser_from_demo.js',
-            'js/jslib/acorn.js'
+            'js/jslib/acorn.js',
+            'js/jslib/php-parser.js',
+            'js/pour_traite_php.js'
             ),
-    'module_a_inclure' => array( 'js/module_interface1.js', 'js/module_html.js'),
+    'module_a_inclure' => array( 'js/module_interface1.js', 'js/module_html.js' , 'js/module_conversion_ast_de_php_parser_vers_rev.js'),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){

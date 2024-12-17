@@ -831,6 +831,7 @@ function html_header1($parametres){
      let __module_html1=null;
      let __module_svg1=null;
      let __module_requete_sql1=null;
+     let __module_php_parseur1=null;
      /*       document.addEventListener("DOMContentLoaded",function(event){});     */
      /*
        =====================================================================================================================
@@ -856,6 +857,10 @@ function html_header1($parametres){
                  if(element.src && element.src.indexOf("js/module_html.js") >= 0){
                      import('./js/module_html.js').then(function(Module){
                          __module_html1=new Module.traitements_sur_html('__module_html1');
+                     });
+                 }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
+                     import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
+                         __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
                      });
                  }
              }

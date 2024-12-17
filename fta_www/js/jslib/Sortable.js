@@ -158,7 +158,7 @@
         var version="1.15.2";
         function userAgent(pattern){
             if(typeof window !== 'undefined' && window.navigator){
-                return(!(!(navigator.userAgent.match( /*   @__PURE__   */ pattern))));
+                return(!(!(navigator.userAgent.match( /*  @__PURE__  */ pattern))));
             }
         }
         var IE11OrLess = userAgent(/(?:Trident.*rv[ :]?11\.|msie|iemobile|Windows Phone)/i);
@@ -267,7 +267,7 @@
                 }while(!(selfOnly) && (el=el.parentNode));
             }
             var matrixFn = ((window.DOMMatrix || window.WebKitCSSMatrix || window.CSSMatrix)) || window.MSCSSMatrix;
-            /*jshint -W056 */
+            /* jshint -W056 */
             return(matrixFn && new matrixFn(appliedTransforms));
         }
         function find(ctx,tagName,iterator){
@@ -799,7 +799,7 @@
                         if(!(sortable.options[pluginName]) && !(plugin.initializeByDefault)){
                             return;
                         }
-                        var initialized= new plugin(sortable,el,sortable.options);
+                        var initialized = new plugin(sortable,el,sortable.options);
                         initialized.sortable=sortable;
                         initialized.options=sortable.options;
                         sortable[pluginName]=initialized;
@@ -864,7 +864,7 @@
             var options=sortable.options;
             var onName = 'on' + (name.charAt(0).toUpperCase()) + (name.substr(1));
             if(window.CustomEvent && !(IE11OrLess) && !(Edge)){
-                evt= new CustomEvent(name,{"bubbles" : true ,"cancelable" : true});
+                evt=new CustomEvent(name,{"bubbles" : true ,"cancelable" : true});
             }else{
                 evt=document.createEvent('Event');
                 evt.initEvent(name,true,true);
@@ -973,7 +973,7 @@
         var ghostRelativeParentInitialScroll=[];
         var _silent=false;
         var savedInputChecked=[];
-        /*# @const */
+        /* # @const */
         var documentExists = typeof document !== 'undefined';
         var PositionGhostAbsolutely=IOS;
         var CSSFloatProperty = (Edge || IE11OrLess) ? ( 'cssFloat' ) : ( 'float' );
@@ -1115,7 +1115,7 @@
                     dragEl.parentNode[expando][_isOutsideThisEl](evt.target);
                 }catch(e){
                 }
-                /*un point virgule est-il en trop ?*/
+                /* un point virgule est-il en trop ? */
             }
         };
         /*#
@@ -1200,7 +1200,7 @@
             _extends(this,AnimationStateManager());
         }
         Sortable.prototype={
-             /*# @lends Sortable.prototype */
+             /* # @lends Sortable.prototype */
             "constructor" : Sortable ,
             "_isOutsideThisEl" : function _isOutsideThisEl(target){
                 if(!(this.el.contains(target)) && target !== this.el){
@@ -1212,7 +1212,7 @@
                 return(typeof this.options.direction === 'function' ? ( this.options.direction.call(this,evt,target,dragEl) ) : ( this.options.direction ));
             
             } ,
-            "_onTapStart" : function _onTapStart( /*   # Event|TouchEvent    */ evt){
+            "_onTapStart" : function _onTapStart( /*  Event|TouchEvent  */ evt){
                 if(!(evt.cancelable)){
                     return;
                 }
@@ -1288,7 +1288,7 @@
                 this._prepareDragStart(evt,touch,target);
             
             } ,
-            "_prepareDragStart" : function _prepareDragStart( /*   # Event    */ evt, /*   # Touch    */ touch, /*   # HTMLElement    */ target){
+            "_prepareDragStart" : function _prepareDragStart( /*  Event  */ evt, /*  Touch  */ touch, /*  # HTMLElement  */ target){
                 var _this=this;
                 var el=_this.el;
                 var options=_this.options;
@@ -1355,7 +1355,7 @@
                 }
             
             } ,
-            "_delayedDragTouchMoveHandler" : function _delayedDragTouchMoveHandler( /*   # TouchEvent|PointerEvent *   */ e){
+            "_delayedDragTouchMoveHandler" : function _delayedDragTouchMoveHandler( /*  TouchEvent|PointerEvent  */ e){
                 var touch = e.touches ? ( e.touches[0] ) : ( e );
                 /* console.log('hugues formule à vérifier') */
                 if(Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) >= Math.floor(this.options.touchStartThreshold / ((this.nativeDraggable
@@ -1382,7 +1382,7 @@
                 off(ownerDocument,'pointermove',this._delayedDragTouchMoveHandler);
             
             } ,
-            "_triggerDragStart" : function _triggerDragStart( /*   # Event    */ evt, /*   # Touch    */ touch){
+            "_triggerDragStart" : function _triggerDragStart( /*  Event  */ evt, /*  Touch  */ touch){
                 touch=touch || evt.pointerType == 'touch' && evt;
                 if(!(this.nativeDraggable) || touch){
                     if(this.options.supportPointer){
@@ -1458,7 +1458,7 @@
                 }
             
             } ,
-            "_onTouchMove" : function _onTouchMove( /*   #TouchEvent   */ evt){
+            "_onTouchMove" : function _onTouchMove( /*  TouchEvent  */ evt){
                 if(tapEvt){
                     var options=this.options;
                     var fallbackTolerance=options.fallbackTolerance;
@@ -1548,7 +1548,7 @@
                 }
             
             } ,
-            "_onDragStart" : function _onDragStart( /*   #Event   */ evt, /*   #boolean   */ fallback){
+            "_onDragStart" : function _onDragStart( /*  Event  */ evt, /*  boolean  */ fallback){
                 var _this=this;
                 var dataTransfer=evt.dataTransfer;
                 var options=_this.options;
@@ -1602,7 +1602,7 @@
                 }
             
             } ,
-            "_onDragOver" : function _onDragOver( /*   #Event   */ evt){
+            "_onDragOver" : function _onDragOver( /*  Event  */ evt){
                 var el=this.el;
                 var target=evt.target;
                 var dragRect;
@@ -1683,7 +1683,7 @@
                             dragEl.parentNode[expando][_isOutsideThisEl](evt.target);
                         }catch(e){
                         }
-                        /*un point virgule est-il en trop ?*/
+                        /* un point virgule est-il en trop ? */
                         !(insertion) && nearestEmptyInsertDetectEvent(evt);
                     }
                     !(options.dragoverBubble) && evt.stopPropagation && evt.stopPropagation();
@@ -1863,7 +1863,7 @@
                 off(document,'selectstart',this);
             
             } ,
-            "_onDrop" : function _onDrop( /*   #Event   */ evt){
+            "_onDrop" : function _onDrop( /*  Event  */ evt){
                 var el=this.el;
                 var options=this.options;
                 newIndex=index(dragEl);
@@ -1959,7 +1959,7 @@
                 savedInputChecked.length=lastDx=lastDy=0;
             
             } ,
-            "handleEvent" : function handleEvent( /*   #Event   */ evt){
+            "handleEvent" : function handleEvent( /*  Event  */ evt){
                 switch (evt.type){
                     case 'drop' : 
                     case 'dragend' : this._onDrop(evt);
@@ -2136,7 +2136,7 @@
             var onMoveFn=sortable.options.onMove;
             var retVal;
             if(window.CustomEvent && !(IE11OrLess) && !(Edge)){
-                evt= new CustomEvent('move',{"bubbles" : true ,"cancelable" : true});
+                evt=new CustomEvent('move',{"bubbles" : true ,"cancelable" : true});
             }else{
                 evt=document.createEvent('Event');
                 evt.initEvent('move',true,true);
@@ -2529,12 +2529,8 @@
             }
         };
         function Revert(){
-          // rien ici
+            /* rien ici */
         }
-        /*
-          ✍ rien ici
-          ✍ rien ici
-        */
         Revert.prototype={
             "startIndex" : null ,
             "dragStart" : function dragStart(_ref2){
@@ -2565,12 +2561,8 @@
         };
         _extends(Revert,{"pluginName" : 'revertOnSpill'});
         function Remove(){
-          // rien ici
+            /* rien ici */
         }
-        /*
-          ✍ rien ici
-          ✍ rien ici
-        */
         Remove.prototype={
             "onSpill" : function onSpill(_ref4){
                 var dragEl=_ref4.dragEl;

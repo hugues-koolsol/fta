@@ -52,7 +52,7 @@ class traitements_sur_html{
     */
     #construit_cle(length){
         let resultat='';
-        /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un)*/
+        /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un) */
         const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
         const longueur=lettres.length;
         let counter=0;
@@ -197,16 +197,16 @@ class traitements_sur_html{
                               bloc à commenter debut
                               la fonction convertit_source_javascript_en_rev 
                               fait un appel ajax synchrone, on la garde pour l'instant
-                            */
-                            /*
+                              
+                              
                               var obj = convertit_source_javascript_en_rev(source_js);
                               if(obj.__xst === true){
                               contenu+=obj.__xva;
                               }else{
                               return(logerreur({"__xst" : false,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type}));
                               }
-                            */
-                            /*
+                              
+                              
                               bloc à commenter fin
                             */
                         }else if(!(jsonDeHtml.content[i].hasOwnProperty('type'))){
@@ -477,8 +477,9 @@ class traitements_sur_html{
                         }else{
                             /*
                               la balise head contient des éléments, 
+                              
+                              si la balise body ne contient rien, 
                             */
-                            /* si la balise body ne contient rien, */
                             var body_est_vide=false;
                             for( var i = nouveauTableau1.length - 1 ; i >= 0 && body_est_vide === false ; i-- ){
                                 if(nouveauTableau1[i][1].toLowerCase() === 'body' && nouveauTableau1[i][2] === 'f' && nouveauTableau1[i][3] === 0){
@@ -545,7 +546,7 @@ class traitements_sur_html{
     mapDOM(element){
         var treeObject={};
         if(typeof element === 'string'){
-            var parser= new DOMParser();
+            var parser = new DOMParser();
             /*
               "application/xml"
               "image/svg+xml"
@@ -1001,17 +1002,13 @@ class traitements_sur_html{
         };
         try{
             var response= await fetch(url,en_entree).catch((dataerr) => {
-                
                 console.error('fetch dataerr=',dataerr)
             }).finally((datafinally) => {
-                
                 /* vide */
             });
             var t= await response.text().catch((dataerr) => {
-                
                 console.error('text dataerr=',dataerr)
             }).finally((datafinally) => {
-                
                 /* vide */
             });
             try{
@@ -1600,10 +1597,10 @@ class traitements_sur_html{
                              && contenuNiveauPlus1.indexOf('<') < 0
                             ){
                                 var tag=tab[id][1];
-                                const re1= new RegExp("\<" + tag + "(.*)\>\r\n[ \t]+","g");
+                                const re1 = new RegExp("\<" + tag + "(.*)\>\r\n[ \t]+","g");
                                 const rp1 = '<' + tag + '$1>';
                                 t=t.replace(re1,rp1);
-                                const re2= new RegExp("\r\n[ \t]+\<\/" + tag + "\>","g");
+                                const re2 = new RegExp("\r\n[ \t]+\<\/" + tag + "\>","g");
                                 const rp2 = '</' + tag + '>';
                                 t=t.replace(re2,rp2);
                             }

@@ -236,36 +236,36 @@ function traiteUneComposante(element,niveau,parentEstCrochet,dansSiOuBoucle,pare
             break;
             
         case 'NewExpression' :
-            if(element.callee && element.callee.type==='MemberExpression' && element.arguments.length===0  ){
+            if(element.callee && element.callee.type === 'MemberExpression' && element.arguments.length === 0){
                 var obj1 = traiteMemberExpression1(element.callee,niveau + 1,parent);
                 if(obj1.__xst === true){
                     t+='new(' + obj1.__xva + ')';
                 }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0049 erreur pour traiteUneComposante "' + element.type + '"',"element" : element}));
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0049 erreur pour traiteUneComposante "' + element.type + '"' ,"element" : element}));
                 }
-            }else if(element.callee && element.callee.type==='MemberExpression' && element.arguments.length>0){
+            }else if(element.callee && element.callee.type === 'MemberExpression' && element.arguments.length > 0){
                 var obj1 = traiteCallExpression1(element,niveau + 1,element,{});
                 if(obj1.__xst === true){
                     t+='new(' + obj1.__xva + ')';
                 }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0049 erreur pour traiteUneComposante "' + element.type + '"',"element" : element}));
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0049 erreur pour traiteUneComposante "' + element.type + '"' ,"element" : element}));
                 }
-            }else if(element.callee && element.callee.type==='Identifier'){
+            }else if(element.callee && element.callee.type === 'Identifier'){
                 var obj1 = traiteCallExpression1(element,niveau + 1,element,{});
                 if(obj1.__xst === true){
                     t+='new(' + obj1.__xva + ')';
                 }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0154 erreur pour traiteUneComposante "' + element.type +'"' ,"element" : element}));
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0154 erreur pour traiteUneComposante "' + element.type + '"' ,"element" : element}));
                 }
-            }else if(element.callee && element.callee.type==='ThisExpression'){
+            }else if(element.callee && element.callee.type === 'ThisExpression'){
                 var obj1 = traiteCallExpression1(element,niveau + 1,element,{});
                 if(obj1.__xst === true){
                     t+='new(' + obj1.__xva + ')';
                 }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0154 erreur pour traiteUneComposante "' + element.type +'"' ,"element" : element}));
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : '0154 erreur pour traiteUneComposante "' + element.type + '"' ,"element" : element}));
                 }
             }else{
-                return(astjs_logerreur({"__xst" : false ,"__xme" : '0255 erreur pour traiteUneComposante new "' + element.callee.type+'"' ,"element" : element}));
+                return(astjs_logerreur({"__xst" : false ,"__xme" : '0255 erreur pour traiteUneComposante new "' + element.callee.type + '"' ,"element" : element}));
             }
             break;
             
@@ -776,7 +776,6 @@ function traiteForOf1(element,niveau){
         console.log('element.left.type=',element.left.type);
         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteForIn1 0713 ' + element.left.type ,"element" : element}));
     }
-    /* */
     if(element.right.type === 'Identifier'){
         nomObjet=element.right.name;
     }else if(element.right.type === 'MemberExpression'){
@@ -870,7 +869,7 @@ function traiteForIn1(element,niveau){
         console.log('element.left.type=',element.left.type);
         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteForIn1 0414 ' + element.left.type ,"element" : element}));
     }
-    /* */
+    /*  */
     if(element.right.type === 'Identifier'){
         nomObjet=element.right.name;
     }else if(element.right.type === 'MemberExpression'){
@@ -1191,7 +1190,7 @@ function traiteIf1(element,niveau,type){
             if(Array.isArray(element.consequent.body) && element.consequent.body.length == 0){
                 var commentaire = comm_avant_fin(element.consequent,niveau + 3);
                 if(commentaire === ''){
-                    /*                        plus tard, on mettre des avertissements                         //astjs_logerreur({__xst:true,__xav:'attention, un contenu de bloc if est vide, mettez un commentaire ',element:element})                      */
+                    /* plus tard, on mettre des avertissements                         //astjs_logerreur({__xst:true,__xav:'attention, un contenu de bloc if est vide, mettez un commentaire ',element:element}) */
                 }else{
                     t+=commentaire;
                 }
@@ -1265,7 +1264,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
     var parentProperty='';
     if(parent.property){
         if(parent.computed && parent.computed === true){
-            /*                le parent est un tableau => les propriétés sont les indices du tableau              */
+            /* le parent est un tableau => les propriétés sont les indices du tableau */
         }else{
             if(parent.property.type === 'Identifier'){
                 parentProperty='prop(' + parent.property.name + ')';
@@ -1298,8 +1297,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
     if(element.arguments && element.arguments.length > 0){
         for( i=0 ; i < element.arguments.length ; i++ ){
             lesArguments+=',';
-            var le_commentaire = comm_dans_arguments_appel_fonction(element.arguments[i],niveau , element);
-//            var le_commentaire = '';
+            var le_commentaire = comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element);
             if('CallExpression' === element.arguments[i].type){
                 var obj1 = traiteCallExpression1(element.arguments[i],niveau + 1,element,{"sansLF" : true});
                 if(obj1.__xst === true){
@@ -1323,7 +1321,6 @@ function traiteCallExpression1(element,niveau,parent,opt){
             }else{
                 var obj1 = traiteUneComposante(element.arguments[i],niveau + 1,false,false,element);
                 if(obj1.__xst === true){
-
                     if('FunctionExpression' === element.arguments[i].type
                      && parent
                      && parent.callee
@@ -1416,7 +1413,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
                     }
                 }
             }else if(element.callee.property.type === 'MemberExpression'){
-                /*                    ce sera traité plus bas dans le                     if(element.callee.object){                  */
+                /* ce sera traité plus bas dans le                     if(element.callee.object){ */
             }else if(element.callee.property.type === 'Literal'){
                 debugger;
             }else if(element.callee.property.type === 'ConditionalExpression'){
@@ -1569,6 +1566,13 @@ function traiteCallExpression1(element,niveau,parent,opt){
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
                 }
+            }else if(element.callee.object.type === 'ConditionalExpression'){
+                var obj1 = traiteUneComposante(element.callee.object,niveau,false,false,element);
+                if(obj1.__xst === true){
+                    t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                }
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0618 ' + element.callee.object.type ,"element" : element}));
             }
@@ -1648,7 +1652,6 @@ function traiteCallExpression1(element,niveau,parent,opt){
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
             }
         }else if(element.callee.type === 'ThisExpression'){
-         
             var obj1 = traiteUneComposante(element.callee,niveau,niveau,false,false,element);
             if(obj1.__xst === true){
                 if(contenu === ''){
@@ -1662,12 +1665,9 @@ function traiteCallExpression1(element,niveau,parent,opt){
                 }else{
                     t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
                 }
-
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0000 [ todo ajuster ] '}));
             }
-         
-         
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type + '"' ,"element" : element}));
         }
@@ -1696,10 +1696,10 @@ function traiteFunctionExpression1(element,niveau){
         }
     }
     if(element.body){
-        var obj = ast_de_js_vers_rev1(element.body,niveau+2);
+        var obj = ast_de_js_vers_rev1(element.body,niveau + 2);
         if(obj.__xst === true){
             contenu=obj.__xva;
-            contenu+=comm_avant_fin(element.body,niveau+2);
+            contenu+=comm_avant_fin(element.body,niveau + 2);
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteFunctionExpression1 pour body' ,"element" : element}));
         }
@@ -1793,6 +1793,7 @@ function traiteArrayExpression1(element,niveau){
          || element.elements[i].type === "BinaryExpression"
          || element.elements[i].type === "UnaryExpression"
          || element.elements[i].type === "ObjectExpression"
+         || element.elements[i].type === "LogicalExpression"
         ){
             var obj1 = traiteUneComposante(element.elements[i],niveau,true,false,element);
             if(obj1.__xst === true){
@@ -1900,7 +1901,6 @@ function traiteMemberExpression1(element,niveau,parent){
         var objTxt='';
         var propertyTxt='';
         if(element.object){
-            
             if(element.object.type === 'MemberExpression'){
                 var obj1 = traiteMemberExpression1(element.object,niveau,element);
                 if(obj1.__xst === true){
@@ -2086,7 +2086,7 @@ function traiteMemberExpression1(element,niveau,parent){
                     if(prop.__xva !== ''){
                         var membre = 'membre(' + objTxt + ',' + 'prop(' + prop.__xva + '))';
                         console.log('%c utilisation de membre=' + membre,'background:lightgreen;color:navy;');
-                        /*                        t+=objTxt.substr[0,objTxt.length - 1] + ',prop[' + prop.__xva + ']]'; */
+                        /* t+=objTxt.substr[0,objTxt.length - 1] + ',prop[' + prop.__xva + ']]'; */
                         t+=membre;
                     }else{
                         t+=objTxt;
@@ -2108,9 +2108,6 @@ function traiteMemberExpression1(element,niveau,parent){
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteAssignmentExpress1 2082 pour ' + element.type ,"element" : element}));
                     }
-                    
-                    
-                    
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteAssignmentExpress1 1515' ,"element" : element}));
                 }
@@ -2619,7 +2616,6 @@ function traiteDeclaration1(element,niveau){
             t+=',';
         }
         t+=comm_avant_debut(element.declarations[decl],niveau);
-        
         var debutDeclaration='';
         if(element.kind && element.kind === 'var'){
             debutDeclaration='\n' + esp0 + 'declare(' + element.declarations[decl].id.name + ' , ';
@@ -2693,22 +2689,10 @@ function traiteDeclaration1(element,niveau){
                         }else{
                             return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pas de callee dans traiteDeclaration1 2721' ,"element" : element}));
                         }
-/*
-                    }else if(element.declarations[decl].init.argument.type === 'NewExpression'){
-                        var obj1 = traiteUneComposante(element.object,niveau + 1,false,false,element);
-                     
-                        var obj1 = traiteCallExpression1(element.declarations[decl].init.argument,niveau + 1,element,{});
-                        if(obj1.__xst === true){
-                            t+=(debutDeclaration + nomDuTestUnary) + '(new(' + obj1.__xva + ')))';
-                        }else{
-                            return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteDeclaration1 1551 ' + element.type ,"element" : element}));
-                        }
-*/                        
                     }else if(element.declarations[decl].init.argument.type === 'MemberExpression'
                      || element.declarations[decl].init.argument.type === 'UnaryExpression'
                      || element.declarations[decl].init.argument.type === 'NewExpression'
                     ){
-                        debugger
                         var obj1 = traiteUneComposante(element.declarations[decl].init.argument,niveau + 1,false,false,element);
                         if(obj1.__xst === true){
                             t+=(debutDeclaration + nomDuTestUnary) + '(' + obj1.__xva + '))';
@@ -2875,54 +2859,69 @@ function comm_avant_debut(elem,niveau){
     t+=commentaire;
     return t;
 }
-
 /*
   =====================================================================================================================
 */
-function comm_dans_arguments_appel_fonction(argument,niveau , element){
+function comm_dans_arguments_appel_fonction(argument,niveau,element){
     var t='';
-    var esp0 = ' '.repeat(NBESPACESREV * niveau);
-    var esp1 = ' '.repeat(NBESPACESREV);
-    var i = tabComment.length - 1;
-    if(tabComment.length>0){
-        if(tabComment[0].start < argument.start && tabComment[0].end <= argument.start && element.start < argument.start && tabComment[0].start > element.end ){
-               debugger
-               var txtComment=tabComment[0].value;
-               var c1 = nbre_caracteres2('(',txtComment);
-               var c2 = nbre_caracteres2(')',txtComment);
-               if(c1 === c2){
-                   if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                       t='#(#' + (txtComment.substr(1)) + ')' + t;
-                   }else{
-                       t='#(' + txtComment + ')' + t;
-                   }
-               }else{
-                   if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                       t='#(#' + (txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']')) + ')' + t;
-                   }else{
-                       t='#(' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ')' + t;
-                   }
-               }
-               tabComment.splice(0,1);
+    if(element.callee.body){
+        /*
+          c'est une fonction auto appelée, les arguments éventuels sont à la fin
+        */
+        var position_debut_parenthese = element.callee.body.end + 1;
+        var position_fin_parenthese=element.end;
+        for( var i=0 ; i < tabComment.length ; i++ ){
+            if(tabComment[i].start > position_debut_parenthese
+             && tabComment[i].end < position_fin_parenthese
+             && argument.start >= tabComment[i].end
+            ){
+                var txtComment = tabComment[i].value.trim();
+                t='#( ' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ' )' + t;
+                tabComment.splice(i,1);
+                break;
+            }else if(tabComment[i].start > position_fin_parenthese){
+                break;
+            }
+        }
+    }else{
+        var position_fin_parenthese=element.end;
+        if(element.callee.name){
+            /*
+              c'est un appel "normal" à une fonction toto(a); 
+            */
+            var position_debut_parenthese = element.start + element.callee.name.length;
+            for( var i=0 ; i < tabComment.length ; i++ ){
+                if(tabComment[i].start > position_debut_parenthese
+                 && tabComment[i].end < position_fin_parenthese
+                 && argument.start >= tabComment[i].end
+                ){
+                    var txtComment = tabComment[i].value.trim();
+                    t='#( ' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ' )' + t;
+                    tabComment.splice(i,1);
+                    break;
+                }else if(tabComment[i].start > position_fin_parenthese){
+                    break;
+                }
+            }
+        }else{
+            /*
+              c'est une fonction anonyme fonction toto(a); 
+            */
+            var position_debut_parenthese=element.callee.end;
+            for( var i=0 ; i < tabComment.length ; i++ ){
+                if(tabComment[i].start > position_debut_parenthese
+                 && tabComment[i].end < position_fin_parenthese
+                 && argument.start >= tabComment[i].end
+                ){
+                    var txtComment = tabComment[i].value.trim();
+                    t='#( ' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ' )' + t;
+                    tabComment.splice(i,1);
+                }
+            }
         }
     }
-     
-/*
-argument.start + ' ' + argument.end + '   ___   ' + element.start + ' '+element.end + '   ____   ' + tabComment[0].start + ' ' + tabComment[0].end
-
-argument.start + ' ' + argument.end
-'844 845'
-element.start + ' '+element.end
-'147 846'
-tabComment[0].start + ' ' + tabComment[0].end
-'424 436'
-
-*/     
-    
     return t;
-    
 }
-
 /*
   =====================================================================================================================
 */
@@ -2942,6 +2941,10 @@ function ajouteCommentaireAvant(element,niveau,positionDebutBloc){
                       donc on ajoute le précédent après en changeant les parenthèses en []
                     */
                     var txtComment=tabComment[i].value;
+                    if(txtComment.indexOf('\n') < 0){
+                        txtComment=txtComment.trim();
+                        txtComment=' ' + txtComment + ' ';
+                    }
                     var c1 = nbre_caracteres2('(',txtComment);
                     var c2 = nbre_caracteres2(')',txtComment);
                     if(c1 === c2){
@@ -2964,40 +2967,42 @@ function ajouteCommentaireAvant(element,niveau,positionDebutBloc){
             }
         }
     }
-     /* on ajoute les commentaires de ligne qui n'ont pas été intégrés précédemment */
+    /* on ajoute les commentaires de ligne qui n'ont pas été intégrés précédemment */
     for( i=tabComment.length - 1 ; i >= 0 ; i-- ){
-        if(tabComment[i].type === 'Line' && tabComment[i].end < element.start ){
-              var txtComment=tabComment[i].value;
-              /* on ne traite pas les commentaires insérés automatiquement dans les js valides */
-              if(!(txtComment==='' || '<![CDATA['===txtComment || '<source_javascript_rev>' === txtComment || '</source_javascript_rev>' === txtComment || ']]>'=== txtComment )){
-                  nombre_de_ligne_trouvees++;
-                  var c1 = nbre_caracteres2('(',txtComment);
-                  var c2 = nbre_caracteres2(')',txtComment);
-                  if(c1 === c2){
-                      t='\n' + esp0 + '#(✍' + txtComment.replace(/\*\//g,'* /') + ')' + t;
-                  }else{
-                      t='\n' + esp0 + '#(✍' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')).replace(/\*\//g,'* /') + ')' + t;
-                  }
-              }
-              tabComment.splice(i,1);
+        if(tabComment[i].type === 'Line' && tabComment[i].end < element.start){
+            var txtComment=tabComment[i].value;
+            /* on ne traite pas les commentaires insérés automatiquement dans les js valides */
+            if(!(txtComment === ''
+             || '<![CDATA[' === txtComment
+             || '<source_javascript_rev>' === txtComment
+             || '</source_javascript_rev>' === txtComment
+             || ']]>' === txtComment)
+            ){
+                nombre_de_ligne_trouvees++;
+                var c1 = nbre_caracteres2('(',txtComment);
+                var c2 = nbre_caracteres2(')',txtComment);
+                if(c1 === c2){
+                    t='\n' + esp0 + '#(✍' + (txtComment.replace(/\*\//g,'* /')) + ')' + t;
+                }else{
+                    t='\n' + esp0 + '#(✍' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']').replace(/\*\//g,'* /')) + ')' + t;
+                }
+            }
+            tabComment.splice(i,1);
         }
     }
-    if(nombre_de_ligne_trouvees>1){
-       /* si on a trouvé plusieurs ligne de commentaires, on les rassemble*/
-       var obj=rev_texte_vers_matrice(t);
-       if(obj.__xst===true){
-        var nouveauCommentaire=obj.__xva[1][13];
-        for(var i=2;i<obj.__xva.length;i++){
-         nouveauCommentaire+=CRLF+obj.__xva[i][13];
+    if(nombre_de_ligne_trouvees > 1){
+        /* si on a trouvé plusieurs ligne de commentaires, on les rassemble */
+        var obj = rev_texte_vers_matrice(t);
+        if(obj.__xst === true){
+            var nouveauCommentaire=obj.__xva[1][13];
+            for( var i=2 ; i < obj.__xva.length ; i++ ){
+                nouveauCommentaire+=CRLF + obj.__xva[i][13];
+            }
+            t='#(' + nouveauCommentaire + ')';
         }
-        t='#(' + nouveauCommentaire + ')';
-
-       }
     }
-    
     return t;
 }
-
 /*
   =====================================================================================================================
 */
@@ -3007,7 +3012,6 @@ function TransformAstEnRev(les_elements,niveau){
         /*
           on va chercher les commentaires en fin de fichier
         */
-        
         obj.__xva+=ajouteCommentaireAvant(les_elements,niveau,99999999);
         return({"__xst" : true ,"__xva" : obj.__xva});
     }else{
@@ -3073,10 +3077,18 @@ function ast_de_js_vers_rev1(les_elements,niveau){
                     var prop={};
                     for(prop in element){
                         if(prop === 'body'){
-                            bodyTrouve=true;
                             var obj = ast_de_js_vers_rev1(element[prop],niveau + 1);
                             if(obj.__xst === true){
-                                t+=obj.__xva;
+                                if(obj.__xva === ''){
+                                    var comm = comm_avant_fin(element,niveau);
+                                    if(comm === ''){
+                                        t+='#( rien ici )';
+                                    }else{
+                                        t+=comm;
+                                    }
+                                }else{
+                                    t+=obj.__xva;
+                                }
                             }else{
                                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur pour TransformAstEnRev 229 ' + element.type ,"element" : element}));
                             }
@@ -3192,6 +3204,7 @@ function ast_de_js_vers_rev1(les_elements,niveau){
                      || element.argument.type === 'BinaryExpression'
                      || element.argument.type === 'MemberExpression'
                      || element.argument.type === 'NewExpression'
+                     || element.argument.type === 'ThisExpression'
                      || element.argument.type === 'UnaryExpression')
                     ){
                         var obj1 = traiteUneComposante(element.argument,niveau,false,false,element);
@@ -3201,7 +3214,7 @@ function ast_de_js_vers_rev1(les_elements,niveau){
                             return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans TransformAstEnRev 1978 ' ,"element" : element}));
                         }
                     }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : '1044 erreur pour TransformAstEnRev ' + element.argument.type ,"element" : element}));
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : '1044 erreur pour TransformAstEnRev return ' + element.argument.type ,"element" : element}));
                     }
                     break;
                     
@@ -3467,6 +3480,27 @@ function convertit_source_javascript_en_rev(sourceDuJavascript){
     }
     return({"__xst" : true ,"__xva" : obj1.__xva});
 }
+/*##
+  =====================================================================================================================
+  // pour deboggage commentaires
+  function trois_positions(n){
+      var t=''+n;
+      if(t.length===1){
+          t='00'+n;
+      }else if(t.length===2){
+          t='0'+n;
+      }
+      return t;
+      
+  et mettre plus bas après obj = parseur_javascript:
+                
+      for(var i=0;i<tabComment.length;i++){
+          console.log(trois_positions(tabComment[i].start)+ ' ' + trois_positions(tabComment[i].end) + ' "' + tabComment[i].value+'"')
+      }
+      
+      
+  }
+*/
 var tabComment=[];
 /*
   =====================================================================================================================
