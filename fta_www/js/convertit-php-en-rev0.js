@@ -1,16 +1,15 @@
 "use strict";
 /*
-  
+  =====================================================================================================================
+  conversion d'un AST produit par https://github.com/nikic/PHP-Parser en rev
+  =====================================================================================================================
   todo
   $c=$a<=>$b; // echo "a" <=> "b"; // -1 , ,,,, echo "a" <=> "a"; // 0 ,,,,, echo "b" <=> "a"; // 1
-  $c=$a ** $b
   $output = `ls -al`; // Utiliser les guillemets obliques revient à utiliser la fonction shell_exec().
-  echo "<pre>$output</pre>";
-  
-  
+  =====================================================================================================================
   point d'entrée : TransformAstPhpEnRev  
   fonction principale php_traite_Stmt_Expression
-  
+  =====================================================================================================================
 */
 var contient_du_javascript_dans_html=false;
 var tableau_de_html_dans_php_a_convertir=[];

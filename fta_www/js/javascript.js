@@ -1781,14 +1781,17 @@ function js_traiteDefinitionClasse(tab,id,niveau){
     var nom_classe='';
     var contenu_classe='';
     for( i=id + 1 ; i < l01 ; i=tab[i][12] ){
-        if(tab[i][7] === id){
-            if(tab[i][1] === 'nom_classe' && tab[i][2] === 'f'){
-                for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
-                    if(tab[j][2] === 'c'){
-                        nom_classe=tab[j][1];
-                    }
+        if(tab[i][1] === 'nom_classe' && tab[i][2] === 'f'){
+            for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
+                if(tab[j][2] === 'c'){
+                    nom_classe=tab[j][1];
                 }
-            }else if(tab[i][1] === 'contenu' && tab[i][2] === 'f'){
+            }
+        }else if(tab[i][1] === 'contenu' && tab[i][2] === 'f'){
+            if(tab[i][8]===0){
+                contenu_classe+='';
+            }else{
+            
                 var obj = js_tabTojavascript1(tab,i + 1,false,false,niveau + 1);
                 if(obj.__xst === true){
                     contenu_classe+=obj.__xva;

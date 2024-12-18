@@ -728,7 +728,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
             }
             if(retourLigne === true){
                 if(tab[i][3] > 0){
-                    if(profondeur_parent > 1){
+                    if(profondeur_parent > 0){
                         t+=les_espaces;
                     }
                 }else{
@@ -769,7 +769,10 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                         t+='/' + chaine + '/' + tab[i][13];
                         break;
                         
-                    case 0 : t+=tab[i][1];
+                    case 0 : 
+                        /* variable en dur */
+                        
+                        t+=tab[i][1];
                         break;
                 }
                 count++;
@@ -866,7 +869,14 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                             t+=CRLF;
                         }else{
                             if(tab[i][10] > 1){
+                                /* si la profondeur est supérieure à 1 */
                                 t+=les_espaces;
+                            }else if(tab[i][9]<tab[tab[i][7]][8]){
+                                /* si ce n'est pas le dernier enfant */
+                                t+=les_espaces;
+                            }else if(tab[i][9]===tab[tab[i][7]][8]){
+                                /* si c'est le dernier enfant */
+                                t+=espacesnrev(true,tab[debut][3]);
                             }
                         }
                     }

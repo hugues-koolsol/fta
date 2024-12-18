@@ -22,6 +22,8 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
         if(obj.__xst===true){
             document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;;
         }else{
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+         
         }
         
         
@@ -31,6 +33,7 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
     }catch(e){
      console.error('e=',e);
     }
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
 }    
 /*
   =====================================================================================================================

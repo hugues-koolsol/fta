@@ -3037,6 +3037,7 @@ function ast_de_js_vers_rev1(les_elements,niveau){
             if(t !== ''){
                 t+=',';
             }
+            
             switch (element.type){
                 case 'FunctionDeclaration' :
                     t+='\n' + esp0 + 'fonction(';
@@ -3311,15 +3312,20 @@ function ast_de_js_vers_rev1(les_elements,niveau){
                     }else{
                         astjs_logerreur({"__xst" : false ,"__xme" : 'erreur2288 il manque id pour la définition de la classe ' + element.type ,"element" : element});
                     }
-                    if(element.body && element.body.type === "ClassBody" && element.body.body && element.body.body.length > 0){
-                        var j=0;
-                        for( j=0 ; j < element.body.body.length ; j++ ){
-                            var obj = ast_de_js_vers_rev1(element.body.body[j],niveau + 1);
-                            if(obj.__xst === true){
-                                corps_de_la_classe+=obj.__xva;
-                            }else{
-                                return(astjs_logerreur({"__xst" : false ,"__xme" : '2308 erreur pour le corps de la classe ' ,"element" : element}));
-                            }
+                    if(element.body ){
+                        if(element.body.type === "ClassBody" && element.body.body && element.body.body.length > 0){
+                           var j=0;
+                           for( j=0 ; j < element.body.body.length ; j++ ){
+                               var obj = ast_de_js_vers_rev1(element.body.body[j],niveau + 1);
+                               if(obj.__xst === true){
+                                   corps_de_la_classe+=obj.__xva;
+                                   corps_de_la_classe+=comm_avant_fin(element.body,niveau+1);
+                               }else{
+                                   return(astjs_logerreur({"__xst" : false ,"__xme" : '2308 erreur pour le corps de la classe ' ,"element" : element}));
+                               }
+                           }
+                        }else{
+                           corps_de_la_classe+=comm_avant_fin(element.body,niveau+1);
                         }
                     }
                     t+='definition_de_classe(nom_classe(' + nom_de_la_classe + '),contenu(' + corps_de_la_classe + '))';
@@ -3509,6 +3515,9 @@ function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2(nom_de_l
     __gi1.raz_des_messages();
     var a = document.getElementById(nom_de_la_text_area_source);
     localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
+    /*
+      https://github.com/acornjs/acorn
+    */
     var parseur_javascript=window.acorn.Parser;
     try{
         tabComment=[];
