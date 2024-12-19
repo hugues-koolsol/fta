@@ -2830,34 +2830,6 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine,options_traitement)
                     tableau_de_html_dans_php_a_convertir.push({"cle" : cle ,"valeur" : stmts[i].value});
                     t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,' + cle + '))';
                     estTraiteSansErreur=true;
-                    /*
-                      var obj1 = __module_html1.TransformHtmlEnRev(stmts[i].value,0,{});
-                      if(obj1.__xst === true){
-                      if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours===true){
-                      
-                      contient_du_javascript_dans_html=true;
-                      }else{
-                      
-                      StmtsHtmlPrecedentEstEcho=false;
-                      if(obj1.hasOwnProperty('__xva')){
-                      if(obj1.__xva !== ''){
-                      t+='\n' + esp0 + 'html_dans_php(' + obj1.__xva + ')';
-                      }
-                      estTraiteSansErreur=true;
-                      }else{
-                      var cle=php_construit_cle(10);
-                      tableau_de_html_dans_php_a_convertir.push({"cle":cle,"valeur":stmts[i].value});
-                      t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,'+cle+'))';
-                      }
-                      }
-                      }else{
-                      
-                      //  On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
-                      //  dans ce cas tout est remplacé par des "echo" plus bas
-                      
-                      estTraiteSansErreur=false;
-                      }
-                    */
                 }else{
                     /*
                       On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
@@ -2966,6 +2938,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine,options_traitement)
                         }
                     }
                 }
+
             }else if("Stmt_Echo" === stmts[i].nodeType){
                 var obj = php_traite_echo(stmts[i],niveau);
                 if(obj.__xst === true){

@@ -10,9 +10,10 @@ $o1='';?>
     <div style="width:90%;">
         <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
         <!-- a href="javascript:transform_text_area_php_en_rev1(&quot;txtar1&quot;,&quot;txtar2&quot;)" class="yysucces">convertir1</a -->
-        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">convertir2 avec html stricte</a>
-        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">convertir avec html non stricte</a>
-        <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">convertir php-parser</a>
+        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky htm strict</a>
+        <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky conv htm</a>
+        <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yysucces">php htm strict</a>
+        <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">php conv htm </a>
         <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar1&quot;,1)">aller à la ligne n°</a>
         <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
         <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>

@@ -18,7 +18,7 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
         var parseur=window.PhpParser.Engine({parser:{extractDoc: true},ast:{withPositions: true}});
         var ast_de_php=parseur.parseCode(a.value);
         
-        var obj=__module_php_parseur1.traite_ast(ast_de_php);
+        var obj=__module_php_parseur1.traite_ast(ast_de_php,options_traitement);
         if(obj.__xst===true){
             document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;;
         }else{
