@@ -45,7 +45,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let t=this.#traite_commentaires_debut(element,niveau,parent,tab_comm);
         var obj=null;
         var nomFonction='';
-        var lesArguments='';
+        var les_parametres='';
         obj=this.#traite_element(element.what,niveau,element,tab_comm);
         if(obj.__xst === true){
             nomFonction+=obj.__xva;
@@ -54,16 +54,20 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }
         
         if(element.arguments && element.arguments.length > 0){
-            for( var i=0 ; i < element.arguments.length ; i++ ){
-                var obj=this.#traite_element(element.arguments[i],niveau,element,tab_comm);
-                if(obj.__xst === true){
-                    lesArguments+=',p(' + obj.__xva + ')';
-                }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0053  #traite_call' ,"element" : element.arguments[i]}));
-                }
+            obj=this.#traite_parametres(element,niveau,element,tab_comm);
+            if(obj.__xst === true){
+
+                les_parametres+=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0051  #traite_call' ,"element" : element.what}));
             }
         }
-        t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
+        if(element.what.kind==='propertylookup'){
+         t+='appelf(' + nomFonction + les_parametres + ')';
+         
+        }else{
+         t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
+        }
         
         return({__xst : true , __xva : t})
     }
@@ -510,8 +514,183 @@ class module_conversion_ast_de_php_parser_vers_rev1{
            }
              
         }
+
+        return({__xst : true , __xva : t})
+    }
+    
+    /*
+      =====================================================================================================================
+    */
+    #traite_return(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        if(element.expr===null){
+            t='revenir()';
+        }else{
+            obj=this.#traite_element(element.expr,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                t='retourner('+obj.__xva+')';
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0532 #traite_catch body'}));
+            }
+        }
+        return({__xst : true , __xva : t})
+    }
+    /*
+      =====================================================================================================================
+    */
+    #traite_catch(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        let what='';
+        let variable='';
+        let contenu='';
+
+        if(element.what && element.what.length>0){
+            for(var i=0;i<element.what.length;i++){
+                obj=this.#traite_element(element.what[i],niveau+1,element,tab_comm);
+                if(obj.__xst===true){
+                    variable+=obj.__xva+',';
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0532 #traite_catch body'}));
+                }
+            }
+        }
         
-        debugger
+        if(element.variable){
+            obj=this.#traite_element(element.variable,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                variable+=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0532 #traite_catch body'}));
+            }
+        }
+        
+        if(element.body){
+            obj=this.#traite_ast0(element.body,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                contenu=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0532 #traite_catch body'}));
+            }
+        }
+        t+='err('+variable+'),faire('+contenu+')';
+        
+        
+
+        return({__xst : true , __xva : t})
+    }
+    /*
+      =====================================================================================================================
+    */
+    #traite_try(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        let contenu='';
+        let catches=[];
+        if(element.body){
+         
+            obj=this.#traite_ast0(element.body,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0533 #traite_try body'}));
+            }
+        }else if(element.kind==='block'){
+            obj=this.#traite_ast0(element,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0540 #traite_try body'}));
+            }
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0543 #traite_try ni body ni block'}));
+        }
+
+        if(element.catches && element.catches.length && element.catches.length>0){
+            for(let i=0;i<element.catches.length;i++){
+             
+                obj=this.#traite_element(element.catches[i],niveau+1,element,tab_comm);
+                if(obj.__xst===true){
+                    catches.push(obj.__xva);
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0533 #traite_try body'}));
+                }
+            }
+        }
+        t+='essayer(faire('+contenu+')';
+        for(var i=0;i<catches.length;i++){
+          t+='sierreur(';
+          t+=catches[i];
+          t+=')';
+        }
+        t+=')';
+
+        return({__xst : true , __xva : t})
+    }
+    /*
+      =====================================================================================================================
+    */
+    #traite_new(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        var les_parametres=''; // les_arguments
+        var what='';
+        obj=this.#traite_parametres(element,niveau,parent,tab_comm,'parametres');
+        if(obj.__xst===true){
+            les_parametres+=obj.__xva;
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0526  #traite_new' ,"element" : element}));
+        }
+        obj=this.#traite_element(element.what,niveau,parent,tab_comm,'parametres');
+        if(obj.__xst===true){
+            what+=obj.__xva;
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0526  #traite_new' ,"element" : element}));
+        }
+        if(element.parenthesizedExpression===true){
+         t+='(nouveau(appelf(nomf('+what+')'+les_parametres+')))';
+        }else{
+         t+='nouveau(appelf(nomf('+what+')'+les_parametres+'))';
+        }
+        return({__xst : true , __xva : t})
+    }
+    /*
+      =====================================================================================================================
+    */
+    #traite_propertylookup(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        let what='';
+        var les_arguments='';
+        var offset='';
+        
+        if(element.what){
+          obj=this.#traite_element(element.what,niveau,element,tab_comm);
+          if(obj.__xst === true){
+              what+=obj.__xva ;
+          }else{
+              return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0053  #traite_print' ,"element" : element}));
+          }
+          
+
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0556  #traite_propertylookup' ,"element" : element}));
+        }
+        
+        if(element.offset){
+          obj=this.#traite_element(element.offset,niveau,element,tab_comm);
+          if(obj.__xst === true){
+              offset+=obj.__xva ;
+          }else{
+              return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0053  #traite_print' ,"element" : element}));
+          }
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0567  #traite_propertylookup' ,"element" : element}));
+        }
+//        t+=what+'->'+offset;
+        t+='element('+what+'),nomf('+offset+')';
+        
         return({__xst : true , __xva : t})
     }
     /*
@@ -550,6 +729,52 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         t='testEnLigne( condition( '+condition+' ) , siVrai('+si_vrai+') , siFaux('+si_faux+'))';
         return({__xst : true , __xva : t})
     }
+    
+    
+    /*
+      =====================================================================================================================
+    */
+    #traite_while(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        let condition='';
+        let contenu='';
+        
+        if(element.test){
+           obj=this.#traite_element(element.test,niveau,element,tab_comm);
+           if(obj.__xst === true){
+               condition+=obj.__xva;
+           }else{
+               return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0157  #traite_if' ,"element" : element}));
+           }
+        }else{
+           c_est_un_sinon=true;
+          /* c'est un else */
+        }
+        if(element.body){
+            obj=this.#traite_ast0(element.body,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0064 #traite_if body'}));
+            }
+        }else if(element.kind==='block'){
+            obj=this.#traite_ast0(element,niveau+1,element,tab_comm);
+            if(obj.__xst===true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0064 #traite_if body'}));
+            }
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0656 #traite_if ni body ni block'}));
+        }
+        
+        
+        t='tantQue(condition( '+condition+' ),faire('+contenu+'))';
+        debugger
+
+        return({__xst : true , __xva : t})
+    }
     /*
       =====================================================================================================================
     */
@@ -575,6 +800,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0064 #traite_if body'}));
             }
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0656 #traite_if ni body ni block'}));
         }
 
         if(element.alternate){
@@ -759,12 +986,15 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0080 #traite_tableau quoi'}));
         }
 
-
-        obj=this.#traite_element(element.offset,niveau,parent,tab_comm);
-        if(obj.__xst===true){
-            offset+=obj.__xva;
+        if(element.offset===false){
+            offset='';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0080 #traite_tableau offset'}));
+           obj=this.#traite_element(element.offset,niveau,parent,tab_comm);
+           if(obj.__xst===true){
+               offset+=obj.__xva;
+           }else{
+               return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0080 #traite_tableau offset'}));
+           }
         }
         
         t=this.#simplifie_tableau( 'nomt('+quoi+')' , 'p('+offset+')' )
@@ -836,10 +1066,12 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             case '&&'  : t+='et(' + gauche + ',' + droite + ')';                 break;
             case '||'  : t+='ou(' + gauche + ',' + droite + ')';                break;
             case '>'   : t+='sup(' + gauche + ',' + droite + ')';                break;
+            case '<'   : t+='inf(' + gauche + ',' + droite + ')';                break;
             case '+'   : t+='plus(' + gauche + ',' + droite + ')';                break;
             case '-'   : t+='moins(' + gauche + ',' + droite + ')';                break;
             case '*'   : t+='mult(' + gauche + ',' + droite + ')';                break;
             case '.'   : t+='concat(' + gauche + ',' + droite + ')';                break;
+            case '===' : t+='egalstricte(' + gauche + ',' + droite + ')';                break;
             case '!==' : t+='diffstricte(' + gauche + ',' + droite + ')';                break;
             case '!=' : t+='diff(' + gauche + ',' + droite + ')';                break;
             case '=='  : t+='egal(' + gauche + ',' + droite + ')';                break;
@@ -1042,7 +1274,66 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
                 
                 
+            case 'propertylookup' :
+                obj=this.#traite_propertylookup(element,niveau,parent,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 bin'}));
+                }
+                break;
                 
+                
+            case 'new' :
+                obj=this.#traite_new(element,niveau,parent,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 bin'}));
+                }
+                break;
+                
+                
+            case 'try' :
+                obj=this.#traite_try(element,niveau,parent,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 bin'}));
+                }
+                break;
+                
+                
+            case 'catch' :
+                obj=this.#traite_catch(element,niveau,parent,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 bin'}));
+                }
+                break;
+                
+                
+            case 'return' :
+                obj=this.#traite_return(element,niveau,parent,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 bin'}));
+                }
+                break;
+                
+            case 'while' :
+                obj=this.#traite_while(element,niveau,parent,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 bin'}));
+                }
+                break;
+                
+                
+            
                 
 
             default :
@@ -1086,24 +1377,32 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     /*
       =====================================================================================================================
     */
-    #traite_function(element,niveau,parent,tab_comm){
+    #traite_parametres(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        let contenu='';
-        let nom_fonction='';
-        let lesArguments='';
-        let valeur_par_defaut='';
-
-        obj=this.#traite_element(element.name,niveau,element,tab_comm);
-        
-        if(obj.__xst===true){
-            nom_fonction+=obj.__xva;
-        }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0135 #traite_function nom'}));
-        }
-        
+        let les_arguments='';
         for(let i=0;i<element.arguments.length;i++){
-            lesArguments+=','
+            t+=','
+            
+            obj=this.#traite_element(element.arguments[i],niveau,element,tab_comm);
+            if(obj.__xst===true){
+                t+='p('+obj.__xva+')';
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments'}));
+            }
+        }
+        return({__xst : true , __xva : t})
+    }
+    /*
+      =====================================================================================================================
+    */
+    #traite_arguments(element,niveau,parent,tab_comm,type){
+        let t='';
+        let obj=null;
+        let les_arguments='';
+        let valeur_par_defaut='';
+        for(let i=0;i<element.arguments.length;i++){
+            t+=','
             
             //, valeur_defaut( defTab() )
             valeur_par_defaut='';
@@ -1112,20 +1411,47 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 if(obj.__xst===true){
                     valeur_par_defaut=', valeur_defaut( '+obj.__xva+' )'; +'argument()';
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1076 #traite_function include'}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1148 #traite_arguments'}));
                 }
             }             
             
             obj=this.#traite_element(element.arguments[i].name,niveau,element,tab_comm);
             if(obj.__xst===true){
+             
                 if(element.arguments[i].byref===true){
-                    lesArguments+='adresseArgument($'+obj.__xva+valeur_par_defaut+')';
+                    t+='adresseArgument($'+obj.__xva+valeur_par_defaut+')';
                 }else{
-                    lesArguments+='argument($'+obj.__xva+valeur_par_defaut+')';
+                    t+='argument($'+obj.__xva+valeur_par_defaut+')';
                 }
+                
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_function include'}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments'}));
             }
+        }
+        return({__xst : true , __xva : t})
+    }
+    /*
+      =====================================================================================================================
+    */
+    #traite_function(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let contenu='';
+        let nom_fonction='';
+        let les_arguments='';
+
+        obj=this.#traite_element(element.name,niveau,element,tab_comm);
+        
+        if(obj.__xst===true){
+            nom_fonction+=obj.__xva;
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0135 #traite_function nom'}));
+        }
+        obj=this.#traite_arguments(element,niveau,parent,tab_comm,'argument');
+        if(obj.__xst===true){
+            les_arguments+=obj.__xva;
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1198 #traite_function arguments'}));
         }
         if(element.body){
             obj=this.#traite_ast0(element.body,niveau+1,element,tab_comm);
@@ -1138,7 +1464,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         t+='fonction(';
         t+=   'definition(';
         t+=      'nom(' + nom_fonction + ')';
-        t+=      lesArguments;
+        t+=      les_arguments;
         t+=   '),';
         t+=   'contenu(\n';
         t+=      contenu;

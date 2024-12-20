@@ -483,7 +483,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     
                 case 'essayer' :
                     var contenu='';
-                    var sierreur='';
+                    var sierreur=[];
                     var nomErreur='';
                     for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][1] === 'faire' && tab[j][2] === 'f'){
@@ -496,6 +496,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'problème sur le contenu du "essayer" '}));
                             }
                         }else if(tab[j][1] === 'sierreur' && tab[j][2] === 'f'){
+                            sierreur.push({nom_erreur:'',contenu:''});
                             if(tab[j][8] === 2){
                                 for( var k = j + 1 ; k < l01 ; k=tab[k][12] ){
                                     if(tab[k][1] === 'faire' && tab[k][2] === 'f'){
@@ -503,12 +504,13 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                         obj=php_tabToPhp1(tab,k + 1,dansFonction,false,niveau);
                                         niveau--;
                                         if(obj.__xst === true){
-                                            sierreur+=obj.__xva;
+                                            sierreur[sierreur.length-1].contenu=obj.__xva;
                                         }else{
                                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'problème sur le "sierreur" du "essayer" '}));
                                         }
                                     }else if(tab[k][1] === 'err' && tab[k][2] === 'f' && tab[k][8] === 2 && tab[k+1][2] === 'c' && tab[k+2][2] === 'c'){
-                                        nomErreur=tab[k+1][1] + ' ' + tab[k+2][1];
+                                        var nomErreur=tab[k+1][1] + ' ' + tab[k+2][1];
+                                        sierreur[sierreur.length-1].nom_erreur=nomErreur.replace(/\\\\/g,'\\');
                                     }else{
                                         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'problème sur le "sierreur" le deuxième argiment doit être "faire"'}));
                                     }
@@ -522,14 +524,12 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     t+='try{';
                     t+=contenu;
                     t+=un_espace;
-                    if(nomErreur.indexOf('\\') >= 0){
-                        t+='}catch(' + (nomErreur.replace(/\\\\/g,'\\')) + '){';
-                    }else{
-                        t+='}catch(' + nomErreur + '){';
+                    for( j=0;j<sierreur.length;j++){
+                        t+='}catch(' + sierreur[j].nom_erreur + '){';
+                        t+=sierreur[j].contenu
+                        t+=un_espace;
+                        t+='}';
                     }
-                    t+=sierreur;
-                    t+=un_espace;
-                    t+='}';
                     break;
                     
                 case 'tantQue' :
@@ -1073,8 +1073,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     }else{
                         var obj = php_traiteElement(tab,i,niveau,{});
                         if(obj.__xst === true){
+/*
                             t+=un_espace;
-                            t+=obj.__xva + ';';
+*/                            
+                            t+=obj.__xva ;
+                            /* + ';'; faut-il vraiment ajouter un ";" ? */
                         }else{
                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php dans php_tabToPhp1 1230 pour i=' + i + ''}));
                         }
@@ -1830,6 +1833,14 @@ function php_traiteElement(tab,ind,niveau,options={}){
         }else{
             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'dans appelf de php_traiteElement 0835'}));
         }
+    }else if(tab[ind][2] === 'f' && tab[ind][1] === ''){
+        obj=php_tabToPhp1(tab,ind+1,true,true,niveau); // dansFonction,dansInitialisation
+        if(obj.__xst === true){
+            t='('+obj.__xva+')';
+        }else{
+            return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'dans appelf de php_traiteElement 0835'}));
+        }
+
     }else{
         debugger;
         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'php.js 2033 php_traiteElement "' + tab[ind][1] + '" non traité '}));
@@ -2503,6 +2514,14 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
                     }else{
                         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2749 nom fonction incorrecte '}));
                     }
+                }else if(tab[j+1][2] === 'f' && tab[j+1][1] === 'appelf'){
+                    var objf2 = php_traiteElement(tab,j + 1,niveau + 2,{});
+                    if(objf2.__xst === true){
+                        nomFonction='' + objf2.__xva + '';
+                    }else{
+                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2511 nom fonction incorrecte '}));
+                    }
+                    debugger
                 }else{
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2147 nom fonction incorrecte '}));
                 }
@@ -2510,6 +2529,7 @@ function php_traiteAppelFonction(tab,i,dansConditionOuDansFonction,niveau){
             break;
         }
     }
+
     if(positionAppelFonction > 0 && nomFonction != ''){
         nomRetour='';
         positionRetour=-1;
