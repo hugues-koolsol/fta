@@ -190,6 +190,24 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     }
                     break;
                     
+                case 'mourir' :
+                    if(tab[i][8] === 0){
+                        t+=un_espace;
+                        t+='die;';
+                    }else if(tab[i][8] === 1 && tab[i+1][2] === 'c'){
+                        t+=un_espace;
+                        t+='die(' + (maConstante(tab[i+1])) + ');';
+                        i++;
+                    }else{
+                        var obj1 = php_traiteElement(tab,i + 1,niveau,{});
+                        if(obj1.__xst === true){
+                            t+='die(' + obj1.__xva + ');';
+                        }else{
+                            return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'dans php_tabToPhp1 0267'}));
+                        }
+                    }
+                    break;
+                    
                 case 'revenir' :
                     if(tab[i][8] === 0){
                         t+=un_espace;
@@ -540,7 +558,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                 t+=un_espace;
                                 t+='while(' + obj.__xva + '){';
                             }else{
-                                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2 problème sur la condition du choix en indice ' + tabchoix[j][0]}));
+                                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2 problème sur la condition tantQue '}));
                             }
                         }else if(tab[j][1] === 'faire'){
                             if(tab[j][8] === 0){
@@ -552,7 +570,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                     t+=un_espace;
                                     t+='}';
                                 }else{
-                                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : tabchoix[j][0] ,"tab" : tab ,"__xme" : '0516 problème sur le alors du choix en indice ' + tabchoix[j][0]}));
+                                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : '0516 problème sur le faire tantQue '}));
                                 }
                             }
                         }else if(tab[j][1] === '#'){
@@ -2079,6 +2097,7 @@ function php_traiteOperation(tab,id,niveau){
                      || tab[i][1] === 'et_binaire'
                      || tab[i][1] === 'xou_binaire'
                      || tab[i][1] === '??'
+                     || tab[i][1] === 'concat'
                      || tab[i][1] === 'modulo'
                     ){
                         var objOperation = php_traiteOperation(tab,i,niveau);

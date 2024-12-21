@@ -3319,14 +3319,13 @@ function ast_de_js_vers_rev1(les_elements,niveau){
                                var obj = ast_de_js_vers_rev1(element.body.body[j],niveau + 1);
                                if(obj.__xst === true){
                                    corps_de_la_classe+=obj.__xva;
-                                   corps_de_la_classe+=comm_avant_fin(element.body,niveau+1);
                                }else{
                                    return(astjs_logerreur({"__xst" : false ,"__xme" : '2308 erreur pour le corps de la classe ' ,"element" : element}));
                                }
                            }
                         }else{
-                           corps_de_la_classe+=comm_avant_fin(element.body,niveau+1);
                         }
+                        corps_de_la_classe+=comm_avant_fin(element.body,niveau+1);
                     }
                     t+='definition_de_classe(nom_classe(' + nom_de_la_classe + '),contenu(' + corps_de_la_classe + '))';
                     break;
