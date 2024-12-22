@@ -181,17 +181,18 @@ foreach($tt[__xva] as $k0 => $v0){
     
     $lsttbl.=' <a class="yydanger" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">🗑</a>';
     
-    if( 
-         ( $v0['T0.chp_type_source']==='normal'  ) 
-      && ( 
-              substr($v0['T0.chp_nom_source'],-4)==='.php' 
-           || substr($v0['T0.chp_nom_source'],-3)==='.js' 
+    if( $v0['T0.chp_type_source']==='normal' ){
+      if( 
+              substr($v0['T0.chp_nom_source'],-3)==='.js' 
            || substr($v0['T0.chp_nom_source'],-5)==='.html' 
            || substr($v0['T0.chp_nom_source'],-4)==='.htm' 
            || substr($v0['T0.chp_nom_source'],-4)==='.sql' 
-         ) 
-    ){
-     $lsttbl.=' <a class="yyavertissement" href="javascript:zz_l1_convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+      ){
+         $lsttbl.=' <a class="yyavertissement" href="javascript:zz_l1_convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+      }else if( substr($v0['T0.chp_nom_source'],-4)==='.php' ){
+         $lsttbl.=' <a class="yyavertissement" href="javascript:zz_l1_convertir_un_source_php_sur_disque1('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque avec nikic">😊</a>';
+         $lsttbl.=' <a class="yyinfo" href="javascript:zz_l1_convertir_un_source_php_sur_disque2('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque avec php_parser">😊</a>';
+      }
     }else{
      $lsttbl.='<a  class=" yyunset"  title="convertir un source">😊</a>';
     }
@@ -224,15 +225,23 @@ $o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$l
   ============================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array( 
- 'js_a_inclure' => array( 
-  'js/pour_zz_source1.js', 
-  'js/convertit-php-en-rev0.js', 'js/php.js' , 'js/convertit-html-en-rev1.js',  'js/convertit-js-en-rev1.js' , 'js/javascript.js'  , 
-  'js/jslib/acorn.js',
-
-  'js/sql.js' , 'js/convertion_sql_en_rev.js' , 'js/jslib/sqlite-parser.js' ), 
- 'module_a_inclure' => array('js/module_html.js'), 
- 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$par=array(
+    'js_a_inclure' => array(
+            'js/pour_zz_source1.js',
+            'js/convertit-php-en-rev0.js',
+            'js/php.js',
+            'js/convertit-html-en-rev1.js',
+            'js/convertit-js-en-rev1.js',
+            'js/javascript.js',
+            'js/jslib/acorn.js',
+            'js/sql.js',
+            'js/convertion_sql_en_rev.js',
+            'js/jslib/sqlite-parser.js',
+            'js/jslib/php-parser.js'),
+    'module_a_inclure' => array(
+            'js/module_html.js',
+            'js/module_conversion_ast_de_php_parser_vers_rev.js'),
+    'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 
 $nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';
 $nom_complet=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/'.$nom_bref;

@@ -181,7 +181,79 @@ function sauvegarder_php_en_ligne(format_rev,donnees){
 }
 
 
+/*
+  =====================================================================================================================
+  convertir un php avec php_parser
+*/
+function zz_l1_convertir_un_source_php_sur_disque2(id_source){
+    __gi1.raz_des_messages();
+    var date_de_debut_traitement= new Date();
+    date_de_debut_traitement=date_de_debut_traitement.getTime();
+    var ajax_param={'call':{lib:'core',file:'file',funct:'charger_un_fichier_source_par_son_identifiant'},id_source:id_source,date_de_debut_traitement:date_de_debut_traitement};
+    async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            var nom_source = donnees.db['T0.chp_nom_source'];
+            var type_source = donnees.db['T0.chp_type_source'];
+            if(nom_source.substr((nom_source.length - 4)) === '.php'){
+                //donnees.contenu_du_fichier
+                //donnees['T0.chi_id_source']
+                var parseur=window.PhpParser.Engine({parser:{extractDoc: true},ast:{withPositions: true}});
+                try{
+                    var ast_de_php=parseur.parseCode(donnees.contenu_du_fichier);
+                    var obj=__module_php_parseur1.traite_ast(ast_de_php,{en_ligne:true});
+                    if(obj.__xst===true){
+                        var parametres={
+                            "__entree" : {
+                                id_source:donnees.db['T0.chi_id_source'],
+                                "date_de_debut_traitement" :  date_de_debut_traitement
+                            }
+                        };
+                        var obj2=sauvegarder_php_en_ligne(obj.__xva , parametres);
+                    }else{
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                    }
+                }catch(e){
+                    logerreur({"__xst" : false , "__xme" : 'Il y a une erreur dans le source php '});
+                }
+                
+            }
+        }else{
+            console.log(donnees);
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+    });
+}
 
+
+/*
+  =====================================================================================================================
+  convertir un php avec nikic
+*/
+function zz_l1_convertir_un_source_php_sur_disque1(id_source){
+    __gi1.raz_des_messages();
+    var date_de_debut_traitement= new Date();
+    date_de_debut_traitement=date_de_debut_traitement.getTime();
+    var ajax_param={'call':{lib:'core',file:'file',funct:'charger_un_fichier_source_par_son_identifiant'},id_source:id_source,date_de_debut_traitement:date_de_debut_traitement};
+    async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            var nom_source = donnees.db['T0.chp_nom_source'];
+            var type_source = donnees.db['T0.chp_type_source'];
+            if(nom_source.substr((nom_source.length - 4)) === '.php'){
+                var ret = recupereAstDePhp2(donnees.contenu_du_fichier,{'donnees':donnees,'en_ligne':true},null);
+                /* le retour est toujours égal à true ( a-t-on fait l'appel ? ) */
+            }
+        }else{
+            console.log(donnees);
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+    });
+}
 
 /*
   =====================================================================================================================
@@ -314,12 +386,18 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
 /*
   =====================================================================================================================
 */
-function convertir_php_en_rev(zone_php,zone_rev){
+function convertir_php_en_rev(zone_php,zone_rev,options_traitement){
     __gi1.raz_des_messages();
+    options_traitement=options_traitement.replace(/\'/g,'"');
+    try{
+     options_traitement=JSON.parse(options_traitement);
+    }catch(e){
+     return;
+    }
     var a = document.getElementById(zone_php);
     var startMicro = performance.now();
     try{
-        var ret=recupereAstDePhp2(a.value,{'zone_php':zone_php,'zone_rev':zone_rev},traitement_apres_recuperation_ast_de_php2);
+        var ret=recupereAstDePhp2(a.value,{"zone_php":zone_php,"zone_rev":zone_rev,"nettoyer_html" : options_traitement.nettoyer_html },traitement_apres_recuperation_ast_de_php2);
         console.log(ret);
 /*     
         var ret = recupereAstDePhp(a.value,{'nom_zone_genere':nom_zone_genere,'nom_zone_rev':nom_zone_rev},traitement_apres_recuperation_ast_dans_zz_source_action);

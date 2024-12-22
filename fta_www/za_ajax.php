@@ -59,13 +59,16 @@ function shutdownHandler(){
 }
 //================================================================================================
 function mylog($error){
- $ret=array(__xst => false,__xms=>array());
- $ret[__xms][]=$error; 
- header('Content-Type: application/json; charset=utf-8');
- echo json_encode($ret,JSON_FORCE_OBJECT);
- /* on a capturé une erreur de type 500, on force la réponse en 200 */
- http_response_code(200);
- exit(0);
+    $ret=array(
+        __xst    => false,
+        __xms    => $error,
+        __entree => isset($GLOBALS['__entree'])?$GLOBALS['__entree']:null,
+    );
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($ret,JSON_FORCE_OBJECT);
+    /* on a capturé une erreur de type 500, on force la réponse en 200 */
+    http_response_code(200);
+    exit(0);
 }
 //================================================================================================
 require_once('aa_include.php');
@@ -75,35 +78,37 @@ if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'======================
 sleep(1);
 */
 if(isset($_POST)&&sizeof($_POST)>0&&isset($_POST['ajax_param'])){
- $ret=array(__xst => false,__xms => array() ); // messages must be in array
- $ret[__entree]=json_decode($_POST['ajax_param'],true);
- if(isset($ret[__entree]['call']['funct'])&&$ret[__entree]['call']['lib']!=''&&$ret[__entree]['call']['file']!=''&&$ret[__entree]['call']['funct']!=''){
-  define('BNF' , '/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php' );
-  if(!is_file(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php')){
-   $ret[__xst]=false;
-   $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/ajax_'.$ret[__entree]['call']['funct'].'.php"';
-  }else{
-   if(session_status()==PHP_SESSION_NONE){
-    session_start();
-   }
-   if($ret[__entree]['call']['funct']!=''){
-    if(true===checkGroupAjaxPages()){
-     require_once INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php';
-     $ret[__entree]['call']['funct']($ret);
+    $ret=array(__xst => false,__xms => array() ); // messages must be in array
+    $ret[__entree]=json_decode($_POST['ajax_param'],true);
+    $GLOBALS[__entree]=$ret[__entree];
+    
+    if(isset($ret[__entree]['call']['funct'])&&$ret[__entree]['call']['lib']!=''&&$ret[__entree]['call']['file']!=''&&$ret[__entree]['call']['funct']!=''){
+        define('BNF' , '/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php' );
+        if(!is_file(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php')){
+            $ret[__xst]=false;
+            $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/ajax_'.$ret[__entree]['call']['funct'].'.php"';
+        }else{
+            if(session_status()==PHP_SESSION_NONE){
+                session_start();
+            }
+            if($ret[__entree]['call']['funct']!=''){
+                if(true===checkGroupAjaxPages()){
+                    require_once INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php';
+                    $ret[__entree]['call']['funct']($ret);
+                }
+            }else{
+                if(true===checkGroupAjaxPages()){
+                    require_once INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php';
+                }
+            }
+        }
+    }else{
+        $ret[__xst]=false;
+        $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret[__entree],true).'"';
     }
-   }else{
-    if(true===checkGroupAjaxPages()){
-     require_once INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php';
-    }
-   }
-  }
- }else{
-  $ret[__xst]=false;
-  $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'funct or lib is not defined in the input parameters : "'.var_export($ret[__entree],true).'"';
- }
 }else{
- $ret[__xst]=false;
- $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'post ajax_param is not defined : "'.var_export($_POST,true).'"'; 
+    $ret[__xst]=false;
+    $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'post ajax_param is not defined : "'.var_export($_POST,true).'"'; 
 }
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($ret,JSON_FORCE_OBJECT);

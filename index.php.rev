@@ -1,4 +1,96 @@
-php(
-   #(  exemple de programme très simple en php : on a déjà écrit cette page en html ),
-   appelf( nomf(require_once) , p( 'index.html' ))
-)
+#(  exemple de programme très simple en php : on a déjà écrit cette page en html ),
+#(require_once('index.html');),
+affecte(
+   $a,
+   appelf(
+      nomf(realpath),
+      p(
+         appelf(
+            nomf(dirname),
+            p(
+               appelf(
+                  nomf(dirname),
+                  p( appelf( nomf(dirname) , p(__FILE__) ))
+               )
+            )
+         )
+      )
+   )
+),
+appelf( nomf(require) , p( concat( $a , '/phplib/vendor/autoload.php' ) )),
+#(
+  https://github.com/nikic/php-parser
+),
+appelf( nomf(use) , p( 'PhpParser\\Error' )),
+appelf( nomf(use) , p( 'PhpParser\\NodeDumper' )),
+appelf( nomf(use) , p( 'PhpParser\\ParserFactory' )),
+fonction(
+   definition( nom(recupererAstDePhp) , adresseArgument($data)),
+   contenu(
+      affecte(
+         $parser,
+         appelf(
+            element(
+               nouveau( appelf( nomf(ParserFactory) ))
+            ),
+            nomf(createForNewestSupportedVersion)
+         )
+      ),
+      essayer(
+         faire(
+            affecte(
+               $ast,
+               appelf(
+                  element($parser),
+                  nomf(parse),
+                  p( tableau( nomt($data[__entree]) , p( 'texteSource' ) ))
+               )
+            ),
+            affecte( $data[__xva] , appelf( nomf(json_encode) , p($ast) )),
+            affecte( $data[__xst] , vrai)
+         ),
+         sierreur(
+            err( Error , $error),
+            faire(
+               affecte( tableau( nomt($data[__xms]) , p() ) , appelf( element($error) , nomf(getMessage) )),
+               revenir()
+            )
+         )
+      )
+   )
+),
+#( si vous devez intégrer du javascript dans du html dans du php, mettez la partie javascript dans des CDATA ),
+affecte( $i , 0),
+tantQue(
+   condition( ( inf( $i , 5 ) )),
+   faire(
+      choix(
+         si(
+            condition( egalstricte( 1 , 1 )),
+            alors(
+               boucle(
+                  initialisation( affecte( $i , 0 )),
+                  condition( ( inf( $i , 10 ) )),
+                  increment( postinc($i)),
+                  faire(
+                     appelf( nomf(echo) , p( 'hello' ) , p( ' world' )),
+                     html_dans_php(
+                        'and others',
+                        javascriptDansHtml(
+                           ( 'type' , "text/javascript"),
+                           boucle(
+                              initialisation( declare( i , 0 )),
+                              condition( inf( i , 10 )),
+                              increment(i++),
+                              faire( appelf( element(console) , nomf(log) , p( 'on est dans du javascript dans du html dans du php :-]' ) ))
+                           )
+                        )
+                     )
+                  )
+               )
+            )
+         )
+      )
+   )
+),
+html_dans_php( javascriptDansHtml( ( 'type' , "text/javascript" ) , declare( b , 2 ) ) , javascriptDansHtml( ( 'type' , "text/javascript" ) , declare( c , 2 ) ))

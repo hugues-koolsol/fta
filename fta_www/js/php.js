@@ -802,6 +802,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     
                 case 'affecte_reference' : 
                 case 'affecte' :
+
                     obj=php_traiteAffecte(tab,i,dansInitialisation,niveau);
                     if(obj.__xst === true){
                         t+=obj.__xva;
@@ -891,7 +892,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                             if(obj.__xst === true){
                                                 valeurCas=obj.__xva;
                                             }else{
-                                                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'php dans bascule 1069'}));
+                                                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : 'php dans bascule 1069'}));
                                             }
                                         }else{
                                             valeurCas=ma_cst_pour_php(tab[k+1]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
@@ -902,13 +903,13 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                             if(obj.__xst === true){
                                                 InstructionsCas=obj.__xva;
                                             }else{
-                                                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : k ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans faire  '}));
+                                                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans faire  '}));
                                             }
                                         }else{
                                             InstructionsCas='';
                                         }
                                     }else{
-                                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans bascule/est  il ne doit y avoir que "valeur" et "faire" '}));
+                                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans bascule/est  il ne doit y avoir que "valeur" et "faire" '}));
                                     }
                                 }
                             }
@@ -1089,12 +1090,17 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                         debugger;
                         t+='';
                     }else{
-                        var obj = php_traiteElement(tab,i,niveau,{});
+                        var option={};
+                        if(dansInitialisation===true){
+                        }else{
+                            option={"terminateur":';'};
+                        }
+                        var obj = php_traiteElement(tab,i,niveau,option);
                         if(obj.__xst === true){
 /*
                             t+=un_espace;
 */                            
-                            t+=obj.__xva ;
+                            t+=obj.__xva;
                             /* + ';'; faut-il vraiment ajouter un ";" ? */
                         }else{
                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php dans php_tabToPhp1 1230 pour i=' + i + ''}));
@@ -1277,8 +1283,7 @@ function php_traiteNew(tab,ind,niveau){
     return({"__xst" : true ,"__xva" : t});
 }
 /*
-  ✍=====================================================================================================================
-  ✍ hugues
+  ======================================================================================================================
 */
 function php_traiteElement(tab,ind,niveau,options={}){
     var t='';
@@ -1548,7 +1553,6 @@ function php_traiteElement(tab,ind,niveau,options={}){
         obj=tabToSql1(tab,ind,niveau,false);
         if(obj.__xst === true){
             t='sql_dans_php(\'' + (obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\')';
-            /* ✍      t=obj.__xva; */
         }else{
             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'erreur php_traiteElement dans un sql 1205 définit dans un php'}));
         }
@@ -1862,17 +1866,9 @@ function php_traiteElement(tab,ind,niveau,options={}){
     }else{
         debugger;
         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'php.js 2033 php_traiteElement "' + tab[ind][1] + '" non traité '}));
-        /*#
-           ========================================================
-           dernier espoir coupé pour l'instant car boucle infinie
-           ========================================================
-          var obj1=php_tabToPhp1[tab,ind,true,true,niveau]; // tab,id,dansFonction,dansInitialisation,niveau]php_traiteElement[tab,ind+1,niveau,{}];
-          if[obj1.__xst===true]{
-              t+=obj1.__xva;
-          }else{
-              return php_logerr[{__xst:false,__xva:t,id:ind,tab:tab,__xme:'php_traiteElement dans castint 1436'}];
-          }
-        */
+    }
+    if(options.hasOwnProperty('terminateur') && options.terminateur!==''){
+        t=espacesn(true,niveau)+t+options.terminateur;
     }
     return({"__xst" : true ,"__xva" : t});
 }

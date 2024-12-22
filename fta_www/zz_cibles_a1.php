@@ -116,14 +116,15 @@ function recupere_une_donnees_des_cibles($id){
       'fta_www/js/convertion_sql_en_rev.js' => array(),
       'fta_www/js/convertit-php-en-rev0.js' => array(),
       'fta_www/js/core6.js' => array(),
-      'fta_www/js/interface0.js' => array(),
       'fta_www/js/javascript.js' => array(),
       'fta_www/js/php.js' => array(),
       'fta_www/js/pour-index_php0.js' => array(),
       'fta_www/js/pour_zz_bdds_action1.js' => array(),
       'fta_www/js/pour_zz_source1.js' => array(),
+      'fta_www/js/pour_traite_php.js' => array(),
       'fta_www/js/pour_svg.js' => array(),
       'fta_www/js/pour_requete_sql.js' => array(),
+      'fta_www/js/module_conversion_ast_de_php_parser_vers_rev.js' => array(),
       
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
@@ -139,6 +140,8 @@ function recupere_une_donnees_des_cibles($id){
       'fta_www/js/jslib/sqlite-parser.js' => array(),
       'fta_www/js/jslib/Sortable.js' => array(),
       'fta_www/js/jslib/acorn.js' => array(),
+      'fta_www/js/jslib/php-parser.js' => array(),
+      
       
    );
 

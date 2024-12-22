@@ -31,7 +31,12 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
         console.log(endMicro - startMicro);
          
     }catch(e){
-     console.error('e=',e);
+        if(e.lineNumber){
+             logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />'+e.message, line:e.lineNumber});
+        }else{
+             logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />'+e.message});
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
 }    

@@ -1056,7 +1056,8 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
             $o1.='   <a class="yyinfo" href="javascript:convertir_rev_en_php_et_sauvegarde_rev(\'chp_rev_source\',\'chp_genere_source\','.$__id.','.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].')">R2P&#8615;</a>'.PHP_EOL;
-            $o1.='   <a class="yyavertissement" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;P2R</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" title="sans nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;)">&#8613;P2RS</a>'.PHP_EOL;
+            $o1.='   <a class="yyavertissement" title="AVEC nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;)">&#8613;P2RH</a>'.PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql') !== false){
 
@@ -1200,7 +1201,8 @@ $par=array( 'js_a_inclure' => array(
             'js/jslib/sqlite-parser.js',
             'js/convertion_sql_en_rev.js',
             'js/convertit-html-en-rev1.js',
-            'js/jslib/acorn.js'            
+            'js/jslib/acorn.js',
+            'js/jslib/php-parser.js'
             ), 'module_a_inclure' => array( 'js/module_html.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 
 $nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';

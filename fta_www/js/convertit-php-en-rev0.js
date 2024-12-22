@@ -3735,21 +3735,32 @@ var globale_tableau_des_js2=[];
 */
 function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
     var ast = JSON.parse(retour_avec_ast.__xva);
-    var obj = TransformAstPhpEnRev(ast,0,false,true,retour_avec_ast.__entree.opt.options_traitement);
-    var options={};
-    if(retour_avec_ast.__entree.hasOwnProperty('opt')){
+    var options={nettoyer_html:false};
+    if(retour_avec_ast.hasOwnProperty('__entree') && retour_avec_ast.__entree.hasOwnProperty('opt')){
         options=retour_avec_ast.__entree.opt;
+        if(retour_avec_ast.__entree.opt.hasOwnProperty('options_traitement')){
+            if(retour_avec_ast.__entree.opt.options_traitement.hasOwnProperty('nettoyer_html')){
+                options.nettoyer_html=retour_avec_ast.__entree.opt.options_traitement.nettoyer_html;
+            }
+        }else if(retour_avec_ast.__entree.opt.hasOwnProperty('nettoyer_html')){
+            options.nettoyer_html=retour_avec_ast.__entree.opt.nettoyer_html;
+        }else if(retour_avec_ast.__entree.opt.hasOwnProperty('zone_rev')){
+            options.nettoyer_html=retour_avec_ast.__entree.opt.zone_rev;
+        }else if(retour_avec_ast.__entree.opt.hasOwnProperty('zone_php')){
+            options.nettoyer_html=retour_avec_ast.__entree.opt.zone_php;
+        }
     }
+    var obj = TransformAstPhpEnRev(ast,0,false,true,options);
     var zone_rev=null;
     var zone_php=null;
-    if(options && options.hasOwnProperty('zone_rev')){
+    if(options.hasOwnProperty('zone_rev')){
         zone_rev=options.zone_rev;
     }
-    if(options && options.hasOwnProperty('zone_php')){
+    if(options.hasOwnProperty('zone_php')){
         zone_php=options.zone_php;
     }
     var en_ligne=null;
-    if(options && options.hasOwnProperty('en_ligne') && options.en_ligne === true){
+    if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
         en_ligne=true;
     }
     if(obj.__xst === true){
@@ -3805,11 +3816,18 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
                 }
             }
         }
+        return({__xst:true})
     }else{
+        logerreur({"__xst" : false ,"__xme" : 'il y a eu une erreur de conversion du programme php'});
         if(zone_php !== null){
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
         }
+        if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_php);
+        }
+        return({__xst:false})
     }
+
 }
 /*
   =====================================================================================================================
@@ -3832,11 +3850,15 @@ function recupereAstDePhp2(texteSource,opt,f_traitement_apres_recuperation_ast_d
                 }else{
                     return;
                 }
+                if(r.readyState===2){
+                 debugger
+                }
             }
             try{
                 var json_retour = JSON.parse(r.responseText);
                 if(json_retour.__xst === true){
-                    traitement_apres_recuperation_ast_de_php2(json_retour);
+                    var obj=traitement_apres_recuperation_ast_de_php2(json_retour);
+                    return({__xst:obj.__xst});
                 }else{
                     for(var elem in json_retour.__xms){
                         if(json_retour.__xms[elem].indexOf('on line ') >= 0
