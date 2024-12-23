@@ -31,6 +31,7 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
         console.log(endMicro - startMicro);
          
     }catch(e){
+        console.error(e);
         if(e.lineNumber){
              logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />'+e.message, line:e.lineNumber});
         }else{

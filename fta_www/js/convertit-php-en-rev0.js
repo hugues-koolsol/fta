@@ -2782,6 +2782,24 @@ function php_construit_cle(l){
     }
     return('_' + resultat);
 }
+
+/*
+  =====================================================================================================================
+*/
+function construit_cle_pour_php(length){
+    let resultat='';
+    /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un) */
+    const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+    const longueur=lettres.length;
+    let counter=0;
+    while(counter < length){
+        resultat+=lettres.charAt(Math.floor(Math.random() * longueur));
+        counter++;
+    }
+    return('_' + resultat);
+}
+
+
 /*
   =====================================================================================================================
 */
@@ -2845,7 +2863,9 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine,options_traitement)
                             "__xme" : '2230 ATTENTION, ce php contient du html en ligne qui n\'est pas complet<br /> passez par le menu html pour le nettoyer <br />ou bien utilisez le bouton "convertir3" du menu php'
                         }));
                     }
-                    logerreur({"__xst" : false ,"__xme" : "ATTENTION, ce php contient du html en ligne qui n'est pas complet et qui est converti en echo !"});
+                    var cle=construit_cle_pour_php(10);
+                    t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "'+cle+'")';
+                    logerreur({"__xst" : false ,"__xme" : "2848 ATTENTION, ce php contient du html incomplet qui est converti en echo ("+cle+") !"});
                     numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                     numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
                     if(stmts[i].value.toLowerCase().indexOf('<script') < 0){
@@ -2937,6 +2957,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine,options_traitement)
                             t+='appelf(nomf(echo),p(\'' + (stmts[i].value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'))';
                         }
                     }
+
                 }
 
             }else if("Stmt_Echo" === stmts[i].nodeType){

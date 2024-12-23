@@ -867,6 +867,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     */
                     var valeurQuand='';
                     var valeursCase='';
+                    var le_cas='';
+                    var tableau_des_cas=[{le_cas:'',les_commentaires:[]}];
+                    var les_commentaires_avant=[];
                     for( var j = i + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][1] === 'quand' && tab[j][2] === 'f'){
                             if(tab[j][8] === 1 && tab[j+1][2] === 'c'){
@@ -913,6 +916,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                     }
                                 }
                             }
+                            
                             valeursCase+=espacesn(true,niveau + 1);
                             if(valeurCas === null){
                                 valeursCase+='default:';
@@ -921,13 +925,37 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             }
                             valeursCase+=InstructionsCas;
                             valeursCase+=espacesn(true,niveau + 2);
+
+                            
+                            le_cas=espacesn(true,niveau + 1);
+                            if(valeurCas === null){
+                                le_cas+='default:';
+                            }else{
+                                le_cas+='case ' + valeurCas + ':';
+                            }
+                            le_cas+=InstructionsCas;
+                            le_cas+=espacesn(true,niveau + 2);
+                            tableau_des_cas[tableau_des_cas.length-1]={le_cas:le_cas,les_commentaires:les_commentaires_avant};
+                            tableau_des_cas.push({le_cas:'',les_commentaires:[]});
+                            les_commentaires_avant=[];
+                            
+                        }else if(tab[j][1] === '#'){
+                            les_commentaires_avant.push(tab[j]);
                         }else{
                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans bascule il ne doit y avoir que "quand" et "est" '}));
                         }
                     }
                     t+=un_espace;
                     t+='switch (' + valeurQuand + '){';
-                    t+=valeursCase;
+                    for(var j=0;j<tableau_des_cas.length;j++){
+                     if(tableau_des_cas[j].le_cas!==''){
+                      for(var k=0;k<tableau_des_cas[j].les_commentaires.length;k++){
+                         t+=espacesn(true,niveau+1)+'/*'+traiteCommentaire2(tableau_des_cas[j].les_commentaires[k][13],niveau,i)+'*/';
+                      }
+                      t+=tableau_des_cas[j].le_cas;
+                     }
+                    }
+//                    t+=valeursCase;
                     t+=un_espace;
                     t+='}';
                     break;
@@ -972,13 +1000,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             }
                         }else if(tab[j][1] === 'faire' && tab[j][2] === 'f'){
                             if(tab[j][8] >= 1){
-                                niveau+=1;
-                                obj=php_tabToPhp1(tab,j + 1,false,false,niveau);
-                                niveau-=1;
+                                obj=php_tabToPhp1(tab,j + 1,false,false,niveau+1);
                                 if(obj.__xst === true){
                                     Instructions=obj.__xva;
                                 }else{
-                                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : k ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans faire  '}));
+                                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : j ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans faire  '}));
                                 }
                             }else{
                                 Instructions='';
@@ -2437,48 +2463,61 @@ function php_traiteAffecte(tab,i,dansConditionOuDansFonction,niveau){
     if(!(dansConditionOuDansFonction)){
         t+=espacesn(true,niveau);
     }
-    if(tab[i][8] === 2){
-        var avantEgal='';
-        var apresEgal='';
-        for( var j = i + 1 ; j < l01 ; j=tab[j][12] ){
-            if(tab[j][7] === i){
-                var elt='';
-                if(tab[j][2] === 'c'){
-                    elt=ma_cst_pour_php(tab[j]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-                }else{
-                    var obj1 = php_traiteElement(tab,j,niveau,{});
-                    if(obj1.__xst === true){
-                        elt=obj1.__xva;
-                    }else{
-                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'dans affecte 0804'}));
-                    }
-                }
-                /* enfant 1 ou 2 */
-                if(tab[j][9] === 1){
-                    avantEgal=elt;
-                }else{
-                    apresEgal=elt;
-                }
+    var avantEgal='';
+    var apresEgal='';
+    var commentaire='';
+    for( var j = i + 1 ; j < l01 ; j=tab[j][12] ){
+        var elt='';
+        if(tab[j][2] === 'f' && tab[j][1] === '#'){
+
+            if(!(dansConditionOuDansFonction)){
+             commentaire+=espacesn(true,niveau);
             }
-        }
-        if(apresEgal.substr(0,avantEgal.length) === avantEgal && apresEgal.substr(avantEgal.length,1) === '.'){
-            if(tab[i][1] === 'affecte_reference'){
-                t+=avantEgal + '.=&' + (apresEgal.substr(avantEgal.length + 1));
-            }else{
-                t+=avantEgal + '.=' + (apresEgal.substr(avantEgal.length + 1));
-            }
+            commentaire+='/*' + (traiteCommentaire2(tab[j][13],niveau,j)) + '*/';
+
+             continue;
+        }else if(tab[j][2] === 'c'){
+            elt=ma_cst_pour_php(tab[j]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
         }else{
-            if(tab[i][1] === 'affecte_reference'){
-                t+=avantEgal + '=&' + apresEgal;
+            var obj1 = php_traiteElement(tab,j,niveau,{});
+            if(obj1.__xst === true){
+                elt=obj1.__xva;
             }else{
-                t+=avantEgal + '=' + apresEgal;
+                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'dans affecte 0804'}));
             }
         }
-        if(!(dansConditionOuDansFonction)){
-            t+=';';
+        /* enfant 1 ou 2 */
+        if(avantEgal === ''){
+            avantEgal=elt;
+        }else{
+            if(apresEgal!==''){
+              return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js 2492 vérifiez les paramètres de affecte ( 2 + commentaires uniquement )  '}));
+            }else{
+              apresEgal=elt;
+            }
+        }
+    }
+    if(apresEgal.substr(0,avantEgal.length) === avantEgal && apresEgal.substr(avantEgal.length,1) === '.'){
+        if(tab[i][1] === 'affecte_reference'){
+            t+=avantEgal + '.=&' + (apresEgal.substr(avantEgal.length + 1));
+        }else{
+            t+=avantEgal + '.=' + (apresEgal.substr(avantEgal.length + 1));
         }
     }else{
-        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js 0946 affecte ne doit contenir que 2 arguments'}));
+        if(tab[i][1] === 'affecte_reference'){
+            t+=avantEgal + '=&' + apresEgal;
+        }else{
+            t+=avantEgal + '=' + apresEgal;
+        }
+    }
+    if(commentaire!==''){
+        t=commentaire+t;
+    }
+    if(!(dansConditionOuDansFonction)){
+        t+=';';
+    }
+    if(tab[i][8] === 3 && commentaire===''){
+         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js 2991 affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
     }
     return({"__xst" : true ,"__xva" : t});
 }

@@ -156,7 +156,7 @@ class interface1{
             affichagesPresents=true;
         }
         while(global_messages.lines.length > 0){
-            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">sélectionner la ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
+            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
             global_messages.lines.splice(0,1);
             affichagesPresents=true;
         }

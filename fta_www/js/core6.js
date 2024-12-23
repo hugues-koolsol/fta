@@ -1635,6 +1635,21 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
+                     
+                     
+                        return(logerreur(formaterErreurRev({
+                            "__xst" : false ,
+                            "ind" : i ,
+                            "__xme" : '1345 la racine ne peut pas contenir des constantes' ,
+                            "type" : 'rev' ,
+                            "texte" : texte ,
+                            "chaineTableau" : chaineTableau ,
+                            "tabComment" : tabCommentaireEtFinParentheses ,
+                            "tableauEntree" : tableauEntree ,
+                            "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
+                            "autoriserCstDansRacine" : autoriserCstDansRacine
+                        })));
+                     
                         return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : '1345 la racine ne peut pas contenir des constantes'}));
                     }
                 }
