@@ -57,7 +57,7 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
             }
 
         }
-        $ret=$db0->exec('PRAGMA encoding = "UTF-8";PRAGMA foreign_keys=1;');
+        $ret=$db0->exec('PRAGMA encoding = "UTF-8";PRAGMA foreign_keys=1;PRAGMA journal_mode=WAL;');
 
         if($ret === false){
 
@@ -832,6 +832,7 @@ function html_header1($parametres){
      let __module_svg1=null;
      let __module_requete_sql1=null;
      let __module_php_parseur1=null;
+     let __module_js_parseur1=null;
      /*       document.addEventListener("DOMContentLoaded",function(event){});     */
      /*
        =====================================================================================================================
@@ -861,6 +862,10 @@ function html_header1($parametres){
                  }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
                      import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
                          __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
+                     });
+                 }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
+                     import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
+                         __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
                      });
                  }
              }

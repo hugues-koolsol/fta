@@ -216,7 +216,11 @@ function zz_l1_convertir_un_source_php_sur_disque2(id_source){
                         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
                     }
                 }catch(e){
-                    logerreur({"__xst" : false , "__xme" : 'Il y a une erreur dans le source php '});
+                    if(e.hasOwnProperty('lineNumber')){
+                        logerreur({"__xst" : false , "__xme" : 'Il y a une erreur dans le source php "" ', "line":e.lineNumber });
+                    }else{
+                        logerreur({"__xst" : false , "__xme" : 'Il y a une erreur dans le source php '});
+                    }
                 }
                 
             }

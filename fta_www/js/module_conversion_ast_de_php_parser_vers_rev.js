@@ -1109,7 +1109,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                     if(les_elements!==''){
                         les_elements+=',';
                     }
-                    les_elements+=obj.__xva;
+                    les_elements+='p('+obj.__xva+')';
                 }else{
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1067  #traite_list' ,"element" : element}));
                 }
@@ -1614,6 +1614,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             case '!' : t+='non(' + what + ')';
                 break;
             case '-' : t+='moins(' + what + ')';
+                break;
+            case '+' : t+='plus(' + what + ')';
                 break;
             default:
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1286 #traite_unary non traité : "' + element.type + '"' ,"element" : element}));
@@ -2412,7 +2414,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1791 #traite_ast0 function' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1791 #traite_element function' ,"element" : element}));
                 }
                 break;
                 
@@ -2421,7 +2423,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1800 #traite_ast0 unset' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1800 #traite_element unset' ,"element" : element}));
                 }
                 break;
                 
@@ -2430,7 +2432,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1809 #traite_ast0 isset' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1809 #traite_element isset' ,"element" : element}));
                 }
                 break;
                 
@@ -2439,7 +2441,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1818 #traite_ast0 inline' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1818 #traite_element inline' ,"element" : element}));
                 }
                 break;
                 
@@ -2448,7 +2450,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1827 #traite_ast0 bin' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1827 #traite_element bin' ,"element" : element}));
                 }
                 break;
                 
@@ -2457,7 +2459,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1836 #traite_ast0 unary' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1836 #traite_element unary' ,"element" : element}));
                 }
                 break;
                 
@@ -2466,7 +2468,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1845 #traite_ast0 array' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1845 #traite_element array' ,"element" : element}));
                 }
                 break;
                 
@@ -2475,7 +2477,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1854 #traite_ast0 retif' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1854 #traite_element retif' ,"element" : element}));
                 }
                 break;
                 
@@ -2484,7 +2486,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1863 #traite_ast0 usegroup' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1863 #traite_element usegroup' ,"element" : element}));
                 }
                 break;
                 
@@ -2493,7 +2495,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1872 #traite_ast0 propertylookup' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1872 #traite_element propertylookup' ,"element" : element}));
                 }
                 break;
                 
@@ -2502,7 +2504,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2323 #traite_ast0 pre' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2323 #traite_element pre' ,"element" : element}));
                 }
                 break;
                 
@@ -2511,7 +2513,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1890 #traite_ast0 new' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1890 #traite_element new' ,"element" : element}));
                 }
                 break;
                 
@@ -2520,7 +2522,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1899 #traite_ast0 try' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1899 #traite_element try' ,"element" : element}));
                 }
                 break;
                 
@@ -2529,7 +2531,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1908 #traite_ast0 catch' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1908 #traite_element catch' ,"element" : element}));
                 }
                 break;
                 
@@ -2538,7 +2540,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1917 #traite_ast0 return' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1917 #traite_element return' ,"element" : element}));
                 }
                 break;
                 
@@ -2547,7 +2549,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1926 #traite_ast0 return' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1926 #traite_element return' ,"element" : element}));
                 }
                 break;
                 
@@ -2556,7 +2558,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1935 #traite_ast0 return' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1935 #traite_element return' ,"element" : element}));
                 }
                 break;
                 
@@ -2565,7 +2567,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1944 #traite_ast0 while' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1944 #traite_element while' ,"element" : element}));
                 }
                 break;
                 
@@ -2574,7 +2576,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1953 #traite_ast0 for' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1953 #traite_element for' ,"element" : element}));
                 }
                 break;
                 
@@ -2583,7 +2585,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1962 #traite_ast0 foreach' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1962 #traite_element foreach' ,"element" : element}));
                 }
                 break;
                 
@@ -2592,7 +2594,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1971 #traite_ast0 post' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1971 #traite_element post' ,"element" : element}));
                 }
                 break;
                 
@@ -2601,7 +2603,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1980 #traite_ast0 pre' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1980 #traite_element pre' ,"element" : element}));
                 }
                 break;
                 
@@ -2610,7 +2612,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1989 #traite_ast0 pre' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1989 #traite_element pre' ,"element" : element}));
                 }
                 break;
                 
@@ -2619,7 +2621,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1998 #traite_ast0 pre' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1998 #traite_element pre' ,"element" : element}));
                 }
                 break;
                 
@@ -2628,7 +2630,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2341 #traite_ast0 break' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2341 #traite_element break' ,"element" : element}));
                 }
                 break;
                 break;
@@ -2638,7 +2640,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2010 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2010 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2647,7 +2649,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2276 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2276 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2657,7 +2659,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2276 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2276 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2668,7 +2670,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2238 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2238 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2677,7 +2679,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2247 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2247 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2686,7 +2688,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2256 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2256 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2696,7 +2698,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2266 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2266 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2706,7 +2708,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2437 #traite_ast0 if' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2437 #traite_element if' ,"element" : element}));
                 }
                 break;
                 
@@ -2716,7 +2718,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2447 #traite_ast0 list' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2447 #traite_element list' ,"element" : element}));
                 }
                 break;
                 
@@ -2726,7 +2728,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2483 #traite_ast0 #traite_continue' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2483 #traite_element #traite_continue' ,"element" : element}));
                 }
                 break;
                 
@@ -2736,7 +2738,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2527 #traite_ast0 #traite_empty' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2527 #traite_element #traite_empty' ,"element" : element}));
                 }
                 break;
                 
@@ -2746,7 +2748,7 @@ name: Identifier {kind: 'identifier', loc: Location, name: 'MicroTimer'}
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2589 #traite_ast0 #traite_assignref' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2589 #traite_element #traite_assignref' ,"element" : element}));
                 }
                 break;
                 

@@ -171,6 +171,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         t+=espcLigne;
                         var objOperation = TraiteOperations2(tab,tab[i+1][0],niveau,0);
                         if(objOperation.__xst === true){
+                            if(objOperation.__xva.substr(objOperation.__xva.length-1,1)===';'){
+
+                             objOperation.__xva=objOperation.__xva.substr(0,objOperation.__xva.length-1);
+                            }
                             t+='return(' + objOperation.__xva + ')' + terminateur;
                         }else{
                             return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"message" : 'erreur 0076 sur return '}));
@@ -300,7 +304,12 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     }
                     t+=obj.__xva + obj.arguments_a_ajouter_au_retour + terminateur;
                 }else{
-                    t+=obj.__xva + terminateur;
+
+                    if(terminateur===';' && obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
+                        t+=obj.__xva ;
+                    }else{
+                        t+=obj.__xva + terminateur;
+                    }
                 }
             }else{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"message" : 'il faut un nom de fonction à appeler n(xxxx)'}));
@@ -2171,7 +2180,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     }
                 }
             }else if(tab[j][1] === 'p'){
-                if(tab[j][8] === 0 && tab[j+1][2] === 'f'){
+                if(tab[j][8] === 0 ){
                     argumentsFonction+=',';
                 }else if(tab[j][8] === 1 && tab[j+1][2] === 'c'){
                     argumentsFonction+=',' + (ma_cst_pour_javascript(tab[j+1]));
@@ -2235,6 +2244,9 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                                 }else if(tab[k][2] === 'f' && tab[k][1] === 'appelf'){
                                     objOperation=js_traiteAppelFonction(tab,k,true,niveau,true,nomFonction);
                                     if(objOperation.__xst === true){
+                                        if(objOperation.__xva.substr(objOperation.__xva.length-1,1)===';'){
+                                            objOperation.__xva=objOperation.__xva.substr(0,objOperation.__xva.length-1);
+                                        }
                                         argumentsFonction+=objOperation.__xva;
                                     }else{
                                         return(logerreur({"__xst" : false ,"__xva" : t ,"id" : k ,"tab" : tab ,"message" : 'erreur 2104 sur des opérations '}));
@@ -2420,13 +2432,13 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }else{
                     t+=')';
                 }
-                if(nomFonction === 'function' && flechee === true){
+                if((nomFonction === 'function' || nomFonction === '') && flechee === true){
                     t+=' => ';
                 }
             }
         }
     }
-    if(nomFonction === 'function'){
+    if(nomFonction === 'function' || (nomFonction === '' && flechee ===true )){
         var espaces_avant_contenu = espacesn(true,niveau);
         if(contenu.substr(0,2) === CRLF){
             espaces_avant_contenu='';

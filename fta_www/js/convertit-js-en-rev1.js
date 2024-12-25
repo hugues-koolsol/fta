@@ -2575,7 +2575,9 @@ function traiteExpression1(element,niveau,parent){
             }else{
                 t+='directive("' + (element.directive.replace(/"/g,'\\"')) + '")';
             }
-        }else if('AssignmentExpression' === element.expression.type
+        }else if(
+            'ArrowFunctionExpression' === element.expression.type
+         || 'AssignmentExpression' === element.expression.type
          || 'BinaryExpression' === element.expression.type
          || 'CallExpression' === element.expression.type
          || 'ConditionalExpression' === element.expression.type
@@ -3178,8 +3180,8 @@ function ast_de_js_vers_rev1(les_elements,niveau){
                         var obj1 = traiteCallExpression1(element.argument,niveau + 1,element,{"sansLF" : true});
                         if(obj1.__xst === true){
                             if(obj1.__xva.indexOf('auto_appelee(1)') >= 0){
-                                console.log('%con retire les fonctions auto appelées dans un return','background:red;color:white;');
-                                obj1.__xva=obj1.__xva.replace(/auto_appelee\(1\),/g,'');
+//                                console.log('%con retire les fonctions auto appelées dans un return','background:red;color:white;');
+//                                obj1.__xva=obj1.__xva.replace(/auto_appelee\(1\),/g,'');
                             }
                             t+='\n' + esp0 + 'retourner(' + obj1.__xva + ')';
                         }else{
@@ -3507,6 +3509,38 @@ function convertit_source_javascript_en_rev(sourceDuJavascript){
   }
 */
 var tabComment=[];
+/*
+  =====================================================================================================================
+*/
+function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3(nom_de_la_text_area_source,nom_de_la_text_area_rev){
+    __gi1.raz_des_messages();
+    var a = document.getElementById(nom_de_la_text_area_source);
+    localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
+    /*
+      https://github.com/acornjs/acorn
+    */
+    var parseur_javascript=window.acorn.Parser;
+    try{
+        tabComment=[];
+        var obj = parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+
+        var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+        if(obj.__xst===true){
+            document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;;
+        }else{
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+         
+        }
+    }catch(e){
+        console.error('e=',e);
+        if(e.pos){
+            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+        }else{
+            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3443'});
+        }
+    }
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+}
 /*
   =====================================================================================================================
 */
