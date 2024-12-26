@@ -2011,7 +2011,10 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 nomFonction=tab[j+2][1];
             }else if(tab[j+1][1] === 'appelf' && tab[j+1][2] === 'f'){
                 var obj1 = js_traiteAppelFonction(tab,j + 1,true,niveau,true,nom_de_la_fonction_parente);
-                if(obj1.__xst === true){
+                if(obj1.__xst === true){                 
+                    if(obj1.__xva.substr(obj1.__xva.length-1,1)===';'){
+                        obj1.__xva=obj1.__xva.substr(0,obj1.__xva.length-1);
+                    }
                     nomFonction=obj1.__xva;
                     enfantTermineParUnePropriete=obj1.termineParUnePropriete;
                     aDesAppelsRecursifs=true;
