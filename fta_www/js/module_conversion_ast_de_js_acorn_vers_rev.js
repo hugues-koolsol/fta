@@ -40,8 +40,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let id='';
         let contenu='';
         let les_arguments='';
+        let asynchrone='';
         if(element.async!==false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0041 #traite_FunctionExpression async' ,"element" : element}));
+            asynchrone='asynchrone(),';
         }
         if(element.expression!==false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0044 #traite_FunctionExpression expression' ,"element" : element}));
@@ -83,9 +84,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
 
         if(id!==''){
-            t+='appelf(id('+id+'),nomf(function),contenu('+contenu+')'+les_arguments+')';
+            t+='appelf('+asynchrone+'id('+id+'),nomf(function),contenu('+contenu+')'+les_arguments+')';
         }else{
-            t+='appelf(nomf(function),contenu('+contenu+')'+les_arguments+')';
+            t+='appelf('+asynchrone+'nomf(function),contenu('+contenu+')'+les_arguments+')';
         }
 
         return({"__xst" : true ,"__xva" : t});
@@ -96,40 +97,426 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     */
     #traite_CallExpression(element,niveau,parent,tab_comm){
         let t='';
-        let obj=null;
+//        let obj=null;
         let auto_appelee='';
         let les_arguments='';
         let nom_fonction='';
-        debugger
+        var i=0;
+        var j=0;
+        var k=0;
+        var parentProperty='';
+
         if(element.callee){
            if( element.callee.params && element.arguments && Array.isArray(element.callee.params) && Array.isArray(element.arguments) ){
-               auto_appelee='auto_appelee(1),';
+               auto_appelee='auto_appelee(3),';
            }
-           obj=this.#traite_element(element.callee,niveau+1,parent,tab_comm);
-           if(obj.__xst===true){
-               nom_fonction+=obj.__xva;
-           }else{
-               return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_CallExpression' ,"element" : element}));
-           }
-        }else{
-           return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_element CallExpression ' ,"element" : element}));
         }
-        if(element.arguments && Array.isArray(element.arguments) ){
-            if(element.arguments.length===0){
-                les_arguments=',p()';
+        
+        if(parent.property){
+            if(parent.computed && parent.computed === true){
+                /* le parent est un tableau => les propriétés sont les indices du tableau */
             }else{
-                for(let i=0;i<element.arguments.length;i++){
-                    obj=this.#traite_element(element.arguments[i],niveau+1,parent,tab_comm);
-                    if(obj.__xst===true){
-                        les_arguments+=',p('+obj.__xva+')'
+                if(parent.property.type === 'Identifier'){
+                    parentProperty='prop(' + parent.property.name + ')';
+                }else if(parent.property.type === 'Literal'){
+                    parentProperty='prop(' + parent.property.raw + ')';
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0514 ' + parent.property.type ,"element" : element}));
+                }
+            }
+        }
+        var contenu='';
+        var le_contenu='';
+        if(element.body){
+            var obj = this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            if(obj.__xst === true){
+                contenu=obj.__xva;
+                if(contenu !== ''){
+                    le_contenu=',contenu(' + contenu + ')';
+                }
+            }else{
+                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
+            }
+        }
+        var lesArguments='';
+        if(element.arguments && element.arguments.length > 0){
+            for( i=0 ; i < element.arguments.length ; i++ ){
+                lesArguments+=',';
+                var le_commentaire = ''; //comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element);
+                if('CallExpression' === element.arguments[i].type){
+                    var obj1 = this.#traite_CallExpression(element.arguments[i],niveau + 1,element,tab_comm);
+                    if(obj1.__xst === true){
+                        if(obj1.__xva.substr(0,6) === 'defTab'){
+                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
+                        }else if(obj1.__xva.substr(0,6) === 'appelf'){
+                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
+                        }else{
+                            lesArguments+='p(' + le_commentaire + 'appelf(' + obj1.__xva + '))';
+                        }
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_CallExpression' ,"element" : element}));
+                        console.error('Dans traiteCallExpression1 element=',element);
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteCallExpression1 479 ' ,"element" : element}));
+                    }
+                }else{
+                    var obj1 = this.#traite_element(element.arguments[i],niveau + 1,element,tab_comm); //traiteUneComposante(element.arguments[i],niveau + 1,false,false,element);
+                    if(obj1.__xst === true){
+                        if('FunctionExpression' === element.arguments[i].type
+                         && parent
+                         && parent.callee
+                         && parent.callee.type
+                         && parent.callee.type === 'FunctionExpression'
+                        ){
+                            console.log('%c VERIFIER ajouter des parenthèses pour les arguments ','color:red;background:pink;');
+                            /* on ajoute une parenthèse */
+
+                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
+                        }else{
+                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
+                        }
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0722' ,"element" : element}));
                     }
                 }
             }
         }
-        t+='appelf('+auto_appelee+'nomf('+nom_fonction+')'+les_arguments+')';
+        if(lesArguments === ''){
+            lesArguments=parentProperty;
+        }else{
+            if(parentProperty !== ''){
+                lesArguments=lesArguments + ',' + parentProperty;
+            }
+        }
+        
+        lesArguments=lesArguments+auto_appelee;
+        
+        var laPropriete='';
+        var prefixe='';
+        if(element.callee){
+            if(element.callee.property){
+                if(element.callee.property.type === 'Identifier'
+                 || element.callee.property.type === 'PrivateIdentifier'
+                 || element.callee.property.type === 'Literal'
+                ){
+                    var nom_de_la_fonction='';
+                    if(element.callee.property.type === 'Literal'){
+                        nom_de_la_fonction='cst(' + element.callee.property.raw + ')';
+                    }else{
+                        if(element.callee.property.type === 'PrivateIdentifier'){
+                            nom_de_la_fonction='#' + element.callee.property.name;
+                        }else{
+                            nom_de_la_fonction=element.callee.property.name;
+                        }
+                    }
+                    if(element.callee.object && element.callee.object.type === 'Identifier'){
+                        if(element.callee.property.type === 'Literal'){
+                            /* a['Symbol.iterator'](); => appelf(nomf(tableau(nomt(a),p('element.callee.property')))) */
+                            if(element.callee.object.type === 'Identifier'){
+                                if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
+                                    t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.raw + '))))';
+                                }else{
+                                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1411 ' ,"element" : element}));
+                                }
+                            }
+                        }else{
+                            t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
+                        }
+                    }else if(element.callee.object && element.callee.object.type === 'Literal'){
+                        t+='appelf(element(' + element.callee.object.raw + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
+                    }else if(element.callee.object && element.callee.object.type === 'ArrayExpression'){
+                        var obj1 = this.#traite_ArrayExpression(element.callee.object,niveau,element.callee,tab_comm); //traiteArrayExpression1(element.callee.object,niveau);
+                        if(obj1.__xst === true){
+                        }else{
+                            return(astjs_logerreur({"__xst" : false ,"__xme" : '1395 erreur dans traiteCallExpression1 ' ,"element" : element}));
+                        }
+                        t+='appelf(element(' + obj1.__xva + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
+                    }else{
+                        if(element.callee.object
+                         && element.callee.object.type === 'MemberExpression'
+                         && !(element.callee.object.object
+                         && element.callee.object.property
+                         && element.callee.object.object.type === 'Identifier'
+                         && element.callee.object.property.type === 'Identifier')
+                        ){
+                            var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); //traiteMemberExpression1(element.callee.object,niveau,element);
+                            if(obj1.__xst === true){
+                                t+='appelf(element(' + obj1.__xva + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
+                            }else{
+                                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 485 ' ,"element" : element}));
+                            }
+                        }else{
+                            if(contenu === ''){
+                                if(element.callee.property.name){
+                                    laPropriete='prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + '))';
+                                }else if(element.callee.property.type === 'ConditionalExpression'){
+                                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1235 ' ,"element" : element}));
+                                }
+                            }else{
+                                console.error('\n\nATTENTION VERIFIER CECI\n\n');
+                                laPropriete='#(to'+'do verifier convertit_js_en-rev 1230 ),prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + ')))';
+                            }
+                        }
+                    }
+                }else if(element.callee.property.type === 'MemberExpression'){
+                    /* ce sera traité plus bas dans le                     if(element.callee.object){ */
+                }else if(element.callee.property.type === 'Literal'){
+                    debugger;
+                }else if(element.callee.property.type === 'ConditionalExpression'){
+                    var obj1 = this.#traite_ConditionalExpression(element.callee.property,niveau,element.callee,tab_comm);  // traiteConditionalExpression1(element.callee.property,niveau + 1);
+                    if(obj1.__xst === true){
+                        if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
+                            if(element.callee.object.type === 'MemberExpression'){
+                                var obj2 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.object,niveau,element.callee);
+                                if(obj2.__xst === true){
+                                    t+='appelf(nomf(tableau(nomt(' + obj2.__xva + '),p(' + obj1.__xva + ')))' + lesArguments + le_contenu + ')';
+                                }else{
+                                    return(astjs_logerreur({"__xst" : false ,"__xme" : '1494 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
+                                }
+                            }else{
+                                return(astjs_logerreur({"__xst" : false ,"__xme" : '1497 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
+                            }
+                        }else{
+                            return(astjs_logerreur({"__xst" : false ,"__xme" : '1500 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
+                        }
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : '1504 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
+                    }
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0887 pour "' + element.callee.property.type + '"' ,"element" : element}));
+                }
+            }
+            if(element.callee.object){
+                if(element.callee.object.type === 'CallExpression'){
+                    var obj1 = this.#traite_CallExpression(element.callee.object,niveau + 1,element,tab_comm); //traiteCallExpression1(element.callee.object,niveau,element,{});
+                    if(obj1.__xst === true){
+                        if(obj1.__xva.substr(0,6) === 'appelf' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
+                            t+='' + (obj1.__xva.substr(0,obj1.__xva.length - 1)) + ',' + laPropriete + ')';
+                        }else if(obj1.__xva.substr(0,3) === 'new' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
+                            t+='' + (obj1.__xva.substr(0,obj1.__xva.length - 1)) + ',' + laPropriete + ')';
+                        }else{
+                            if(contenu === ''){
+                                t+='appelf(' + obj1.__xva + ',' + laPropriete + ')';
+                            }else{
+                                t+='appelf(' + obj1.__xva + ',' + laPropriete + ',contenu(' + contenu + '))';
+                            }
+                        }
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0900 ' ,"element" : element}));
+                    }
+                }else if(element.callee.object.type === 'ArrayExpression'){
+                    console.log('%ctraité plus haut ' + t,'background:lightblue;color:navy;');
+                    /* traité plus haut */
+                }else if(element.callee.object.type === 'MemberExpression'){
+                    var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.object,niveau,element);
+                    if(obj1.__xst === false){
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 485 ' ,"element" : element}));
+                    }
+                    prefixe='';
+                    if(element.callee.property.type === 'PrivateIdentifier'){
+                        prefixe='#';
+                    }
+                    if(element.callee.object.object
+                     && element.callee.object.property
+                     && element.callee.object.object.type === 'Identifier'
+                     && element.callee.object.property.type === 'Identifier'
+                    ){
+                        if(contenu === ''){
+                            t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + ')';
+                        }else{
+                            t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + ',contenu(' + contenu + '))';
+                        }
+                    }else{
+                        /*
+                          Traité plus haut en repère xxx001    
+                        */
+                    }
+                }else if(element.callee.object.type === 'Identifier'){
+                    var nom_de_l_objet=element.callee.object.name;
+                    if(element.callee.property && element.callee.property.type === 'MemberExpression'){
+                        var obj = this.#traite_MemberExpression(element.callee.property,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.property,niveau,element.callee);
+                        if(obj.__xst === true){
+                            if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
+                                /* a[Symbol.iterator](); => appelf(nomf(a[Symbol.iterator])) */
+                                t+='appelf(nomf(' + nom_de_l_objet + '[' + obj.__xva + '])' + lesArguments + le_contenu + ')';
+                            }else{
+                                return(astjs_logerreur({"__xst" : false ,"__xme" : '1539 erreur dans traiteCallExpression1 ' + element.callee.property.type ,"element" : element}));
+                            }
+                        }else{
+                            return(astjs_logerreur({"__xst" : false ,"__xme" : '1538 erreur dans traiteCallExpression1 ' + element.callee.property.type ,"element" : element}));
+                        }
+                    }
+                }else if(element.callee.object.type === 'Literal'){
+                    /* le traitement a été fait plus haut */
+                }else if(element.callee.object.type === 'ThisExpression'){
+                    prefixe='';
+                    if(element.callee.property.type === 'PrivateIdentifier'){
+                        prefixe='#';
+                    }
+                    t='appelf(element(this),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                }else if(element.callee.object.type === 'ImportExpression'){
+                    if(element.callee.object.source){
+                        if(element.callee.object.source.type === 'Literal'){
+                            lesArguments='p(' + element.callee.object.source.raw + ')';
+                        }else if(element.callee.object.source.type === 'Identifier'){
+                            lesArguments='p(' + element.callee.object.source.name + ')';
+                        }else{
+                            return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1230 type de source inconnu pour l\'import ' + element.callee.object.type ,"element" : element}));
+                        }
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1230 pas de source en import ' + element.callee.object.type ,"element" : element}));
+                    }
+                    t='appelf(nomf(import),' + lesArguments + ',' + laPropriete + le_contenu + ')';
+                }else if(element.callee.object.type === 'Super'){
+                    t='appelf(nomf(super),' + lesArguments + ',' + laPropriete + ')';
+                }else if(element.callee.object.type === 'NewExpression'){
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); //traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    if(obj1.__xst === true){
+                        t=(obj1.__xva.substr(0,obj1.__xva.length - 2)) + ',' + lesArguments + ',' + laPropriete + '))';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteAssignmentExpress1 1385' ,"element" : element}));
+                    }
+                }else if(element.callee.object.type === 'BinaryExpression'){
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    if(obj1.__xst === true){
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1366 ' + element.callee.object.type ,"element" : element}));
+                    }
+                }else if(element.callee.object.type === 'FunctionExpression'){
+                    var obj1 = this.#traite_FunctionExpression(element.callee.object,niveau,element,tab_comm); //traiteFunctionExpression1(element.callee.object,niveau,element,'');
+                    if(obj1.__xst === true){
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                    }
+                }else if(element.callee.object.type === 'LogicalExpression'){
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    if(obj1.__xst === true){
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                    }
+                }else if(element.callee.object.type === 'AssignmentExpression'){
+                    var obj1 =  this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    if(obj1.__xst === true){
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                    }
+                }else if(element.callee.object.type === 'ConditionalExpression'){
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    if(obj1.__xst === true){
+                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                    }
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0618 ' + element.callee.object.type ,"element" : element}));
+                }
+            }else if(element.callee.type === 'Identifier'){
+                if(element.callee.name === 'Array' && laPropriete === ''){
+                    if(lesArguments.length > 0 && lesArguments.substr(0,1) === ','){
+                        lesArguments=lesArguments.substr(1);
+                    }
+                    t+='defTab(' + lesArguments + ')';
+                }else{
+                    if(contenu === ''){
+                        t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + ')';
+                    }else{
+                        debugger; // voir le_contenu
+                        t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
+                    }
+                }
+            }else if(element.callee.type === 'CallExpression'){
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,false,false,element);
+                if(obj1.__xst === true){
+                    t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
+                }
+            }else if(element.callee.type === 'SequenceExpression'){
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,false,false,element);
+                if(obj1.__xst === true){
+                    t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
+                }
+            }else if(element.callee.type === 'FunctionExpression'){
+                var obj1 = this.#traite_FunctionExpression(element.callee,niveau,element,tab_comm); // traiteFunctionExpression1(element.callee,niveau,element,'');
+                if(obj1.__xst === true){
+                    if(contenu === ''){
+                        /*
+                          console.log('element=',element)
+                          console.log('parent=',parent)
+                          console.log('parent.callee=',parent.callee)
+                        */
+                        if(obj1.__xva.substr(0,6) === 'appelf'){
+//                            console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
+                            /* cas (function() {var g=1;})(); */
+//                            t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
+                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                        }else{
+                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                        }
+                    }else{
+                        debugger; // voir le_contenu
+                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
+                    }
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                }
+            }else if(element.callee.type === 'ConditionalExpression'){
+                var obj1 = this.#traite_ConditionalExpression(element.callee,niveau,element,tab_comm); // traiteConditionalExpression1(element.callee,niveau + 1);
+                if(obj1.__xst === true){
+                    t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0108 ' ,"element" : element}));
+                }
+            }else if(element.callee.type === 'Super'){
+                t+='appelf(nomf(super)' + lesArguments + laPropriete + ')';
+            }else if(element.callee.type === 'ArrowFunctionExpression'){
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,false,false,element);
+                if(obj1.__xst === true){
+                    if(contenu === ''){
+                        if(obj1.__xva.substr(0,6) === 'appelf'){
+//                            console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
+                            /* cas (()=>{var g=1;})(); */
+//                            t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
+                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                        }else{
+                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                        }
+                    }else{
+                        debugger; // voir le_contenu
+                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
+                    }
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
+                }
+            }else if(element.callee.type === 'ThisExpression'){
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,niveau,false,false,element);
+                if(obj1.__xst === true){
+                    if(contenu === ''){
+                        if(obj1.__xva.substr(0,6) === 'appelf'){
+                            console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
+                            /* cas (()=>{var g=1;})(); */
+//                            t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
+                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                        }else{
+                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
+                        }
+                    }else{
+                        debugger; // voir le_contenu
+                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
+                    }
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0000 [ to'+'do ajuster ] '}));
+                }
+            }else{
+                return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type + '"' ,"element" : element}));
+            }
+        }
         return({"__xst" : true ,"__xva" : t});
+        
     }
     
     /*
@@ -142,9 +529,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let id='';
         let les_arguments='';
         let est_expression=false
+        let asynchrone='';
 
         if(element.async!==false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0083 #traite_ArrowFunctionExpression async' ,"element" : element}));
+            asynchrone='asynchrone(),';
+
         }
         
         est_expression=element.expression;
@@ -199,7 +588,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         
         
-        t+='appelf(flechee()'+les_arguments+',contenu('+contenu+'))';
+        t+='appelf('+asynchrone+'flechee()'+les_arguments+',contenu('+contenu+'))';
 
         return({"__xst" : true ,"__xva" : t});
     }
@@ -212,9 +601,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let l_argument='';
         
-        if(element.argument ){
+        if(element.argument){
+
             obj=this.#traite_element(element.argument,niveau+1,parent,tab_comm);
             if(obj.__xst===true){
+                if(obj.__xva.substr(obj.__xva.length-1,1)===';'){
+                 debugger
+                }
                 l_argument+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0206 #traite_ReturnStatement' ,"element" : element}));
@@ -352,7 +745,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let debutDeclaration='';
         
         for(let decl in element.declarations){
-        if(element.declarations)
             if(t !== ''){
                 t+=',';
             }
@@ -411,6 +803,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(t !== ''){
                 t+=',';
             }
+            t+=this.#comm_avant_debut(element.properties[i],niveau,tab_comm);
+            
             var val=element.properties[i];
             if(val.key.type === 'Identifier'){
                 t+='(' + val.key.name + ',';
@@ -442,9 +836,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let ne_contient_que_des_constantes=true;
         let nombre_elements=0;
         let format_constante='';
+        let commentaire = '';
         t+='defTab(';
         let lesPar='';
         for(let i in element.elements){
+            commentaire=this.#comm_avant_debut(element.elements[i],niveau,tab_comm);
+            if(commentaire!==''){
+             lesPar+=','+commentaire;
+            }
             if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
                 if(element.elements[i].raw.substr(0,1) === '\''
@@ -469,7 +868,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        if(lesPar.length >= 0){
+        if(lesPar.length >= 0 ){
             lesPar=lesPar.substr(1);
         }
         t+=lesPar + ')';
@@ -492,9 +891,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let contenu='';
         let nom_fonction='';
         let les_arguments='';
+        let asynchrone='';
         
         if(element.async!==false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0455 #traite_FunctionDeclaration async' ,"element" : element}));
+            asynchrone='asynchrone(),';
         }
         if(element.expression!==false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0458 #traite_FunctionDeclaration expression' ,"element" : element}));
@@ -540,7 +940,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0478 #traite_FunctionDeclaration' ,"element" : element}));
         }
         
-        t+='fonction( definition(nom('+nom_fonction+') '+les_arguments+' )  ,  contenu( '+contenu+' ) )';
+        t+='fonction( definition('+asynchrone+'nom('+nom_fonction+') '+les_arguments+' )  ,  contenu( '+contenu+' ) )';
         
         return({"__xst" : true ,"__xva" : t});
     }
@@ -874,7 +1274,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             case 'void' : return 'void';
             default: 
             this.#astjs_logerreur({"__xst" : false ,"__xme" : '0834 #recup_nom_operateur "'+s+'"'})
-            return('TODO recupNomOperateur pour "' + s + '"');
+            return('TO'+'DO recupNomOperateur pour "' + s + '"');
         }
     }
     
@@ -905,6 +1305,152 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         return({"__xst" : true ,"__xva" : t});
     }
     
+    
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_SwitchStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let i=0;
+        
+        
+        t+='bascule(';
+        obj = this.#traite_element(element.discriminant,niveau+1,element,tab_comm);
+        if(obj.__xst === true){
+            t+='quand(' + obj.__xva + ')';
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1312 #traite_SwitchStatement' ,"element" : element}));
+        }
+        for( i=0 ; i < element.cases.length ; i++ ){
+            t+='est(';
+            if(element.cases[i].test !== null){
+                obj = this.#traite_element(element.cases[i].test,niveau+1,false,false,element);
+                if(obj.__xst === true){
+                    t+='valeur(' + obj.__xva + ')';
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1322 #traite_SwitchStatement' ,"element" : element}));
+                }
+            }else{
+                t+='valeurNonPrevue()';
+            }
+            t+='faire(';
+            if(element.cases[i].consequent && element.cases[i].consequent.length > 0){
+                obj = this.#traite_ast0(element.cases[i].consequent,niveau+3,element,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1333 #traite_SwitchStatement' ,"element" : element}));
+                }
+            }
+            t+=')';
+            t+=')';
+        }
+        t+=')';
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_ForInStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let gauche='';
+        let droite='';
+        let contenu='';
+        
+        obj=this.#traite_element(element.left,niveau+1,parent,tab_comm);
+        if(obj.__xst===true){
+            gauche+=obj.__xva;
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
+        }
+        
+        
+        obj=this.#traite_element(element.right,niveau+1,parent,tab_comm);
+        if(obj.__xst===true){
+            droite+=obj.__xva;
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element}));
+        }
+        
+        if(element.body){
+            if(element.expression){
+
+                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
+                if(obj.__xst===true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element}));
+                }
+            }else{
+                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
+                if(obj.__xst===true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element}));
+                }
+            }
+        }
+        
+
+        t+='boucle_sur_objet_dans(';
+        t+='pourChaque(dans(' + gauche + ' , ' + droite + ')),';
+        t+='faire('+contenu+')';
+        t+=')';
+        
+        
+        
+        
+        return({"__xst" : true ,"__xva" : t});
+        
+    }
+    
+    
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_WhileStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let i=0;
+        let test='';
+        let contenu = '';
+        
+        obj = this.#traite_element(element.test,niveau+1,element,tab_comm);
+        if(obj.__xst === false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
+        }
+        test+=obj.__xva;
+        
+        if(element.body){
+            if(element.expression){
+
+                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
+                if(obj.__xst===true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element}));
+                }
+            }else{
+                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
+                if(obj.__xst===true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
+                }
+            }
+        }
+        t+='tantQue(';
+        t+='condition(' + test + '),';
+        t+='faire('+contenu+')';
+        t+='),';
+
+        return({"__xst" : true ,"__xva" : t});
+        
+    }
     /*
       =============================================================================================================
     */
@@ -933,7 +1479,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         
         if(element.test === null){
-            t+='()';
+            test+='()';
         }else{
 
             obj = this.#traite_element(element.test,niveau+1,element,tab_comm);
@@ -1056,6 +1602,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         t+='alors(';
         var bloc_traitement_dans=null;
         if(element.consequent){
+            
             obj=this.#traite_ast0(element.consequent,niveau+2,parent,tab_comm);
             if(obj.__xst===true){
                 t+=obj.__xva;
@@ -1230,6 +1777,250 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     /*
       =============================================================================================================
     */
+    #traite_ConditionalExpression(element,niveau,parent,tab_comm){
+        let t='';
+        
+        var objtest1 = this.#traite_element(element.test,niveau,element,tab_comm);
+        if(objtest1.__xst === false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1733 #traite_ConditionalExpression' ,"element" : element}));
+        }
+        var objSiVrai={};
+        var objSiVrai = this.#traite_element(element.consequent,niveau,element,tab_comm);
+        if(objSiVrai.__xst === false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1738 #traite_ConditionalExpression' ,"element" : element}));
+        }
+        var objSiFaux={};
+        var objSiFaux = this.#traite_element(element.alternate,niveau,element,tab_comm);
+        if(objSiFaux.__xst === false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1743 #traite_ConditionalExpression' ,"element" : element}));
+        }
+        t+='testEnLigne(condition(' + objtest1.__xva + '),siVrai(' + objSiVrai.__xva + '),siFaux(' + objSiFaux.__xva + '))';
+        return({"__xst" : true ,"__xva" : t});
+        
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_PrivateIdentifier(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        t='#'+element.name;
+//        debugger
+        return({"__xst" : true ,"__xva" : t});
+        
+    }
+    
+
+    /*
+      =============================================================================================================
+    */
+    #traite_ExportNamedDeclaration(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let j=0;
+        
+        if(element.specifiers && element.specifiers.length > 0){
+            for( j=0 ; j < element.specifiers.length ; j++ ){
+                var specifier=element.specifiers[j];
+                if(specifier.exported){
+                    if(specifier.exported.type === "Identifier"){
+                        t+='exporter(nom_de_classe(' + specifier.exported.name + '))';
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1777 #traite_ExportNamedDeclaration' ,"element" : element}));
+                    }
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1780 #traite_ExportNamedDeclaration' ,"element" : element}));
+                }
+            }
+        }
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_TemplateLiteral(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+
+        if(element.quasis
+         && element.quasis.length === 1
+         && 'TemplateElement' === element.quasis[0].type
+         && element.quasis[0].value
+         && element.quasis[0].value.raw
+        ){
+            t='`' + element.quasis[0].value.raw + '`';
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1802 #traite_TemplateLiteral' ,"element" : element}));
+        }
+        return({"__xst" : true ,"__xva" : t});
+
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_NewExpression(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+
+        if(element.callee && element.callee.type === 'MemberExpression' && element.arguments.length === 0){
+            obj = this.#traite_MemberExpression(element.callee,niveau+1,element,tab_comm);
+            if(obj.__xst === true){
+                t+='new(' + obj.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element}));
+            }
+        }else if(
+            (element.callee && element.callee.type === 'MemberExpression' && element.arguments.length > 0)
+         || (element.callee && element.callee.type === 'Identifier')
+         || (element.callee && element.callee.type === 'ThisExpression')
+        ){
+            var obj1 = this.#traite_CallExpression(element,niveau + 1,element,{});
+            if(obj1.__xst === true){
+                t+='new(' + obj1.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1831 #traite_NewExpression' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1834 #traite_NewExpression' ,"element" : element}));
+        }
+        
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_TryStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        
+        t+='essayer(';
+        t+='faire(';
+        obj = this.#traite_ast0(element.block.body,niveau + 2,element,tab_comm);
+        if(obj.__xst === true){
+            t+=obj.__xva;
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element}));
+        }
+        t+='),';
+        t+='sierreur(';
+        if(element.handler && element.handler.type === 'CatchClause'){
+            if(element.handler.param && element.handler.param.type === 'Identifier'){
+                t+=element.handler.param.name + ',';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1863 #traite_TryStatement' ,"element" : element}));
+            }
+            if(element.handler.body && element.handler.body.type === 'BlockStatement'){
+                obj = this.#traite_ast0(element.handler.body,niveau + 2,element,tab_comm);
+                if(obj.__xst === true){
+                    t+='faire('+obj.__xva+')';
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1870 #traite_TryStatement' ,"element" : element}));
+                }
+            }
+        }
+        t+=')';
+        t+=')';
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_AssignmentPattern(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+
+        if(element.left && element.right){
+            var objgauche = this.#traite_element(element.left ,niveau+1,element,tab_comm);
+            var objdroite = this.#traite_element(element.right,niveau+1,element,tab_comm);
+            if(objgauche.__xst === true && objdroite.__xst){
+                t+=objgauche.__xva + ',defaut(' + objdroite.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1893 #traite_AssignmentPattern' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1896 #traite_AssignmentPattern' ,"element" : element}));
+        }
+
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_AwaitExpression(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        
+        if("CallExpression" === element.argument.type){
+            var objass = this.#traite_element(element.argument,niveau+1,element,tab_comm);
+            if(objass.__xst === true){
+                t+='await(' + objass.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1924 #traite_AwaitExpression' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1927 #traite_AwaitExpression' ,"element" : element}));
+        }
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_ThrowStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        
+        obj=this.#traite_element(element.argument ,niveau+1,element,tab_comm);
+        if(obj.__xst === true){
+            t+='throw(' + obj.__xva + ')';
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1987 #traite_ThrowStatement' ,"element" : element}));
+        }
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_SequenceExpression(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+    
+    
+        if(element.expressions.length > 1 && parent.computed && parent.computed === true){
+            /*
+              tab[1,1] est super dangereux, on le signale mais ça passe
+            */
+            this.#astjs_logerreur({"__xst" : false ,"__xme" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element});
+        }
+        for( let i=0 ; i < element.expressions.length ; i++ ){
+            obj = this.#traite_element(element.expressions[i],niveau+2,element,tab_comm);
+            if(obj.__xst === true){
+                if(t !== ''){
+                    t+=',';
+                }
+                t+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2018 #traite_SequenceExpression' ,"element" : element}));
+            }
+        }
+        t='virgule(' + t + ')';
+    
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
     #traite_element(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
@@ -1253,7 +2044,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     let valeur='';
                     /* il faut traiter les valeurs entre quotes qui terminent par un \ */
                     if(element.raw.indexOf('\\\n') >= 0){
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0063 veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1744 #traite_element Literal veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
                     }else{
                         valeur=element.raw;
                     }
@@ -1263,6 +2054,21 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         t+=valeur;
                     }
                 }
+                break;
+                
+                
+            case 'BreakStatement' :
+                if(element.label !== null){
+                    if(element.label.type === 'Identifier'){
+                        t+='break(' + element.label.name + ')';
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1758 #traite_element BreakStatement' ,"element" : element}));
+                    }
+                }else{
+                    t+='break()';
+                }
+                break;
+            
             
          
             case 'EmptyStatement' :
@@ -1270,8 +2076,142 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+='';
                 break;
                 
+            case 'DebuggerStatement' : t+='debugger()';
+                break;
+                
+                
             case 'ThisExpression' :
+
                 t+='this';
+                break;
+                
+            case 'ContinueStatement' :
+
+                t+='continue()';
+                break;
+                
+            case 'SequenceExpression' :
+                
+                obj=this.#traite_SequenceExpression(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element #SequenceExpression ' ,"element" : element}));
+                }
+                break;
+            
+            case 'ThrowStatement' :
+            
+                obj=this.#traite_ThrowStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element #traite_ThrowStatement ' ,"element" : element}));
+                }
+                break;
+            
+            case 'AwaitExpression' :
+
+                obj=this.#traite_AwaitExpression(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1990 #traite_element #traite_AwaitExpression ' ,"element" : element}));
+                }
+                break;
+            
+            case 'AssignmentPattern' :
+
+                obj=this.#traite_AssignmentPattern(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2000 #traite_element AssignmentPattern ' ,"element" : element}));
+                }
+                break;
+            
+            case 'TryStatement' :
+
+                obj=this.#traite_TryStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2010 #traite_element TryStatement ' ,"element" : element}));
+                }
+                break;
+            
+            case 'NewExpression' :
+
+                obj=this.#traite_NewExpression(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1883 #traite_element NewExpression ' ,"element" : element}));
+                }
+                break;
+            
+            case 'TemplateLiteral' :
+
+                obj=this.#traite_TemplateLiteral(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1862 #traite_element TemplateLiteral ' ,"element" : element}));
+                }
+                break;
+            
+            case 'ExportNamedDeclaration' :
+
+                obj=this.#traite_ExportNamedDeclaration(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1837 #traite_element ExportNamedDeclaration ' ,"element" : element}));
+                }
+                break;
+            
+            case 'SwitchStatement' :
+
+                obj=this.#traite_SwitchStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2071 #traite_element SwitchStatement ' ,"element" : element}));
+                }
+                break;
+            
+                
+            case 'ForInStatement' :
+            
+                obj=this.#traite_ForInStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1716 #traite_element ForInStatement ' ,"element" : element}));
+                }
+                break;
+                
+            
+            
+            case 'PrivateIdentifier' :
+                
+                obj=this.#traite_PrivateIdentifier(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1698 #traite_element PrivateIdentifier ' ,"element" : element}));
+                }
+                break;
+                
+                
+            case 'ConditionalExpression' :
+                
+                obj=this.#traite_ConditionalExpression(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1671 #traite_element ConditionalExpression ' ,"element" : element}));
+                }
                 break;
                 
                 
@@ -1281,7 +2221,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1173 #traite_element PropertyDefinition ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1173 #traite_element MethodDefinition ' ,"element" : element}));
                 }
                 break;
                 
@@ -1325,6 +2265,16 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
+            case 'WhileStatement' :
+            
+                obj=this.#traite_WhileStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2082 #traite_element WhileStatement ' ,"element" : element}));
+                }
+                break;
+
             case 'ForStatement' :
                 
                 obj=this.#traite_ForStatement(element,niveau,parent,tab_comm);
@@ -1474,7 +2424,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             default:
-                t+='#(0570 TODO #traite_element "'+element.type+'")';
+                t+='#(0570 TO'+'DO #traite_element "'+element.type+'")';
                 break;
         }
         return({"__xst" : true ,"__xva" : t});
@@ -1630,19 +2580,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         }
                         break;
                         
-                    case 'ClassDeclaration' :
-                    case 'FunctionDeclaration':
-                    case 'VariableDeclaration':
-                    case 'IfStatement':
-                    case 'ForStatement':
-                        obj=this.#traite_element(element[i],niveau,element,tab_comm);
-                        if(obj.__xst === true){
-                            t+=espaces + obj.__xva;
-                        }else{
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
-                        }
-                        break;
-                        
                     case 'EmptyStatement':
                         t+=this.#comm_avant_debut(element[i],niveau,tab_comm);
                     
@@ -1650,7 +2587,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         break;
                         
                     default:
-                        t+=espaces + '#(0415 TODO "'+element[i].type+'")';
+                        obj=this.#traite_element(element[i],niveau,element,tab_comm);
+                        if(obj.__xst === true){
+                            t+=espaces + obj.__xva;
+                        }else{
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
+                        }
+                        break;
                         
                 }
             }
@@ -1690,7 +2633,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
          
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0048 #traite_ast0 non prévu "'+element.type+'"' }));
+            obj=this.#traite_element(element,niveau,element,tab_comm);
+            if(obj.__xst === true){
+                t+=espaces + obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
+            }
+//            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0048 #traite_ast0 non prévu "'+element.type+'"' }));
         }
         return({"__xst" : true ,"__xva" : t});
     }

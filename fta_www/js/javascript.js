@@ -148,6 +148,9 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                                     }
                                     t+='return(' + obj.__xva + ')' + obj.arguments_a_ajouter_au_retour + terminateur;
                                 }else{
+                                    if(obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
+                                        obj.__xva.substr(0,obj.__xva.length - 1);
+                                    }
                                     t+='return(' + obj.__xva + ')' + terminateur;
                                 }
                             }else{
@@ -160,6 +163,9 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         t+=espcLigne;
                         var objtestLi = js_traite_new(tab,i + 1,niveau);
                         if(objtestLi.__xst === true){
+                            if(objtestLi.__xva.substr(objtestLi.__xva.length - 1,1) === ';'){
+                                objtestLi.__xva.substr(0,objtestLi.__xva.length - 1);
+                            }
                             t+='return(' + objtestLi.__xva + ')';
                             if(!(dansInitialisation)){
                                 t+=terminateur;
@@ -1733,18 +1739,25 @@ function js_traiteInstruction1(tab,niveau,id){
                 }
                 break;
                 
+            case 'declare_variable' :
             case 'declare_constante' :
+                var type='';
+                if(tab[id][1]==='declare_constante'){
+                  type='const'
+                }else{
+                  type='let'
+                }
                 if(tab[tab[id][7]][1] === 'de'){
                     for( var j = id + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][2] === 'c'){
-                            return({"__xst" : true ,"__xva" : 'const ' + (ma_cst_pour_javascript(tab[j]))});
+                            return({"__xst" : true ,"__xva" : type+' ' + (ma_cst_pour_javascript(tab[j]))});
                         }
                     }
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1717 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
                 }else if(tab[tab[id][7]][1] === 'dans'){
                     for( var j = id + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][2] === 'c'){
-                            return({"__xst" : true ,"__xva" : 'const ' + (ma_cst_pour_javascript(tab[j]))});
+                            return({"__xst" : true ,"__xva" : type+' ' + (ma_cst_pour_javascript(tab[j]))});
                         }
                     }
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2439 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
