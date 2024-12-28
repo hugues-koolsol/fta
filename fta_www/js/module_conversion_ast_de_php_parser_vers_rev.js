@@ -1946,6 +1946,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let obj=null;
         let visibility='';
         let statique='';
+        let valeur_defaut='';
         
         if(element.isStatic){
             statique='_statique';
@@ -1961,11 +1962,26 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1624 #traite_propertystatement "'+element.visibility+'"' ,"element" : element}));
         }
+        
         if(element.properties){
+         
+         
             for(let i=0;i<element.properties.length;i++){
+             
+                valeur_defaut='';
+                if(element.properties[i].value){
+                    obj=this.#traite_element(element.properties[i].value,niveau,element,tab_comm);
+                    if(obj.__xst === true){
+                        valeur_defaut=',valeur_defaut('+obj.__xva+')';
+                    }else{
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1977 #traite_propertystatement value' ,"element" : element}));
+                    }
+                }
+             
+             
                 obj=this.#traite_element(element.properties[i],niveau,element,tab_comm);
                 if(obj.__xst === true){
-                    t+=visibility+'('+obj.__xva+')';
+                    t+=visibility+'('+obj.__xva+valeur_defaut+')';
                 }else{
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0135 #traite_function nom' ,"element" : element}));
                 }

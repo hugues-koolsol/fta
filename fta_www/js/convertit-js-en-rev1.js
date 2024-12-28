@@ -3522,8 +3522,9 @@ function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3(nom_de_l
     var parseur_javascript=window.acorn.Parser;
     try{
         tabComment=[];
+        /* on transforme le javascript en ast */
         var obj = parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
-
+        /* on transforme le ast en rev */
         var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
         if(obj.__xst===true){
             document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;;

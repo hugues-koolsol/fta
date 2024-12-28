@@ -87,7 +87,50 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
 /*
   =====================================================================================================================
 */
-function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn(chp_genere_source,chp_rev_source){
+function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_source,chp_rev_source){
+    __gi1.raz_des_messages();
+    var a = document.getElementById(chp_genere_source);
+    
+    
+/*    
+    var obj = transform_source_js_en_rev_avec_acorn(a.value,{"nom_de_la_text_area_source" : chp_genere_source,"nom_de_la_text_area_rev" : chp_rev_source});
+    if(obj.__xst === true){
+    }else{
+        astjs_logerreur({"__xst" : false,"__xme" : '2446 erreur '});
+    }
+*/
+
+    var parseur_javascript=window.acorn.Parser;
+    try{
+        tabComment=[];
+        /* on transforme le javascript en ast */
+        var obj = parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+        /* on transforme le ast en rev */
+        var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+        if(obj.__xst===true){
+            document.getElementById(chp_rev_source).value=obj.__xva;;
+        }else{
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+         
+        }
+    }catch(e){
+        console.error('e=',e);
+        if(e.pos){
+            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+        }else{
+            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3443'});
+        }
+    }
+
+
+    
+}
+
+
+/*
+  =====================================================================================================================
+*/
+function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn1(chp_genere_source,chp_rev_source){
     __gi1.raz_des_messages();
     var a = document.getElementById(chp_genere_source);
     var obj = transform_source_js_en_rev_avec_acorn(a.value,{"nom_de_la_text_area_source" : chp_genere_source,"nom_de_la_text_area_rev" : chp_rev_source});
@@ -179,6 +222,66 @@ function sauvegarder_php_en_ligne(format_rev,donnees){
  
 
 }
+/*
+  =====================================================================================================================
+*/
+
+
+function zz_l1_convertir_un_source_js_sur_disque2(id_source){
+     __gi1.raz_des_messages();
+
+    var date_de_debut_traitement= new Date();
+    date_de_debut_traitement=date_de_debut_traitement.getTime();
+    var ajax_param={'call':{lib:'core',file:'file',funct:'charger_un_fichier_source_par_son_identifiant'},id_source:id_source,date_de_debut_traitement:date_de_debut_traitement};
+    async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
+        if(donnees.__xst === true){
+            var nom_source = donnees.db['T0.chp_nom_source'];
+            var type_source = donnees.db['T0.chp_type_source'];
+            if(nom_source.substr((nom_source.length - 3)) === '.js'){
+                var parseur_javascript=window.acorn.Parser;
+                try{
+                    tabComment=[];
+                    /* on transforme le javascript en ast */
+                    var obj = parseur_javascript.parse(donnees.contenu_du_fichier,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+                    /* on transforme le ast en rev */
+                    var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+                    if(obj.__xst===true){
+                     
+                        var parametres={
+                            "__entree" : {
+                                id_source:donnees.db['T0.chi_id_source'],
+                                "date_de_debut_traitement" :  date_de_debut_traitement
+                            }
+                        };
+
+                        var obj2=sauvegarder_js_en_ligne(obj.__xva , parametres);
+                     
+                     
+                    }else{
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                     
+                    }
+                }catch(e){
+                    console.error('e=',e);
+                    if(e.pos){
+                        logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+                    }else{
+                        logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3443'});
+                    }
+                }
+            }
+        }else{
+            console.log(donnees);
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+    });
+ 
+ 
+}
+
 
 
 /*

@@ -2,7 +2,7 @@
 /*
   =====================================================================================================================
   conversion d'un ast produit acorn https://github.com/acornjs/acorn en rev
-  point d'entrée = traite_ast
+  point d'entrée = traite_ast, #traite_element
   =====================================================================================================================
 */
 class module_conversion_ast_de_js_acorn_vers_rev1{
@@ -81,6 +81,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
            }else{
                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
            }
+           contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
 
         if(id!==''){
@@ -118,8 +119,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 if(parent.property.type === 'Identifier'){
                     parentProperty='prop(' + parent.property.name + ')';
+                    parent.property=null;
+                    
                 }else if(parent.property.type === 'Literal'){
                     parentProperty='prop(' + parent.property.raw + ')';
+                    parent.property=null;
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0514 ' + parent.property.type ,"element" : element}));
                 }
@@ -137,6 +141,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
             }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
         var lesArguments='';
         if(element.arguments && element.arguments.length > 0){
@@ -303,7 +308,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0900 ' ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'ArrayExpression'){
-                    console.log('%ctraité plus haut ' + t,'background:lightblue;color:navy;');
+//                    console.log('%ctraité plus haut ' + t,'background:lightblue;color:navy;');
                     /* traité plus haut */
                 }else if(element.callee.object.type === 'MemberExpression'){
                     var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.object,niveau,element);
@@ -570,6 +575,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0097 #traite_ArrowFunctionExpression' ,"element" : element}));
                }
            }
+           contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+           
         }
         
         if(element.params && Array.isArray(element.params) ){
@@ -910,6 +917,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
            }else{
                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element}));
            }
+           contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
         
         if(element.id){
@@ -978,15 +986,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let prop='';
         let valeur='';
 
-        if(element.property){
-            obj=this.#traite_element(element.property,niveau+1,parent,tab_comm);
-            if(obj.__xst === true){
-                prop=obj.__xva;
-            }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0522 #traite_MemberExpression' ,"element" : element}));
-            }
-        }
-        
         obj=this.#traite_element(element.object,niveau+1,element,tab_comm);
         if(obj.__xst === true){
             valeur=obj.__xva;
@@ -995,25 +994,55 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         
         if(element.computed === false){
+         
+            if(element.property){
+                obj=this.#traite_element(element.property,niveau+1,element,tab_comm);
+                if(obj.__xst === true){
+                    prop=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0522 #traite_MemberExpression' ,"element" : element}));
+                }
+            }
+            
+         
             if(prop!==''){
              
                 if(valeur.substr(0,8) === 'tableau('){
                     t+=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + '))';
                 }else if(valeur.substr(0,6) === 'appelf'){
-                        if(valeur.indexOf('prop(') >= 0){
-                            valeur=(valeur.substr(0,valeur.length - 2)) + '.' + prop + '))';
-                            t=valeur;
-                        }else{
-                            valeur=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + '))';
-                            t=valeur;
-                        }
+                    if(valeur.indexOf('prop(') >= 0){
+                        valeur=(valeur.substr(0,valeur.length - 2)) + '.' + prop + '))';
+                        t=valeur;
+                    }else{
+                        valeur=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + '))';
+                        t=valeur;
+                    }
                 }else{
-                    t+=valeur + '.' + prop;
+                    if(valeur.substr(valeur.length-1,1)===')'){
+                        if(valeur.substr(valeur.length-2,1)==='('){
+                            t+=valeur.substr(0,valeur.length-1)+'prop('+prop+')'+')';
+                        }else{
+                            t+=valeur.substr(0,valeur.length-1)+',prop('+prop+')'+')';
+                        }
+                    }else{
+                        t+=valeur + '.' + prop;
+                    }
                 }
             }else{
                 t+=valeur;
             }
         }else{
+
+
+            if(element.property){
+                obj=this.#traite_element(element.property,niveau+1,element,tab_comm);
+                if(obj.__xst === true){
+                    prop=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0522 #traite_MemberExpression' ,"element" : element}));
+                }
+            }
+
 
             if(prop===''){
                 t+=valeur;
@@ -1392,6 +1421,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element}));
                 }
             }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+            
         }
         
 
@@ -1406,9 +1437,50 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         return({"__xst" : true ,"__xva" : t});
         
     }
-    
-    
-    
+    /*
+      =============================================================================================================
+    */
+    #traite_DoWhileStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let i=0;
+        let test='';
+        let contenu = '';
+        
+        if(element.body){
+            if(element.expression){
+
+                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
+                if(obj.__xst===true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element}));
+                }
+            }else{
+                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
+                if(obj.__xst===true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
+                }
+            }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+
+        }
+        obj = this.#traite_element(element.test,niveau+1,element,tab_comm);
+        if(obj.__xst === false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
+        }
+        test+=obj.__xva;
+        
+        t+='faire_tant_que(';
+        t+='instructions('+contenu+')';
+        t+='condition(' + test + '),';
+        t+='),';
+
+        return({"__xst" : true ,"__xva" : t});
+        
+    }
     /*
       =============================================================================================================
     */
@@ -1442,6 +1514,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
                 }
             }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
         t+='tantQue(';
         t+='condition(' + test + '),';
@@ -1518,6 +1591,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
                 }
             }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
         
         
@@ -1588,6 +1662,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             
         }else{
             if(element.test){
+
                 t+='sinonsi(';
                 obj = this.#traite_element(element.test,niveau+1,parent,tab_comm);
                 if(obj.__xst === true){
@@ -1609,6 +1684,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1063 #traite_IfStatement' ,"element" : element}));
             }
+            
+            t+=this.#comm_avant_fin(element.consequent,niveau,tab_comm,true);            
         }else{
 
             obj=this.#traite_ast0(element,niveau+2,parent,tab_comm);
@@ -1617,6 +1694,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1083 #traite_IfStatement' ,"element" : element}));
             }
+            t+=this.#comm_avant_fin(element.consequent,niveau,tab_comm,true);            
 
         }
         t+=')';
@@ -1666,6 +1744,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1128 #traite_ClassDeclaration' ,"element" : element}));
             }
+            corps_de_la_classe+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+            
         }
         t+='definition_de_classe(nom_classe(' + nom_de_la_classe + '),contenu(' + corps_de_la_classe + '))';
         
@@ -1988,7 +2068,32 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
+    /*
+      =============================================================================================================
+    */
+    #traite_LabeledStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        
+        let contenu='';
+        if(element.body){
+            obj = this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            if(obj.__xst === true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2070 #traite_LabeledStatement' ,"element" : element}));
+            }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+        }
+        if(element.label.type === 'Identifier'){
+            t+='etiquette(' + element.label.name + ',contenu(' + contenu + '))';
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2076 #traite_LabeledStatement' ,"element" : element}));
+        }
+
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
     /*
       =============================================================================================================
     */
@@ -2021,6 +2126,41 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     /*
       =============================================================================================================
     */
+    #traite_BlockStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        
+        
+        if(element.body && Array.isArray(element.body)){
+            
+            for(let i=0;i<element.body.length;i++){
+                if(element.body[i].type && element.body[i].type==='ExpressionStatement'){
+                    obj=this.#traite_element(element.body[i].expression,niveau,parent,tab_comm);
+                    if(obj.__xst === true){
+                        t+=obj.__xva;
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2126 #traite_BlockStatement' ,"element" : element}));
+                    }
+                }else{
+                    obj=this.#traite_element(element.body[i],niveau,parent,tab_comm);
+                    if(obj.__xst === true){
+                        t+=obj.__xva;
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2133 #traite_BlockStatement' ,"element" : element}));
+                    }
+                }
+            }
+            t+=this.#comm_avant_fin(element,niveau,tab_comm,true);
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2139 #traite_BlockStatement' ,"element" : element}));
+        }
+        t='('+t+')';
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
     #traite_element(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
@@ -2029,6 +2169,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
          
             case 'Identifier' :
                 t+=element.name;
+                
                 break;
          
             case 'Literal' :
@@ -2090,13 +2231,23 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+='continue()';
                 break;
                 
+            case 'LabeledStatement' :
+            
+                obj=this.#traite_LabeledStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element LabeledStatement ' ,"element" : element}));
+                }
+                break;
+            
             case 'SequenceExpression' :
                 
                 obj=this.#traite_SequenceExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element #SequenceExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element SequenceExpression ' ,"element" : element}));
                 }
                 break;
             
@@ -2106,7 +2257,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element #traite_ThrowStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element ThrowStatement ' ,"element" : element}));
                 }
                 break;
             
@@ -2116,7 +2267,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1990 #traite_element #traite_AwaitExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1990 #traite_element AwaitExpression ' ,"element" : element}));
                 }
                 break;
             
@@ -2265,6 +2416,16 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
+            case 'DoWhileStatement' :
+                
+                obj=this.#traite_DoWhileStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2082 #traite_element DoWhileStatement ' ,"element" : element}));
+                }
+                break;
+
             case 'WhileStatement' :
             
                 obj=this.#traite_WhileStatement(element,niveau,parent,tab_comm);
@@ -2422,18 +2583,41 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_element CallExpression ' ,"element" : element}));
                 }
                 break;
+
+            case 'BlockStatement':
+                /*# 
+                  de temps en temps, on peut passer pas là mais je ne vois pas l'utilité : exemple :
+                  switch(a) {
+                   case b:
+                     { // pourquoi cette accolade ?
+                       a=1;
+                     } // pourquoi cette accolade ?
+                     break;
+                  }
+                */
+                obj=this.#traite_BlockStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2551 #traite_element BlockStatement ' ,"element" : element}));
+                }
+                break;
+
                 
             default:
-                t+='#(0570 TO'+'DO #traite_element "'+element.type+'")';
+                debugger
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2500 #traite_element non prévu "'+element.type+'" ' ,"element" : element}));
                 break;
         }
+
+        element=null;
         return({"__xst" : true ,"__xva" : t});
     }
     
     /*
       =====================================================================================================================
     */
-    #ajouteCommentaireAvant(element,niveau,positionDebutBloc,tab_comm){
+    #ajouteCommentaireAvant(element,niveau,positionDebutBloc,tab_comm,mode_fin=false){
         var t='';
         var i = tab_comm.length - 1;
         var nombre_de_ligne_trouvees=0;
@@ -2473,27 +2657,52 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        /* on ajoute les commentaires de ligne qui n'ont pas été intégrés précédemment */
-        for( i=tab_comm.length - 1 ; i >= 0 ; i-- ){
-            if(tab_comm[i].type === 'Line' && tab_comm[i].end < element.start){
-                var txtComment=tab_comm[i].value;
-                /* on ne traite pas les commentaires insérés automatiquement dans les js valides */
-                if(!(txtComment === ''
-                 || '<![CDATA[' === txtComment
-                 || '<source_javascript_rev>' === txtComment
-                 || '</source_javascript_rev>' === txtComment
-                 || ']]>' === txtComment)
-                ){
-                    nombre_de_ligne_trouvees++;
-                    var c1 = nbre_caracteres2('(',txtComment);
-                    var c2 = nbre_caracteres2(')',txtComment);
-                    if(c1 === c2){
-                        t='#(✍' + (txtComment.replace(/\*\//g,'* /')) + ')' + t;
-                    }else{
-                        t='#(✍' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']').replace(/\*\//g,'* /')) + ')' + t;
+        if(mode_fin===true){
+            for( i=tab_comm.length - 1 ; i >= 0 ; i-- ){
+                if(tab_comm[i].type === 'Line' && tab_comm[i].start > element.start && tab_comm[i].end < element.end){
+                    var txtComment=tab_comm[i].value;
+                    /* on ne traite pas les commentaires insérés automatiquement dans les js valides */
+                    if(!(txtComment === ''
+                     || '<![CDATA[' === txtComment
+                     || '<source_javascript_rev>' === txtComment
+                     || '</source_javascript_rev>' === txtComment
+                     || ']]>' === txtComment)
+                    ){
+                        nombre_de_ligne_trouvees++;
+                        var c1 = nbre_caracteres2('(',txtComment);
+                        var c2 = nbre_caracteres2(')',txtComment);
+                        if(c1 === c2){
+                            t='#(✍' + (txtComment.replace(/\*\//g,'* /')) + ')' + t;
+                        }else{
+                            t='#(✍' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']').replace(/\*\//g,'* /')) + ')' + t;
+                        }
                     }
+                    tab_comm.splice(i,1);
                 }
-                tab_comm.splice(i,1);
+            }
+        }else{
+            /* on ajoute les commentaires de ligne qui n'ont pas été intégrés précédemment */
+            for( i=tab_comm.length - 1 ; i >= 0 ; i-- ){
+                if(tab_comm[i].type === 'Line' && tab_comm[i].end < element.start){
+                    var txtComment=tab_comm[i].value;
+                    /* on ne traite pas les commentaires insérés automatiquement dans les js valides */
+                    if(!(txtComment === ''
+                     || '<![CDATA[' === txtComment
+                     || '<source_javascript_rev>' === txtComment
+                     || '</source_javascript_rev>' === txtComment
+                     || ']]>' === txtComment)
+                    ){
+                        nombre_de_ligne_trouvees++;
+                        var c1 = nbre_caracteres2('(',txtComment);
+                        var c2 = nbre_caracteres2(')',txtComment);
+                        if(c1 === c2){
+                            t='#(✍' + (txtComment.replace(/\*\//g,'* /')) + ')' + t;
+                        }else{
+                            t='#(✍' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']').replace(/\*\//g,'* /')) + ')' + t;
+                        }
+                    }
+                    tab_comm.splice(i,1);
+                }
             }
         }
         if(nombre_de_ligne_trouvees > 1 ){
@@ -2544,8 +2753,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     */
     #comm_avant_fin(elem,niveau,tab_comm){
         var t='';
+        if(elem===undefined || !elem.hasOwnProperty('end')){
+            return t;
+        }
         var positionDebutBloc=elem.end;
-        var commentaire = ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc);
+        var commentaire = this.#ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc,tab_comm,true);
         t=commentaire;
         return t;
     }
@@ -2555,7 +2767,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #comm_avant_debut(elem,niveau,tab_comm){
         var t='';
         var positionDebutBloc=elem.start;
-        var commentaire = this.#ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc , tab_comm );
+        var commentaire = this.#ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc , tab_comm ,false );
         t+=commentaire;
         return t;
     }

@@ -1226,8 +1226,19 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
             }else{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'javascript.js traitement etiquette contenu mauvais ' + (JSON.stringify(tab[i]))}));
             }
+        }else if("" === tab[i][1] && tab[i][2] === 'f'){
+            /* un bloc, ça arrive de temps en temps */
+            var obj=js_tabTojavascript1(tab,id+1,false,false,niveau+1,false)
+            if(obj.__xst === true){
+                t+=espcLigne+'{'+obj.__xva+espcLigne+'}';
+            }else{
+                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'javascript.js traitement bloc ' + (JSON.stringify(tab[i]))}));
+            }
+            
+            
         }else if(tab[i][2] === 'c'){
             t+=ma_cst_pour_javascript(tab[i]);
+            
         }else{
             /* en dernier lieu, on teste une opération */
             var objOperation = TraiteOperations2(tab,i,niveau + 1,0);
@@ -2822,11 +2833,15 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                 }
             }
         }else if(tab[i][1] === '' || tab[i][1] === 'condition'){
-            var objOperation = TraiteOperations2(tab,i,niveau,niveauOp + 1);
-            if(objOperation.__xst === true){
-                t+='(' + objOperation.__xva + ')';
+            if(tab[i][8]===0){
+                    t+='';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : ' erreur sur TraiteOperations2 4276'}));
+                var objOperation = TraiteOperations2(tab,i,niveau,niveauOp + 1);
+                if(objOperation.__xst === true){
+                    t+='(' + objOperation.__xva + ')';
+                }else{
+                    return(logerreur({"__xst" : false ,"__xme" : ' erreur sur TraiteOperations2 4276'}));
+                }
             }
         }else if(tab[i][1] === 'appelf'){
             var obj = js_traiteAppelFonction(tab,i,true,niveau,false,'');

@@ -2745,7 +2745,9 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
     var l01=tab.length;
     var seuil_elements_dans_tableau=3;
     var commentaire='';
+    var le_commentaire='';
     var nombre_elements_dans_tableau=0;
+    var a_un_tbel=false;
     for( j=id + 1 ; j < l01 ; j=tab[j][12] ){
         if(tab[j][3] === tab[id][3] + 1){
             /* ✍ si on est au niveau +1 */
@@ -2761,21 +2763,25 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
                 nombre_elements_dans_tableau=seuil_elements_dans_tableau + 1;
                 commentaire+=tab[j][13];
             }else if(tab[j][1] === '' && tab[j][2] === 'f'){
-                if(tab[j][8] === 2){
+                if(tab[j][8] >= 2){
                     /* format clé => valeur */
                     var cle='';
                     var valeur='';
                     for( var k = j + 1 ; k < l01 ; k=tab[k][12] ){
                         if(tab[k][7] === j){
                             if(tab[k][1] === '#' && tab[k][2] === 'f'){
+                                le_commentaire='/*' + tab[k][13].trim().replace(/\n/g,'').replace(/\r/g,'') + '*/';
+                                if(le_commentaire.indexOf('tbel')>=0){
+                                 a_un_tbel=true;
+                                }
                                 nombre_elements_dans_tableau=seuil_elements_dans_tableau + 1;
                             }else{
                                 obje=php_traiteElement(tab,k,niveau + 2,options);
                                 if(obje.__xst === true){
-                                    if(tab[k][9] === 1){
+                                    if(cle===''){
                                         cle=obje.__xva;
                                     }else{
-                                        valeur+=obje.__xva;
+                                        valeur=obje.__xva;
                                     }
                                 }else{
                                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2357 php_traiteDefinitionTableau il y a un problème'}));
@@ -2784,12 +2790,19 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
                         }
                     }
                     textObj+=',';
-                    if(nombre_elements_dans_tableau > seuil_elements_dans_tableau){
+                    if(nombre_elements_dans_tableau > seuil_elements_dans_tableau || a_un_tbel===true ){
                         textObj+=espacesn(true,niveau + 1);
                     }else{
                         textObj+=' ';
                     }
-                    textObj+=cle + ' => ' + valeur + '';
+                    if(valeur==='' && cle!==''){
+                        textObj+= le_commentaire+(a_un_tbel===true?espacesn(true,niveau + 1):'')+ cle + '';
+                    }else if(valeur!=='' && cle!==''){
+                        textObj+= le_commentaire+(a_un_tbel===true?espacesn(true,niveau + 1):'') +cle+ ' => ' + valeur + '';
+                    }else{
+                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2800 php_traiteDefinitionTableau problème clé valeur'}));
+                    }
+                    le_commentaire='';
                 }else if(tab[j][8] === 1){
                     /* en php, i peut n'y avoir qu'une dimention sans cle => valeur array['a','b'] */
                     niveau+=2;
@@ -2811,16 +2824,23 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
         }
     }
     t+='array(';
-    if(commentaire !== ''){
+    if(commentaire !== '' || a_un_tbel===true){
         if(textObj !== ''){
-            t+=(espacesn(true,niveau + 1)) + '/*' + commentaire + '*/' + (textObj.substr(1));
+            if(commentaire === '' && a_un_tbel===true){
+                t+= (textObj.substr(1));
+            }else{
+                t+='/*' + commentaire + '*/' + (textObj.substr(1));
+            }
         }else{
-            t+=(espacesn(true,niveau + 1)) + '/*' + commentaire + '*/';
+            t+=(espacesn(true,niveau + 1)) + (commentaire===''?'':'/*' + commentaire + '*/');
         }
     }else{
         if(textObj !== ''){
             t+=textObj.substr(1);
         }
+    }
+    if(a_un_tbel===true){
+     t+=espacesn(true,niveau );
     }
     t+=')';
     return({"__xst" : true ,"__xva" : t});

@@ -125,6 +125,7 @@ function recupere_une_donnees_des_cibles($id){
       'fta_www/js/pour_svg.js' => array(),
       'fta_www/js/pour_requete_sql.js' => array(),
       'fta_www/js/module_conversion_ast_de_php_parser_vers_rev.js' => array(),
+      'fta_www/js/module_conversion_ast_de_js_acorn_vers_rev.js' => array(),
       
       'fta_www/js/sql.js' => array(),
       'fta_www/js/texte.js' => array(),
