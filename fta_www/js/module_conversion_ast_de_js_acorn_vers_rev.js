@@ -1,4 +1,5 @@
 "use strict";
+
 /*
   =====================================================================================================================
   conversion d'un ast produit acorn https://github.com/acornjs/acorn en rev
@@ -20,17 +21,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     */
     #astjs_logerreur(o){
         logerreur(o);
-/*
-        if(o.hasOwnProperty('element') && o.element.hasOwnProperty('loc') && o.element.loc.hasOwnProperty('start') ){
-            if(global_messages['lines'].length<5){
-                global_messages['lines'].push(o.element.loc.start.line);
-            }
-        }
-*/        
+        /*
+          if(o.hasOwnProperty('element') && o.element.hasOwnProperty('loc') && o.element.loc.hasOwnProperty('start') ){
+          if(global_messages['lines'].length<5){
+          global_messages['lines'].push(o.element.loc.start.line);
+          }
+          }
+        */
         return o;
     }
-    
-    
     /*
       =============================================================================================================
     */
@@ -41,64 +40,58 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let contenu='';
         let les_arguments='';
         let asynchrone='';
-        if(element.async!==false){
+        if(element.async !== false){
             asynchrone='asynchrone(),';
         }
-        if(element.expression!==false){
+        if(element.expression !== false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0044 #traite_FunctionExpression expression' ,"element" : element}));
         }
-        if(element.generator!==false){
+        if(element.generator !== false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0047 #traite_FunctionExpression generator' ,"element" : element}));
         }
         if(element.id){
-           obj=this.#traite_element(element.id,niveau+1,parent,tab_comm);
-           if(obj.__xst===true){
-               id+=obj.__xva;
-           }else{
-               return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
-           }
+            obj=this.#traite_element(element.id,niveau + 1,parent,tab_comm);
+            if(obj.__xst === true){
+                id+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
+            }
         }
-        if(element.params && Array.isArray(element.params) ){
-            if(element.params.length===0){
+        if(element.params && Array.isArray(element.params)){
+            if(element.params.length === 0){
                 les_arguments=',p()';
             }else{
-                for(let i=0;i<element.params.length;i++){
-                    obj=this.#traite_element(element.params[i],niveau+1,parent,tab_comm);
-                    if(obj.__xst===true){
-                        les_arguments+=',p('+obj.__xva+')'
+                for( let i=0 ; i < element.params.length ; i++ ){
+                    obj=this.#traite_element(element.params[i],niveau + 1,parent,tab_comm);
+                    if(obj.__xst === true){
+                        les_arguments+=',p(' + obj.__xva + ')';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_CallExpression' ,"element" : element}));
                     }
                 }
             }
         }
-        
-        
         if(element.body){
-           obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-           if(obj.__xst===true){
-               contenu+=obj.__xva;
-           }else{
-               return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
-           }
-           contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+            obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+            if(obj.__xst === true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
+            }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
-
-        if(id!==''){
-            t+='appelf('+asynchrone+'id('+id+'),nomf(function),contenu('+contenu+')'+les_arguments+')';
+        if(id !== ''){
+            t+='appelf(' + asynchrone + 'id(' + id + '),nomf(function),contenu(' + contenu + ')' + les_arguments + ')';
         }else{
-            t+='appelf('+asynchrone+'nomf(function),contenu('+contenu+')'+les_arguments+')';
+            t+='appelf(' + asynchrone + 'nomf(function),contenu(' + contenu + ')' + les_arguments + ')';
         }
-
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
     #traite_CallExpression(element,niveau,parent,tab_comm){
         let t='';
-//        let obj=null;
         let auto_appelee='';
         let les_arguments='';
         let nom_fonction='';
@@ -106,13 +99,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         var j=0;
         var k=0;
         var parentProperty='';
-
         if(element.callee){
-           if( element.callee.params && element.arguments && Array.isArray(element.callee.params) && Array.isArray(element.arguments) ){
-               auto_appelee='auto_appelee(3),';
-           }
+            if(element.callee.params && element.arguments && Array.isArray(element.callee.params) && Array.isArray(element.arguments)){
+                auto_appelee='auto_appelee(3),';
+            }
         }
-        
         if(parent.property){
             if(parent.computed && parent.computed === true){
                 /* le parent est un tableau => les propriétés sont les indices du tableau */
@@ -120,7 +111,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(parent.property.type === 'Identifier'){
                     parentProperty='prop(' + parent.property.name + ')';
                     parent.property=null;
-                    
                 }else if(parent.property.type === 'Literal'){
                     parentProperty='prop(' + parent.property.raw + ')';
                     parent.property=null;
@@ -147,7 +137,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(element.arguments && element.arguments.length > 0){
             for( i=0 ; i < element.arguments.length ; i++ ){
                 lesArguments+=',';
-                var le_commentaire = ''; //comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element);
+                var le_commentaire='';
                 if('CallExpression' === element.arguments[i].type){
                     var obj1 = this.#traite_CallExpression(element.arguments[i],niveau + 1,element,tab_comm);
                     if(obj1.__xst === true){
@@ -163,7 +153,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteCallExpression1 479 ' ,"element" : element}));
                     }
                 }else{
-                    var obj1 = this.#traite_element(element.arguments[i],niveau + 1,element,tab_comm); //traiteUneComposante(element.arguments[i],niveau + 1,false,false,element);
+                    var obj1 = this.#traite_element(element.arguments[i],niveau + 1,element,tab_comm);
                     if(obj1.__xst === true){
                         if('FunctionExpression' === element.arguments[i].type
                          && parent
@@ -173,7 +163,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         ){
                             console.log('%c VERIFIER ajouter des parenthèses pour les arguments ','color:red;background:pink;');
                             /* on ajoute une parenthèse */
-
                             lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
                         }else{
                             lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
@@ -191,9 +180,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 lesArguments=lesArguments + ',' + parentProperty;
             }
         }
-        
-        lesArguments=lesArguments+auto_appelee;
-        
+        lesArguments=lesArguments + auto_appelee;
         var laPropriete='';
         var prefixe='';
         if(element.callee){
@@ -217,18 +204,28 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                             /* a['Symbol.iterator'](); => appelf(nomf(tableau(nomt(a),p('element.callee.property')))) */
                             if(element.callee.object.type === 'Identifier'){
                                 if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
-                                    t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.raw + '))))';
+                                    t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.raw + ')))' + lesArguments + ')';
                                 }else{
                                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1411 ' ,"element" : element}));
                                 }
                             }
+                        }else if(element.callee.property.type === 'Identifier'
+                         && element.callee.hasOwnProperty('computed')
+                         && element.callee.computed === true
+                        ){
+                            /* a[b](x) */
+                            t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.name + ')))' + lesArguments + le_contenu + ')';
                         }else{
                             t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
                         }
                     }else if(element.callee.object && element.callee.object.type === 'Literal'){
                         t+='appelf(element(' + element.callee.object.raw + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
-                    }else if(element.callee.object && element.callee.object.type === 'ArrayExpression'){
-                        var obj1 = this.#traite_ArrayExpression(element.callee.object,niveau,element.callee,tab_comm); //traiteArrayExpression1(element.callee.object,niveau);
+                    }else if(element.callee.object && 'ArrayExpression' === element.callee.object.type){
+                        if(element.callee.property.type === 'Identifier'){
+                            /* cas ([f(3160).forEach,f(1654)]).forEach(function(x){a=1;}); */
+                            element.callee.property=null;
+                        }
+                        var obj1 = this.#traite_ArrayExpression(element.callee.object,niveau,element.callee,tab_comm);
                         if(obj1.__xst === true){
                         }else{
                             return(astjs_logerreur({"__xst" : false ,"__xme" : '1395 erreur dans traiteCallExpression1 ' ,"element" : element}));
@@ -242,7 +239,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                          && element.callee.object.object.type === 'Identifier'
                          && element.callee.object.property.type === 'Identifier')
                         ){
-                            var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); //traiteMemberExpression1(element.callee.object,niveau,element);
+                            var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm);
                             if(obj1.__xst === true){
                                 t+='appelf(element(' + obj1.__xva + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
                             }else{
@@ -257,7 +254,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                                 }
                             }else{
                                 console.error('\n\nATTENTION VERIFIER CECI\n\n');
-                                laPropriete='#(to'+'do verifier convertit_js_en-rev 1230 ),prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + ')))';
+                                laPropriete='#(to' + 'do verifier convertit_js_en-rev 1230 ),prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + ')))';
                             }
                         }
                     }
@@ -266,11 +263,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }else if(element.callee.property.type === 'Literal'){
                     debugger;
                 }else if(element.callee.property.type === 'ConditionalExpression'){
-                    var obj1 = this.#traite_ConditionalExpression(element.callee.property,niveau,element.callee,tab_comm);  // traiteConditionalExpression1(element.callee.property,niveau + 1);
+                    var obj1 = this.#traite_ConditionalExpression(element.callee.property,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
                         if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
                             if(element.callee.object.type === 'MemberExpression'){
-                                var obj2 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.object,niveau,element.callee);
+                                var obj2 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm);
                                 if(obj2.__xst === true){
                                     t+='appelf(nomf(tableau(nomt(' + obj2.__xva + '),p(' + obj1.__xva + ')))' + lesArguments + le_contenu + ')';
                                 }else{
@@ -291,7 +288,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             if(element.callee.object){
                 if(element.callee.object.type === 'CallExpression'){
-                    var obj1 = this.#traite_CallExpression(element.callee.object,niveau + 1,element,tab_comm); //traiteCallExpression1(element.callee.object,niveau,element,{});
+                    var obj1 = this.#traite_CallExpression(element.callee.object,niveau + 1,element,tab_comm);
                     if(obj1.__xst === true){
                         if(obj1.__xva.substr(0,6) === 'appelf' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
                             t+='' + (obj1.__xva.substr(0,obj1.__xva.length - 1)) + ',' + laPropriete + ')';
@@ -308,10 +305,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0900 ' ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'ArrayExpression'){
-//                    console.log('%ctraité plus haut ' + t,'background:lightblue;color:navy;');
-                    /* traité plus haut */
+                    /*
+                      c'est traité plus haut 
+                    */
                 }else if(element.callee.object.type === 'MemberExpression'){
-                    var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.object,niveau,element);
+                    var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === false){
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 485 ' ,"element" : element}));
                     }
@@ -337,7 +335,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }else if(element.callee.object.type === 'Identifier'){
                     var nom_de_l_objet=element.callee.object.name;
                     if(element.callee.property && element.callee.property.type === 'MemberExpression'){
-                        var obj = this.#traite_MemberExpression(element.callee.property,niveau,element.callee,tab_comm); // traiteMemberExpression1(element.callee.property,niveau,element.callee);
+                        var obj = this.#traite_MemberExpression(element.callee.property,niveau,element.callee,tab_comm);
                         if(obj.__xst === true){
                             if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
                                 /* a[Symbol.iterator](); => appelf(nomf(a[Symbol.iterator])) */
@@ -373,42 +371,42 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }else if(element.callee.object.type === 'Super'){
                     t='appelf(nomf(super),' + lesArguments + ',' + laPropriete + ')';
                 }else if(element.callee.object.type === 'NewExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); //traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
                         t=(obj1.__xva.substr(0,obj1.__xva.length - 2)) + ',' + lesArguments + ',' + laPropriete + '))';
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteAssignmentExpress1 1385' ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'BinaryExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
                         t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1366 ' + element.callee.object.type ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'FunctionExpression'){
-                    var obj1 = this.#traite_FunctionExpression(element.callee.object,niveau,element,tab_comm); //traiteFunctionExpression1(element.callee.object,niveau,element,'');
+                    var obj1 = this.#traite_FunctionExpression(element.callee.object,niveau,element,tab_comm);
                     if(obj1.__xst === true){
                         t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'LogicalExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
                         t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'AssignmentExpression'){
-                    var obj1 =  this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
                         t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
                     }
                 }else if(element.callee.object.type === 'ConditionalExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm); // traiteUneComposante(element.callee.object,niveau,false,false,element);
+                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
                         t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
                     }else{
@@ -424,106 +422,58 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     }
                     t+='defTab(' + lesArguments + ')';
                 }else{
-                    if(contenu === ''){
-                        t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + ')';
-                    }else{
-                        debugger; // voir le_contenu
-                        t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
-                    }
+                    t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + le_contenu + ')';
                 }
             }else if(element.callee.type === 'CallExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,false,false,element);
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
                 if(obj1.__xst === true){
                     t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
                 }
             }else if(element.callee.type === 'SequenceExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,false,false,element);
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
                 if(obj1.__xst === true){
                     t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
                 }
-            }else if(element.callee.type === 'FunctionExpression'){
-                var obj1 = this.#traite_FunctionExpression(element.callee,niveau,element,tab_comm); // traiteFunctionExpression1(element.callee,niveau,element,'');
-                if(obj1.__xst === true){
-                    if(contenu === ''){
-                        /*
-                          console.log('element=',element)
-                          console.log('parent=',parent)
-                          console.log('parent.callee=',parent.callee)
-                        */
-                        if(obj1.__xva.substr(0,6) === 'appelf'){
-//                            console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
-                            /* cas (function() {var g=1;})(); */
-//                            t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
-                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
-                        }else{
-                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
-                        }
-                    }else{
-                        debugger; // voir le_contenu
-                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
-                    }
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
-                }
             }else if(element.callee.type === 'ConditionalExpression'){
-                var obj1 = this.#traite_ConditionalExpression(element.callee,niveau,element,tab_comm); // traiteConditionalExpression1(element.callee,niveau + 1);
+                var obj1 = this.#traite_ConditionalExpression(element.callee,niveau,element,tab_comm);
                 if(obj1.__xst === true){
                     t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0108 ' ,"element" : element}));
                 }
+            }else if(element.callee.type === 'FunctionExpression'){
+                var obj1 = this.#traite_FunctionExpression(element.callee,niveau,element,tab_comm);
+                if(obj1.__xst === true){
+                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + le_contenu + ')';
+                }else{
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
+                }
             }else if(element.callee.type === 'Super'){
                 t+='appelf(nomf(super)' + lesArguments + laPropriete + ')';
             }else if(element.callee.type === 'ArrowFunctionExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,false,false,element);
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
                 if(obj1.__xst === true){
-                    if(contenu === ''){
-                        if(obj1.__xva.substr(0,6) === 'appelf'){
-//                            console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
-                            /* cas (()=>{var g=1;})(); */
-//                            t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
-                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
-                        }else{
-                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
-                        }
-                    }else{
-                        debugger; // voir le_contenu
-                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
-                    }
+                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + le_contenu + ')';
                 }else{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
                 }
             }else if(element.callee.type === 'ThisExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm); // traiteUneComposante(element.callee,niveau,niveau,false,false,element);
+                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
                 if(obj1.__xst === true){
-                    if(contenu === ''){
-                        if(obj1.__xva.substr(0,6) === 'appelf'){
-                            console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
-                            /* cas (()=>{var g=1;})(); */
-//                            t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
-                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
-                        }else{
-                            t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
-                        }
-                    }else{
-                        debugger; // voir le_contenu
-                        t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ',contenu(' + contenu + '))';
-                    }
+                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + le_contenu + ')';
                 }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0000 [ to'+'do ajuster ] '}));
+                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0000 [ to' + 'do ajuster ] '}));
                 }
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type + '"' ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t});
-        
     }
-    
     /*
       =============================================================================================================
     */
@@ -533,73 +483,58 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let contenu='';
         let id='';
         let les_arguments='';
-        let est_expression=false
+        let est_expression=false;
         let asynchrone='';
-
-        if(element.async!==false){
+        if(element.async !== false){
             asynchrone='asynchrone(),';
-
         }
-        
         est_expression=element.expression;
-        
-        
-        if(element.generator!==false){
+        if(element.generator !== false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0047 #traite_ArrowFunctionExpression generator' ,"element" : element}));
         }
-
         if(element.id){
-           obj=this.#traite_element(element.id,niveau+1,parent,tab_comm);
-           if(obj.__xst===true){
-               id+=obj.__xva;
-           }else{
-               return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0099 #traite_ArrowFunctionExpression' ,"element" : element}));
-           }
+            obj=this.#traite_element(element.id,niveau + 1,parent,tab_comm);
+            if(obj.__xst === true){
+                id+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0099 #traite_ArrowFunctionExpression' ,"element" : element}));
+            }
         }
-
-
         if(element.body){
-           if(element.expression){
-
-               obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
-               if(obj.__xst===true){
-                   contenu+='retourner('+obj.__xva+')';
-               }else{
-                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0130 #traite_ArrowFunctionExpression' ,"element" : element}));
-               }
-           }else{
-               obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-               if(obj.__xst===true){
-                   contenu+=obj.__xva;
-               }else{
-                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0097 #traite_ArrowFunctionExpression' ,"element" : element}));
-               }
-           }
-           contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
-           
+            if(element.expression){
+                obj=this.#traite_element(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
+                    contenu+='retourner(' + obj.__xva + ')';
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0130 #traite_ArrowFunctionExpression' ,"element" : element}));
+                }
+            }else{
+                obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0097 #traite_ArrowFunctionExpression' ,"element" : element}));
+                }
+            }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
-        
-        if(element.params && Array.isArray(element.params) ){
-            if(element.params.length===0){
+        if(element.params && Array.isArray(element.params)){
+            if(element.params.length === 0){
                 les_arguments=',p()';
             }else{
-                for(let i=0;i<element.params.length;i++){
-                    obj=this.#traite_element(element.params[i],niveau+1,parent,tab_comm);
-                    if(obj.__xst===true){
-                        les_arguments+=',p('+obj.__xva+')'
+                for( let i=0 ; i < element.params.length ; i++ ){
+                    obj=this.#traite_element(element.params[i],niveau + 1,parent,tab_comm);
+                    if(obj.__xst === true){
+                        les_arguments+=',p(' + obj.__xva + ')';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_CallExpression' ,"element" : element}));
                     }
                 }
             }
         }
-        
-        
-        t+='appelf('+asynchrone+'flechee()'+les_arguments+',contenu('+contenu+'))';
-
+        t+='appelf(' + asynchrone + 'flechee()' + les_arguments + ',contenu(' + contenu + '))';
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
@@ -607,29 +542,24 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         let l_argument='';
-        
         if(element.argument){
-
-            obj=this.#traite_element(element.argument,niveau+1,parent,tab_comm);
-            if(obj.__xst===true){
-                if(obj.__xva.substr(obj.__xva.length-1,1)===';'){
-                 debugger
+            obj=this.#traite_element(element.argument,niveau + 1,parent,tab_comm);
+            if(obj.__xst === true){
+                if(obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
+                    debugger;
                 }
                 l_argument+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0206 #traite_ReturnStatement' ,"element" : element}));
             }
         }
-        if(l_argument===''){
+        if(l_argument === ''){
             t+='revenir()';
         }else{
-            t+='retourner('+l_argument+')';
+            t+='retourner(' + l_argument + ')';
         }
-
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
@@ -638,32 +568,25 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let gauche='';
         let droite='';
-        
-        obj=this.#traite_element(element.left,niveau+1,parent,tab_comm);
-        if(obj.__xst===true){
+        obj=this.#traite_element(element.left,niveau + 1,parent,tab_comm);
+        if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0134 #traite_AssignmentExpression' ,"element" : element}));
         }
-        
-        
-        obj=this.#traite_element(element.right,niveau+1,parent,tab_comm);
-        if(obj.__xst===true){
+        obj=this.#traite_element(element.right,niveau + 1,parent,tab_comm);
+        if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0142 #traite_AssignmentExpression' ,"element" : element}));
         }
-        
         if(element.operator === '='){
-            t+='affecte(' + gauche + ' , '+droite+ ')';;
+            t+='affecte(' + gauche + ' , ' + droite + ')';
         }else{
-            t+='affectop(\'' + element.operator + '\' , ' + gauche + ' , '+droite+ ')';;
+            t+='affectop(\'' + element.operator + '\' , ' + gauche + ' , ' + droite + ')';
         }
-        
-
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
@@ -674,24 +597,19 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let droite='';
         let nomDuTest='';
         let nouveauTableau=null;
-        
-        obj=this.#traite_element(element.left,niveau+1,parent,tab_comm);
-        if(obj.__xst===true){
+        obj=this.#traite_element(element.left,niveau + 1,parent,tab_comm);
+        if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
         }
-        
-        
-        obj=this.#traite_element(element.right,niveau+1,parent,tab_comm);
-        if(obj.__xst===true){
+        obj=this.#traite_element(element.right,niveau + 1,parent,tab_comm);
+        if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0287 #traite_BinaryExpression' ,"element" : element}));
         }
-        
         nomDuTest=this.#recup_nom_operateur(element.operator);
-        
         if(element.right.type === 'Literal'
          && (element.right.raw.substr(0,1) === "'"
          || element.right.raw.substr(0,1) === '"')
@@ -712,11 +630,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             t='concat(' + (t.substr(5));
         }
         if(t.substr(0,14) === 'concat(concat(' || t.substr(0,15) === 'concat( concat('){
-
-            obj = functionToArray(t,true,false,'');
-            if(obj.__xst === true){ 
-                nouveauTableau = baisserNiveauEtSupprimer(obj.__xva,2,0);
-                obj = a2F1(nouveauTableau,0,false,1);
+            obj=functionToArray(t,true,false,'');
+            if(obj.__xst === true){
+                nouveauTableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
+                obj=a2F1(nouveauTableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }
@@ -729,19 +646,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
          || t.substr(0,10) === 'mult(mult('
          || t.substr(0,10) === 'divi(divi('
         ){
-            obj = functionToArray(t,true,false,'');
+            obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
-                nouveauTableau = baisserNiveauEtSupprimer(obj.__xva,2,0);
-                obj = a2F1(nouveauTableau,0,false,1);
+                nouveauTableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
+                obj=a2F1(nouveauTableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }
             }
         }
         return({"__xst" : true ,"__xva" : t});
-
     }
-    
     /*
       =============================================================================================================
     */
@@ -750,23 +665,21 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let nomVariable='';
         let debutDeclaration='';
-        
         for(let decl in element.declarations){
             if(t !== ''){
                 t+=',';
             }
             nomVariable='';
             if(element.declarations[decl].id){
-                obj=this.#traite_element(element.declarations[decl].id,niveau+1,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_element(element.declarations[decl].id,niveau + 1,parent,tab_comm);
+                if(obj.__xst === true){
                     nomVariable=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_VariableDeclaration' ,"element" : element}));
                 }
             }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0387 #traite_VariableDeclaration' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0387 #traite_VariableDeclaration' ,"element" : element}));
             }
-            
             debutDeclaration='';
             if(element.kind && element.kind === 'var'){
                 debutDeclaration='declare(' + nomVariable + ' , ';
@@ -777,50 +690,39 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 debutDeclaration='declare(' + nomVariable + ' , ';
             }
-            
             if(element.declarations[decl].init){
-
-                obj=this.#traite_element(element.declarations[decl].init,niveau+1,parent,tab_comm);
-                if(obj.__xst===true){
-                    t+=debutDeclaration + obj.__xva + ')';
+                obj=this.#traite_element(element.declarations[decl].init,niveau + 1,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=(debutDeclaration + obj.__xva) + ')';
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
                 }
-             
-             
             }else{
                 t+=debutDeclaration + 'null())';
             }
         }
-        
-
         return({"__xst" : true ,"__xva" : t});
     }
-    
-    
     /*
       =============================================================================================================
     */
     #traite_ObjectExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
-        
         for(let i in element.properties){
             if(t !== ''){
                 t+=',';
             }
             t+=this.#comm_avant_debut(element.properties[i],niveau,tab_comm);
-            
             var val=element.properties[i];
             if(val.key.type === 'Identifier'){
                 t+='(' + val.key.name + ',';
             }else if(val.key.type === 'Literal'){
                 t+='(' + val.key.raw + ',';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '280 #traite_ObjectExpression "' + val.key.type+'"' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '280 #traite_ObjectExpression "' + val.key.type + '"' ,"element" : element}));
             }
-            obj = this.#traite_element(val.value,niveau+1,parent,tab_comm);
+            obj=this.#traite_element(val.value,niveau + 1,parent,tab_comm);
             if(obj.__xst === true){
                 t+=obj.__xva + ')';
             }else{
@@ -828,28 +730,24 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }
         t='obj(' + t + ')';
-
         return({"__xst" : true ,"__xva" : t});
     }
-    
-    
     /*
       =============================================================================================================
     */
     #traite_ArrayExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
         let ne_contient_que_des_constantes=true;
         let nombre_elements=0;
         let format_constante='';
-        let commentaire = '';
+        let commentaire='';
         t+='defTab(';
         let lesPar='';
         for(let i in element.elements){
             commentaire=this.#comm_avant_debut(element.elements[i],niveau,tab_comm);
-            if(commentaire!==''){
-             lesPar+=','+commentaire;
+            if(commentaire !== ''){
+                lesPar+=',' + commentaire;
             }
             if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
@@ -867,7 +765,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 nombre_elements++;
             }else{
                 ne_contient_que_des_constantes=false;
-                obj=this.#traite_element(element.elements[i],niveau+1,parent,tab_comm);
+                obj=this.#traite_element(element.elements[i],niveau + 1,parent,tab_comm);
                 if(obj.__xst === true){
                     lesPar+=',p(' + obj.__xva + ')';
                 }else{
@@ -875,7 +773,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        if(lesPar.length >= 0 ){
+        if(lesPar.length >= 0){
             lesPar=lesPar.substr(1);
         }
         t+=lesPar + ')';
@@ -888,7 +786,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
@@ -899,61 +796,55 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let nom_fonction='';
         let les_arguments='';
         let asynchrone='';
-        
-        if(element.async!==false){
+        if(element.async !== false){
             asynchrone='asynchrone(),';
         }
-        if(element.expression!==false){
+        if(element.expression !== false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0458 #traite_FunctionDeclaration expression' ,"element" : element}));
         }
-        if(element.generator!==false){
+        if(element.generator !== false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0461 #traite_FunctionDeclaration generator' ,"element" : element}));
         }
-        
-        if(element.body){
-           obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-           if(obj.__xst===true){
-               contenu+=obj.__xva;
-           }else{
-               return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element}));
-           }
-           contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
-        }
-        
         if(element.id){
-           obj=this.#traite_element(element.id,niveau+1,parent,tab_comm);
-           if(obj.__xst===true){
-               nom_fonction+=obj.__xva;
-           }else{
-               return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0475 #traite_FunctionDeclaration' ,"element" : element}));
-           }
+            obj=this.#traite_element(element.id,niveau + 1,parent,tab_comm);
+            if(obj.__xst === true){
+                nom_fonction+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0475 #traite_FunctionDeclaration' ,"element" : element}));
+            }
         }else{
-           return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0478 #traite_FunctionDeclaration' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0478 #traite_FunctionDeclaration' ,"element" : element}));
         }
-
-
-        if(element.params && Array.isArray(element.params) ){
-            for(let i=0;i<element.params.length;i++){
-                obj=this.#traite_element(element.params[i],niveau+1,parent,tab_comm);
-                if(obj.__xst===true){
-                    les_arguments+=',argument('+obj.__xva+')'
+        if(element.params && Array.isArray(element.params)){
+            for( let i=0 ; i < element.params.length ; i++ ){
+                obj=this.#traite_element(element.params[i],niveau + 1,parent,tab_comm);
+                if(obj.__xst === true){
+                    var comm=this.#comm_avant_debut(element.params[i],niveau,tab_comm);
+                    les_arguments+=',argument(' +comm+ obj.__xva + ')';
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_FunctionDeclaration' ,"element" : element}));
                 }
             }
-            if(les_arguments!==''){
+            if(les_arguments !== ''){
                 les_arguments=les_arguments.substr(1);
             }
         }else{
-           return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0478 #traite_FunctionDeclaration' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0478 #traite_FunctionDeclaration' ,"element" : element}));
         }
-        
-        t+='fonction( definition('+asynchrone+'nom('+nom_fonction+') '+les_arguments+' )  ,  contenu( '+contenu+' ) )';
-        
+        if(element.body){
+            obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+            if(obj.__xst === true){
+                contenu+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element}));
+            }
+            contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
+        }
+        t+='fonction( definition(' + asynchrone + 'nom(' + nom_fonction + ') ' + les_arguments + ' )  ,  contenu( ' + contenu + ' ) )';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #recupProp(element,niveau,parent,tab_comm){
         var t='';
@@ -970,11 +861,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else if(element.type === 'PrivateIdentifier'){
             t+='#' + element.name + '';
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0561 #recupProp "'+element.type+'"' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0561 #recupProp "' + element.type + '"' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
@@ -985,28 +875,22 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let propertyTxt='';
         let prop='';
         let valeur='';
-
-        obj=this.#traite_element(element.object,niveau+1,element,tab_comm);
+        obj=this.#traite_element(element.object,niveau + 1,element,tab_comm);
         if(obj.__xst === true){
             valeur=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0553 #traite_MemberExpression' ,"element" : element}));
         }
-        
         if(element.computed === false){
-         
             if(element.property){
-                obj=this.#traite_element(element.property,niveau+1,element,tab_comm);
+                obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
                 if(obj.__xst === true){
                     prop=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0522 #traite_MemberExpression' ,"element" : element}));
                 }
             }
-            
-         
-            if(prop!==''){
-             
+            if(prop !== ''){
                 if(valeur.substr(0,8) === 'tableau('){
                     t+=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + '))';
                 }else if(valeur.substr(0,6) === 'appelf'){
@@ -1018,11 +902,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         t=valeur;
                     }
                 }else{
-                    if(valeur.substr(valeur.length-1,1)===')'){
-                        if(valeur.substr(valeur.length-2,1)==='('){
-                            t+=valeur.substr(0,valeur.length-1)+'prop('+prop+')'+')';
+                    if(valeur.substr(valeur.length - 1,1) === ')'){
+                        if(valeur.substr(valeur.length - 2,1) === '('){
+                            t+=(valeur.substr(0,valeur.length - 1)) + 'prop(' + prop + ')' + ')';
                         }else{
-                            t+=valeur.substr(0,valeur.length-1)+',prop('+prop+')'+')';
+                            t+=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + ')' + ')';
                         }
                     }else{
                         t+=valeur + '.' + prop;
@@ -1032,24 +916,19 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+=valeur;
             }
         }else{
-
-
             if(element.property){
-                obj=this.#traite_element(element.property,niveau+1,element,tab_comm);
+                obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
                 if(obj.__xst === true){
                     prop=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0522 #traite_MemberExpression' ,"element" : element}));
                 }
             }
-
-
-            if(prop===''){
+            if(prop === ''){
                 t+=valeur;
             }else{
-             
                 if(element.object.type === 'Identifier' && element.property.type === 'Identifier'){
-                    t+=valeur+'['+prop+']'
+                    t+=valeur + '[' + prop + ']';
                 }else if(element.object.type === 'Identifier' || element.object.type === 'MemberExpression'){
                     if(prop.substr(0,5) === 'plus(' || prop.substr(0,6) === 'moins('){
                         /*
@@ -1122,10 +1001,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         return({"__xst" : true ,"__xva" : t});
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #traiteCondition1(element,niveau,parent,tab_comm){
-        
         let t='';
         let obj=null;
         let i=0;
@@ -1134,8 +1012,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let enfantDe2='';
         let enfantDe1='';
         let nouveau_tableau=null;
-        
-        obj = this.#traite_element(element,niveau+1,parent,tab_comm);
+        obj=this.#traite_element(element,niveau + 1,parent,tab_comm);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
@@ -1147,7 +1024,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
           en ceci
           [ [ egal[d,1] ],ou[ [ egal[e,2] ] ] , ou[ [egal[f,3] ] ] ]
         */
-        obj = functionToArray(t,true,true,'');
+        obj=functionToArray(t,true,true,'');
         if(obj.__xst === true){
             if(obj.__xva.length > 3
              && obj.__xva[1][1] === ''
@@ -1209,8 +1086,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     /*
                       il faut supprimer l'id 2 et baisser de 1 tous les niveaux supérieurs à 1 de l'id 2
                     */
-                    nouveau_tableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-                    obj = a2F1(nouveau_tableau,0,false,1);
+                    nouveau_tableau=baisserNiveauEtSupprimer(o.__xva,2,0);
+                    obj=a2F1(nouveau_tableau,0,false,1);
                     if(obj.__xst === true){
                         t=obj.__xva;
                     }
@@ -1218,7 +1095,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }
         return({"__xst" : true ,"__xva" : t});
-    }    
+    }
     /*
       =============================================================================================================
     */
@@ -1228,14 +1105,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let nouveau_tableau=null;
         let gauche='';
         let droite='';
-        
         if(element.left && element.right){
-            obj = this.#traiteCondition1(element.left,niveau,element,tab_comm);
+            obj=this.#traiteCondition1(element.left,niveau,element,tab_comm);
             if(obj.__xst === false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0762 #traite_LogicalExpression ' ,"element" : element}));
             }
             gauche=obj.__xva;
-            obj = this.#traiteCondition1(element.right,niveau,element,tab_comm);
+            obj=this.#traiteCondition1(element.right,niveau,element,tab_comm);
             if(obj.__xst === false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0767 #traite_LogicalExpression ' ,"element" : element}));
             }
@@ -1251,10 +1127,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0778 #traite_LogicalExpression ' ,"element" : element}));
         }
         if(t.substr(0,6) === 'ou(ou(' || t.substr(0,6) === 'et(et('){
-            obj = functionToArray(t,true,false,'');
+            obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
-                nouveau_tableau = baisserNiveauEtSupprimer(obj.__xva,2,0);
-                obj = a2F1(nouveau_tableau,0,false,1);
+                nouveau_tableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
+                obj=a2F1(nouveau_tableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
@@ -1264,9 +1140,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #recup_nom_operateur(s){
         switch (s){
@@ -1301,22 +1176,20 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             case 'in' : return 'cle_dans_objet';
             case 'delete' : return 'supprimer';
             case 'void' : return 'void';
-            default: 
-            this.#astjs_logerreur({"__xst" : false ,"__xme" : '0834 #recup_nom_operateur "'+s+'"'})
-            return('TO'+'DO recupNomOperateur pour "' + s + '"');
+            default:
+                this.#astjs_logerreur({"__xst" : false ,"__xme" : '0834 #recup_nom_operateur "' + s + '"'});
+                return('TO' + 'DO recupNomOperateur pour "' + s + '"');
+                
         }
     }
-    
     /*
       =============================================================================================================
     */
     #traite_UnaryExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
-        
         let nomDuTestUnary = this.#recup_nom_operateur(element.operator);
-        obj = this.#traite_element(element.argument,niveau+1,element,tab_comm);
+        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
         if(obj.__xst === true){
             if((nomDuTestUnary === 'moins' || nomDuTestUnary === 'plus') && isNumeric(obj.__xva)){
                 if(nomDuTestUnary === 'moins'){
@@ -1330,12 +1203,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0860 #traite_UnaryExpression' ,"element" : element}));
         }
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
-    
-    
     /*
       =============================================================================================================
     */
@@ -1343,10 +1212,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         let i=0;
-        
-        
         t+='bascule(';
-        obj = this.#traite_element(element.discriminant,niveau+1,element,tab_comm);
+        obj=this.#traite_element(element.discriminant,niveau + 1,element,tab_comm);
         if(obj.__xst === true){
             t+='quand(' + obj.__xva + ')';
         }else{
@@ -1355,7 +1222,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         for( i=0 ; i < element.cases.length ; i++ ){
             t+='est(';
             if(element.cases[i].test !== null){
-                obj = this.#traite_element(element.cases[i].test,niveau+1,false,false,element);
+                obj=this.#traite_element(element.cases[i].test,niveau + 1,false,false,element);
                 if(obj.__xst === true){
                     t+='valeur(' + obj.__xva + ')';
                 }else{
@@ -1366,7 +1233,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             t+='faire(';
             if(element.cases[i].consequent && element.cases[i].consequent.length > 0){
-                obj = this.#traite_ast0(element.cases[i].consequent,niveau+3,element,tab_comm);
+                obj=this.#traite_ast0(element.cases[i].consequent,niveau + 3,element,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
@@ -1388,54 +1255,41 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let gauche='';
         let droite='';
         let contenu='';
-        
-        obj=this.#traite_element(element.left,niveau+1,parent,tab_comm);
-        if(obj.__xst===true){
+        obj=this.#traite_element(element.left,niveau + 1,parent,tab_comm);
+        if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
         }
-        
-        
-        obj=this.#traite_element(element.right,niveau+1,parent,tab_comm);
-        if(obj.__xst===true){
+        obj=this.#traite_element(element.right,niveau + 1,parent,tab_comm);
+        if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element}));
         }
-        
         if(element.body){
             if(element.expression){
-
-                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_element(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element}));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element}));
                 }
             }
             contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
-            
         }
-        
-
         t+='boucle_sur_objet_dans(';
         t+='pourChaque(dans(' + gauche + ' , ' + droite + ')),';
-        t+='faire('+contenu+')';
+        t+='faire(' + contenu + ')';
         t+=')';
-        
-        
-        
-        
         return({"__xst" : true ,"__xva" : t});
-        
     }
     /*
       =============================================================================================================
@@ -1445,41 +1299,35 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let i=0;
         let test='';
-        let contenu = '';
-        
+        let contenu='';
         if(element.body){
             if(element.expression){
-
-                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_element(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element}));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
                 }
             }
             contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
-
         }
-        obj = this.#traite_element(element.test,niveau+1,element,tab_comm);
+        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
         if(obj.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
         }
         test+=obj.__xva;
-        
         t+='faire_tant_que(';
-        t+='instructions('+contenu+')';
+        t+='instructions(' + contenu + ')';
         t+='condition(' + test + '),';
         t+='),';
-
         return({"__xst" : true ,"__xva" : t});
-        
     }
     /*
       =============================================================================================================
@@ -1489,26 +1337,23 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let i=0;
         let test='';
-        let contenu = '';
-        
-        obj = this.#traite_element(element.test,niveau+1,element,tab_comm);
+        let contenu='';
+        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
         if(obj.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
         }
         test+=obj.__xva;
-        
         if(element.body){
             if(element.expression){
-
-                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_element(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element}));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
@@ -1518,11 +1363,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         t+='tantQue(';
         t+='condition(' + test + '),';
-        t+='faire('+contenu+')';
+        t+='faire(' + contenu + ')';
         t+='),';
-
         return({"__xst" : true ,"__xva" : t});
-        
     }
     /*
       =============================================================================================================
@@ -1534,13 +1377,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let pourInit='';
         let test='';
         let valeurIncrement='';
-        let contenu = '';
-        
-        
+        let contenu='';
         if(element.init === null){
             pourInit='';
-        }else {
-            obj = this.#traite_element(element.init,niveau+1,element,tab_comm);
+        }else{
+            obj=this.#traite_element(element.init,niveau + 1,element,tab_comm);
             if(obj.__xst === true){
                 if(pourInit !== ''){
                     pourInit+=',';
@@ -1550,42 +1391,35 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0888 #traite_ForStatement' ,"element" : element}));
             }
         }
-        
         if(element.test === null){
             test+='()';
         }else{
-
-            obj = this.#traite_element(element.test,niveau+1,element,tab_comm);
+            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
             if(obj.__xst === false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
             }
             test+=obj.__xva;
         }
-
         if(element.update === null){
             valeurIncrement='';
         }else{
-            obj = this.#traite_element(element.update,niveau+1,element,tab_comm);
+            obj=this.#traite_element(element.update,niveau + 1,element,tab_comm);
             if(obj.__xst === false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0907 #traite_ForStatement' ,"element" : element}));
             }
             valeurIncrement+=obj.__xva;
-
         }
-
-        
         if(element.body){
             if(element.expression){
-
-                obj=this.#traite_element(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_element(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element}));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
@@ -1593,26 +1427,21 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             contenu+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
         }
-        
-        
         t+='boucle(';
         t+='    initialisation(' + pourInit + ')';
-        t+='    condition('+test+')';
+        t+='    condition(' + test + ')';
         t+='    increment(' + valeurIncrement + ')';
-        t+='    faire('+contenu+')';
+        t+='    faire(' + contenu + ')';
         t+=')';
-
-        return({"__xst" : true ,"__xva" : t});        
+        return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
-    #traite_UpdateExpression(element,niveau,parent,tab_comm){ //element,niveau,opt,parent){
+    #traite_UpdateExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
         let elem='';
-        
         if(element.argument.type === 'Identifier' && parent.type === "ForStatement" && parent.update.type === "UpdateExpression"){
             /* cas simples de for(i=0;i<j;i++){} */
             if('++' === element.operator && element.prefix === false){
@@ -1626,7 +1455,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             return({"__xst" : true ,"__xva" : t});
         }
-        obj = this.#traite_element(element.argument,niveau+1,parent,tab_comm);
+        obj=this.#traite_element(element.argument,niveau + 1,parent,tab_comm);
         if(obj.__xst === true){
             elem=obj.__xva;
         }else{
@@ -1643,28 +1472,25 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
     #traite_IfStatement(element,niveau,parent,tab_comm,type){
         let t='';
         let obj=null;
-        if( type === 'if'){
+        if(type === 'if'){
             t+='choix(';
             t+='si(';
-            obj = this.#traite_element(element.test,niveau+1,parent,tab_comm);
+            obj=this.#traite_element(element.test,niveau + 1,parent,tab_comm);
             if(obj.__xst === true){
                 t+='condition(' + obj.__xva + '),';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1036 #traite_IfStatement' ,"element" : element}));
             }
-            
         }else{
             if(element.test){
-
                 t+='sinonsi(';
-                obj = this.#traite_element(element.test,niveau+1,parent,tab_comm);
+                obj=this.#traite_element(element.test,niveau + 1,parent,tab_comm);
                 if(obj.__xst === true){
                     t+='condition(' + obj.__xva + '),';
                 }else{
@@ -1677,30 +1503,26 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         t+='alors(';
         var bloc_traitement_dans=null;
         if(element.consequent){
-            
-            obj=this.#traite_ast0(element.consequent,niveau+2,parent,tab_comm);
-            if(obj.__xst===true){
+            obj=this.#traite_ast0(element.consequent,niveau + 2,parent,tab_comm);
+            if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1063 #traite_IfStatement' ,"element" : element}));
             }
-            
-            t+=this.#comm_avant_fin(element.consequent,niveau,tab_comm,true);            
+            t+=this.#comm_avant_fin(element.consequent,niveau,tab_comm,true);
         }else{
-
-            obj=this.#traite_ast0(element,niveau+2,parent,tab_comm);
-            if(obj.__xst===true){
+            obj=this.#traite_ast0(element,niveau + 2,parent,tab_comm);
+            if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1083 #traite_IfStatement' ,"element" : element}));
             }
-            t+=this.#comm_avant_fin(element.consequent,niveau,tab_comm,true);            
-
+            t+=this.#comm_avant_fin(element.consequent,niveau,tab_comm,true);
         }
         t+=')';
         t+=')';
         if(element.alternate){
-            obj = this.#traite_IfStatement(element.alternate,niveau,parent,tab_comm,'else');
+            obj=this.#traite_IfStatement(element.alternate,niveau,parent,tab_comm,'else');
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
@@ -1710,7 +1532,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(type === 'if'){
             t+=')';
         }
-        
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -1722,7 +1543,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let nom_de_la_classe='';
         let super_classe='';
         let corps_de_la_classe='';
-
         if(element.id){
             if("Identifier" === element.id.type){
                 nom_de_la_classe=element.id.name;
@@ -1732,11 +1552,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1105 #traite_ClassDeclaration' ,"element" : element}));
         }
-        if(element.body ){
+        if(element.body){
             if(element.body.type === "ClassBody" && element.body.body && element.body.body.length > 0){
-
-                obj=this.#traite_ast0(element.body,niveau+2,parent,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_ast0(element.body,niveau + 2,parent,tab_comm);
+                if(obj.__xst === true){
                     corps_de_la_classe+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1063 #traite_IfStatement' ,"element" : element}));
@@ -1745,15 +1564,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1128 #traite_ClassDeclaration' ,"element" : element}));
             }
             corps_de_la_classe+=this.#comm_avant_fin(element.body,niveau,tab_comm,true);
-            
         }
         t+='definition_de_classe(nom_classe(' + nom_de_la_classe + '),contenu(' + corps_de_la_classe + '))';
-        
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
-
     /*
       =============================================================================================================
     */
@@ -1767,7 +1581,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+='variable_publique(' + element.key.name;
             }
             if(element.value){
-                obj = this.#traite_element(element.value,niveau+1,parent,tab_comm);
+                obj=this.#traite_element(element.value,niveau + 1,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=',' + obj.__xva + '';
                 }else{
@@ -1778,8 +1592,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1162 #traite_PropertyDefinition' ,"element" : element}));
         }
-
- 
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -1789,7 +1601,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         let j=0;
-        
         if((element.kind === "method"
          || element.kind === "constructor"
          || element.kind === "get"
@@ -1814,11 +1625,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+=',';
                 for( j=0 ; j < element.value.params.length ; j++ ){
                     if(element.value.params[j].type === "Identifier"){
-                        t+='argument('+element.value.params[j].name + ')';
+                        t+='argument(' + element.value.params[j].name + ')';
                     }else if(element.value.params[j].type === "AssignmentPattern"){
-                        obj = traiteAssignmentPattern(element.value.params[j],niveau + 1,{});
+                        obj=traiteAssignmentPattern(element.value.params[j],niveau + 1,{});
                         if(obj.__xst === true){
-                            t+='argument('+obj.__xva + ')';
+                            t+='argument(' + obj.__xva + ')';
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1193 #traite_MethodDefinition' ,"element" : element}));
                         }
@@ -1835,13 +1646,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             var prop={};
             for(prop in element.value){
                 if(prop === 'body'){
-                    obj=this.#traite_ast0(element.value[prop],niveau+2,parent,tab_comm);
-                    if(obj.__xst===true){
+                    obj=this.#traite_ast0(element.value[prop],niveau + 2,parent,tab_comm);
+                    if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1212 #traite_MethodDefinition' ,"element" : element}));
                     }
-                 
                 }
             }
             t+=')';
@@ -1849,9 +1659,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             debugger;
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1222 #traite_MethodDefinition' ,"element" : element}));
-        }        
-        
-        
+        }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -1859,7 +1667,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     */
     #traite_ConditionalExpression(element,niveau,parent,tab_comm){
         let t='';
-        
         var objtest1 = this.#traite_element(element.test,niveau,element,tab_comm);
         if(objtest1.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1733 #traite_ConditionalExpression' ,"element" : element}));
@@ -1876,22 +1683,16 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         t+='testEnLigne(condition(' + objtest1.__xva + '),siVrai(' + objSiVrai.__xva + '),siFaux(' + objSiFaux.__xva + '))';
         return({"__xst" : true ,"__xva" : t});
-        
     }
-    
     /*
       =============================================================================================================
     */
     #traite_PrivateIdentifier(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        t='#'+element.name;
-//        debugger
+        t='#' + element.name;
         return({"__xst" : true ,"__xva" : t});
-        
     }
-    
-
     /*
       =============================================================================================================
     */
@@ -1899,7 +1700,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         let j=0;
-        
         if(element.specifiers && element.specifiers.length > 0){
             for( j=0 ; j < element.specifiers.length ; j++ ){
                 var specifier=element.specifiers[j];
@@ -1914,17 +1714,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
     #traite_TemplateLiteral(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-
         if(element.quasis
          && element.quasis.length === 1
          && 'TemplateElement' === element.quasis[0].type
@@ -1936,27 +1733,27 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1802 #traite_TemplateLiteral' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
-
     }
-    
     /*
       =============================================================================================================
     */
     #traite_NewExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-
         if(element.callee && element.callee.type === 'MemberExpression' && element.arguments.length === 0){
-            obj = this.#traite_MemberExpression(element.callee,niveau+1,element,tab_comm);
+            obj=this.#traite_MemberExpression(element.callee,niveau + 1,element,tab_comm);
             if(obj.__xst === true){
                 t+='new(' + obj.__xva + ')';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element}));
             }
-        }else if(
-            (element.callee && element.callee.type === 'MemberExpression' && element.arguments.length > 0)
-         || (element.callee && element.callee.type === 'Identifier')
-         || (element.callee && element.callee.type === 'ThisExpression')
+        }else if(element.callee
+         && element.callee.type === 'MemberExpression'
+         && element.arguments.length > 0
+         || element.callee
+         && element.callee.type === 'Identifier'
+         || element.callee
+         && element.callee.type === 'ThisExpression'
         ){
             var obj1 = this.#traite_CallExpression(element,niveau + 1,element,{});
             if(obj1.__xst === true){
@@ -1967,21 +1764,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1834 #traite_NewExpression' ,"element" : element}));
         }
-        
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
     #traite_TryStatement(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
         t+='essayer(';
         t+='faire(';
-        obj = this.#traite_ast0(element.block.body,niveau + 2,element,tab_comm);
+        obj=this.#traite_ast0(element.block.body,niveau + 2,element,tab_comm);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
@@ -1996,9 +1789,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1863 #traite_TryStatement' ,"element" : element}));
             }
             if(element.handler.body && element.handler.body.type === 'BlockStatement'){
-                obj = this.#traite_ast0(element.handler.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0(element.handler.body,niveau + 2,element,tab_comm);
                 if(obj.__xst === true){
-                    t+='faire('+obj.__xva+')';
+                    t+='faire(' + obj.__xva + ')';
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1870 #traite_TryStatement' ,"element" : element}));
                 }
@@ -2006,20 +1799,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         t+=')';
         t+=')';
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
     #traite_AssignmentPattern(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-
         if(element.left && element.right){
-            var objgauche = this.#traite_element(element.left ,niveau+1,element,tab_comm);
-            var objdroite = this.#traite_element(element.right,niveau+1,element,tab_comm);
+            var objgauche = this.#traite_element(element.left,niveau + 1,element,tab_comm);
+            var objdroite = this.#traite_element(element.right,niveau + 1,element,tab_comm);
             if(objgauche.__xst === true && objdroite.__xst){
                 t+=objgauche.__xva + ',defaut(' + objdroite.__xva + ')';
             }else{
@@ -2028,8 +1818,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1896 #traite_AssignmentPattern' ,"element" : element}));
         }
-
-        
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2038,9 +1826,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_AwaitExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
         if("CallExpression" === element.argument.type){
-            var objass = this.#traite_element(element.argument,niveau+1,element,tab_comm);
+            var objass = this.#traite_element(element.argument,niveau + 1,element,tab_comm);
             if(objass.__xst === true){
                 t+='await(' + objass.__xva + ')';
             }else{
@@ -2049,18 +1836,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1927 #traite_AwaitExpression' ,"element" : element}));
         }
-        
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
     #traite_ThrowStatement(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
-        obj=this.#traite_element(element.argument ,niveau+1,element,tab_comm);
+        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
         if(obj.__xst === true){
             t+='throw(' + obj.__xva + ')';
         }else{
@@ -2074,10 +1858,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_LabeledStatement(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
         let contenu='';
         if(element.body){
-            obj = this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
@@ -2090,8 +1873,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2076 #traite_LabeledStatement' ,"element" : element}));
         }
-
-        
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2100,8 +1881,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_SequenceExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-    
-    
         if(element.expressions.length > 1 && parent.computed && parent.computed === true){
             /*
               tab[1,1] est super dangereux, on le signale mais ça passe
@@ -2109,7 +1888,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             this.#astjs_logerreur({"__xst" : false ,"__xme" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element});
         }
         for( let i=0 ; i < element.expressions.length ; i++ ){
-            obj = this.#traite_element(element.expressions[i],niveau+2,element,tab_comm);
+            obj=this.#traite_element(element.expressions[i],niveau + 2,element,tab_comm);
             if(obj.__xst === true){
                 if(t !== ''){
                     t+=',';
@@ -2120,7 +1899,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }
         t='virgule(' + t + ')';
-    
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2129,12 +1907,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_BlockStatement(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
-        
         if(element.body && Array.isArray(element.body)){
-            
-            for(let i=0;i<element.body.length;i++){
-                if(element.body[i].type && element.body[i].type==='ExpressionStatement'){
+            for( let i=0 ; i < element.body.length ; i++ ){
+                if(element.body[i].type && element.body[i].type === 'ExpressionStatement'){
                     obj=this.#traite_element(element.body[i].expression,niveau,parent,tab_comm);
                     if(obj.__xst === true){
                         t+=obj.__xva;
@@ -2154,8 +1929,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2139 #traite_BlockStatement' ,"element" : element}));
         }
-        t='('+t+')';
-        
+        t='(' + t + ')';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2165,16 +1939,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         t+=this.#comm_avant_debut(element,niveau,tab_comm);
-        switch(element.type){
-         
-            case 'Identifier' :
-                t+=element.name;
-                
+        switch (element.type){
+            case 'Identifier' : t+=element.name;
                 break;
-         
             case 'Literal' :
-            
-            
                 if(element.regex){
                     let leParam = '/' + element.regex.pattern + '/';
                     if(element.regex.flags){
@@ -2189,14 +1957,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     }else{
                         valeur=element.raw;
                     }
-                    if(niveau===0){
+                    if(niveau === 0){
                         t+='directive(' + valeur + ')';
                     }else{
                         t+=valeur;
                     }
                 }
                 break;
-                
                 
             case 'BreakStatement' :
                 if(element.label !== null){
@@ -2209,30 +1976,16 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     t+='break()';
                 }
                 break;
-            
-            
-         
-            case 'EmptyStatement' :
-
-                t+='';
-                break;
                 
+            case 'EmptyStatement' : t+='';
+                break;
             case 'DebuggerStatement' : t+='debugger()';
                 break;
-                
-                
-            case 'ThisExpression' :
-
-                t+='this';
+            case 'ThisExpression' : t+='this';
                 break;
-                
-            case 'ContinueStatement' :
-
-                t+='continue()';
+            case 'ContinueStatement' : t+='continue()';
                 break;
-                
             case 'LabeledStatement' :
-            
                 obj=this.#traite_LabeledStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2240,9 +1993,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element LabeledStatement ' ,"element" : element}));
                 }
                 break;
-            
-            case 'SequenceExpression' :
                 
+            case 'SequenceExpression' :
                 obj=this.#traite_SequenceExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2250,9 +2002,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element SequenceExpression ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'ThrowStatement' :
-            
                 obj=this.#traite_ThrowStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2260,9 +2011,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element ThrowStatement ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'AwaitExpression' :
-
                 obj=this.#traite_AwaitExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2270,9 +2020,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1990 #traite_element AwaitExpression ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'AssignmentPattern' :
-
                 obj=this.#traite_AssignmentPattern(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2280,9 +2029,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2000 #traite_element AssignmentPattern ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'TryStatement' :
-
                 obj=this.#traite_TryStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2290,9 +2038,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2010 #traite_element TryStatement ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'NewExpression' :
-
                 obj=this.#traite_NewExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2300,9 +2047,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1883 #traite_element NewExpression ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'TemplateLiteral' :
-
                 obj=this.#traite_TemplateLiteral(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2310,9 +2056,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1862 #traite_element TemplateLiteral ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'ExportNamedDeclaration' :
-
                 obj=this.#traite_ExportNamedDeclaration(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2320,9 +2065,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1837 #traite_element ExportNamedDeclaration ' ,"element" : element}));
                 }
                 break;
-            
+                
             case 'SwitchStatement' :
-
                 obj=this.#traite_SwitchStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2330,10 +2074,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2071 #traite_element SwitchStatement ' ,"element" : element}));
                 }
                 break;
-            
                 
             case 'ForInStatement' :
-            
                 obj=this.#traite_ForInStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2342,10 +2084,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-            
-            
             case 'PrivateIdentifier' :
-                
                 obj=this.#traite_PrivateIdentifier(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2354,9 +2093,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-                
             case 'ConditionalExpression' :
-                
                 obj=this.#traite_ConditionalExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2365,9 +2102,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-                
             case 'MethodDefinition' :
-                
                 obj=this.#traite_MethodDefinition(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2377,7 +2112,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'PropertyDefinition' :
-                
                 obj=this.#traite_PropertyDefinition(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2387,7 +2121,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'ClassDeclaration' :
-                
                 obj=this.#traite_ClassDeclaration(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2397,7 +2130,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'IfStatement' :
-                
                 obj=this.#traite_IfStatement(element,niveau,parent,tab_comm,'if');
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2407,7 +2139,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'UpdateExpression' :
-                
                 obj=this.#traite_UpdateExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2417,7 +2148,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'DoWhileStatement' :
-                
                 obj=this.#traite_DoWhileStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2425,9 +2155,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2082 #traite_element DoWhileStatement ' ,"element" : element}));
                 }
                 break;
-
+                
             case 'WhileStatement' :
-            
                 obj=this.#traite_WhileStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2435,9 +2164,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2082 #traite_element WhileStatement ' ,"element" : element}));
                 }
                 break;
-
-            case 'ForStatement' :
                 
+            case 'ForStatement' :
                 obj=this.#traite_ForStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2447,7 +2175,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'UnaryExpression' :
-                
                 obj=this.#traite_UnaryExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2457,7 +2184,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'LogicalExpression' :
-                
                 obj=this.#traite_LogicalExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2467,7 +2193,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'MemberExpression' :
-
                 obj=this.#traite_MemberExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2477,7 +2202,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'FunctionDeclaration' :
-
                 obj=this.#traite_FunctionDeclaration(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2487,7 +2211,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'ArrayExpression' :
-                
                 obj=this.#traite_ArrayExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2496,9 +2219,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-
             case 'ObjectExpression' :
-
                 obj=this.#traite_ObjectExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2507,9 +2228,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-            
             case 'VariableDeclaration' :
-            
                 obj=this.#traite_VariableDeclaration(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2519,7 +2238,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 break;
                 
             case 'BinaryExpression' :
-
                 obj=this.#traite_BinaryExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2528,10 +2246,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-            
-            
             case 'ReturnStatement' :
-
                 obj=this.#traite_ReturnStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2540,9 +2255,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-                
             case 'AssignmentExpression' :
-
                 obj=this.#traite_AssignmentExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2551,9 +2264,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-                
             case "ArrowFunctionExpression" :
-
                 obj=this.#traite_ArrowFunctionExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2562,9 +2273,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-                
-            
-            case 'FunctionExpression':         
+            case 'FunctionExpression' :
                 obj=this.#traite_FunctionExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2573,9 +2282,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-            
-            case 'CallExpression':
-            
+            case 'CallExpression' :
                 obj=this.#traite_CallExpression(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
@@ -2583,8 +2290,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_element CallExpression ' ,"element" : element}));
                 }
                 break;
-
-            case 'BlockStatement':
+                
+            case 'BlockStatement' :
                 /*# 
                   de temps en temps, on peut passer pas là mais je ne vois pas l'utilité : exemple :
                   switch(a) {
@@ -2602,20 +2309,18 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2551 #traite_element BlockStatement ' ,"element" : element}));
                 }
                 break;
-
                 
             default:
-                debugger
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2500 #traite_element non prévu "'+element.type+'" ' ,"element" : element}));
+                debugger;
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2500 #traite_element non prévu "' + element.type + '" ' ,"element" : element}));
                 break;
+                
         }
-
         element=null;
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #ajouteCommentaireAvant(element,niveau,positionDebutBloc,tab_comm,mode_fin=false){
         var t='';
@@ -2657,7 +2362,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        if(mode_fin===true){
+        if(mode_fin === true){
             for( i=tab_comm.length - 1 ; i >= 0 ; i-- ){
                 if(tab_comm[i].type === 'Line' && tab_comm[i].start > element.start && tab_comm[i].end < element.end){
                     var txtComment=tab_comm[i].value;
@@ -2705,7 +2410,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        if(nombre_de_ligne_trouvees > 1 ){
+        if(nombre_de_ligne_trouvees > 1){
             /* si on a trouvé plusieurs ligne de commentaires, on les rassemble */
             var obj = rev_texte_vers_matrice(t);
             if(obj.__xst === true){
@@ -2719,11 +2424,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         return t;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #derniers_commentaires(tab_comm){
         let t='';
-        for( let i=0;i<tab_comm.length ; i++ ){
+        for( let i=0 ; i < tab_comm.length ; i++ ){
             var txtComment=tab_comm[i].value;
             if(txtComment.indexOf('\n') < 0){
                 txtComment=txtComment.trim();
@@ -2744,16 +2449,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     t='#(' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ')' + t;
                 }
             }
-         
         }
         return t;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #comm_avant_fin(elem,niveau,tab_comm){
         var t='';
-        if(elem===undefined || !elem.hasOwnProperty('end')){
+        if(elem === undefined || !(elem.hasOwnProperty('end'))){
             return t;
         }
         var positionDebutBloc=elem.end;
@@ -2762,16 +2466,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         return t;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #comm_avant_debut(elem,niveau,tab_comm){
         var t='';
         var positionDebutBloc=elem.start;
-        var commentaire = this.#ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc , tab_comm ,false );
+        var commentaire = this.#ajouteCommentaireAvant(elem,niveau + 1,positionDebutBloc,tab_comm,false);
         t+=commentaire;
         return t;
     }
-    
     /*
       =============================================================================================================
     */
@@ -2779,11 +2482,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         const espaces = CRLF + '   '.repeat(niveau);
-        
         if(Array.isArray(element)){
-            for(let i=0;i<element.length;i++){
-                switch(element[i].type){
-                    case 'ExpressionStatement':
+            for( let i=0 ; i < element.length ; i++ ){
+                switch (element[i].type){
+                    case 'ExpressionStatement' :
                         obj=this.#traite_element(element[i].expression,niveau,element,tab_comm);
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
@@ -2792,9 +2494,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         }
                         break;
                         
-                    case 'EmptyStatement':
+                    case 'EmptyStatement' :
                         t+=this.#comm_avant_debut(element[i],niveau,tab_comm);
-                    
                         t+='';
                         break;
                         
@@ -2809,12 +2510,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         
                 }
             }
-        }else if(element.type && element.type==='BlockStatement' || element.type && element.type==='ClassBody'){
-
+        }else if(element.type && element.type === 'BlockStatement' || element.type && element.type === 'ClassBody'){
             if(element.body && Array.isArray(element.body)){
-                
-                for(let i=0;i<element.body.length;i++){
-                    if(element.body[i].type && element.body[i].type==='ExpressionStatement'){
+                for( let i=0 ; i < element.body.length ; i++ ){
+                    if(element.body[i].type && element.body[i].type === 'ExpressionStatement'){
                         obj=this.#traite_element(element.body[i].expression,niveau,parent,tab_comm);
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
@@ -2834,16 +2533,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0191 #traite_ast0 BlockStatement' ,"element" : element}));
             }
-     
-         
-        }else if(element.type && element.type==='ExpressionStatement'){
+        }else if(element.type && element.type === 'ExpressionStatement'){
             obj=this.#traite_element(element.expression,niveau,element,tab_comm);
             if(obj.__xst === true){
                 t+=espaces + obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
             }
-         
         }else{
             obj=this.#traite_element(element,niveau,element,tab_comm);
             if(obj.__xst === true){
@@ -2851,7 +2547,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
             }
-//            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0048 #traite_ast0 non prévu "'+element.type+'"' }));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2866,22 +2561,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             this.#options_traitement=options_traitement;
         }
         if(Array.isArray(ast_de_js)){
-         
             let niveau=0;
-            obj = this.#traite_ast0(ast_de_js,niveau,null,tab_comm);
+            obj=this.#traite_ast0(ast_de_js,niveau,null,tab_comm);
             if(obj.__xst === true){
                 t+=obj.__xva;
                 t+=this.#derniers_commentaires(tab_comm);
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 traite_ast erreur de convertion' }));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 traite_ast erreur de convertion'}));
             }
-         
         }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 traite_ast le point d\'entrée doit être un tableau' }));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 traite_ast le point d\'entrée doit être un tableau'}));
         }
-        
-        
-        
         return({"__xst" : true ,"__xva" : t});
     }
     /*

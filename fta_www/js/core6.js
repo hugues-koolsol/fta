@@ -1,4 +1,5 @@
 "use strict";
+
 const DEBUTCOMMENTAIRE='#';
 const DEBUTBLOC='@';
 const CRLF='\r\n';
@@ -769,9 +770,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                         t+='/' + chaine + '/' + tab[i][13];
                         break;
                         
-                    case 0 : 
-                        /* variable en dur */
-                        
+                    case 0 : /* variable en dur */
                         t+=tab[i][1];
                         break;
                 }
@@ -871,10 +870,10 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                             if(tab[i][10] > 1){
                                 /* si la profondeur est supérieure à 1 */
                                 t+=les_espaces;
-                            }else if(tab[i][9]<tab[tab[i][7]][8]){
+                            }else if(tab[i][9] < tab[tab[i][7]][8]){
                                 /* si ce n'est pas le dernier enfant */
                                 t+=les_espaces;
-                            }else if(tab[i][9]===tab[tab[i][7]][8]){
+                            }else if(tab[i][9] === tab[tab[i][7]][8]){
                                 /* si c'est le dernier enfant */
                                 t+=espacesnrev(true,tab[debut][3]);
                             }
@@ -1635,8 +1634,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                     
-                     
                         return(logerreur(formaterErreurRev({
                             "__xst" : false ,
                             "ind" : i ,
@@ -1649,7 +1646,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
                         })));
-                     
                         return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : '1345 la racine ne peut pas contenir des constantes'}));
                     }
                 }

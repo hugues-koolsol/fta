@@ -1,4 +1,5 @@
 "use strict";
+
 /*
   =====================================================================================================================
 */
@@ -10,37 +11,30 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
     localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
     var lines = a.value.split(/\r|\r\n|\n/);
     var count=lines.length;
-    
     try{
-        // {parser:{extractDoc: true,php7: true,},ast:{withPositions: true}}
-        
+        /* ✍ {parser:{extractDoc: true,php7: true,},ast:{withPositions: true}} */
         var startMicro = performance.now();
-        var parseur=window.PhpParser.Engine({parser:{extractDoc: true},ast:{withPositions: true}});
-        var ast_de_php=parseur.parseCode(a.value);
-        
-        var obj=__module_php_parseur1.traite_ast(ast_de_php,options_traitement);
-        if(obj.__xst===true){
-            document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;;
+        var parseur = window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
+        var ast_de_php = parseur.parseCode(a.value);
+        var obj = __module_php_parseur1.traite_ast(ast_de_php,options_traitement);
+        if(obj.__xst === true){
+            document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
         }else{
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
-         
         }
-        
-        
         var endMicro = performance.now();
         console.log(endMicro - startMicro);
-         
     }catch(e){
         console.error(e);
         if(e.lineNumber){
-             logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />'+e.message, line:e.lineNumber});
+            logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message ,"line" : e.lineNumber});
         }else{
-             logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />'+e.message});
+            logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message});
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
-}    
+}
 /*
   =====================================================================================================================
 */

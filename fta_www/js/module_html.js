@@ -987,8 +987,8 @@ class traitements_sur_html{
       function recupérer_un_fetch
     */
     async recupere_un_fetch(url,donnees){
-        var delais_admis = (donnees.call.opt && donnees.call.opt.delais_admis) ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur = (donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur')) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
+        var delais_admis = donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
+        var masquer_les_messages_du_serveur = donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
             "signal" : AbortSignal.timeout(delais_admis) ,
             "method" : "POST" ,

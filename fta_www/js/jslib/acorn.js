@@ -1,13 +1,14 @@
 "use strict";
+
 /*
   =====================================================================================================================
   ================================ https://github.com/acornjs/acorn ===================================================
   =====================================================================================================================
 */
 (function(global,factory){
-        (typeof exports === 'object' && typeof module !== 'undefined') ? ( factory(exports) ) : ( ((typeof define === 'function' && define.amd) ? ( define(['exports'],factory) ) : ( global=typeof globalThis !== 'undefined' ? ( globalThis ) : ( (global || self) ) , factory(global.acorn={}) )) );
+        typeof exports === 'object' && typeof module !== 'undefined' ? ( factory(exports) ) : ( (typeof define === 'function' && define.amd ? ( define(['exports'],factory) ) : ( global=typeof globalThis !== 'undefined' ? ( globalThis ) : ( global || self ) , factory(global.acorn={}) )) );
 })(this,function(exports){
-        "use strict";
+    "use strict"
         /* ✍ This file was generated. Do not modify manually! */
         var astralIdentifierCodes = [
             /* tbel */509,0,227,0,150,4,294,9,1368                ,2,2,1,6,3,41,2,5,0,166
@@ -312,7 +313,7 @@
             for( var i=from ; i < end ; i++ ){
                 var next = code.charCodeAt(i);
                 if(isNewLine(next)){
-                    return((i < end - 1 && next === 13 && code.charCodeAt(i + 1) === 10) ? ( i + 2 ) : ( i + 1 ));
+                    return(i < end - 1 && next === 13 && code.charCodeAt(i + 1) === 10 ? ( i + 2 ) : ( i + 1 ));
                 }
             }
             return -1;
@@ -484,7 +485,7 @@
         function getOptions(opts){
             var options={};
             for(var opt in defaultOptions){
-                options[opt]=(opts && hasOwn(opts,opt)) ? ( opts[opt] ) : ( defaultOptions[opt] );
+                options[opt]=opts && hasOwn(opts,opt) ? ( opts[opt] ) : ( defaultOptions[opt] );
             }
             if(options.ecmaVersion === "latest"){
                 options.ecmaVersion=1e8;
@@ -819,7 +820,7 @@
           ✍ raise an unexpected token error.
         */
         pp$9.expect=function(type){
-            this.eat(type) || this.unexpected();
+        this.eat(type) || this.unexpected();
         };
         /* ✍ Raise an unexpected token error. */
         pp$9.unexpected=function(pos){
@@ -1125,7 +1126,7 @@
         */
         pp$8.parseForStatement=function(node){
             this.next();
-            var awaitAt = (this.options.ecmaVersion >= 9 && this.canAwait && this.eatContextual("await")) ? ( this.lastTokStart ) : ( -1 );
+            var awaitAt = this.options.ecmaVersion >= 9 && this.canAwait && this.eatContextual("await") ? ( this.lastTokStart ) : ( -1 );
             this.labels.push(loopLabel);
             this.enterScope(0);
             this.expect(types$1.parenL);
@@ -1499,7 +1500,7 @@
                 node.async=!(!(isAsync));
             }
             if(statement & FUNC_STATEMENT){
-                node.id=(statement & FUNC_NULLABLE_ID && this.type !== types$1.name) ? ( null ) : ( this.parseIdent() );
+                node.id=statement & FUNC_NULLABLE_ID && this.type !== types$1.name ? ( null ) : ( this.parseIdent() );
                 if(node.id && !(statement & FUNC_HANGING_STATEMENT)){
                     /*
                       ✍ If it is a regular function declaration in sloppy mode, then it is
@@ -1507,7 +1508,7 @@
                       ✍ mode depends on properties of the current scope [see
                       ✍ treatFunctionsAsVar].
                     */
-                    this.checkLValSimple(node.id,(this.strict || node.generator || node.async) ? ( (this.treatFunctionsAsVar ? ( BIND_VAR ) : ( BIND_LEXICAL )) ) : ( BIND_FUNCTION ));
+                    this.checkLValSimple(node.id,this.strict || node.generator || node.async ? ( (this.treatFunctionsAsVar ? ( BIND_VAR ) : ( BIND_LEXICAL )) ) : ( BIND_FUNCTION ));
                 }
             }
             var oldYieldPos=this.yieldPos;
@@ -2494,7 +2495,7 @@
             this.exprAllowed=true;
         };
         types$1.parenL.updateContext=function(prevType){
-            var statementParens = ((prevType === types$1._if || prevType === types$1._for || prevType === types$1._with)) || prevType === types$1._while;
+            var statementParens = prevType === types$1._if || prevType === types$1._for || prevType === types$1._with || prevType === types$1._while;
             this.context.push(statementParens ? ( types.p_stat ) : ( types.p_expr ));
             this.exprAllowed=true;
         };
@@ -2758,7 +2759,7 @@
             if(this.checkExpressionErrors(refDestructuringErrors)){
                 return expr;
             }
-            return((expr.start === startPos && expr.type === "ArrowFunctionExpression") ? ( expr ) : ( this.parseExprOp(expr,startPos,startLoc,-1,forInit) ));
+            return(expr.start === startPos && expr.type === "ArrowFunctionExpression" ? ( expr ) : ( this.parseExprOp(expr,startPos,startLoc,-1,forInit) ));
         };
         /*
           ✍ Parse binary operators with the operator precedence parsing
@@ -2895,7 +2896,7 @@
             return result;
         };
         pp$5.parseSubscripts=function(base,startPos,startLoc,noCalls,forInit){
-            var maybeAsyncArrow = ((this.options.ecmaVersion >= 8 && base.type === "Identifier" && base.name === "async" && this.lastTokEnd === base.end && !(this.canInsertSemicolon()) && base.end - base.start === 5)) && this.potentialArrowAt === base.start;
+            var maybeAsyncArrow = this.options.ecmaVersion >= 8 && base.type === "Identifier" && base.name === "async" && this.lastTokEnd === base.end && !(this.canInsertSemicolon()) && base.end - base.start === 5 && this.potentialArrowAt === base.start;
             var optionalChained=false;
             while(true){
                 var element = this.parseSubscript(base,startPos,startLoc,noCalls,maybeAsyncArrow,optionalChained,forInit);
@@ -3514,7 +3515,7 @@
                     prop.computed=false;
                 }
             }
-            return(prop.key=(this.type === types$1.num || this.type === types$1.string) ? ( this.parseExprAtom() ) : ( this.parseIdent(this.options.allowReserved !== "never") ));
+            return(prop.key=this.type === types$1.num || this.type === types$1.string ? ( this.parseExprAtom() ) : ( this.parseIdent(this.options.allowReserved !== "never") ));
         };
         /* ✍ Initialize empty function node. */
         pp$5.initFunction=function(node){
@@ -4085,7 +4086,7 @@
                 return c;
             }
             var next = s.charCodeAt(i + 1);
-            return((next >= 0xDC00 && next <= 0xDFFF) ? ( (c << 10) + next - 0x35FDC00 ) : ( c ));
+            return(next >= 0xDC00 && next <= 0xDFFF ? ( (c << 10) + next - 0x35FDC00 ) : ( c ));
         };
         RegExpValidationState.prototype.nextIndex=function nextIndex(i,forceU){
             if(forceU === void(0)){
@@ -4665,7 +4666,8 @@
             return false;
         };
         pp$1.regexp_eatZero=function(state){
-            if(state.current() === 0x30 && !(isDecimalDigit( /*  0  */ state.lookahead()))){
+            if(state.current() === 0x30 && !(isDecimalDigit(state.lookahead()))){
+                /* 0 */
                 state.lastIntValue=0;
                 state.advance();
                 return true;
@@ -5529,7 +5531,7 @@
                 return code;
             }
             var next = this.input.charCodeAt(this.pos + 1);
-            return((next <= 0xdbff || next >= 0xe000) ? ( code ) : ( (code << 10) + next - 0x35fdc00 ));
+            return(next <= 0xdbff || next >= 0xe000 ? ( code ) : ( (code << 10) + next - 0x35fdc00 ));
         };
         pp.skipBlockComment=function(){
             var startLoc = this.options.onComment && this.curPosition();
@@ -5733,7 +5735,7 @@
             var next = this.input.charCodeAt(this.pos + 1);
             var size=1;
             if(next === code){
-                size=(code === 62 && this.input.charCodeAt(this.pos + 2) === 62) ? ( 3 ) : ( 2 );
+                size=code === 62 && this.input.charCodeAt(this.pos + 2) === 62 ? ( 3 ) : ( 2 );
                 if(this.input.charCodeAt(this.pos + size) === 61){
                     return(this.finishOp(types$1.assign,size + 1));
                 }
@@ -5995,7 +5997,7 @@
             var start=this.pos;
             var total=0;
             var lastCode=0;
-            for( var i=0,e = len == null ? ( Infinity ) : ( len ) ; i < e ; ++i,++this.pos ){
+            for( var i=0,e = len == null ? ( Infinity ) : ( len ) ; i < e ; ++i , ++this.pos ){
                 var code = this.input.charCodeAt(this.pos);
                 var val = void(0);
                 if(allowSeparators && code === 95){

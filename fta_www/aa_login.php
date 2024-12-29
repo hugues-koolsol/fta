@@ -51,21 +51,21 @@ if((isset($_POST)) && (count($_POST) > 0)){
            conditions(egal(champ(`T0` , `chp_nom_de_connexion_utilisateur`) , :nom_de_connexion)),
            complements(limité_à(quantité(1) , début(0)))
           )          
-          ===========================================================================*/
+          ===========================================================================
+        */
         sql_inclure_reference(1);
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_1.php');
         /*
-        SELECT 
-        `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
-         FROM b1.tbl_utilisateurs T0
-        WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion  
-       
-         LIMIT 1 OFFSET 0 ;
-
+          SELECT 
+          `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
+          FROM b1.tbl_utilisateurs T0
+          WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion  
+          
+          LIMIT 1 OFFSET 0 ;
+          
         */
         /*sql_inclure_fin*/
-        
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
 
         if($sql1[__xst] !== true){
@@ -91,7 +91,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*10+20));
             $_SESSION[APP_KEY]['__filtres']=array();
             $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
-            $_SESSION[APP_KEY]['__parametres_utilisateurs']=(($sql1[__xva][0]['T0.chp_parametres_utilisateur'] !== '')?json_decode($sql1[__xva][0]['T0.chp_parametres_utilisateur'],true):array());
+            $_SESSION[APP_KEY]['__parametres_utilisateurs']=($sql1[__xva][0]['T0.chp_parametres_utilisateur'] !== ''?json_decode($sql1[__xva][0]['T0.chp_parametres_utilisateur'],true):array());
             ajouterMessage('info',__LINE__.' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
 
@@ -205,7 +205,6 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 <script type="text/javascript">
 //<![CDATA[
 //<source_javascript_rev>
-
 "use strict";
 /*
   normalement j'évite de mettre du js dans du php mais pour l'exemple, je le fais ici
@@ -232,10 +231,10 @@ function verifier_formulaire_avant_envoi(){
 var myURL=window.location.href;
 if(myURL.indexOf('?raz1') >= 0 || myURL.indexOf('&raz1') >= 0){
     setTimeout(function(){
-    
-        document.getElementById('nom_de_connexion').value='';
-        document.getElementById('mot_de_passe').value='';
-        document.getElementById('nom_de_connexion').focus();},700);
+            document.getElementById('nom_de_connexion').value='';
+            document.getElementById('mot_de_passe').value='';
+            document.getElementById('nom_de_connexion').focus();
+        },700);
 }
 //</source_javascript_rev>
 //]]>

@@ -1,4 +1,5 @@
 "use strict";
+
 /*
   entête[
   ['id','id'                                 ,''], // 00
@@ -17,13 +18,13 @@
   ['com','commentaire'                       ,''],  
   
   ];
-*/
-/*
+  
+  
   =====================================================================================================================
 */
 function js_texte_convertit_texte_en_rev_racine(le_texte,niveau){
     var t = 'texte(`' + (le_texte.replace(/`/g,'\\`')) + '`)';
-    return({ "__xst" : true , "value" : t });
+    return({"__xst" : true ,"value" : t});
 }
 /*
   =====================================================================================================================
@@ -72,17 +73,17 @@ function convertir_tableau_rev_vers_texte1(tab,id,niveau){
                     if(objTexte.__xst === true){
                         t+=objTexte.value;
                     }else{
-                        return(logerreur({ "__xst" : false , "id" : i , "__xme" : '0070 erreur dans un texte' }));
+                        return(logerreur({"__xst" : false ,"id" : i ,"__xme" : '0070 erreur dans un texte'}));
                     }
                 }else{
-                    return(logerreur({ "__xst" : false , "id" : i , "__xme" : '0067seules les fonctions texte et # sont admises dans un texte' }));
+                    return(logerreur({"__xst" : false ,"id" : i ,"__xme" : '0067seules les fonctions texte et # sont admises dans un texte'}));
                 }
             }else if(tab[i][2] === 'c'){
                 /*
                   si c'est une constante, on ajoute le texte
                 */
                 if(tab[i][4] === 0){
-                    /* c'est une constante non quotée, on ne fait aucune transformation*/
+                    /* c'est une constante non quotée, on ne fait aucune transformation */
                     contenu=tab[i][1];
                 }else if(tab[i][4] === 1){
                     /* c'est une constante quotée par des apostrophes ['] */
@@ -102,5 +103,5 @@ function convertir_tableau_rev_vers_texte1(tab,id,niveau){
             }
         }
     }
-    return({ "__xst" : true , "value" : t });
+    return({"__xst" : true ,"value" : t});
 }

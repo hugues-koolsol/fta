@@ -1,4 +1,5 @@
 "use strict";
+
 /*
   =====================================================================================================================
 */
@@ -197,15 +198,7 @@ function sauvegardeTexteSource(){
         var nomDuSource = document.getElementById('nomDuSource').value;
         for( i=0 ; i < nomDuSource.length ; i=i + 1 ){
             c=nomDuSource.substr(i,1);
-            if(c == '/'
-             || c == '\\'
-             || c == ':'
-             || c == '*'
-             || c == '?'
-             || c == '"'
-             || c == '<'
-             || c == '>'
-             || c == '|'){
+            if(c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|'){
                 alert('Le caractère "' + c + '" n\'est pas autorisé ( tout comme /\\:*?"<>|');
                 return;
             }else{
@@ -215,14 +208,13 @@ function sauvegardeTexteSource(){
                 }
             }
         }
-        var ajax_param={ "call" : { "lib" : 'core' , "file" : 'file' , "funct" : 'sauvegarger_un_fichier_rev' } , "contenu_du_fichier" : document.getElementById('normalise').value , "file_name" : nomDuSource };
+        var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'sauvegarger_un_fichier_rev'} ,"contenu_du_fichier" : document.getElementById('normalise').value ,"file_name" : nomDuSource};
         async function sauvegarger_un_fichier_rev(url="",ajax_param){
             return(__gi1.recupérer_un_fetch(url,ajax_param));
         }
         sauvegarger_un_fichier_rev('za_ajax.php?sauvegarger_un_fichier_rev',ajax_param).then((donnees) => {
-                
                 if(donnees.__xst === true){
-                    logerreur({ "__xst" : true , "__xme" : '👍 fichier sauvegardé' });
+                    logerreur({"__xst" : true ,"__xme" : '👍 fichier sauvegardé'});
                 }
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource')
             });
@@ -331,21 +323,20 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
     }
     if(fichierAConcatener !== ''){
         var ajax_param={
-             "call" : { "lib" : 'core' , "file" : 'file' , "funct" : 'concatener_des_fichiers1' } ,
-             "file_name" : file_name ,
-             "file_extension" : file_extension ,
-             "file_path" : file_path ,
-             "fichierAConcatener" : fichierAConcatener ,
-             "tabConcatFichier" : tabConcatFichier 
+            "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'concatener_des_fichiers1'} ,
+            "file_name" : file_name ,
+            "file_extension" : file_extension ,
+            "file_path" : file_path ,
+            "fichierAConcatener" : fichierAConcatener ,
+            "tabConcatFichier" : tabConcatFichier
         };
         async function concatener_des_fichiers1(url="",ajax_param){
             return(__gi1.recupérer_un_fetch(url,ajax_param));
         }
         concatener_des_fichiers1('za_ajax.php?concatener_des_fichiers1',ajax_param).then((donnees) => {
-                
                 console.log(donnees);
                 if(donnees.__xst === true){
-                    logerreur({ "__xst" : true , "__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé' });
+                    logerreur({"__xst" : true ,"__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé'});
                     if(donnees.__entree.tabConcatFichier){
                         concateneFichiers(donnees.__entree.tabConcatFichier,donnees.__entree.file_name,donnees.__entree.file_extension,donnees.__entree.file_path);
                     }
@@ -361,7 +352,7 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
 function enregistrer2(){
     var sourcesCompactesIdentiques=false;
     var sourcesIdentiques=false;
-    var conversion={ "__xst" : false };
+    var conversion={"__xst" : false};
     document.getElementById('sauvegarderLeNormalise').disabled=true;
     document.getElementById('nomDuSource').disabled=true;
     __gi1.raz_des_messages();
@@ -400,10 +391,10 @@ function enregistrer2(){
             if(compacteOriginal.__xst == true && compacteReecrit.__xst === true){
                 if(compacteOriginal.__xva == compacteReecrit.__xva){
                     sourcesCompactesIdentiques=true;
-                    logerreur({ "__xst" : true , "__xme" : '<b>👍 sources compactés Egaux</b>' });
+                    logerreur({"__xst" : true ,"__xme" : '<b>👍 sources compactés Egaux</b>'});
                     var conversion = convertSource(matriceFonction);
                 }else{
-                    logerreur({ "__xst" : false , "__xme" : 'sources compactés différents' });
+                    logerreur({"__xst" : false ,"__xme" : 'sources compactés différents'});
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />o=' + compacteOriginal.__xva;
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
@@ -419,32 +410,34 @@ function enregistrer2(){
         zonedonneesComplementaires.appendChild(diResultatsCompactes);
         if(sourcesCompactesIdentiques){
             if(a.value == fonctionReecriteAvecRetour1.__xva.replace(/\r\n/g,'\n')){
-                logerreur({ "__xst" : true , "__xme" : '<b>👍👍 sources Egaux</b>' });
+                logerreur({"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'});
                 document.getElementById('sauvegarderLeNormalise').disabled=false;
                 document.getElementById('nomDuSource').disabled=false;
                 if(conversion.__xst == true){
                     global_messages.data.sourceGenere=conversion.__xva;
-                    var ajax_param={ "call" : { "lib" : 'core' , "file" : 'file' , "funct" : 'ecrire_fichier1' } , "contenu_du_fichier" : conversion.__xva , "file_name" : conversion.file_name , "file_extension" : conversion.file_extension , "file_path" : conversion.file_path };
+                    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'ecrire_fichier1'} ,"contenu_du_fichier" : conversion.__xva ,"file_name" : conversion.file_name ,"file_extension" : conversion.file_extension ,"file_path" : conversion.file_path};
                     async function ecrire_fichier1(url="",ajax_param){
                         return(__gi1.recupérer_un_fetch(url,ajax_param));
                     }
                     ecrire_fichier1('za_ajax.php?ecrire_fichier1',ajax_param).then((donnees) => {
-                            
                             if(donnees.__xst === true){
-                                logerreur({ "__xst" : true , "__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>' });
+                                logerreur({"__xst" : true ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'});
                                 if(conversion.tabConcatFichier.length > 0){
                                     concateneFichiers(conversion.tabConcatFichier,conversion.file_name,conversion.file_extension,conversion.file_path);
                                 }
                                 document.getElementById('sauvegarderLeNormalise').disabled=false;
                                 document.getElementById('nomDuSource').disabled=false;
                             }else{
-                                logerreur({ "__xst" : false , "__xme" : 'il y a eu un problème d\'écriture sur disque' });
+                                logerreur({"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'});
                             }
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource')
                         });
                 }
             }else{
-                logerreur({ "__xst" : false , "__xme" : 'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  ' });
+                logerreur({
+                        "__xst" : false ,
+                        "__xme" : 'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '
+                    });
             }
         }
     }
@@ -556,12 +549,11 @@ function chargerFichierRev(nomFichierSource){
     document.getElementById('nomDuSource').disabled=true;
     document.getElementById('normalise').value='';
     document.getElementById('zonesource').value='';
-    var ajax_param={ "call" : { "lib" : 'core' , "file" : 'file' , "funct" : 'charger_un_ficher_rev' , "opt" : { "delais_admis" : 1500 } } , "file_name" : nomFichierSource };
+    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_ficher_rev' ,"opt" : {"delais_admis" : 1500}} ,"file_name" : nomFichierSource};
     async function charger_fichier_rev1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
     charger_fichier_rev1('za_ajax.php?charger_un_ficher_rev',ajax_param).then((donnees) => {
-            
             if(donnees.__xst === true){
                 localStorage.setItem("fta_dernier_fichier_charge",donnees.__entree.file_name);
                 var zoneSource = document.getElementById('zonesource');
@@ -587,9 +579,8 @@ function initialisation_page_rev(par){
     async function charger_la_liste_des_sources1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
-    var ajax_param={ "call" : { "lib" : 'core' , "file" : 'file' , "funct" : 'getRevFiles' } };
+    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
     charger_la_liste_des_sources1('za_ajax.php?getRevFiles',ajax_param).then((donnees) => {
-            
             if(donnees.__xst == true){
                 var fta_dernier_fichier_charge = localStorage.getItem('fta_dernier_fichier_charge');
                 var trouve='';

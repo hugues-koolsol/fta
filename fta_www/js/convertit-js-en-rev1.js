@@ -1368,11 +1368,14 @@ function traiteCallExpression1(element,niveau,parent,opt){
                         /* a['Symbol.iterator'](); => appelf(nomf(tableau(nomt(a),p('element.callee.property')))) */
                         if(element.callee.object.type === 'Identifier'){
                             if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
-                                t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.raw + '))))';
+                                t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.raw + ')))' + lesArguments + le_contenu + ')';
                             }else{
                                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1411 ' ,"element" : element}));
                             }
                         }
+                    }else if(element.callee.property.type === 'Identifier' && element.callee.hasOwnProperty('computed') && element.callee.computed === true){
+                        /* a[b](x) */
+                        t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.name + ')))' + lesArguments + le_contenu + ')';
                     }else{
                         t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
                     }

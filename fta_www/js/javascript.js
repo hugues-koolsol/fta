@@ -1,4 +1,5 @@
 "use strict";
+
 /*
   =====================================================================================================================
   point d'entrée parseJavascript0
@@ -177,9 +178,8 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         t+=espcLigne;
                         var objOperation = TraiteOperations2(tab,tab[i+1][0],niveau,0);
                         if(objOperation.__xst === true){
-                            if(objOperation.__xva.substr(objOperation.__xva.length-1,1)===';'){
-
-                             objOperation.__xva=objOperation.__xva.substr(0,objOperation.__xva.length-1);
+                            if(objOperation.__xva.substr(objOperation.__xva.length - 1,1) === ';'){
+                                objOperation.__xva=objOperation.__xva.substr(0,objOperation.__xva.length - 1);
                             }
                             t+='return(' + objOperation.__xva + ')' + terminateur;
                         }else{
@@ -310,9 +310,8 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     }
                     t+=obj.__xva + obj.arguments_a_ajouter_au_retour + terminateur;
                 }else{
-
-                    if(terminateur===';' && obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
-                        t+=obj.__xva ;
+                    if(terminateur === ';' && obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
+                        t+=obj.__xva;
                     }else{
                         t+=obj.__xva + terminateur;
                     }
@@ -1228,17 +1227,14 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
             }
         }else if("" === tab[i][1] && tab[i][2] === 'f'){
             /* un bloc, ça arrive de temps en temps */
-            var obj=js_tabTojavascript1(tab,id+1,false,false,niveau+1,false)
+            var obj = js_tabTojavascript1(tab,id + 1,false,false,niveau + 1,false);
             if(obj.__xst === true){
-                t+=espcLigne+'{'+obj.__xva+espcLigne+'}';
+                t+=espcLigne + '{' + obj.__xva + espcLigne + '}';
             }else{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'javascript.js traitement bloc ' + (JSON.stringify(tab[i]))}));
             }
-            
-            
         }else if(tab[i][2] === 'c'){
             t+=ma_cst_pour_javascript(tab[i]);
-            
         }else{
             /* en dernier lieu, on teste une opération */
             var objOperation = TraiteOperations2(tab,i,niveau + 1,0);
@@ -1249,6 +1245,10 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 ){
                     t+=objOperation.__xva;
                 }else{
+                    if(terminateur===';'){
+                        /* de temps en temps, on a une opération directe comme par exemple : aa && b(); */
+                        t+=espcLigne;
+                    }
                     t+=objOperation.__xva + terminateur;
                 }
             }else{
@@ -1750,25 +1750,25 @@ function js_traiteInstruction1(tab,niveau,id){
                 }
                 break;
                 
-            case 'declare_variable' :
+            case 'declare_variable' : 
             case 'declare_constante' :
                 var type='';
-                if(tab[id][1]==='declare_constante'){
-                  type='const'
+                if(tab[id][1] === 'declare_constante'){
+                    type='const';
                 }else{
-                  type='let'
+                    type='let';
                 }
                 if(tab[tab[id][7]][1] === 'de'){
                     for( var j = id + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][2] === 'c'){
-                            return({"__xst" : true ,"__xva" : type+' ' + (ma_cst_pour_javascript(tab[j]))});
+                            return({"__xst" : true ,"__xva" : type + ' ' + (ma_cst_pour_javascript(tab[j]))});
                         }
                     }
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1717 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
                 }else if(tab[tab[id][7]][1] === 'dans'){
                     for( var j = id + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][2] === 'c'){
-                            return({"__xst" : true ,"__xva" : type+' ' + (ma_cst_pour_javascript(tab[j]))});
+                            return({"__xst" : true ,"__xva" : type + ' ' + (ma_cst_pour_javascript(tab[j]))});
                         }
                     }
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2439 erreur sur js_traiteInstruction1 pour ' + tab[id][1]}));
@@ -1821,10 +1821,9 @@ function js_traiteDefinitionClasse(tab,id,niveau){
                 }
             }
         }else if(tab[i][1] === 'contenu' && tab[i][2] === 'f'){
-            if(tab[i][8]===0){
+            if(tab[i][8] === 0){
                 contenu_classe+='';
             }else{
-            
                 var obj = js_tabTojavascript1(tab,i + 1,false,false,niveau + 1);
                 if(obj.__xst === true){
                     contenu_classe+=obj.__xva;
@@ -2035,9 +2034,9 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 nomFonction=tab[j+2][1];
             }else if(tab[j+1][1] === 'appelf' && tab[j+1][2] === 'f'){
                 var obj1 = js_traiteAppelFonction(tab,j + 1,true,niveau,true,nom_de_la_fonction_parente);
-                if(obj1.__xst === true){                 
-                    if(obj1.__xva.substr(obj1.__xva.length-1,1)===';'){
-                        obj1.__xva=obj1.__xva.substr(0,obj1.__xva.length-1);
+                if(obj1.__xst === true){
+                    if(obj1.__xva.substr(obj1.__xva.length - 1,1) === ';'){
+                        obj1.__xva=obj1.__xva.substr(0,obj1.__xva.length - 1);
                     }
                     nomFonction=obj1.__xva;
                     enfantTermineParUnePropriete=obj1.termineParUnePropriete;
@@ -2207,7 +2206,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     }
                 }
             }else if(tab[j][1] === 'p'){
-                if(tab[j][8] === 0 ){
+                if(tab[j][8] === 0){
                     argumentsFonction+=',';
                 }else if(tab[j][8] === 1 && tab[j+1][2] === 'c'){
                     argumentsFonction+=',' + (ma_cst_pour_javascript(tab[j+1]));
@@ -2271,8 +2270,8 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                                 }else if(tab[k][2] === 'f' && tab[k][1] === 'appelf'){
                                     objOperation=js_traiteAppelFonction(tab,k,true,niveau,true,nomFonction);
                                     if(objOperation.__xst === true){
-                                        if(objOperation.__xva.substr(objOperation.__xva.length-1,1)===';'){
-                                            objOperation.__xva=objOperation.__xva.substr(0,objOperation.__xva.length-1);
+                                        if(objOperation.__xva.substr(objOperation.__xva.length - 1,1) === ';'){
+                                            objOperation.__xva=objOperation.__xva.substr(0,objOperation.__xva.length - 1);
                                         }
                                         argumentsFonction+=objOperation.__xva;
                                     }else{
@@ -2331,6 +2330,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     'fromCodePoint',
                     'getAttribute',
                     'getBBox',
+                    'has',
                     'hasOwnProperty',
                     'includes',
                     'indexOf',
@@ -2465,7 +2465,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
             }
         }
     }
-    if(nomFonction === 'function' || (nomFonction === '' && flechee ===true )){
+    if(nomFonction === 'function' || nomFonction === '' && flechee === true){
         var espaces_avant_contenu = espacesn(true,niveau);
         if(contenu.substr(0,2) === CRLF){
             espaces_avant_contenu='';
@@ -2833,8 +2833,8 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                 }
             }
         }else if(tab[i][1] === '' || tab[i][1] === 'condition'){
-            if(tab[i][8]===0){
-                    t+='';
+            if(tab[i][8] === 0){
+                t+='';
             }else{
                 var objOperation = TraiteOperations2(tab,i,niveau,niveauOp + 1);
                 if(objOperation.__xst === true){

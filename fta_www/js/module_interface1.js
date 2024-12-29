@@ -205,8 +205,8 @@ class interface1{
       function recupérer_un_fetch
     */
     async recupérer_un_fetch(url,donnees){
-        var delais_admis = (donnees.call.opt && donnees.call.opt.delais_admis) ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur = (donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur')) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
+        var delais_admis = donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
+        var masquer_les_messages_du_serveur = donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
             "signal" : AbortSignal.timeout(delais_admis) ,
             "method" : "POST" ,
@@ -1211,7 +1211,7 @@ class interface1{
             return((-(c)) / 2 * (t * (t - 2) - 1) + b);
         };
         var element=document.scrollingElement;
-        var positionDeDepart = ((element && element.scrollTop)) || window.pageYOffset;
+        var positionDeDepart = element && element.scrollTop || window.pageYOffset;
         var change = destination - positionDeDepart;
         var increment=20;
         var tempsCourant=0;
