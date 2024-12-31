@@ -1844,7 +1844,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(element.arguments[i].value){
                 obj=this.#traite_element(element.arguments[i].value,niveau,element,tab_comm);
                 if(obj.__xst === true){
-                    valeur_par_defaut=', valeur_defaut( ' + obj.__xva + ' )';+('argument()');
+                    valeur_par_defaut=', valeur_defaut( ' + obj.__xva + ' )';
                 }else{
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1514 #traite_arguments' ,"element" : element}));
                 }

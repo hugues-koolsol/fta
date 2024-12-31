@@ -6,6 +6,7 @@
 class interface1{
     #nom_de_la_variable='';
     #nom_div_des_messages1='';
+    #div_des_positions_du_curseur=null;
     /*
       à priori, les ascenseurs "thin" font 11px de large
     */
@@ -58,6 +59,12 @@ class interface1{
                     e.target.close();
                 }
             });
+        this.#div_des_positions_du_curseur=document.createElement('div');
+        this.#div_des_positions_du_curseur.id='div_des_positions_du_curseur';
+        this.#div_des_positions_du_curseur.setAttribute('style', 'position:absolute;top:60px;left:0px;background:white;display:inline-block;min-height:12px!important;line-height:12px;');
+        this.#div_des_positions_du_curseur.innerHTML='hello';
+        
+        document.getElementsByTagName('body')[0].appendChild(this.#div_des_positions_du_curseur);
     }
     /* function nom_de_la_variable */
     get nom_de_la_variable(){
@@ -446,7 +453,9 @@ class interface1{
         var resultat = window.prompt('aller à la position',1);
         if(resultat && isNumeric(resultat)){
             var a = document.getElementById(nom_textarea);
-            a.rows="100";
+            if(a.rows<10 || a.getBoundingClientRect().height<160){
+                a.rows="100";
+            }
             a.focus();
             a.selectionStart=0;
             a.selectionEnd=resultat;
@@ -1733,6 +1742,12 @@ class interface1{
         var tabtext=[];
         var elem=this.#global_tableau_des_textareas[e.target.id];
         var zoneSource = document.getElementById(e.target.id);
+        
+        this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
+        var ttt=zoneSource.getBoundingClientRect();
+        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10)+document.documentElement.scrollTop-10)+'px';
+        this.#div_des_positions_du_curseur.style.left=(document.documentElement.scrollLeft)+'px';
+        
         if(e.keyCode === 36){
             /* touche home : on décale le scroll au début et toute la page aussi */
             zoneSource.scrollTo({"left" : 0});

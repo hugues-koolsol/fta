@@ -1618,7 +1618,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
                     if(obj1.__xva.substr(0,6) === 'appelf'){
                         console.log('%cajouter des parenthèses ','color:red;background:yellow;','element.callee=',element.callee);
                         /* cas (function() {var g=1;})(); */
-                        t+='(appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + '))';
+                        t+='appelf(#(auto_appelee(1)),auto_appelee(1),nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
                     }else{
                         t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + ')';
                     }
@@ -3560,9 +3560,7 @@ function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2(nom_de_l
         tabComment=[];
         var obj = parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
         if(obj === ''){
-            t='';
         }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
-            t='';
         }else{
             var obj1 = TransformAstEnRev(obj.body,0);
             if(obj1.__xst === true){
