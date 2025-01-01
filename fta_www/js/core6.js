@@ -1743,7 +1743,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   
                   
                 */
-                posOuvPar=i;
+                posOuvPar=tableauEntree[i][2];
                 if(texte === DEBUTCOMMENTAIRE){
                     dsComment=true;
                     niveauDebutCommentaire=niveau;
@@ -1813,7 +1813,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte='';
                 }else{
                     /*
-                      à faire éventuellement, : parentèse fermante avec un virgule avant : x(a,) 
+                      à faire éventuellement, : parenthèse fermante avec un virgule avant : x(a,) 
                       ce n'est pas réellement à traiter car la virgule sera supprimée silencieusement
                       mais on peut éventuellement le signaler ... à voir
                     */

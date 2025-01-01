@@ -101,14 +101,14 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
     $GLOBALS[__entree]=$ret[__entree];
 
-    if((isset($ret[__entree]['call']['funct'])) && ($ret[__entree]['call']['lib'] != '') && ($ret[__entree]['call']['file'] != '') && ($ret[__entree]['call']['funct'] != '')){
+    if((isset($ret[__entree]['call']['funct'])) && ($ret[__entree]['call']['lib'] !== '') && ($ret[__entree]['call']['file'] !== '') && ($ret[__entree]['call']['funct'] !== '')){
 
         define('BNF','/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
 
         if(!(is_file(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php'))){
 
             $ret[__xst]=false;
-            $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'Ajax file not founded : "'.INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/ajax_'.$ret[__entree]['call']['funct'].'.php"';
+            $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'programme ajan non trouvé : "'.INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/ajax_'.$ret[__entree]['call']['funct'].'.php"';
 
         }else{
 
@@ -120,12 +120,13 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
             }
 
 
-            if($ret[__entree]['call']['funct'] != ''){
+            if($ret[__entree]['call']['funct'] !== ''){
 
 
                 if(true === checkGroupAjaxPages()){
 
                     require_once(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
+                    /* appel d'une fonction dont le nom est "$ret[__entree]['call']['funct']" avec comme paramètre : "$ret" */
                     $ret[__entree]['call']['funct']($ret);
 
                 }
@@ -135,7 +136,8 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
 
 
                 if(true === checkGroupAjaxPages()){
-
+                 
+                    /* inclusion d'un fichier */
                     require_once(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
 
                 }
@@ -148,14 +150,14 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
     }else{
 
         $ret[__xst]=false;
-        $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'funct or lib is not defined in the input parameters : "'.var_export($ret[__entree],true).'"';
+        $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "'.var_export($ret[__entree],true).'"';
     }
 
 
 }else{
 
     $ret[__xst]=false;
-    $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'post ajax_param is not defined : "'.var_export($_POST,true).'"';
+    $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'ajax_param est absent : "'.var_export($_POST,true).'"';
 }
 
 header('Content-Type: application/json; charset=utf-8');

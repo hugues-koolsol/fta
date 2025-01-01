@@ -1861,7 +1861,7 @@ function js_traiteDefinitionObjet(tab,id,dansConditionOuDansFonction,niveau){
                             return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'dans js_traiteDefinitionObjet il y a un problème'}));
                         }
                     }else if(tab[j+2][1] === 'new'){
-                        obj=js_traite_new(tab,j + 2,true,niveau + 1,false,'');
+                        obj=js_traite_new(tab,j + 2,niveau + 1);
                         if(obj.__xst === true){
                             valeur=obj.__xva;
                             tableau_prop_objet.push({"type" : 'cv' ,"cle" : tab[j+1][1] ,"valeur" : valeur});

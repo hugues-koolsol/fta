@@ -533,6 +533,9 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
     }else{
         return(astphp_logerreur({"__xst" : false ,"__xme" : '0507  erreur php_traite_Stmt_ClassMethod element.flags=' + element.flags ,"element" : element}));
     }
+    if(type_retour !== ''){
+        t+='\n' + esp0 + esp1 + 'type_retour(\'' + (type_retour.replace(/\\/g,'\\\\')) + '\'),';
+    }
     t+='\n' + esp0 + esp1 + '),';
     if(element.stmts && element.stmts.length > 0){
         var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false,false,options_traitement);
@@ -541,9 +544,6 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
         }else{
             return(astphp_logerreur({"__xst" : false ,"__xme" : '0514  erreur php_traite_Stmt_ClassMethod ' ,"element" : element}));
         }
-    }
-    if(type_retour !== ''){
-        t+='\n' + esp0 + esp1 + 'type_retour(\'' + (type_retour.replace(/\\/g,'\\\\')) + '\'),';
     }
     if(contenu !== ''){
         t+='\n' + esp0 + esp1 + 'contenu(' + contenu + ')';
@@ -765,6 +765,9 @@ function php_traite_Expr_New(element,niveau){
                     return(astphp_logerreur({"__xst" : false ,"__xme" : '0599  erreur php_traite_Expr_New ' ,"element" : element}));
                 }
             }
+        }
+        if(lesArgumentsDeLaClass===''){
+            lesArgumentsDeLaClass=',sans_arguments()';
         }
         if(nomClasse.indexOf('\\') >= 0){
             if(qualif_totale === true){

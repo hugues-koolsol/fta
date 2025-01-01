@@ -26,7 +26,7 @@
 function chargerSourceDeTest(){
     var t=`#( début aaaa  debut),
 a(
-  #(test , 👍),
+  #(test , 👍,𤭢),
   b(
     xx(
       y(

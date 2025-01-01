@@ -39,7 +39,7 @@ class interface1{
         ['nuE','numéro enfants',9],
         ['pro','profondeur',10],
         ['pop','position ouverture parenthese',11],
-        ['pfp','enfant suivant',12],
+        ['efs','enfant suivant',12],
         ['com','commentaire',13]
     ];
     /*
@@ -63,7 +63,6 @@ class interface1{
         this.#div_des_positions_du_curseur.id='div_des_positions_du_curseur';
         this.#div_des_positions_du_curseur.setAttribute('style', 'position:absolute;top:60px;left:0px;background:white;display:inline-block;min-height:12px!important;line-height:12px;');
         this.#div_des_positions_du_curseur.innerHTML='hello';
-        
         document.getElementsByTagName('body')[0].appendChild(this.#div_des_positions_du_curseur);
     }
     /* function nom_de_la_variable */
@@ -1717,6 +1716,11 @@ class interface1{
       =============================================================================================================
     */
     #mouse_up_sur_editeur1(e){
+        var zoneSource = document.getElementById(e.target.id);
+        this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
+        var ttt=zoneSource.getBoundingClientRect();
+        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10)+document.documentElement.scrollTop-10)+'px';
+        this.#div_des_positions_du_curseur.style.left=(document.documentElement.scrollLeft)+'px';
         return false;
     }
     /*
@@ -1823,9 +1827,7 @@ class interface1{
             id_de_la_text_area=obj;
         }
         this.#global_tableau_des_textareas[id_de_la_text_area]={"mode" : mode ,"mon_decallage_haut" : 0};
-        /*
-          document.getElementById(id_de_la_text_area).addEventListener('mouseup',this.#mouse_up_sur_editeur1.bind(this));
-        */
+        document.getElementById(id_de_la_text_area).addEventListener('mouseup',this.#mouse_up_sur_editeur1.bind(this));
         document.getElementById(id_de_la_text_area).addEventListener('keydown',this.#keydown_sur_editeur1.bind(this));
         document.getElementById(id_de_la_text_area).addEventListener('keyup',this.#analyse_key_up_editeur1.bind(this));
         /*

@@ -90,13 +90,6 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
 function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_source,chp_rev_source){
     __gi1.raz_des_messages();
     var a = document.getElementById(chp_genere_source);
-    /*
-      var obj = transform_source_js_en_rev_avec_acorn(a.value,{"nom_de_la_text_area_source" : chp_genere_source,"nom_de_la_text_area_rev" : chp_rev_source});
-      if(obj.__xst === true){
-      }else{
-      astjs_logerreur({"__xst" : false,"__xme" : '2446 erreur '});
-      }
-    */
     var parseur_javascript=window.acorn.Parser;
     try{
         tabComment=[];
@@ -110,12 +103,13 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
         }
     }catch(e){
-        console.error('e=',e);
+        /* console.error('e=',e); */
         if(e.pos){
-            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+            logerreur({"__xst" : false ,"__xme" : '0115 erreur dans un source javascript' ,"plage" : [e.pos,e.pos]});
         }else{
-            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3443'});
+            logerreur({"__xst" : false ,"__xme" : '0117 erreur dans un source javascript'});
         }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','chp_genere_source');
     }
 }
 /*
