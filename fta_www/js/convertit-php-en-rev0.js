@@ -515,32 +515,33 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
     }
     t+=lesArguments;
     if(element.flags === 18){
-        t+='\n' + esp0 + esp1 + esp1 + 'abstraite(),';
-        t+='\n' + esp0 + esp1 + esp1 + 'protégée(),';
+        t+='\n' + esp0 + esp1 + esp1 + 'abstraite()';
+        t+='\n' + esp0 + esp1 + esp1 + 'protégée()';
     }else if(element.flags === 12){
-        t+='\n' + esp0 + esp1 + esp1 + 'privée(),';
-        t+='\n' + esp0 + esp1 + esp1 + 'statique(),';
+        t+='\n' + esp0 + esp1 + esp1 + 'privée()';
+        t+='\n' + esp0 + esp1 + esp1 + 'statique()';
     }else if(element.flags === 9){
-        t+='\n' + esp0 + esp1 + esp1 + 'publique(),';
+        t+='\n' + esp0 + esp1 + esp1 + 'publique()';
         t+='\n' + esp0 + esp1 + esp1 + 'statique(),';
     }else if(element.flags === 4){
-        t+='\n' + esp0 + esp1 + esp1 + 'privée(),';
+        t+='\n' + esp0 + esp1 + esp1 + 'privée()';
     }else if(element.flags === 2){
-        t+='\n' + esp0 + esp1 + esp1 + 'protégée(),';
+        t+='\n' + esp0 + esp1 + esp1 + 'protégée()';
     }else if(element.flags === 1){
-        t+='\n' + esp0 + esp1 + esp1 + 'publique(),';
+        t+='\n' + esp0 + esp1 + esp1 + 'publique()';
     }else if(element.flags === 0){
     }else{
         return(astphp_logerreur({"__xst" : false ,"__xme" : '0507  erreur php_traite_Stmt_ClassMethod element.flags=' + element.flags ,"element" : element}));
     }
     if(type_retour !== ''){
-        t+='\n' + esp0 + esp1 + 'type_retour(\'' + (type_retour.replace(/\\/g,'\\\\')) + '\'),';
+        t+='\n' + esp0 + esp1 + ',type_retour(\'' + (type_retour.replace(/\\/g,'\\\\')) + '\')';
     }
     t+='\n' + esp0 + esp1 + '),';
     if(element.stmts && element.stmts.length > 0){
         var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false,false,options_traitement);
         if(obj.__xst === true){
             contenu+=obj.__xva;
+
         }else{
             return(astphp_logerreur({"__xst" : false ,"__xme" : '0514  erreur php_traite_Stmt_ClassMethod ' ,"element" : element}));
         }
@@ -549,6 +550,30 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
         t+='\n' + esp0 + esp1 + 'contenu(' + contenu + ')';
     }
     t+='\n' + esp0 + ')';
+    return({"__xst" : true ,"__xva" : t});
+}
+
+/*
+  =====================================================================================================================
+*/
+function php_traite_Stmt_Static(element,niveau){
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
+    var esp1 = ' '.repeat(NBESPACESREV);
+    if(element.vars && element.vars.length>0){
+        for(var i=0;i<element.vars.length;i++){
+            var obj = php_traite_Stmt_Expression(element.vars[i],niveau,false,element);
+            if(obj.__xst === true){
+                t+=obj.__xva;
+            }else{
+                return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Stmt_Function ' ,"element" : element}));
+            }
+        }
+        
+    }else{
+        return(astphp_logerreur({"__xst" : false ,"__xme" : '0564  erreur php_traite_Stmt_Static ' ,"element" : element}));
+    }
+
     return({"__xst" : true ,"__xva" : t});
 }
 /*
@@ -575,6 +600,8 @@ function php_traite_Expr_Closure(element,niveau){
     var lesArguments='';
     var les_utilisations='';
     var contenu='';
+    var type_retour='';
+
     if(element.params && element.params.length > 0){
         var i=0;
         for( i=0 ; i < element.params.length ; i++ ){
@@ -586,7 +613,7 @@ function php_traite_Expr_Closure(element,niveau){
                         if(obj.__xst === true){
                             lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Expr_Closure ' ,"element" : element}));
                         }
                     }
                     lesArguments+=')';
@@ -601,13 +628,13 @@ function php_traite_Expr_Closure(element,niveau){
                         if(obj.__xst === true){
                             lesArguments+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Expr_Closure ' ,"element" : element}));
                         }
                     }
                     lesArguments+=')';
                 }
             }else{
-                return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Expr_Closure ' ,"element" : element}));
             }
         }
         if(lesArguments.length > 1){
@@ -625,7 +652,7 @@ function php_traite_Expr_Closure(element,niveau){
                         if(obj.__xst === true){
                             les_utilisations+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Expr_Closure ' ,"element" : element}));
                         }
                     }
                     les_utilisations+=')';
@@ -640,13 +667,13 @@ function php_traite_Expr_Closure(element,niveau){
                         if(obj.__xst === true){
                             les_utilisations+=',valeur_defaut(' + obj.__xva + ')';
                         }else{
-                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Expr_Closure ' ,"element" : element}));
                         }
                     }
                     les_utilisations+=')';
                 }
             }else{
-                return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Expr_Closure ' ,"element" : element}));
             }
         }
     }
@@ -655,11 +682,26 @@ function php_traite_Expr_Closure(element,niveau){
         if(obj.__xst === true){
             contenu+=obj.__xva;
         }else{
-            return(astphp_logerreur({"__xst" : false ,"__xme" : '0587  erreur php_traite_Stmt_Function ' ,"element" : element}));
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '0587  erreur php_traite_Expr_Closure ' ,"element" : element}));
         }
     }
+    if(element.static !==false){
+        return(astphp_logerreur({"__xst" : false ,"__xme" : '0688  erreur php_traite_Expr_Closure ' ,"element" : element}));
+      
+    }
+    if(element.returnType){
+        var obj = php_traite_Stmt_Expression(element.returnType,niveau,false,element);
+        if(obj.__xst === true){
+            type_retour+=',type_retour(' + obj.__xva + ')';
+            
+        }else{
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Expr_Closure ' ,"element" : element}));
+        }
+    }
+    
     t='cloturée(';
     t+=lesArguments;
+    t+=type_retour;
     t+=les_utilisations;
     t+='\n' + esp0 + esp1 + 'contenu(\n';
     t+=contenu;
@@ -1197,7 +1239,11 @@ function php_traite_Expr_List(element,niveau){
 function php_traite_Expr_Array(element,niveau){
     var t='';
     var lesElements='';
+    var format_court='';
     if(element.items){
+        if(element.attributes.kind===2){
+            format_court='format_court(),';
+        }
         var i=0;
         for( i=0 ; i < element.items.length ; i++ ){
             if("ArrayItem" === element.items[i].nodeType){
@@ -1242,9 +1288,232 @@ function php_traite_Expr_Array(element,niveau){
             }
         }
     }
-    t+='defTab(' + lesElements + ')';
+    t+='defTab(' + format_court + lesElements + ')';
     return({"__xst" : true ,"__xva" : t});
 }
+
+/*
+  =====================================================================================================================
+*/
+
+function php_traite_chaine_raw(valeur_raw,element){
+    var t='';
+ 
+    var rv=valeur_raw;
+    var contenu = rv.substr(1,rv.length - 2);
+
+     /* si une chaine contient \\x, je préfère l'éclarter en \\'.'x */
+     
+    if(contenu.indexOf('\\\\o')>=0 ){
+        return(astphp_logerreur({"__xst" : false ,"__xme" : '1308 php_traite_chaine_raw TO DO ' ,"element" : element}));
+    }
+    if(contenu.indexOf('\\\\f')>=0 ){
+        return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 php_traite_chaine_raw TO DO ' ,"element" : element}));
+    }
+    
+    if(contenu.indexOf('\\\\x')>=0 ){
+        var caractere='';
+        if(rv.substr(0,1)==='\''){
+            var tableau=contenu.split('\\\\x');
+            /*
+             \\x     => ""   , ""    => '\\'   .'x'
+             aa\\x   => "aa" , ""    => 'aa'.'\\' .'x'
+             aa\\xaa => "aa" , "aa"  => 'aa\\' .'x' . 'aa'
+            */
+            var tableau_a_concatener=[];
+            for(var i=0;i<tableau.length;i++){
+                if(i===tableau.length-1){
+                    if(tableau[i]===''){
+                    }else{
+                        var tt=php_traite_chaine_raw("'"+tableau[i]+"'",element);
+                        tableau_a_concatener.push(tt);
+                    }
+                }else{
+                    if(tableau[i]===''){
+                        tableau_a_concatener.push("'\\\\'");
+                        tableau_a_concatener.push("'x'");
+                    }else{
+                        var tt=php_traite_chaine_raw("'"+tableau[i]+"'",element);
+                        tableau_a_concatener.push(tt);
+                        tableau_a_concatener.push("'\\\\'");
+                        tableau_a_concatener.push("'x'");
+                    }
+                }
+            }
+            t='concat('+tableau_a_concatener.join(',')+')';
+            return({__xst:true , __xva : t});
+        }else{
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 php_traite_chaine_raw TO DO ' ,"element" : element}));
+        }
+    }
+
+    
+    var probablement_dans_une_regex = valeur_raw.substr(1,1) === '/' ? ( true ) : ( false );
+    
+    
+    if(rv.substr(0,1) === '\''
+     && contenu.indexOf('\'') < 0
+     && contenu.indexOf('\\') < 0
+     || rv.substr(0,1) === '"'
+     && contenu.indexOf('"') < 0
+     && contenu.indexOf('\\') < 0
+    ){
+        /*
+          si c'est une chaine "simple" cad ne contenant ni terminateur ni antislash
+        */
+        t+=valeur_raw;
+    }else{
+        /*
+          en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
+          mais pour les fichiers rev, c'est pas excellent, 
+          on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
+          petite analyse et on remonte une erreur si on n'est pas dans ces cas
+        */
+        var l01 = rv.length - 2;
+        /*
+          la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
+          on les retire pour l'analyse, donc on part de l'avant dernier caractère 
+          et on redescend jusqu'à l'indice 1
+        */
+        var nouvelle_chaine='';
+        var i=l01;
+        for( i=l01 ; i > 0 ; i-- ){
+            if(rv.substr(i,1) === '\\'){
+                /* on remonte à partir du dernier caractère */
+                if(i === l01){
+                    /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
+                    if(rv.length > 2 && l01 > 1 && i > 1 && rv.substr(i - 1,1) === '\\'){
+                        nouvelle_chaine='\\\\';
+                        i--;
+                    }else{
+                        /* position du \ en dernier */
+                        return(astphp_logerreur({"__xst" : false ,"__xme" : '0925  une chaine ne doit pas contenir un simple \\ en dernière position  ' ,"element" : element}));
+                    }
+                }else{
+                    if(i > 1){
+                        /*
+                          si on est avant le dernier caractère;
+                        */
+                        if(rv.substr(i - 1,1) === '\\'){
+                            nouvelle_chaine='\\\\' + nouvelle_chaine;
+                            i--;
+                        }else{
+                            if(rv.substr(i + 1,1) === 'r'
+                             || rv.substr(i + 1,1) === 'n'
+                             || rv.substr(i + 1,1) === 't'
+                             || rv.substr(i + 1,1) === '\''
+                             || rv.substr(i + 1,1) === '.'
+                             || rv.substr(i + 1,1) === '-'
+                             || rv.substr(i + 1,1) === 'A'
+                             || rv.substr(i + 1,1) === '?'
+                             || rv.substr(i + 1,1) === 'd'
+                             || rv.substr(i + 1,1) === '/'
+                             || rv.substr(i + 1,1) === 'x'
+                             || rv.substr(i + 1,1) === 'o'
+                             || rv.substr(i + 1,1) === 'b'
+                             || rv.substr(i + 1,1) === 'B'
+                             || rv.substr(i + 1,1) === '"'
+                             || rv.substr(i + 1,1) === '$'
+                             || rv.substr(i + 1,1) === 'w'
+                             || rv.substr(i + 1,1) === 's'
+                             || rv.substr(i + 1,1) === 'z'
+                             || rv.substr(i + 1,1) === 'Z'
+                             || rv.substr(i + 1,1) === '('
+                             || rv.substr(i + 1,1) === ')'
+                             || rv.substr(i + 1,1) === '['
+                             || rv.substr(i + 1,1) === ']'
+                            ){
+                                if(rv.substr(i + 1,1) === 'r'
+                                 || rv.substr(i + 1,1) === 't'
+                                 || rv.substr(i + 1,1) === 'n'
+                                 || rv.substr(i + 1,1) === '\''
+                                 && rv.substr(0,1) === "'"
+                                 || rv.substr(i + 1,1) === '"'
+                                 && rv.substr(0,1) === '"'
+                                ){
+                                    nouvelle_chaine='\\' + nouvelle_chaine;
+                                }else{
+                                    nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                }
+                            }else{
+                                if(probablement_dans_une_regex === false){
+                                    if(i > 0 && rv.substr(i - 1,1) !== '\\'){
+                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                    }else{
+                                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                    }
+                                }else{
+                                    /* 
+                                      commenté car $regex='/\'|\\\\(?=[\'\\\\]|$)|(?<=\\\\)\\\/'; ne passait plus 
+                                      return(astphp_logerreur({"__xst" : false ,"__xme" : '0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                    */
+                                    if(i > 0 && rv.substr(i - 1,1) !== '\\'){
+                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                    }else{
+                                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                    }
+                                 
+                                }
+                            }
+                        }
+                    }else{
+                        /*
+                          si on est au premier caractère;
+                        */
+                        if(rv.substr(i,1) === '\\'){
+                            var c = nouvelle_chaine.substr(0,1);
+                            if(c === '.'
+                             || c === '-'
+                             || c === 'd'
+                             || c === 'f'
+                             || c === '/'
+                             || c === 'x'
+                             || c === 'o'
+                             || c === 'b'
+                             || c === 's'
+                             || c === '\\'
+                             || c === ']'
+                             || c === '['
+                             || c === '$'
+                             || c === '"'
+                             || c === 'N'
+                             || c === '{'
+                             && rv.substr(0,1) === '\''
+                            ){
+                                nouvelle_chaine='\\\\' + nouvelle_chaine;
+                            }else if(c === 'r' || c === 'n' || c === 't' || c === '\'' && rv.substr(0,1) === '\'' || c === '"' && rv.substr(0,1) === '"'){
+                                nouvelle_chaine='\\' + nouvelle_chaine;
+                            }else{
+                                return(astphp_logerreur({"__xst" : false ,"__xme" : '0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,"element" : element}));
+                            }
+                        }else{
+                            nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
+                        }
+                    }
+                }
+            }else if(rv.substr(i,1) === '\'' && rv.substr(0,1) === '\''){
+                if(i >= 2 && rv.substr(i - 1,1) === '\\'){
+                    nouvelle_chaine='\\\'' + nouvelle_chaine;
+                    i--;
+                }else{
+                    return(astphp_logerreur({"__xst" : false ,"__xme" : '0983 il doit y avoir un backslash avant un apostrophe ' ,"element" : element}));
+                }
+            }else if(rv.substr(i,1) === '"' && rv.substr(0,1) === '"'){
+                if(i >= 2 && rv.substr(i - 1,1) === '\\'){
+                    nouvelle_chaine='\\"' + nouvelle_chaine;
+                    i--;
+                }else{
+                    return(astphp_logerreur({"__xst" : false ,"__xme" : '0994 il doit y avoir un backslash avant un guillemet ' ,"element" : element}));
+                }
+            }else{
+                nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
+            }
+        }
+        t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
+    } 
+    return({__xst:true , __xva: t});
+}
+
 /*
   =====================================================================================================================
   =====================================================================================================================
@@ -1258,19 +1527,20 @@ function php_traite_Expr_Array(element,niveau){
   var comptage={};
 */
 function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traitement){
-    /*
+    /*#
+      // pour perf
       if( parent && parent.hasOwnProperty('nodeType')){
-      if(comptage.hasOwnProperty(element.nodeType+'___parent_'+parent.nodeType)){
-      comptage[element.nodeType+'___parent_'+parent.nodeType]++;
+          if(comptage.hasOwnProperty(element.nodeType+'___parent_'+parent.nodeType)){
+              comptage[element.nodeType+'___parent_'+parent.nodeType]++;
+          }else{
+              comptage[element.nodeType+'___parent_'+parent.nodeType]=1;
+          }
       }else{
-      comptage[element.nodeType+'___parent_'+parent.nodeType]=1;
-      }
-      }else{
-      if(comptage.hasOwnProperty(element.nodeType+'____pas_de_parent')){
-      comptage[element.nodeType+'_no_parent']++;
-      }else{
-      comptage[element.nodeType+'_no_parent']=1;
-      }
+          if(comptage.hasOwnProperty(element.nodeType+'____pas_de_parent')){
+              comptage[element.nodeType+'_no_parent']++;
+          }else{
+              comptage[element.nodeType+'_no_parent']=1;
+          }
       }
     */
     var t='';
@@ -1437,159 +1707,17 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 break;
                 
             case "Scalar_String" :
-                if(element.attributes.kind && (element.attributes.kind === 3 || element.attributes.kind === 4)){
+                if(element.attributes.kind && element.attributes.kind === 3 ){
+                    debugger
                     t+='heredoc(\'' + element.attributes.docLabel + '\',`\n' + (element.attributes.rawValue.replace(/`/g,'\\`')) + '`)';
+                }else if(element.attributes.kind && element.attributes.kind === 4 ){
+                    t+='nowdoc(\'' + element.attributes.docLabel + '\',`\n' + (element.attributes.rawValue.replace(/`/g,'\\`')) + '`)';
                 }else if(element.attributes.rawValue.substr(0,1) === '\'' || element.attributes.rawValue.substr(0,1) === '"'){
-                    var rv=element.attributes.rawValue;
-                    var contenu = rv.substr(1,rv.length - 2);
-                    if(rv.substr(0,1) === '\''
-                     && contenu.indexOf('\'') < 0
-                     && contenu.indexOf('\\') < 0
-                     || rv.substr(0,1) === '"'
-                     && contenu.indexOf('"') < 0
-                     && contenu.indexOf('\\') < 0
-                    ){
-                        /*
-                          si c'est une chaine "simple" cad ne contenant ni terminateur ni antislash
-                        */
-                        t+=element.attributes.rawValue;
+                    var obj=php_traite_chaine_raw(element.attributes.rawValue,element)
+                    if(obj.__xst===true){
+                        t+=obj.__xva;
                     }else{
-                        /*
-                          en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
-                          mais pour les fichiers rev, c'est pas excellent, 
-                          on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
-                          petite analyse et on remonte une erreur si on n'est pas dans ces cas
-                        */
-                        var l01 = rv.length - 2;
-                        var probablement_dans_une_regex = element.attributes.rawValue.substr(1,1) === '/' ? ( true ) : ( false );
-                        /*
-                          la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
-                          on les retire pour l'analyse, donc on part de l'avant dernier caractère 
-                          et on redescend jusqu'à l'indice 1
-                        */
-                        var nouvelle_chaine='';
-                        var i=l01;
-                        for( i=l01 ; i > 0 ; i-- ){
-                            if(rv.substr(i,1) === '\\'){
-                                /* on remonte à partir du dernier caractère */
-                                if(i === l01){
-                                    /* si le dernier caractère est un \ et que l'avant dernier est aussi un \, pas de problème */
-                                    if(rv.length > 2 && l01 > 1 && i > 1 && rv.substr(i - 1,1) === '\\'){
-                                        nouvelle_chaine='\\\\';
-                                        i--;
-                                    }else{
-                                        /* position du \ en dernier */
-                                        return(astphp_logerreur({"__xst" : false ,"__xme" : '0925  une chaine ne doit pas contenir un simple \\ en dernière position  ' ,"element" : element}));
-                                    }
-                                }else{
-                                    if(i > 1){
-                                        /*
-                                          si on est avant le dernier caractère;
-                                        */
-                                        if(rv.substr(i - 1,1) === '\\'){
-                                            nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                            i--;
-                                        }else{
-                                            if(rv.substr(i + 1,1) === 'r'
-                                             || rv.substr(i + 1,1) === 'n'
-                                             || rv.substr(i + 1,1) === 't'
-                                             || rv.substr(i + 1,1) === '\''
-                                             || rv.substr(i + 1,1) === '.'
-                                             || rv.substr(i + 1,1) === '-'
-                                             || rv.substr(i + 1,1) === 'A'
-                                             || rv.substr(i + 1,1) === '?'
-                                             || rv.substr(i + 1,1) === 'd'
-                                             || rv.substr(i + 1,1) === '/'
-                                             || rv.substr(i + 1,1) === 'x'
-                                             || rv.substr(i + 1,1) === 'o'
-                                             || rv.substr(i + 1,1) === 'b'
-                                             || rv.substr(i + 1,1) === 'B'
-                                             || rv.substr(i + 1,1) === '"'
-                                             || rv.substr(i + 1,1) === '$'
-                                             || rv.substr(i + 1,1) === 'w'
-                                             || rv.substr(i + 1,1) === 's'
-                                             || rv.substr(i + 1,1) === 'z'
-                                             || rv.substr(i + 1,1) === 'Z'
-                                             || rv.substr(i + 1,1) === '('
-                                             || rv.substr(i + 1,1) === ')'
-                                             || rv.substr(i + 1,1) === '['
-                                             || rv.substr(i + 1,1) === ']'
-                                            ){
-                                                if(rv.substr(i + 1,1) === 'r'
-                                                 || rv.substr(i + 1,1) === 't'
-                                                 || rv.substr(i + 1,1) === 'n'
-                                                 || rv.substr(i + 1,1) === '\''
-                                                 && rv.substr(0,1) === "'"
-                                                 || rv.substr(i + 1,1) === '"'
-                                                 && rv.substr(0,1) === '"'
-                                                ){
-                                                    nouvelle_chaine='\\' + nouvelle_chaine;
-                                                }else{
-                                                    nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                                }
-                                            }else{
-                                                if(probablement_dans_une_regex === false){
-                                                    if(i > 0 && rv.substr(i - 1,1) !== '\\'){
-                                                        nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                                    }else{
-                                                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1494 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
-                                                    }
-                                                }else{
-                                                    return(astphp_logerreur({"__xst" : false ,"__xme" : '0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
-                                                }
-                                            }
-                                        }
-                                    }else{
-                                        /*
-                                          si on est au premier caractère;
-                                        */
-                                        if(rv.substr(i,1) === '\\'){
-                                            var c = nouvelle_chaine.substr(0,1);
-                                            if(c === '.'
-                                             || c === '-'
-                                             || c === 'd'
-                                             || c === '/'
-                                             || c === 'x'
-                                             || c === 'o'
-                                             || c === 'b'
-                                             || c === 's'
-                                             || c === '\\'
-                                             || c === ']'
-                                             || c === '['
-                                             || c === '$'
-                                             || c === '"'
-                                             && rv.substr(0,1) === '\''
-                                            ){
-                                                nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                            }else if(c === 'r' || c === 'n' || c === 't' || c === '\'' && rv.substr(0,1) === '\'' || c === '"' && rv.substr(0,1) === '"'){
-                                                nouvelle_chaine='\\' + nouvelle_chaine;
-                                            }else{
-                                                return(astphp_logerreur({"__xst" : false ,"__xme" : '0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,"element" : element}));
-                                            }
-                                        }else{
-                                            nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
-                                        }
-                                    }
-                                }
-                            }else if(rv.substr(i,1) === '\'' && rv.substr(0,1) === '\''){
-                                if(i >= 2 && rv.substr(i - 1,1) === '\\'){
-                                    nouvelle_chaine='\\\'' + nouvelle_chaine;
-                                    i--;
-                                }else{
-                                    return(astphp_logerreur({"__xst" : false ,"__xme" : '0983 il doit y avoir un backslash avant un apostrophe ' ,"element" : element}));
-                                }
-                            }else if(rv.substr(i,1) === '"' && rv.substr(0,1) === '"'){
-                                if(i >= 2 && rv.substr(i - 1,1) === '\\'){
-                                    nouvelle_chaine='\\"' + nouvelle_chaine;
-                                    i--;
-                                }else{
-                                    return(astphp_logerreur({"__xst" : false ,"__xme" : '0994 il doit y avoir un backslash avant un guillemet ' ,"element" : element}));
-                                }
-                            }else{
-                                nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
-                            }
-                        }
-                        t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
+                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1702 php_traite_Stmt_Expression Scalar_String ' ,"element" : element}));
                     }
                 }else{
                     t+=element.attributes.rawValue;
@@ -1624,7 +1752,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
             case "Expr_UnaryMinus" :
                 var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                 if(obj.__xst === true){
-                    t+='-' + obj.__xva;
+                    if(obj.__xva.substr(0,17)==='valeur_constante(' || 'propriete' === obj.__xva.substr(0,9) ){
+                        t+='moins(' + obj.__xva + ')';
+                    }else{
+                        t+='-' + obj.__xva;
+                    }
                 }else{
                     return(astphp_logerreur({"__xst" : false ,"__xme" : '0902  dans php_traite_Stmt_Expression  ' ,"element" : element}));
                 }
@@ -1651,7 +1783,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
             case "Expr_UnaryPlus" :
                 var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                 if(obj.__xst === true){
-                    t+='+' + obj.__xva;
+                    if(obj.__xva.substr(0,17)==='valeur_constante(' || 'propriete' === obj.__xva.substr(0,9) ){
+                        t+='plus(' + obj.__xva + ')';
+                    }else{
+                       t+='+' + obj.__xva;
+                    }
                 }else{
                     return(astphp_logerreur({"__xst" : false ,"__xme" : '0902  dans php_traite_Stmt_Expression  ' ,"element" : element}));
                 }
@@ -2072,7 +2208,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 if(element.class && element.class.nodeType === 'Name' && element.name && element.name.nodeType === "VarLikeIdentifier"){
                     t+=element.class.name + '::$' + element.name.name;
                 }else{
-                    return(astphp_logerreur({"__xst" : false ,"__xme" : '1702  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' ,"element" : element}));
+                    return(astphp_logerreur({"__xst" : false ,"__xme" : '2185  dans php_traite_Stmt_Expression "' + element.nodeType + '" ' ,"element" : element}));
                 }
                 break;
                 
@@ -2172,6 +2308,15 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                     t+=obj.__xva;
                 }else{
                     return(astphp_logerreur({"__xst" : false ,"__xme" : '1576  dans php_traite_Stmt_Expression  ' ,"element" : element}));
+                }
+                break;
+                
+            case "Stmt_Static" :
+                var obj = php_traite_Stmt_Static(element,niveau);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(astphp_logerreur({"__xst" : false ,"__xme" : '2183  dans php_traite_Stmt_Expression  ' ,"element" : element}));
                 }
                 break;
                 
@@ -2526,6 +2671,17 @@ function php_traite_Stmt_Class(element,niveau,options_traitement){
     var contenu='';
     var implemente='';
     var indicateurs='';
+    var etend='';
+    
+
+    if(element.extends){
+        if(element.extends.nodeType==='Name'){
+            etend+='\n' + esp0 + esp1 + ',étend('+element.extends.name+')';
+        }else{
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '2573 dans php_traite_Stmt_Class' ,"element" : element}));
+        }
+    }
+    
     if(element.implements && element.implements.length > 0){
         for( var i=0 ; i < element.implements.length ; i++ ){
             if(element.implements[i].nodeType === 'Name'){
@@ -2565,6 +2721,7 @@ function php_traite_Stmt_Class(element,niveau,options_traitement){
     t+='\n' + esp0 + esp1 + 'nom_classe(' + nom_de_classe + ')';
     t+=indicateurs;
     t+=implemente;
+    t+=etend;
     t+='\n' + esp0 + esp1 + 'contenu(' + contenu;
     t+='\n' + esp0 + esp1 + ')';
     t+='\n' + esp0 + ')';
@@ -3774,6 +3931,7 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
             options.nettoyer_html=retour_avec_ast.__entree.opt.zone_php;
         }
     }
+    
     var obj = TransformAstPhpEnRev(ast,0,false,true,options);
     var zone_rev=null;
     var zone_php=null;

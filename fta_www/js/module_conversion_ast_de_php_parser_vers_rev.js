@@ -677,7 +677,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0704  #staticlookup' ,"element" : element}));
         }
         if(what.substr(0,1)==='\''){
-            t='cst('+what.substr(0,what.length-1) + '::' + offset + '\')';
+            t='valeur_constante('+what.substr(0,what.length-1) + '::' + offset + '\')';
+        }else if(what.substr(0,17)==='valeur_constante('){
+            t='valeur_constante('+what.substr(17,what.length-19) + '::' + offset + '\')';
         }else{
             t=what + '::' + offset;
         }
@@ -715,7 +717,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0567  #traite_propertylookup' ,"element" : element}));
             }
-            t+='element(' + what + '),nomf(' + offset + ')';
+//            t+='element(' + what + '),nomf(' + offset + ')';
+            
+            t+='propriete(' + what + ',' + offset + ')';
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -783,6 +787,85 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         return({"__xst" : true ,"__xva" : t});
     }
     
+    /*
+      =============================================================================================================
+    */
+    #traite_closure(element,niveau,parent,tab_comm,est_alternate){
+        let t='';
+        let obj=null;
+        
+        var lesArguments='';
+        var les_utilisations='';
+        var contenu='';
+        var type_retour='';
+        
+        obj=this.#traite_arguments(element,niveau,parent,tab_comm,'argument');
+        if(obj.__xst===true){
+            lesArguments=obj.__xva;
+        }else{
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0801 #traite_closure ' ,"element" : element}));
+        }
+        
+        if(element.byref!==false){
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0805 #traite_closure byref' ,"element" : element}));
+        }
+        if(element.isStatic!==false){
+            return(this.#astphp_logerreur({"__xst" : true ,"__xme" : '#traite_closure isStatic false ' ,"element" : element}));
+            
+        }
+
+        if(element.nullable!==false){
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0805 #traite_closure nullable' ,"element" : element}));
+        }
+
+        if(element.attrGroups.length!==0){
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0805 #traite_closure attrGroups' ,"element" : element}));
+        }
+
+        if(element.uses.length!==0){
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0805 #traite_closure uses' ,"element" : element}));
+        }
+
+        if(element.type){
+            if(element.type.kind==='typereference'){
+                type_retour='type_retour('+element.type.name+')';
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0825 #traite_closure ' ,"element" : element}));
+            }
+         
+        }
+        
+        if(element.body){
+            if(element.body.kind === undefined){
+                element.body.kind='body';
+            }
+            if(Array.isArray(element.body)){
+                element.body.children=element.body;
+            }
+            obj=this.#traite_ast0(element.body,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                if(obj.__xva!==''){
+                    contenu=',contenu('+obj.__xva+')';
+                }
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1606 #traite_method body' ,"element" : element}));
+            }
+        }
+        
+
+        t='cloturée(';
+        t+=lesArguments;
+        t+=type_retour;
+        t+=les_utilisations;
+        t+=contenu;
+        t+=')';
+        
+        return({"__xst" : true ,"__xva" : t});        
+        
+        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0802 #traite_closure ' ,"element" : element}));
+        
+        
+    }
     /*
       =============================================================================================================
     */
@@ -855,7 +938,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let obj=null;
 
         if(element.name && element.name !==''){
-            t=element.name;
+            if(element.name.indexOf('\\')>=0){
+                t='\''+element.name.replace(/\\/g,'\\\\')+'\'';
+            }else{
+                t=element.name;
+            }
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0795 #traite_typereference ' ,"element" : element}));
         }
@@ -877,10 +964,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0798 #traite_interface ' ,"element" : element}));
         }
         if(element.extends && element.extends !== null ){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0801 #traite_interface extends non traité' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0997 #traite_interface extends non traité' ,"element" : element}));
         }
         if(element.attrGroups && element.attrGroups.length>0 ){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0801 #traite_interface attrGroups non traité' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1000 #traite_interface attrGroups non traité' ,"element" : element}));
         }
         if(element.body && element.body.length>0){
          
@@ -911,7 +998,14 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let faire='';
 
         if(element.name && element.name!==''){
-            nom_de_l_espace=element.name;
+            
+            
+            if(element.name.indexOf('\\')>=0){
+                nom_de_l_espace='\''+element.name.replace(/\\/g,'\\\\')+'\'';
+            }else{
+                nom_de_l_espace=element.name;
+            }
+            
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0794 #traite_namespace ' ,"element" : element}));
         }
@@ -931,11 +1025,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(faire!==''){
          faire=faire.substr(1);
         }
-        if(nom_de_l_espace.indexOf('\\') >= 0){
-            t+='espace_de_noms(nom_espace(\'' + (nom_de_l_espace.replace(/\\/g,'\\\\')) + '\'),faire(' + faire + '))';
-        }else{
-            t+='espace_de_noms(nom_espace(\'' + nom_de_l_espace + '\'),faire(' + faire + '))';
-        }
+        t+='espace_de_noms(nom_espace(' + nom_de_l_espace + '),faire(' + faire + '))';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -955,7 +1045,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(obj.__xst === true){
                 cle+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0802 #traite_declare cle' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1074 #traite_declare cle' ,"element" : element}));
             }
             
             obj=this.#traite_element(element.directives[i].value,niveau,element,tab_comm);
@@ -982,7 +1072,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }
         }
         if(texte_des_directives === ''){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0825  #traite_declare texte directive non trouvé' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1100  #traite_declare texte directive non trouvé' ,"element" : element}));
         }
         texte_des_directives=texte_des_directives.substr(1);
         if(instructions !== ''){
@@ -1031,7 +1121,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1226 #traite_element string type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1226 #traite_nowdoc string type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
             }
         }else{
             let contenu = element.raw.replace('<<<\'' + element.label+'\'','').replace(/`/g,'\\`');
@@ -1051,7 +1141,6 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     
     /*
       =============================================================================================================
-      <<<EOT ... EOT -> heredoc('EOT' , `...`);
     */
     #traite_encapsedpart(element,niveau,parent,tab_comm,est_alternate){
         let t='';
@@ -1064,7 +1153,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(obj.__xst === true){
               t=obj.__xva;
             }else{
-              return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_element #traite_encapsed type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
+              return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_encapsedpart  type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
             }
           
         }
@@ -1097,7 +1186,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                        }
                          
                    }else{
-                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_element #traite_encapsed type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
+                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_encapsed  type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
                    }
                }
             }else{
@@ -1775,7 +1864,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 t+='affecte_reference(' + gauche + ',' + droite + ')';
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1470 #traite_assignref il manque un gauche ou un droite : "' + element.type + '"' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1470 #traite_assignref il manque un gauche ou un droite ' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1824,7 +1913,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1515 #traite_assign opérateur non traité : "' + element.operator + '"' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1518 #traite_assign il manque un gauche ou un droite : "' + element.type + '"' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1518 #traite_assign il manque un gauche ou un droite' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1968,18 +2057,64 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         
         
     }
+    
     /*
       =============================================================================================================
-      en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
-      mais pour les fichiers rev, c'est pas excellent, 
-      on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
-      petite analyse et on remonte une erreur si on n'est pas dans ces cas
-      =============================================================================================================
     */
-    #traite_string(element,niveau,parent,tab_comm){
+    #traite_chaine_raw(valeur_raw,element){
+     
         let t='';
-        var rv=element.raw;
+        var rv=valeur_raw;
         var contenu = rv.substr(1,rv.length - 2);
+        
+        
+        if(contenu.indexOf('\\\\o')>=0 ){
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '1308 #traite_chaine_raw TO DO ' ,"element" : element}));
+        }
+        if(contenu.indexOf('\\\\f')>=0 ){
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
+        }
+        
+        if(contenu.indexOf('\\\\x')>=0 ){
+            var caractere='';
+            if(rv.substr(0,1)==='\''){
+                var tableau=contenu.split('\\\\x');
+                /*
+                 \\x     => ""   , ""    => '\\'   .'x'
+                 aa\\x   => "aa" , ""    => 'aa'.'\\' .'x'
+                 aa\\xaa => "aa" , "aa"  => 'aa\\' .'x' . 'aa'
+                */
+                var tableau_a_concatener=[];
+                for(var i=0;i<tableau.length;i++){
+                    if(i===tableau.length-1){
+                        if(tableau[i]===''){
+                        }else{
+                            var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
+                            tableau_a_concatener.push(tt);
+                        }
+                    }else{
+                        if(tableau[i]===''){
+                            tableau_a_concatener.push("'\\\\'");
+                            tableau_a_concatener.push("'x'");
+                        }else{
+                            var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
+                            tableau_a_concatener.push(tt);
+                            tableau_a_concatener.push("'\\\\'");
+                            tableau_a_concatener.push("'x'");
+                        }
+                    }
+                }
+                t='concat('+tableau_a_concatener.join(',')+')';
+                return({__xst:true , __xva : t});
+            }else{
+                return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
+            }
+        }
+        
+        
+        var probablement_dans_une_regex = ( contenu.substr(0,1) === '/' &&  contenu.substr(contenu.length-1,1) === '/' ? ( true ) : ( false ) );
+
+        
         if(rv.substr(0,1) === '\''
          && contenu.indexOf('\'') < 0
          && contenu.indexOf('\\') < 0
@@ -1990,12 +2125,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             /*
               si c'est une chaine "simple" cad ne contenant ni terminateur ni antislash
             */
-            t+=element.raw;
+            t+=valeur_raw;
         }else{
             /*
             */
             var l01 = rv.length - 2;
-            var probablement_dans_une_regex = element.raw.substr(1,1) === '/' ? ( true ) : ( false );
             /*
               la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
               on les retire pour l'analyse, donc on part de l'avant dernier caractère 
@@ -2069,7 +2203,16 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
                                         }
                                     }else{
-                                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1456 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                        /* 
+                                          commenté car $regex='/\'|\\\\(?=[\'\\\\]|$)|(?<=\\\\)\\\/'; ne passait plus 
+                                          return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1456 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                        */
+
+                                        if(i > 0 && rv.substr(i - 1,1) !== '\\'){
+                                            nouvelle_chaine='\\\\' + nouvelle_chaine;
+                                        }else{
+                                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                        }
                                     }
                                 }
                             }
@@ -2093,6 +2236,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                  || c === '$'
                                  || c === '"'
                                  || c === 'N'
+                                 || c === '{'
                                  && rv.substr(0,1) === '\''
                                 ){
                                     nouvelle_chaine='\\\\' + nouvelle_chaine;
@@ -2126,7 +2270,19 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }
             t+=rv.substr(0,1) + nouvelle_chaine + rv.substr(0,1);
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : true ,"__xva" : t});     
+     
+    }
+    /*
+      =============================================================================================================
+      en php, une chaine 'bla \ bla' avec un antislash au milieu est accepté 
+      mais pour les fichiers rev, c'est pas excellent, 
+      on accepte les \r \n \t \x \o , \" et \' \\ donc on fait une 
+      petite analyse et on remonte une erreur si on n'est pas dans ces cas
+      =============================================================================================================
+    */
+    #traite_string(element,niveau,parent,tab_comm){
+        return this.#traite_chaine_raw(element.raw,element);
     }
     /*
       =============================================================================================================
@@ -2157,6 +2313,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let variadic='';
         let type_argument='';
         let nom_argument='';
+        let nullable='';
         for( let i=0 ; i < element.arguments.length ; i++ ){
             t+=',';
             valeur_par_defaut='';
@@ -2174,12 +2331,14 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 nom_argument=obj.__xva;
                 type_argument='';
                 variadic='';
+                nullable='';
                 /* pas encore traité */
                 if(element.arguments[i].hasOwnProperty('flags') && element.arguments[i].flags !== 0){
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1825 #traite_arguments flag != 0' ,"element" : element}));
                 }
                 if(element.arguments[i].hasOwnProperty('nullable') && element.arguments[i].nullable !== false){
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1860 #traite_arguments nullable != false' ,"element" : element}));
+                    nullable='?';
+//                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1860 #traite_arguments nullable != false' ,"element" : element}));
                 }
                 if(element.arguments[i].hasOwnProperty('readonly') && element.arguments[i].readonly !== false){
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1864 #traite_arguments readonly != false' ,"element" : element}));
@@ -2188,7 +2347,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                  
                     obj=this.#traite_element(element.arguments[i].type,niveau,element,tab_comm);
                     if(obj.__xst === true){
-                        type_argument=',type_argument(' + obj.__xva + ')';
+                        type_argument=',type_argument('+nullable+ obj.__xva + ')';
                     }else{
                         return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1876  #traite_arguments type "' + JSON.stringify( element.arguments[i].type ) + '"' ,"element" : element}));
                     }
@@ -2205,6 +2364,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element}));
             }
+        }
+        if(t.length>0){
+            t=t.substr(1);
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2374,6 +2536,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let obj=null;
         let nom_class='';
         let contenu='';
+        let etend=''
         /*
           body: (2) [PropertyStatement, PropertyStatement]
           extends: null
@@ -2407,7 +2570,12 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }
         }
         if(element.extends){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1610 #traite_class ' ,"element" : element}));
+            obj=this.#traite_element(element.extends,niveau,element,tab_comm);
+            if(obj.__xst === true){
+                etend+=',étend('+obj.__xva+')';
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1599 #traite_class nom' ,"element" : element}));
+            }
         }
         if(element.implements){
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1610 #traite_class ' ,"element" : element}));
@@ -2424,7 +2592,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(element.isReadonly){
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1610 #traite_class ' ,"element" : element}));
         }
-        t+='definition_de_classe( nom_classe(' + nom_class + ') , contenu( ' + contenu + ' ))';
+        t+='definition_de_classe( nom_classe(' + nom_class + ') '+etend+', contenu( ' + contenu + ' ))';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2585,9 +2753,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
             case 'name' : 
                 if(element.name.indexOf('\\')>=0){
-                  t+='\''+element.name.replace(/\\/g,'\\\\')+'\'';
+                     t+='valeur_constante(\''+element.name.replace(/\\/g,'\\\\')+'\')';
                 }else{
-                  t+=element.name;
+                     t+=element.name;
                 }
                 break;
             case 'identifier' :
@@ -3107,6 +3275,15 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
                 break;
                 
+            case 'closure' :
+            
+                obj=this.#traite_closure(element,niveau,element,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '3126 #traite_element closure' ,"element" : element}));
+                }
+                break;
                 
                 
             default:
