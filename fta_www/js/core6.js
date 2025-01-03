@@ -631,7 +631,7 @@ function strToHtml(s){
   )  
   =====================================================================================================================
 */
-function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null){
+function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null,ne_prendre_qu_un_element=false){
     /*
       le parent id=0 et début=1
     */
@@ -887,6 +887,9 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                     return({"__xst" : false ,"__xme" : 'erreur' ,"id" : i});
                 }
                 count++;
+            }
+            if(ne_prendre_qu_un_element===true){
+              break;
             }
         }
     }

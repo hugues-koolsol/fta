@@ -354,6 +354,7 @@ function php_traite_Expr_FuncCall(element,niveau){
             }
         }
     }
+
     if('cst' === nomFonction){
         t+='cst(' + (lesArgumentsCourts.substr(1)) + ')';
     }else if('sql_inclure_source' === nomFonction){
@@ -601,10 +602,33 @@ function php_traite_Expr_Closure(element,niveau){
     var les_utilisations='';
     var contenu='';
     var type_retour='';
+    var type_argument='';
 
     if(element.params && element.params.length > 0){
         var i=0;
         for( i=0 ; i < element.params.length ; i++ ){
+
+            type_argument='';
+            if(element.params[i].type){
+             if(element.params[i].type.nodeType=='Name'){
+              type_argument=',type_argument( \''+element.params[i].type.name.replace(/\\/g,'\\\\')+'\' )';
+             }else{
+              return(astphp_logerreur({"__xst" : false ,"__xme" : '0614  erreur php_traite_Expr_Closure ' ,"element" : element}));
+             }
+            }
+            
+            if(element.params[i].attrGroups.length>0){
+              return(astphp_logerreur({"__xst" : false ,"__xme" : '0620  erreur php_traite_Expr_Closure ' ,"element" : element}));
+            }
+            
+            if(element.params[i].hooks.length>0){
+              return(astphp_logerreur({"__xst" : false ,"__xme" : '0624  erreur php_traite_Expr_Closure ' ,"element" : element}));
+            }
+            
+            if(element.params[i].flags!==0){
+              return(astphp_logerreur({"__xst" : false ,"__xme" : '0628  erreur php_traite_Expr_Closure ' ,"element" : element}));
+            }
+            
             if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
                 if(element.params[i].byRef && element.params[i].byRef === true){
                     lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name;
@@ -631,7 +655,7 @@ function php_traite_Expr_Closure(element,niveau){
                             return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Expr_Closure ' ,"element" : element}));
                         }
                     }
-                    lesArguments+=')';
+                    lesArguments+=type_argument+')';
                 }
             }else{
                 return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Expr_Closure ' ,"element" : element}));
@@ -785,6 +809,7 @@ function php_traite_Stmt_Function(element,niveau){
 */
 function php_traite_Expr_New(element,niveau){
     var t='';
+
     if(element.class){
         var qualif_totale=false;
         var nomClasse='';
@@ -877,6 +902,7 @@ function php_traite_Expr_MethodCall(element,niveau){
             }
         }
     }
+
     t+='appelf(' + lelement + 'nomf(' + nomFonction + ')' + lesArguments + ')';
     return({"__xst" : true ,"__xva" : t});
 }
@@ -2130,30 +2156,36 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 break;
                 
             case "Expr_PropertyFetch" :
-                var variable='';
-                if(element.var){
-                    var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
-                    if(obj.__xst === true){
-                        variable=obj.__xva;
-                    }else{
-                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1890  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
-                    }
+                if('Expr_Variable'===element.var.nodeType && element.name.nodeType === 'Identifier' ){
+                     t+='$'+element.var.name+'->'+element.name.name;
                 }else{
-                    return(astphp_logerreur({"__xst" : false ,"__xme" : '1450  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
-                }
-                var propriete='';
-                if(element.name){
-                    if(element.name.nodeType === 'Identifier'){
-                        propriete=element.name.name;
-                    }else if(element.name.nodeType === 'Expr_Variable'){
-                        propriete='$' + element.name.name;
+                    var variable='';
+                    if(element.var){
+                        var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
+                        if(obj.__xst === true){
+                            variable=obj.__xva;
+                        }else{
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '1890  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
+                        }
                     }else{
-                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1900  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
+                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1450  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
                     }
-                }else{
-                    return(astphp_logerreur({"__xst" : false ,"__xme" : '1454  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
+                    var propriete='';
+                    if(element.name){
+                        if(element.name.nodeType === 'Identifier'){
+                            propriete=element.name.name;
+                        }else if(element.name.nodeType === 'Expr_Variable'){
+                            propriete='$' + element.name.name;
+                        }else{
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '1900  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
+                        }
+                    }else{
+                        return(astphp_logerreur({"__xst" : false ,"__xme" : '1454  dans php_traite_Stmt_Expression Expr_PropertyFetch ' ,"element" : element}));
+                    }
+                    t+='propriete(' + variable + ',' + propriete + ')';
+                 
                 }
-                t+='propriete(' + variable + ',' + propriete + ')';
+
                 /* =============================================== */
                 break;
                 
@@ -3331,7 +3363,7 @@ function TransformAstPhpEnRev(stmts,niveau,dansFor,de_racine,options_traitement)
                 if(nom_de_l_espace.indexOf('\\') >= 0){
                     t+='\n' + esp0 + 'espace_de_noms(nom_espace(\'' + (nom_de_l_espace.replace(/\\/g,'\\\\')) + '\'),faire(' + faire + '))';
                 }else{
-                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(\'' + nom_de_l_espace + '\'),faire(' + faire + '))';
+                    t+='\n' + esp0 + 'espace_de_noms(nom_espace(' + nom_de_l_espace + '),faire(' + faire + '))';
                 }
             }else if("Stmt_Interface" === stmts[i].nodeType){
                 var nom_de_l_interface='';
