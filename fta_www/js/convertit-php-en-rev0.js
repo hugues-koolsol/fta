@@ -127,6 +127,9 @@ function php_traite_Stmt_Switch(element,niveau,dansFor,de_racine,options_traitem
             for( i=0 ; i < element.cases.length ; i++ ){
                 var leSw=element.cases[i];
                 var laCondition='';
+                var lesInstructions='';
+                var les_commentaires=ajouteCommentairesAvant(leSw,niveau+3);
+                
                 if(leSw.cond){
                     var obj = php_traite_Stmt_Expression(leSw.cond,niveau,false,element);
                     if(obj.__xst === true){
@@ -137,20 +140,17 @@ function php_traite_Stmt_Switch(element,niveau,dansFor,de_racine,options_traitem
                 }else{
                     laCondition=null;
                 }
-                var lesInstructions='';
                 if(leSw.stmts){
                     if(leSw.stmts.length > 0){
-                        niveau+=3;
-                        var obj1 = TransformAstPhpEnRev(leSw.stmts,niveau,false,false,options_traitement);
-                        niveau-=3;
+                        var obj1 = TransformAstPhpEnRev(leSw.stmts,niveau+3,false,false,options_traitement);
                         if(obj1.__xst === true){
-                            lesInstructions=obj1.__xva;
+                            lesInstructions+=obj1.__xva;
                         }else{
                             return(astphp_logerreur({"__xst" : false ,"__xme" : '0175  erreur php_traite_Stmt_TryCatch' ,"element" : element}));
                         }
                     }
                 }
-                tabSw.push([laCondition,lesInstructions]);
+                tabSw.push([laCondition,lesInstructions,les_commentaires]);
             }
         }else{
             return(astphp_logerreur({"__xst" : false ,"__xme" : '0182  erreur php_traite_Stmt_Switch' ,"element" : element}));
@@ -162,6 +162,7 @@ function php_traite_Stmt_Switch(element,niveau,dansFor,de_racine,options_traitem
     t+='\n' + esp0 + esp1 + 'quand(' + leTest + ')';
     var i=0;
     for( i=0 ; i < tabSw.length ; i++ ){
+        t+=',\n' + esp0 + esp1 + ''+tabSw[i][2];
         t+=',\n' + esp0 + esp1 + 'est(';
         if(tabSw[i][0] === null){
             t+='\n' + esp0 + esp1 + esp1 + 'valeurNonPrevue()';
@@ -331,7 +332,8 @@ function php_traite_Expr_FuncCall(element,niveau){
         }else if(element.name.nodeType === "Expr_Variable"){
             nomFonction=prefixStatic + '$' + element.name.name;
         }else if(element.name.nodeType === "Name_FullyQualified"){
-            nomFonction=prefixStatic + 'qualification_totale(' + element.name.name + ')';
+            /* nomFonction=prefixStatic + 'qualification_totale(' + element.name.name + ')'; */
+            nomFonction=prefixStatic + '\'\\\\' + element.name.name.replace(/\\/,'\\\\') + '\'';
         }else{
             return(astphp_logerreur({"__xst" : false ,"__xme" : '0364  erreur php_traite_Expr_FuncCall "' + element.name.nodeType + '"' ,"element" : element}));
         }
@@ -391,11 +393,7 @@ function php_traite_Expr_FuncCall(element,niveau){
         }
         t+='' + nomFonction + '(' + lesArgumentsCourts + ')';
     }else{
-        if(nomFonction.indexOf('\\') >= 0){
-            t+='appelf(nomf(\'' + (nomFonction.replace(/\\/g,'\\\\')) + '\')' + lesArguments + ')';
-        }else{
-            t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
-        }
+        t+='appelf(nomf(' + nomFonction + ')' + lesArguments + ')';
     }
     return({"__xst" : true ,"__xva" : t});
 }
@@ -483,7 +481,7 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
                     var obj = php_traite_Stmt_Expression(element.params[i].type,niveau,false,element);
                     if(obj.__xst === true){
                         if(obj.__xva.indexOf('\\') >= 0){
-                            lesArguments+=',type_argument(valeur_constante(\'' + (obj.__xva.replace(/\\/g,'\\\\')) + '\'))';
+                            lesArguments+=',type_argument(\'' + (obj.__xva.replace(/\\/g,'\\\\')) + '\')';
                         }else{
                             lesArguments+=',type_argument(' + obj.__xva + ')';
                         }
@@ -553,6 +551,131 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
     t+='\n' + esp0 + ')';
     return({"__xst" : true ,"__xva" : t});
 }
+
+/*
+  =====================================================================================================================
+*/
+function php_traite_Stmt_Function(element,niveau){
+    var t='';
+    var esp0 = ' '.repeat(NBESPACESREV * niveau);
+    var esp1 = ' '.repeat(NBESPACESREV);
+    var nomFonction='';
+    var lesArguments='';
+    var contenu='';
+    var type_retour='';
+    if(element.name && element.name.nodeType === "Identifier"){
+        nomFonction=element.name.name;
+    }else{
+        return(astphp_logerreur({"__xst" : false ,"__xme" : '0542  erreur php_traite_Stmt_Function ' ,"element" : element}));
+    }
+    if(element.params && element.params.length > 0){
+        var i=0;
+        for( i=0 ; i < element.params.length ; i++ ){
+            if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
+             
+             
+             
+                if(element.params[i].byRef && element.params[i].byRef === true){
+                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name;
+                    if(element.params[i].default){
+                        var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
+                        if(obj.__xst === true){
+                            lesArguments+=',valeur_defaut(' + obj.__xva + ')';
+                        }else{
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                        }
+                    }
+                    if(element.params[i].type){
+                        var obj = php_traite_Stmt_Expression(element.params[i].type,niveau,false,element);
+                        if(obj.__xst === true){
+                            if(obj.__xva.indexOf('\\') >= 0){
+                                lesArguments+=',type_argument(\'' + (obj.__xva.replace(/\\/g,'\\\\')) + '\')';
+                            }else{
+                                lesArguments+=',type_argument(' + obj.__xva + ')';
+                            }
+                        }else{
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0483  erreur php_traite_Stmt_ClassMethod ' ,"element" : element}));
+                        }
+                    }
+                    
+                    lesArguments+=')';
+                }else{
+                    if(element.params[i].variadic && element.params[i].variadic === true){
+                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;
+                    }else{
+                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument($' + element.params[i].var.name;
+                    }
+                    if(element.params[i].default){
+                        var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
+                        if(obj.__xst === true){
+                            lesArguments+=',valeur_defaut(' + obj.__xva + ')';
+                        }else{
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Stmt_Function ' ,"element" : element}));
+                        }
+                    }
+                    if(element.params[i].type){
+                        var obj = php_traite_Stmt_Expression(element.params[i].type,niveau,false,element);
+                        if(obj.__xst === true){
+                            if(obj.__xva.indexOf('\\') >= 0){
+                                lesArguments+=',type_argument(\'' + (obj.__xva.replace(/\\/g,'\\\\')) + '\')';
+                            }else{
+                                lesArguments+=',type_argument(' + obj.__xva + ')';
+                            }
+                        }else{
+                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0483  erreur php_traite_Stmt_ClassMethod ' ,"element" : element}));
+                        }
+                    }
+                    
+                    lesArguments+=')';
+                }
+            }else{
+                return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Stmt_Function ' ,"element" : element}));
+            }
+        }
+    }
+    
+    if(element.returnType){
+        if(element.returnType.nodeType === 'Name'){
+            type_retour=element.returnType.name;
+        }else if(element.returnType.nodeType === 'Identifier'){
+            type_retour=element.returnType.name;
+        }else if(element.returnType.nodeType === 'NullableType'){
+            if(element.returnType.type.nodeType === 'Identifier'){
+                type_retour='?' + element.returnType.type.name;
+            }else if(element.returnType.type.nodeType === 'Name'){
+                type_retour='?' + element.returnType.type.name;
+            }else{
+                return(astphp_logerreur({"__xst" : false ,"__xme" : '0494  erreur php_traite_Stmt_ClassMethod return_type "' + element.returnType.nodeType + '"' ,"element" : element}));
+            }
+        }else{
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '0497  erreur php_traite_Stmt_ClassMethod return_type "' + element.returnType.nodeType + '"' ,"element" : element}));
+        }
+    }
+    
+    if(element.stmts && element.stmts.length > 0){
+        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false);
+        if(obj.__xst === true){
+            contenu+=obj.__xva;
+        }else{
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '0587  erreur php_traite_Stmt_Function ' ,"element" : element}));
+        }
+    }
+    t+='\n' + esp0 + 'fonction(';
+    t+='\n' + esp0 + esp1 + 'definition(';
+    t+='\n' + esp0 + esp1 + esp1 + 'nom(' + nomFonction + ')';
+    t+=lesArguments;
+    if(type_retour !== ''){
+        t+='\n' + esp0 + esp1 + ',type_retour(\'' + (type_retour.replace(/\\/g,'\\\\')) + '\')';
+    }
+    t+='\n' + esp0 + esp1 + '),';
+    t+='\n' + esp0 + esp1 + 'contenu(\n';
+    t+=contenu;
+    t+='\n' + esp0 + esp1 + ')';
+    t+='\n' + esp0 + ')';
+    return({"__xst" : true ,"__xva" : t});
+}
+
+
 
 /*
   =====================================================================================================================
@@ -735,76 +858,6 @@ function php_traite_Expr_Closure(element,niveau){
 }
 /*
   =====================================================================================================================
-*/
-function php_traite_Stmt_Function(element,niveau){
-    var t='';
-    var esp0 = ' '.repeat(NBESPACESREV * niveau);
-    var esp1 = ' '.repeat(NBESPACESREV);
-    var nomFonction='';
-    var lesArguments='';
-    var contenu='';
-    if(element.name && element.name.nodeType === "Identifier"){
-        nomFonction=element.name.name;
-    }else{
-        return(astphp_logerreur({"__xst" : false ,"__xme" : '0542  erreur php_traite_Stmt_Function ' ,"element" : element}));
-    }
-    if(element.params && element.params.length > 0){
-        var i=0;
-        for( i=0 ; i < element.params.length ; i++ ){
-            if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
-                if(element.params[i].byRef && element.params[i].byRef === true){
-                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name;
-                    if(element.params[i].default){
-                        var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
-                        if(obj.__xst === true){
-                            lesArguments+=',valeur_defaut(' + obj.__xva + ')';
-                        }else{
-                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0555  erreur php_traite_Stmt_Function ' ,"element" : element}));
-                        }
-                    }
-                    lesArguments+=')';
-                }else{
-                    if(element.params[i].variadic && element.params[i].variadic === true){
-                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;
-                    }else{
-                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument($' + element.params[i].var.name;
-                    }
-                    if(element.params[i].default){
-                        var obj = php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
-                        if(obj.__xst === true){
-                            lesArguments+=',valeur_defaut(' + obj.__xva + ')';
-                        }else{
-                            return(astphp_logerreur({"__xst" : false ,"__xme" : '0570  erreur php_traite_Stmt_Function ' ,"element" : element}));
-                        }
-                    }
-                    lesArguments+=')';
-                }
-            }else{
-                return(astphp_logerreur({"__xst" : false ,"__xme" : '0576  erreur php_traite_Stmt_Function ' ,"element" : element}));
-            }
-        }
-    }
-    if(element.stmts && element.stmts.length > 0){
-        var obj = TransformAstPhpEnRev(element.stmts,niveau + 2,false);
-        if(obj.__xst === true){
-            contenu+=obj.__xva;
-        }else{
-            return(astphp_logerreur({"__xst" : false ,"__xme" : '0587  erreur php_traite_Stmt_Function ' ,"element" : element}));
-        }
-    }
-    t+='\n' + esp0 + 'fonction(';
-    t+='\n' + esp0 + esp1 + 'definition(';
-    t+='\n' + esp0 + esp1 + esp1 + 'nom(' + nomFonction + ')';
-    t+=lesArguments;
-    t+='\n' + esp0 + esp1 + '),';
-    t+='\n' + esp0 + esp1 + 'contenu(\n';
-    t+=contenu;
-    t+='\n' + esp0 + esp1 + ')';
-    t+='\n' + esp0 + ')';
-    return({"__xst" : true ,"__xva" : t});
-}
-/*
-  =====================================================================================================================
   traite un "new"
 */
 function php_traite_Expr_New(element,niveau){
@@ -838,17 +891,19 @@ function php_traite_Expr_New(element,niveau){
         }
         if(nomClasse.indexOf('\\') >= 0){
             if(qualif_totale === true){
-                t+='nouveau(appelf(nomf(qualification_totale(\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\'))' + lesArgumentsDeLaClass + ')),';
+//                t+='nouveau(appelf(nomf(qualification_totale(\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\'))' + lesArgumentsDeLaClass + ')),';
+                t+='nouveau(appelf(nomf(\'\\\\' + (nomClasse.replace(/\\/g,'\\\\')) + '\')' + lesArgumentsDeLaClass + ')),';
             }else{
                 if(qualif_totale === true){
-                    t+='nouveau(appelf(nomf(qualification_totale\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\'))' + lesArgumentsDeLaClass + ')),';
+//                    t+='nouveau(appelf(nomf(qualification_totale\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\'))' + lesArgumentsDeLaClass + ')),';
+                    t+='nouveau(appelf(nomf(\'\\\\' + (nomClasse.replace(/\\/g,'\\\\')) + '\')' + lesArgumentsDeLaClass + ')),';
                 }else{
                     t+='nouveau(appelf(nomf(\'' + (nomClasse.replace(/\\/g,'\\\\')) + '\')' + lesArgumentsDeLaClass + ')),';
                 }
             }
         }else{
             if(qualif_totale === true){
-                t+='nouveau(appelf(nomf(qualification_totale(' + nomClasse + '))' + lesArgumentsDeLaClass + ')),';
+                t+='nouveau(appelf(nomf(\'\\\\' + nomClasse + '\')' + lesArgumentsDeLaClass + ')),';
             }else{
                 t+='nouveau(appelf(nomf(' + nomClasse + ')' + lesArgumentsDeLaClass + ')),';
             }
@@ -1080,7 +1135,11 @@ function php_traite_Expr_Assign(element,niveau){
     if(element.expr){
         var obj = php_traite_Stmt_Expression(element.expr,niveau,false,element);
         if(obj.__xst === true){
-            droite=obj.__xva;
+            if(element.expr.nodeType==="Expr_ClassConstFetch"){
+                droite='valeur_constante('+obj.__xva+')';
+            }else{
+                droite=obj.__xva;
+            }
         }else{
             return(astphp_logerreur({"__xst" : false ,"__xme" : '0733  erreur dans une assignation ' ,"element" : element}));
         }
@@ -1130,13 +1189,13 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
         parametres+=',p()';
     }
     if(num === 0){
-        if("Expr_Variable" === element.var.nodeType || "Expr_ArrayDimFetch" === element.var.nodeType){
+        if("Expr_Variable" === element.var.nodeType || "Expr_ArrayDimFetch" === element.var.nodeType || 'Expr_PropertyFetch' === element.var.nodeType ){
             t=simplifie_tableau(nom_variable,parametres,num);
         }else{
             t='tableau(' + nom_variable + parametres + ')';
         }
     }else{
-        if("Expr_Variable" === element.var.nodeType || "Expr_ArrayDimFetch" === element.var.nodeType){
+        if("Expr_Variable" === element.var.nodeType || "Expr_ArrayDimFetch" === element.var.nodeType || 'Expr_PropertyFetch' === element.var.nodeType ){
             t=simplifie_tableau(nom_variable,parametres,num);
         }else{
             t=nom_variable + parametres;
@@ -1149,6 +1208,7 @@ function php_traite_Expr_ArrayDimFetch(element,niveau,num){
 */
 function simplifie_tableau(nom_variable,parametres,num){
     var t='';
+    
     var obj_nom_tableau = functionToArray(nom_variable,true,true,'');
     if(obj_nom_tableau.__xst === true){
         if(obj_nom_tableau.__xva.length === 2
@@ -1620,7 +1680,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
             case "Expr_ClassConstFetch" :
                 /* aaa\bbb::ccc */
                 if(element.class.nodeType === 'Name' && element.name.nodeType === 'Identifier'){
-                    t+='valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '::' + element.name.name + '\')';
+                    if(element.class.name.indexOf('\\')>=0){
+                        t+='\'' + (element.class.name.replace(/\\/g,'\\\\')+ '::' + element.name.name)  + '\'';
+                    }else{
+                        t+='' + element.class.name + '::' + element.name.name + '';
+                    }
                 }
                 break;
                 
@@ -1631,11 +1695,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 var publique='';
                 if(element.flags && element.flags > 0){
                     if(element.flags === 1){
-                        publique=',publique()';
+                        publique='publique()';
                     }else if(element.flags === 4){
-                        privee=',privee()';
+                        privee='privée()';
                     }else if(element.flags === 2){
-                        protegee=',protégée()';
+                        protegee='protégée()';
                     }else{
                         debugger;
                         return(astphp_logerreur({"__xst" : false ,"__xme" : '1130 php_traite_Stmt_Expression Stmt_ClassConst class="' + element.flags + '" ' ,"element" : element}));
@@ -1656,7 +1720,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                         }else{
                             return(astphp_logerreur({"__xst" : false ,"__xme" : '1147 php_traite_Stmt_Expression Stmt_ClassConst ' ,"element" : element}));
                         }
-                        constantes+=',constante(' + nom_constante + ',valeur(' + valeur_constante + ')' + privee + protegee + publique + ')';
+                        constantes+=',constante('+privee+ publique+  protegee+',nomc(' + nom_constante + '),valeur(' + valeur_constante   + '))';
                     }
                 }else{
                     return(astphp_logerreur({"__xst" : false ,"__xme" : '1136 php_traite_Stmt_Expression Stmt_ClassConst ' ,"element" : element}));
@@ -1698,11 +1762,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                                     t+='type_variable(' + element.type.name + '),';
                                 }else if(element.type.nodeType === "NullableType"){
                                     if(element.type.type.nodeType === 'Name_FullyQualified'){
-                                        t+='type_variable(\'\\\\' + element.type.type.name + '\',nullable()),';
+                                        t+='type_variable(\'?\\\\' + element.type.type.name + '\'),';
                                     }else if(element.type.type.nodeType === 'Identifier'){
-                                        t+='type_variable(\'' + element.type.type.name + '\',nullable()),';
+                                        t+='type_variable(\'?' + element.type.type.name + '\'),';
                                     }else if(element.type.type.nodeType === 'Name'){
-                                        t+='type_variable(\'' + element.type.type.name + '\',nullable()),';
+                                        t+='type_variable(\'?' + element.type.type.name + '\'),';
                                     }else{
                                         return(astphp_logerreur({"__xst" : false ,"__xme" : '1198 php_traite_Stmt_Expression Stmt_Property ' ,"element" : element}));
                                     }
@@ -1975,7 +2039,11 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                             t+=element.name.name;
                         }
                     }else if(element.name.nodeType === 'Name_FullyQualified'){
-                        t+='valeur_constante(\'\\\\' + element.name.name + '\')';
+                        if(element.name.name.indexOf('\\')>=0){
+                            t+='valeur_constante(\'\\\\' + element.name.name.replace(/\\/g,'\\\\') + '\')';
+                        }else{
+                            t+='valeur_constante(\'\\\\' + element.name.name + '\')';
+                        }
                     }else{
                         return(astphp_logerreur({"__xst" : false ,"__xme" : '1430  dans php_traite_Stmt_Expression "' + element.name.nodeType + '" ' ,"element" : element}));
                     }
@@ -2067,7 +2135,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 }else{
                     var obj = php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
-                        t+='preinc(' + obj.__xva + ' , 1)';
+                        t+='preinc(' + obj.__xva + ' )';
                     }else{
                         return(astphp_logerreur({"__xst" : false ,"__xme" : '1538  dans php_traite_Stmt_Expression  ' ,"element" : element}));
                     }
@@ -2272,7 +2340,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
             case "Expr_Instanceof" :
                 if(element.class && element.class.nodeType === 'Name' && element.expr && element.expr.nodeType === 'Expr_Variable'){
                     if(element.class.name.indexOf('\\') >= 0){
-                        t+='instance_de($' + element.expr.name + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                        t+='instance_de($' + element.expr.name + ' , \'' + (element.class.name.replace(/\\/g,'\\\\')) + '\')';
                     }else{
                         t+='instance_de($' + element.expr.name + ' , ' + element.class.name + ')';
                     }
@@ -2280,7 +2348,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                     var obj = php_traite_Stmt_Expression(element.expr,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
                         if(element.class.name.indexOf('\\') >= 0){
-                            t+='instance_de(' + obj.__xva + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                            t+='instance_de(' + obj.__xva + ' , \'' + (element.class.name.replace(/\\/g,'\\\\')) + '\')';
                         }else{
                             t+='instance_de(' + obj.__xva + ' , ' + element.class.name + ')';
                         }
@@ -2291,7 +2359,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                     var obj = php_traite_Expr_ArrayDimFetch(element.expr,niveau,0);
                     if(obj.__xst === true){
                         if(element.class.name.indexOf('\\') >= 0){
-                            t+='instance_de(' + obj.__xva + ' , valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')) + '\'))';
+                            t+='instance_de(' + obj.__xva + ' , \'' + (element.class.name.replace(/\\/g,'\\\\')) + '\')';
                         }else{
                             t+='instance_de(' + obj.__xva + ' , ' + element.class.name + ')';
                         }
@@ -2398,7 +2466,7 @@ function php_traite_Expr_Ternary(element,niveau,options_traitement){
     }else{
         return(astphp_logerreur({"__xst" : false ,"__xme" : '1772 erreur php_traite_Expr_Ternary' ,"element" : element}));
     }
-    t+='testEnLigne(condition((' + conditionIf + ')),siVrai(' + siVrai + '),siFaux(' + siFaux + '))';
+    t+='testEnLigne(condition(' + conditionIf + '),siVrai(' + siVrai + '),siFaux(' + siFaux + '))';
     return({"__xst" : true ,"__xva" : t});
 }
 /*
@@ -2595,7 +2663,7 @@ function php_traite_Stmt_While(element,niveau,options_traitement){
         return(astphp_logerreur({"__xst" : false ,"__xme" : '1959  dans php_traite_Stmt_While' ,"element" : element}));
     }
     t+='\n' + esp0 + 'tantQue(';
-    t+='\n' + esp0 + esp1 + 'condition((' + conditionWhile + '))';
+    t+='\n' + esp0 + esp1 + 'condition(' + conditionWhile + ')';
     t+='\n' + esp0 + esp1 + 'faire(\n';
     t+=instructionsDansWhile;
     t+='\n' + esp0 + esp1 + ')';
@@ -2800,7 +2868,7 @@ function php_traite_Stmt_DoWhile(element,niveau,options_traitement){
     t+='\n' + esp0 + esp1 + 'faire(';
     t+='\n' + instructions;
     t+='\n' + esp0 + esp1 + ')';
-    t+='\n' + esp0 + esp1 + 'condition(' + condition + '),';
+    t+='\n' + esp0 + esp1 + 'condition' + condition + ',';
     t+='\n' + esp0 + ')';
     return({"__xst" : true ,"__xva" : t});
 }

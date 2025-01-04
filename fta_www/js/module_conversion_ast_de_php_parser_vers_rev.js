@@ -60,6 +60,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0051  #traite_call' ,"element" : element.what}));
             }
         }
+
         if(element.what.kind === 'propertylookup' ){
             if(nomFonction.indexOf('element(') >= 0 && nomFonction.indexOf('nomf(') >= 0){
                 t+='appelf(' + nomFonction + les_parametres + ')';
@@ -89,25 +90,32 @@ class module_conversion_ast_de_php_parser_vers_rev1{
               appelf(nomf(propriete($this->createdArrays,detach)),p($node))
               par un
               appelf(element($this->createdArrays),nomf(detach),p($node))
+              
+              "propriete(
+               tableau(
+                nomt($node->stmts)
+                p(moins($numStmts,1))
+               ),
+               getAttributes)"
+              
             */
             
             var tableau1 = iterateCharacters2(nomFonction);
             var o = functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
-                if(o.__xva[0][8]===1 
-                 && o.__xva[1][1]==='propriete' && o.__xva[1][2]==='f' && o.__xva[1][8]===2
-                ){
-                    var tt=a2F1(o.__xva,1,false,2,o.__xva[1][10],[],null,true);
-                    if(tt.__xst===true){
-                        var _l_element=tt.__xva;
-                        var tt=a2F1(o.__xva,1,false,3,o.__xva[1][10],[],null,true);
-                        if(tt.__xst===true){
-                            t+='appelf(element('+_l_element+'),nomf(' +tt.__xva+ ')' + les_parametres + ')';
-                        }else{
-                            t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
-                        }
-                    }else{
-                        t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
+                if(o.__xva[0][8]===1 && o.__xva[1][1]==='propriete' && o.__xva[1][2]==='f' && o.__xva[1][8]===2 ){
+                    var _l_element='';
+                    for(var j=2;j<o.__xva.length;j=o.__xva[j][12]){
+                       var tt=a2F1(o.__xva,1,false,j,o.__xva[1][10],[],null,true);
+                       if(tt.__xst===true){
+                           if(_l_element==''){
+                               _l_element=tt.__xva;
+                           }else{
+                               t+='appelf(element('+_l_element+'),nomf(' +tt.__xva+ ')' + les_parametres + ')';
+                           }
+                       }else{
+                           t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
+                       }
                     }
                 }else{
                     t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
@@ -1015,7 +1023,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0347 #traite_assign droite' ,"element" : element}));
             }
-            t+='(' + nom + ',' + valeur + ')';
+            t+='nomc(' + nom + '),valeur(' + valeur + ')';
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1518 #traite_assign il manque un gauche ou un droite' ,"element" : element}));
         }
@@ -1049,7 +1057,12 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         
         if(element.visibility ){
             if(element.visibility==='private'){
-                visibility='constante_privée';
+                visibility='constante(privée(),';
+            }else if(element.visibility==='public'){
+                visibility='constante(publique(),';
+                
+            }else if(element.visibility==='protected'){
+                visibility='constante(protégée(),';
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0895 #traite_classconstant visibilitée non traitée non traité "'+element.visibility+'"' ,"element" : element}));
             }
@@ -1060,7 +1073,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         for(let i=0;i<element.constants.length;i++){
             obj=this.#traite_element(element.constants[i],niveau,element,tab_comm);
             if(obj.__xst === true){
-                t+=visibility + obj.__xva ;
+                t+=visibility + obj.__xva + ')';
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_pre quoi' ,"element" : element}));
             }
@@ -2197,9 +2210,23 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         switch (element.type){
             case '!' : t+='non(' + what + ')';
                 break;
-            case '-' : t+='moins(' + what + ')';
+            case '-' : 
+                if(isNumeric(what) ){
+                    t+='-' + what;
+                }else if(element.what.kind==='variable' ){
+                    t+='-' + what;
+                }else{
+                    t+='moins(' + what + ')';
+                }
                 break;
-            case '+' : t+='plus(' + what + ')';
+            case '+' : ;
+                if(isNumeric(what)){
+                    t+='+' + what;
+                }else if(element.what.kind==='variable' ){
+                    t+='+' + what;
+                }else{
+                    t+='plus(' + what + ')';
+                }
                 break;
             default:
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1286 #traite_unary non traité : "' + element.type + '"' ,"element" : element}));
@@ -2216,6 +2243,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let obj=null;
         let gauche='';
         let droite='';
+
         if(element.left){
             obj=this.#traite_element(element.left,niveau,element,tab_comm);
             if(obj.__xst === true){
@@ -2302,7 +2330,20 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }
         
         
-        if(t.substr(0,6) === 'et(et('){
+        if(t.substr(0,6) === 'et(et(' ){
+            var tableau1 = iterateCharacters2(t);
+            var o = functionToArray2(tableau1.out,false,true,'');
+            if(o.__xst === true){
+                var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
+                var obj1 = a2F1(nouveauTableau,0,true,1);
+                if(obj1.__xst === true){
+                    t=obj1.__xva;
+                }
+            }
+        }
+        
+        
+        if(t.substr(0,6) === 'ou(ou(' ){
             var tableau1 = iterateCharacters2(t);
             var o = functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
@@ -2674,6 +2715,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let visibility='';
         let statique='';
         let valeur_defaut='';
+        let type_variable='';
         if(element.isStatic){
             statique='_statique';
         }
@@ -2686,9 +2728,41 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1624 #traite_propertystatement "' + element.visibility + '"' ,"element" : element}));
         }
+
         if(element.properties){
             for( let i=0 ; i < element.properties.length ; i++ ){
                 valeur_defaut='';
+                type_variable=''
+                if(element.properties[i].type){
+                    var nullable='';
+                    if(element.properties[i].nullable === true){
+                       nullable='?';
+                    }
+                 
+                    if(element.properties[i].type.kind==='name' || element.properties[i].type.kind==='typereference' ){
+                        if(element.properties[i].type.name.indexOf('\\')>=0){
+                            type_variable='type_variable(\'' +nullable+ element.properties[i].type.name.replace(/\\/g,'\\\\') + '\'),';
+                        }else{
+                            type_variable='type_variable(' +nullable+ element.properties[i].type.name +'),';
+                        }
+                     
+                     
+                    }else{
+                        debugger
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2724 #traite_propertystatement "'+element.properties[i].type.kind+'" ' ,"element" : element}));
+                        /*#
+                          obj=this.#traite_element(element.properties[i].type,niveau,element,tab_comm);
+                          if(obj.__xst === true){
+                           
+                              type_variable='type_variable(' + obj.__xva + '),';
+                          }else{
+                              return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1977 #traite_propertystatement value' ,"element" : element}));
+                          }
+                        */
+                    }
+                }
+                
+                
                 if(element.properties[i].value){
                     obj=this.#traite_element(element.properties[i].value,niveau,element,tab_comm);
                     if(obj.__xst === true){
@@ -2697,11 +2771,19 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                         return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1977 #traite_propertystatement value' ,"element" : element}));
                     }
                 }
-                obj=this.#traite_element(element.properties[i],niveau,element,tab_comm);
-                if(obj.__xst === true){
-                    t+=visibility + '(' + obj.__xva + valeur_defaut + ')';
+                if(element.properties[i].name && element.properties[i].name.kind==='identifier'){
+                    t+=visibility + '(' + type_variable + '$'+element.properties[i].name.name + valeur_defaut + ')';
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0135 #traite_function nom' ,"element" : element}));
+                    debugger
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2749 #traite_propertystatement value' ,"element" : element}));
+                    /*                    
+                        obj=this.#traite_element(element.properties[i],niveau,element,tab_comm);
+                        if(obj.__xst === true){
+                            t+=visibility + '(' + type_variable + obj.__xva + valeur_defaut + ')';
+                        }else{
+                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0135 #traite_function nom' ,"element" : element}));
+                        }
+                    */
                 }
             }
         }
@@ -2720,6 +2802,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let statique='';
         let type_retour='';
         let abstraite='';
+        let nullable='';
         /*
           arguments: []
           attrGroups: []
@@ -2735,6 +2818,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
           type: null
           visibility: "public"
         */
+        if(element.nullable){
+            nullable='?';
+        }
         if(element.isFinal){
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1877 #traite_method ' ,"element" : element}));
         }
@@ -2752,9 +2838,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }
         if(element.type){
             if(element.type.kind==='typereference'){
-                type_retour='type_retour(\''+element.type.name.replace(/\\/g,'\\\\')+'\')';
+                type_retour='type_retour(\''+nullable+element.type.name.replace(/\\/g,'\\\\')+'\')';
             }else if(element.type.kind==='name'){
-                type_retour='type_retour(\''+element.type.name.replace(/\\/g,'\\\\')+'\')';
+                type_retour='type_retour(\''+nullable+element.type.name.replace(/\\/g,'\\\\')+'\')';
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1897 #traite_method ' ,"element" : element}));
             }
@@ -2883,6 +2969,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let contenu='';
         let nom_fonction='';
         let les_arguments='';
+        let type_retour='';
         obj=this.#traite_element(element.name,niveau,element,tab_comm);
         if(obj.__xst === true){
             nom_fonction+=obj.__xva;
@@ -2903,10 +2990,20 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1098 #traite_function body' ,"element" : element}));
             }
         }
+        if(element.type){
+            if(element.type.kind==='typereference'){
+                type_retour='type_retour(\''+element.type.name.replace(/\\/g,'\\\\')+'\')';
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2979 #traite_closure ' ,"element" : element}));
+            }
+         
+        }
+        
         t+='fonction(';
         t+='definition(';
         t+='nom(' + nom_fonction + ')';
         t+=les_arguments;
+        t+=type_retour;
         t+='),';
         t+='contenu(\n';
         t+=contenu;
@@ -2930,10 +3027,14 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         for( var i=0 ; i < tab_comm.length ; i++ ){
             if(tab_comm[i].loc.end.offset <= position_de_fin){
                 commentaires_a_retirer.push(i);
+                var valeur = tab_comm[i].value;
                 if(tab_comm[i].kind === 'commentline'){
-                    t+='#( ' + (tab_comm[i].value.trim().substr(2).trim()) + ' )';
+                    t+='#( ' + (valeur.trim().substr(2).trim()) + ')';
                 }else{
-                    t+='#(' + (tab_comm[i].value.substr(2,tab_comm[i].value.length - 4)) + ')';
+                    if( valeur.substr(0,3)==='/**'){
+                     valeur='/*#'+valeur.substr(3);
+                    }
+                    t+='#(' + (valeur.substr(2,valeur.length - 4)) + ')';
                 }
             }
         }
@@ -2953,17 +3054,22 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             for( var i=0 ; i < tab_comm.length ; i++ ){
                 if(tab_comm[i].loc.end.offset <= position_de_debut){
                     commentaires_a_retirer.push(i);
+                    var valeur = tab_comm[i].value;
+
                     if(tab_comm[i].kind === 'commentline'){
-                        if(((tab_comm[i].value.match(/\(/g) || []).length) === ((tab_comm[i].value.match(/\)/g) || []).length)){
-                            t+='#( ' + (tab_comm[i].value.trim().substr(2).trim()) + ' )';
+                        if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
+                            t+='#( ' + (valeur.trim().substr(2).trim()) + ')';
                         }else{
-                            t+='#( ' + (tab_comm[i].value.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim()) + ' )';
+                            t+='#(' + (valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim()) + ')';
                         }
                     }else{
-                        if(((tab_comm[i].value.match(/\(/g) || []).length) === ((tab_comm[i].value.match(/\)/g) || []).length)){
-                            t+='#(' + (tab_comm[i].value.substr(2,tab_comm[i].value.length - 4)) + ')';
+                        if( valeur.substr(0,3)==='/**'){
+                         valeur='/*#'+valeur.substr(3);
+                        }
+                        if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
+                            t+='#(' + (valeur.substr(2,valeur.length - 4)) + ')';
                         }else{
-                            t+='#(' + (tab_comm[i].value.replace(/\(/g,'[').replace(/\)/g,']').substr(2,tab_comm[i].value.length - 4)) + ')';
+                            t+='#(' + (valeur.replace(/\(/g,'[').replace(/\)/g,']').substr(2,valeur.length - 4)) + ')';
                         }
                     }
                 }
@@ -2994,17 +3100,22 @@ class module_conversion_ast_de_php_parser_vers_rev1{
              && tab_comm[i].loc.end.offset < position_de_debut_elem
             ){
                 commentaires_a_retirer.push(i);
+                var valeur = tab_comm[i].value;
+                
                 if(tab_comm[i].kind === 'commentline'){
-                    if(((tab_comm[i].value.match(/\(/g) || []).length) === ((tab_comm[i].value.match(/\)/g) || []).length)){
-                        t+='#( ' + (tab_comm[i].value.trim().substr(2).trim()) + ' )';
+                    if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
+                        t+='#( ' + (valeur.trim().substr(2).trim()) + ')';
                     }else{
-                        t+='#( ' + (tab_comm[i].value.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim()) + ' )';
+                        t+='#(' + (valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim()) + ')';
                     }
                 }else{
-                    if(((tab_comm[i].value.match(/\(/g) || []).length) === ((tab_comm[i].value.match(/\)/g) || []).length)){
-                        t+='#(' + (tab_comm[i].value.substr(2,tab_comm[i].value.length - 4)) + ')';
+                    if( valeur.substr(0,3)==='/**'){
+                     valeur='/*#'+valeur.substr(3);
+                    }
+                    if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
+                        t+='#(' + (valeur.substr(2,valeur.length - 4)) + ')';
                     }else{
-                        t+='#(' + (tab_comm[i].value.replace(/\(/g,'[').replace(/\)/g,']').substr(2,tab_comm[i].value.length - 4)) + ')';
+                        t+='#(' + (valeur.replace(/\(/g,'[').replace(/\)/g,']').substr(2,valeur.length - 4)) + ')';
                     }
                 }
             }
@@ -3016,6 +3127,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     }
     /*
       =============================================================================================================
+      0300
     */
     #traite_element(element,niveau,parent,tab_comm){
         if(element === undefined){
@@ -3028,9 +3140,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             obj=this.#traite_commentaires_debut(element,niveau,parent,tab_comm);
             if(obj.__xst===true){
-              t+=obj.__xva;
+                t+=obj.__xva;
             }else{
-               return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2831 #traite_element ' ,"element" : parent?null:parent}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2831 #traite_element ' ,"element" : parent?null:parent}));
             }
         }
         switch (element.kind){
@@ -3038,15 +3150,33 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
             case 'nullkeyword' : t+='null';
                 break;
-            case 'boolean' : t+=element.raw;
+            case 'boolean' : 
+                if(element.raw==='false'){
+                    t+='faux';
+                }else{
+                    t+='vrai';
+                }
                 break;
             case 'number' : t+=element.value;
                 break;
             case 'name' : 
-                if(element.name.indexOf('\\')>=0){
-                     t+='valeur_constante(\''+element.name.replace(/\\/g,'\\\\')+'\')';
+                console.log('pour name, parent.kind='+parent.kind)
+                if(parent.kind==='array' || parent.kind==='bin' || parent.kind==='assign' || parent.kind==='unary' ){
+                    if(parent.type==='instanceof'){
+                        t+='\''+element.name.replace(/\\/g,'\\\\')+'\'';
+                    }else{
+                        if(element.name.indexOf('\\')>=0){
+                            t+='valeur_constante(\''+element.name.replace(/\\/g,'\\\\')+'\')';
+                        }else{
+                            t+=element.name;
+                        }
+                    }
                 }else{
-                     t+=element.name;
+                    if(element.name.indexOf('\\')>=0){
+                         t+='\''+element.name.replace(/\\/g,'\\\\')+'\'';
+                    }else{
+                         t+=element.name;
+                    }
                 }
                 break;
             case 'identifier' :
@@ -3676,7 +3806,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             default:
                 debugger;
                 /* ========================== */
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2724 #traite_ast0 default' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '3744 #traite_ast0 default' ,"element" : element}));
                 break;
                 
         }
