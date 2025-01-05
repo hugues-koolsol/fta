@@ -1827,7 +1827,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
                 }
             }
         }
-        t='(' + objCondition.__xva + '?' + objSiVrai.__xva + ':' + objSiFaux.__xva + ')';
+        t='(' + objCondition.__xva + ' ? ' + objSiVrai.__xva + ' : ' + objSiFaux.__xva + ')';
     }else if(tab[ind][2] === 'f' && tab[ind][1] === 'sql_inclure_source'){
         if(tab[ind][8] === 1 && tab[ind+1][2] === 'c'){
             t+='sql_inclure_source(' + tab[ind+1][1] + ')';
@@ -2175,7 +2175,6 @@ function php_traiteOperation(tab,id,niveau){
                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur 1649 dans php_traiteOperation '}));
                         }
                     }else{
-                        debugger;
                         return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '1347 fonction du premier paramètre non reconnue php_traiteOperation"' + tab[i][1] + '"'}));
                     }
                 }else{
@@ -2861,7 +2860,6 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
     var t='';
     var j=0;
     var obje={};
-    var textObj='';
     var l01=tab.length;
     var seuil_elements_dans_tableau=3;
     var commentaire='';
@@ -2878,24 +2876,34 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
     }
     for( j=id + 1 ; j < l01 ; j=tab[j][12] ){
         /* ✍ si on est au niveau +1 */
-        if(tab[j][1] === '' && tab[j][2] === 'f'){
-            nombre_elements_dans_tableau++;
-        }else if(tab[j][1] === '#' && tab[j][2] === 'f'){
+        nombre_elements_dans_tableau++;
+        if(tab[j][1] === '#' && tab[j][2] === 'f'){
             contient_un_commentaire=true;
             if(tab[j][13].indexOf('tbel') >= 0){
                 a_un_tbel=true;
             }
         }
+        
     }
     if(nombre_elements_dans_tableau > seuil_elements_dans_tableau){
         contient_un_commentaire=true;
     }
+    var tableauSortie=[];
+    var sortie='';
+    
     for( j=id + 1 ; j < tab.length && tab[j][3] > tab[id][3] ; j=tab[j][12] ){
 
-
+        sortie='';
         if(tab[j][1] === '#' && tab[j][2] === 'f'){
-            nombre_elements_dans_tableau=seuil_elements_dans_tableau + 1;
-            commentaire+=tab[j][13];
+            if(nombre_elements_dans_tableau>seuil_elements_dans_tableau){
+                if(a_un_tbel===false){
+                    sortie+=espacesn(true,niveau + 1);
+                }
+            }
+            sortie+='/*' + (traiteCommentaire2(tab[j][13],niveau+1,j)) + '*/'
+            tableauSortie.push(["commentaire" , sortie ]);
+            
+//            commentaire+=tab[j][13];
         }else if(tab[j][1] === 'format_court' && tab[j][2] === 'f'){
             format_court=true;
         }else if(tab[j][1] === '' && tab[j][2] === 'f'){
@@ -2908,7 +2916,6 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
                     if(tab[k][7] === j){
                         if(tab[k][1] === '#' && tab[k][2] === 'f'){
                             le_commentaire='/*' + (tab[k][13].trim().replace(/\n/g,'').replace(/\r/g,'')) + '*/';
-                            nombre_elements_dans_tableau=seuil_elements_dans_tableau + 1;
                         }else{
                             obje=php_traiteElement(tab,k,niveau + 2,options);
                             if(obje.__xst === true){
@@ -2923,46 +2930,51 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
                         }
                     }
                 }
-                textObj+=',';
+
                 if(a_un_tbel){
-                    textObj+=' ';
+                    sortie+=' ';
+                    
                 }else{
                     if(contient_un_commentaire === true){
-                        textObj+=espacesn(true,niveau + 1);
+                        sortie+=espacesn(true,niveau + 1);
                     }else{
-                        textObj+=' ';
+                        sortie+=' ';
                     }
                 }
                 if(valeur === '' && cle !== ''){
-                    textObj+=(le_commentaire + cle) + '';
+                    sortie+=(le_commentaire + cle) + '';
+                    
                 }else if(valeur !== '' && cle !== ''){
-                    textObj+=(le_commentaire + cle) + ' => ' + valeur + '';
+                    sortie+=(le_commentaire + cle) + ' => ' + valeur + '';
+                    
                 }else{
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2800 php_traiteDefinitionTableau problème clé valeur'}));
                 }
+                
+                tableauSortie.push(["element" , sortie ]);
+                
                 le_commentaire='';
             }else if(tab[j][8] === 1){
-                /* en php, i peut n'y avoir qu'une dimention sans cle => valeur array['a','b'] */
-                niveau+=2;
-                obje=php_traiteElement(tab,j + 1,niveau,options);
-                niveau-=2;
+                /* en php, il peut n'y avoir qu'une dimention sans cle => valeur array['a','b'] */
+                obje=php_traiteElement(tab,j + 1,niveau+2,options);
                 if(obje.__xst === true){
-                    textObj+=',';
+
+                    
                     if(a_un_tbel){
                         if(numero_enfant % 10 === 0){
-                            textObj+=espacesn(true,niveau + 1);
-                            textObj+='';
+                            sortie+=espacesn(true,niveau + 1);
                         }else{
-                            textObj+=' ';
+                            sortie+=' ';
                         }
                     }else{
                         if(contient_un_commentaire){
-                            textObj+=espacesn(true,niveau + 1);
+                            sortie+=espacesn(true,niveau + 1);
                         }else{
-                            textObj+=' ';
+                            sortie+=' ';
                         }
                     }
-                    textObj+=obje.__xva;
+                    sortie+=obje.__xva;
+                    tableauSortie.push(["element" , sortie] );
                 }else{
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2378 php_traiteDefinitionTableau il y a un problème'}));
                 }
@@ -2970,17 +2982,24 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
         }
         
     }
-    if(format_court===true){
-        t+='[';
-    }else{
-        t+='array(';
+    var tt='';
+    var dernier_element=true;
+    /* on démarre la lecture du tableau à la fin */
+    for(var i=tableauSortie.length-1;i>=0;i--){
+     if(tableauSortie[i][0]==='commentaire'){
+       tt=tableauSortie[i][1]+tt;
+     }else{
+       /* et on ne met pas de firgule après le dernier élément */
+       tt=tableauSortie[i][1]+(dernier_element===true?'':',')+tt;
+       dernier_element=false;
+     }
     }
-    if(textObj !== ''){
-        if(commentaire === ''){
-            t+=textObj.substr(1);
-        }else{
-            t+='/*' + commentaire + '*/' + (textObj.substr(1));
-        }
+    
+    
+    if(format_court===true){
+        t='['+tt;
+    }else{
+        t+='array('+tt;
     }
     if(a_un_tbel){
         if(numero_enfant >= 10){

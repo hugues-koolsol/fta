@@ -394,7 +394,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
     try{
         var startMicro = performance.now();
         var ast = JSON.parse(ret.__xva);
-        var obj = TransformAstPhpEnRev(ast,0,false);
+        var obj = TransformAstPhpEnRev(ast,0,null,false);
         if(obj.__xst === true){
             var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
             var matriceFonction = functionToArray2(tableau1.out,true,false,'');

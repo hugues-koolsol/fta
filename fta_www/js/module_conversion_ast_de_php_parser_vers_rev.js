@@ -63,7 +63,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
 
         if(element.what.kind === 'propertylookup' ){
             if(nomFonction.indexOf('element(') >= 0 && nomFonction.indexOf('nomf(') >= 0){
-                t+='appelf(' + nomFonction + les_parametres + ')';
+                if(nomFonction.substr(0,9)==='propriete'){
+                    t+=this.#remplace_nom_fonction2(nomFonction,les_parametres)
+                }else{
+                    t+='appelf(' + nomFonction + les_parametres + ')';
+                }
             }else{
                 if(element.what.what.kind === 'variable' && element.what.offset && element.what.offset.kind === 'identifier'){
                     t+='appelf( element($'+element.what.what.name+') , nomf('+element.what.offset.name+')' + les_parametres + ')';
@@ -79,6 +83,37 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         
         return({"__xst" : true ,"__xva" : t});
     }
+    /*
+      =============================================================================================================
+    */
+    #remplace_nom_fonction2(nomFonction,les_parametres){
+        let t='';
+        var tableau1 = iterateCharacters2(nomFonction);
+        var o = functionToArray2(tableau1.out,false,true,'');
+        if(o.__xst === true){
+            if(o.__xva[0][8]===1 && o.__xva[1][1]==='propriete' && o.__xva[1][2]==='f' && o.__xva[1][8]===2 ){
+                var _l_element='';
+                for(var j=2;j<o.__xva.length;j=o.__xva[j][12]){
+                   var tt=a2F1(o.__xva,1,false,j,o.__xva[1][10],[],null,true);
+                   if(tt.__xst===true){
+                       if(_l_element==''){
+                           _l_element=tt.__xva;
+                       }else{
+                           t+='appelf(element('+_l_element+'),nomf(' +tt.__xva+ ')' + les_parametres + ')';
+                       }
+                   }else{
+                       t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
+                   }
+                }
+            }else{
+                t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
+            }
+        }else{
+            debugger
+            t+='appelf(nomf(' + nomFonction + ')' + les_parametres + ')';
+        }
+        return t;
+    }        
     /*
       =============================================================================================================
     */
@@ -737,10 +772,14 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0526  #traite_new' ,"element" : element}));
         }
-        if(les_parametres===''){
-            les_parametres=',sans_arguments()';
-        }
-
+        /*#
+          la doc dit :        
+          If there are no arguments to be passed to the class's constructor, parentheses after the class name may be omitted. 
+          Moi, je mets systématiquement des parenthèses !
+          if(les_parametres===''){
+              les_parametres=',sans_arguments()';
+          }
+        */
         if(element.what.kind==='name'){
             if(element.what.name.indexOf('\\')>=0){
                 what='\''+element.what.name.replace(/\\/g,'\\\\')+'\'';
@@ -825,7 +864,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0759  #traite_retif' ,"element" : element}));
             }
         }else{
-            si_vrai='null';
+            si_vrai=condition;
         }
         obj=this.#traite_element(element.falseExpr,niveau,element,tab_comm);
         if(obj.__xst === true){
@@ -1015,17 +1054,17 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(obj.__xst === true){
                 nom+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0341 #traite_assign gauche' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0341 #traite_constant' ,"element" : element}));
             }
             obj=this.#traite_element(element.value,niveau,element,tab_comm);
             if(obj.__xst === true){
                 valeur+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0347 #traite_assign droite' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0347 #traite_constant' ,"element" : element}));
             }
             t+='nomc(' + nom + '),valeur(' + valeur + ')';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1518 #traite_assign il manque un gauche ou un droite' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1518 #traite_constant' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});        
         
@@ -1075,7 +1114,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(obj.__xst === true){
                 t+=visibility + obj.__xva + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_pre quoi' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_classconstant' ,"element" : element}));
             }
         }
         
@@ -1095,7 +1134,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             if(obj.__xst === true){
                 valeur=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_pre quoi' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_staticvariable' ,"element" : element}));
             }
           
         }
@@ -1103,7 +1142,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(obj.__xst === true){
             variable=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_pre quoi' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0764 #traite_staticvariable' ,"element" : element}));
         }
         
         t='static('+variable+','+valeur+')';
@@ -1347,7 +1386,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else if(contenu.substr(contenu.length-1,1)==='\n' || contenu.substr(contenu.length-1,1)==='\r'){
              contenu=contenu.substr(0,contenu.length-1);
             }
-            t+='nowdoc(\'' + element.label + '\',`' + contenu + '`)';
+            t+='nowdoc(\'' + element.label + '\',`' + contenu.replace(/`/g,'\\`') + '`)';
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1422,7 +1461,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
              contenu=contenu.substr(0,contenu.length-1);
             }
          
-            t+='heredoc(\'' + element.label + '\',`' + contenu + '`)';
+            t+='heredoc(\'' + element.label + '\',`' + contenu.replace(/`/g,'\\`') + '`)';
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1986,6 +2025,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0315 #traite_deftab ' ,"element" : element}));
             }
+            if(i===element.items.length-1){
+              les_elements+=this.#traite_commentaires_fin_tableau(element,niveau,parent,tab_comm);
+            }
         }
         if(les_elements.length > 1){
             les_elements=les_elements.substr(1);
@@ -1996,6 +2038,49 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         t+='defTab(' + format_court + les_elements + ')';
         return({"__xst" : true ,"__xva" : t});
     }
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_commentaires_fin_tableau(element,niveau,parent,tab_comm){
+        var t='';
+        var position_de_debut_bloc=parent.loc.start.offset;
+        var position_de_fin_bloc=parent.loc.end.offset;
+        var position_de_debut_elem=element.loc.start.offset;
+        var commentaires_a_retirer=[];
+        for( var i=0 ; i < tab_comm.length ; i++ ){
+            if(tab_comm[i].loc.end.offset < element.loc.end.offset
+             && tab_comm[i].loc.start.offset > element.loc.start.offset
+            ){
+                commentaires_a_retirer.push(i);
+                var valeur = tab_comm[i].value;
+                
+                if(tab_comm[i].kind === 'commentline'){
+                    if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
+                        t+='#( ' + (valeur.trim().substr(2).trim()) + ')';
+                    }else{
+                        t+='#(' + (valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim()) + ')';
+                    }
+                }else{
+                    if( valeur.substr(0,3)==='/**'){
+                     valeur='/*#'+valeur.substr(3);
+                    }
+                    if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
+                        t+='#(' + (valeur.substr(2,valeur.length - 4)) + ')';
+                    }else{
+                        t+='#(' + (valeur.replace(/\(/g,'[').replace(/\)/g,']').substr(2,valeur.length - 4)) + ')';
+                    }
+                }
+            }
+        }
+        for( var i = commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
+            tab_comm.splice(commentaires_a_retirer[i],1);
+        }
+        return t;
+    }
+    
+    
+    
     /*
       =============================================================================================================
     */
@@ -2257,7 +2342,19 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(element.right){
             obj=this.#traite_element(element.right,niveau,element,tab_comm);
             if(obj.__xst === true){
-                droite+=obj.__xva;
+                if(element.type==='instanceof'){
+                    if(element.right.kind==='name'){
+                        if(element.right.name.indexOf('\\')<0){
+                            droite+=element.right.name;
+                        }else{
+                            droite+=obj.__xva;
+                        }
+                    }else{
+                        droite+=obj.__xva;
+                    }
+                }else{
+                    droite+=obj.__xva;
+                }
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0335 #traite_bin droite' ,"element" : element}));
             }
@@ -2370,6 +2467,59 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         var rv=valeur_raw;
         var contenu = rv.substr(1,rv.length - 2);
         
+        /*
+         \\x     => ""   , ""    => '\\'   .'x'
+         aa\\x   => "aa" , ""    => 'aa'.'\\' .'x'
+         aa\\xaa => "aa" , "aa"  => 'aa\\' .'x' . 'aa'
+        */
+        
+/*        
+        var tabcarspec=['x','f','o']
+        for( var z in tabcarspec){
+            var car_a_trouver=tabcarspec[z];
+            var chaine_a_trouver='\\\\'+car_a_trouver;
+            if(contenu.indexOf(chaine_a_trouver)>=0 ){
+        //        return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
+                
+                var caractere='';
+                if(rv.substr(0,1)==='\''){
+                    var tableau=contenu.split(chaine_a_trouver);
+                    var tableau_a_concatener=[];
+                    for(var i=0;i<tableau.length;i++){
+                        if(i===tableau.length-1){
+                            if(tableau[i]===''){
+                            }else{
+                                var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
+                                if(tt.__xst===true){
+                                    tableau_a_concatener.push(tt.__xva);
+                                }else{
+                                    return(astphp_logerreur({"__xst" : false ,"__xme" : '1433 #traite_chaine_raw TO DO ' ,"element" : element}));
+                                }
+                            }
+                        }else{
+                            if(tableau[i]===''){
+                                tableau_a_concatener.push("'\\\\'");
+                                tableau_a_concatener.push("'"+car_a_trouver+"'");
+                            }else{
+                                var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
+                                if(tt.__xst===true){
+                                    tableau_a_concatener.push(tt.__xva);
+                                    tableau_a_concatener.push("'\\\\'");
+                                    tableau_a_concatener.push("'"+car_a_trouver+"'");
+                                }else{
+                                    return(astphp_logerreur({"__xst" : false ,"__xme" : '1447 #traite_chaine_raw' ,"element" : element}));
+                                }
+                            }
+                        }
+                    }
+                    t='concat('+tableau_a_concatener.join(',')+')';
+                    return({__xst:true , __xva : t});
+                }else{
+                    return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
+                }
+            }
+        }
+*/
         
         if(contenu.indexOf('\\\\o')>=0 ){
             return(astphp_logerreur({"__xst" : false ,"__xme" : '1308 #traite_chaine_raw TO DO ' ,"element" : element}));
@@ -2377,43 +2527,6 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(contenu.indexOf('\\\\f')>=0 ){
             return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
         }
-        
-        if(contenu.indexOf('\\\\x')>=0 ){
-            var caractere='';
-            if(rv.substr(0,1)==='\''){
-                var tableau=contenu.split('\\\\x');
-                /*
-                 \\x     => ""   , ""    => '\\'   .'x'
-                 aa\\x   => "aa" , ""    => 'aa'.'\\' .'x'
-                 aa\\xaa => "aa" , "aa"  => 'aa\\' .'x' . 'aa'
-                */
-                var tableau_a_concatener=[];
-                for(var i=0;i<tableau.length;i++){
-                    if(i===tableau.length-1){
-                        if(tableau[i]===''){
-                        }else{
-                            var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
-                            tableau_a_concatener.push(tt);
-                        }
-                    }else{
-                        if(tableau[i]===''){
-                            tableau_a_concatener.push("'\\\\'");
-                            tableau_a_concatener.push("'x'");
-                        }else{
-                            var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
-                            tableau_a_concatener.push(tt);
-                            tableau_a_concatener.push("'\\\\'");
-                            tableau_a_concatener.push("'x'");
-                        }
-                    }
-                }
-                t='concat('+tableau_a_concatener.join(',')+')';
-                return({__xst:true , __xva : t});
-            }else{
-                return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
-            }
-        }
-        
         
         var probablement_dans_une_regex = ( contenu.substr(0,1) === '/' &&  contenu.substr(contenu.length-1,1) === '/' ? ( true ) : ( false ) );
 
@@ -3160,7 +3273,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             case 'number' : t+=element.value;
                 break;
             case 'name' : 
-                console.log('pour name, parent.kind='+parent.kind)
+//                console.log('pour name, parent.kind='+parent.kind)
                 if(parent.kind==='array' || parent.kind==='bin' || parent.kind==='assign' || parent.kind==='unary' ){
                     if(parent.type==='instanceof'){
                         t+='\''+element.name.replace(/\\/g,'\\\\')+'\'';

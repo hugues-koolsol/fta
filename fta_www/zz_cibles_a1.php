@@ -399,6 +399,11 @@ function recupere_une_donnees_des_cibles($id){
    
    
    $chemin_fichier_acces_pour_bdd=realpath($dossier_racine.'/fta_inc/db/__liste_des_acces_bdd.php');
+   
+   $texte_chemin_base='INCLUDE_PATH.DIRECTORY_SEPARATOR.\'db\'.DIRECTORY_SEPARATOR.\'sqlite\'.DIRECTORY_SEPARATOR.\'system.db';
+   
+   
+   
 
    $contenu_fichier_acces_pour_bdd='';
    $contenu_fichier_acces_pour_bdd.='<'.'?php'.PHP_EOL;
@@ -406,9 +411,11 @@ function recupere_une_donnees_des_cibles($id){
    $contenu_fichier_acces_pour_bdd.=' \'id\'             => 1,'.PHP_EOL;
    $contenu_fichier_acces_pour_bdd.=' \'nom_bdd\'        => \'system.db\','.PHP_EOL;
    $contenu_fichier_acces_pour_bdd.=' \'fournisseur\'    => \'sqlite\','.PHP_EOL;
-   $contenu_fichier_acces_pour_bdd.=' \'initialisation\' => \'attach database "'.str_replace('\\','\\\\',$chemin_base_systeme).'" as "system.db"\','.PHP_EOL;
+   $contenu_fichier_acces_pour_bdd.=' \'initialisation\' => \'attach database "\'.'.$texte_chemin_base.'" as `system.db`;pragma journal_mode=WAL;pragma foreign_keys=ON;\','.PHP_EOL;
    $contenu_fichier_acces_pour_bdd.=' \'lien\' => null,'.PHP_EOL;
    $contenu_fichier_acces_pour_bdd.=');'.PHP_EOL;
+   
+   
    
 
    if($fd=fopen($chemin_fichier_acces_pour_bdd,'w')){
