@@ -328,7 +328,11 @@ function php_traite_Expr_FuncCall(element,niveau){
                 return(astphp_logerreur({"__xst" : false ,"__xme" : '0359  erreur php_traite_Expr_FuncCall' ,"element" : element}));
             }
         }else if("Identifier" === element.name.nodeType){
-            nomFonction=prefixStatic + element.name.name;
+            if(prefixStatic.indexOf('\\')>=0){
+                nomFonction='\''+prefixStatic.replace(/\\/g,'\\\\') + element.name.name+'\'';
+            }else{
+                nomFonction=prefixStatic + element.name.name;
+            }
         }else if(element.name.nodeType === "Expr_Variable"){
             nomFonction=prefixStatic + '$' + element.name.name;
         }else if(element.name.nodeType === "Name_FullyQualified"){
@@ -726,6 +730,7 @@ function php_traite_Expr_Closure(element,niveau){
     var contenu='';
     var type_retour='';
     var type_argument='';
+    var statique='';
 
     if(element.params && element.params.length > 0){
         var i=0;
@@ -740,11 +745,11 @@ function php_traite_Expr_Closure(element,niveau){
              }
             }
             
-            if(element.params[i].attrGroups.length>0){
+            if(element.params[i].attrGroups && element.params[i].attrGroups.length>0){
               return(astphp_logerreur({"__xst" : false ,"__xme" : '0620  erreur php_traite_Expr_Closure ' ,"element" : element}));
             }
             
-            if(element.params[i].hooks.length>0){
+            if(element.params[i].hooks && element.params[i].hooks.length>0){
               return(astphp_logerreur({"__xst" : false ,"__xme" : '0624  erreur php_traite_Expr_Closure ' ,"element" : element}));
             }
             
@@ -833,8 +838,7 @@ function php_traite_Expr_Closure(element,niveau){
         }
     }
     if(element.static !==false){
-        return(astphp_logerreur({"__xst" : false ,"__xme" : '0688  erreur php_traite_Expr_Closure ' ,"element" : element}));
-      
+        statique='statique()';
     }
     if(element.returnType){
         var obj = php_traite_Stmt_Expression(element.returnType,niveau,false,element);
@@ -847,6 +851,7 @@ function php_traite_Expr_Closure(element,niveau){
     }
     
     t='cloturée(';
+    t+=statique;
     t+=lesArguments;
     t+=type_retour;
     t+=les_utilisations;
@@ -1417,7 +1422,7 @@ function php_traite_chaine_raw(valeur_raw,element){
              aa\\xaa => "aa" , "aa"  => 'aa\\' .'x' . 'aa'
             */
      
-     
+/*     
     
     var tabcarspec=['x','f','o']
     for( var z in tabcarspec){
@@ -1464,7 +1469,7 @@ function php_traite_chaine_raw(valeur_raw,element){
             }
         }
     }
-
+*/
     
     var probablement_dans_une_regex = valeur_raw.substr(1,1) === '/' ? ( true ) : ( false );
     
@@ -1495,6 +1500,7 @@ function php_traite_chaine_raw(valeur_raw,element){
         */
         var nouvelle_chaine='';
         var i=l01;
+
         for( i=l01 ; i > 0 ; i-- ){
             if(rv.substr(i,1) === '\\'){
                 /* on remonte à partir du dernier caractère */
@@ -1581,6 +1587,7 @@ function php_traite_chaine_raw(valeur_raw,element){
                         if(rv.substr(i,1) === '\\'){
                             var c = nouvelle_chaine.substr(0,1);
                             if(c === '.'
+                             || c === '0'
                              || c === '-'
                              || c === 'd'
                              || c === 'f'
@@ -1713,7 +1720,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 /* aaa\bbb::ccc */
                 if(element.class.nodeType === 'Name' && element.name.nodeType === 'Identifier'){
                     if(element.class.name.indexOf('\\')>=0){
-                        if(parent.nodeType==='Expr_Array' || 'Expr_Ternary' === parent.nodeType || 'Expr_BinaryOp_' === parent.nodeType.substr(0,14) ){
+                        if(parent.nodeType==='Expr_Array' || 'Expr_Ternary' === parent.nodeType  || 'Arg' === parent.nodeType || 'Expr_BinaryOp_' === parent.nodeType.substr(0,14) ){
                             t+='valeur_constante(\'' + (element.class.name.replace(/\\/g,'\\\\')+ '::' + element.name.name)  + '\')';
                         }else{
                             t+='\'' + (element.class.name.replace(/\\/g,'\\\\')+ '::' + element.name.name)  + '\'';
@@ -2821,8 +2828,14 @@ function php_traite_Stmt_Class(element,niveau,options_traitement){
     if(element.extends){
         if(element.extends.nodeType==='Name'){
             etend+='\n' + esp0 + esp1 + ',étend('+element.extends.name+')';
+        }else if(element.extends.nodeType==='Name_FullyQualified'){
+            if(element.extends.name.indexOf('\\')>=0){
+                etend+='\n' + esp0 + esp1 + ',étend(\'\\\\'+element.extends.name.replace(/\\/g,'\\\\')+'\')';
+            }else{
+                etend+='\n' + esp0 + esp1 + ',étend(\'\\\\'+element.extends.name+'\')';
+            }
         }else{
-            return(astphp_logerreur({"__xst" : false ,"__xme" : '2573 dans php_traite_Stmt_Class' ,"element" : element}));
+            return(astphp_logerreur({"__xst" : false ,"__xme" : '2573 dans php_traite_Stmt_Class pour "'+element.extends.nodeType+'"' ,"element" : element}));
         }
     }
     

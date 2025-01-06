@@ -277,17 +277,19 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                     "element" : element
                 }));
             }
-            logerreur({"__xst" : false ,"__xme" : "ATTENTION, ce php contient du html en ligne qui n'est pas complet et qui est converti en echo !"});
+            var cle = php_construit_cle(10);
+            logerreur({"__xst" : false ,"__xme" : 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "'+cle+'"'});
             if(contenu.indexOf('<?') >= 0){
                 /*
                   il semble qu'il y a une erreur dans ce parseur contrairement à celui de nikki
                   une ligne html qui contient : <form id="boite_de_connexion" method="post"><? echo 'h';?></form>
-                  est prise dans le inline or le "short open tag" est vraiement problématique
+                  est prise dans le inline or le "short open tag" est un probléme
                   
                 */
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0151 les "tags php courts ne sont pas admis' ,"element" : element}));
             }
             if(contenu.toLowerCase().indexOf('<script') < 0){
+                t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "'+cle+'")';
                 t+='appelf(nomf(echo),p(\'' + (contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'))';
             }else{
                 /*
@@ -920,6 +922,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         var les_utilisations='';
         var contenu='';
         var type_retour='';
+        var statique ='';
         
         obj=this.#traite_arguments(element,niveau,parent,tab_comm,'argument');
         if(obj.__xst===true){
@@ -932,8 +935,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0805 #traite_closure byref' ,"element" : element}));
         }
         if(element.isStatic!==false){
-            return(this.#astphp_logerreur({"__xst" : true ,"__xme" : '#traite_closure isStatic false ' ,"element" : element}));
-            
+            statique='statique()'
         }
 
         if(element.nullable!==false){
@@ -1030,6 +1032,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         
 
         t='cloturée(';
+        t+=statique;
         t+=lesArguments;
         t+=type_retour;
         t+=les_utilisations;
@@ -1230,7 +1233,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 if(obj.__xst === true){
                     faire+=',' + obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0806  #traite_interface' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1235  #traite_interface' ,"element" : element}));
                 }
             }
          
@@ -1266,11 +1269,21 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(element.children && element.children.length>0){
          
             for(  i=0 ; i < element.children.length ; i++ ){
-                obj=this.#traite_element(element.children[i],niveau,element,tab_comm);
-                if(obj.__xst === true){
-                    faire+=',' + obj.__xva;
+
+                if(element.children[i].kind==='expressionstatement'){
+                    obj=this.#traite_element(element.children[i].expression,niveau,element,tab_comm);
+                    if(obj.__xst === true){
+                        faire+=',' + obj.__xva;
+                    }else{
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0806  #traite_namespace' ,"element" : element}));
+                    }
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0806  #traite_namespace' ,"element" : element}));
+                    obj=this.#traite_element(element.children[i],niveau,element,tab_comm);
+                    if(obj.__xst === true){
+                        faire+=',' + obj.__xva;
+                    }else{
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0806  #traite_namespace' ,"element" : element}));
+                    }
                 }
             }
          
@@ -1399,17 +1412,22 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     #traite_encapsedpart(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
+
         if(element.curly && element.curly===true){
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_encapsedpart curly non traité "' + (JSON.stringify(element)) + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1405 #traite_encapsedpart curly non traité "' + (JSON.stringify(element)) + '"' ,"element" : element}));
         }
         if(element.expression){
-            obj=this.#traite_element(element.expression,niveau,element,tab_comm);
-            if(obj.__xst === true){
-              t=obj.__xva;
+            if(element.expression.kind==='string' && element.expression.isDoubleQuote === false){
+              t+=element.expression.raw.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+
             }else{
-              return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_encapsedpart  type non prévu "' + (JSON.stringify(element)) + '"' ,"element" : element}));
+                obj=this.#traite_element(element.expression,niveau,element,tab_comm);
+                if(obj.__xst === true){
+                  t=obj.__xva;
+                }else{
+                  return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1412 #traite_encapsedpart' ,"element" : element}));
+                }
             }
-          
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1432,10 +1450,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                t+=','+'"{'+obj.__xva.replace(/\"/g,'\\"')+'}"';
                            }
                        }else{
-                           if(t!=='' ){
-                               t=t.substr(0,t.length-1)+obj.__xva.replace(/\"/g,'\\"')+'"';
+                           if(element.value[i].expression.kind==='variable'){
+                               t+=','+obj.__xva;
                            }else{
-                               t+=','+'"'+obj.__xva.replace(/\"/g,'\\"')+'"';
+                               t+=','+'"'+obj.__xva+'"';
                            }
                        }
                          
@@ -2519,14 +2537,14 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-*/
-        
         if(contenu.indexOf('\\\\o')>=0 ){
             return(astphp_logerreur({"__xst" : false ,"__xme" : '1308 #traite_chaine_raw TO DO ' ,"element" : element}));
         }
         if(contenu.indexOf('\\\\f')>=0 ){
             return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
         }
+*/
+        
         
         var probablement_dans_une_regex = ( contenu.substr(0,1) === '/' &&  contenu.substr(contenu.length-1,1) === '/' ? ( true ) : ( false ) );
 
@@ -2639,6 +2657,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                             if(rv.substr(i,1) === '\\'){
                                 var c = nouvelle_chaine.substr(0,1);
                                 if(c === '.'
+                                 || c === '0'
                                  || c === '-'
                                  || c === 'd'
                                  || c === '/'
@@ -3274,7 +3293,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
             case 'name' : 
 //                console.log('pour name, parent.kind='+parent.kind)
-                if(parent.kind==='array' || parent.kind==='bin' || parent.kind==='assign' || parent.kind==='unary' ){
+                if(parent.kind==='array' || parent.kind==='bin' || parent.kind==='assign' || parent.kind==='unary' || parent.kind==='retif' ){
                     if(parent.type==='instanceof'){
                         t+='\''+element.name.replace(/\\/g,'\\\\')+'\'';
                     }else{
