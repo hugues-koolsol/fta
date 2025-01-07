@@ -78,7 +78,7 @@ function shutdownHandler(){
 
 function mylog($error){
 
-    $ret=array( __xst => false, __xms => $error, __entree => (isset($GLOBALS['__entree'])?$GLOBALS['__entree']:null));
+    $ret=array( __xst => false, __xms => $error, __entree => (isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null));
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($ret,JSON_FORCE_OBJECT) ;
     /* on a capturé une erreur de type 500, on force la réponse en 200 */
@@ -136,7 +136,7 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
 
 
                 if(true === checkGroupAjaxPages()){
-                 
+
                     /* inclusion d'un fichier */
                     require_once(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
 

@@ -146,7 +146,7 @@ class traitements_sur_html{
                     if(attributs !== ''){
                         attributs+=',';
                     }
-                    attributs+='(\'' + (attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\',"' + (jsonDeHtml.attributes[attr].replace(/"/g,'&quot;')) + '")';
+                    attributs+='(\'' + attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\',"' + jsonDeHtml.attributes[attr].replace(/"/g,'&quot;') + '")';
                 }
             }
             /*
@@ -163,9 +163,9 @@ class traitements_sur_html{
                 t+=')';
             }else if(type.toLowerCase() === 'ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 if(jsonDeHtml.content[0].content){
-                    var chaineJsEquivalente = 'var a=' + (jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/')) + ';';
+                    var chaineJsEquivalente = 'var a=' + jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
                 }else{
-                    var chaineJsEquivalente = 'var a=' + (jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/')) + ';';
+                    var chaineJsEquivalente = 'var a=' + jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
                 }
                 tableau_des_javascript_a_convertir.push({"type" : "ldplusjsondanshtml" ,"__xva" : chaineJsEquivalente ,"cas" : "ldjson"});
                 var obj = convertit_source_javascript_en_rev(chaineJsEquivalente);
@@ -294,12 +294,12 @@ class traitements_sur_html{
                     }else if(typeParent === 'textarea' || typeParent === 'pre'){
                         /* on ne remplace pas les LF dans les textarea et les pre */
                         if(contenu !== ''){
-                            t='`' + (contenu.replace(/`/g,'\\`')) + '`';
+                            t='`' + contenu.replace(/`/g,'\\`') + '`';
                         }
                     }else{
                         contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
                         if(contenu !== ''){
-                            t+='\'' + (contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'';
+                            t+='\'' + contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'';
                         }
                     }
                 }else{
@@ -385,7 +385,7 @@ class traitements_sur_html{
                 if(contenu.indexOf('&') >= 0 || contenu.indexOf('>') >= 0 || contenu.indexOf('<') >= 0 || contenu.indexOf('"') >= 0){
                 }
                 if(contenu !== ''){
-                    contenu='"' + (contenu.replace(/"/g,'&quot;')) + '"';
+                    contenu='"' + contenu.replace(/"/g,'&quot;') + '"';
                 }
                 t+=contenu;
                 if(contenu != ''){
@@ -998,7 +998,7 @@ class traitements_sur_html{
             "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
             "redirect" : "follow" ,
             "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + (encodeURIComponent(JSON.stringify(donnees)))
+            "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
             var response= await fetch(url,en_entree).catch((dataerr) => {
@@ -1024,7 +1024,7 @@ class traitements_sur_html{
                 logerreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
-                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + (JSON.stringify(donnees)) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
+                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
             }
         }catch(e){
             console.log(e);
@@ -1219,7 +1219,7 @@ class traitements_sur_html{
             if(tab[j][7] === ind){
                 if(tab[j][2] === 'f'){
                     if(tab[j][1] === ''){
-                        lesProprietes+=' ' + tab[j+1][1] + '="' + (tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')) + '"';
+                        lesProprietes+=' ' + tab[j+1][1] + '="' + tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
                     }else{
                         if(indiceDebutJs === -1){
                             indiceDebutJs=j;
@@ -1301,14 +1301,14 @@ class traitements_sur_html{
             }
             t+=' ?>';
             return({
-                    "__xst" : true ,
-                    "__xva" : t ,
-                    "dansHead" : dansHead ,
-                    "dansBody" : dansBody ,
-                    "dansJs" : dansJs ,
-                    "dansPhp" : dansPhp ,
-                    "dansCss" : dansCss
-                });
+                "__xst" : true ,
+                "__xva" : t ,
+                "dansHead" : dansHead ,
+                "dansBody" : dansBody ,
+                "dansJs" : dansJs ,
+                "dansPhp" : dansPhp ,
+                "dansCss" : dansCss
+            });
         }else if(dansJs && tab[id][1] === 'source'){
             php_contexte_commentaire_html=false;
             ob=parseJavascript0(tab,id + 1,0);
@@ -1328,14 +1328,14 @@ class traitements_sur_html{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'}));
             }
             return({
-                    "__xst" : true ,
-                    "__xva" : t ,
-                    "dansHead" : dansHead ,
-                    "dansBody" : dansBody ,
-                    "dansJs" : dansJs ,
-                    "dansPhp" : dansPhp ,
-                    "dansCss" : dansCss
-                });
+                "__xst" : true ,
+                "__xva" : t ,
+                "dansHead" : dansHead ,
+                "dansBody" : dansBody ,
+                "dansJs" : dansJs ,
+                "dansPhp" : dansPhp ,
+                "dansCss" : dansCss
+            });
         }else{
             temp='';
             if(id === 0 || tab[id][1] === 'html' || tab[id][1] === 'html_dans_php'){
@@ -1377,7 +1377,7 @@ class traitements_sur_html{
                                   Ecriture de la propriété
                                   =====================================================
                                 */
-                                temp+=' ' + tab[i+1][1] + '="' + (tab[i+2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\')) + '"';
+                                temp+=' ' + tab[i+1][1] + '="' + tab[i+2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
                                 if(tab[i+1][1] == 'data-lang' && (tab[i+2][1] == 'fr' || tab[i+2][1] == 'en')){
                                     globale_LangueCourante=tab[i+2][1];
                                 }
@@ -1436,7 +1436,7 @@ class traitements_sur_html{
                                     if(tab[j][7] === i){
                                         if(tab[j][2] === 'f'){
                                             if(tab[j][1] === ''){
-                                                lesProprietes+=' ' + tab[j+1][1] + '="' + (tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;')) + '"';
+                                                lesProprietes+=' ' + tab[j+1][1] + '="' + tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
                                             }else{
                                                 if(indiceDebutJs === -1){
                                                     indiceDebutJs=j;

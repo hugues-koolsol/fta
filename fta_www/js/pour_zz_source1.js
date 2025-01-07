@@ -412,7 +412,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
         }
     }catch(e){
-        astphp_logerreur({"__xst" : false ,"__xme" : 'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + (JSON.stringify(e.stack).replace(/\\n/g,'\n<br />'))});
+        astphp_logerreur({"__xst" : false ,"__xme" : 'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')});
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
 }

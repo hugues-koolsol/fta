@@ -331,7 +331,7 @@
         };
         var regexpCache = Object.create(null);
         function wordsRegexp(words){
-            return(regexpCache[words] || (regexpCache[words]=new RegExp("^(?:" + (words.replace(/ /g,"|")) + ")$")));
+            return(regexpCache[words] || (regexpCache[words]=new RegExp("^(?:" + words.replace(/ /g,"|") + ")$")));
         }
         function codePointToString(code){
             /* ✍ UTF-16 Decoding */
@@ -820,7 +820,7 @@
           ✍ raise an unexpected token error.
         */
         pp$9.expect=function(type){
-        this.eat(type) || this.unexpected();
+            this.eat(type) || this.unexpected();
         };
         /* ✍ Raise an unexpected token error. */
         pp$9.unexpected=function(pos){
@@ -2402,8 +2402,8 @@
             "p_stat" : new TokContext("(",false) ,
             "p_expr" : new TokContext("(",true) ,
             "q_tmpl" : new TokContext("`",true,true,function(p){
-        return(p.tryReadTemplateToken());
-    }) ,
+                return(p.tryReadTemplateToken());
+            }) ,
             "f_stat" : new TokContext("function",false) ,
             "f_expr" : new TokContext("function",true) ,
             "f_expr_gen" : new TokContext("function",true,false,null,true) ,
@@ -5482,12 +5482,12 @@
             pp[Symbol.iterator]=function(){
                 var this$1$1=this;
                 return({
-                        "next" : function(){
-                            var token = this$1$1.getToken();
-                            return({"done" : token.type === types$1.eof ,"value" : token});
-                        
-                        }
-                    });
+                    "next" : function(){
+                        var token = this$1$1.getToken();
+                        return({"done" : token.type === types$1.eof ,"value" : token});
+                    
+                    }
+                });
             };
         }
         /*
@@ -5806,7 +5806,7 @@
                     return(this.finishToken(types$1.privateId,this.readWord1()));
                 }
             }
-            this.raise(this.pos,"Unexpected character '" + (codePointToString(code)) + "'");
+            this.raise(this.pos,"Unexpected character '" + codePointToString(code) + "'");
         };
         pp.getTokenFromCode=function(code){
             switch (code){
@@ -5923,7 +5923,7 @@
                 case 35 : /* ✍ '#' */
                     return(this.readToken_numberSign());
             }
-            this.raise(this.pos,"Unexpected character '" + (codePointToString(code)) + "'");
+            this.raise(this.pos,"Unexpected character '" + codePointToString(code) + "'");
         };
         pp.finishOp=function(type,size){
             var str = this.input.slice(this.pos,this.pos + size);

@@ -58,7 +58,7 @@ function convertSource(objMatSrc){
                     position_de_la_balise_source=i;
                 }else if(objMatSrc.__xva[i][1] == 'concatFichier'){
                 }else{
-                    return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : l\'élément ne doit pas se trouver là ' + (JSON.stringify(objMatSrc.__xva[i]))}));
+                    return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[i])}));
                 }
             }
         }
@@ -248,8 +248,8 @@ function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommen
             if(tab1[i] != tab2[i]){
                 global_messages.lines.push(i);
                 document.getElementById('global_messages').innerHTML+='<div class="yywarning">différence dans des sources en ligne ' + (i + 1) + '</div>';
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">' + (tab1[i].replace(/ /g,'░')) + '</div>';
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">' + (tab2[i].replace(/ /g,'░')) + '</div>';
+                document.getElementById('global_messages').innerHTML+='<div class="yywarning">' + tab1[i].replace(/ /g,'░') + '</div>';
+                document.getElementById('global_messages').innerHTML+='<div class="yywarning">' + tab2[i].replace(/ /g,'░') + '</div>';
                 if(comparaisonSourcesSansCommentairesOK === true){
                     document.getElementById('global_messages').innerHTML+=lienReprendre;
                 }
@@ -265,7 +265,7 @@ function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommen
         for( i=0 ; goOn && i < tab1.length && i < tab2.length ; i=i + 1 ){
             if(tab1[i] != tab2[i]){
                 global_messages.lines.push(i);
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">ligne : ' + (i + 1) + '<br />' + (replaceAll(tab1[i],' ','░')) + '<br />' + (replaceAll(tab2[i],' ','░')) + '</div>';
+                document.getElementById('global_messages').innerHTML+='<div class="yywarning">ligne : ' + (i + 1) + '<br />' + replaceAll(tab1[i],' ','░') + '<br />' + replaceAll(tab2[i],' ','░') + '</div>';
                 goOn=false;
             }
         }
@@ -400,8 +400,8 @@ function enregistrer2(){
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
                 }
             }else{
-                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + (JSON.stringify(compacteOriginal)) + '</b>';
-                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + (JSON.stringify(compacteReecrit)) + '</b>';
+                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
+                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
             }
             var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true,false);
         }else{

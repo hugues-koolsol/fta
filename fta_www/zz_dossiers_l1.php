@@ -1,11 +1,9 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once('aa_include.php');
-initialiser_les_services(true,true);
-/* sess,bdd*/
+initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-
-if(!isset($_SESSION[APP_KEY]['cible_courante'])){
+if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
     ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -33,14 +31,13 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_51.php');
     /*
-    SELECT 
-    `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
-     FROM b1.tbl_dossiers T0
-    WHERE (`T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
-
+      SELECT 
+      `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
+      FROM b1.tbl_dossiers T0
+      WHERE (`T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+      
     */
     /*sql_inclure_fin*/
-    
     $tt=sql_51(array( 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if($tt[__xst] === false){
@@ -50,7 +47,7 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
 
     }
 
-    for($i=0;($i < count($tt[__xva]));$i++){
+    for($i=0;$i < count($tt[__xva]);$i++){
 
         if($tt[__xva][$i]['T0.chp_nom_dossier'] !== '/'){
 
@@ -87,18 +84,17 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_52.php');
         /*
-        
-        INSERT  OR IGNORE INTO b1.`tbl_dossiers`(
-            `chx_cible_dossier` , 
-            `chp_nom_dossier`
-        ) VALUES (
-            :chx_cible_dossier , 
-            :chp_nom_dossier
-        );
-
+          
+          INSERT  OR IGNORE INTO b1.`tbl_dossiers`(
+          `chx_cible_dossier` , 
+          `chp_nom_dossier`
+          ) VALUES (
+          :chx_cible_dossier , 
+          :chp_nom_dossier
+          );
+          
         */
         /*sql_inclure_fin*/
-        
         $tt=sql_52($tableau_a_inserer);
 
         if($tt[__xst] === true){
@@ -244,13 +240,17 @@ $o1.='    <h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_
 $__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
-if(isset($_GET['button_chercher'])){
- $__xpage=0;
-}else{
- $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
-}
-$__nbEnregs=0;
 
+if(isset($_GET['button_chercher'])){
+
+    $__xpage=0;
+
+}else{
+
+    $__xpage=(int)($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']);
+}
+
+$__nbEnregs=0;
 $chi_id_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_dossier',BNF);
 $chp_nom_dossier=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_dossier',BNF);
 $autofocus='chi_id_dossier';
@@ -268,41 +268,36 @@ if($chi_id_dossier != ''){
 $o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chi_id_dossier">id dossier</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_dossier')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.($autofocus == 'chi_id_dossier' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_nom_dossier">nom</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_dossier')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_dossier' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
-
 $o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
-
 $o1.='</form>'.PHP_EOL;
-
-
-$__debut=$__xpage*($__nbMax);
-
+$__debut=$__xpage*$__nbMax;
 sql_inclure_reference(53);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_53.php');
 /*
-SELECT 
-`T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
- FROM b1.tbl_dossiers T0
-WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier 
- AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier 
- AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
- ORDER BY  `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;
-*/ 
+  SELECT 
+  `T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
+  FROM b1.tbl_dossiers T0
+  WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier 
+  AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier 
+  AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
+  ORDER BY  `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;
+*/
 /*sql_inclure_fin*/
-
 $tt=sql_53(array(
     'T0_chi_id_dossier' => $chi_id_dossier,
     'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_nom_dossier' => (($chp_nom_dossier === NULL)?$chp_nom_dossier:(($chp_nom_dossier === '')?'':'%'.$chp_nom_dossier.'%')),
+    'T0_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%'.$chp_nom_dossier.'%')),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
-    'page_courante' => BNF));
+    'page_courante' => BNF
+));
 
 if($tt[__xst] === false){
 
@@ -322,7 +317,6 @@ $__nbEnregs=$tt['nombre'];
 $consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
 $boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.PHP_EOL;
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_haut);
-
 $__lsttbl='';
 $__lsttbl.='  <thead><tr>';
 $__lsttbl.='<th>action</th>';
@@ -340,6 +334,7 @@ foreach($tt[__xva] as $k0 => $v0){
         $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">🗑</a>';
 
     }else{
+
         $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
         $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
     }
@@ -373,4 +368,3 @@ $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $j
 $o1.=html_footer1($par);
 print($o1);
 $o1='';
-?>

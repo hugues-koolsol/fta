@@ -124,7 +124,7 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
             if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                 if(compacteOriginal.__xva == compacteReecrit.__xva){
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + (strToHtml(compacteOriginal.__xva)) + '</textarea>';
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>';
                     logerreur({"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement});
                 }else{
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
@@ -133,8 +133,8 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
                 }
             }else{
-                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + (JSON.stringify(compacteOriginal)) + '</b>';
-                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + (JSON.stringify(compacteReecrit)) + '</b>';
+                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
+                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
             }
         }
         var endMicro = performance.now();
@@ -144,9 +144,9 @@ function transformLeRev(autoriser_constante_dans_la_racine=false){
         var difonctionReecriteAvecRetour1 = document.createElement('pre');
         difonctionReecriteAvecRetour1.style.fontSize='0.9em';
         if(fonctionReecriteAvecEtColoration1.__xst === true){
-            difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr /><textarea class="txtar1" rows="10">' + (strToHtml(fonctionReecriteAvecEtColoration1.__xva)) + '</textarea>';
+            difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr /><textarea class="txtar1" rows="10">' + strToHtml(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
         }else{
-            difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:<textarea class="txtar1" rows="10">' + (strToHtml(fonctionReecriteAvecRetour1.message)) + '</textarea>';
+            difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:<textarea class="txtar1" rows="10">' + strToHtml(fonctionReecriteAvecRetour1.message) + '</textarea>';
         }
         document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
         var t0 = document.createElement('div');

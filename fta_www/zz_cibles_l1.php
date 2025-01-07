@@ -1,8 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once('aa_include.php');
-initialiser_les_services(true,true);
-
+initialiser_les_services( /*session*/ true, /*bdd*/ true);
 /*
   =====================================================================================================================
 */
@@ -16,7 +15,7 @@ if((isset($_GET['__action'])) && ('__selectionner_cette_cible' === $_GET['__acti
 
     }
 
-    $__id=((isset($_GET['__id']))?((is_numeric($_GET['__id']))?(int)($_GET['__id']):0):0);
+    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
 
     if($__id !== 0){
 
@@ -24,14 +23,13 @@ if((isset($_GET['__action'])) && ('__selectionner_cette_cible' === $_GET['__acti
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_34.php');
         /*
-        SELECT 
-        `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
-         FROM b1.tbl_cibles T0
-        WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
-
+          SELECT 
+          `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
+          FROM b1.tbl_cibles T0
+          WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
+          
         */
         /*sql_inclure_fin*/
-        
         $tt=sql_34(array( 'T0_chi_id_cible' => $__id));
 
         if(($tt[__xst] === true) && (count($tt[__xva]) === 1)){
@@ -63,14 +61,17 @@ $o1.='<h1>Liste des systèmes cibles</h1>';
 $__nbMax=$_SESSION[APP_KEY]['__parametres_utilisateurs'][BNF]['nombre_de_lignes']??20;
 $__debut=0;
 $__xpage=recuperer_et_sauvegarder_les_parametres_de_recherche('__xpage',BNF);
+
 if(isset($_GET['button_chercher'])){
- $__xpage=0;
+
+    $__xpage=0;
+
 }else{
- $__xpage=(int)$_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'];
+
+    $__xpage=(int)($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']);
 }
+
 $__nbEnregs=0;
-
-
 $chi_id_cible=recuperer_et_sauvegarder_les_parametres_de_recherche('chi_id_cible',BNF);
 $chp_nom_cible=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_nom_cible',BNF);
 $chp_dossier_cible=recuperer_et_sauvegarder_les_parametres_de_recherche('chp_dossier_cible',BNF);
@@ -99,54 +100,49 @@ if($chi_id_cible != ''){
 $o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chi_id_cible">id cible</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_cible" id="chi_id_cible"   value="'.enti1($chi_id_cible).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_cible')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_cible" id="chi_id_cible"   value="'.enti1($chi_id_cible).'"  size="8" maxlength="32"  '.($autofocus == 'chi_id_cible' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_nom_cible">nom</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_cible" id="chp_nom_cible"   value="'.enti1($chp_nom_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_cible')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_cible" id="chp_nom_cible"   value="'.enti1($chp_nom_cible).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_cible' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_dossier_cible">dossier</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_dossier_cible" id="chp_dossier_cible"   value="'.enti1($chp_dossier_cible).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_dossier_cible')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_dossier_cible" id="chp_dossier_cible"   value="'.enti1($chp_dossier_cible).'"  size="8" maxlength="64"  '.($autofocus == 'chp_dossier_cible' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_commentaire_cible">commentaire</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_commentaire_cible" id="chp_commentaire_cible"   value="'.enti1($chp_commentaire_cible).'"  size="8" maxlength="64" '.(($autofocus == 'chp_commentaire_cible')?'autofocus="autofocus"':'').'  />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_commentaire_cible" id="chp_commentaire_cible"   value="'.enti1($chp_commentaire_cible).'"  size="8" maxlength="64" '.($autofocus == 'chp_commentaire_cible' ? 'autofocus="autofocus"' : '').'  />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
-
 $o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
-
 $o1.=' </form>'.PHP_EOL;
-$__debut=$__xpage*($__nbMax);
-
+$__debut=$__xpage*$__nbMax;
 sql_inclure_reference(33);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_33.php');
 /*
-SELECT 
-`T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
- FROM b1.tbl_cibles T0
-WHERE (`T0`.`chi_id_cible` = :T0_chi_id_cible
- AND `T0`.`chp_nom_cible` LIKE :T0_chp_nom_cible
- AND `T0`.`chp_dossier_cible` LIKE :T0_chp_dossier_cible
- AND `T0`.`chp_commentaire_cible` LIKE :T0_chp_commentaire_cible)
- ORDER BY  `T0`.`chi_id_cible` ASC
- LIMIT :quantitee OFFSET :debut ;
-
+  SELECT 
+  `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
+  FROM b1.tbl_cibles T0
+  WHERE (`T0`.`chi_id_cible` = :T0_chi_id_cible
+  AND `T0`.`chp_nom_cible` LIKE :T0_chp_nom_cible
+  AND `T0`.`chp_dossier_cible` LIKE :T0_chp_dossier_cible
+  AND `T0`.`chp_commentaire_cible` LIKE :T0_chp_commentaire_cible)
+  ORDER BY  `T0`.`chi_id_cible` ASC
+  LIMIT :quantitee OFFSET :debut ;
+  
 */
 /*sql_inclure_fin*/
-
 $tt=sql_33(array(
     'T0_chi_id_cible' => $chi_id_cible,
-    'T0_chp_nom_cible' => (($chp_nom_cible === NULL)?$chp_nom_cible:(($chp_nom_cible === '')?'':'%'.$chp_nom_cible.'%')),
-    'T0_chp_dossier_cible' => (($chp_dossier_cible === NULL)?$chp_dossier_cible:(($chp_dossier_cible === '')?'':'%'.$chp_dossier_cible.'%')),
-    'T0_chp_commentaire_cible' => (($chp_commentaire_cible === NULL)?$chp_commentaire_cible:(($chp_commentaire_cible === '')?'':'%'.$chp_commentaire_cible.'%')),
+    'T0_chp_nom_cible' => ($chp_nom_cible === null ? $chp_nom_cible : ($chp_nom_cible === '' ? '' : '%'.$chp_nom_cible.'%')),
+    'T0_chp_dossier_cible' => ($chp_dossier_cible === null ? $chp_dossier_cible : ($chp_dossier_cible === '' ? '' : '%'.$chp_dossier_cible.'%')),
+    'T0_chp_commentaire_cible' => ($chp_commentaire_cible === null ? $chp_commentaire_cible : ($chp_commentaire_cible === '' ? '' : '%'.$chp_commentaire_cible.'%')),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
-    'page_courante' => BNF));
-    
-    
-//echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['sql0'] , true ) . '</pre>' ; exit(0);
+    'page_courante' => BNF
+));
+/* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['sql0'] , true ) . '</pre>' ; exit(0);*/
 
 if($tt[__xst] === false){
 
@@ -164,10 +160,10 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='';
-$consUrlRedir.=(($chi_id_cible !== '')?'&amp;chi_id_cible='.rawurlencode($chi_id_cible):'');
-$consUrlRedir.=(($chp_nom_cible !== '')?'&amp;chp_nom_cible='.rawurlencode($chp_nom_cible):'');
-$consUrlRedir.=(($chp_dossier_cible !== '')?'&amp;chp_dossier_cible='.rawurlencode($chp_dossier_cible):'');
-$consUrlRedir.=(($chp_commentaire_cible !== '')?'&amp;chp_nom_source='.rawurlencode($chp_commentaire_cible):'');
+$consUrlRedir.=($chi_id_cible !== '' ? '&amp;chi_id_cible='.rawurlencode($chi_id_cible) : '');
+$consUrlRedir.=($chp_nom_cible !== '' ? '&amp;chp_nom_cible='.rawurlencode($chp_nom_cible) : '');
+$consUrlRedir.=($chp_dossier_cible !== '' ? '&amp;chp_dossier_cible='.rawurlencode($chp_dossier_cible) : '');
+$consUrlRedir.=($chp_commentaire_cible !== '' ? '&amp;chp_nom_source='.rawurlencode($chp_commentaire_cible) : '');
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>');
 $lsttbl='';
 $lsttbl.='<thead><tr>';
@@ -184,9 +180,6 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='<td data-label="" style="text-align:left!important;">';
     $lsttbl.='<div class="yyflex1">';
     $lsttbl.=' <a class="yyinfo" href="zz_cibles_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_cible'].'" title="modifier">✎</a>';
-    /*✎ #9998*/
-    /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v0 , true ) . '</pre>' ; exit(0);*/
-    /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);*/
 
     if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
@@ -224,10 +217,9 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl.='<td data-label="etat" style="text-align:center;">';
     $listeDesEtats='';
 
-    if(!is_dir($dossier)){
+    if(!(is_dir($dossier))){
 
         $listeDesEtats.='Le dossier n\'existe pas ';
-        /*   $lsttbl.=' <a class="yyinfo" href="zz_cibles_l1.php?__action=__creation_dossier&amp;__id='.$v0['T0.chi_id_cible'].'" title="créer le dossier">📁</a>';*/
 
     }else{
 
@@ -270,4 +262,3 @@ $o1='';
 $o1.=html_footer1($par);
 print($o1);
 $o1='';
-?>

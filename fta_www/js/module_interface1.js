@@ -61,8 +61,8 @@ class interface1{
             });
         this.#div_des_positions_du_curseur=document.createElement('div');
         this.#div_des_positions_du_curseur.id='div_des_positions_du_curseur';
-        this.#div_des_positions_du_curseur.setAttribute('style', 'position:absolute;top:60px;left:0px;background:white;display:inline-block;min-height:12px!important;line-height:12px;');
-        this.#div_des_positions_du_curseur.innerHTML='hello';
+        this.#div_des_positions_du_curseur.setAttribute('style','position:absolute;top:60px;left:0px;background:white;display:inline-block;min-height:12px!important;line-height:12px;');
+        this.#div_des_positions_du_curseur.innerHTML='';
         document.getElementsByTagName('body')[0].appendChild(this.#div_des_positions_du_curseur);
     }
     /* function nom_de_la_variable */
@@ -108,7 +108,6 @@ class interface1{
       on remplir_et_afficher_les_messages1
     */
     remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
-        this.reactiver_les_boutons1();
         var i=0;
         var affichagesPresents=false;
         var zon = document.getElementById(nomZone);
@@ -204,6 +203,7 @@ class interface1{
         }
         if(zon.innerHTML !== ''){
             zon.style.visibility='visible';
+            this.reactiver_les_boutons1();
         }
     }
     /*
@@ -222,7 +222,7 @@ class interface1{
             "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
             "redirect" : "follow" ,
             "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + (encodeURIComponent(JSON.stringify(donnees)))
+            "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
             var response= await fetch(url,en_entree).catch((err) => {
@@ -250,7 +250,7 @@ class interface1{
                 logerreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
-                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + (JSON.stringify(donnees)) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
+                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
             }
         }catch(e){
             console.log(e);
@@ -275,7 +275,7 @@ class interface1{
         var jsn1 = JSON.parse(parametres);
         if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
             var paramatresModale={"__champs_texte_a_rapatrier" : jsn1['__champs_texte_a_rapatrier'] ,"__nom_champ_dans_parent" : jsn1['__nom_champ_dans_parent']};
-            this.global_modale2_iframe.src=(jsn1['__url']) + '?__parametres_choix=' + (encodeURIComponent(JSON.stringify(paramatresModale)));
+            this.global_modale2_iframe.src=(jsn1['__url']) + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale));
             this.global_modale2.showModal();
         }
     }
@@ -452,7 +452,7 @@ class interface1{
         var resultat = window.prompt('aller à la position',1);
         if(resultat && isNumeric(resultat)){
             var a = document.getElementById(nom_textarea);
-            if(a.rows<10 || a.getBoundingClientRect().height<160){
+            if(a.rows < 10 || a.getBoundingClientRect().height < 160){
                 a.rows="100";
             }
             a.focus();
@@ -536,6 +536,79 @@ class interface1{
     }
     /*
       =============================================================================================================
+      quand on clique sur un lien javascript, , le traitement devrait être immédiat,
+      On le réaffiche 300 ms apres
+      =============================================================================================================
+    */
+    masquer_les_boutons(){
+        var refBody = document.getElementsByTagName('body')[0];
+        var lsta1 = refBody.getElementsByTagName('a');
+        for( var i=0 ; i < lsta1.length ; i++ ){
+            if(lsta1[i].href){
+                try{
+                    if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+                    }else{
+                        lsta1[i].classList.add('yyunset_temporaire');
+                    }
+                }catch(e){
+                }
+            }
+        }
+    }
+    reference_bouton_attendre=null;
+    /*
+      =============================================================================================================
+      on action_quand_click_sur_lien_javascript
+    */
+    action_quand_click_sur_lien_javascript(e){
+        var attendre_message_avant_reactivation=false;
+        try{
+            if(e.target.getAttribute('data-attendre_message') && e.target.getAttribute('data-attendre_message') === 'oui'){
+                attendre_message_avant_reactivation=true;
+                __gi1.reference_bouton_attendre=e.target;
+                __gi1.masquer_les_boutons();
+            }
+            e.target.classList.add("yyunset_temporaire");
+        }catch(e1){
+        }
+        if(attendre_message_avant_reactivation === false){
+            setTimeout(function(){
+                    /*
+                      Normalement, l'affichage des messages supprime les yyunset_temporaire
+                      mais on ne sait jamais
+                    */
+                    var lstb1 = document.getElementsByClassName("yyunset_temporaire");
+                    var i=0;
+                    for( i=0 ; i < lstb1.length ; i++ ){
+                        lstb1[i].classList.remove('yyunset_temporaire');
+                    }
+                },300);
+        }
+    }
+    /*
+      =============================================================================================================
+      on colorier_le_bouton
+    */
+    #colorier_le_bouton(a){
+        __gi1.class_list_avant=a.className;
+        __gi1.element_a_reactiver=a;
+        var a_une_erreur=false;
+        var lst = document.getElementById('zone_global_messages').getElementsByTagName('div');
+        for( var i=0 ; i < lst.length ; i++ ){
+            if(lst[i].className.indexOf('yyerreur') >= 0){
+                a_une_erreur=true;
+                break;
+            }
+        }
+        if(a_une_erreur === true){
+            a.className='yyerreur';
+            a.style.zoom=1.3;
+        }else{
+            a.className='yysucces';
+        }
+    }
+    /*
+      =============================================================================================================
       on reactiver_les_boutons1
     */
     reactiver_les_boutons1(){
@@ -564,10 +637,11 @@ class interface1{
         }
         var lsta1 = refBody.getElementsByTagName('a');
         for( i=0 ; i < lsta1.length ; i++ ){
-            if(lsta1[i].href && typeof lsta1[i].href === 'string' && !(lsta1[i].href.indexOf('javascript') >= 0)){
-                if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
-                }else{
-                    lsta1[i].classList.remove("yyunset");
+            if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+            }else{
+                lsta1[i].classList.remove("yyunset_temporaire");
+                if(__gi1.reference_bouton_attendre === lsta1[i]){
+                    this.#colorier_le_bouton(lsta1[i]);
                 }
             }
         }
@@ -652,29 +726,6 @@ class interface1{
             }
             this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
         }
-    }
-    /*
-      =============================================================================================================
-      quand on clique sur un lien javascript, , le traitement devrait être immédiat,
-      On le réaffiche 300 ms apres
-      =============================================================================================================
-    */
-    action_quand_click_sur_lien_javascript(e){
-        try{
-            e.target.classList.add("yyunset_temporaire");
-        }catch(e1){
-        }
-        setTimeout(function(){
-                /*
-                  Normalement, l'affichage des messages supprime les yyunset_temporaire
-                  mais on ne sait jamais
-                */
-                var lstb1 = document.getElementsByClassName("yyunset_temporaire");
-                var i=0;
-                for( i=0 ; i < lstb1.length ; i++ ){
-                    lstb1[i].classList.remove('yyunset_temporaire');
-                }
-            },300);
     }
     /*
       =============================================================================================================
@@ -881,7 +932,7 @@ class interface1{
         var a = document.getElementById(nom_de_la_textarea);
         a.focus();
         if(a.selectionStart === a.selectionEnd){
-            var nouveau_source = (a.value.substr(0,a.selectionStart)) + '#()' + (a.value.substr(a.selectionStart));
+            var nouveau_source = a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart);
             a.value=nouveau_source;
             this.formatter_le_source_rev(nom_de_la_textarea);
         }
@@ -1618,7 +1669,7 @@ class interface1{
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = APP_KEY + '_biscuit' + '=' + (encodeURIComponent(JSON.stringify(t))) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
+                    var cookieString = APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;
@@ -1718,9 +1769,9 @@ class interface1{
     #mouse_up_sur_editeur1(e){
         var zoneSource = document.getElementById(e.target.id);
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
-        var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10)+document.documentElement.scrollTop-10)+'px';
-        this.#div_des_positions_du_curseur.style.left=(document.documentElement.scrollLeft)+'px';
+        var ttt = zoneSource.getBoundingClientRect();
+        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10) + document.documentElement.scrollTop - 10) + 'px';
+        this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         return false;
     }
     /*
@@ -1746,12 +1797,10 @@ class interface1{
         var tabtext=[];
         var elem=this.#global_tableau_des_textareas[e.target.id];
         var zoneSource = document.getElementById(e.target.id);
-        
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
-        var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10)+document.documentElement.scrollTop-10)+'px';
-        this.#div_des_positions_du_curseur.style.left=(document.documentElement.scrollLeft)+'px';
-        
+        var ttt = zoneSource.getBoundingClientRect();
+        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10) + document.documentElement.scrollTop - 10) + 'px';
+        this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         if(e.keyCode === 36){
             /* touche home : on décale le scroll au début et toute la page aussi */
             zoneSource.scrollTo({"left" : 0});

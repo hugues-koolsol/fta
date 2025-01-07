@@ -1,4 +1,5 @@
 "use strict";
+
 /*
   =====================================================================================================================
 */
@@ -23,12 +24,12 @@ function transform_text_area_rev_en_html(nom_de_la_textarea_rev,nom_de_la_textar
         var obj2 = __module_html1.tabToHtml1(obj1.__xva,0,false,0);
         if(obj2.__xst === true){
             document.getElementById(nom_de_la_textarea_html).value=obj2.__xva;
-            asthtml_logerreur({ "__xst" : true , "__xme" : 'html produit' });
+            asthtml_logerreur({"__xst" : true ,"__xme" : 'html produit'});
         }else{
-            asthtml_logerreur({ "__xst" : false , "__xme" : 'erreur de reconstruction du html' });
+            asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du html'});
         }
     }else{
-        asthtml_logerreur({ "__xst" : false , "__xme" : 'erreur pour le rev' });
+        asthtml_logerreur({"__xst" : false ,"__xme" : 'erreur pour le rev'});
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
 }
@@ -42,7 +43,7 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
         options_json['zone_source']=nom_de_la_textarea;
     }catch(e){
         console.log(e);
-        asthtml_logerreur({ "__xst" : false , "__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option' });
+        asthtml_logerreur({"__xst" : false ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'});
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
         return;
     }

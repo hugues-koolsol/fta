@@ -2,9 +2,8 @@
 define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services(true,true);
-/* sess,bdd*/
 
-if(!isset($_SESSION[APP_KEY]['cible_courante'])){
+if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
     ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -18,11 +17,13 @@ if((isset($_GET['supprimer_tout'])) && ($_GET['supprimer_tout'] === '1')){
     sql_inclure_reference(14);
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_14.php');
-    /* === ATTENTION === 
-Le fichier des requêtes sql js est à regénérer et/ou à intégrer 
-*/
+    /*
+      
+      DELETE FROM b1.tbl_revs
+      WHERE `chx_cible_rev` = :chx_cible_rev ;
+      
+    */
     /*sql_inclure_fin*/
-    
     $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if($tt[__xst] === false){
@@ -80,60 +81,90 @@ if($chp_nom_source1 != ''){
 
     $autofocus='chp_nom_source1';
 
-}else if($chp_provenance_rev != ''){
+}else{
 
-    $autofocus='chp_provenance_rev';
 
-}else if($chp_nom_source2 != ''){
+    if($chp_provenance_rev != ''){
 
-    $autofocus='chp_nom_source2';
+        $autofocus='chp_provenance_rev';
 
-}else if($chx_source_rev != ''){
+    }else{
 
-    $autofocus='chx_source_rev';
 
-}else if($chp_valeur_rev != ''){
+        if($chp_nom_source2 != ''){
 
-    $autofocus='chp_valeur_rev';
+            $autofocus='chp_nom_source2';
 
-}else if($chp_commentaire_rev != ''){
+        }else{
 
-    $autofocus='chp_commentaire_rev';
 
-}else if($chi_id_rev != ''){
+            if($chx_source_rev != ''){
 
-    $autofocus='chi_id_rev';
+                $autofocus='chx_source_rev';
+
+            }else{
+
+
+                if($chp_valeur_rev != ''){
+
+                    $autofocus='chp_valeur_rev';
+
+                }else{
+
+
+                    if($chp_commentaire_rev != ''){
+
+                        $autofocus='chp_commentaire_rev';
+
+                    }else{
+
+
+                        if($chi_id_rev != ''){
+
+                            $autofocus='chi_id_rev';
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
 
 }
 
 $o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_nom_source1">nom source =</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_source1" id="chp_nom_source1"   value="'.enti1($chp_nom_source1).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source1')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_source1" id="chp_nom_source1"   value="'.enti1($chp_nom_source1).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_source1' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_provenance_rev">provenance</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_provenance_rev" id="chp_provenance_rev"   value="'.enti1($chp_provenance_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_provenance_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_provenance_rev" id="chp_provenance_rev"   value="'.enti1($chp_provenance_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chp_provenance_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_nom_source2">nom source <></label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_source2" id="chp_nom_source2"   value="'.enti1($chp_nom_source2).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_nom_source2')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_nom_source2" id="chp_nom_source2"   value="'.enti1($chp_nom_source2).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_source2' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_valeur_rev">valeur(1)</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_valeur_rev" id="chp_valeur_rev"   value="'.enti1($chp_valeur_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_valeur_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_valeur_rev" id="chp_valeur_rev"   value="'.enti1($chp_valeur_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chp_valeur_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chx_source_rev">id source</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chx_source_rev" id="chx_source_rev"   value="'.enti1($chx_source_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chx_source_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chx_source_rev" id="chx_source_rev"   value="'.enti1($chx_source_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chx_source_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chp_commentaire_rev">commentaire(13)</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_commentaire_rev" id="chp_commentaire_rev"   value="'.enti1($chp_commentaire_rev).'"  size="8" maxlength="64"  '.(($autofocus == 'chp_commentaire_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chp_commentaire_rev" id="chp_commentaire_rev"   value="'.enti1($chp_commentaire_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chp_commentaire_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.PHP_EOL;
 $o1.='    <label for="chi_id_rev">id rev</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.(($autofocus == 'chi_id_rev')?'autofocus="autofocus"':'').' />'.PHP_EOL;
+$o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.($autofocus == 'chi_id_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
 $o1.='   </div>'.PHP_EOL;
 $o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
 $o1.='</form>'.PHP_EOL;
@@ -141,23 +172,48 @@ $__debut=$__xpage*$__nbMax;
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
 require_once(INCLUDE_PATH.'/sql/sql_13.php');
-/* === ATTENTION === 
-Le fichier des requêtes sql js est à regénérer et/ou à intégrer 
+/*
+  SELECT 
+  `T0`.`chi_id_rev` , `T0`.`chp_provenance_rev` , `T0`.`chx_source_rev` , `T1`.`chp_nom_source` , `T0`.`chp_valeur_rev` , 
+  `T0`.`chp_type_rev` , `T0`.`chp_niveau_rev` , `T0`.`chp_pos_premier_rev` , `T0`.`chp_commentaire_rev` , `T2`.`chp_type_requete`
+  FROM b1.tbl_revs T0
+  LEFT JOIN b1.tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
+  
+  LEFT JOIN b1.tbl_requetes T2 ON T2.chi_id_requete = T0.chx_source_rev
+  
+  WHERE (`T0`.`chx_cible_rev` = :T0_chx_cible_rev
+  
+  AND `T0`.`chp_provenance_rev` LIKE :T0_chp_provenance_rev
+  
+  AND `T0`.`chx_source_rev` = :T0_chx_source_rev
+  
+  AND `T1`.`chp_nom_source` LIKE :T1_chp_nom_source1
+  
+  AND `T1`.`chp_nom_source` NOT LIKE :T1_chp_nom_source2
+  
+  AND `T0`.`chp_valeur_rev` LIKE :T0_chp_valeur_rev
+  
+  AND `T0`.`chp_commentaire_rev` LIKE :T0_chp_commentaire_rev
+  
+  AND `T0`.`chi_id_rev` = :T0_chi_id_rev) 
+  ORDER BY `T0`.`chp_provenance_rev` ASC, `T0`.`chx_source_rev` ASC  
+  LIMIT :quantitee OFFSET :debut ;
+  
 */
 /*sql_inclure_fin*/
-
 $tt=sql_13(array(
     'T0_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_provenance_rev' => (($chp_provenance_rev === NULL)?$chp_provenance_rev:(($chp_provenance_rev === '')?'':'%'.$chp_provenance_rev.'%')),
+    'T0_chp_provenance_rev' => ($chp_provenance_rev === null ? $chp_provenance_rev : ($chp_provenance_rev === '' ? '' : '%'.$chp_provenance_rev.'%')),
     'T0_chx_source_rev' => $chx_source_rev,
-    'T1_chp_nom_source1' => (($chp_nom_source1 === NULL)?$chp_nom_source1:(($chp_nom_source1 === '')?'':'%'.$chp_nom_source1.'%')),
-    'T1_chp_nom_source2' => (($chp_nom_source2 === NULL)?$chp_nom_source2:(($chp_nom_source2 === '')?'':'%'.$chp_nom_source2.'%')),
-    'T0_chp_valeur_rev' => (($chp_valeur_rev === NULL)?$chp_valeur_rev:(($chp_valeur_rev === '')?'':'%'.$chp_valeur_rev.'%')),
-    'T0_chp_commentaire_rev' => (($chp_commentaire_rev === NULL)?$chp_commentaire_rev:(($chp_commentaire_rev === '')?'':'%'.$chp_commentaire_rev.'%')),
+    'T1_chp_nom_source1' => ($chp_nom_source1 === null ? $chp_nom_source1 : ($chp_nom_source1 === '' ? '' : '%'.$chp_nom_source1.'%')),
+    'T1_chp_nom_source2' => ($chp_nom_source2 === null ? $chp_nom_source2 : ($chp_nom_source2 === '' ? '' : '%'.$chp_nom_source2.'%')),
+    'T0_chp_valeur_rev' => ($chp_valeur_rev === null ? $chp_valeur_rev : ($chp_valeur_rev === '' ? '' : '%'.$chp_valeur_rev.'%')),
+    'T0_chp_commentaire_rev' => ($chp_commentaire_rev === null ? $chp_commentaire_rev : ($chp_commentaire_rev === '' ? '' : '%'.$chp_commentaire_rev.'%')),
     'T0_chi_id_rev' => $chi_id_rev,
     'quantitee' => $__nbMax,
     'debut' => $__debut,
-    'page_courante' => BNF));
+    'page_courante' => BNF
+));
 
 if($tt[__xst] === false){
 
@@ -175,18 +231,15 @@ if($tt[__xst] === false){
 }
 
 $consUrlRedir='';
-$consUrlRedir.=(($chi_id_rev !== '')?'&amp;chi_id_rev='.rawurlencode($chi_id_rev):'');
-$consUrlRedir.=(($chp_provenance_rev !== '')?'&amp;chp_provenance_rev='.rawurlencode($chp_provenance_rev):'');
-$consUrlRedir.=(($chx_source_rev !== '')?'&amp;chx_source_rev='.rawurlencode($chx_source_rev):'');
-$consUrlRedir.=(($chp_nom_source1 !== '')?'&amp;chp_nom_source1='.rawurlencode($chp_nom_source1):'');
-$consUrlRedir.=(($chp_nom_source2 !== '')?'&amp;chp_nom_source2='.rawurlencode($chp_nom_source2):'');
-$consUrlRedir.=(($chp_valeur_rev !== '')?'&amp;chp_valeur_rev='.rawurlencode($chp_valeur_rev):'');
-$consUrlRedir.=(($chp_commentaire_rev !== '')?'&amp;chp_commentaire_rev='.rawurlencode($chp_commentaire_rev):'');
+$consUrlRedir.=($chi_id_rev !== '' ? '&amp;chi_id_rev='.rawurlencode($chi_id_rev) : '');
+$consUrlRedir.=($chp_provenance_rev !== '' ? '&amp;chp_provenance_rev='.rawurlencode($chp_provenance_rev) : '');
+$consUrlRedir.=($chx_source_rev !== '' ? '&amp;chx_source_rev='.rawurlencode($chx_source_rev) : '');
+$consUrlRedir.=($chp_nom_source1 !== '' ? '&amp;chp_nom_source1='.rawurlencode($chp_nom_source1) : '');
+$consUrlRedir.=($chp_nom_source2 !== '' ? '&amp;chp_nom_source2='.rawurlencode($chp_nom_source2) : '');
+$consUrlRedir.=($chp_valeur_rev !== '' ? '&amp;chp_valeur_rev='.rawurlencode($chp_valeur_rev) : '');
+$consUrlRedir.=($chp_commentaire_rev !== '' ? '&amp;chp_commentaire_rev='.rawurlencode($chp_commentaire_rev) : '');
 $boutons_avant='';
-
 $boutons_avant='<a class="yydanger" href="'.BNF.'?supprimer_tout=1">supprimer tout</a>';
-
-
 $__nbEnregs=$tt['nombre'];
 $o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
 $__lsttbl='';
@@ -233,9 +286,14 @@ foreach($tt[__xva] as $k0 => $v0){
 
         $__lsttbl.=enti1($v0['T1.chp_nom_source']).'';
 
-    }else if($v0['T0.chp_provenance_rev'] === 'sql'){
+    }else{
 
-        $__lsttbl.=enti1('requête sql').'';
+
+        if($v0['T0.chp_provenance_rev'] === 'sql'){
+
+            $__lsttbl.=enti1('requête sql').'';
+
+        }
 
     }
 
@@ -278,40 +336,65 @@ foreach($tt[__xva] as $k0 => $v0){
 
     if($chp_valeur_rev != ''){
 
+
         if($v0['T0.chp_provenance_rev'] === 'source'){
 
-            if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']])){
 
-                $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
-
-            }else if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
+            if(!(isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']]))){
 
                 $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
             }else{
 
-                $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
-            }
 
-        }else if($v0['T0.chp_provenance_rev'] === 'sql'){
-         
-            if('requete_manuelle' !== $v0['T2.chp_type_requete']){
-         
-                if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']])){
+                if(!(isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]))){
 
-                    $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
-
-                }else if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
-
-                    $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+                    $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
                 }else{
 
-                    $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
-                    
+                    $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
                 }
+
             }
+
+
+        }else{
+
+
+            if($v0['T0.chp_provenance_rev'] === 'sql'){
+
+
+                if('requete_manuelle' !== $v0['T2.chp_type_requete']){
+
+
+                    if(!(isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']]))){
+
+                        $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+
+                    }else{
+
+
+                        if(!(isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]))){
+
+                            $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
+
+                        }else{
+
+                            $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]++;
+                        }
+
+                    }
+
+
+                }
+
+
+            }
+
         }
+
+
     }
 
     $__lsttbl.='<td style="text-align:left;">';
@@ -347,7 +430,8 @@ if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) |
                 'chaine_a_remplacer' => $chaine_a_remplacer,
                 'liste_des_taches' => $liste_des_taches,
                 'critere_de_recherche' => $tt['where0'],
-                'provenance' => 'source');
+                'provenance' => 'source'
+            );
             $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
             $paramUrl=str_replace('\\','\\\\',$paramUrl);
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
@@ -360,6 +444,8 @@ if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) |
     }
 
 }
+
+
 if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
 
     $liste_des_taches=array();
@@ -377,7 +463,8 @@ if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($
                 'chaine_a_remplacer' => $chaine_a_remplacer,
                 'liste_des_taches' => $liste_des_taches,
                 'critere_de_recherche' => $tt['where0'],
-                'provenance' => 'sql');
+                'provenance' => 'sql'
+            );
             $paramUrl=json_encode($__parametres_pour_travail_en_arriere_plan,JSON_FORCE_OBJECT);
             $paramUrl=str_replace('\\','\\\\',$paramUrl);
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
@@ -391,20 +478,15 @@ if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($
 
 }
 
-
 /* $o1.= __FILE__ . ' ' . __LINE__ . ' $arr = <pre>' . var_export( $data0 , true ) . '</pre>' ;*/
 /*
   
   =====================================================================================================================
 */
-$js_a_executer_apres_chargement=array( 
- array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')), 
- array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array())
-);
+$js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')), array( 'nomDeLaFonctionAappeler' => '#charger_le_module_des_taches_en_arrière_plan', 'parametre' => array()));
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $o1.=html_footer1($par);
 print($o1);
 $o1='';
-?>

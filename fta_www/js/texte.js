@@ -23,7 +23,7 @@
   =====================================================================================================================
 */
 function js_texte_convertit_texte_en_rev_racine(le_texte,niveau){
-    var t = 'texte(`' + (le_texte.replace(/`/g,'\\`')) + '`)';
+    var t = 'texte(`' + le_texte.replace(/`/g,'\\`') + '`)';
     return({"__xst" : true ,"value" : t});
 }
 /*

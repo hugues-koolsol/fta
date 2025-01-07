@@ -602,7 +602,7 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
             if(ne_contient_que_des_egals === true){
                 calcul=117 - 2 * niveau * nbEspacesSrc1;
                 if(calcul > 0){
-                    newTab[i]='  ' + (' '.repeat(niveau * nbEspacesSrc1)) + ('='.repeat(calcul));
+                    newTab[i]='  ' + ' '.repeat(niveau * nbEspacesSrc1) + '='.repeat(calcul);
                 }
             }
         }
@@ -888,8 +888,8 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 }
                 count++;
             }
-            if(ne_prendre_qu_un_element===true){
-              break;
+            if(ne_prendre_qu_un_element === true){
+                break;
             }
         }
     }
@@ -1006,7 +1006,7 @@ function formaterErreurRev(obj){
                     if(obj.chaineTableau.substr(i,1) === '['){
                         for( j=i ; j < obj.chaineTableau.length && message_ajoute === '' ; j++ ){
                             if(obj.chaineTableau.substr(j,1) === ']'){
-                                message_ajoute='près de `' + (obj.chaineTableau.substr(i,j - i + 1)) + '`';
+                                message_ajoute='près de `' + obj.chaineTableau.substr(i,j - i + 1) + '`';
                                 break;
                             }
                         }

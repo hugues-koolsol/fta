@@ -75,12 +75,7 @@ $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => 'initialisation_page_rev', 'parametre' => array( 'nom' => 'zonesource', 'mode' => 'rev'))
 );
 $a=array(/* */
-    'js_a_inclure' => array(
-            'js/php.js',
-            'js/javascript.js',
-            'js/sql.js',
-            'js/index_source_script-v0.js'
-        ),
+    'js_a_inclure' => array( 'js/php.js', 'js/javascript.js', 'js/sql.js', 'js/index_source_script-v0.js'),
     'module_a_inclure' => array( 'js/module_html.js'),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

@@ -639,7 +639,7 @@ function encrypter($donnee){
     $iv_length=openssl_cipher_iv_length(ENCRYPTION_METHODE);
     $iv=openssl_random_pseudo_bytes($iv_length);
     $first_encrypted=openssl_encrypt($donnee,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
-    $second_encrypted=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,TRUE);
+    $second_encrypted=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,true);
     $output=base64_encode($iv.$second_encrypted.$first_encrypted);
     return($output);
 
@@ -658,7 +658,7 @@ function decrypter($entree){
     $second_encrypted=substr($mix,$iv_length,64);
     $first_encrypted=substr($mix,($iv_length+64));
     $donnee=@openssl_decrypt($first_encrypted,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
-    $second_encrypted_new=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,TRUE);
+    $second_encrypted_new=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,true);
 
     if(@hash_equals($second_encrypted,$second_encrypted_new)){
 
@@ -706,7 +706,7 @@ function html_header1($parametres){
     $css_hauteur_mini_bouton=$css_taille_reference_textes+4*$css_taille_reference_padding+2*$css_taille_reference_border;
     $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
     $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
-    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-2*$css_taille_reference_margin-1;
+    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-(2*$css_taille_reference_margin)-1;
 
     if(isset($_COOKIE[APP_KEY.'_biscuit'])){
 
@@ -715,16 +715,16 @@ function html_header1($parametres){
 
         if($le_biscuit !== null){
 
-            $css_taille_reference_generale=(isset($le_biscuit['--yyvtrg'])?(int)(str_replace('px','',$le_biscuit['--yyvtrg'])):$css_taille_reference_generale);
-            $css_taille_reference_textes=(isset($le_biscuit['--yyvtrt'])?(int)(str_replace('px','',$le_biscuit['--yyvtrt'])):$css_taille_reference_textes);
-            $css_taille_reference_padding=(isset($le_biscuit['--yyvtrp'])?(int)(str_replace('px','',$le_biscuit['--yyvtrp'])):$css_taille_reference_padding);
-            $css_taille_reference_border=(isset($le_biscuit['--yyvtrb'])?(int)(str_replace('px','',$le_biscuit['--yyvtrb'])):$css_taille_reference_border);
-            $css_taille_reference_margin=(isset($le_biscuit['--yyvtrm'])?(int)(str_replace('px','',$le_biscuit['--yyvtrm'])):$css_taille_reference_margin);
-            $css_hauteur_ligne=(isset($le_biscuit['--yyvhal'])?(int)(str_replace('px','',$le_biscuit['--yyvhal'])):$css_hauteur_ligne);
-            $css_hauteur_mini_bouton=(isset($le_biscuit['--yyvhmb'])?(int)(str_replace('px','',$le_biscuit['--yyvhmb'])):$css_hauteur_mini_bouton);
-            $css_hauteur_menu_defilement=(isset($le_biscuit['--yyvhmd'])?(int)(str_replace('px','',$le_biscuit['--yyvhmd'])):$css_hauteur_menu_defilement);
-            $css_hauteur_grands_boutons=(isset($le_biscuit['--yyvhgb'])?(int)(str_replace('px','',$le_biscuit['--yyvhgb'])):$css_hauteur_grands_boutons);
-            $css_hauteur_mini_conteneur=(isset($le_biscuit['--yyvhmc'])?(int)(str_replace('px','',$le_biscuit['--yyvhmc'])):$css_hauteur_mini_conteneur);
+            $css_taille_reference_generale=(isset($le_biscuit['--yyvtrg']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrg'])) : $css_taille_reference_generale);
+            $css_taille_reference_textes=(isset($le_biscuit['--yyvtrt']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrt'])) : $css_taille_reference_textes);
+            $css_taille_reference_padding=(isset($le_biscuit['--yyvtrp']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrp'])) : $css_taille_reference_padding);
+            $css_taille_reference_border=(isset($le_biscuit['--yyvtrb']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrb'])) : $css_taille_reference_border);
+            $css_taille_reference_margin=(isset($le_biscuit['--yyvtrm']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrm'])) : $css_taille_reference_margin);
+            $css_hauteur_ligne=(isset($le_biscuit['--yyvhal']) ? (int)(str_replace('px','',$le_biscuit['--yyvhal'])) : $css_hauteur_ligne);
+            $css_hauteur_mini_bouton=(isset($le_biscuit['--yyvhmb']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmb'])) : $css_hauteur_mini_bouton);
+            $css_hauteur_menu_defilement=(isset($le_biscuit['--yyvhmd']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmd'])) : $css_hauteur_menu_defilement);
+            $css_hauteur_grands_boutons=(isset($le_biscuit['--yyvhgb']) ? (int)(str_replace('px','',$le_biscuit['--yyvhgb'])) : $css_hauteur_grands_boutons);
+            $css_hauteur_mini_conteneur=(isset($le_biscuit['--yyvhmc']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmc'])) : $css_hauteur_mini_conteneur);
 
         }else{
 
@@ -771,7 +771,7 @@ function html_header1($parametres){
     $css_hauteur_mini_bouton=$css_taille_reference_textes+4*$css_taille_reference_padding+2*$css_taille_reference_border;
     $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
     $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
-    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-2*$css_taille_reference_margin-1;
+    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-(2*$css_taille_reference_margin)-1;
     $le_biscuit['--yyvhmb']=$css_hauteur_mini_bouton.'px';
     $le_biscuit['--yyvhal']=$css_hauteur_ligne.'px';
     $le_biscuit['--yyvhmd']=$css_hauteur_menu_defilement.'px';
@@ -903,7 +903,7 @@ EOT;
 
         $o1.='  <nav id="navbar" class="yynavbar">'.PHP_EOL;
         $o1.='    <div style="min-width:'.($css_hauteur_grands_boutons*2+4*$css_taille_reference_margin).'px;">'.PHP_EOL;
-        $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.('index.php' === BNF?'yymenusel1':'').'" title="page d\'accueil" style="">&#127968;</a>'.PHP_EOL;
+        $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.('index.php' === BNF ? 'yymenusel1' : '').'" title="page d\'accueil" style="">&#127968;</a>'.PHP_EOL;
         $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()">💬</a>'.PHP_EOL;
         $o1.='    </div>'.PHP_EOL;
         $o1.='    <div id="menuPrincipal" class="menuScroller">'.PHP_EOL;
@@ -913,21 +913,21 @@ EOT;
 
         if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
 
-            $o1.='          <li><a class="yytbfixe '.('traiteHtml.php' === BNF?'yymenusel1':'').'" href="traiteHtml.php?idMenu='.$idMenu++.'">HTML</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('traiteJs.php' === BNF?'yymenusel1':'').'" href="traiteJs.php?idMenu='.$idMenu++.'">JS</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('traitePhp.php' === BNF?'yymenusel1':'').'" href="traitePhp.php?idMenu='.$idMenu++.'">PHP</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('traiteSql.php' === BNF?'yymenusel1':'').'" href="traiteSql.php?idMenu='.$idMenu++.'">SQL</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('index_source.php' === BNF?'yymenusel1':'').'" href="index_source.php?idMenu='.$idMenu++.'">REV</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('zz_taches_l1.php' === BNF?'yymenusel1':'').'" href="zz_taches_l1.php?idMenu='.$idMenu++.'&chp_priorite_tache2=99">tâches</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('zz_cibles_l1.php' === BNF?'yymenusel1':'').'" href="zz_cibles_l1.php?idMenu='.$idMenu++.'">cibles</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('traiteHtml.php' === BNF ? 'yymenusel1' : '').'" href="traiteHtml.php?idMenu='.$idMenu++.'">HTML</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('traiteJs.php' === BNF ? 'yymenusel1' : '').'" href="traiteJs.php?idMenu='.$idMenu++.'">JS</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('traitePhp.php' === BNF ? 'yymenusel1' : '').'" href="traitePhp.php?idMenu='.$idMenu++.'">PHP</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('traiteSql.php' === BNF ? 'yymenusel1' : '').'" href="traiteSql.php?idMenu='.$idMenu++.'">SQL</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('index_source.php' === BNF ? 'yymenusel1' : '').'" href="index_source.php?idMenu='.$idMenu++.'">REV</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('zz_taches_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_taches_l1.php?idMenu='.$idMenu++.'&chp_priorite_tache2=99">tâches</a></li>'.PHP_EOL;
+            $o1.='          <li><a class="yytbfixe '.('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_cibles_l1.php?idMenu='.$idMenu++.'">cibles</a></li>'.PHP_EOL;
 
             if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
-                $o1.='          <li><a class="yytbfixe '.('zz_dossiers_l1.php' === BNF?'yymenusel1':'').'" href="zz_dossiers_l1.php?idMenu='.$idMenu++.'">dossiers</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_sources_l1.php' === BNF?'yymenusel1':'').'" href="zz_sources_l1.php?idMenu='.$idMenu++.'">sources</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_bdds_l1.php' === BNF?'yymenusel1':'').'" href="zz_bdds_l1.php?idMenu='.$idMenu++.'">bdds</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_requetes_l1.php' === BNF?'yymenusel1':'').'" href="zz_requetes_l1.php?idMenu='.$idMenu++.'">rsql</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_rev_l1.php' === BNF?'yymenusel1':'').'" href="zz_revs_l1.php?idMenu='.$idMenu++.'">revs</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.('zz_dossiers_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_dossiers_l1.php?idMenu='.$idMenu++.'">dossiers</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.('zz_sources_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_sources_l1.php?idMenu='.$idMenu++.'">sources</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.('zz_bdds_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_bdds_l1.php?idMenu='.$idMenu++.'">bdds</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.('zz_requetes_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_requetes_l1.php?idMenu='.$idMenu++.'">rsql</a></li>'.PHP_EOL;
+                $o1.='          <li><a class="yytbfixe '.('zz_rev_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_revs_l1.php?idMenu='.$idMenu++.'">revs</a></li>'.PHP_EOL;
 
             }
 
@@ -979,7 +979,7 @@ function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
     if(!(isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])) || (sha1($post[$nom_du_champ]) !== $_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])){
 
 
-        if(((isset($post['__action'])) && ($post['__action'] == '__modification')) && (is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]))){
+        if((isset($post['__action'])) && ($post['__action'] == '__modification') && (is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]))){
 
             ajouterMessage('avertissement',__LINE__.' désolé, il faut sauvegarder à nouveau');
             recharger_la_page($bnf.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);

@@ -61,7 +61,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
         "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
         "redirect" : "follow" ,
         "referrerPolicy" : "no-referrer" ,
-        "body" : 'ajax_param=' + (encodeURIComponent(JSON.stringify(donnees)))
+        "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
     };
     try{
         var response= await fetch(url,en_entree);
@@ -79,7 +79,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
             console.log('url=' + url);
             console.log(JSON.stringify(en_entree));
             console.log(JSON.stringify(donnees));
-            return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + (JSON.stringify(donnees)) + ' , t=' + t});
+            return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t});
         }
     }catch(e){
         console.log(e);

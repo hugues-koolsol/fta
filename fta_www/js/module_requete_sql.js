@@ -918,7 +918,7 @@ class requete_sql{
         }
         var i=0;
         for( i=0 ; i < tab_ex.length ; i++ ){
-            t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_formule_dans_la_formule(&quot;' + (tab_ex[i].replace(/"/g,'&#34;')) + '&quot;)">' + tab_ex[i] + '</a>';
+            t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_formule_dans_la_formule(&quot;' + tab_ex[i].replace(/"/g,'&#34;') + '&quot;)">' + tab_ex[i] + '</a>';
         }
         var contenu='';
         if("requete_manuelle" === this.#obj_webs.type_de_requete){
@@ -982,7 +982,7 @@ class requete_sql{
         }
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
-        t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + (strToHtml(contenu)) + '</textarea>';
+        t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(contenu) + '</textarea>';
         t+='<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_la_formule(&quot;' + destination + '&quot;)">ajouter la formule</a>';
         document.getElementById('__contenu_modale').innerHTML=t;
         __gi1.global_modale2.showModal();
@@ -1029,7 +1029,7 @@ class requete_sql{
         }
         var i=0;
         for( i=0 ; i < tab_ex.length ; i++ ){
-            t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_formule_dans_la_formule(&quot;' + (tab_ex[i].replace(/"/g,'&#34;')) + '&quot;)">' + tab_ex[i] + '</a>';
+            t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_cette_formule_dans_la_formule(&quot;' + tab_ex[i].replace(/"/g,'&#34;') + '&quot;)">' + tab_ex[i] + '</a>';
         }
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
@@ -1269,7 +1269,7 @@ class requete_sql{
                         contenu+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_sortie(' + i + ')">T' + this.#obj_webs.champs_sortie[i].indice_table + '.' + this.#obj_webs.champs_sortie[i].nom_du_champ + '</a>';
                     }
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'formule'){
-                    contenu+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_sortie(' + i + ')">' + (this.#obj_webs.champs_sortie[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')) + '</a>';
+                    contenu+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_sortie(' + i + ')">' + this.#obj_webs.champs_sortie[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') + '</a>';
                     contenu+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_la_formule_de_destination(' + i + ',&quot;champs_sortie&quot;)">✎</a>';
                 }
             }
@@ -1293,7 +1293,7 @@ class requete_sql{
                     if(this.#obj_webs.conditions[i].type_d_element === 'champ'){
                         t+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_where(' + i + ')">' + this.#obj_webs.conditions[i].nom_du_champ + '</a>';
                     }else if(this.#obj_webs.conditions[i].type_d_element === 'formule'){
-                        t+='<a style="max-width: 90%;display: inline;" href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_where(' + i + ')">' + (this.#obj_webs.conditions[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')) + '</a>';
+                        t+='<a style="max-width: 90%;display: inline;" href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_where(' + i + ')">' + this.#obj_webs.conditions[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') + '</a>';
                         t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_la_formule_de_destination(' + i + ',&quot;conditions&quot;)">✎</a>';
                     }
                     t+='</li>';
@@ -1318,7 +1318,7 @@ class requete_sql{
                     if(this.#obj_webs.complements[i].type_d_element === 'champ'){
                         t+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_complements(' + i + ')">' + this.#obj_webs.complements[i].nom_du_champ + '</a>';
                     }else if(this.#obj_webs.complements[i].type_d_element === 'formule'){
-                        t+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_complements(' + i + ')">' + (this.#obj_webs.complements[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')) + '</a>';
+                        t+='<a href="javascript:' + this.#nom_de_la_variable + '.retirer_ce_champ_de_complements(' + i + ')">' + this.#obj_webs.complements[i].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') + '</a>';
                         t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.modifier_la_formule_de_destination(' + i + ',&quot;complements&quot;)">✎</a>';
                     }
                     t+='</li>';
@@ -1354,7 +1354,7 @@ class requete_sql{
                         valeurs+=CRLF + '      ' + 'champ(`T' + elem.indice_table + '` , `' + elem.nom_du_champ + '` ' + (elem.alias_du_champ && elem.alias_du_champ !== '' ? ( ' , alias_champ(`' + elem.alias_du_champ + '`)' ) : ( '' )) + ' )';
                     }
                 }else if(elem.type_d_element === 'constante'){
-                    valeurs+=CRLF + '      ' + (maConstante(elem.constante));
+                    valeurs+=CRLF + '      ' + maConstante(elem.constante);
                 }else if(elem.type_d_element === 'formule'){
                     valeurs+=CRLF + '      ' + elem.formule;
                 }
@@ -1586,10 +1586,10 @@ class requete_sql{
         t+='<a href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">👊</a>';
         t+='<a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">🖐</a>';
         t+='</div>';
-        t+='<textarea class="txtar1" id="txtar1" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + (rev_texte.replace(/</g,'&lt;').replace(/>/g,'&gt;')) + '</textarea>';
+        t+='<textarea class="txtar1" id="txtar1" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + rev_texte.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>';
         t+='</div>';
         t+='<div>';
-        t+='<label style="width:90%;display:inline-block" for="cht_commentaire_requete">commentaire : <input style="width:50%" type="text" id="cht_commentaire_requete" value="' + (this.#globale_commentaire_requete.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')) + '"/></label>';
+        t+='<label style="width:90%;display:inline-block" for="cht_commentaire_requete">commentaire : <input style="width:50%" type="text" id="cht_commentaire_requete" value="' + this.#globale_commentaire_requete.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;') + '"/></label>';
         t+='<br />';
         t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.transform_textarea_rev_vers_sql(&quot;txtar1&quot; , &quot;txtar2&quot; , ' + this.#globale_id_requete + ');" title="convertir rev en SQL">R2S</a>';
         t+='<a class="yysucces" href="javascript:' + this.#nom_de_la_variable + '.bouton_ajouter_le_rev_en_base(' + this.#globale_id_requete + ')" title="ajouter en base">ajouter en base</a>';
@@ -1617,7 +1617,7 @@ class requete_sql{
             "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
             "redirect" : "follow" ,
             "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + (encodeURIComponent(JSON.stringify(donnees)))
+            "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
             var response= await fetch(url,en_entree);
@@ -1630,7 +1630,7 @@ class requete_sql{
                 logerreur({"__xst" : false ,"__xme" : 'url=' + url});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree)});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees)});
-                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + (JSON.stringify(donnees)) + ' , t=' + t});
+                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t});
             }
         }catch(e){
             debugger;
@@ -1882,7 +1882,7 @@ class requete_sql{
         if(type_de_requete === 'requete_manuelle'){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.__xva);
             t+='    $texte_sql_' + id_requete_en_base + '=\'' + CRLF;
-            t+='      ' + (nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ')) + CRLF;
+            t+='      ' + nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ') + CRLF;
             t+='    \';' + CRLF;
             t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_' + id_requete_en_base + ' = <pre>\' . $texte_sql_' + id_requete_en_base + ' . \'</pre>\' ; exit(0);' + CRLF;
             t+='    $err=error_reporting(0);' + CRLF;
@@ -1908,7 +1908,7 @@ class requete_sql{
         }else if(type_de_requete === 'delete'){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.__xva);
             t+='    $texte_sql_' + id_requete_en_base + '=\'' + CRLF;
-            t+='      ' + (nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ')) + CRLF;
+            t+='      ' + nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ') + CRLF;
             t+='    \';' + CRLF;
             t+='    // echo __FILE__ . \' \' . __LINE__ . \' $texte_sql_' + id_requete_en_base + ' = <pre>\' . $texte_sql_' + id_requete_en_base + ' . \'</pre>\' ; exit(0);' + CRLF;
             t+='    $err=error_reporting(0);' + CRLF;
@@ -1925,7 +1925,7 @@ class requete_sql{
         }else if(type_de_requete === 'insert'){
             nouvelle_chaine=this.#traiter_chaine_sql_pour_php(obj3.debut_sql_pour_insert);
             t+='    $texte_sql_' + id_requete_en_base + '=\'' + CRLF;
-            t+='      ' + (nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ')) + CRLF;
+            t+='      ' + nouvelle_chaine.replace(/\r/g,'').replace(/\n/g,CRLF + '      ') + CRLF;
             t+='    \';' + CRLF;
             t+='    $liste_des_valeurs=\'\';' + CRLF;
             t+='    for($i=0;($i < count($par));$i++){' + CRLF;
@@ -2015,9 +2015,9 @@ class requete_sql{
                                                     valeur_du_champ='NULL';
                                                 }else{
                                                     if(tab[m][1].substr(0,1) === ':'){
-                                                        valeur_du_champ='\'.sq1($par[\'' + (tab[m][1].substr(1)) + '\']).\'';
+                                                        valeur_du_champ='\'.sq1($par[\'' + tab[m][1].substr(1) + '\']).\'';
                                                     }else{
-                                                        valeur_du_champ='\'' + (tab[m][1].replace(/\'/g,"''")) + '\'';
+                                                        valeur_du_champ='\'' + tab[m][1].replace(/\'/g,"''") + '\'';
                                                     }
                                                 }
                                             }
@@ -2083,7 +2083,7 @@ class requete_sql{
             for( i=0 ; i < tableau_des_conditions.length ; i++ ){
                 var elem=tableau_des_conditions[i];
                 if(elem.type_condition === 'constante'){
-                    t+='    $where0.=\' AND ' + (elem.valeur.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'')) + '\'.PHP_EOL;' + CRLF;
+                    t+='    $where0.=\' AND ' + elem.valeur.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'.PHP_EOL;' + CRLF;
                 }else if(elem.type_condition === 'variable'){
                     if((elem.type.toLowerCase() === 'integer'
                      || elem.type.toLowerCase() === 'int')

@@ -91,7 +91,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*10+20));
             $_SESSION[APP_KEY]['__filtres']=array();
             $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
-            $_SESSION[APP_KEY]['__parametres_utilisateurs']=($sql1[__xva][0]['T0.chp_parametres_utilisateur'] !== ''?json_decode($sql1[__xva][0]['T0.chp_parametres_utilisateur'],true):array());
+            $_SESSION[APP_KEY]['__parametres_utilisateurs']=($sql1[__xva][0]['T0.chp_parametres_utilisateur'] !== '' ? json_decode($sql1[__xva][0]['T0.chp_parametres_utilisateur'],true) : array());
             ajouterMessage('info',__LINE__.' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
 

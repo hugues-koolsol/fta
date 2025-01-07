@@ -66,7 +66,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     le_commentaire=this.#comm_dans_arguments_appel_fonction(element.params[i],niveau,element,tab_comm);
                     obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm);
                     if(obj.__xst === true){
-                        les_arguments+=',p(' +le_commentaire+ obj.__xva + ')';
+                        les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_CallExpression' ,"element" : element}));
                     }
@@ -126,11 +126,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(element.arguments && element.arguments.length > 0){
             for( i=0 ; i < element.arguments.length ; i++ ){
                 lesArguments+=',';
-                var le_commentaire = '';
-                if(auto_appelee!==''){
-                   le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
+                var le_commentaire='';
+                if(auto_appelee !== ''){
+                    le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
                 }
-                
                 if('CallExpression' === element.arguments[i].type){
                     var obj1 = this.#traite_CallExpression(element.arguments[i],niveau + 1,element,tab_comm);
                     if(obj1.__xst === true){
@@ -174,7 +173,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }
         lesArguments=lesArguments + auto_appelee;
-        
         var contenu='';
         var le_contenu='';
         if(element.body){
@@ -188,7 +186,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
             }
         }
-        
         var laPropriete='';
         var prefixe='';
         if(element.callee){
@@ -299,9 +296,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     var obj1 = this.#traite_CallExpression(element.callee.object,niveau + 1,element,tab_comm);
                     if(obj1.__xst === true){
                         if(obj1.__xva.substr(0,6) === 'appelf' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
-                            t+='' + (obj1.__xva.substr(0,obj1.__xva.length - 1)) + ',' + laPropriete + ')';
+                            t+='' + obj1.__xva.substr(0,obj1.__xva.length - 1) + ',' + laPropriete + ')';
                         }else if(obj1.__xva.substr(0,3) === 'new' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
-                            t+='' + (obj1.__xva.substr(0,obj1.__xva.length - 1)) + ',' + laPropriete + ')';
+                            t+='' + obj1.__xva.substr(0,obj1.__xva.length - 1) + ',' + laPropriete + ')';
                         }else{
                             if(contenu === ''){
                                 t+='appelf(' + obj1.__xva + ',' + laPropriete + ')';
@@ -381,7 +378,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }else if(element.callee.object.type === 'NewExpression'){
                     var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
                     if(obj1.__xst === true){
-                        t=(obj1.__xva.substr(0,obj1.__xva.length - 2)) + ',' + lesArguments + ',' + laPropriete + '))';
+                        t=obj1.__xva.substr(0,obj1.__xva.length - 2) + ',' + lesArguments + ',' + laPropriete + '))';
                     }else{
                         return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteAssignmentExpress1 1385' ,"element" : element}));
                     }
@@ -534,7 +531,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     le_commentaire=this.#comm_dans_arguments_appel_fonction(element.params[i],niveau,element,tab_comm);
                     obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm);
                     if(obj.__xst === true){
-                        les_arguments+=',p(' +le_commentaire+ obj.__xva + ')';
+                        les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_CallExpression' ,"element" : element}));
                     }
@@ -633,10 +630,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             t+=nomDuTest + '(' + gauche + ',' + droite + ')';
         }
         if(t.substr(0,12) === 'plus(concat('){
-            t='concat(' + (t.substr(5));
+            t='concat(' + t.substr(5);
         }
         if(t.substr(0,13) === 'plus( concat('){
-            t='concat(' + (t.substr(5));
+            t='concat(' + t.substr(5);
         }
         if(t.substr(0,14) === 'concat(concat(' || t.substr(0,15) === 'concat( concat('){
             obj=functionToArray(t,true,false,'');
@@ -766,7 +763,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 ){
                     ne_contient_que_des_constantes=false;
                 }
-                format_constante+= commentaire + '[' + element.elements[i].raw + ']';
+                format_constante+=commentaire + '[' + element.elements[i].raw + ']';
                 nombre_elements++;
             }else if(element.elements[i].type === 'Identifier'){
                 lesPar+=',p(' + element.elements[i].name + ')';
@@ -899,21 +896,21 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             if(prop !== ''){
                 if(valeur.substr(0,8) === 'tableau('){
-                    t+=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + '))';
+                    t+=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + '))';
                 }else if(valeur.substr(0,6) === 'appelf'){
                     if(valeur.indexOf('prop(') >= 0){
-                        valeur=(valeur.substr(0,valeur.length - 2)) + '.' + prop + '))';
+                        valeur=valeur.substr(0,valeur.length - 2) + '.' + prop + '))';
                         t=valeur;
                     }else{
-                        valeur=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + '))';
+                        valeur=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + '))';
                         t=valeur;
                     }
                 }else{
                     if(valeur.substr(valeur.length - 1,1) === ')'){
                         if(valeur.substr(valeur.length - 2,1) === '('){
-                            t+=(valeur.substr(0,valeur.length - 1)) + 'prop(' + prop + ')' + ')';
+                            t+=valeur.substr(0,valeur.length - 1) + 'prop(' + prop + ')' + ')';
                         }else{
-                            t+=(valeur.substr(0,valeur.length - 1)) + ',prop(' + prop + ')' + ')';
+                            t+=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + ')' + ')';
                         }
                     }else{
                         t+=valeur + '.' + prop;
@@ -991,7 +988,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                                     bcont=false;
                                     break;
                                 }else{
-                                    cumChaine+='[' + (maConstante(o.__xva[i+1])) + ']';
+                                    cumChaine+='[' + maConstante(o.__xva[i+1]) + ']';
                                 }
                             }else{
                                 bcont=false;
@@ -1936,9 +1933,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_element(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
-        if('ForStatement'===element.type){
-//         debugger
+        if('ForStatement' === element.type){
+            /* debugger */
         }
         t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
         switch (element.type){
@@ -2322,17 +2318,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         element=null;
         return({"__xst" : true ,"__xva" : t});
     }
-    
-    
     /*
       =============================================================================================================
       les arguments d'une fonction auto_appelée ne commencent qu'après le "element.callee.body.end"
     */
-    #comm_dans_arguments_appel_fonction(element,niveau,parent,tab_comm){ // tabComment
+    #comm_dans_arguments_appel_fonction(element,niveau,parent,tab_comm){
+        /* tabComment */
         var t='';
         let tab_com_a_supprimer=[];
-        
-        if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee===true){
+        if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
             var position_debut_parenthese = parent.callee.body.end + 1;
             var position_fin_parenthese=parent.end;
             for( var i=0 ; i < tab_comm.length ; i++ ){
@@ -2341,7 +2335,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                  && element.start >= tab_comm[i].end
                 ){
                     var txtComment = tab_comm[i].value.trim();
-                    t='#( ' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ' )' + t;
+                    t='#( ' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ' )' + t;
                     tab_com_a_supprimer.push(i);
                 }else if(tab_comm[i].start > position_fin_parenthese){
                     break;
@@ -2350,12 +2344,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             t=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
         }
-        for(var j=0;j<tab_com_a_supprimer.length;j++){
-           tab_comm.splice(tab_com_a_supprimer[j],1);
+        for( var j=0 ; j < tab_com_a_supprimer.length ; j++ ){
+            tab_comm.splice(tab_com_a_supprimer[j],1);
         }
         return t;
-    }    
-
+    }
     /*
       =============================================================================================================
     */
@@ -2371,15 +2364,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             var c2 = nbre_caracteres2(')',txtComment);
             if(c1 === c2){
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + (txtComment.substr(1)) + ')';
+                    t+='#(#' + txtComment.substr(1) + ')';
                 }else{
                     t+='#(' + txtComment + ')';
                 }
             }else{
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + (txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']')) + ')';
+                    t+='#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
                 }else{
-                    t+='#(' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ')';
+                    t+='#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
                 }
             }
         }
@@ -2391,19 +2384,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #comm_avant_fin1(elem,niveau,parent,tab_comm){
         let t='';
         let txtComment='';
-        let position_debut_bloc=0;//parent.start;
-        let position_fin_bloc=0;//parent.end;
+        let position_debut_bloc=0;
+        /* parent.start; */
+        let position_fin_bloc=0;
+        /* parent.end; */
         let i=0;
         let c1=0;
         let c2=0;
         let tab_com_a_supprimer=[];
-     
-        if(parent===null){
-         return t;
+        if(parent === null){
+            return t;
         }
-     
-
-        
         if(Array.isArray(parent)){
             position_debut_bloc=parent[0].start;
             position_fin_bloc=parent[parent.length-1].end;
@@ -2411,14 +2402,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             position_debut_bloc=parent.start;
             position_fin_bloc=parent.end;
         }
-        
-        if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee===true){
-          return t;
-          position_fin_bloc=parent.callee.body.end;
+        if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
+            return t;
+            position_fin_bloc=parent.callee.body.end;
         }
-        
-        for( i=0;i<tab_comm.length && tab_comm[i].start<=position_fin_bloc && tab_comm[i].end<=position_fin_bloc ; i++ ){
-            if(tab_comm[i].start<position_debut_bloc ){
+        for( i=0 ; i < tab_comm.length && tab_comm[i].start <= position_fin_bloc && tab_comm[i].end <= position_fin_bloc ; i++ ){
+            if(tab_comm[i].start < position_debut_bloc){
                 /* dans le cas des fonctions auto_appelées , les commentaires peuvent être au milieu du tableau */
                 continue;
             }
@@ -2427,28 +2416,27 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
-            c1 = nbre_caracteres2('(',txtComment);
-            c2 = nbre_caracteres2(')',txtComment);
+            c1=nbre_caracteres2('(',txtComment);
+            c2=nbre_caracteres2(')',txtComment);
             if(c1 === c2){
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + (txtComment.substr(1)) + ')';
+                    t+='#(#' + txtComment.substr(1) + ')';
                 }else{
                     t+='#(' + txtComment + ')';
                 }
             }else{
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + (txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']')) + ')';
+                    t+='#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
                 }else{
-                    t+='#(' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ')';
+                    t+='#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
                 }
             }
             tab_com_a_supprimer.push(i);
         }
-        for(var j=tab_com_a_supprimer.length-1;j>=0;j--){
-           tab_comm.splice(tab_com_a_supprimer[j],1);
+        for( var j = tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
+            tab_comm.splice(tab_com_a_supprimer[j],1);
         }
         return t;
-        
     }
     /*
       =============================================================================================================
@@ -2464,18 +2452,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let position_debut_bloc=0;
         let position_fin_bloc=0;
         let position_debut_element=null;
-        
-        
-        
-
-        if(elem.start===undefined){
+        if(elem.start === undefined){
             /* on a probablement un tableau */
             if(Array.isArray(elem)){
-                if(elem.length>0){
+                if(elem.length > 0){
                     position_debut_element=elem[0].start;
                 }else{
-                    if(parent===null){
-                        /* on est dans l'initialisation */ 
+                    if(parent === null){
+                        /* on est dans l'initialisation */
                         return t;
                     }else{
                         debugger;
@@ -2487,13 +2471,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             position_debut_element=elem.start;
         }
-        
-        if(parent===null){
+        if(parent === null){
             /* cas initialisation */
             position_debut_bloc=0;
-            if(elem.end===undefined){
+            if(elem.end === undefined){
                 if(Array.isArray(elem)){
-                    if(elem.length>0){
+                    if(elem.length > 0){
                         /* il y a au moins une ligne de code */
                         position_fin_bloc=elem[elem.length-1].end;
                     }else{
@@ -2507,64 +2490,59 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }else if(Array.isArray(parent)){
             position_debut_bloc=parent[0].start;
-            if(elem.start===parent[0].start){
-             position_debut_bloc=0;
+            if(elem.start === parent[0].start){
+                position_debut_bloc=0;
             }
             position_fin_bloc=parent[parent.length-1].end;
-/*
-        }else if(elem.body){
-            position_debut_bloc=elem.start;
-            position_fin_bloc=elem.end-1;
-*/            
+            /*
+              }else if(elem.body){
+              position_debut_bloc=elem.start;
+              position_fin_bloc=elem.end-1;
+            */
         }else{
-
             position_debut_bloc=parent.start;
             position_fin_bloc=parent.end;
-
-            if(parent.type==="CallExpression" && parent.arguments && Array.isArray(parent.arguments)){
-                for(var j=0;j<parent.arguments.length;j++){
-                   if(elem.start===parent.arguments[j].start){
-                       position_debut_bloc=parent.callee.end;
-                   }
+            if(parent.type === "CallExpression" && parent.arguments && Array.isArray(parent.arguments)){
+                for( var j=0 ; j < parent.arguments.length ; j++ ){
+                    if(elem.start === parent.arguments[j].start){
+                        position_debut_bloc=parent.callee.end;
+                    }
                 }
             }
         }
-
-        if(parent && parent.hasOwnProperty('auto_appelee') && parent.auto_appelee===true){
-          return t;
+        if(parent && parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
+            return t;
         }
-        for( i=0;i<tab_comm.length && tab_comm[i].start<=position_debut_element && tab_comm[i].end<=position_fin_bloc ; i++ ){
-             
-             if(tab_comm[i].start<position_debut_bloc){
-                  /* dans le cas des fonctions auto_appelées , les commentaires peuvent être au milieu du tableau */
-                  continue;
-             }
-             
-             txtComment=tab_comm[i].value;
-             if(txtComment.indexOf('\n') < 0){
-                 txtComment=txtComment.trim();
-                 txtComment=' ' + txtComment + ' ';
-             }
-             if((txtComment.match(/\(/g)||[]).length === (txtComment.match(/\)/g)||[]).length){
-                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                     t+='#(#' + (txtComment.substr(1)) + ')';
-                 }else{
-                     t+='#(' + txtComment + ')';
-                 }
-             }else{
-                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                     t+='#(#' + (txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']')) + ')';
-                 }else{
-                     t+='#(' + (txtComment.replace(/\(/g,'[').replace(/\)/g,']')) + ')';
-                 }
-             }
-             tab_com_a_supprimer.push(i);
+        for( i=0 ; i < tab_comm.length && tab_comm[i].start <= position_debut_element && tab_comm[i].end <= position_fin_bloc ; i++ ){
+            if(tab_comm[i].start < position_debut_bloc){
+                /* dans le cas des fonctions auto_appelées , les commentaires peuvent être au milieu du tableau */
+                continue;
+            }
+            txtComment=tab_comm[i].value;
+            if(txtComment.indexOf('\n') < 0){
+                txtComment=txtComment.trim();
+                txtComment=' ' + txtComment + ' ';
+            }
+            if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
+                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
+                    t+='#(#' + txtComment.substr(1) + ')';
+                }else{
+                    t+='#(' + txtComment + ')';
+                }
+            }else{
+                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
+                    t+='#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                }else{
+                    t+='#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                }
+            }
+            tab_com_a_supprimer.push(i);
         }
-        if(t.indexOf('044')>=0){
+        if(t.indexOf('044') >= 0){
             debugger;
         }
-        for(var j=tab_com_a_supprimer.length-1;j>=0;j--){
-           tab_comm.splice(tab_com_a_supprimer[j],1);
+        for( var j = tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
+            tab_comm.splice(tab_com_a_supprimer[j],1);
         }
         return t;
     }
@@ -2575,7 +2553,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         const espaces = CRLF + '   '.repeat(niveau);
-        
         if(Array.isArray(element)){
             for( let i=0 ; i < element.length ; i++ ){
                 switch (element[i].type){
