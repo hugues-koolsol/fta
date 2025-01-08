@@ -5,7 +5,10 @@ initialiser_les_services(true,false);
 $o1='';
 $o1=html_header1(array( 'title' => 'Accueil', 'description' => 'Accueil'));
 print($o1);
-$o1='';?>
+$o1='';
+ob_flush();
+
+?>
 <div class="menuScroller">
     <ul>
         <li>

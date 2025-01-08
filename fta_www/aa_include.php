@@ -673,6 +673,114 @@ function decrypter($entree){
   =====================================================================================================================
 */
 
+function xcleanSession1($par){
+
+
+    if(isset($_SESSION[APP_KEY][NAV])){
+
+        foreach($_SESSION[APP_KEY][NAV] as $k => $v){
+
+            if($par['except'] != $k){
+
+                unset($_SESSION[APP_KEY][NAV][$k]);
+
+            }
+
+        }
+
+    }
+
+
+    if(isset($_SESSION[APP_KEY]['choose'])){
+
+        unset($_SESSION[APP_KEY]['choose']);
+
+    }
+
+
+}
+/*
+  =====================================================================================================================
+*/
+
+function supprimerLesParametresDeNavigationEnSession(){
+
+
+    if(isset($_GET['idMenu'])){
+
+        $sauf='';
+        xcleanSession1(array( 'except' => ''));
+
+    }else{
+
+        $sauf=BNF;
+        xcleanSession1(array( 'except' => BNF));
+    }
+
+
+    if(isset($_SESSION[APP_KEY][NAV])){
+
+        foreach($_SESSION[APP_KEY][NAV] as $k => $v){
+
+            if($sauf != $k){
+
+                unset($_SESSION[APP_KEY][NAV][$k]);
+
+            }
+
+        }
+
+    }
+
+
+    if(isset($_SESSION[APP_KEY]['valeurPourChoixCroise'])){
+
+        unset($_SESSION[APP_KEY]['valeurPourChoixCroise']);
+
+    }
+
+
+}
+/*
+  =====================================================================================================================
+  quand on fait une maj, il faut vérifier que l'id envoyé en post correspond bien à l'id du formulaire
+  =====================================================================================================================
+*/
+
+function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
+
+
+    if((isset($post['__action'])) && ($post['__action'] == '__creation')){
+
+        return;
+
+    }
+
+
+    if(!(isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])) || (sha1($post[$nom_du_champ]) !== $_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])){
+
+
+        if((isset($post['__action'])) && ($post['__action'] == '__modification') && (is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]))){
+
+            ajouterMessage('avertissement',__LINE__.' désolé, il faut sauvegarder à nouveau');
+            recharger_la_page($bnf.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);
+
+        }else{
+
+            ajouterMessage('erreur',__LINE__.' désolé, sha1 différents sur '.$nom_du_champ.', cette erreur sera analysée');
+            recharger_la_page($page_de_redirection);
+        }
+
+
+    }
+
+
+}
+
+/*
+  =====================================================================================================================
+*/
+
 function html_header1($parametres){
 
 
@@ -791,25 +899,30 @@ function html_header1($parametres){
     $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].'; /* hauteur des grands boutons ( quitter et index ) */'.PHP_EOL;
     $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.PHP_EOL;
     $texte_base_css.='}'.PHP_EOL;
-
-    if(true){
+    /* on met en ligne le root car il est dynamique */
+    $o1.=$texte_base_css;
+    
+    /*
+      la valeur çi dessous devrait être à false pour ne pas inclure de css dans le html renvoyé      
+    */
+    if(false){
 
         /* dans le cas ou on met tout dans le html reçu */
-        $o1.=$texte_base_css;
         $o1.=file_get_contents('6.css');
         $o1.='</style>'.PHP_EOL;
 
     }else{
 
         /* dans le cas ou ou on met le css en lien externe */
+        $o1.=$texte_base_css;
         $o1.='</style>'.PHP_EOL;
         $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.PHP_EOL;
     }
+     
+    $module_par_balise_script=true;
+    if($module_par_balise_script===true){
 
-
-    if(false){
-
-        $o1.='<script type="module" src="js/module_interface1.js"></script>'.PHP_EOL;
+        $o1.='<script type="module" src="js/module_interface1.js" onload="demarre_l_interface()"></script>'.PHP_EOL;
 
     }else{
 
@@ -828,6 +941,7 @@ function html_header1($parametres){
     $o1.=' const CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.PHP_EOL;
     $o1.=' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.PHP_EOL;
+    
     $o1.=<<<EOT
 
      const __debut_execution=performance.now();
@@ -854,44 +968,87 @@ function html_header1($parametres){
      /*
        =====================================================================================================================
      */
-     window.addEventListener('load',function(){
-             __gi1=new interface1('__gi1','zone_global_messages');
-             __gi1.deplace_la_zone_de_message();
-             fonctionDeLaPageAppeleeQuandToutEstCharge();
-             setTimeout(function(){
-             
-                 __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
-             },500);
-         /*
-         import('./js/module_interface1.js').then(function(Module){
-         
-         });
-         */
-         let liste_des_scripts = document.getElementsByTagName('script');
-         let i=0;
-         for( i=0 ; i < liste_des_scripts.length ; i++ ){
-             var element=liste_des_scripts[i];
-             if(element.type && element.type === 'module'){
-                 if(element.src && element.src.indexOf("js/module_html.js") >= 0){
-                     import('./js/module_html.js').then(function(Module){
-                         __module_html1=new Module.traitements_sur_html('__module_html1');
-                     });
-                 }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
-                     import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
-                         __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
-                     });
-                 }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
-                     import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
-                         __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
-                     });
-                 }
-             }
-         }
-     });     
-    //]]>
-    </script>
+EOT;
+     if($module_par_balise_script===true){
+         $o1.=<<<EOT
+           function demarre_l_interface(){
+                import('./js/module_interface1.js').then(function(Module){
+                    __gi1=new Module.interface1('__gi1','zone_global_messages');
+                    __gi1.deplace_la_zone_de_message();
+                    fonctionDeLaPageAppeleeQuandToutEstCharge();
+                    setTimeout(function(){
+                    
+                        __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
+                    },500);
+                    
+                    let liste_des_scripts = document.getElementsByTagName('script');
+                    let i=0;
+                    for( i=0 ; i < liste_des_scripts.length ; i++ ){
+                        var element=liste_des_scripts[i];
+                        if(element.type && element.type === 'module'){
+                            if(element.src && element.src.indexOf("js/module_html.js") >= 0){
+                                import('./js/module_html.js').then(function(Module){
+                                    __module_html1=new Module.traitements_sur_html('__module_html1');
+                                });
+                            }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
+                                import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
+                                    __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
+                                });
+                            }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
+                                import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
+                                    __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
+                                });
+                            }
+                        }
+                    }
+                    
+                
+                });
+                
+           }
+EOT;       
+     }else{
+     $o1=<<<EOT
+        window.addEventListener('load',function(){
+                __gi1=new interface1('__gi1','zone_global_messages');
+                __gi1.deplace_la_zone_de_message();
+                fonctionDeLaPageAppeleeQuandToutEstCharge();
+                setTimeout(function(){
+                
+                    __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
+                },500);
+            /*
+            import('./js/module_interface1.js').then(function(Module){
+            
+            });
+            */
+            let liste_des_scripts = document.getElementsByTagName('script');
+            let i=0;
+            for( i=0 ; i < liste_des_scripts.length ; i++ ){
+                var element=liste_des_scripts[i];
+                if(element.type && element.type === 'module'){
+                    if(element.src && element.src.indexOf("js/module_html.js") >= 0){
+                        import('./js/module_html.js').then(function(Module){
+                            __module_html1=new Module.traitements_sur_html('__module_html1');
+                        });
+                    }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
+                        import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
+                            __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
+                        });
+                    }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
+                        import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
+                            __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
+                        });
+                    }
+                }
+            }
+        });     
+       
+       
     
 EOT;
+     }
+    $o1.=PHP_EOL.'//]]>'.PHP_EOL.'</script>'.PHP_EOL;
     $o1.=' </head>'.PHP_EOL;
     $o1.=' <body>'.PHP_EOL;
     /*
@@ -960,113 +1117,7 @@ EOT;
     return($o1);
 
 }
-/*
-  =====================================================================================================================
-  quand on fait une maj, il faut vérifier que l'id envoyé en post correspond bien à l'id du formulaire
-  =====================================================================================================================
-*/
 
-function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
-
-
-    if((isset($post['__action'])) && ($post['__action'] == '__creation')){
-
-        return;
-
-    }
-
-
-    if(!(isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])) || (sha1($post[$nom_du_champ]) !== $_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])){
-
-
-        if((isset($post['__action'])) && ($post['__action'] == '__modification') && (is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]))){
-
-            ajouterMessage('avertissement',__LINE__.' désolé, il faut sauvegarder à nouveau');
-            recharger_la_page($bnf.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);
-
-        }else{
-
-            ajouterMessage('erreur',__LINE__.' désolé, sha1 différents sur '.$nom_du_champ.', cette erreur sera analysée');
-            recharger_la_page($page_de_redirection);
-        }
-
-
-    }
-
-
-}
-/*
-  =====================================================================================================================
-*/
-
-function xcleanSession1($par){
-
-
-    if(isset($_SESSION[APP_KEY][NAV])){
-
-        foreach($_SESSION[APP_KEY][NAV] as $k => $v){
-
-            if($par['except'] != $k){
-
-                unset($_SESSION[APP_KEY][NAV][$k]);
-
-            }
-
-        }
-
-    }
-
-
-    if(isset($_SESSION[APP_KEY]['choose'])){
-
-        unset($_SESSION[APP_KEY]['choose']);
-
-    }
-
-
-}
-/*
-  =====================================================================================================================
-*/
-
-function supprimerLesParametresDeNavigationEnSession(){
-
-
-    if(isset($_GET['idMenu'])){
-
-        $sauf='';
-        xcleanSession1(array( 'except' => ''));
-
-    }else{
-
-        $sauf=BNF;
-        xcleanSession1(array( 'except' => BNF));
-    }
-
-
-    if(isset($_SESSION[APP_KEY][NAV])){
-
-        foreach($_SESSION[APP_KEY][NAV] as $k => $v){
-
-            if($sauf != $k){
-
-                unset($_SESSION[APP_KEY][NAV][$k]);
-
-            }
-
-        }
-
-    }
-
-
-    if(isset($_SESSION[APP_KEY]['valeurPourChoixCroise'])){
-
-        unset($_SESSION[APP_KEY]['valeurPourChoixCroise']);
-
-    }
-
-
-}
 /*
   =====================================================================================================================
 */

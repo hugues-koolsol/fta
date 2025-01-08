@@ -19,11 +19,23 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
         var obj = __module_php_parseur1.traite_ast(ast_de_php,options_traitement);
         if(obj.__xst === true){
             document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
+            var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
+            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            if(matriceFonction.__xst === true){
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+                if(obj2.__xst === true){
+                   document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
+                }else{
+                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                }
+            }else{
+                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+            }
         }else{
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
         }
         var endMicro = performance.now();
-        console.log(endMicro - startMicro);
+//        console.log(endMicro - startMicro);
     }catch(e){
         console.error(e);
         if(e.lineNumber){

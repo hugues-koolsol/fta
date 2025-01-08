@@ -16,7 +16,12 @@ function recupererAstDePhp(&$data){
         $contenu=preg_replace('/\\/\\*sql_'.'inclure_deb\\*\\/(.*?)\\/\\*sql_'.'inclure_fin\\*\\//us','', $data[__entree]['texteSource']);
 
         $ast=$parser->parse($contenu);
-        $data[__xva]=json_encode($ast);
+        /*
+          sans le JSON_INVALID_UTF8_IGNORE, le source
+          $a = "\x80" ;
+          retourne false
+        */
+        $data[__xva]=json_encode($ast,JSON_INVALID_UTF8_IGNORE);
         $data[__xst]=true;
     }catch(Error $error){
         $data[__xms][]=$error->getMessage();

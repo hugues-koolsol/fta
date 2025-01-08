@@ -1,9 +1,15 @@
 Un programme en cours de développement pour transformer des fonctions imbriquées en tableau
-de façon à écrire des traitements et des données avec une syntaxe commune appelée "rev".
+de façon à écrire des traitements ( c'est à dire les programmes ) et des données avec une syntaxe commune appelée "rev".
 
-Les deux types d'éléments de base sont les constantes et les fonctions.  
+Il n'y a que deux types d'éléments de base :   
+- les constantes   
+- les fonctions avec des arguments   
 Ces dernières peuvent contenir des constantes et/ou des fonctions.  
-etc...
+   
+
+Les constantes sont sous deux formats :
+- sans délimiteurs : typiquement les noms de variables, les constantes des langages...   
+- avec délimiteurs : ' (apostrophe) , " (guillemet) , / (divisé pour les regex ) , ` ( apostrophe inversé ) 
 
 
 La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français.
@@ -248,13 +254,10 @@ A partir du format rev, le programme permet de produire un format tabulaire qui 
 A partir du format tabulaire on peut regénérer le source original
 
 
-Pour l'instant les bibliothèques externes qui sont utilisées ne sont pas encore converties en format "rev".  
-Ces bibliothèques permettent de convertir les sources jsmt/js/php/sql en "AST" ( abstract syntax tree ).  
-Ces "AST" sont ensuites traités pour produire les "rev".
+Les bibliothèques externes qui sont utilisées pour convertir les sources des programmes en AST ( abstract syntax tree ) sont en cours de conversion en format "rev".  
+Ces "AST" sont ensuites traités pour produire les "rev".   
 
-
-
-Tous les autres programmes et sql sont convertis au format "rev"
+L'objectif est d'avoir que des sources 
 
 
 

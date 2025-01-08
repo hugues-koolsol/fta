@@ -2108,3 +2108,4 @@ class interface1{
         }
     }
 }
+export{interface1};

@@ -64,8 +64,11 @@ $par=array(/* */
 );
 $o1.='<script type="text/javascript">
 window.addEventListener(\'load\',function(){
-  chargerLeDernierSourceJs();
-  bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2("txtar1","txtar2");
+  
+ setTimeout(function(){
+      chargerLeDernierSourceJs();
+      bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2("txtar1","txtar2");
+  },100);
  }
 )
 </script>';

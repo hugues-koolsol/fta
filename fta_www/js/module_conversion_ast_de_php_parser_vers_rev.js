@@ -2204,6 +2204,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }else{
                     t+='affecte(' + gauche + ',ou_binaire(' + gauche + ' , ' + droite + '))';
                 }
+            }else if(element.operator === '%='){
+                t+='affecte(' + gauche + ',modulo(' + gauche + ' , ' + droite + '))';
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1515 #traite_assign opérateur non traité : "' + element.operator + '"' ,"element" : element}));
             }
@@ -2323,6 +2325,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             case '%' : t+='modulo(' + gauche + ',' + droite + ')';
                 break;
             case '^' : t+='xou_binaire(' + gauche + ',' + droite + ')';
+                break;
+            case '<<' : t+='decal_gauche(' + gauche + ',' + droite + ')';
+                break;
+            case '>>' : t+='decal_droite(' + gauche + ',' + droite + ')';
                 break;
             case '&' : t+='et_binaire(' + gauche + ',' + droite + ')';
                 break;
@@ -2627,6 +2633,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             t+=',';
             obj=this.#traite_element(element.arguments[i],niveau,element,tab_comm);
             if(obj.__xst === true){
+             
                 t+='p(' + obj.__xva + ')';
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element}));
@@ -2920,6 +2927,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let etend='';
         let implemente='';
         let abstraite='';
+        let finale='';
         /*
           isAnonymous: false
           isFinal: false
@@ -2971,12 +2979,12 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2792 #traite_class ' ,"element" : element}));
         }
         if(element.isFinal){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2795 #traite_class ' ,"element" : element}));
+            finale=',finale()';
         }
         if(element.isReadonly){
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2798 #traite_class ' ,"element" : element}));
         }
-        t+='definition_de_classe( nom_classe(' + nom_class + ') ' + abstraite + implemente + etend + ', contenu( ' + contenu + ' ))';
+        t+='definition_de_classe( nom_classe(' + nom_class + ') ' + finale + abstraite + implemente + etend + ', contenu( ' + contenu + ' ))';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -3182,6 +3190,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                  || parent.kind === 'assign'
                  || parent.kind === 'unary'
                  || parent.kind === 'retif'
+                 || parent.kind === 'constant'
+                 || parent.kind === 'call'
                 ){
                     if(parent.type === 'instanceof'){
                         t+='\'' + element.name.replace(/\\/g,'\\\\') + '\'';
@@ -3213,6 +3223,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             case 'selfreference' : t+='self';
                 break;
             case 'staticreference' : t+='static';
+                break;
+            case 'parentreference' : t+='parent';
                 break;
             case 'halt' :
                 if(element.after && element.after !== ''){
