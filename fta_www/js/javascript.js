@@ -2031,12 +2031,6 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }else{
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'erreur 1938 sur return'}));
                 }
-                /*
-                  }else if(tab[j][8] === 2 && tab[j+1][1] === 'new'){
-                  debugger
-                  // hugues vérifier le cas ou new contient une propriété et une fonction 
-                  nomFonction=tab[j+1][1] + ' ' + tab[j+2][1];
-                */
             }else if(tab[j+1][1] === 'new' && tab[j+1][2] === 'f'){
                 var objtestLi = js_traite_new(tab,j + 1,niveau);
                 if(objtestLi.__xst === true){
@@ -2044,6 +2038,16 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }else{
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'erreur 1938 sur return'}));
                 }
+                
+                
+            }else if(tab[j+1][1] === 'defTab' && tab[j+1][2] === 'f'){
+                var obj = js_traiteDefinitionTableau(tab,j+1,niveau,{});
+                if(obj.__xst === true){
+                    nomFonction=obj.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"__xme" : '2054 js_traiteAppelFonction'}));
+                }
+                
             }else{
                 debugger;
             }
@@ -2370,8 +2374,10 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
     }
     var arguments_a_ajouter_au_retour='';
     if(!(enfantTermineParUnePropriete)){
-        if(nomFonction === 'Array'){
+        if(nomFonction === 'Array' && nbEnfants <= 1 ){
             t+='[';
+        }else if(nomFonction === 'Array' && nbEnfants > 1  ){
+            t+='Array(';
         }else{
             if(nomFonction === 'super' && argumentsFonction === ''){
                 /* pas de parenthèses pour la fonction super */
@@ -2406,8 +2412,10 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
         t+=espacesn(true,niveau);
     }
     if(!(enfantTermineParUnePropriete)){
-        if(nomFonction === 'Array'){
+        if(nomFonction === 'Array' && nbEnfants <= 1 ){
             t+=']';
+        }else if(nomFonction === 'Array' && nbEnfants > 1 ){
+            t+=')';
         }else{
             if(nomFonction === 'super' && argumentsFonction === ''){
                 /* pas de parenthèses pour la fonction super */

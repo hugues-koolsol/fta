@@ -24,17 +24,17 @@
 */
 function ma_cst_pour_php(elt){
     var r = maConstante(elt);
-    if(elt[4] === 1){
+    if(elt[4] === 1){ 
         /* apostrophe */
         r=r.replace(/\\\\d/g,'\\d').replace(/\\\\o/g,'\\o').replace(/\\\\\./g,'\\.').replace(/\\\\\-/g,'\\-').replace(/\\\\\//g,'\\/');
         r=r.replace(/\\\\x/g,'\\x').replace(/\\\\A/g,'\\A').replace(/\\\\z/g,'\\z').replace(/\\\\s/g,'\\s').replace(/\\\\\?/g,'\\?').replace(/\\\\f/g,'\\f');
-        r=r.replace(/\\\\w/g,'\\w');
+    r=r.replace(/\\\\w/g,'\\w').replace(/\\\\{/g,'\\{').replace(/\\\\}/g,'\\}');
     }else if(elt[4] === 3){
         /* guillemet */
         r=r.replace(/\\\\d/g,'\\d').replace(/\\\\o/g,'\\o').replace(/\\\\\./g,'\\.').replace(/\\\\\-/g,'\\-').replace(/\\\\\//g,'\\/');
         r=r.replace(/\\\\x/g,'\\x').replace(/\\\\A/g,'\\A').replace(/\\\\z/g,'\\z').replace(/\\\\s/g,'\\s').replace(/\\\\\?/g,'\\?').replace(/\\\\f/g,'\\f');
         r=r.replace(/\\\\w/g,'\\w');
-        r=r.replace(/\\\$/g,'$').replace(/\\\\0/g,'\\0');
+        r=r.replace(/\\\$/g,'$').replace(/\\\\0/g,'\\0').replace(/\\\\v/g,'\\v');
     }else if(elt[4] === 3){
         r=r.replace(/\\\\\$/g,'\\$');
     }
@@ -235,13 +235,22 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '0173 dans php_tabToPhp1 retourner doit avoir un paramètre'}));
                     }else if(tab[i][8] === 1 && tab[i+1][2] === 'c'){
                         t+=un_espace;
-                        t+='return(' + ma_cst_pour_php(tab[i+1]) + ');';
+                        t+='return ' + ma_cst_pour_php(tab[i+1]) + ';';
                         i++;
                     }else{
                         t+=un_espace;
                         var obj1 = php_traiteElement(tab,i + 1,niveau,{});
                         if(obj1.__xst === true){
-                            t+='return(' + obj1.__xva + ');';
+                            if(obj1.__xva.length>120){
+                                var obj1 = php_traiteElement(tab,i + 1,niveau,{"retour_de_ligne" : true});
+                                if(obj1.__xst === true){
+                                    t+='return ' + obj1.__xva + ';';
+                                }else{
+                                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '0249 php_tabToPhp1'}));
+                                }
+                            }else{
+                                t+='return ' + obj1.__xva + ';';
+                            }
                         }else{
                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'dans php_tabToPhp1 0289'}));
                         }
@@ -394,13 +403,22 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                         if(tabchoix[j][1] === '#'){
                         }else if(tabchoix[j][1] === 'condition'){
                             if(tab[tabchoix[j][0]][8] > 0){
-                                obj=php_condition0(tab,tabchoix[j][0],niveau);
+                                obj=php_condition0(tab,tabchoix[j][0],niveau,false);
                                 if(obj.__xst === true){
-                                    condition+=obj.__xva;
+                                    if(obj.__xva.length>120){
+                                        obj=php_condition0(tab,tabchoix[j][0],niveau,true);
+                                        if(obj.__xst === true){
+                                            condition+=obj.__xva;
+                                        }else{
+                                            return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : tabchoix[j][0] ,"tab" : tab ,"__xme" : '0406 faire_tant_que condition '}));
+                                        }
+                                    }else{
+                                        condition+=obj.__xva;
+                                    }
                                 }else{
                                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : tabchoix[j][0] ,"tab" : tab ,"__xme" : '1 problème sur la condition du choix en indice ' + tabchoix[j][0]}));
                                 }
-                                condition=condition.replace(/\n/g,'').replace(/\r/g,'');
+
                             }
                         }else if(tabchoix[j][1] === 'faire'){
                             if(tab[tabchoix[j][0]][8] > 0){
@@ -468,7 +486,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             }
                         }else if(tabchoix[j][1] === 'condition'){
                             if(tab[tabchoix[j][0]][8] > 0){
-                                obj=php_condition0(tab,tabchoix[j][0],niveau);
+                                obj=php_condition0(tab,tabchoix[j][0],niveau,false);
                                 if(obj.__xst === true){
                                     condition+=obj.__xva;
                                 }else{
@@ -515,9 +533,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     var nomErreur='';
                     for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][1] === 'faire' && tab[j][2] === 'f'){
-                            niveau++;
-                            obj=php_tabToPhp1(tab,j + 1,dansFonction,false,niveau);
-                            niveau--;
+                            obj=php_tabToPhp1(tab,j + 1,dansFonction,false,niveau+1);
                             if(obj.__xst === true){
                                 contenu+=obj.__xva;
                             }else{
@@ -528,9 +544,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             if(tab[j][8] === 2){
                                 for( var k = j + 1 ; k < l01 ; k=tab[k][12] ){
                                     if(tab[k][1] === 'faire' && tab[k][2] === 'f'){
-                                        niveau++;
-                                        obj=php_tabToPhp1(tab,k + 1,dansFonction,false,niveau);
-                                        niveau--;
+                                        obj=php_tabToPhp1(tab,k + 1,dansFonction,false,niveau+1);
                                         if(obj.__xst === true){
                                             sierreur[sierreur.length-1].contenu=obj.__xva;
                                         }else{
@@ -564,13 +578,29 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                 case 'tantQue' :
                     for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
                         if(tab[j][1] === 'condition'){
-                            obj=php_condition0(tab,j,niveau);
+                            obj=php_condition0(tab,j,niveau,false);
+                            
+                            if(obj.__xva.length>120){
+                                obj=php_condition0(tab,j,niveau,true);
+                                if(obj.__xst === true){
+                                    t+=un_espace;
+                                    t+='while(' + obj.__xva + '){';
+                                }else{
+                                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : tabchoix[j][0] ,"tab" : tab ,"__xme" : '0583 tantQue condition '}));
+                                }
+                            }else{
+                                t+=un_espace;
+                                t+='while(' + obj.__xva + '){';
+                            }
+                            
+/*                            
                             if(obj.__xst === true){
                                 t+=un_espace;
                                 t+='while(' + obj.__xva + '){';
                             }else{
                                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2 problème sur la condition tantQue '}));
                             }
+*/                            
                         }else if(tab[j][1] === 'faire'){
                             if(tab[j][8] === 0){
                                 t+='}';
@@ -674,9 +704,19 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                     break;
                                 }
                             }
-                            obj=php_condition0(tab,debutCondition,niveau);
+                            obj=php_condition0(tab,debutCondition,niveau,false);
                             if(obj.__xst === true){
-                                t+=obj.__xva;
+                                if(obj.__xva.length>120){
+                                    
+                                    obj=php_condition0(tab,debutCondition,niveau,true);
+                                    if(obj.__xst === true){
+                                        t+=obj.__xva;
+                                    }else{
+                                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : tabchoix[j][0] ,"tab" : tab ,"__xme" : '2 problème sur la condition du choix en indice ' + tabchoix[j][0]}));
+                                    }
+                                }else{
+                                    t+=obj.__xva;
+                                }
                             }else{
                                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : tabchoix[j][0] ,"tab" : tab ,"__xme" : '2 problème sur la condition du choix en indice ' + tabchoix[j][0]}));
                             }
@@ -684,9 +724,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             t+=CRLF;
                             if(tabchoix[j][2] > 0 && tabchoix[j][4] > 0){
                                 /* ✍ si on a trouve un "alors" et qu'il contient des enfants */
-                                niveau++;
-                                obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
-                                niveau--;
+                                obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau+1);
                                 if(obj.__xst === true){
                                     t+=obj.__xva;
                                 }else{
@@ -715,7 +753,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                     break;
                                 }
                             }
-                            obj=php_condition0(tab,debutCondition,niveau);
+                            obj=php_condition0(tab,debutCondition,niveau,false);
                             if(obj.__xst === true){
                                 t+=obj.__xva;
                             }else{
@@ -750,9 +788,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             t+=CRLF;
                             if(tabchoix[j][2] > 0 && tabchoix[j][4] > 0){
                                 /* ✍ si on a trouve un "alors" et qu'il contient des enfants */
-                                niveau++;
-                                obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau);
-                                niveau--;
+                                
+                                obj=php_tabToPhp1(tab,tabchoix[j][2],dansFonction,false,niveau+1);
+                                
                                 if(obj.__xst === true){
                                     t+=obj.__xva;
                                 }else{
@@ -1369,6 +1407,9 @@ function php_traiteElement(tab,ind,niveau,options={}){
     var i=0;
     var j=0;
     var l01=tab.length;
+    
+    
+    
     if(tab[ind][2] === 'c'){
         t=ma_cst_pour_php(tab[ind]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
         return({"__xst" : true ,"__xva" : t});
@@ -1443,6 +1484,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
         case 'variable_publique' : 
         case 'variable_publique_statique' : 
         case 'variable_privée_statique' :
+        case 'variable_ptotégée_statique' :
             var declaration='';
             var nom_variable='';
             var type_variable='';
@@ -1489,6 +1531,8 @@ function php_traiteElement(tab,ind,niveau,options={}){
                 t+='public static ' + type_variable + nom_variable + declaration;
             }else if(tab[ind][1] === 'variable_privée_statique'){
                 t+='private static ' + type_variable + nom_variable + declaration;
+            }else if(tab[ind][1] === 'variable_ptotégée_statique'){
+                t+='protected static ' + type_variable + nom_variable + declaration;
             }
             break;
             
@@ -1503,6 +1547,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
             var publique='';
             var statique='';
             var protegee='';
+            var finale='';
             var abstraite='';
             var nom_methode='';
             for( i=ind + 1 ; i < l01 ; i=tab[i][12] ){
@@ -1512,6 +1557,8 @@ function php_traiteElement(tab,ind,niveau,options={}){
                             nom_methode=tab[j+1][1];
                         }else if(tab[j][1] === 'privée' && tab[j][2] === 'f' && tab[j][8] === 0){
                             privee='private ';
+                        }else if(tab[j][1] === 'finale' && tab[j][2] === 'f' && tab[j][8] === 0){
+                            finale='final ';
                         }else if(tab[j][1] === 'publique' && tab[j][2] === 'f' && tab[j][8] === 0){
                             publique='public ';
                         }else if(tab[j][1] === 'statique' && tab[j][2] === 'f' && tab[j][8] === 0){
@@ -1590,12 +1637,12 @@ function php_traiteElement(tab,ind,niveau,options={}){
              && tab[tab[tab[ind][7]][7]][2] === 'f'
              && contenu === ''
             ){
-                t+=(privee + publique + statique + abstraite + protegee) + 'function ' + nom_methode + '(' + les_arguments + ') ' + type_retour + ';';
+                t+=(finale+privee + publique + statique + abstraite + protegee) + 'function ' + nom_methode + '(' + les_arguments + ') ' + type_retour + ';';
             }else{
                 if(abstraite !== '' && contenu === ''){
-                    t+=(privee + publique + statique + abstraite + protegee) + 'function ' + nom_methode + '(' + les_arguments + ')' + type_retour + ';';
+                    t+=(finale+privee + publique + statique + abstraite + protegee) + 'function ' + nom_methode + '(' + les_arguments + ')' + type_retour + ';';
                 }else{
-                    t+=(privee + publique + statique + abstraite + protegee) + 'function ' + nom_methode + '(' + les_arguments + ')' + type_retour + '{';
+                    t+=(finale+privee + publique + statique + abstraite + protegee) + 'function ' + nom_methode + '(' + les_arguments + ')' + type_retour + '{';
                     t+=les_commentaires_methode;
                     t+=contenu;
                     t+=espacesn(true,niveau);
@@ -1618,7 +1665,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
         case 'ou' : 
         case 'et_logique' : 
         case 'ou_logique' :
-            obj=php_condition1(tab,ind,niveau,tab[ind][7]);
+            obj=php_condition1(tab,ind,niveau,tab[ind][7],false);
             if(obj.__xst === true){
                 t=obj.__xva;
             }else{
@@ -1823,7 +1870,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
                 if(tab[j][1] === 'condition'){
                     testEnLigne.push([j,tab[j][1],ind]);
                 }else if(tab[j][1] === 'siVrai'){
-                    testEnLigne.push([j,tab[j][1],ind]);
+                    testEnLigne.push([j,tab[j][1],ind,tab[j][8]]);
                 }else if(tab[j][1] === 'siFaux'){
                     testEnLigne.push([j,tab[j][1],ind]);
                 }else{
@@ -1834,34 +1881,38 @@ function php_traiteElement(tab,ind,niveau,options={}){
                 return(php_logerr({"__xst" : false ,"id" : id ,"ind" : ind ,"tab" : tab ,"__xme" : 'php_traiteElement 1428 il faut un format testEnLigne(condition() , siVrai(1) , siFaux(2))"'}));
             }
             var j=0;
+            var si_vrai='';
             for( j=0 ; j < testEnLigne.length ; j++ ){
                 if(testEnLigne[j][1] === 'condition'){
-                    niveau=niveau + 1;
-                    var objCondition = php_condition0(tab,testEnLigne[j][0],niveau);
-                    niveau=niveau - 1;
+                    var objCondition = php_condition0(tab,testEnLigne[j][0],niveau+1,false);
                     if(objCondition.__xst === true){
                     }else{
                         return(php_logerr({"__xst" : false ,"__xva" : t ,"ind" : testEnLigne[j][0] ,"tab" : tab ,"__xme" : '1 php_traiteElement sur condition 1438 ' + testEnLigne[j][0]}));
                     }
                 }else if(testEnLigne[j][1] === 'siVrai'){
-                    niveau=niveau + 1;
-                    var objSiVrai = php_traiteElement(tab,testEnLigne[j][0] + 1,niveau,{});
-                    niveau=niveau - 1;
-                    if(objSiVrai.__xst === true){
+                    if(testEnLigne[j][3]===0){
+                     si_vrai='';
                     }else{
-                        return(php_logerr({"__xst" : false ,"__xva" : t ,"ind" : testEnLigne[j][0] ,"tab" : tab ,"__xme" : '1 php_traiteElement sur siVrai 1446 ' + testEnLigne[j][0]}));
+                        var objSiVrai = php_traiteElement(tab,testEnLigne[j][0] + 1,niveau+1,{});
+                        if(objSiVrai.__xst === true){
+                            si_vrai=objSiVrai.__xva;
+                        }else{
+                            return(php_logerr({"__xst" : false ,"__xva" : t ,"ind" : testEnLigne[j][0] ,"tab" : tab ,"__xme" : '1 php_traiteElement sur siVrai 1446 ' + testEnLigne[j][0]}));
+                        }
                     }
                 }else if(testEnLigne[j][1] === 'siFaux'){
-                    niveau=niveau + 1;
-                    var objSiFaux = php_traiteElement(tab,testEnLigne[j][0] + 1,niveau,{});
-                    niveau=niveau - 1;
+                    var objSiFaux = php_traiteElement(tab,testEnLigne[j][0] + 1,niveau+1,{});
                     if(objSiFaux.__xst === true){
                     }else{
                         return(php_logerr({"__xst" : false ,"__xva" : t ,"ind" : testEnLigne[j][0] ,"tab" : tab ,"__xme" : '1 php_traiteElement sur objSiFaux 1454 ' + testEnLigne[j][0]}));
                     }
                 }
             }
-            t='(' + objCondition.__xva + ' ? ' + objSiVrai.__xva + ' : ' + objSiFaux.__xva + ')';
+            if(options.hasOwnProperty('retour_de_ligne') && options.retour_de_ligne === true){
+                t='(' + objCondition.__xva + ' ?' + (si_vrai===''?'':espacesn(true,niveau)+' '+si_vrai+' ') + ': ' +espacesn(true,niveau)+ objSiFaux.__xva + ')';
+            }else{
+                t='(' + objCondition.__xva + ' ?' + (si_vrai===''?'':' '+si_vrai+' ') + ': ' + objSiFaux.__xva + ')';
+            }
             break;
             
         case 'sql_inclure_source' :
@@ -2104,11 +2155,167 @@ function php_traiteListe1(tab,ind,niveau){
     t+='list(' + lesParams + ')';
     return({"__xst" : true ,"__xva" : t});
 }
-/* ✍===================================================================================================================== */
+/*
+(n/a)	clone new	clone et new
+droite	**	arithmétique
+(n/a)	+ - ++ -- ~ (int) (float) (string) (array) (object) (bool) @	arithmétique (unitaire + et -), incrément/décrément bit à bit, casting de type et contrôle d'erreur
+gauche	instanceof	type
+(n/a)	!	logique
+gauche	* / %	arithmétique
+gauche	+ - .	arithmétique (binaire + et -), tableau et chaîne de caractères (. antérieur à PHP 8.0.0)
+gauche	<< >>	bitwise
+gauche	.	string (à partir de PHP 8.0.0)
+non-associatif	< <= > >=	comparaison
+non-associatif	== != === !== <> <=>	comparaison
+gauche	&	bitwise et références
+gauche	^	bitwise
+gauche	|	bitwise
+gauche	&&	logique
+gauche	||	logique
+droite	??	coalescence nul
+non-associatif	? :	ternaire (gauche--associatif antérieur à PHP 8.0.0)
+droite	= += -= *= **= /= .= %= &= |= ^= <<= >>= ??=	affectation
+(n/a)	yield from	yield from
+(n/a)	yield	yield
+(n/a)	print	print
+gauche	and	logique
+gauche	xor	logique
+gauche	or	logique
+
+*/
+/*
+  // https://www.php.net/manual/fr/language.operators.precedence.php
+  les plus et moins unaires sont gérés à part
+  'plus'          : {priorite :  10 , operateur : '+'      , operandes : '1'  , commentaire : 'plus  unaire ( cad +1, +$a)' },
+  'moins'         : {priorite :  10 , operateur : '-'      , operandes : '1'  , commentaire : 'poins unaire ( cad +1, +$a)' },
+  
+  <> <=> à gérer quand je verrai son utilisation !
+  
+*/
+var tableau_precedences={
+  ''              : {priorite :   0 , operateur : 'new '        , operandes : '1'  , commentaire : 'parenthèse !' },
+  'nouveau'       : {priorite :   5 , operateur : 'new '        , operandes : '1'  , commentaire : '' },
+  'clone'         : {priorite :   5 , operateur : 'clone '      , operandes : '1'  , commentaire : '' },
+   /**/
+  'puissance'     : {priorite :  10 , operateur : '**'          , operandes : '2'  , commentaire : '' },
+   /**/
+  'instance_de'   : {priorite :  20 , operateur : 'instanceof'  , operandes : '1'  , commentaire : '' },
+   /**/
+  'non'           : {priorite :  30 , operateur : '-'           , operandes : '1'  , commentaire : '' },
+   /**/
+  'mult'          : {priorite :  40 , operateur : '*'           , operandes : '2n' , commentaire : '' },
+  'divi'          : {priorite :  40 , operateur : '/'           , operandes : '2n' , commentaire : '' },
+  'modulo'        : {priorite :  40 , operateur : '%'           , operandes : '2n' , commentaire : '' },
+   /**/
+  'plus'          : {priorite :  50 , operateur : '+'           , operandes : '2n' , commentaire : '' },
+  'moins'         : {priorite :  50 , operateur : '-'           , operandes : '2n' , commentaire : '' },
+   /**/
+  'decal_gauche'  : {priorite :  60 , operateur : '<<'          , operandes : '2'  , commentaire : '' },
+  'decal_droite'  : {priorite :  60 , operateur : '>>'          , operandes : '2'  , commentaire : '' },
+   /**/
+  'concat'        : {priorite :  70 , operateur : '.'           , operandes : '2n' , commentaire : '' },
+   /**/
+  'inf'           : {priorite :  80 , operateur : '<'           , operandes : '2'  , commentaire : '' },
+  'infeg'         : {priorite :  80 , operateur : '<='          , operandes : '2'  , commentaire : '' },
+  'sup'           : {priorite :  80 , operateur : '>'           , operandes : '2'  , commentaire : '' },
+  'supeg'         : {priorite :  80 , operateur : '>='          , operandes : '2'  , commentaire : '' },
+   /**/
+  'egal'          : {priorite :  90 , operateur : '=='          , operandes : '2'  , commentaire : '' },
+  'diff'          : {priorite :  90 , operateur : '!='          , operandes : '2'  , commentaire : '' },
+  'egalstricte'   : {priorite :  90 , operateur : '==='         , operandes : '2'  , commentaire : '' },
+  'diffstricte'   : {priorite :  90 , operateur : '!=='         , operandes : '2'  , commentaire : '' },
+   /**/
+  'et_binaire'    : {priorite : 100 , operateur : '&'           , operandes : '2'  , commentaire : '' },
+  'xou_binaire'   : {priorite : 120 , operateur : '^'           , operandes : '2'  , commentaire : '' },
+  'ou_binaire'    : {priorite : 130 , operateur : '|'           , operandes : '2'  , commentaire : '' },
+   /**/
+  'et'            : {priorite : 130 , operateur : '&&'          , operandes : '2n' , commentaire : '' },
+  'ou'            : {priorite : 140 , operateur : '||'          , operandes : '2n' , commentaire : '' },
+  '??'            : {priorite : 150 , operateur : '??'          , operandes : '3'  , commentaire : '' },
+  /* les autres, je ne les ai pas encore rencontrés */ 
+};
+
+/*
+
+                }else if(tab[parentId][1] === ''){ xou_binaire ou_exclusif xou_binaire
+                    t+='&';
+                }else if(tab[parentId][1] === '??'){
+                    t+='??';
+                }else if(tab[parentId][1] === 'ou_binaire'){
+                    t+='|';
+                }else if(tab[parentId][1] === 'et_binaire'){
+                    t+=' & ';
+                }else if(tab[parentId][1] === 'xou_binaire'){
+                    t+='^';
+                }else{
+
+
+*/
+/*
+
+tab[tab[tab[id][7]][7]] + ' ' + tab[tab[id][7]] + ' ' + tab[id]
+$a=$b?$c:$d+1; testenligne sifaux plus
+*/
+
+
 function php_traiteOperation(tab,id,niveau){
     var t='';
     var i=0;
+    var l01=tab.length;
+    
+    if(!tableau_precedences.hasOwnProperty(tab[id][1])){
+        return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '2259 php_traiteOperation 1633 "' + tab[id][1] + '"' }));
+    }     
+    var operandes=[];
+    
+    for( i=id + 1 ; i < l01 ; i=tab[i][12] ){
+     
+        if(tab[i][1] === '#' && tab[i][2] ==='f'){
+        }else if(tab[i][2] ==='c'){
+            operandes.push(ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r'));
+        }else{
+         
+         
+            if(tableau_precedences.hasOwnProperty(tab[id][1])){
+                debugger
+                var objOperation = php_traiteOperation(tab,i,niveau);
+                if(objOperation.__xst === true){
+                    operandes.push(objOperation.__xva);
+                }else{
+                    return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '2282 php_traiteOperation'}));
+                }
+             
+            }else{
+         
+                var obj1 = php_traiteElement(tab,i,niveau,{});
+                if(obj1.__xst === true){
+                    operandes.push(obj1.__xva);
+                }else{
+                    return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2291 php_traiteOperation '}));
+                }
+            }
+         
+        }
+        
+     
+    }
+    console.log('operandes=' , operandes );
+    
+    
+    debugger
+    return({"__xva" : t ,"__xst" : true});
+}
+
+/*
+  A réécrire avec le tableau plus haut
+  ===================================================================================================================== 
+*/
+function php_traiteOperation_ancien(tab,id,niveau){
+    var t='';
+    var i=0;
     var j=0;
+    
+    
     /*
       dans le cas d'un "plus" simple on est peut être au milieu d'une concaténation de chaine.
       Si un des deux paramètre est numérique il est plus prudent d'ajouter une parenthèse
@@ -2147,8 +2354,12 @@ function php_traiteOperation(tab,id,niveau){
             }
         }else{
             if(numEnfant === 1){
+                debugger
                 numEnfant=numEnfant + 1;
                 if(tab[i][2] === 'c'){
+                     // affecte( $a , plus( mult( $b , $c ) , $e )),
+                     // tab[tab[tab[i][7]][7]] + ' ' + tab[tab[i][7]] + ' ' + tab[i]
+                     // plus                           mult 
                     if(condi0){
                         t+='(';
                     }
@@ -2177,6 +2388,7 @@ function php_traiteOperation(tab,id,niveau){
                      || tab[i][1] === 'ou_binaire'
                      || tab[i][1] === 'decal_gauche'
                      || tab[i][1] === 'decal_droite'
+                     || tab[i][1] === 'et_binaire'
                      || tab[i][1] === '??'
                     ){
                         var objOperation = php_traiteOperation(tab,i,niveau);
@@ -3074,7 +3286,7 @@ function php_traiteDefinitionTableau(tab,id,niveau,options={}){
     return({"__xst" : true ,"__xva" : t});
 }
 /* ✍===================================================================================================================== */
-function php_condition1(tab,id,niveau,id_parent){
+function php_condition1(tab,id,niveau,id_parent,saut_de_ligne){
     var t='';
     var i=0;
     var j=0;
@@ -3087,7 +3299,7 @@ function php_condition1(tab,id,niveau,id_parent){
     for( i=id ; i < l01 ; i=tab[i][12] ){
         if(tab[i][2] === 'f'){
             if(tab[i][1] === 'condition'){
-                var obj = php_condition1(tab,i + 1,niveau,i);
+                var obj = php_condition1(tab,i + 1,niveau+1,i,saut_de_ligne);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                     return({"__xst" : true ,"__xva" : t});
@@ -3095,7 +3307,7 @@ function php_condition1(tab,id,niveau,id_parent){
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2351 erreur dans une condition'}));
                 }
             }else if(tab[i][1] === 'non'){
-                var obj = php_condition1(tab,i + 1,niveau,i);
+                var obj = php_condition1(tab,i + 1,niveau+1,i,saut_de_ligne);
                 if(obj.__xst === true){
                     t+='!(' + obj.__xva + ')';
                     return({"__xst" : true ,"__xva" : t});
@@ -3103,7 +3315,7 @@ function php_condition1(tab,id,niveau,id_parent){
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2351 erreur dans une condition'}));
                 }
             }else if(tab[i][1] === ''){
-                var obj = php_condition1(tab,i + 1,niveau,i);
+                var obj = php_condition1(tab,i + 1,niveau+1,i,saut_de_ligne);
                 if(obj.__xst === true){
                     t+='(' + obj.__xva + ')';
                 }else{
@@ -3114,19 +3326,29 @@ function php_condition1(tab,id,niveau,id_parent){
                 premiere=true;
                 for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
                     if(tab[j][2] === 'f'){
-                        var obj = php_condition1(tab,j,niveau,i);
+                        var obj = php_condition1(tab,j,niveau+1,i,saut_de_ligne);
                         if(obj.__xst === true){
                             if(premiere === true){
                                 premiere=false;
                             }else{
                                 if(tab[i][1] === 'et'){
-                                    cumul+=' && ';
+                                    if(saut_de_ligne===true){
+                                        cumul+=espacesn(true,niveau);
+                                        cumul+=' && ';
+                                    }else{
+                                        cumul+=' && ';
+                                    }
                                 }else if(tab[i][1] === 'et_logique'){
                                     cumul+=' and ';
                                 }else if(tab[i][1] === 'ou_logique'){
                                     cumul+=' or ';
                                 }else{
-                                    cumul+=' || ';
+                                    if(saut_de_ligne===true){
+                                        cumul+=espacesn(true,niveau);
+                                        cumul+=' || ';
+                                    }else{
+                                        cumul+=' || ';
+                                    }
                                 }
                             }
                             if(tab[j][1] === 'non'){
@@ -3142,13 +3364,21 @@ function php_condition1(tab,id,niveau,id_parent){
                             premiere=false;
                         }else{
                             if(tab[i][1] === 'et'){
-                                cumul+=' && ';
+                                if(saut_de_ligne===true){
+                                    cumul+=' && ';
+                                }else{
+                                    cumul+=' && ';
+                                }
                             }else if(tab[i][1] === 'et_logique'){
                                 cumul+=' and ';
                             }else if(tab[i][1] === 'ou_logique'){
                                 cumul+=' or ';
                             }else{
-                                cumul+=' || ';
+                                if(saut_de_ligne===true){
+                                    cumul+=' || ';
+                                }else{
+                                    cumul+=' || ';
+                                }
                             }
                         }
                         cumul+=ma_cst_pour_php(tab[j]);
@@ -3247,7 +3477,7 @@ function php_condition1(tab,id,niveau,id_parent){
   =====================================================================================================================
   on arrive dans un condition()
 */
-function php_condition0(tab,id,niveau){
+function php_condition0(tab,id,niveau,saut_de_ligne){
     /* ✍ console.log('php_condition0'); */
     var t='';
     var i=0;
@@ -3259,7 +3489,7 @@ function php_condition0(tab,id,niveau){
     if(tab[id][8] === 0){
         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2313 une condition doit être remplie'}));
     }else{
-        obj=php_condition1(tab,id + 1,niveau,id);
+        obj=php_condition1(tab,id + 1,niveau,id,saut_de_ligne);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{

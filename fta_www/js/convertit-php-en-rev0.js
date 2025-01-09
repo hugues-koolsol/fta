@@ -525,7 +525,10 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
         }
     }
     t+=lesArguments;
-    if(element.flags === 18){
+    if(element.flags === 33){
+        t+='\n' + esp0 + esp1 + esp1 + 'finale()';
+        t+='\n' + esp0 + esp1 + esp1 + 'publique()';
+    }else if(element.flags === 18){
         t+='\n' + esp0 + esp1 + esp1 + 'abstraite()';
         t+='\n' + esp0 + esp1 + esp1 + 'protégée()';
     }else if(element.flags === 12){
@@ -1158,6 +1161,11 @@ function php_traite_Expr_Assign(element,niveau,parent){
         return(astphp_logerreur({"__xst" : false ,"__xme" : '0860  erreur php_traite_Expr_Assign ' ,"element" : element}));
     }
     t+='affecte(' + gauche + ' , ' + droite + ')';
+    if(parent && parent.nodeType && parent.nodeType.substr(0,14) ==='Expr_BinaryOp_'){
+        t='('+t+')';
+    }
+
+
     return({"__xst" : true ,"__xva" : t});
 }
 /*
@@ -1580,6 +1588,7 @@ function php_traite_chaine_raw(valeur_raw,element){
                              || c === 'o'
                              || c === 'b'
                              || c === 's'
+                             || c === 'v'
                              || c === '\\'
                              || c === ']'
                              || c === '['
@@ -1593,7 +1602,7 @@ function php_traite_chaine_raw(valeur_raw,element){
                             }else if(c === 'r' || c === 'n' || c === 't' || c === '\'' && rv.substr(0,1) === '\'' || c === '"' && rv.substr(0,1) === '"'){
                                 nouvelle_chaine='\\' + nouvelle_chaine;
                             }else{
-                                return(astphp_logerreur({"__xst" : false ,"__xme" : '0930 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,"element" : element}));
+                                return(astphp_logerreur({"__xst" : false ,"__xme" : '0930 après un backslash il ne peut y avoir que les caractères réduits et pas "'+c+'" ' ,"element" : element}));
                             }
                         }else{
                             nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
@@ -1782,7 +1791,13 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                                   private static $_resources = array();
                                 */
                                 t+='variable_privée_statique(';
+                            }else if(element.flags && element.flags === 10){
+                                /*
+                                  private static $_resources = array();
+                                */
+                                t+='variable_ptotégée_statique(';
                             }else{
+                                debugger
                                 return(astphp_logerreur({"__xst" : false ,"__xme" : '1003 php_traite_Stmt_Expression Stmt_Property ' ,"element" : element}));
                             }
                             if(element.type){
@@ -2492,8 +2507,6 @@ function php_traite_Expr_Ternary(element,niveau,options_traitement){
         }else{
             return(astphp_logerreur({"__xst" : false ,"__xme" : '1758 erreur php_traite_Expr_Ternary' ,"element" : element}));
         }
-    }else{
-        siVrai=conditionIf;
     }
     var siFaux='';
     if(element.else){

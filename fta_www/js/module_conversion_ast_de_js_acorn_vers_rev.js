@@ -421,7 +421,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0618 ' + element.callee.object.type ,"element" : element}));
                 }
             }else if(element.callee.type === 'Identifier'){
-                if(element.callee.name === 'Array' && laPropriete === ''){
+                if(element.callee.name === 'Array' && laPropriete === '' && parent.type !== 'CallExpression'){
                     if(lesArguments.length > 0 && lesArguments.substr(0,1) === ','){
                         lesArguments=lesArguments.substr(1);
                     }

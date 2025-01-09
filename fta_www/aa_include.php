@@ -951,7 +951,7 @@ function html_header1($parametres){
      const __xva='__xva';
      const __entree='__entree';
      /* 
-       attention, doit être déclarée en "var" plutôt qu'en "let" sinon lorsqu'on ferme une sous fenêtre,  
+       attention, __gi1 doit être déclarée en "var" plutôt qu'en "let" sinon lorsqu'on ferme une sous fenêtre,  
        par l'appel à window.parent[this.#nom_de_la_variable]['fermerModale2']();
        ça ne fonctionne plus
      */
@@ -970,6 +970,7 @@ function html_header1($parametres){
      */
 EOT;
      if($module_par_balise_script===true){
+         /* mode normal */
          $o1.=<<<EOT
            function demarre_l_interface(){
                 import('./js/module_interface1.js').then(function(Module){
@@ -1008,44 +1009,45 @@ EOT;
            }
 EOT;       
      }else{
-     $o1=<<<EOT
-        window.addEventListener('load',function(){
-                __gi1=new interface1('__gi1','zone_global_messages');
-                __gi1.deplace_la_zone_de_message();
-                fonctionDeLaPageAppeleeQuandToutEstCharge();
-                setTimeout(function(){
+         /* 
+           ici c'est quand je suis en cours de mise au point, 
+           pour que ceci fonctionne il faut retirer le "export{interface1};" à la fin de "js/module_interface1.js" 
+         */
+         $o1=<<<EOT
+            window.addEventListener('load',function(){
+                    __gi1=new interface1('__gi1','zone_global_messages');
+                    __gi1.deplace_la_zone_de_message();
+                    fonctionDeLaPageAppeleeQuandToutEstCharge();
+                    setTimeout(function(){
+                    
+                        __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
+                    },500);
+                /*
+                import('./js/module_interface1.js').then(function(Module){
                 
-                    __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
-                },500);
-            /*
-            import('./js/module_interface1.js').then(function(Module){
-            
-            });
-            */
-            let liste_des_scripts = document.getElementsByTagName('script');
-            let i=0;
-            for( i=0 ; i < liste_des_scripts.length ; i++ ){
-                var element=liste_des_scripts[i];
-                if(element.type && element.type === 'module'){
-                    if(element.src && element.src.indexOf("js/module_html.js") >= 0){
-                        import('./js/module_html.js').then(function(Module){
-                            __module_html1=new Module.traitements_sur_html('__module_html1');
-                        });
-                    }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
-                        import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
-                            __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
-                        });
-                    }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
-                        import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
-                            __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
-                        });
+                });
+                */
+                let liste_des_scripts = document.getElementsByTagName('script');
+                let i=0;
+                for( i=0 ; i < liste_des_scripts.length ; i++ ){
+                    var element=liste_des_scripts[i];
+                    if(element.type && element.type === 'module'){
+                        if(element.src && element.src.indexOf("js/module_html.js") >= 0){
+                            import('./js/module_html.js').then(function(Module){
+                                __module_html1=new Module.traitements_sur_html('__module_html1');
+                            });
+                        }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_php_parser_vers_rev.js") >= 0){
+                            import('./js/module_conversion_ast_de_php_parser_vers_rev.js').then(function(Module){
+                                __module_php_parseur1=new Module.module_conversion_ast_de_php_parser_vers_rev1('__module_php_parseur1');
+                            });
+                        }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
+                            import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
+                                __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
+                            });
+                        }
                     }
                 }
-            }
-        });     
-       
-       
-    
+            });     
 EOT;
      }
     $o1.=PHP_EOL.'//]]>'.PHP_EOL.'</script>'.PHP_EOL;
@@ -1117,11 +1119,9 @@ EOT;
     return($o1);
 
 }
-
 /*
   =====================================================================================================================
 */
-
 function html_footer1($parametres=array()){
 
     $o1='';

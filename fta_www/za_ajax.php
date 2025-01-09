@@ -78,7 +78,7 @@ function shutdownHandler(){
 
 function mylog($error){
 
-    $ret=array( __xst => false, __xms => $error, __entree => (isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null));
+    $ret=array( __xst => false, __xms => array( $error), __entree => (isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null));
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($ret,JSON_FORCE_OBJECT) ;
     /* on a capturé une erreur de type 500, on force la réponse en 200 */

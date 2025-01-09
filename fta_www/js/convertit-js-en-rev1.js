@@ -1466,7 +1466,7 @@ function traiteCallExpression1(element,niveau,parent,opt){
                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0900 ' ,"element" : element}));
                 }
             }else if(element.callee.object.type === 'ArrayExpression'){
-                console.log('%ctraité plus haut ' + t,'background:lightblue;color:navy;');
+                /* console.log('%ctraité plus haut ' + t,'background:lightblue;color:navy;'); */
                 /* traité plus haut */
             }else if(element.callee.object.type === 'MemberExpression'){
                 var obj1 = traiteMemberExpression1(element.callee.object,niveau,element);
