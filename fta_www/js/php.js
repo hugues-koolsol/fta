@@ -857,6 +857,15 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     }
                     break;
                     
+                case 'affecteop' :
+                    obj=php_traiteAffectOp(tab,i,dansInitialisation,niveau);
+                    if(obj.__xst === true){
+                        t+=obj.__xva;
+                    }else{
+                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '0894 erreur affecte'}));
+                    }
+                    break;
+                    
                 case 'static' : 
                 case 'declare' :
                     t+=un_espace;
@@ -1692,6 +1701,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
         case 'xou_binaire' :
         case 'decal_gauche' :
         case 'decal_droite' :
+        case 'instance_de':
             obj=php_traiteOperation(tab,ind,niveau);
             if(obj.__xst === true){
                 t=obj.__xva;
@@ -2044,7 +2054,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
             }
             break;
             
-        case 'instance_de' :
+/*        case 'instance_de' :
             if(tab[ind][8] === 2 && tab[ind+1][2] === 'c' && tab[ind+2][2] === 'c'){
                 t+=tab[ind+1][1] + ' instanceof ' + tab[ind+2][1].replace(/\\\\/g,'\\');
             }else if(tab[ind][8] === 2 && tab[ind+1][2] === 'c' && tab[ind+2][2] === 'f'){
@@ -2063,7 +2073,6 @@ function php_traiteElement(tab,ind,niveau,options={}){
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur 1649 dans php_traiteOperation '}));
                 }
                 if(tab[ind+2][2] === 'c'){
-                    /* indice du prochain enfant */
                     t+=tab[tab[ind+1][12]][1].replace(/\\\\/g,'\\');
                 }else{
                     debugger;
@@ -2072,7 +2081,7 @@ function php_traiteElement(tab,ind,niveau,options={}){
                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : '1889 php_traiteElement dans instance_de '}));
             }
             break;
-            
+*/            
         case 'throw' :
             var obj1 = php_traiteElement(tab,ind + 1,niveau,{});
             if(obj1.__xst === true){
@@ -2115,6 +2124,15 @@ function php_traiteElement(tab,ind,niveau,options={}){
                 t='(' + obj.__xva + ')';
             }else{
                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'dans appelf de php_traiteElement 0835'}));
+            }
+            break;
+            
+        case 'encapsulé' :
+            
+            if(tab[ind][8] === 1 && tab[ind+1][2] === 'c'){
+                t+=ma_cst_pour_php(tab[ind+1]);
+            }else{
+                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : '2017 php_traiteElement dans valeur_constante '}));
             }
             break;
             
@@ -2193,52 +2211,50 @@ gauche	or	logique
   
 */
 var tableau_precedences={
-  ''              : {priorite :   0 , operateur : 'new '        , operandes : '1'  , commentaire : 'parenthèse !' },
-  'nouveau'       : {priorite :   5 , operateur : 'new '        , operandes : '1'  , commentaire : '' },
-  'clone'         : {priorite :   5 , operateur : 'clone '      , operandes : '1'  , commentaire : '' },
+  ''              : {priorite :   0 , operateur : ''             , operandes : '1'  , commentaire : 'parenthèse !' },
+  'nouveau'       : {priorite :   5 , operateur : 'new '         , operandes : '1'  , commentaire : '' },
+  'clone'         : {priorite :   5 , operateur : 'clone '       , operandes : '1'  , commentaire : '' },
    /**/
-  'puissance'     : {priorite :  10 , operateur : '**'          , operandes : '2'  , commentaire : '' },
+  'puissance'     : {priorite :  10 , operateur : '**'           , operandes : '2'  , commentaire : '' },
    /**/
-  'instance_de'   : {priorite :  20 , operateur : 'instanceof'  , operandes : '1'  , commentaire : '' },
+  'instance_de'   : {priorite :  20 , operateur : ' instanceof ' , operandes : '1'  , commentaire : '' },
    /**/
-  'non'           : {priorite :  30 , operateur : '-'           , operandes : '1'  , commentaire : '' },
+  'non'           : {priorite :  30 , operateur : '!'            , operandes : '1'  , commentaire : '' },
    /**/
-  'mult'          : {priorite :  40 , operateur : '*'           , operandes : '2n' , commentaire : '' },
-  'divi'          : {priorite :  40 , operateur : '/'           , operandes : '2n' , commentaire : '' },
-  'modulo'        : {priorite :  40 , operateur : '%'           , operandes : '2n' , commentaire : '' },
+  'mult'          : {priorite :  40 , operateur : ' * '          , operandes : '2n' , commentaire : '' },
+  'divi'          : {priorite :  40 , operateur : ' / '          , operandes : '2n' , commentaire : '' },
+  'modulo'        : {priorite :  40 , operateur :  '% '          , operandes : '2n' , commentaire : '' },
    /**/
-  'plus'          : {priorite :  50 , operateur : '+'           , operandes : '2n' , commentaire : '' },
-  'moins'         : {priorite :  50 , operateur : '-'           , operandes : '2n' , commentaire : '' },
+  'plus'          : {priorite :  50 , operateur : ' + '          , operandes : '2n' , commentaire : '' },
+  'moins'         : {priorite :  50 , operateur : ' - '          , operandes : '2n' , commentaire : '' },
    /**/
-  'decal_gauche'  : {priorite :  60 , operateur : '<<'          , operandes : '2'  , commentaire : '' },
-  'decal_droite'  : {priorite :  60 , operateur : '>>'          , operandes : '2'  , commentaire : '' },
+  'decal_gauche'  : {priorite :  60 , operateur : '<<'           , operandes : '2'  , commentaire : '' },
+  'decal_droite'  : {priorite :  60 , operateur : '>>'           , operandes : '2'  , commentaire : '' },
    /**/
-  'concat'        : {priorite :  70 , operateur : '.'           , operandes : '2n' , commentaire : '' },
+  'concat'        : {priorite :  70 , operateur : ' . '          , operandes : '2n' , commentaire : '' },
    /**/
-  'inf'           : {priorite :  80 , operateur : '<'           , operandes : '2'  , commentaire : '' },
-  'infeg'         : {priorite :  80 , operateur : '<='          , operandes : '2'  , commentaire : '' },
-  'sup'           : {priorite :  80 , operateur : '>'           , operandes : '2'  , commentaire : '' },
-  'supeg'         : {priorite :  80 , operateur : '>='          , operandes : '2'  , commentaire : '' },
+  'inf'           : {priorite :  80 , operateur : ' < '          , operandes : '2'  , commentaire : '' },
+  'infeg'         : {priorite :  80 , operateur : ' <= '         , operandes : '2'  , commentaire : '' },
+  'sup'           : {priorite :  80 , operateur : ' > '          , operandes : '2'  , commentaire : '' },
+  'supeg'         : {priorite :  80 , operateur : ' >= '         , operandes : '2'  , commentaire : '' },
    /**/
-  'egal'          : {priorite :  90 , operateur : '=='          , operandes : '2'  , commentaire : '' },
-  'diff'          : {priorite :  90 , operateur : '!='          , operandes : '2'  , commentaire : '' },
-  'egalstricte'   : {priorite :  90 , operateur : '==='         , operandes : '2'  , commentaire : '' },
-  'diffstricte'   : {priorite :  90 , operateur : '!=='         , operandes : '2'  , commentaire : '' },
+  'egal'          : {priorite :  90 , operateur : ' == '         , operandes : '2'  , commentaire : '' },
+  'diff'          : {priorite :  90 , operateur : ' != '         , operandes : '2'  , commentaire : '' },
+  'egalstricte'   : {priorite :  90 , operateur : ' === '        , operandes : '2'  , commentaire : '' },
+  'diffstricte'   : {priorite :  90 , operateur : ' !== '        , operandes : '2'  , commentaire : '' },
    /**/
-  'et_binaire'    : {priorite : 100 , operateur : '&'           , operandes : '2'  , commentaire : '' },
-  'xou_binaire'   : {priorite : 120 , operateur : '^'           , operandes : '2'  , commentaire : '' },
-  'ou_binaire'    : {priorite : 130 , operateur : '|'           , operandes : '2'  , commentaire : '' },
+  'et_binaire'    : {priorite : 100 , operateur : ' & '          , operandes : '2'  , commentaire : '' },
+  'xou_binaire'   : {priorite : 120 , operateur : ' ^ '          , operandes : '2'  , commentaire : '' },
+  'ou_binaire'    : {priorite : 130 , operateur : ' | '          , operandes : '2'  , commentaire : '' },
    /**/
-  'et'            : {priorite : 130 , operateur : '&&'          , operandes : '2n' , commentaire : '' },
-  'ou'            : {priorite : 140 , operateur : '||'          , operandes : '2n' , commentaire : '' },
-  '??'            : {priorite : 150 , operateur : '??'          , operandes : '3'  , commentaire : '' },
+  'et'            : {priorite : 130 , operateur : ' && '         , operandes : '2n' , commentaire : '' },
+  'ou'            : {priorite : 140 , operateur : ' || '         , operandes : '2n' , commentaire : '' },
+  '??'            : {priorite : 150 , operateur : '??'           , operandes : '3'  , commentaire : '' },
   /* les autres, je ne les ai pas encore rencontrés */ 
 };
 
 /*
 
-                }else if(tab[parentId][1] === ''){ xou_binaire ou_exclusif xou_binaire
-                    t+='&';
                 }else if(tab[parentId][1] === '??'){
                     t+='??';
                 }else if(tab[parentId][1] === 'ou_binaire'){
@@ -2265,22 +2281,27 @@ function php_traiteOperation(tab,id,niveau){
     
     if(!tableau_precedences.hasOwnProperty(tab[id][1])){
         return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '2259 php_traiteOperation 1633 "' + tab[id][1] + '"' }));
-    }     
+    }
+    var operateur_courant =tableau_precedences[tab[id][1]];
     var operandes=[];
     
     for( i=id + 1 ; i < l01 ; i=tab[i][12] ){
      
         if(tab[i][1] === '#' && tab[i][2] ==='f'){
         }else if(tab[i][2] ==='c'){
-            operandes.push(ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r'));
+            operandes.push({valeur:ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r')});
         }else{
          
          
-            if(tableau_precedences.hasOwnProperty(tab[id][1])){
-                debugger
+            if(tableau_precedences.hasOwnProperty(tab[i][1])){
+                var sous_operateur=tableau_precedences[tab[i][1]];
                 var objOperation = php_traiteOperation(tab,i,niveau);
                 if(objOperation.__xst === true){
-                    operandes.push(objOperation.__xva);
+                    if(sous_operateur.priorite>operateur_courant.priorite || ( operateur_courant.operateur === ' . ' && sous_operateur.operateur !== ' . ' ) ){
+                        operandes.push({valeur:'('+objOperation.__xva+')'});
+                    }else{
+                        operandes.push({valeur:objOperation.__xva});
+                    }
                 }else{
                     return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '2282 php_traiteOperation'}));
                 }
@@ -2289,7 +2310,7 @@ function php_traiteOperation(tab,id,niveau){
          
                 var obj1 = php_traiteElement(tab,i,niveau,{});
                 if(obj1.__xst === true){
-                    operandes.push(obj1.__xva);
+                    operandes.push({valeur:obj1.__xva});
                 }else{
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2291 php_traiteOperation '}));
                 }
@@ -2299,10 +2320,29 @@ function php_traiteOperation(tab,id,niveau){
         
      
     }
-    console.log('operandes=' , operandes );
+    if(operandes.length===0){
+        return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '2308 php_traiteOperation'}));
+    }else if(operandes.length===1){
+        if(tab[id][1]==='moins'){
+            t+='-'+operandes[0].valeur;
+        }else if(tab[id][1]==='plus'){
+            t+='+'+operandes[0].valeur;
+        }else{
+            t+=operateur_courant.operateur;
+            t+=operandes[0].valeur;
+        }
+    }else{
+        for(var i=0;i<operandes.length;i++){
+            if(i>0){
+             t+=operateur_courant.operateur;
+            }
+            t+=operandes[i].valeur;
+        }
+    }
+//    console.log('operandes=' , operandes );
     
     
-    debugger
+//    debugger
     return({"__xva" : t ,"__xst" : true});
 }
 
@@ -2901,6 +2941,67 @@ function php_traiteAppelCloturee(tab,i,dansConditionOuDansFonction,niveau){
     t=statique + 'function(' + argumentsFonction + ')' + type_retour + les_utilisations + '{' + contenu + espacesn(true,niveau + 1) + '}';
     return({"__xst" : true ,"__xva" : t});
 }
+
+
+/*
+  =====================================================================================================================
+*/
+function php_traiteAffectOp(tab,i,dansConditionOuDansFonction,niveau){
+    const l01=tab.length;
+    var t='';
+    if(!(dansConditionOuDansFonction)){
+        t+=espacesn(true,niveau);
+    }
+    var operation='';
+    var avantEgal='';
+    var apresEgal='';
+    var commentaire='';
+    for( var j = i + 1 ; j < l01 ; j=tab[j][12] ){
+        var elt='';
+        if(tab[j][2] === 'f' && tab[j][1] === '#'){
+            if(!(dansConditionOuDansFonction)){
+                commentaire+=espacesn(true,niveau);
+            }
+            commentaire+='/*' + traiteCommentaire2(tab[j][13],niveau,j) + '*/';
+            continue;
+        }else if(tab[j][2] === 'c'){
+           if(operation===''){
+               operation=tab[j][1];
+           }else{
+               elt=ma_cst_pour_php(tab[j]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+           }
+        }else{
+            var obj1 = php_traiteElement(tab,j,niveau,{});
+            if(obj1.__xst === true){
+                elt=obj1.__xva;
+            }else{
+                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'dans affecte 0804'}));
+            }
+        }
+        /* enfant 1 ou 2 ou 3 */
+        if(avantEgal === ''){
+            avantEgal=elt;
+        }else{
+            if(apresEgal !== ''){
+                return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js 2492 vérifiez les paramètres de affecte ( 2 + commentaires uniquement )  '}));
+            }else{
+                apresEgal=elt;
+            }
+        }
+    }
+    if(commentaire !== ''){
+        t=commentaire + t;
+    }
+    t+=avantEgal + ' ' + operation + ' ' + apresEgal;
+    if(!(dansConditionOuDansFonction)){
+        t+=';';
+    }
+    if(tab[i][8] === 4 && commentaire === ''){
+        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js 2991 affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
+    }
+    return({"__xst" : true ,"__xva" : t});
+}
+
 /*
   =====================================================================================================================
 */
