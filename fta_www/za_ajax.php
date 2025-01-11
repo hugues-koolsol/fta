@@ -34,7 +34,7 @@ function recupTypeErreur($ty){
 
     }
 
-    return($er);
+    return $er;
 
 }
 /*
@@ -45,7 +45,7 @@ function recupTypeErreur($ty){
 
 function errorHandler($error_level,$error_message,$error_file,$error_line,$error_context){
 
-    $error='error : '.recupTypeErreur($error_level)." | problème de traitement :".$error_message." | line:".$error_line." | file:".basename($error_file)." (".$error_file.")";
+    $error='error : ' . recupTypeErreur($error_level) . " | problème de traitement :" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")";
     /* , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true))); */
     mylog($error);
 
@@ -65,8 +65,8 @@ function shutdownHandler(){
     if(isset($lasterror['type'])){
 
         $dernierMessage=str_replace('#','<br />#',str_replace(RACINE_DU_PROJET,'',$lasterror['message']));
-        $error='shutdown : '.recupTypeErreur($lasterror['type']).' problème dans le source <b>"'.basename($lasterror['file']).'"</b> en ligne <b>"'.$lasterror['line'].'"</b> <br />';
-        $error.=' msg:'.'<span style="text-wrap:wrap;">'.$dernierMessage.'</span> ';
+        $error='shutdown : ' . recupTypeErreur($lasterror['type']) . ' problème dans le source <b>"' . basename($lasterror['file']) . '"</b> en ligne <b>"' . $lasterror['line'] . '"</b> <br />';
+        $error .= ' msg:' . '<span style="text-wrap:wrap;">' . $dernierMessage . '</span> ';
         /* $error.= '<br />ligne:' . $lasterror['line'] . ' <br /> fichier:' . basename($lasterror['file']) . ' (' . $lasterror['file'] . ')'; */
         mylog($error);
 
@@ -101,14 +101,17 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
     $GLOBALS[__entree]=$ret[__entree];
 
-    if((isset($ret[__entree]['call']['funct'])) && ($ret[__entree]['call']['lib'] !== '') && ($ret[__entree]['call']['file'] !== '') && ($ret[__entree]['call']['funct'] !== '')){
+    if((isset($ret[__entree]['call']['funct']))
+     && ($ret[__entree]['call']['lib'] !== '')
+     && ($ret[__entree]['call']['file'] !== '')
+     && ($ret[__entree]['call']['funct'] !== '')){
 
-        define('BNF','/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
+        define('BNF','/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php');
 
-        if(!(is_file(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php'))){
+        if(!(is_file(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php'))){
 
             $ret[__xst]=false;
-            $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'programme ajan non trouvé : "'.INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/ajax_'.$ret[__entree]['call']['funct'].'.php"';
+            $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'programme ajan non trouvé : "' . INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/ajax_' . $ret[__entree]['call']['funct'] . '.php"';
 
         }else{
 
@@ -125,7 +128,7 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
 
                 if(true === checkGroupAjaxPages()){
 
-                    require_once(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
+                    require_once(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php');
                     /* appel d'une fonction dont le nom est "$ret[__entree]['call']['funct']" avec comme paramètre : "$ret" */
                     $ret[__entree]['call']['funct']($ret);
 
@@ -138,7 +141,7 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
                 if(true === checkGroupAjaxPages()){
 
                     /* inclusion d'un fichier */
-                    require_once(INCLUDE_PATH.'/ajax/'.$ret[__entree]['call']['lib'].'/'.$ret[__entree]['call']['file'].'.php');
+                    require_once(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php');
 
                 }
 
@@ -150,14 +153,14 @@ if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
     }else{
 
         $ret[__xst]=false;
-        $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "'.var_export($ret[__entree],true).'"';
+        $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "' . var_export($ret[__entree],true) . '"';
     }
 
 
 }else{
 
     $ret[__xst]=false;
-    $ret[__xms][]=basename(__FILE__).' '.__LINE__.' '.'ajax_param est absent : "'.var_export($_POST,true).'"';
+    $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'ajax_param est absent : "' . var_export($_POST,true) . '"';
 }
 
 header('Content-Type: application/json; charset=utf-8');

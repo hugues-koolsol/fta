@@ -62,7 +62,7 @@ $par=array(/* */
     'module_a_inclure' => array( 'js/module_interface1.js', 'js/module_html.js', 'js/module_conversion_ast_de_js_acorn_vers_rev.js'),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
-$o1.='<script type="text/javascript">
+$o1 .= '<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   
  setTimeout(function(){
@@ -72,6 +72,6 @@ window.addEventListener(\'load\',function(){
  }
 )
 </script>';
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

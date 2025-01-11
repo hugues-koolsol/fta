@@ -901,8 +901,8 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
         }else if((tab[i][1] === 'declare'
          || tab[i][1] === 'declare_constante'
          || tab[i][1] === 'declare_variable'
-         || "variable_privée" === tab[i][1]
-         || "variable_publique" === tab[i][1])
+         || tab[i][1] === "variable_privée"
+         || tab[i][1] === "variable_publique")
          && tab[i][2] === 'f'
         ){
             t+=espcLigne;
@@ -926,12 +926,29 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                 }else if("variable_publique" === tab[i][1]){
                     prefixe_declaration='';
                 }else{
-                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '0965 frefixe déclaration inconnu "' + tab[i][1] + '"'}));
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '0965 prefixe déclaration inconnu "' + tab[i][1] + '"'}));
                 }
+                var debut='';
+                
+                var obj = js_traiteInstruction1(tab,niveau,tabdeclare[0][0]);
+                if(obj.__xst === true){
+                    debut=prefixe_declaration + obj.__xva + '=';
+                }else{
+                    logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '0937 js_tabTojavascript1 "' + tab[tabdeclare[1][0]][1] + '"'});
+                }
+
+                var obj = js_traiteInstruction1(tab,niveau,tabdeclare[1][0]);
+                if(obj.__xst === true){
+                    t+=debut+obj.__xva + terminateur;
+                }else{
+                    logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '0937 js_tabTojavascript1 "' + tab[tabdeclare[1][0]][1] + '"'});
+                }
+/*#                
+                
                 if(tabdeclare[0][2] === 'c' && tabdeclare[1][2] === 'c'){
                     var cst = ma_cst_pour_javascript(tabdeclare[1]);
                     if(tabdeclare[4] === 2){
-                        /* multiligne entre (`) apostrophes inversées */
+                        // multiligne entre (`) apostrophes inversées 
                         cst=cst.replace(/\r/g,'').replace(/\n/g,CRLF);
                     }
                     t+=(prefixe_declaration + tabdeclare[0][1]) + '=' + cst + '' + terminateur;
@@ -996,10 +1013,12 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                         }else{
                             return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript.js 0957 : cas dans declare non prévu ' + tabdeclare[1][1]}));
                         }
+                    }else if(tabdeclare[0][2] === 'f' && tabdeclare[1][2] === 'f'){
                     }else{
                         return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript.js 0960 : cas dans declare non prévu'}));
                     }
                 }
+*/                
             }else{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur dans une déclaration 0996, declare  doit avoir 2 paramètres'}));
             }
@@ -2038,16 +2057,13 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }else{
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'erreur 1938 sur return'}));
                 }
-                
-                
             }else if(tab[j+1][1] === 'defTab' && tab[j+1][2] === 'f'){
-                var obj = js_traiteDefinitionTableau(tab,j+1,niveau,{});
+                var obj = js_traiteDefinitionTableau(tab,j + 1,niveau,{});
                 if(obj.__xst === true){
                     nomFonction=obj.__xva;
                 }else{
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"__xme" : '2054 js_traiteAppelFonction'}));
                 }
-                
             }else{
                 debugger;
             }
@@ -2374,9 +2390,9 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
     }
     var arguments_a_ajouter_au_retour='';
     if(!(enfantTermineParUnePropriete)){
-        if(nomFonction === 'Array' && nbEnfants <= 1 ){
+        if(nomFonction === 'Array' && nbEnfants <= 1){
             t+='[';
-        }else if(nomFonction === 'Array' && nbEnfants > 1  ){
+        }else if(nomFonction === 'Array' && nbEnfants > 1){
             t+='Array(';
         }else{
             if(nomFonction === 'super' && argumentsFonction === ''){
@@ -2412,9 +2428,9 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
         t+=espacesn(true,niveau);
     }
     if(!(enfantTermineParUnePropriete)){
-        if(nomFonction === 'Array' && nbEnfants <= 1 ){
+        if(nomFonction === 'Array' && nbEnfants <= 1){
             t+=']';
-        }else if(nomFonction === 'Array' && nbEnfants > 1 ){
+        }else if(nomFonction === 'Array' && nbEnfants > 1){
             t+=')';
         }else{
             if(nomFonction === 'super' && argumentsFonction === ''){
@@ -2525,10 +2541,12 @@ var tableau_des_opérateurs_js={
      /* logiques */
     "et" : {"__xva" : '&&' ,"type_operateur" : 'm2' ,"precedence" : 5} ,
     "ou" : {"__xva" : '||' ,"type_operateur" : 'm2' ,"precedence" : 4} ,
+    "??" : {"__xva" : '??' ,"type_operateur" : 'm2' ,"precedence" : 4} ,
      /* opérateurs unaires */
     "void" : {"__xva" : 'void' ,"type_operateur" : 1 ,"precedence" : 15} ,
     "Typeof" : {"__xva" : 'typeof ' ,"type_operateur" : 1 ,"precedence" : 15} ,
     "new" : {"__xva" : 'new ' ,"type_operateur" : 1 ,"precedence" : 18} ,
+    "chainé" : {"__xva" : '?.' ,"type_operateur" : 2 ,"precedence" : 18} ,
     "non" : {"__xva" : '!' ,"type_operateur" : 1 ,"precedence" : 15} ,
     "condition" : {"__xva" : '' ,"type_operateur" : 'm0' ,"precedence" : 19} ,
      /* opérateurs comparaison */

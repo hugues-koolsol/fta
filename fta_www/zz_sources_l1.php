@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
-    ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible avant d\'accéder aux sources');
+    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux sources');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -18,8 +18,8 @@ function obtenir_entete_de_la_page(){
 
     $o1='';
     $o1=html_header1(array( 'title' => 'Sources', 'description' => 'Sources'));
-    $o1.='<h1>Liste des sources de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>';
-    return(array( __xst => true, 'value' => $o1));
+    $o1 .= '<h1>Liste des sources de ' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '</h1>';
+    return array( __xst => true, 'value' => $o1);
 
 }
 /*
@@ -71,34 +71,34 @@ if($chp_nom_source != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_nom_source">nom</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_source" id="chp_nom_source"   value="'.enti1($chp_nom_source).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_source' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_type_source">type</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_type_source" id="chp_type_source"   value="'.enti1($chp_type_source).'"  size="8" maxlength="64"  '.($autofocus == 'chp_type_source' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_nom_dossier">dossier</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_dossier' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chi_id_source">id</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_source" id="chi_id_source"   value="'.enti1($chi_id_source).'"  size="8" maxlength="32"  '.($autofocus == 'chi_id_source' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chi_id_dossier">id dossier</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="'.enti1($chi_id_dossier).'"  size="8" maxlength="64"  '.($autofocus == 'chi_id_dossier' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
-$o1.='</form>'.PHP_EOL;
+$o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_nom_source">nom</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_nom_source" id="chp_nom_source"   value="' . enti1($chp_nom_source) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_nom_source' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_type_source">type</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_type_source" id="chp_type_source"   value="' . enti1($chp_type_source) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_type_source' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_nom_dossier">dossier</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="' . enti1($chp_nom_dossier) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_nom_dossier' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chi_id_source">id</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chi_id_source" id="chi_id_source"   value="' . enti1($chi_id_source) . '"  size="8" maxlength="32"  ' . ($autofocus == 'chi_id_source' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chi_id_dossier">id dossier</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chi_id_dossier" id="chi_id_dossier"   value="' . enti1($chi_id_dossier) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chi_id_dossier' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . html_du_bouton_rechercher_pour_les_listes() . PHP_EOL . '   </div>' . PHP_EOL;
+$o1 .= '</form>' . PHP_EOL;
 /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $o1 , true ) . '</pre>' ; exit(0);*/
-$__debut=$__xpage*$__nbMax;
+$__debut=$__xpage * $__nbMax;
 sql_inclure_reference(61);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH.'/sql/sql_61.php');
+require_once(INCLUDE_PATH . '/sql/sql_61.php');
 /*
   SELECT 
   `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
@@ -122,9 +122,9 @@ require_once(INCLUDE_PATH.'/sql/sql_61.php');
 $tt=sql_61(array(
     'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_source' => $chi_id_source,
-    'T0_chp_nom_source' => ($chp_nom_source === null ? $chp_nom_source : ($chp_nom_source === '' ? '' : '%'.$chp_nom_source.'%')),
-    'T0_chp_type_source' => ($chp_type_source === null ? $chp_type_source : ($chp_type_source === '' ? '' : '%'.$chp_type_source.'%')),
-    'T2_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%'.$chp_nom_dossier.'%')),
+    'T0_chp_nom_source' => ($chp_nom_source === null ? $chp_nom_source : ($chp_nom_source === '' ? '' : '%' . $chp_nom_source . '%')),
+    'T0_chp_type_source' => ($chp_type_source === null ? $chp_type_source : ($chp_type_source === '' ? '' : '%' . $chp_type_source . '%')),
+    'T2_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%')),
     'T0_chx_dossier_id_source' => $chi_id_dossier,
     'quantitee' => $__nbMax,
     'debut' => $__debut,
@@ -133,12 +133,12 @@ $tt=sql_61(array(
 
 if($tt[__xst] === false){
 
-    $o1.='<div>';
-    $o1.='<div class="yydanger">Erreur sql</div>';
-    $o1.='<pre>'.$tt['sql0'].'</per>';
-    $o1.='</div>';
+    $o1 .= '<div>';
+    $o1 .= '<div class="yydanger">Erreur sql</div>';
+    $o1 .= '<pre>' . $tt['sql0'] . '</per>';
+    $o1 .= '</div>';
     $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => array());
-    $o1.=html_footer1($par);
+    $o1 .= html_footer1($par);
     print($o1);
     $o1='';
     exit(0);
@@ -147,77 +147,79 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='';
-$consUrlRedir.=($chi_id_source !== '' ? '&amp;chi_id_source='.rawurlencode($chi_id_source) : '');
-$consUrlRedir.=($chp_nom_source !== '' ? '&amp;chp_nom_source='.rawurlencode($chp_nom_source) : '');
-$consUrlRedir.=($chp_nom_dossier !== '' ? '&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier) : '');
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>');
+$consUrlRedir .= ($chi_id_source !== '' ? '&amp;chi_id_source=' . rawurlencode($chi_id_source) : '');
+$consUrlRedir .= ($chp_nom_source !== '' ? '&amp;chp_nom_source=' . rawurlencode($chp_nom_source) : '');
+$consUrlRedir .= ($chp_nom_dossier !== '' ? '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) : '');
+$o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>');
 $lsttbl='';
-$lsttbl.='<thead><tr>';
-$lsttbl.='<th>action</th>';
-$lsttbl.='<th>id</th>';
-$lsttbl.='<th>nom</th>';
-$lsttbl.='<th>type</th>';
-$lsttbl.='<th>dossier</th>';
-$lsttbl.='<th>commentaire</th>';
-$lsttbl.='</tr></thead><tbody>';
+$lsttbl .= '<thead><tr>';
+$lsttbl .= '<th>action</th>';
+$lsttbl .= '<th>id</th>';
+$lsttbl .= '<th>nom</th>';
+$lsttbl .= '<th>type</th>';
+$lsttbl .= '<th>dossier</th>';
+$lsttbl .= '<th>commentaire</th>';
+$lsttbl .= '</tr></thead><tbody>';
 foreach($tt[__xva] as $k0 => $v0){
-    $lsttbl.='<tr>';
-    $lsttbl.='<td data-label="" style="text-align:left!important;">';
-    $lsttbl.='<div class="yyflex1">';
-    $lsttbl.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_source'].'" title="modifier">✎</a>';
-    $lsttbl.=' <a class="yydanger" href="zz_sources_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_source'].'" title="supprimer">🗑</a>';
+    $lsttbl .= '<tr>';
+    $lsttbl .= '<td data-label="" style="text-align:left!important;">';
+    $lsttbl .= '<div class="yyflex1">';
+    $lsttbl .= ' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_source'] . '" title="modifier">✎</a>';
+    $lsttbl .= ' <a class="yydanger" href="zz_sources_a1.php?__action=__suppression&amp;__id=' . $v0['T0.chi_id_source'] . '" title="supprimer">🗑</a>';
 
     if($v0['T0.chp_type_source'] === 'normal'){
 
 
-        if((substr($v0['T0.chp_nom_source'],-5) === '.html') || (substr($v0['T0.chp_nom_source'],-4) === '.htm') || (substr($v0['T0.chp_nom_source'],-4) === '.sql')){
+        if((substr($v0['T0.chp_nom_source'],-5) === '.html')
+         || (substr($v0['T0.chp_nom_source'],-4) === '.htm')
+         || (substr($v0['T0.chp_nom_source'],-4) === '.sql')){
 
-            $lsttbl.=' <a class="yyavertissement" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+            $lsttbl .= ' <a class="yyavertissement" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_sur_disque(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 
         }else if(substr($v0['T0.chp_nom_source'],-3) === '.js'){
 
             /* $lsttbl.=' <a class="yyavertissement" href="javascript:zz_l1_convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';*/
-            $lsttbl.=' <a class="yyrose" data-attendre_message="oui" id="js_'.$v0['T0.chi_id_source'].'" href="javascript:zz_l1_convertir_un_source_js_sur_disque2('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';
+            $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_js_sur_disque2(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 
         }else if(substr($v0['T0.chp_nom_source'],-4) === '.php'){
 
             /* $lsttbl.=' <a class="yyavertissement" href="javascript:zz_l1_convertir_un_source_php_sur_disque1('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque avec nikic">😊</a>';*/
-            $lsttbl.=' <a class="yyinfo" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_php_sur_disque2('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque avec php_parser">😊</a>';
+            $lsttbl .= ' <a class="yyinfo" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_php_sur_disque2(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque avec php_parser">😊</a>';
 
         }
 
 
     }else{
 
-        $lsttbl.='<a  class=" yyunset"  title="convertir un source">😊</a>';
+        $lsttbl .= '<a  class=" yyunset"  title="convertir un source">😊</a>';
     }
 
-    $lsttbl.='</div>';
-    $lsttbl.='</td>';
-    $lsttbl.='<td style="text-align:center;">';
-    $lsttbl.=''.$v0['T0.chi_id_source'].'';
-    $lsttbl.='</td>';
-    $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.=''.$v0['T0.chp_nom_source'].'';
-    $lsttbl.='</td>';
-    $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.=''.$v0['T0.chp_type_source'].'';
-    $lsttbl.='</td>';
-    $lsttbl.='<td style="text-align:left;">';
-    $lsttbl.='('.$v0['T0.chx_dossier_id_source'].')'.$v0['T2.chp_nom_dossier'].'';
-    $lsttbl.='</td>';
-    $lsttbl.='<td style="text-align:left;">';
+    $lsttbl .= '</div>';
+    $lsttbl .= '</td>';
+    $lsttbl .= '<td style="text-align:center;">';
+    $lsttbl .= '' . $v0['T0.chi_id_source'] . '';
+    $lsttbl .= '</td>';
+    $lsttbl .= '<td style="text-align:left;">';
+    $lsttbl .= '' . $v0['T0.chp_nom_source'] . '';
+    $lsttbl .= '</td>';
+    $lsttbl .= '<td style="text-align:left;">';
+    $lsttbl .= '' . $v0['T0.chp_type_source'] . '';
+    $lsttbl .= '</td>';
+    $lsttbl .= '<td style="text-align:left;">';
+    $lsttbl .= '(' . $v0['T0.chx_dossier_id_source'] . ')' . $v0['T2.chp_nom_dossier'] . '';
+    $lsttbl .= '</td>';
+    $lsttbl .= '<td style="text-align:left;">';
 
     if($v0['T0.chp_commentaire_source'] !== null){
 
-        $lsttbl.=''.enti1(mb_substr($v0['T0.chp_commentaire_source'],0,50,'UTF-8')).'';
+        $lsttbl .= '' . enti1(mb_substr($v0['T0.chp_commentaire_source'],0,50,'UTF-8')) . '';
 
     }
 
-    $lsttbl.='</td>';
-    $lsttbl.='<tr>';
+    $lsttbl .= '</td>';
+    $lsttbl .= '<tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$lsttbl.'</tbody></table></div>'.PHP_EOL;
+$o1 .= '<div style="overflow-x:scroll;"><table class="yytableResult1">' . PHP_EOL . $lsttbl . '</tbody></table></div>' . PHP_EOL;
 /*
   =====================================================================================================================
 */
@@ -235,15 +237,15 @@ $par=array( 'js_a_inclure' => array(
             'js/jslib/sqlite-parser.js',
             'js/jslib/php-parser.js'
         ), 'module_a_inclure' => array( 'js/module_html.js', 'js/module_conversion_ast_de_php_parser_vers_rev.js', 'js/module_conversion_ast_de_js_acorn_vers_rev.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';
-$nom_complet=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/'.$nom_bref;
+$nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
+$nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql/' . $nom_bref;
 
 if(is_file($nom_complet)){
 
-    $o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents($nom_complet).'</script>';
+    $o1 .= '<script type="text/javascript">' . PHP_EOL . file_get_contents($nom_complet) . '</script>';
 
 }
 
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

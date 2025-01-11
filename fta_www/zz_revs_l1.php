@@ -5,7 +5,7 @@ initialiser_les_services(true,true);
 
 if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
-    ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
+    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -16,7 +16,7 @@ if((isset($_GET['supprimer_tout'])) && ($_GET['supprimer_tout'] === '1')){
 
     sql_inclure_reference(14);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH.'/sql/sql_14.php');
+    require_once(INCLUDE_PATH . '/sql/sql_14.php');
     /*
       
       DELETE FROM b1.tbl_revs
@@ -28,11 +28,11 @@ if((isset($_GET['supprimer_tout'])) && ($_GET['supprimer_tout'] === '1')){
 
     if($tt[__xst] === false){
 
-        ajouterMessage('erreur',__LINE__.' problème ',BNF);
+        ajouterMessage('erreur',__LINE__ . ' problème ',BNF);
 
     }else{
 
-        ajouterMessage('info',__LINE__.' tout a été supprimé',BNF);
+        ajouterMessage('info',__LINE__ . ' tout a été supprimé',BNF);
     }
 
     recharger_la_page(BNF);
@@ -47,7 +47,7 @@ $o1='';
 $o1=html_header1(array( 'title' => 'revs', 'description' => 'revs'));
 print($o1);
 $o1='';
-$o1.='<h1>Liste des revs de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>';
+$o1 .= '<h1>Liste des revs de ' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '</h1>';
 /*
   
   =====================================================================================================================
@@ -137,41 +137,41 @@ if($chp_nom_source1 != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_nom_source1">nom source =</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_source1" id="chp_nom_source1"   value="'.enti1($chp_nom_source1).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_source1' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_provenance_rev">provenance</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_provenance_rev" id="chp_provenance_rev"   value="'.enti1($chp_provenance_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chp_provenance_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_nom_source2">nom source <></label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_source2" id="chp_nom_source2"   value="'.enti1($chp_nom_source2).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_source2' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_valeur_rev">valeur(1)</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_valeur_rev" id="chp_valeur_rev"   value="'.enti1($chp_valeur_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chp_valeur_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chx_source_rev">id source</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chx_source_rev" id="chx_source_rev"   value="'.enti1($chx_source_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chx_source_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_commentaire_rev">commentaire(13)</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_commentaire_rev" id="chp_commentaire_rev"   value="'.enti1($chp_commentaire_rev).'"  size="8" maxlength="64"  '.($autofocus == 'chp_commentaire_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chi_id_rev">id rev</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="'.enti1($chi_id_rev).'"  size="8" maxlength="32"  '.($autofocus == 'chi_id_rev' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
-$o1.='</form>'.PHP_EOL;
-$__debut=$__xpage*$__nbMax;
+$o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_nom_source1">nom source =</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_nom_source1" id="chp_nom_source1"   value="' . enti1($chp_nom_source1) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_nom_source1' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_provenance_rev">provenance</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_provenance_rev" id="chp_provenance_rev"   value="' . enti1($chp_provenance_rev) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_provenance_rev' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_nom_source2">nom source <></label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_nom_source2" id="chp_nom_source2"   value="' . enti1($chp_nom_source2) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_nom_source2' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_valeur_rev">valeur(1)</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_valeur_rev" id="chp_valeur_rev"   value="' . enti1($chp_valeur_rev) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_valeur_rev' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chx_source_rev">id source</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chx_source_rev" id="chx_source_rev"   value="' . enti1($chx_source_rev) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chx_source_rev' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_commentaire_rev">commentaire(13)</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_commentaire_rev" id="chp_commentaire_rev"   value="' . enti1($chp_commentaire_rev) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_commentaire_rev' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chi_id_rev">id rev</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chi_id_rev" id="chi_id_rev"   value="' . enti1($chi_id_rev) . '"  size="8" maxlength="32"  ' . ($autofocus == 'chi_id_rev' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . html_du_bouton_rechercher_pour_les_listes() . PHP_EOL . '   </div>' . PHP_EOL;
+$o1 .= '</form>' . PHP_EOL;
+$__debut=$__xpage * $__nbMax;
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH.'/sql/sql_13.php');
+require_once(INCLUDE_PATH . '/sql/sql_13.php');
 /*
   SELECT 
   `T0`.`chi_id_rev` , `T0`.`chp_provenance_rev` , `T0`.`chx_source_rev` , `T1`.`chp_nom_source` , `T0`.`chp_valeur_rev` , 
@@ -203,12 +203,12 @@ require_once(INCLUDE_PATH.'/sql/sql_13.php');
 /*sql_inclure_fin*/
 $tt=sql_13(array(
     'T0_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_provenance_rev' => ($chp_provenance_rev === null ? $chp_provenance_rev : ($chp_provenance_rev === '' ? '' : '%'.$chp_provenance_rev.'%')),
+    'T0_chp_provenance_rev' => ($chp_provenance_rev === null ? $chp_provenance_rev : ($chp_provenance_rev === '' ? '' : '%' . $chp_provenance_rev . '%')),
     'T0_chx_source_rev' => $chx_source_rev,
-    'T1_chp_nom_source1' => ($chp_nom_source1 === null ? $chp_nom_source1 : ($chp_nom_source1 === '' ? '' : '%'.$chp_nom_source1.'%')),
-    'T1_chp_nom_source2' => ($chp_nom_source2 === null ? $chp_nom_source2 : ($chp_nom_source2 === '' ? '' : '%'.$chp_nom_source2.'%')),
-    'T0_chp_valeur_rev' => ($chp_valeur_rev === null ? $chp_valeur_rev : ($chp_valeur_rev === '' ? '' : '%'.$chp_valeur_rev.'%')),
-    'T0_chp_commentaire_rev' => ($chp_commentaire_rev === null ? $chp_commentaire_rev : ($chp_commentaire_rev === '' ? '' : '%'.$chp_commentaire_rev.'%')),
+    'T1_chp_nom_source1' => ($chp_nom_source1 === null ? $chp_nom_source1 : ($chp_nom_source1 === '' ? '' : '%' . $chp_nom_source1 . '%')),
+    'T1_chp_nom_source2' => ($chp_nom_source2 === null ? $chp_nom_source2 : ($chp_nom_source2 === '' ? '' : '%' . $chp_nom_source2 . '%')),
+    'T0_chp_valeur_rev' => ($chp_valeur_rev === null ? $chp_valeur_rev : ($chp_valeur_rev === '' ? '' : '%' . $chp_valeur_rev . '%')),
+    'T0_chp_commentaire_rev' => ($chp_commentaire_rev === null ? $chp_commentaire_rev : ($chp_commentaire_rev === '' ? '' : '%' . $chp_commentaire_rev . '%')),
     'T0_chi_id_rev' => $chi_id_rev,
     'quantitee' => $__nbMax,
     'debut' => $__debut,
@@ -217,13 +217,13 @@ $tt=sql_13(array(
 
 if($tt[__xst] === false){
 
-    $o1.='<div>';
-    $o1.='<div class="yydanger">Erreur sql</div>';
-    $o1.='<pre>'.$tt['sql0'].'</per>';
-    $o1.='</div>';
+    $o1 .= '<div>';
+    $o1 .= '<div class="yydanger">Erreur sql</div>';
+    $o1 .= '<pre>' . $tt['sql0'] . '</per>';
+    $o1 .= '</div>';
     $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
     $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-    $o1.=html_footer1($par);
+    $o1 .= html_footer1($par);
     print($o1);
     $o1='';
     exit(0);
@@ -231,88 +231,88 @@ if($tt[__xst] === false){
 }
 
 $consUrlRedir='';
-$consUrlRedir.=($chi_id_rev !== '' ? '&amp;chi_id_rev='.rawurlencode($chi_id_rev) : '');
-$consUrlRedir.=($chp_provenance_rev !== '' ? '&amp;chp_provenance_rev='.rawurlencode($chp_provenance_rev) : '');
-$consUrlRedir.=($chx_source_rev !== '' ? '&amp;chx_source_rev='.rawurlencode($chx_source_rev) : '');
-$consUrlRedir.=($chp_nom_source1 !== '' ? '&amp;chp_nom_source1='.rawurlencode($chp_nom_source1) : '');
-$consUrlRedir.=($chp_nom_source2 !== '' ? '&amp;chp_nom_source2='.rawurlencode($chp_nom_source2) : '');
-$consUrlRedir.=($chp_valeur_rev !== '' ? '&amp;chp_valeur_rev='.rawurlencode($chp_valeur_rev) : '');
-$consUrlRedir.=($chp_commentaire_rev !== '' ? '&amp;chp_commentaire_rev='.rawurlencode($chp_commentaire_rev) : '');
+$consUrlRedir .= ($chi_id_rev !== '' ? '&amp;chi_id_rev=' . rawurlencode($chi_id_rev) : '');
+$consUrlRedir .= ($chp_provenance_rev !== '' ? '&amp;chp_provenance_rev=' . rawurlencode($chp_provenance_rev) : '');
+$consUrlRedir .= ($chx_source_rev !== '' ? '&amp;chx_source_rev=' . rawurlencode($chx_source_rev) : '');
+$consUrlRedir .= ($chp_nom_source1 !== '' ? '&amp;chp_nom_source1=' . rawurlencode($chp_nom_source1) : '');
+$consUrlRedir .= ($chp_nom_source2 !== '' ? '&amp;chp_nom_source2=' . rawurlencode($chp_nom_source2) : '');
+$consUrlRedir .= ($chp_valeur_rev !== '' ? '&amp;chp_valeur_rev=' . rawurlencode($chp_valeur_rev) : '');
+$consUrlRedir .= ($chp_commentaire_rev !== '' ? '&amp;chp_commentaire_rev=' . rawurlencode($chp_commentaire_rev) : '');
 $boutons_avant='';
-$boutons_avant='<a class="yydanger" href="'.BNF.'?supprimer_tout=1">supprimer tout</a>';
+$boutons_avant='<a class="yydanger" href="' . BNF . '?supprimer_tout=1">supprimer tout</a>';
 $__nbEnregs=$tt['nombre'];
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
+$o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
 $__lsttbl='';
-$__lsttbl.='<thead><tr>';
-$__lsttbl.='<th>action</th>';
-$__lsttbl.='<th>id</th>';
-$__lsttbl.='<th>provenance</th>';
-$__lsttbl.='<th>nom source</th>';
-$__lsttbl.='<th>id source</th>';
-$__lsttbl.='<th>valeur(1)</th>';
-$__lsttbl.='<th>type(2)</th>';
-$__lsttbl.='<th>niveau(3)</th>';
-$__lsttbl.='<th>pos(5)</th>';
-$__lsttbl.='<th>comm(13)</th>';
-$__lsttbl.='</tr></thead><tbody>';
+$__lsttbl .= '<thead><tr>';
+$__lsttbl .= '<th>action</th>';
+$__lsttbl .= '<th>id</th>';
+$__lsttbl .= '<th>provenance</th>';
+$__lsttbl .= '<th>nom source</th>';
+$__lsttbl .= '<th>id source</th>';
+$__lsttbl .= '<th>valeur(1)</th>';
+$__lsttbl .= '<th>type(2)</th>';
+$__lsttbl .= '<th>niveau(3)</th>';
+$__lsttbl .= '<th>pos(5)</th>';
+$__lsttbl .= '<th>comm(13)</th>';
+$__lsttbl .= '</tr></thead><tbody>';
 $tableau_pour_webworker_sources=array();
 $tableau_pour_webworker_sql=array();
 foreach($tt[__xva] as $k0 => $v0){
-    $__lsttbl.='<tr>';
-    $__lsttbl.='<td data-label="" style="text-align:left!important;">';
-    $__lsttbl.='<div class="yyflex1">';
-    $__lsttbl.=' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id='.$v0['T0.chx_source_rev'].'" target="_blank" title="modifier">⇒</a>';
+    $__lsttbl .= '<tr>';
+    $__lsttbl .= '<td data-label="" style="text-align:left!important;">';
+    $__lsttbl .= '<div class="yyflex1">';
+    $__lsttbl .= ' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id=' . $v0['T0.chx_source_rev'] . '" target="_blank" title="modifier">⇒</a>';
 
     if(($v0['T0.chp_valeur_rev'] === '#') && ($v0['T0.chp_type_rev'] === 'f')){
 
-        $__lsttbl.=' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler('.$v0['T0.chx_source_rev'].','.$v0['T0.chi_id_rev'].',&quot;'.$v0['T0.chp_provenance_rev'].'&quot;)"  title="supprimer ce commentaire et recompiler">⚙️</a>';
+        $__lsttbl .= ' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler(' . $v0['T0.chx_source_rev'] . ',' . $v0['T0.chi_id_rev'] . ',&quot;' . $v0['T0.chp_provenance_rev'] . '&quot;)"  title="supprimer ce commentaire et recompiler">⚙️</a>';
 
     }else{
 
-        $__lsttbl.=' <a class="yyunset" title="supprimer">⚙️</a>';
+        $__lsttbl .= ' <a class="yyunset" title="supprimer">⚙️</a>';
     }
 
-    $__lsttbl.='</div>';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:center;">';
-    $__lsttbl.=''.$v0['T0.chi_id_rev'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:left;">';
-    $__lsttbl.=enti1($v0['T0.chp_provenance_rev']).'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:left;">';
+    $__lsttbl .= '</div>';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:center;">';
+    $__lsttbl .= '' . $v0['T0.chi_id_rev'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:left;">';
+    $__lsttbl .= enti1($v0['T0.chp_provenance_rev']) . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:left;">';
 
     if($v0['T0.chp_provenance_rev'] === 'source'){
 
-        $__lsttbl.=enti1($v0['T1.chp_nom_source']).'';
+        $__lsttbl .= enti1($v0['T1.chp_nom_source']) . '';
 
     }else{
 
 
         if($v0['T0.chp_provenance_rev'] === 'sql'){
 
-            $__lsttbl.=enti1('requête sql').'';
+            $__lsttbl .= enti1('requête sql') . '';
 
         }
 
     }
 
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:left;">';
-    $__lsttbl.=$v0['T0.chx_source_rev'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:left;">';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:left;">';
+    $__lsttbl .= $v0['T0.chx_source_rev'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:left;">';
 
     if($v0['T0.chp_provenance_rev'] === 'sql'){
 
 
         if($v0['T0.chp_niveau_rev'] == 0){
 
-            $__lsttbl.='<b style="color:red;">'.$v0['T0.chp_valeur_rev'].'</b>';
+            $__lsttbl .= '<b style="color:red;">' . $v0['T0.chp_valeur_rev'] . '</b>';
 
         }else{
 
-            $__lsttbl.=$v0['T0.chp_valeur_rev'];
+            $__lsttbl .= $v0['T0.chp_valeur_rev'];
         }
 
 
@@ -328,11 +328,11 @@ foreach($tt[__xva] as $k0 => $v0){
             $a=enti1(mb_substr($v0['T0.chp_valeur_rev'],0,100));
         }
 
-        $__lsttbl.=str_replace('&para;CR&para;','<br />',str_replace('&para;LF&para;','<br />',str_replace('&para;CR&para;&para;LF&para;','<br />',$a)));
+        $__lsttbl .= str_replace('&para;CR&para;','<br />',str_replace('&para;LF&para;','<br />',str_replace('&para;CR&para;&para;LF&para;','<br />',$a)));
     }
 
     /* */
-    $__lsttbl.='</td>';
+    $__lsttbl .= '</td>';
 
     if($chp_valeur_rev != ''){
 
@@ -397,21 +397,21 @@ foreach($tt[__xva] as $k0 => $v0){
 
     }
 
-    $__lsttbl.='<td style="text-align:left;">';
-    $__lsttbl.=$v0['T0.chp_type_rev'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:left;">';
-    $__lsttbl.=$v0['T0.chp_niveau_rev'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:right;">';
-    $__lsttbl.=$v0['T0.chp_pos_premier_rev'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="max-width: 150px;overflow-wrap: anywhere;">';
-    $__lsttbl.=enti1(mb_substr($v0['T0.chp_commentaire_rev'],0,100)).'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='</tr>';
+    $__lsttbl .= '<td style="text-align:left;">';
+    $__lsttbl .= $v0['T0.chp_type_rev'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:left;">';
+    $__lsttbl .= $v0['T0.chp_niveau_rev'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:right;">';
+    $__lsttbl .= $v0['T0.chp_pos_premier_rev'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="max-width: 150px;overflow-wrap: anywhere;">';
+    $__lsttbl .= enti1(mb_substr($v0['T0.chp_commentaire_rev'],0,100)) . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '</tr>';
 }
-$o1.='<div style="overflow-x:scroll;"><table class="yytableResult1">'.PHP_EOL.$__lsttbl.'</tbody></table></div>'.PHP_EOL;
+$o1 .= '<div style="overflow-x:scroll;"><table class="yytableResult1">' . PHP_EOL . $__lsttbl . '</tbody></table></div>' . PHP_EOL;
 
 if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
 
@@ -437,7 +437,7 @@ if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) |
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sources, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sources</a>'.PHP_EOL;
+            $o1 .= '   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\'' . enti1($paramUrl) . '\')" title="pour les sources, lancer un remplacement en arrière plan">remplacer "' . enti1($chaine_a_remplacer) . '" en arriere_plan dans les sources</a>' . PHP_EOL;
 
         }
 
@@ -470,7 +470,7 @@ if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($
             $paramUrl=str_replace('\'','\\\'',$paramUrl);
             $paramUrl=str_replace('"','\\"',$paramUrl);
             $paramUrl=rawurlencode($paramUrl);
-            $o1.='   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\''.enti1($paramUrl).'\')" title="pour les sql, lancer un remplacement en arrière plan">remplacer "'.enti1($chaine_a_remplacer).'" en arriere_plan dans les sql</a>'.PHP_EOL;
+            $o1 .= '   <a href="javascript:__gi1.lancer_un_travail_en_arriere_plan(\'' . enti1($paramUrl) . '\')" title="pour les sql, lancer un remplacement en arrière plan">remplacer "' . enti1($chaine_a_remplacer) . '" en arriere_plan dans les sql</a>' . PHP_EOL;
 
         }
 
@@ -487,6 +487,6 @@ $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

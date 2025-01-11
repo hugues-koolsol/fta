@@ -24,18 +24,18 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
             if(matriceFonction.__xst === true){
                 var obj2 = arrayToFunct1(matriceFonction.__xva,true);
                 if(obj2.__xst === true){
-                   document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
+                    document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
                 }else{
-                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
                 }
             }else{
-                  __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
             }
         }else{
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
         }
         var endMicro = performance.now();
-//        console.log(endMicro - startMicro);
+        /* console.log(endMicro - startMicro); */
     }catch(e){
         console.error(e);
         if(e.lineNumber){

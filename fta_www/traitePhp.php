@@ -65,34 +65,34 @@ $par=array(/* éléments à passer au pied de page */
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
-$o1.='<script type="text/javascript">
+$o1 .= '<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   chargerLeDernierSourcePhp();
 //  transformPhpEnRev();
  }
 );
-</script>'.PHP_EOL;
+</script>' . PHP_EOL;
 
 if(isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])){
 
-    $nom_bref='aa_js_sql_cible_'.$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'].'.js';
-    $nom_complet=INCLUDE_PATH.DIRECTORY_SEPARATOR.'sql/'.$nom_bref;
+    $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
+    $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql/' . $nom_bref;
 
     if(is_file($nom_complet)){
 
-        $o1.='<script type="text/javascript">'.PHP_EOL.file_get_contents($nom_complet).'</script>';
+        $o1 .= '<script type="text/javascript">' . PHP_EOL . file_get_contents($nom_complet) . '</script>';
 
     }else{
 
-        $o1.='<script type="text/javascript">/*fichier non trouve*/</script>';
+        $o1 .= '<script type="text/javascript">/*fichier non trouve*/</script>';
     }
 
 
 }else{
 
-    $o1.='<script type="text/javascript">/*'.CRLF.'====================================='.CRLF.'ATTENTION veuillez sélectionner une cible'.CRLF.'====================================================='.CRLF.'*/</script>';
+    $o1 .= '<script type="text/javascript">/*' . CRLF . '=====================================' . CRLF . 'ATTENTION veuillez sélectionner une cible' . CRLF . '=====================================================' . CRLF . '*/</script>';
 }
 
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

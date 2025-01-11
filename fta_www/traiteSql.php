@@ -44,13 +44,13 @@ $par=array(/* */
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
-$o1.='<script type="text/javascript">
+$o1 .= '<script type="text/javascript">
 window.addEventListener(\'load\',function(){
   charger_le_dernier_source_sql("txtar1");
   setTimeout(function(){transform_sql_de_textarea_en_rev("txtar1" , "txtar2");},50);
  }
 )
 </script>';
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

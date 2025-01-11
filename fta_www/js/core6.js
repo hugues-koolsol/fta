@@ -1101,6 +1101,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var c='';
     var c1='';
     var c2='';
+    /*
+      je mets les éléments dans une chaine car chrome est particulièrement lent sur les tableau.push()
+      à la fin de la boucle, on fait un json.parse sur chaineTableau
+    */
     var chaineTableau='';
     var typePrecedent='';
     var drapeauRegex='';
@@ -1202,7 +1206,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                       après avoir rempli la fonction, on met les commentaires dans un tableau et on remplira 
                       le tableau principal "T" à la fin
                     */
-                    tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
+                    tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
                     indiceTabCommentaire++;
                     posFerPar=0;
                     /*
@@ -2259,7 +2263,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     }
     /*
       Puis on ajoute les commentaires 
-      tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire,posFerPar];
+      tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
       T[indice][13]=commentaire;
     */
     l01=tabCommentaireEtFinParentheses.length;
@@ -2268,7 +2272,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     }
     /*
       =============================================================================================================
-      mise à jour de l'id du parent[7] et du nombre d'éléments[8]
+      mise à jour de l'id du parent[7] et du nombre d'enfants[8]
       =============================================================================================================
     */
     l01=T.length;
@@ -2297,7 +2301,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 k++;
                 T[j][9]=k;
                 /*
-                  pour le dernier, on met -1 et on mettre l01 plus tard
+                  pour le dernier, on met l01 à priori 
+                  et on mettra la vraie valeur à la prochaine boucle
                 */
                 T[j][12]=l01;
                 if(k > 1){

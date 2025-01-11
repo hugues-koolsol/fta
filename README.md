@@ -3,8 +3,8 @@ de façon à écrire des traitements ( c'est à dire les programmes ) et des don
 
 Il n'y a que deux types d'éléments de base :   
 - les constantes   
-- les fonctions avec des arguments   
-Ces dernières peuvent contenir des constantes et/ou des fonctions.  
+- les fonctions avec ou sans arguments.   
+Les arguments peuvent être des constantes et/ou des fonctions.  
    
 
 Les constantes sont sous deux formats :
@@ -257,7 +257,7 @@ A partir du format tabulaire on peut regénérer le source original
 Les bibliothèques externes qui sont utilisées pour convertir les sources des programmes en AST ( abstract syntax tree ) sont en cours de conversion en format "rev".  
 Ces "AST" sont ensuites traités pour produire les "rev".   
 
-L'objectif est d'avoir que des sources 
+L'objectif est d'avoir que des sources au format rev
 
 
 

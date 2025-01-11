@@ -16,9 +16,9 @@ $o1=html_header1($a);
   ici commence le php spécifique de la page
   =====================================================================================================================
 */
-$o1.='<style>';
-$o1.='#arrayed td{max-width:150px;overflow-x:auto;}';
-$o1.='</style>';
+$o1 .= '<style>';
+$o1 .= '#arrayed td{max-width:150px;overflow-x:auto;}';
+$o1 .= '</style>';
 print($o1);
 $o1='';?>
 <div class="menuScroller">

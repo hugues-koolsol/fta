@@ -3,9 +3,9 @@ date_default_timezone_set('Europe/Paris');
 define('APP_KEY','fta');
 define('PREFIXE_REPERTOIRES','fta');
 define('RACINE_DU_PROJET',realpath(dirname(__FILE__,2)));
-define('INCLUDE_PATH',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_inc');
-define('BACKUP_PATH',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_backup');
-define('RACINE_FICHIERS_PROVISOIRES',RACINE_DU_PROJET.DIRECTORY_SEPARATOR.PREFIXE_REPERTOIRES.'_temp');
+define('INCLUDE_PATH',RACINE_DU_PROJET . DIRECTORY_SEPARATOR . PREFIXE_REPERTOIRES . '_inc');
+define('BACKUP_PATH',RACINE_DU_PROJET . DIRECTORY_SEPARATOR . PREFIXE_REPERTOIRES . '_backup');
+define('RACINE_FICHIERS_PROVISOIRES',RACINE_DU_PROJET . DIRECTORY_SEPARATOR . PREFIXE_REPERTOIRES . '_temp');
 define('LIEN_BDD','LIEN_BDD');
 define('BDD','BDD');
 $GLOBALS[BDD]=array();
@@ -62,13 +62,13 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
 
         if($ret === false){
 
-            echo __FILE__.' '.__LINE__.' __LINE__ = <pre>'.var_export(__LINE__,true).'</pre>' ;
+            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export(__LINE__,true) . '</pre>' ;
             exit(0);
 
         }
 
         foreach($GLOBALS[BDD] as $k1 => $v1){
-            define('BDD_'.$v1['id'],$v1['id']);
+            define('BDD_' . $v1['id'],$v1['id']);
             $GLOBALS[BDD][$k1][LIEN_BDD]=$db0;
 
             if($v1['fournisseur'] === 'sqlite'){
@@ -103,14 +103,14 @@ function texte_aleatoire($lng){
     $str=base64_encode($str);
     $str=str_replace(array( "+", "/", "="),"",$str);
     $str=substr($str,0,$lng);
-    return($str);
+    return $str;
 
 }
 /*===================================================================================================================*/
 
 function cst($a=''){
 
-    return($a);
+    return $a;
 
 }
 /*===================================================================================================================*/
@@ -130,7 +130,7 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
             if(@unlink($chemin_du_fichier)){
 
-                return(true);
+                return true;
 
             }
 
@@ -140,15 +140,15 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
     }else{
 
-        $repertoire=BACKUP_PATH.DIRECTORY_SEPARATOR.date('Y/m/d');
+        $repertoire=BACKUP_PATH . DIRECTORY_SEPARATOR . date('Y/m/d');
 
         if((is_dir($repertoire)) || (mkdir($repertoire,511,true))){
 
-            $chemin_fichier_copie=$repertoire.DIRECTORY_SEPARATOR.uniqid().str_replace('\\','_',str_replace('/','_',str_replace(':','_',$chemin_du_fichier)));
+            $chemin_fichier_copie=$repertoire . DIRECTORY_SEPARATOR . uniqid() . str_replace('\\','_',str_replace('/','_',str_replace(':','_',$chemin_du_fichier)));
 
             if(@rename($chemin_du_fichier,$chemin_fichier_copie)){
 
-                return(true);
+                return true;
 
             }
 
@@ -157,7 +157,7 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
     }
 
-    return(false);
+    return false;
 
 }
 /*===fonction vide intentionnelle à conserver ===*/
@@ -186,7 +186,7 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
 
             if(is_numeric($v1)){
 
-                $chaine_recherche.=','.$v1;
+                $chaine_recherche .= ',' . $v1;
 
             }
 
@@ -195,22 +195,22 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
         if($chaine_recherche !== ''){
 
             $chaine_recherche=substr($chaine_recherche,1);
-            $champ_where.='AND '.sq0($nom_du_champ).' in ('.sq0($chaine_recherche).') ';
+            $champ_where .= 'AND ' . sq0($nom_du_champ) . ' in (' . sq0($chaine_recherche) . ') ';
 
         }
 
 
     }else if($critere === null){
 
-        $champ_where.='AND '.sq0($nom_du_champ).' IS NULL ';
+        $champ_where .= 'AND ' . sq0($nom_du_champ) . ' IS NULL ';
 
     }else if(is_numeric($critere)){
 
-        $champ_where.='AND '.sq0($nom_du_champ).' = '.sq0($critere).' ';
+        $champ_where .= 'AND ' . sq0($nom_du_champ) . ' = ' . sq0($critere) . ' ';
 
     }
 
-    return($champ_where);
+    return $champ_where;
 
 }
 /*
@@ -222,9 +222,9 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
     $o1='';
     $__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
 
-    if($__debut+$__nbMax < $__nbEnregs){
+    if($__debut + $__nbMax < $__nbEnregs){
 
-        $__bouton_enregs_suiv=' <a href="'.BNF.'?__xpage='.(($__xpage+1)).$consUrlRedir.'">&raquo;</a>';
+        $__bouton_enregs_suiv=' <a href="' . BNF . '?__xpage=' . ($__xpage + 1) . $consUrlRedir . '">&raquo;</a>';
 
     }
 
@@ -232,28 +232,28 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
 
     if($__xpage > 0){
 
-        $__bouton_enregs_prec=' <a href="'.BNF.'?__xpage='.($__xpage-1).$consUrlRedir.'">&laquo;</a>';
+        $__bouton_enregs_prec=' <a href="' . BNF . '?__xpage=' . ($__xpage - 1) . $consUrlRedir . '">&laquo;</a>';
 
     }
 
 
     if($__nbEnregs > 0){
 
-        $o1.='<form class="yylistForm1" method="post">'.PHP_EOL;
-        $o1.=$boutons_avant;
-        $o1.=$__bouton_enregs_prec.PHP_EOL.$__bouton_enregs_suiv.PHP_EOL.' <div style="display:inline-block;">'.PHP_EOL;
-        $o1.='  page '.number_format(($__xpage+1),0,',',' ').'/'.number_format(ceil($__nbEnregs/$__nbMax),0,',',' ').' ('.number_format($__nbEnregs,0,',',' ').' enregistrements )'.PHP_EOL;
-        $o1.=' </div>'.PHP_EOL;
-        $o1.='</form>'.PHP_EOL;
+        $o1 .= '<form class="yylistForm1" method="post">' . PHP_EOL;
+        $o1 .= $boutons_avant;
+        $o1 .= $__bouton_enregs_prec . PHP_EOL . $__bouton_enregs_suiv . PHP_EOL . ' <div style="display:inline-block;">' . PHP_EOL;
+        $o1 .= '  page ' . number_format($__xpage + 1,0,',',' ') . '/' . number_format(ceil($__nbEnregs / $__nbMax),0,',',' ') . ' (' . number_format($__nbEnregs,0,',',' ') . ' enregistrements )' . PHP_EOL;
+        $o1 .= ' </div>' . PHP_EOL;
+        $o1 .= '</form>' . PHP_EOL;
 
     }else{
 
-        $o1.='<form class="yylistForm1 yyavertissement" method="post">';
-        $o1.=$boutons_avant;
-        $o1.='Aucun enregistrement trouvé</form>'.PHP_EOL;
+        $o1 .= '<form class="yylistForm1 yyavertissement" method="post">';
+        $o1 .= $boutons_avant;
+        $o1 .= 'Aucun enregistrement trouvé</form>' . PHP_EOL;
     }
 
-    return($o1);
+    return $o1;
 
 }
 /*
@@ -262,9 +262,9 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
 
 function html_du_bouton_rechercher_pour_les_listes(){
 
-    $o='    <label for="button_chercher">rechercher</label>'.PHP_EOL;
-    $o.='    <button id="button_chercher" name="button_chercher" type="submit" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche" value="0">🔎</button>'.PHP_EOL;
-    return($o);
+    $o='    <label for="button_chercher">rechercher</label>' . PHP_EOL;
+    $o .= '    <button id="button_chercher" name="button_chercher" type="submit" class="button_chercher"  title="cliquez sur ce bouton pour lancer la recherche" value="0">🔎</button>' . PHP_EOL;
+    return $o;
 
 }
 /*
@@ -273,7 +273,7 @@ function html_du_bouton_rechercher_pour_les_listes(){
 
 function bouton_retour_a_la_liste($url){
 
-    return('<a id="__retour_a_la_liste" href="'.$url.'" title="retour à la liste">&nbsp;⬱&nbsp;</a>');
+    return '<a id="__retour_a_la_liste" href="' . $url . '" title="retour à la liste">&nbsp;⬱&nbsp;</a>';
 
 }
 /*===================================================================================================================*/
@@ -281,7 +281,7 @@ function bouton_retour_a_la_liste($url){
 function recharger_la_page($a){
 
     header("HTTP/1.1 303 See Other");
-    header('Location: '.$a);
+    header('Location: ' . $a);
     exit(0);
 
 }
@@ -294,14 +294,14 @@ function recharger_la_page($a){
 
 function htmlDansPhp($s){
 
-    return($s);
+    return $s;
 
 }
 /*===================================================================================================================*/
 
 function checkGroupAjaxPages(){
 
-    return(true);
+    return true;
 
 }
 /*
@@ -314,11 +314,11 @@ function le_dossier_est_vide($dossier){
 
     if(is_dir($dossier)){
 
-        return(count(scandir($dossier))==2);
+        return count(scandir($dossier)) == 2;
 
     }else{
 
-        return(true);
+        return true;
     }
 
 
@@ -336,9 +336,9 @@ function concat(...$ps){
 
     $t='';
     foreach($ps as $p){
-        $t.=$p;
+        $t .= $p;
     }
-    return($t);
+    return $t;
 
 }
 /*========================================================================================================================*/
@@ -371,7 +371,8 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
         /* si on a changé un critère de recherche, il faut revenir à la première page */
 
-        if((isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k])) && ($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k] !== $_GET[$k])){
+        if((isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]))
+         && ($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k] !== $_GET[$k])){
 
             $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']=0;
 
@@ -406,7 +407,7 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     }
 
-    return($ret);
+    return $ret;
 
 }
 /*========================================================================================================================*/
@@ -416,11 +417,11 @@ function enti1($s){
 
     if($s === null){
 
-        return('');
+        return '';
 
     }
 
-    return(htmlentities($s,ENT_COMPAT,'utf-8'));
+    return htmlentities($s,ENT_COMPAT,'utf-8');
 
 }
 /*========================================================================================================================*/
@@ -430,11 +431,11 @@ function sq1($s){
 
     if(is_numeric($s)){
 
-        return($s);
+        return $s;
 
     }else if($s === null){
 
-        return('NULL');
+        return 'NULL';
 
     }
 
@@ -459,7 +460,7 @@ function sq1($s){
         'Ü' => 'Ü'
     );
     $s1=strtr($s1,$ua);
-    return('\''.$s1.'\'');
+    return '\'' . $s1 . '\'';
 
 }
 /*========================================================================================================================*/
@@ -486,7 +487,7 @@ function sq0($s){
         'ü' => 'ü',
         'Ü' => 'Ü'
     );
-    return(strtr($s,$ua));
+    return strtr($s,$ua);
 
 }
 /*
@@ -506,7 +507,7 @@ function signaler_erreur($tab){
         ajouterMessage('erreur',$tab[__xme]);
     }
 
-    return($tab);
+    return $tab;
 
 }
 /*
@@ -542,7 +543,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
         }else{
 
-            $_SESSION[APP_KEY][NAV]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "'.$type_de_message.'" '.$message;
+            $_SESSION[APP_KEY][NAV]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "' . $type_de_message . '" ' . $message;
         }
 
 
@@ -564,7 +565,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
         }else{
 
-            $_SESSION[APP_KEY][NAV][$page]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "'.$type_de_message.'" '.$message;
+            $_SESSION[APP_KEY][NAV][$page]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "' . $type_de_message . '" ' . $message;
         }
 
     }
@@ -596,7 +597,7 @@ function recupere_les_messages_de_session($bnf){
             if(count($_SESSION[APP_KEY][NAV][$bnf][$v1]) > 0){
 
                 foreach($_SESSION[APP_KEY][NAV][$bnf][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.PHP_EOL;
+                    $les_messages_a_afficher .= '<div class="yy' . $v1 . '">' . $verr . '</div>' . PHP_EOL;
                     $visible='visible;';
                 }
 
@@ -613,7 +614,7 @@ function recupere_les_messages_de_session($bnf){
             if(count($_SESSION[APP_KEY][NAV][$v1]) > 0){
 
                 foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
-                    $les_messages_a_afficher.='<div class="yy'.$v1.'">'.$verr.'</div>'.PHP_EOL;
+                    $les_messages_a_afficher .= '<div class="yy' . $v1 . '">' . $verr . '</div>' . PHP_EOL;
                     $visible='visible;';
                 }
 
@@ -624,7 +625,7 @@ function recupere_les_messages_de_session($bnf){
         }
 
     }
-    return(array( $visible, $les_messages_a_afficher));
+    return array( $visible, $les_messages_a_afficher);
 
 }
 /*
@@ -633,15 +634,15 @@ function recupere_les_messages_de_session($bnf){
 
 function encrypter($donnee){
 
-    $donnee=ENCRYPTION_DONNEES_EN_PLUS.$donnee;
+    $donnee=ENCRYPTION_DONNEES_EN_PLUS . $donnee;
     $premiere_cle=base64_decode($_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']);
     $deuxieme_cle=base64_decode($_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']);
     $iv_length=openssl_cipher_iv_length(ENCRYPTION_METHODE);
     $iv=openssl_random_pseudo_bytes($iv_length);
     $first_encrypted=openssl_encrypt($donnee,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
     $second_encrypted=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,true);
-    $output=base64_encode($iv.$second_encrypted.$first_encrypted);
-    return($output);
+    $output=base64_encode($iv . $second_encrypted . $first_encrypted);
+    return $output;
 
 }
 /*
@@ -656,17 +657,17 @@ function decrypter($entree){
     $iv_length=openssl_cipher_iv_length(ENCRYPTION_METHODE);
     $iv=substr($mix,0,$iv_length);
     $second_encrypted=substr($mix,$iv_length,64);
-    $first_encrypted=substr($mix,($iv_length+64));
+    $first_encrypted=substr($mix,$iv_length + 64);
     $donnee=@openssl_decrypt($first_encrypted,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
     $second_encrypted_new=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,true);
 
     if(@hash_equals($second_encrypted,$second_encrypted_new)){
 
-        return(substr($donnee,strlen(ENCRYPTION_DONNEES_EN_PLUS)));
+        return substr($donnee,strlen(ENCRYPTION_DONNEES_EN_PLUS));
 
     }
 
-    return(false);
+    return false;
 
 }
 /*
@@ -757,17 +758,20 @@ function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
     }
 
 
-    if(!(isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])) || (sha1($post[$nom_du_champ]) !== $_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])){
+    if(!(isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ]))
+     || (sha1($post[$nom_du_champ]) !== $_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])){
 
 
-        if((isset($post['__action'])) && ($post['__action'] == '__modification') && (is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]))){
+        if((isset($post['__action']))
+         && ($post['__action'] == '__modification')
+         && (is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]))){
 
-            ajouterMessage('avertissement',__LINE__.' désolé, il faut sauvegarder à nouveau');
-            recharger_la_page($bnf.'?__action=__modification&__id='.$_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);
+            ajouterMessage('avertissement',__LINE__ . ' désolé, il faut sauvegarder à nouveau');
+            recharger_la_page($bnf . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' désolé, sha1 différents sur '.$nom_du_champ.', cette erreur sera analysée');
+            ajouterMessage('erreur',__LINE__ . ' désolé, sha1 différents sur ' . $nom_du_champ . ', cette erreur sera analysée');
             recharger_la_page($page_de_redirection);
         }
 
@@ -776,7 +780,6 @@ function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
 
 
 }
-
 /*
   =====================================================================================================================
 */
@@ -791,13 +794,13 @@ function html_header1($parametres){
     }
 
     $o1='';
-    $o1.='<!DOCTYPE HTML>'.PHP_EOL;
-    $o1.='<html lang="fr">'.PHP_EOL;
-    $o1.=' <head>'.PHP_EOL;
-    $o1.='  <meta charset="utf-8" />'.PHP_EOL;
-    $o1.='  <title>'.(($parametres['title']??'titre de la page à compléter')).'</title>'.PHP_EOL;
-    $o1.='  <meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;
-    $o1.='  <link rel="icon" href="favicon.ico" type="image/x-icon" />'.PHP_EOL;
+    $o1 .= '<!DOCTYPE HTML>' . PHP_EOL;
+    $o1 .= '<html lang="fr">' . PHP_EOL;
+    $o1 .= ' <head>' . PHP_EOL;
+    $o1 .= '  <meta charset="utf-8" />' . PHP_EOL;
+    $o1 .= '  <title>' . ($parametres['title']??'titre de la page à compléter') . '</title>' . PHP_EOL;
+    $o1 .= '  <meta name="viewport" content="width=device-width, initial-scale=1" />' . PHP_EOL;
+    $o1 .= '  <link rel="icon" href="favicon.ico" type="image/x-icon" />' . PHP_EOL;
     /*
       attention, les variables css ajoutent un espace dans le css
       heigh:(var --taille)px;
@@ -810,15 +813,15 @@ function html_header1($parametres){
     $css_taille_reference_padding=2;
     $css_taille_reference_border=1;
     $css_taille_reference_margin=1;
-    $css_hauteur_ligne=$css_taille_reference_textes+$css_taille_reference_padding;
-    $css_hauteur_mini_bouton=$css_taille_reference_textes+4*$css_taille_reference_padding+2*$css_taille_reference_border;
-    $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
-    $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
-    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-(2*$css_taille_reference_margin)-1;
+    $css_hauteur_ligne=$css_taille_reference_textes + $css_taille_reference_padding;
+    $css_hauteur_mini_bouton=($css_taille_reference_textes + 4 * $css_taille_reference_padding) + 2 * $css_taille_reference_border;
+    $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin;
+    $css_hauteur_menu_defilement=($css_hauteur_mini_bouton + 2 * $css_taille_reference_margin) + 11;
+    $css_hauteur_grands_boutons=($css_hauteur_menu_defilement - 2 * $css_taille_reference_margin) - 1;
 
-    if(isset($_COOKIE[APP_KEY.'_biscuit'])){
+    if(isset($_COOKIE[APP_KEY . '_biscuit'])){
 
-        $json_biscuit_texte=rawurldecode($_COOKIE[APP_KEY.'_biscuit']);
+        $json_biscuit_texte=rawurldecode($_COOKIE[APP_KEY . '_biscuit']);
         $le_biscuit=@json_decode($json_biscuit_texte,true);
 
         if($le_biscuit !== null){
@@ -837,16 +840,16 @@ function html_header1($parametres){
         }else{
 
             $le_biscuit=array(
-                '--yyvtrg' => $css_taille_reference_generale.'px',
-                '--yyvtrt' => $css_taille_reference_textes.'px',
-                '--yyvtrp' => $css_taille_reference_padding.'px',
-                '--yyvtrb' => $css_taille_reference_border.'px',
-                '--yyvtrm' => $css_taille_reference_margin.'px',
-                '--yyvhmb' => $css_hauteur_mini_bouton.'px',
-                '--yyvhal' => $css_hauteur_ligne.'px',
-                '--yyvhmd' => $css_hauteur_menu_defilement.'px',
-                '--yyvhgb' => $css_hauteur_grands_boutons.'px',
-                '--yyvhmc' => $css_hauteur_mini_conteneur.'px'
+                '--yyvtrg' => $css_taille_reference_generale . 'px',
+                '--yyvtrt' => $css_taille_reference_textes . 'px',
+                '--yyvtrp' => $css_taille_reference_padding . 'px',
+                '--yyvtrb' => $css_taille_reference_border . 'px',
+                '--yyvtrm' => $css_taille_reference_margin . 'px',
+                '--yyvhmb' => $css_hauteur_mini_bouton . 'px',
+                '--yyvhal' => $css_hauteur_ligne . 'px',
+                '--yyvhmd' => $css_hauteur_menu_defilement . 'px',
+                '--yyvhgb' => $css_hauteur_grands_boutons . 'px',
+                '--yyvhmc' => $css_hauteur_mini_conteneur . 'px'
             );
         }
 
@@ -855,94 +858,95 @@ function html_header1($parametres){
 
         $useragent=$_SERVER['HTTP_USER_AGENT'];
 
-        if((preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent)) || (preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4)))){
+        if((preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent))
+         || (preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4)))){
 
             $css_taille_reference_padding=4;
 
         }
 
         $le_biscuit=array(
-            '--yyvtrg' => $css_taille_reference_generale.'px',
-            '--yyvtrt' => $css_taille_reference_textes.'px',
-            '--yyvtrp' => $css_taille_reference_padding.'px',
-            '--yyvtrb' => $css_taille_reference_border.'px',
-            '--yyvtrm' => $css_taille_reference_margin.'px',
-            '--yyvhmb' => $css_hauteur_mini_bouton.'px',
-            '--yyvhal' => $css_hauteur_ligne.'px',
-            '--yyvhmd' => $css_hauteur_menu_defilement.'px',
-            '--yyvhgb' => $css_hauteur_grands_boutons.'px',
-            '--yyvhmc' => $css_hauteur_mini_conteneur.'px'
+            '--yyvtrg' => $css_taille_reference_generale . 'px',
+            '--yyvtrt' => $css_taille_reference_textes . 'px',
+            '--yyvtrp' => $css_taille_reference_padding . 'px',
+            '--yyvtrb' => $css_taille_reference_border . 'px',
+            '--yyvtrm' => $css_taille_reference_margin . 'px',
+            '--yyvhmb' => $css_hauteur_mini_bouton . 'px',
+            '--yyvhal' => $css_hauteur_ligne . 'px',
+            '--yyvhmd' => $css_hauteur_menu_defilement . 'px',
+            '--yyvhgb' => $css_hauteur_grands_boutons . 'px',
+            '--yyvhmc' => $css_hauteur_mini_conteneur . 'px'
         );
     }
 
-    $css_hauteur_ligne=$css_taille_reference_textes+$css_taille_reference_padding;
-    $css_hauteur_mini_bouton=$css_taille_reference_textes+4*$css_taille_reference_padding+2*$css_taille_reference_border;
-    $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton+2*$css_taille_reference_margin;
-    $css_hauteur_menu_defilement=$css_hauteur_mini_bouton+2*$css_taille_reference_margin+11;
-    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement-(2*$css_taille_reference_margin)-1;
-    $le_biscuit['--yyvhmb']=$css_hauteur_mini_bouton.'px';
-    $le_biscuit['--yyvhal']=$css_hauteur_ligne.'px';
-    $le_biscuit['--yyvhmd']=$css_hauteur_menu_defilement.'px';
-    $le_biscuit['--yyvhgb']=$css_hauteur_grands_boutons.'px';
-    $le_biscuit['--yyvhmc']=$css_hauteur_mini_conteneur.'px';
+    $css_hauteur_ligne=$css_taille_reference_textes + $css_taille_reference_padding;
+    $css_hauteur_mini_bouton=($css_taille_reference_textes + 4 * $css_taille_reference_padding) + 2 * $css_taille_reference_border;
+    $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin;
+    $css_hauteur_menu_defilement=($css_hauteur_mini_bouton + 2 * $css_taille_reference_margin) + 11;
+    $css_hauteur_grands_boutons=($css_hauteur_menu_defilement - 2 * $css_taille_reference_margin) - 1;
+    $le_biscuit['--yyvhmb']=$css_hauteur_mini_bouton . 'px';
+    $le_biscuit['--yyvhal']=$css_hauteur_ligne . 'px';
+    $le_biscuit['--yyvhmd']=$css_hauteur_menu_defilement . 'px';
+    $le_biscuit['--yyvhgb']=$css_hauteur_grands_boutons . 'px';
+    $le_biscuit['--yyvhmc']=$css_hauteur_mini_conteneur . 'px';
     $GLOBALS['__le_biscuit']=$le_biscuit;
     $texte_base_css=PHP_EOL;
-    $texte_base_css.='<style type="text/css">:root{'.PHP_EOL;
-    $texte_base_css.='--yyvtrg:'.$le_biscuit['--yyvtrg'].';'.PHP_EOL;
-    $texte_base_css.='--yyvtrt:'.$le_biscuit['--yyvtrt'].'; /* taille de référence du texte */'.PHP_EOL;
-    $texte_base_css.='--yyvtrp:'.$le_biscuit['--yyvtrp'].'; /* taille de référence du espaces ( padding ) */'.PHP_EOL;
-    $texte_base_css.='--yyvtrb:'.$le_biscuit['--yyvtrb'].'; /* taille de référence des bordures */'.PHP_EOL;
-    $texte_base_css.='--yyvtrm:'.$le_biscuit['--yyvtrm'].'; /* taille de référence dus marges */'.PHP_EOL;
-    $texte_base_css.='--yyvhmb:'.$le_biscuit['--yyvhmb'].'; /* hauteur minimales des boutons */'.PHP_EOL;
-    $texte_base_css.='--yyvhal:'.$le_biscuit['--yyvhal'].'; /* hauteur de ligne */'.PHP_EOL;
-    $texte_base_css.='--yyvhmd:'.$le_biscuit['--yyvhmd'].'; /* hauteur du menu à défilement */'.PHP_EOL;
-    $texte_base_css.='--yyvhgb:'.$le_biscuit['--yyvhgb'].'; /* hauteur des grands boutons ( quitter et index ) */'.PHP_EOL;
-    $texte_base_css.='--yyvhmc:'.$le_biscuit['--yyvhmc'].'; /* hauteur minimale de conteneur ( div ) */'.PHP_EOL;
-    $texte_base_css.='}'.PHP_EOL;
+    $texte_base_css .= '<style type="text/css">:root{' . PHP_EOL;
+    $texte_base_css .= '--yyvtrg:' . $le_biscuit['--yyvtrg'] . ';' . PHP_EOL;
+    $texte_base_css .= '--yyvtrt:' . $le_biscuit['--yyvtrt'] . '; /* taille de référence du texte */' . PHP_EOL;
+    $texte_base_css .= '--yyvtrp:' . $le_biscuit['--yyvtrp'] . '; /* taille de référence du espaces ( padding ) */' . PHP_EOL;
+    $texte_base_css .= '--yyvtrb:' . $le_biscuit['--yyvtrb'] . '; /* taille de référence des bordures */' . PHP_EOL;
+    $texte_base_css .= '--yyvtrm:' . $le_biscuit['--yyvtrm'] . '; /* taille de référence dus marges */' . PHP_EOL;
+    $texte_base_css .= '--yyvhmb:' . $le_biscuit['--yyvhmb'] . '; /* hauteur minimales des boutons */' . PHP_EOL;
+    $texte_base_css .= '--yyvhal:' . $le_biscuit['--yyvhal'] . '; /* hauteur de ligne */' . PHP_EOL;
+    $texte_base_css .= '--yyvhmd:' . $le_biscuit['--yyvhmd'] . '; /* hauteur du menu à défilement */' . PHP_EOL;
+    $texte_base_css .= '--yyvhgb:' . $le_biscuit['--yyvhgb'] . '; /* hauteur des grands boutons ( quitter et index ) */' . PHP_EOL;
+    $texte_base_css .= '--yyvhmc:' . $le_biscuit['--yyvhmc'] . '; /* hauteur minimale de conteneur ( div ) */' . PHP_EOL;
+    $texte_base_css .= '}' . PHP_EOL;
     /* on met en ligne le root car il est dynamique */
-    $o1.=$texte_base_css;
-    
+    $o1 .= $texte_base_css;
     /*
       la valeur çi dessous devrait être à false pour ne pas inclure de css dans le html renvoyé      
     */
+
     if(false){
 
         /* dans le cas ou on met tout dans le html reçu */
-        $o1.=file_get_contents('6.css');
-        $o1.='</style>'.PHP_EOL;
+        $o1 .= file_get_contents('6.css');
+        $o1 .= '</style>' . PHP_EOL;
 
     }else{
 
         /* dans le cas ou ou on met le css en lien externe */
-        $o1.=$texte_base_css;
-        $o1.='</style>'.PHP_EOL;
-        $o1.='  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />'.PHP_EOL;
+        $o1 .= $texte_base_css;
+        $o1 .= '</style>' . PHP_EOL;
+        $o1 .= '  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />' . PHP_EOL;
     }
-     
-    $module_par_balise_script=true;
-    if($module_par_balise_script===true){
 
-        $o1.='<script type="module" src="js/module_interface1.js" onload="demarre_l_interface()"></script>'.PHP_EOL;
+    $module_par_balise_script=true;
+
+    if($module_par_balise_script === true){
+
+        $o1 .= '<script type="module" src="js/module_interface1.js" onload="demarre_l_interface()"></script>' . PHP_EOL;
 
     }else{
 
-        $o1.='<script type="text/javascript">'.PHP_EOL;
-        $o1.=file_get_contents('js/module_interface1.js');
-        $o1.='</script>'.PHP_EOL;
+        $o1 .= '<script type="text/javascript">' . PHP_EOL;
+        $o1 .= file_get_contents('js/module_interface1.js');
+        $o1 .= '</script>' . PHP_EOL;
     }
 
-    $o1.='<script type="text/javascript">'.PHP_EOL;
-    $o1.='//<![CDATA['.PHP_EOL;
-    $o1.='"use strict";'.PHP_EOL;
+    $o1 .= '<script type="text/javascript">' . PHP_EOL;
+    $o1 .= '//<![CDATA[' . PHP_EOL;
+    $o1 .= '"use strict";' . PHP_EOL;
     /* les constantes qui sont définies au niveau du serveur */
-    $o1.=' const APP_KEY=\''.APP_KEY.'\';'.PHP_EOL;
-    $o1.=' const CSS_TAILLE_REFERENCE_TEXTE='.$css_taille_reference_textes.';'.PHP_EOL;
-    $o1.=' const CSS_TAILLE_REFERENCE_BORDER='.$css_taille_reference_border.';'.PHP_EOL;
-    $o1.=' const CSS_TAILLE_REFERENCE_PADDING='.$css_taille_reference_padding.';'.PHP_EOL;
-    $o1.=' const CSS_TAILLE_REFERENCE_MARGIN='.$css_taille_reference_margin.';'.PHP_EOL;
-    $o1.=' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV='.$css_hauteur_mini_conteneur.';'.PHP_EOL;
-    
-    $o1.=<<<EOT
+    $o1 .= ' const APP_KEY=\'' . APP_KEY . '\';' . PHP_EOL;
+    $o1 .= ' const CSS_TAILLE_REFERENCE_TEXTE=' . $css_taille_reference_textes . ';' . PHP_EOL;
+    $o1 .= ' const CSS_TAILLE_REFERENCE_BORDER=' . $css_taille_reference_border . ';' . PHP_EOL;
+    $o1 .= ' const CSS_TAILLE_REFERENCE_PADDING=' . $css_taille_reference_padding . ';' . PHP_EOL;
+    $o1 .= ' const CSS_TAILLE_REFERENCE_MARGIN=' . $css_taille_reference_margin . ';' . PHP_EOL;
+    $o1 .= ' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV=' . $css_hauteur_mini_conteneur . ';' . PHP_EOL;
+    $o1 .= <<<EOT
 
      const __debut_execution=performance.now();
      const __xst='__xst';
@@ -969,9 +973,11 @@ function html_header1($parametres){
        =====================================================================================================================
      */
 EOT;
-     if($module_par_balise_script===true){
-         /* mode normal */
-         $o1.=<<<EOT
+
+    if($module_par_balise_script === true){
+
+        /* mode normal */
+        $o1 .= <<<EOT
            function demarre_l_interface(){
                 import('./js/module_interface1.js').then(function(Module){
                     __gi1=new Module.interface1('__gi1','zone_global_messages');
@@ -1007,13 +1013,15 @@ EOT;
                 });
                 
            }
-EOT;       
-     }else{
-         /* 
-           ici c'est quand je suis en cours de mise au point, 
-           pour que ceci fonctionne il faut retirer le "export{interface1};" à la fin de "js/module_interface1.js" 
-         */
-         $o1=<<<EOT
+EOT;
+
+    }else{
+
+        /*
+          ici c'est quand je suis en cours de mise au point, 
+          pour que ceci fonctionne il faut retirer le "export{interface1};" à la fin de "js/module_interface1.js" 
+        */
+        $o1=<<<EOT
             window.addEventListener('load',function(){
                     __gi1=new interface1('__gi1','zone_global_messages');
                     __gi1.deplace_la_zone_de_message();
@@ -1049,10 +1057,11 @@ EOT;
                 }
             });     
 EOT;
-     }
-    $o1.=PHP_EOL.'//]]>'.PHP_EOL.'</script>'.PHP_EOL;
-    $o1.=' </head>'.PHP_EOL;
-    $o1.=' <body>'.PHP_EOL;
+    }
+
+    $o1 .= PHP_EOL . '//]]>' . PHP_EOL . '</script>' . PHP_EOL;
+    $o1 .= ' </head>' . PHP_EOL;
+    $o1 .= ' <body>' . PHP_EOL;
     /*
       pour la phase de conception
       $o1.='<!-- '.$texte_base_css.' -->'.PHP_EOL;
@@ -1060,93 +1069,94 @@ EOT;
 
     if(!(isset($parametres['pas_de_menu']))){
 
-        $o1.='  <nav id="navbar" class="yynavbar">'.PHP_EOL;
-        $o1.='    <div style="min-width:'.($css_hauteur_grands_boutons*2+4*$css_taille_reference_margin).'px;">'.PHP_EOL;
-        $o1.='     <a href="./" id="buttonhome" class="yytbgrand '.('index.php' === BNF ? 'yymenusel1' : '').'" title="page d\'accueil" style="">&#127968;</a>'.PHP_EOL;
-        $o1.='     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()">💬</a>'.PHP_EOL;
-        $o1.='    </div>'.PHP_EOL;
-        $o1.='    <div id="menuPrincipal" class="menuScroller">'.PHP_EOL;
-        $o1.='      <div>'.PHP_EOL;
-        $o1.='        <ul>'.PHP_EOL;
+        $o1 .= '  <nav id="navbar" class="yynavbar">' . PHP_EOL;
+        $o1 .= '    <div style="min-width:' . ($css_hauteur_grands_boutons * 2 + 4 * $css_taille_reference_margin) . 'px;">' . PHP_EOL;
+        $o1 .= '     <a href="./" id="buttonhome" class="yytbgrand ' . ('index.php' === BNF ? 'yymenusel1' : '') . '" title="page d\'accueil" style="">&#127968;</a>' . PHP_EOL;
+        $o1 .= '     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()">💬</a>' . PHP_EOL;
+        $o1 .= '    </div>' . PHP_EOL;
+        $o1 .= '    <div id="menuPrincipal" class="menuScroller">' . PHP_EOL;
+        $o1 .= '      <div>' . PHP_EOL;
+        $o1 .= '        <ul>' . PHP_EOL;
         $idMenu=0;
 
         if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
 
-            $o1.='          <li><a class="yytbfixe '.('traiteHtml.php' === BNF ? 'yymenusel1' : '').'" href="traiteHtml.php?idMenu='.$idMenu++.'">HTML</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('traiteJs.php' === BNF ? 'yymenusel1' : '').'" href="traiteJs.php?idMenu='.$idMenu++.'">JS</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('traitePhp.php' === BNF ? 'yymenusel1' : '').'" href="traitePhp.php?idMenu='.$idMenu++.'">PHP</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('traiteSql.php' === BNF ? 'yymenusel1' : '').'" href="traiteSql.php?idMenu='.$idMenu++.'">SQL</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('index_source.php' === BNF ? 'yymenusel1' : '').'" href="index_source.php?idMenu='.$idMenu++.'">REV</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('zz_taches_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_taches_l1.php?idMenu='.$idMenu++.'&chp_priorite_tache2=99">tâches</a></li>'.PHP_EOL;
-            $o1.='          <li><a class="yytbfixe '.('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_cibles_l1.php?idMenu='.$idMenu++.'">cibles</a></li>'.PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('traiteHtml.php' === BNF ? 'yymenusel1' : '') . '" href="traiteHtml.php?idMenu=' . $idMenu++ . '">HTML</a></li>' . PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('traiteJs.php' === BNF ? 'yymenusel1' : '') . '" href="traiteJs.php?idMenu=' . $idMenu++ . '">JS</a></li>' . PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('traitePhp.php' === BNF ? 'yymenusel1' : '') . '" href="traitePhp.php?idMenu=' . $idMenu++ . '">PHP</a></li>' . PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('traiteSql.php' === BNF ? 'yymenusel1' : '') . '" href="traiteSql.php?idMenu=' . $idMenu++ . '">SQL</a></li>' . PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('index_source.php' === BNF ? 'yymenusel1' : '') . '" href="index_source.php?idMenu=' . $idMenu++ . '">REV</a></li>' . PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('zz_taches_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_taches_l1.php?idMenu=' . $idMenu++ . '&chp_priorite_tache2=99">tâches</a></li>' . PHP_EOL;
+            $o1 .= '          <li><a class="yytbfixe ' . ('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_cibles_l1.php?idMenu=' . $idMenu++ . '">cibles</a></li>' . PHP_EOL;
 
             if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
-                $o1.='          <li><a class="yytbfixe '.('zz_dossiers_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_dossiers_l1.php?idMenu='.$idMenu++.'">dossiers</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_sources_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_sources_l1.php?idMenu='.$idMenu++.'">sources</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_bdds_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_bdds_l1.php?idMenu='.$idMenu++.'">bdds</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_requetes_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_requetes_l1.php?idMenu='.$idMenu++.'">rsql</a></li>'.PHP_EOL;
-                $o1.='          <li><a class="yytbfixe '.('zz_rev_l1.php' === BNF ? 'yymenusel1' : '').'" href="zz_revs_l1.php?idMenu='.$idMenu++.'">revs</a></li>'.PHP_EOL;
+                $o1 .= '          <li><a class="yytbfixe ' . ('zz_dossiers_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_dossiers_l1.php?idMenu=' . $idMenu++ . '">dossiers</a></li>' . PHP_EOL;
+                $o1 .= '          <li><a class="yytbfixe ' . ('zz_sources_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_sources_l1.php?idMenu=' . $idMenu++ . '">sources</a></li>' . PHP_EOL;
+                $o1 .= '          <li><a class="yytbfixe ' . ('zz_bdds_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_bdds_l1.php?idMenu=' . $idMenu++ . '">bdds</a></li>' . PHP_EOL;
+                $o1 .= '          <li><a class="yytbfixe ' . ('zz_requetes_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_requetes_l1.php?idMenu=' . $idMenu++ . '">rsql</a></li>' . PHP_EOL;
+                $o1 .= '          <li><a class="yytbfixe ' . ('zz_rev_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_revs_l1.php?idMenu=' . $idMenu++ . '">revs</a></li>' . PHP_EOL;
 
             }
 
 
         }
 
-        $o1.='        </ul>'.PHP_EOL;
-        $o1.='      </div>'.PHP_EOL;
-        $o1.='    </div>'.PHP_EOL;
+        $o1 .= '        </ul>' . PHP_EOL;
+        $o1 .= '      </div>' . PHP_EOL;
+        $o1 .= '    </div>' . PHP_EOL;
 
         if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
 
-            $o1.='    <div class="">'.PHP_EOL;
-            $o1.='      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">🔑</a>'.PHP_EOL;
-            $o1.='    </div>'.PHP_EOL;
+            $o1 .= '    <div class="">' . PHP_EOL;
+            $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">🔑</a>' . PHP_EOL;
+            $o1 .= '    </div>' . PHP_EOL;
 
         }else if(BNF !== 'aa_login.php'){
 
-            $o1.='    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>'.PHP_EOL;
+            $o1 .= '    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>' . PHP_EOL;
 
         }
 
-        $o1.='  </nav>'.PHP_EOL;
+        $o1 .= '  </nav>' . PHP_EOL;
 
     }
 
-    $o1.='  <main id="contenuPrincipal">'.PHP_EOL;
+    $o1 .= '  <main id="contenuPrincipal">' . PHP_EOL;
     $les_messages=recupere_les_messages_de_session(BNF);
-    $o1.='   <div id="zone_global_messages" style="visibility:'.$les_messages[0].';">'.$les_messages[1].'</div>'.PHP_EOL;
-    return($o1);
+    $o1 .= '   <div id="zone_global_messages" style="visibility:' . $les_messages[0] . ';">' . $les_messages[1] . '</div>' . PHP_EOL;
+    return $o1;
 
 }
 /*
   =====================================================================================================================
 */
+
 function html_footer1($parametres=array()){
 
     $o1='';
-    $o1.='</main>'.PHP_EOL;
-    $o1.='<dialog id="modale1">'.PHP_EOL.' <a id="__fermerModale1" href="javascript:__gi1.fermerModale2()" class="yydanger">×</a>'.PHP_EOL;
-    $o1.=' <div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div>'.PHP_EOL;
-    $o1.=' <div id="__contenu_modale">'.PHP_EOL;
-    $o1.='  <iframe id="iframe_modale_1" src=""></iframe>'.PHP_EOL;
-    $o1.=' </div>'.PHP_EOL;
-    $o1.='</dialog>'.PHP_EOL;
-    $o1.='<div id="bas_de_page">'.PHP_EOL;
-    $o1.='<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>'.PHP_EOL;
+    $o1 .= '</main>' . PHP_EOL;
+    $o1 .= '<dialog id="modale1">' . PHP_EOL . ' <a id="__fermerModale1" href="javascript:__gi1.fermerModale2()" class="yydanger">×</a>' . PHP_EOL;
+    $o1 .= ' <div id="__message_modale" style="max-height:200px;overflow-y:scroll;position:fixed;width:75vw;"></div>' . PHP_EOL;
+    $o1 .= ' <div id="__contenu_modale">' . PHP_EOL;
+    $o1 .= '  <iframe id="iframe_modale_1" src=""></iframe>' . PHP_EOL;
+    $o1 .= ' </div>' . PHP_EOL;
+    $o1 .= '</dialog>' . PHP_EOL;
+    $o1 .= '<div id="bas_de_page">' . PHP_EOL;
+    $o1 .= '<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>' . PHP_EOL;
 
     if(!(preg_match('/.*_a[0-9]+\.php/',BNF))){
 
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A'.$GLOBALS['__le_biscuit']['--yyvtrt'].'</a>'.PHP_EOL;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p'.$GLOBALS['__le_biscuit']['--yyvtrp'].'</a>'.PHP_EOL;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b'.$GLOBALS['__le_biscuit']['--yyvtrb'].'</a>'.PHP_EOL;
-        $o1.='<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m'.$GLOBALS['__le_biscuit']['--yyvtrm'].'</a>'.PHP_EOL;
-        $o1.='<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;'.enti1(BNF).'&quot;)" style="opacity:0.5;">⚙️</a>'.PHP_EOL;
+        $o1 .= '<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A' . $GLOBALS['__le_biscuit']['--yyvtrt'] . '</a>' . PHP_EOL;
+        $o1 .= '<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_padding\')" style="" title="taille espace">p' . $GLOBALS['__le_biscuit']['--yyvtrp'] . '</a>' . PHP_EOL;
+        $o1 .= '<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_border\')" style=""  title="taille bordure">b' . $GLOBALS['__le_biscuit']['--yyvtrb'] . '</a>' . PHP_EOL;
+        $o1 .= '<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_margin\')" style=""  title="taille marge">m' . $GLOBALS['__le_biscuit']['--yyvtrm'] . '</a>' . PHP_EOL;
+        $o1 .= '<a href="javascript:__gi1.fixer_les_parametres_pour_une_liste(&quot;' . enti1(BNF) . '&quot;)" style="opacity:0.5;">⚙️</a>' . PHP_EOL;
 
     }
 
-    $o1.='</div>'.PHP_EOL;
-    $o1.='  <script type="text/javascript" defer src="js/core6.js"></script>'.PHP_EOL;
+    $o1 .= '</div>' . PHP_EOL;
+    $o1 .= '  <script type="text/javascript" defer src="js/core6.js"></script>' . PHP_EOL;
     /*
       d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
       mais grâce à ces lignes, le module js est mis en cache et les appels suivants sont plus rapides
@@ -1158,7 +1168,7 @@ function html_footer1($parametres=array()){
 
             if($v1 !== ''){
 
-                $o1.='  <script type="module" src="'.$v1.'"></script>'.PHP_EOL;
+                $o1 .= '  <script type="module" src="' . $v1 . '"></script>' . PHP_EOL;
 
             }
 
@@ -1173,7 +1183,7 @@ function html_footer1($parametres=array()){
 
             if($v1 !== ''){
 
-                $o1.='  <script type="text/javascript" src="'.$v1.'" defer></script>'.PHP_EOL;
+                $o1 .= '  <script type="text/javascript" src="' . $v1 . '" defer></script>' . PHP_EOL;
 
             }
 
@@ -1181,12 +1191,12 @@ function html_footer1($parametres=array()){
 
     }
 
-    $o1.='<script type="text/javascript">'.PHP_EOL;
-    $o1.='"use strict";'.PHP_EOL;
+    $o1 .= '<script type="text/javascript">' . PHP_EOL;
+    $o1 .= '"use strict";' . PHP_EOL;
 
     if(isset($parametres['js_a_executer_apres_chargement'])){
 
-        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){'.PHP_EOL;
+        $o1 .= 'function fonctionDeLaPageAppeleeQuandToutEstCharge(){' . PHP_EOL;
         $txt1='';
         foreach($parametres['js_a_executer_apres_chargement'] as $k1 => $v1){
 
@@ -1195,26 +1205,26 @@ function html_footer1($parametres=array()){
 
                 if($txt1 != ''){
 
-                    $txt1.=','.PHP_EOL;
+                    $txt1 .= ',' . PHP_EOL;
 
                 }
 
-                $txt1.=' '.json_encode($v1,JSON_FORCE_OBJECT).'';
+                $txt1 .= ' ' . json_encode($v1,JSON_FORCE_OBJECT) . '';
 
             }
 
         }
-        $o1.=' var arrayLocalJs=['.PHP_EOL.$txt1.PHP_EOL.' ];'.PHP_EOL;
-        $o1.=' __gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);'.PHP_EOL;
-        $o1.='}'.PHP_EOL;
+        $o1 .= ' var arrayLocalJs=[' . PHP_EOL . $txt1 . PHP_EOL . ' ];' . PHP_EOL;
+        $o1 .= ' __gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);' . PHP_EOL;
+        $o1 .= '}' . PHP_EOL;
 
     }else{
 
-        $o1.='function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};'.PHP_EOL;
+        $o1 .= 'function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};' . PHP_EOL;
     }
 
-    $o1.='</script>'.PHP_EOL;
-    $o1.='</body></html>'.PHP_EOL;
+    $o1 .= '</script>' . PHP_EOL;
+    $o1 .= '</body></html>' . PHP_EOL;
 
     if(isset($parametres['ne_pas_supprimer_les_valeurs_de_session_sur_un_choix'])){
 
@@ -1224,6 +1234,6 @@ function html_footer1($parametres=array()){
         supprimerLesParametresDeNavigationEnSession();
     }
 
-    return($o1);
+    return $o1;
 
 }

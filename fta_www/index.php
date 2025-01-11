@@ -6,9 +6,7 @@ $o1='';
 $o1=html_header1(array( 'title' => 'Accueil', 'description' => 'Accueil'));
 print($o1);
 $o1='';
-ob_flush();
-
-?>
+ob_flush();?>
 <div class="menuScroller">
     <ul>
         <li>
@@ -49,6 +47,6 @@ $par=array(/* */
     'js_a_inclure' => array( 'js/pour-index_php0.js'),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

@@ -5,13 +5,13 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
-    ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
+    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
 
 /*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);*/
-$dossier_racine='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'';
+$dossier_racine='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '';
 /*
   =====================================================================================================================
 */
@@ -19,7 +19,7 @@ $dossier_racine='../../'.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible
 if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action'])){
 
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);*/
-    $le_dossier_a_recuperer='../../'.$_GET['__racine'];
+    $le_dossier_a_recuperer='../../' . $_GET['__racine'];
     $listeDesDossiersSurDisque=listerLesDossiers($le_dossier_a_recuperer);
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $arr[1] , true ) . '</pre>' ; exit(0);*/
     $les_valeurs_sql='';
@@ -29,7 +29,7 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
     */
     sql_inclure_reference(51);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH.'/sql/sql_51.php');
+    require_once(INCLUDE_PATH . '/sql/sql_51.php');
     /*
       SELECT 
       `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
@@ -42,7 +42,7 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
 
     if($tt[__xst] === false){
 
-        ajouterMessage('erreur',__LINE__.' : erreur de récupération des dossiers actuels '.$tt[__xme],BNF);
+        ajouterMessage('erreur',__LINE__ . ' : erreur de récupération des dossiers actuels ' . $tt[__xme],BNF);
         recharger_la_page(BNF);
 
     }
@@ -82,7 +82,7 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
 
         sql_inclure_reference(52);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH.'/sql/sql_52.php');
+        require_once(INCLUDE_PATH . '/sql/sql_52.php');
         /*
           
           INSERT  OR IGNORE INTO b1.`tbl_dossiers`(
@@ -99,17 +99,17 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
 
         if($tt[__xst] === true){
 
-            ajouterMessage('succes',__LINE__.' : les dossiers ont été importés',BNF);
+            ajouterMessage('succes',__LINE__ . ' : les dossiers ont été importés',BNF);
 
         }else{
 
-            ajouterMessage('erreur',__LINE__.' : erreur d\'importation des dossiers '.$tt[__xme],BNF);
+            ajouterMessage('erreur',__LINE__ . ' : erreur d\'importation des dossiers ' . $tt[__xme],BNF);
         }
 
 
     }else{
 
-        ajouterMessage('info',__LINE__.' : les dossiers sont synchronisés',BNF);
+        ajouterMessage('info',__LINE__ . ' : les dossiers sont synchronisés',BNF);
     }
 
     recharger_la_page(BNF);
@@ -130,13 +130,13 @@ function listerLesDossiers($dir,$niveau=0){
 
     if(count($ffs) < 1){
 
-        return(array( array(), ''));
+        return array( array(), '');
 
     }
 
     $temp=array();
     foreach($ffs as $ff){
-        $chemin=$dir.'/'.$ff;
+        $chemin=$dir . '/' . $ff;
 
         if(is_dir($chemin)){
 
@@ -153,7 +153,7 @@ function listerLesDossiers($dir,$niveau=0){
             /*
               on ne met pas le sous dossier vendor qui contient des bibliothèques importées par composer
             */
-            $sousDossiers=listerLesDossiers($v1,($niveau+1));
+            $sousDossiers=listerLesDossiers($v1,$niveau + 1);
 
             if(count($sousDossiers[0]) > 0){
 
@@ -172,19 +172,19 @@ function listerLesDossiers($dir,$niveau=0){
 
         if($chaineRev !== ''){
 
-            $chaineRev.=',';
+            $chaineRev .= ',';
 
         }
 
-        $chaineRev.=$k1.'(';
+        $chaineRev .= $k1 . '(';
 
         if($sousChaineRev !== ''){
 
-            $chaineRev.=$sousChaineRev;
+            $chaineRev .= $sousChaineRev;
 
         }
 
-        $chaineRev.=')';
+        $chaineRev .= ')';
     }
 
     if($niveau === 0){
@@ -196,7 +196,7 @@ function listerLesDossiers($dir,$niveau=0){
 
                 if(isset($v1['chemin'])){
 
-                    $sortie[$k1]=array( 'niveau' => $niveau/2, 'chemin' => $v1['chemin']);
+                    $sortie[$k1]=array( 'niveau' => $niveau / 2, 'chemin' => $v1['chemin']);
                     /* , 'chemin' => $v1['chemin']*/
 
                 }
@@ -217,11 +217,11 @@ function listerLesDossiers($dir,$niveau=0){
         }
         $lineaire=array();
         linearise($temp,$lineaire);
-        return(array( $temp, $lineaire, $chaineRev));
+        return array( $temp, $lineaire, $chaineRev);
 
     }else{
 
-        return(array( $temp, $chaineRev));
+        return array( $temp, $chaineRev);
     }
 
 
@@ -233,7 +233,7 @@ $o1='';
 $o1=html_header1(array( 'title' => 'Dossiers', 'description' => 'Dossiers'));
 print($o1);
 $o1='';
-$o1.='    <h1>Liste des dossiers de '.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].'</h1>'.PHP_EOL;
+$o1 .= '    <h1>Liste des dossiers de ' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '</h1>' . PHP_EOL;
 /*
   =====================================================================================================================
 */
@@ -265,21 +265,21 @@ if($chi_id_dossier != ''){
 
 }
 
-$o1.='<form method="get" class="yyfilterForm">'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chi_id_dossier">id dossier</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="'.enti1($chi_id_dossier).'"  size="8" maxlength="32"  '.($autofocus == 'chi_id_dossier' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.PHP_EOL;
-$o1.='    <label for="chp_nom_dossier">nom</label>'.PHP_EOL;
-$o1.='    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="'.enti1($chp_nom_dossier).'"  size="8" maxlength="64"  '.($autofocus == 'chp_nom_dossier' ? 'autofocus="autofocus"' : '').' />'.PHP_EOL;
-$o1.='   </div>'.PHP_EOL;
-$o1.='   <div>'.html_du_bouton_rechercher_pour_les_listes().PHP_EOL.'   </div>'.PHP_EOL;
-$o1.='</form>'.PHP_EOL;
-$__debut=$__xpage*$__nbMax;
+$o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chi_id_dossier">id dossier</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chi_id_dossier" id="chi_id_dossier" value="' . enti1($chi_id_dossier) . '"  size="8" maxlength="32"  ' . ($autofocus == 'chi_id_dossier' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . PHP_EOL;
+$o1 .= '    <label for="chp_nom_dossier">nom</label>' . PHP_EOL;
+$o1 .= '    <input  type="text" name="chp_nom_dossier" id="chp_nom_dossier"   value="' . enti1($chp_nom_dossier) . '"  size="8" maxlength="64"  ' . ($autofocus == 'chp_nom_dossier' ? 'autofocus="autofocus"' : '') . ' />' . PHP_EOL;
+$o1 .= '   </div>' . PHP_EOL;
+$o1 .= '   <div>' . html_du_bouton_rechercher_pour_les_listes() . PHP_EOL . '   </div>' . PHP_EOL;
+$o1 .= '</form>' . PHP_EOL;
+$__debut=$__xpage * $__nbMax;
 sql_inclure_reference(53);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH.'/sql/sql_53.php');
+require_once(INCLUDE_PATH . '/sql/sql_53.php');
 /*
   SELECT 
   `T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
@@ -293,7 +293,7 @@ require_once(INCLUDE_PATH.'/sql/sql_53.php');
 $tt=sql_53(array(
     'T0_chi_id_dossier' => $chi_id_dossier,
     'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%'.$chp_nom_dossier.'%')),
+    'T0_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%')),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF
@@ -301,12 +301,12 @@ $tt=sql_53(array(
 
 if($tt[__xst] === false){
 
-    $o1.='<div>';
-    $o1.='<div class="yydanger">Erreur sql</div>';
-    $o1.='<pre>'.$tt['sql0'].'</per>';
-    $o1.='</div>';
+    $o1 .= '<div>';
+    $o1 .= '<div class="yydanger">Erreur sql</div>';
+    $o1 .= '<pre>' . $tt['sql0'] . '</per>';
+    $o1 .= '</div>';
     $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => array());
-    $o1.=html_footer1($par);
+    $o1 .= html_footer1($par);
     print($o1);
     $o1='';
     exit(0);
@@ -314,46 +314,47 @@ if($tt[__xst] === false){
 }
 
 $__nbEnregs=$tt['nombre'];
-$consUrlRedir='&amp;chi_id_dossier='.rawurlencode($chi_id_dossier).'&amp;chp_nom_dossier='.rawurlencode($chp_nom_dossier).'';
-$boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>'.PHP_EOL;
-$o1.=construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_haut);
+$consUrlRedir='&amp;chi_id_dossier=' . rawurlencode($chi_id_dossier) . '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) . '';
+$boutons_haut=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__creation">Créer un nouveau dossier</a>' . PHP_EOL;
+$o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_haut);
 $__lsttbl='';
-$__lsttbl.='  <thead><tr>';
-$__lsttbl.='<th>action</th>';
-$__lsttbl.='<th>id</th>';
-$__lsttbl.='<th>nom</th>';
-$__lsttbl.='</tr></thead>'.PHP_EOL.'  <tbody>'.PHP_EOL;
+$__lsttbl .= '  <thead><tr>';
+$__lsttbl .= '<th>action</th>';
+$__lsttbl .= '<th>id</th>';
+$__lsttbl .= '<th>nom</th>';
+$__lsttbl .= '</tr></thead>' . PHP_EOL . '  <tbody>' . PHP_EOL;
 foreach($tt[__xva] as $k0 => $v0){
-    $__lsttbl.='<tr>'.PHP_EOL;
-    $__lsttbl.='<td data-label="" style="text-align:left!important;">';
-    $__lsttbl.='<div class="yyflex1">';
+    $__lsttbl .= '<tr>' . PHP_EOL;
+    $__lsttbl .= '<td data-label="" style="text-align:left!important;">';
+    $__lsttbl .= '<div class="yyflex1">';
 
     if($v0['T0.chp_nom_dossier'] !== '/'){
 
-        $__lsttbl.=' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id='.$v0['T0.chi_id_dossier'].'" title="modifier">✎</a>';
-        $__lsttbl.=' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id='.$v0['T0.chi_id_dossier'].'" title="supprimer">🗑</a>';
+        $__lsttbl .= ' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_dossier'] . '" title="modifier">✎</a>';
+        $__lsttbl .= ' <a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id=' . $v0['T0.chi_id_dossier'] . '" title="supprimer">🗑</a>';
 
     }else{
 
-        $__lsttbl.='<a class="yyunset" title="modifier">✎</a>';
-        $__lsttbl.='<a class="yyunset" title="supprimer">🗑</a>';
+        $__lsttbl .= '<a class="yyunset" title="modifier">✎</a>';
+        $__lsttbl .= '<a class="yyunset" title="supprimer">🗑</a>';
     }
 
-    $__lsttbl.='</div>';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:center;">';
-    $__lsttbl.=''.$v0['T0.chi_id_dossier'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.='<td style="text-align:left;">';
-    $__lsttbl.='['.$_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'].']'.$v0['T0.chp_nom_dossier'].'';
-    $__lsttbl.='</td>';
-    $__lsttbl.=PHP_EOL.'</tr>'.PHP_EOL;
+    $__lsttbl .= '</div>';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:center;">';
+    $__lsttbl .= '' . $v0['T0.chi_id_dossier'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= '<td style="text-align:left;">';
+    $__lsttbl .= '[' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . ']' . $v0['T0.chp_nom_dossier'] . '';
+    $__lsttbl .= '</td>';
+    $__lsttbl .= PHP_EOL . '</tr>' . PHP_EOL;
 }
-$o1.='<div style="overflow-x:scroll;">'.PHP_EOL.' <table class="yytableResult1">'.PHP_EOL.$__lsttbl.'  </tbody>'.PHP_EOL.' </table>'.PHP_EOL.'</div>'.PHP_EOL;
+$o1 .= '<div style="overflow-x:scroll;">' . PHP_EOL . ' <table class="yytableResult1">' . PHP_EOL . $__lsttbl . '  </tbody>' . PHP_EOL . ' </table>' . PHP_EOL . '</div>' . PHP_EOL;
 
-if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta') && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
+if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta')
+ && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
 
-    $o1.='<a class="yyinfo" href="zz_dossiers_l1.php?__action=__recuperer_dossiers&amp;__racine='.rawurlencode(APP_KEY).'">recupérer les dossiers de '.APP_KEY.'</a>'.PHP_EOL;
+    $o1 .= '<a class="yyinfo" href="zz_dossiers_l1.php?__action=__recuperer_dossiers&amp;__racine=' . rawurlencode(APP_KEY) . '">recupérer les dossiers de ' . APP_KEY . '</a>' . PHP_EOL;
 
 }
 
@@ -365,6 +366,6 @@ $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_
 print($o1);
 $o1='';
 $par=array( 'js_a_inclure' => array( ''), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

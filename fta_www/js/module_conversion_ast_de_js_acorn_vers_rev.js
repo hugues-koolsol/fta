@@ -709,6 +709,84 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
+
+    /*
+      =============================================================================================================
+    */
+    #traite_SpreadElement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        if(element.argument){
+            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                t+='...'+obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0721 #traite_RestElement' ,"element" : element}));
+        }
+
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_RestElement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        if(element.argument){
+            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                t+='...'+obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0721 #traite_RestElement' ,"element" : element}));
+        }
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_ObjectPattern(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        for(let i in element.properties){
+            if(element.properties[i].computed!==false){
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1200 #traite_ObjectPattern' ,"element" : element}));
+            }
+            if(element.properties[i].method!==false){
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1204 #traite_ObjectPattern' ,"element" : element}));
+            }
+            if(element.properties[i].shorthand!==false){
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1207 #traite_ObjectPattern' ,"element" : element}));
+            }
+            if(t !== ''){
+                t+=',';
+            }
+            t+=this.#comm_avant_debut1(element.properties[i],niveau,element,tab_comm);
+            var val=element.properties[i];
+            if(val.key.type === 'Identifier'){
+                t+='(' + val.key.name + ',';
+            }else if(val.key.type === 'Literal'){
+                t+='(' + val.key.raw + ',';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0739 #traite_ObjectPattern "' + val.key.type + '"' ,"element" : element}));
+            }
+            obj=this.#traite_element(val.value,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                t+=obj.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0745 #traite_ObjectPattern'}));
+            }
+        }
+        
+        t='obj(' + t + ')';
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
     /*
       =============================================================================================================
     */
@@ -1124,6 +1202,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+='et(' + gauche + ',' + droite + ')';
             }else if('||' === element.operator){
                 t+='ou(' + gauche + ',' + droite + ')';
+            }else if('??' === element.operator){
+                t+='??(' + gauche + ',' + droite + ')';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0775 #traite_LogicalExpression ' ,"element" : element}));
             }
@@ -1186,6 +1266,46 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 
         }
     }
+    
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_ChainExpression(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let objet="";
+        let propriete='';
+        
+        if(!element.expression){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element}));
+        }
+        if(element.expression.computed!==false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1201 #traite_ChainExpression' ,"element" : element}));
+        }
+        if(element.expression.object!==false){
+            obj=this.#traite_element(element.expression.object,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                 objet=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1208 #traite_ChainExpression' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1212 #traite_ChainExpression' ,"element" : element}));
+        }
+        if(element.expression.property!==false){
+            obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                 propriete=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1221 #traite_ChainExpression' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1224 #traite_ChainExpression' ,"element" : element}));
+        }
+        t+='chainé('+objet+','+propriete+')'
+        return({"__xst" : true ,"__xva" : t});
+    }
     /*
       =============================================================================================================
     */
@@ -1247,6 +1367,50 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             t+=')';
             t+=')';
         }
+        t+=')';
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_ForOfStatement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let gauche='';
+        let droite='';
+        let contenu='';
+        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm);
+        if(obj.__xst === true){
+            gauche+=obj.__xva;
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
+        }
+        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm);
+        if(obj.__xst === true){
+            droite+=obj.__xva;
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element}));
+        }
+        if(element.body){
+            if(element.expression){
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                if(obj.__xst === true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element}));
+                }
+            }else{
+                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                if(obj.__xst === true){
+                    contenu+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element}));
+                }
+            }
+        }
+        t+='boucle_sur_objet_de(';
+        t+='pourChaque(de(' + gauche + ' , ' + droite + ')),';
+        t+='faire(' + contenu + ')';
         t+=')';
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1630,6 +1794,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1193 #traite_MethodDefinition' ,"element" : element}));
                         }
+                    }else if(element.value.params[j].type === "RestElement" && element.value.params[j].argument && element.value.params[j].argument.type==='Identifier'){
+                        t+='argument(...' + element.value.params[j].argument.name + ')';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1196 #traite_MethodDefinition' ,"element" : element}));
                     }
@@ -1647,7 +1813,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1212 #traite_MethodDefinition' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1739 #traite_MethodDefinition' ,"element" : element}));
                     }
                 }
             }
@@ -1716,9 +1882,19 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     /*
       =============================================================================================================
     */
+    #traite_TemplateElement(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        t+='"'+element.value.raw.replace(/"/g,'\\"')+'"'
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
     #traite_TemplateLiteral(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
+        let tableau_des_expressions=[];
         if(element.quasis
          && element.quasis.length === 1
          && 'TemplateElement' === element.quasis[0].type
@@ -1727,7 +1903,32 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         ){
             t='`' + element.quasis[0].value.raw + '`';
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1802 #traite_TemplateLiteral' ,"element" : element}));
+            for(let i=0;i<element.expressions.length;i++){
+                obj=this.#traite_element(element.expressions[i],niveau,element.expressions,tab_comm);
+                if(obj.__xst===true){
+                    tableau_des_expressions.push(obj.__xva);
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1736 #traite_TemplateLiteral' ,"element" : element}));
+                }
+            }
+            for(let i=0;i<element.quasis.length;i++){
+                t+=',';
+                
+                obj=this.#traite_element(element.quasis[i],niveau,element.quasis,tab_comm);
+                if(obj.__xst===true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element}));
+                }
+                
+                if(i<tableau_des_expressions.length){
+                    t+=','+tableau_des_expressions[i];
+                }
+            }
+            if(t!==''){
+                t=t.substr(1);
+            }
+            t='concat('+t+')';
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2046,12 +2247,22 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
+                
             case 'TemplateLiteral' :
                 obj=this.#traite_TemplateLiteral(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1862 #traite_element TemplateLiteral ' ,"element" : element}));
+                }
+                break;
+                
+            case 'TemplateElement' :
+                obj=this.#traite_TemplateElement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2093 #traite_element TemplateElement ' ,"element" : element}));
                 }
                 break;
                 
@@ -2079,6 +2290,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     t+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1716 #traite_element ForInStatement ' ,"element" : element}));
+                }
+                break;
+                
+            case 'ForOfStatement' :
+                obj=this.#traite_ForOfStatement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2137 #traite_element ForOfStatement ' ,"element" : element}));
                 }
                 break;
                 
@@ -2288,6 +2508,43 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_element CallExpression ' ,"element" : element}));
                 }
                 break;
+                
+            case 'ChainExpression' :
+                obj=this.#traite_ChainExpression(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2397 #traite_element ChainExpression ' ,"element" : element}));
+                }
+                break;
+                
+            case 'ObjectPattern' :
+                obj=this.#traite_ObjectPattern(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2446 #traite_element ObjectPattern ' ,"element" : element}));
+                }
+                break;
+                
+            case 'RestElement' :
+                obj=this.#traite_RestElement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2496 #traite_element RestElement ' ,"element" : element}));
+                }
+                break;
+                
+            case 'SpreadElement' :
+                obj=this.#traite_SpreadElement(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2496 #traite_element SpreadElement ' ,"element" : element}));
+                }
+                break;
+                
                 
             case 'BlockStatement' :
                 /*# 

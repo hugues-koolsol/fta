@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
-    ajouterMessage('info',__LINE__.' : veuillez sélectionner une cible ');
+    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -16,7 +16,10 @@ print($o1);
 $o1='';
 $requete_en_cours=array();
 
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification') && (isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
+if((isset($_GET['__action']))
+ && ($_GET['__action'] == '__modification')
+ && (isset($_GET['__id']))
+ && (is_numeric($_GET['__id']))){
 
     $id_requete=(int)($_GET['__id']);
 
@@ -28,7 +31,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification') && (iss
 
     sql_inclure_reference(32);
     /*sql_inclure_deb */
-    require_once(INCLUDE_PATH.'/sql/sql_32.php');
+    require_once(INCLUDE_PATH . '/sql/sql_32.php');
     /*sql_inclure_fin*/
     $tt=sql_32(array( 'T0_chi_id_requete' => $id_requete, 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
@@ -41,9 +44,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification') && (iss
 
 }
 
-$o1.='<script type="text/javascript">'.PHP_EOL;
-$o1.='var globale_requete_en_cours='.json_encode($requete_en_cours,JSON_FORCE_OBJECT).';'.PHP_EOL;
-$o1.='</script>'.PHP_EOL;
+$o1 .= '<script type="text/javascript">' . PHP_EOL;
+$o1 .= 'var globale_requete_en_cours=' . json_encode($requete_en_cours,JSON_FORCE_OBJECT) . ';' . PHP_EOL;
+$o1 .= '</script>' . PHP_EOL;
 print($o1);
 $o1='';?>
 <div class="menuScroller">
@@ -110,7 +113,7 @@ $par=array( 'module_a_inclure' => array( 'js/module_requete_sql.js'), 'js_a_incl
             'js/pour_requete_sql.js',
             'js/jslib/Sortable.js'
         ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.='';
-$o1.=html_footer1($par);
+$o1 .= '';
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

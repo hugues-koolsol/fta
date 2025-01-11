@@ -11,7 +11,7 @@ define("BNF",basename(__FILE__));
   =====================================================================================================================
 */
 require_once('aa_include.php');
-initialiser_les_services(true,false);
+initialiser_les_services( /*session*/ true, /*bdd*/ false);
 /*===================================================================================================================*/
 
 function supprimerLesValeursDeSession(){
@@ -30,7 +30,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
     if((isset($_POST['nom_de_connexion'])) && (isset($_POST['mot_de_passe']))){
 
-        initialiser_les_services(true,true);
+        initialiser_les_services( /*session*/ true, /*bdd*/ true);
         /*#
           ===========================================================================
           on importe la fonction sql 1 ( sql_inclure_reference(1)) qui recherche 
@@ -55,7 +55,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
         */
         sql_inclure_reference(1);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH.'/sql/sql_1.php');
+        require_once(INCLUDE_PATH . '/sql/sql_1.php');
         /*
           SELECT 
           `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
@@ -70,7 +70,7 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
         if($sql1[__xst] !== true){
 
-            ajouterMessage('erreur',__LINE__.' '.$sql1[__xme],BNF);
+            ajouterMessage('erreur',__LINE__ . ' ' . $sql1[__xme],BNF);
             supprimerLesValeursDeSession();
             recharger_la_page(BNF);
 
@@ -88,11 +88,11 @@ if((isset($_POST)) && (count($_POST) > 0)){
             $_SESSION[APP_KEY]['sess_id_utilisateur']=$sql1[__xva][0]['T0.chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_id_utilisateur_init']=$sql1[__xva][0]['T0.chi_id_utilisateur'];
             $_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']=base64_encode(openssl_random_pseudo_bytes(16));
-            $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2)*10+20));
+            $_SESSION[APP_KEY]['sess_deuxième_cle_chiffrement']=base64_encode(texte_aleatoire(rand(1,2) * 10 + 20));
             $_SESSION[APP_KEY]['__filtres']=array();
             $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
             $_SESSION[APP_KEY]['__parametres_utilisateurs']=($sql1[__xva][0]['T0.chp_parametres_utilisateur'] !== '' ? json_decode($sql1[__xva][0]['T0.chp_parametres_utilisateur'],true) : array());
-            ajouterMessage('info',__LINE__.' connexion effectuée avec succes :-)');
+            ajouterMessage('info',__LINE__ . ' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
 
         }else{
@@ -103,9 +103,9 @@ if((isset($_POST)) && (count($_POST) > 0)){
               
             */
             supprimerLesValeursDeSession();
-            ajouterMessage('erreur',__LINE__.' la combinaison de l\'identifiant et du mot de passe est inconnue',BNF);
+            ajouterMessage('erreur',__LINE__ . ' la combinaison de l\'identifiant et du mot de passe est inconnue',BNF);
             sleep(2);
-            recharger_la_page(BNF.'?raz1');
+            recharger_la_page(BNF . '?raz1');
         }
 
 
@@ -245,6 +245,6 @@ if(myURL.indexOf('?raz1') >= 0 || myURL.indexOf('&raz1') >= 0){
 
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array( 'js_a_inclure' => array(), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
-$o1.=html_footer1($par);
+$o1 .= html_footer1($par);
 print($o1);
 $o1='';

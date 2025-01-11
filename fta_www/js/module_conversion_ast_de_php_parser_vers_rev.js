@@ -1389,7 +1389,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let obj=null;
         if(element.label === undefined && element.type === 'string'){
             if(element.value && Array.isArray(element.value)){
-                t='encapsulé('+element.raw+')';
+                t='encapsulé(' + element.raw + ')';
                 /*#
                   for( let i=0 ; i < element.value.length ; i++ ){
                       obj=this.#traite_element(element.value[i],niveau,element,tab_comm);
@@ -1411,7 +1411,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                           return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_encapsed  type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
                       }
                   }
-                */                
+                */
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1011 #traite_encapsed string type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
             }
@@ -2211,8 +2211,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1518 #traite_assign il manque un gauche ou un droite' ,"element" : element}));
         }
-        if(parent && parent.kind && parent.kind==='bin'){
-            t='('+t+')';
+        if(parent && parent.kind && parent.kind === 'bin'){
+            t='(' + t + ')';
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2637,7 +2637,6 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             t+=',';
             obj=this.#traite_element(element.arguments[i],niveau,element,tab_comm);
             if(obj.__xst === true){
-             
                 t+='p(' + obj.__xva + ')';
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element}));
@@ -2856,7 +2855,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             nullable='?';
         }
         if(element.isFinal){
-            finale='finale()'
+            finale='finale()';
         }
         if(element.isStatic){
             statique=',statique()';
@@ -2918,7 +2917,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1599 #traite_method nom' ,"element" : element}));
         }
-        t+='méthode(definition( nomm(' + nom_methode + ') ' + finale + abstraite + statique + les_arguments + visibility + type_retour +  ')' + contenu + ')';
+        t+='méthode(definition( nomm(' + nom_methode + ') ' + finale + abstraite + statique + les_arguments + visibility + type_retour + ')' + contenu + ')';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
