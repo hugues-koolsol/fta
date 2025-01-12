@@ -88,8 +88,9 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
 
 
     if($initialiser_session === true){
-
-        session_start();
+        if(session_status() === PHP_SESSION_NONE){
+            session_start();
+        }
 
     }
 

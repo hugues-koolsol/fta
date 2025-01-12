@@ -1705,6 +1705,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let nom_de_la_classe='';
         let super_classe='';
         let corps_de_la_classe='';
+        let etend='';
         if(element.id){
             if("Identifier" === element.id.type){
                 nom_de_la_classe=element.id.name;
@@ -1726,7 +1727,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1128 #traite_ClassDeclaration' ,"element" : element}));
             }
         }
-        t+='definition_de_classe(nom_classe(' + nom_de_la_classe + '),contenu(' + corps_de_la_classe + '))';
+        if(element.superClass){
+            if('Identifier' === element.superClass.type){
+                etend=',étend('+element.superClass.name+')'
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1734 #traite_ClassDeclaration "'+element.superClass.type+'"' ,"element" : element}));
+            }
+        }
+        t+='definition_de_classe(nom_classe(' + nom_de_la_classe + ')'+etend+',contenu(' + corps_de_la_classe + '))';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2142,6 +2150,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             case 'Identifier' : t+=element.name;
                 break;
             case 'Literal' :
+                
+
                 if(element.regex){
                     let leParam = '/' + element.regex.pattern + '/';
                     if(element.regex.flags){
@@ -2150,16 +2160,20 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     t+=leParam;
                 }else{
                     let valeur='';
-                    /* il faut traiter les valeurs entre quotes qui terminent par un \ */
-                    if(element.raw.indexOf('\\\n') >= 0){
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1744 #traite_element Literal veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
+                    if(parent && parent.type==='BlockStatement' && element.value==='use strict'){
+                        t+='useStrict()';
                     }else{
-                        valeur=element.raw;
-                    }
-                    if(niveau === 0){
-                        t+='directive(' + valeur + ')';
-                    }else{
-                        t+=valeur;
+                        /* il faut traiter les valeurs entre quotes qui terminent par un \ */
+                        if(element.raw.indexOf('\\\n') >= 0){
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1744 #traite_element Literal veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
+                        }else{
+                            valeur=element.raw;
+                        }
+                        if(niveau === 0){
+                            t+='directive(' + valeur + ')';
+                        }else{
+                            t+=valeur;
+                        }
                     }
                 }
                 break;
