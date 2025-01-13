@@ -1048,6 +1048,7 @@ class traitements_sur_html{
         var doctype='';
         var elementsJson={};
         var i=0;
+        var tableau_des_commentaires_js=[];
         try{
             var position_doctype = texteHtml.toUpperCase().indexOf('<!DOCTYPE');
             if(position_doctype >= 0){
@@ -1065,8 +1066,6 @@ class traitements_sur_html{
                 if(elementsJson.parfait === true){
                     supprimer_le_tag_html_et_head=false;
                 }else{
-                    /*
-                    */
                     var supprimer_le_tag_html_et_head=true;
                     if(texteHtml.indexOf('<html') >= 0){
                         supprimer_le_tag_html_et_head=false;
@@ -1087,8 +1086,10 @@ class traitements_sur_html{
                             var parseur_javascript=window.acorn.Parser;
                             for( var indjs=0 ; indjs < tableau_de_javascripts_a_convertir.length ; indjs++ ){
                                 try{
-                                    tabComment=[];
-                                    var obj0 = parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tabComment});
+                                    /*tabComment*/
+                                    tableau_des_commentaires_js=[];
+                                    
+                                    var obj0 = parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
                                 }catch(e){
                                     console.error('erreur de conversion js e=',e);
                                     if(e.pos){
@@ -1096,7 +1097,29 @@ class traitements_sur_html{
                                     }
                                     return(logerreur({"__xst" : false ,"__xme" : '1093 il y a un problème dans un source javascript'}));
                                 }
-                                var obj1 = TransformAstEnRev(obj0.body,0);
+                                if(tableau_des_commentaires_js.length>0){
+                                     /* 
+                                       il faut retirer les commentaires si ce sont des CDATA ou des <source_javascript_rev> 
+                                       car javascriptdanshtml les ajoute.
+                                     */
+                                     var commentaires_a_remplacer=[
+                                         '<![CDATA[' , ']]>' , '<source_javascript_rev>' , '</source_javascript_rev>'  
+                                     ]
+                                     for(var nn=0;nn<commentaires_a_remplacer.length;nn++){
+                                         for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
+                                             if(tableau_des_commentaires_js[indc].value.trim()===commentaires_a_remplacer[nn]){
+                                                 tableau_des_commentaires_js.splice(indc,1);
+                                             }
+                                         }
+                                     }
+                                     for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
+                                         if(tableau_des_commentaires_js[indc].value.trim()==='' && tableau_des_commentaires_js[indc].type==='Line'){
+                                             tableau_des_commentaires_js.splice(indc,1);
+                                         }
+                                     }
+                                }
+                                /* on transforme le ast du js en rev */
+                                var obj1 = __module_js_parseur1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
                                 if(obj1.__xst === true){
                                     /* puis on remplace la chaine */
                                     var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';

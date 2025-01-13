@@ -426,8 +426,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             var parseur_javascript=window.acorn.Parser;
             for( var i=0 ; i < globale_tableau_des_js2.length ; i++ ){
                 try{
-                    tabComment=[];
-                    var obj = parseur_javascript.parse(globale_tableau_des_js2[i].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tabComment});
+                    var tableau_des_commentaires_js=[];
+                    var obj = parseur_javascript.parse(globale_tableau_des_js2[i].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
                 }catch(e){
                     globale_tableau_des_js2=[];
                     return(logerreur({"__xst" : false ,"__xme" : '3770 il y a un problème dans un source javascript dans le php'}));
@@ -436,8 +436,35 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 if(obj === '' || obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
                     globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'');
                 }else{
-                    var obj0 = TransformAstEnRev(obj.body,0);
+                 
+                    if(tableau_des_commentaires_js.length>0){
+                         /* 
+                           il faut retirer le premier et le derniers commentaire si ce sont des CDATA ou des <source_javascript_rev> 
+                           car javascriptdanshtml les ajoute.
+                         */
+                         var commentaires_a_remplacer=[
+                             '<![CDATA[' , ']]>' , '<source_javascript_rev>' , '</source_javascript_rev>'  
+                         ]
+                         for(var nn=0;nn<commentaires_a_remplacer.length;nn++){
+                             for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
+                                 if(tableau_des_commentaires_js[indc].value.trim()===commentaires_a_remplacer[nn]){
+                                     tableau_des_commentaires_js.splice(indc,1);
+                                 }
+                             }
+                         }
+                         for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
+                             if(tableau_des_commentaires_js[indc].value.trim()==='' && tableau_des_commentaires_js[indc].type==='Line'){
+                                 tableau_des_commentaires_js.splice(indc,1);
+                             }
+                         }
+                         
+           
+                    }
+                    /* on transforme le ast du js en rev */
+                    var obj0 = __module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                     if(obj0.__xst === true){
+                     
+                     
                         globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
                     }else{
                         globale_tableau_des_js2=[];

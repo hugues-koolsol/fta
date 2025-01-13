@@ -103,29 +103,32 @@ function transform_text_area_Html_en_rev(nom_de_la_textarea,options){
   =====================================================================================================================
 */
 function chargerSourceDeTestHtml(){
-    var t=`<html lang="fr"><head>
-<title>Hello</title>
-</head>
-<body style="color:red;">
-<p>
-&lt;standars & poor's 2 tabulations entre les flèches =>		<=
-</p>
-  <div>
-    <a biza-rre href="www.example.com" style="color:red;" onclick="alert('1');alert(&quot;2&quot;)" class>test</a>
- <a href="www.example.com" style="" class>lien</a>
-
-  </div>
-<!-- commentaire html : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA -->
+    var t=`<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Hello</title>
+    </head>
+    <body style="color:red;">
+        <p>&lt;standars & poor's 2 tabulations entre les flèches =&gt;		&lt;=</p>
+        <div>
+            <a biza-rre="" href="www.example.com" style="color:red;" onclick="alert('1');alert(&quot;2&quot;)" class="">test</a>
+            <a href="www.example.com" style="" class="">lien</a>
+        </div>
+        <!-- commentaire html : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA -->
 <script>
 //<![CDATA[
+//<source_javascript_rev>
 /* commentaire javascript : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA */
 function monAlerte(a){
-  alert(a);
+    alert(a);
 }
 monAlerte(0);
+//</source_javascript_rev>
 //]]>
-</script>  
-</body></head>`;
+</script>
+
+    </body>
+</html>`;
     document.getElementById('txtar1').value=t;
 }
 /*

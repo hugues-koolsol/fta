@@ -6,13 +6,32 @@ $o1='';
 $o1=html_header1(array( 'title' => 'php ⇒ rev', 'description' => 'convertir un php en rev'));
 print($o1);
 $o1='';?>
+<div class="menuScroller">
+    <ul>
+        <li>
+            <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
+            &nbsp;
+        </li>
+        <li>
+            <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky htm strict</a>
+            &nbsp;
+        </li>
+        <li>
+            <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky conv htm</a>
+            &nbsp;
+        </li>
+        <li>
+            <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yysucces">php htm strict</a>
+            &nbsp;
+        </li>
+        <li>
+            <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">php conv htm</a>
+            &nbsp;
+        </li>
+    </ul>
+</div>
 <h1>Convertir un php en rev</h1>
 <div style="width:90%;">
-    <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
-    <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky htm strict</a>
-    <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky conv htm</a>
-    <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yysucces">php htm strict</a>
-    <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">php conv htm</a>
     <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar1&quot;,1)">aller à la ligne n°</a>
     <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
@@ -58,10 +77,12 @@ $par=array(/* éléments à passer au pied de page */
             'js/jslib/php-parser.js',
             'js/pour_traite_php.js'
         ),
-    'module_a_inclure' => array(/* */
+    'module_a_inclure' => array(
+            /* */
             'js/module_interface1.js',
             'js/module_html.js',
-            'js/module_conversion_ast_de_php_parser_vers_rev.js'
+            'js/module_conversion_ast_de_php_parser_vers_rev.js',
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

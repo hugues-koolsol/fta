@@ -160,7 +160,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                             lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
                         }
                     }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0722' ,"element" : element}));
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0163' ,"element" : element}));
                     }
                 }
             }
@@ -681,7 +681,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(obj.__xst === true){
                     nomVariable=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_VariableDeclaration' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0684 #traite_VariableDeclaration' ,"element" : element}));
                 }
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0387 #traite_VariableDeclaration' ,"element" : element}));
@@ -701,7 +701,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(obj.__xst === true){
                     t+=(debutDeclaration + obj.__xva) + ')';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0704 #traite_BinaryExpression' ,"element" : element}));
                 }
             }else{
                 t+=debutDeclaration + 'null())';
@@ -709,7 +709,118 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
+    
+    
+    /*
+      =============================================================================================================
+    */
+    #traite_ImportNamespaceSpecifier(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        if(element.local){
+            if( element.local.type==='Identifier'){
+                  t+='espace_de_noms('+element.local.name+')'
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0724 #traite_ImportDefaultSpecifier' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0727 #traite_ImportDefaultSpecifier' ,"element" : element}));
+        }
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_ImportDefaultSpecifier(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
 
+        if(element.local){
+            if( element.local.type==='Identifier'){
+                  t+='bibliotheque_par_défaut('+element.local.name+')'
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0742 #traite_ImportDefaultSpecifier' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0746 #traite_ImportDefaultSpecifier' ,"element" : element}));
+        }
+    
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_ImportSpecifier(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+
+        if(element.imported && element.local){
+            if( element.imported.type==='Identifier' && element.local.type==='Identifier'){
+                if(element.imported.name === element.local.name){
+                  t+='bibliotheque_spécifiée('+element.imported.name+')'
+                }else{
+                  t+='bibliotheque_spécifiée('+element.imported.name+','+element.local.name+')'
+                }
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element}));
+        }
+        /*
+          https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/import
+          import exportParDefaut from "nom-module";
+          import * as nom from "nom-module";
+          import { export1 } from "nom-module";
+          import { export1 as alias } from "nom-module";
+          import { export3 , export2 } from "nom-module";
+          import { export4 , export2 as alias2  } from "nom-module";
+          import exportParDefaut1, { export5  } from "nom-module";
+          import exportParDefaut2, * as nom2 from "nom-module";
+          import "nom-module";
+          import { toto , truc } from "nom-module/chemin/vers/fichier-non-exporte";
+          let promesse = import("nom-module");
+        */        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+    */
+    #traite_ImportDeclaration(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let source='';
+        let specifiers='';
+        if(element.source){
+            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                 source+=obj.__xva;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0767 #traite_ImportDeclaration' ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0798 #traite_ImportDeclaration' ,"element" : element}));
+        }
+        
+        if(element.specifiers){
+            for(let i=0;i<element.specifiers.length;i++){
+                obj=this.#traite_element(element.specifiers[i],niveau + 1,element.specifiers,tab_comm);
+                if(obj.__xst === true){
+                     specifiers+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0722 #traite_ImportDeclaration' ,"element" : element}));
+                }
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0738 #traite_ImportDeclaration' ,"element" : element}));
+        }
+        
+        t='importer('+specifiers+ ',provenance('+source+')'+')'
+        
+        
+
+        return({"__xst" : true ,"__xva" : t});
+    }
     /*
       =============================================================================================================
     */
@@ -721,7 +832,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(obj.__xst === true){
                 t+='...'+obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0740 #traite_SpreadElement' ,"element" : element}));
             }
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0721 #traite_RestElement' ,"element" : element}));
@@ -740,7 +851,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(obj.__xst === true){
                 t+='...'+obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0759 #traite_RestElement' ,"element" : element}));
             }
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0721 #traite_RestElement' ,"element" : element}));
@@ -1195,7 +1306,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             gauche=obj.__xva;
             obj=this.#traiteCondition1(element.right,niveau,element,tab_comm);
             if(obj.__xst === false){
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0767 #traite_LogicalExpression ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1234 #traite_LogicalExpression ' ,"element" : element}));
             }
             droite=obj.__xva;
             if('&&' === element.operator){
@@ -2555,9 +2666,47 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2496 #traite_element SpreadElement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2558 #traite_element SpreadElement ' ,"element" : element}));
                 }
                 break;
+                
+            case 'ImportDeclaration' :
+                obj=this.#traite_ImportDeclaration(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2567 #traite_element ImportDeclaration ' ,"element" : element}));
+                }
+                break;
+                
+            case 'ImportSpecifier' :
+                obj=this.#traite_ImportSpecifier(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2620 #traite_element ImportSpecifier ' ,"element" : element}));
+                }
+                break;
+                
+            case 'ImportDefaultSpecifier' :
+                obj=this.#traite_ImportDefaultSpecifier(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2674 #traite_element ImportDefaultSpecifier ' ,"element" : element}));
+                }
+                break;
+                
+                
+            case 'ImportNamespaceSpecifier' :
+                obj=this.#traite_ImportNamespaceSpecifier(element,niveau,parent,tab_comm);
+                if(obj.__xst === true){
+                    t+=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2703 #traite_element ImportNamespaceSpecifier ' ,"element" : element}));
+                }
+                break;
+                
                 
                 
             case 'BlockStatement' :

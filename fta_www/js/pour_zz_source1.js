@@ -99,6 +99,20 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
         var obj = __module_js_parseur1.traite_ast(obj.body,tabComment,{});
         if(obj.__xst === true){
             document.getElementById(chp_rev_source).value=obj.__xva;
+            
+            
+            var tableau1 = iterateCharacters2(obj.__xva);
+            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            if(matriceFonction.__xst === true){
+                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+                if(obj2.__xst === true){
+                    document.getElementById(chp_rev_source).value=obj2.__xva;
+                }
+            }else{
+                logerreur({"__xst" : false ,"__xme" : 'erreur rev'});
+            }
+            
+            
         }else{
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
         }
@@ -110,18 +124,6 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
             logerreur({"__xst" : false ,"__xme" : '0117 erreur dans un source javascript'});
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages','chp_genere_source');
-    }
-}
-/*
-  =====================================================================================================================
-*/
-function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn1(chp_genere_source,chp_rev_source){
-    __gi1.raz_des_messages();
-    var a = document.getElementById(chp_genere_source);
-    var obj = transform_source_js_en_rev_avec_acorn(a.value,{"nom_de_la_text_area_source" : chp_genere_source ,"nom_de_la_text_area_rev" : chp_rev_source});
-    if(obj.__xst === true){
-    }else{
-        astjs_logerreur({"__xst" : false ,"__xme" : '2446 erreur '});
     }
 }
 /*

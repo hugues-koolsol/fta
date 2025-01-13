@@ -206,6 +206,7 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 //<![CDATA[
 //<source_javascript_rev>
 "use strict";
+
 /*
   normalement j'évite de mettre du js dans du php mais pour l'exemple, je le fais ici
   car le js ci dessous est passe par l'étape rev 
@@ -213,8 +214,8 @@ if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY
 function verifier_formulaire_avant_envoi(){
     __gi1.raz_des_messages();
     var retour=false;
-    var zone_nom_de_connexion = document.getElementById('nom_de_connexion');
-    var zone_mot_de_passe = document.getElementById('mot_de_passe');
+    var zone_nom_de_connexion=document.getElementById('nom_de_connexion');
+    var zone_mot_de_passe=document.getElementById('mot_de_passe');
     try{
         if(zone_mot_de_passe.value == '' || zone_nom_de_connexion.value == ''){
             retour=false;

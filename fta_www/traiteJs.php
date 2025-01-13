@@ -13,10 +13,6 @@ $o1='';?>
             &nbsp;
         </li>
         <li>
-            <a href="javascript:bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2( 'txtar1' , 'txtar2' )" class="yysucces">convertir module acorn 2</a>
-            &nbsp;
-        </li>
-        <li>
             <a href="javascript:bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' )" class="yysucces">convertir module acorn 3</a>
             &nbsp;
         </li>
@@ -52,26 +48,28 @@ $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'))
 );
 $par=array(/* */
-    'js_a_inclure' => array(
-            'js/javascript.js',
-            'js/javascript.js',
-            'js/convertit-html-en-rev1.js',
-            'js/convertit-js-en-rev1.js',
-            'js/jslib/acorn.js'
+    'js_a_inclure' => array( 'js/javascript.js', 'js/convertit-html-en-rev1.js', 'js/convertit-js-en-rev1.js', 'js/jslib/acorn.js'),
+    'module_a_inclure' => array(/**/
+            'js/module_interface1.js',
+            'js/module_html.js',
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js'
         ),
-    'module_a_inclure' => array( 'js/module_interface1.js', 'js/module_html.js', 'js/module_conversion_ast_de_js_acorn_vers_rev.js'),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
-);
-$o1 .= '<script type="text/javascript">
-window.addEventListener(\'load\',function(){
-  
- setTimeout(function(){
-      chargerLeDernierSourceJs();
-      bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn2("txtar1","txtar2");
-  },100);
- }
-)
-</script>';
+);?>
+<script type="text/javascript">
+//<![CDATA[
+//<source_javascript_rev>
+window.addEventListener("load",function(){
+        setTimeout(function(){
+                chargerLeDernierSourceJs();
+                bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3("txtar1","txtar2");
+            },100);
+    });
+//</source_javascript_rev>
+//]]>
+</script>
+
+<?php
 $o1 .= html_footer1($par);
 print($o1);
 $o1='';
