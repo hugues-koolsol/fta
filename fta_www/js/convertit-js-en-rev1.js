@@ -3424,9 +3424,9 @@ function bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3(nom_de_l
     }catch(e){
         console.error('e=',e);
         if(e.pos){
-            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+            logerreur({"__xst" : false ,"__xme" : '3427 source js "'+e.message+'"' ,"plage" : [e.pos,e.pos]});
         }else{
-            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3443'});
+            logerreur({"__xst" : false ,"__xme" : '3429 source js "'+e.message+'"'});
         }
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');

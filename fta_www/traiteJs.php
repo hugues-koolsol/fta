@@ -62,7 +62,7 @@ $par=array(/* */
 window.addEventListener("load",function(){
         setTimeout(function(){
                 chargerLeDernierSourceJs();
-                bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3("txtar1","txtar2");
+//                bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3("txtar1","txtar2");
             },100);
     });
 //</source_javascript_rev>

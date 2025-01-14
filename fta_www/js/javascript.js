@@ -2064,7 +2064,12 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
     for( j=id + 1 ; j < l01 ; j=j=tab[j][12] ){
         if(tab[j][1] === 'nomf' && tab[j][2] === 'f'){
             positionAppelFonction=j;
-            if(tab[j][8] === 1 && tab[j+1][2] === 'c'){
+            if(tab[j][8] === 0 ){
+                /* 
+                  nom fonction vide 
+                  declare_variable( x0 , chainé( a.b , appelf( nomf() , p() ) )),
+                */
+            }else if(tab[j][8] === 1 && tab[j+1][2] === 'c'){
                 nomFonction=tab[j+1][1];
                 if(nomFonction === 'Array'){
                     nbEnfants=tab[tab[tab[j+1][7]][7]][8] - 1;
