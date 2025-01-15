@@ -90,8 +90,78 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     }
     /*
       =============================================================================================================
+      afr réécrire ce bord..
     */
     #traite_CallExpression(element,niveau,parent,tab_comm){
+        let t='';
+        let obj=null;
+        let les_arguments='';
+        let le_commentaire='';
+        let i=0;
+        let nom_de_la_fonction='';
+        let le_contenu='';
+        let auto_appelee='';
+        // f(a) => appelf( nomf(f) , p(a)),
+        
+        
+        if(element.arguments){
+            if(element.arguments.length > 0){
+                for( i=0 ; i < element.arguments.length ; i++ ){
+                    if(les_arguments!==''){
+                        les_arguments+=',';
+                    }
+                    le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
+                    obj = this.#traite_element(element.arguments[i],niveau + 1,element,tab_comm);
+                    if(obj.__xst === true){
+                        les_arguments+='p(' + le_commentaire + obj.__xva + ')';
+                    }else{
+                        return(astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
+                    }
+                }
+            }else{
+              les_arguments='p()';
+            }
+        }
+        if(element.callee){
+            obj = this.#traite_element(element.callee,niveau + 1,element,tab_comm);
+            if(obj.__xst === true){
+                nom_de_la_fonction+=obj.__xva;
+            }else{
+                return(astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
+            }
+            if(element.callee.params && element.arguments){
+               auto_appelee='auto_appelee(4),';
+            }
+            
+        }else{
+            return(astjs_logerreur({"__xst" : false ,"__xme" : '0125 traiteCallExpression1' ,"element" : element}));
+        }
+        
+        if(element.body){
+            obj = this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            if(obj.__xst === true){
+                if(obj.__xva !== ''){
+                    le_contenu=',contenu(' + contenu + ')';
+                }
+            }else{
+                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
+            }
+        }
+        
+        if(element.optional===true){
+            t+='chainé('+nom_de_la_fonction+' , appelf('+auto_appelee+'nomf()'+',' + les_arguments + le_contenu + '))';
+        }else{
+            t+='appelf('+auto_appelee+'nomf('+nom_de_la_fonction+')'+',' + les_arguments + le_contenu + ')';
+        }
+//        debugger
+        
+        return({"__xst" : true ,"__xva" : t});
+    }
+    /*
+      =============================================================================================================
+      afr réécrire ce bord..
+    */
+    #traite_CallExpression_ancien(element,niveau,parent,tab_comm){
         let t='';
         let auto_appelee='';
         let les_arguments='';
@@ -221,7 +291,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                             /* a[b](x) */
                             t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.name + ')))' + lesArguments + le_contenu + ')';
                         }else{
-                            t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
+                            debugger
+                            if(element.optional===true){
+                                if(lesArguments===''){
+                                  lesArguments=',p()'
+                                }
+                                t+='chainé(' + nom_de_la_fonction + ' , appelf( nomf()' + lesArguments + le_contenu + '))';
+                            }else{
+                                t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
+                            }
                         }
                     }else if(element.callee.object && element.callee.object.type === 'Literal'){
                         t+='appelf(element(' + element.callee.object.raw + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
@@ -253,7 +331,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         }else{
                             if(contenu === ''){
                                 if(element.callee.property.name){
-                                    laPropriete='prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + '))';
+                                    if(element.optional===true){
+                                        if(lesArguments===''){
+                                         lesArguments=',p()';
+                                        }
+                                        laPropriete='chainé(' + nom_de_la_fonction + ' , appelf( nomf() ' + lesArguments + '))';
+                                    }else{
+                                        laPropriete='prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + '))';
+                                    }
                                 }else if(element.callee.property.type === 'ConditionalExpression'){
                                     return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1235 ' ,"element" : element}));
                                 }
@@ -327,10 +412,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                      && element.callee.object.object.type === 'Identifier'
                      && element.callee.object.property.type === 'Identifier'
                     ){
-                        if(contenu === ''){
-                            t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + ')';
+                        if(element.optional===true){ // 
+                            t='chainé(' + obj1.__xva + ',' + laPropriete + ')';
                         }else{
-                            t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + ',contenu(' + contenu + '))';
+                            t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
                         }
                     }else{
                         /*
@@ -350,6 +435,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                             }
                         }else{
                             return(astjs_logerreur({"__xst" : false ,"__xme" : '1538 erreur dans traiteCallExpression1 ' + element.callee.property.type ,"element" : element}));
+                        }
+                    }else{
+                        if(element.optional===true){
+                           t='chainé(' + nom_de_l_objet + ',' + t + ')';
+                           debugger
+                        }else{
+                           debugger
                         }
                     }
                 }else if(element.callee.object.type === 'Literal'){
@@ -427,7 +519,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     }
                     t+='defTab(' + lesArguments + ')';
                 }else{
-                    t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + le_contenu + ')';
+                    if(element.optional===true){
+                        if(lesArguments===''){
+                          lesArguments=',p()';
+                        }
+                        t+='chainé( ' + element.callee.name + ' , appelf(nomf()' + lesArguments + laPropriete + le_contenu + '))';
+                    }else{
+                        t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + le_contenu + ')';
+                    }
                 }
             }else if(element.callee.type === 'CallExpression'){
                 var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
@@ -1120,6 +1219,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let propertyTxt='';
         let prop='';
         let valeur='';
+
         obj=this.#traite_element(element.object,niveau + 1,element,tab_comm);
         if(obj.__xst === true){
             valeur=obj.__xva;
@@ -1127,6 +1227,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0553 #traite_MemberExpression' ,"element" : element}));
         }
         if(element.computed === false){
+//            debugger
             if(element.property){
                 obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
                 if(obj.__xst === true){
@@ -1143,7 +1244,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         valeur=valeur.substr(0,valeur.length - 2) + '.' + prop + '))';
                         t=valeur;
                     }else{
-                        valeur=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + '))';
+                        if(element.optional==true){
+                            valeur='chainé(' + valeur.substr(0,valeur.length - 1) + '),' + prop + ')';
+                        }else{
+                            valeur=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + '))';
+                        }
                         t=valeur;
                     }
                 }else{
@@ -1151,10 +1256,19 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         if(valeur.substr(valeur.length - 2,1) === '('){
                             t+=valeur.substr(0,valeur.length - 1) + 'prop(' + prop + ')' + ')';
                         }else{
-                            t+=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + ')' + ')';
+                            if(element.optional===true){
+                                t+='chainé(' + valeur + ', ' +  prop + ')' ;
+                                debugger
+                            }else{
+                                t+=valeur.substr(0,valeur.length - 1) + ',prop(' + prop + ')' + ')';
+                            }
                         }
                     }else{
-                        t+=valeur + '.' + prop;
+                        if(element.optional===true){
+                            t+='chainé('+valeur + ',' + prop +')';
+                        }else{
+                            t+=valeur + '.' + prop;
+                        }
                     }
                 }
             }else{
@@ -1170,11 +1284,34 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
             if(prop === ''){
-                t+=valeur;
+                if(element.optional===true){
+                   debugger ; 
+                   /* que faut-il faire ici  ? */
+                   t+=valeur;
+                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1178 #traite_MemberExpression' ,"element" : element}));
+                }else{
+                   t+=valeur;
+                }
             }else{
+                /*  à priori c'est comme ça mais on va essayer de simplifier */
+                var tempo='tableau(nomt(' + valeur + '),p(' + prop + '))';
+                if(element.optional===true){
+                  tempo='chainé( ' + valeur + ' , tableau( nomt() , p(' + prop + ')))';
+                }
+                
                 if(element.object.type === 'Identifier' && element.property.type === 'Identifier'){
-                    t+=valeur + '[' + prop + ']';
+                    if(element.optional===true){
+                        
+                        t+='chainé('+valeur +','+ '[' + prop + '])';
+                        /* à verifier */
+                        debugger ;
+                    }else{
+                        t+=valeur + '[' + prop + ']';
+                    }
                 }else if(element.object.type === 'Identifier' || element.object.type === 'MemberExpression'){
+                 
+                    
+                    
                     if(prop.substr(0,5) === 'plus(' || prop.substr(0,6) === 'moins('){
                         /*
                           on essaie de mettre un arr(i+1)(j+1) à la place d'un                      
@@ -1192,26 +1329,39 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                              && obj_indice_tableau.__xva[3][2] === 'c'
                             ){
                                 if(prop.substr(0,5) === 'plus('){
-                                    t+='' + valeur + '[' + obj_indice_tableau.__xva[2][1] + '+' + obj_indice_tableau.__xva[3][1] + ']';
+                                    if(element.optional===true){
+                                        t+='chainé(' + valeur + ' , [' + obj_indice_tableau.__xva[2][1] + '+' + obj_indice_tableau.__xva[3][1] + '])';
+                                        debugger;
+                                        /* vérifier */
+                                        
+                                    }else{
+                                        t+='' + valeur + '[' + obj_indice_tableau.__xva[2][1] + '+' + obj_indice_tableau.__xva[3][1] + ']';
+                                    }
                                 }else if(prop.substr(0,6) === 'moins('){
                                     t+='' + valeur + '[' + obj_indice_tableau.__xva[2][1] + '-' + obj_indice_tableau.__xva[3][1] + ']';
                                 }else{
-                                    t+='tableau(nomt(' + valeur + '),p(' + prop + '))';
+                                    /* 'tableau(nomt(' + valeur + '),p(' + prop + '))'; */
+                                    t+=tempo ;
                                 }
                             }else{
-                                t+='tableau(nomt(' + valeur + '),p(' + prop + '))';
+                                /* 'tableau(nomt(' + valeur + '),p(' + prop + '))'; */
+                                t+=tempo ;
                             }
                         }else{
-                            t+='tableau(nomt(' + valeur + '),p(' + prop + '))';
+                            /* 'tableau(nomt(' + valeur + '),p(' + prop + '))'; */
+                            t+=tempo ;
                         }
                     }else{
-                        t+='tableau(nomt(' + valeur + '),p(' + prop + '))';
+                        /* 'tableau(nomt(' + valeur + '),p(' + prop + '))'; */
+                        t+=tempo ;
                     }
                 }else{
-                    t+='tableau(nomt(' + valeur + '),p(' + prop + '))';
+                    /* 'tableau(nomt(' + valeur + '),p(' + prop + '))'; */
+                    t+=tempo ;
                 }
             }
         }
+        
         if(t.substr(0,8) === 'tableau('){
             var o = functionToArray(t,true,false,'');
             if(o.__xst === true){
@@ -1559,29 +1709,125 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
           let  x4 = a ?. (b.c);
           let  x5 = b.c ?. e;
           let  x6 = b ?. e;
-          let  x7 = a ?. [[42]];
+          let  x7 = a ?. [42];
           let  x8 = a ?. ["b"];
           let  x9 = a.b ?. ();
           let x10 = a.b ?. c;
           let x11 = a.b ?. c.d();
-          let x12 = b.c ?. d ?.e;
+          let x12 = b.c ?. d ? .e;
           let x13 = a.b ?. c ?. ();
         */     
         let t='';
         let obj=null;
+        let gauche='';
+        let droite='';
         let objet="";
         let propriete='';
         
         if(!element.expression){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element}));
         }
+        
+        if(element.expression.type==='CallExpression'){
+
+
+            var les_arguments='';
+            if(element.expression.hasOwnProperty('arguments')){
+             
+                if(element.expression.arguments.length === 0){
+                    les_arguments='p()';
+                }else{
+                    for( let i=0 ; i < element.expression.arguments.length ; i++ ){
+                        var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
+                        var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm);
+                        if(obj1.__xst === true){
+                            if(les_arguments!==''){
+                                les_arguments+=',';
+                            }
+                            les_arguments+='p(' + le_commentaire + obj1.__xva + ')';
+                        }else{
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
+                        }
+                    }
+                }
+            }
+
+
+            obj=this.#traite_element( element.expression.callee , niveau + 1 , element , tab_comm );
+            if(obj.__xst===true){
+                gauche=obj.__xva;
+                if(gauche.substr(0,7)==='chainé('){
+
+                    obj=functionToArray(gauche,true,true,'');
+                    if(obj.__xst === true){
+                        var nouveauTableau=obj.__xva;
+                        
+                        var t1=a2F1(nouveauTableau,1,true,2,0,[],null,true);
+                        if(t1.__xst===true){
+                        }else{
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
+                        }
+                        
+                        var t2=a2F1(nouveauTableau,1,true,nouveauTableau[2][12],0,[],null,false);
+                        if(t2.__xst===true){
+                        }else{
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
+                        }
+                        t+='chainé('+t1.__xva+',appelf(nomf('+t2.__xva+')'+les_arguments+'))';
+                        
+                        
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
+                    }
+
+                 
+                 
+                }else{
+                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1739 #traite_ChainExpression' ,"element" : element}));
+                }
+            }else{
+              return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
+            }
+        }else if(element.expression.type==='MemberExpression'){
+         
+            debugger
+            element.expression.optional=false;
+            
+            obj=this.#traite_element( element.expression.object , niveau + 1 , element , tab_comm );
+            if(obj.__xst===true){
+                gauche=obj.__xva;
+            }else{
+              return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
+            }
+            
+            obj=this.#traite_element( element.expression.property , niveau + 1 , element , tab_comm );
+            if(obj.__xst===true){
+                droite=obj.__xva;
+            }else{
+              return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1752 #traite_ChainExpression' ,"element" : element}));
+            }
+            t+='chainé('+gauche+','+droite+')';
+            debugger         
+          
+        }else{
+           return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "'+element.expression.type+'"' ,"element" : element}));
+        }
+        
+        return({"__xst" : true ,"__xva" : t});
+        
+        
+        
         if(element.hasOwnProperty('optional') && element.optional!==false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1448 #traite_ChainExpression' ,"element" : element}));
         }
         if(element.expression.object && element.expression.object!==false){
             obj=this.#traite_chaineObject(element.expression.object,niveau,element.expression,tab_comm);
             if(obj.__xst === true){
-                 objet='chainé('+obj.objet+', '+obj.optionnel+')';
+                 if(obj.optionnel===''){
+                     objet=obj.objet;
+                 }else{
+                     objet='chainé('+obj.objet+', '+obj.optionnel+')';
+                 }
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1208 #traite_ChainExpression' ,"element" : element}));
             }
@@ -2217,7 +2463,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1739 #traite_MethodDefinition' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2429 #traite_MethodDefinition' ,"element" : element}));
                     }
                 }
             }
@@ -2539,9 +2785,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_element(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        if('ForStatement' === element.type){
-            /* debugger */
-        }
         t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
         switch (element.type){
             case 'Identifier' : t+=element.name;
@@ -3175,6 +3418,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let position_debut_bloc=0;
         let position_fin_bloc=0;
         let position_debut_element=null;
+        if(elem===null){
+           return t;
+        }
+        
         if(elem.start === undefined){
             /* on a probablement un tableau */
             if(Array.isArray(elem)){

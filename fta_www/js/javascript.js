@@ -1483,16 +1483,22 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
     for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
         if(tab[j][1] === 'nomt' && tab[j][2] === 'f'){
             positionAppelTableau=j;
-            var obj1 = js_traiteInstruction1(tab,niveau,j + 1);
-            if(obj1.__xst === true){
-                nomTableau=obj1.__xva;
+            debugger
+            if(tab[j][8]===0){
+                /* le nom tableau peut être vide dans le cas ou on a a ?. [b]*/
+                nomTableau='';
             }else{
-                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '864 js_traiteTableau1 nomt'}));
+                var obj1 = js_traiteInstruction1(tab,niveau,j + 1);
+                if(obj1.__xst === true){
+                    nomTableau=obj1.__xva;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '864 js_traiteTableau1 nomt'}));
+                }
             }
             break;
         }
     }
-    if(positionAppelTableau > 0 && nomTableau !== ''){
+    if(positionAppelTableau > 0 ){
         for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
             if(tab[j][2] === 'f'){
                 if(tab[j][1] === 'nomt' || tab[j][1] === 'p' || tab[j][1] === '#' || tab[j][1] === 'prop'){
@@ -1823,6 +1829,7 @@ function js_traiteInstruction1(tab,niveau,id){
                     }
                     t+='' + obj.__xva;
                 }else{
+                    
                     return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1412 js_traiteInstruction1 "' + tab[id][1] + '"' }));
                 }
                 
@@ -2098,10 +2105,17 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                 }else{
                     logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2349 erreur sur appel de tableau "' + tab[j][1] + '"'});
                 }
-            }else if(tab[j+1][1] === 'testEnLigne' && tab[j+1][2] === 'f'){
+            }else if(tab[j+1][2] === 'f' && ( tab[j+1][1] === 'testEnLigne') ){
                 var objTableau = js_traiteInstruction1(tab,niveau,j + 1);
                 if(objTableau.__xst === true){
                     nomFonction='(' + objTableau.__xva + ')';
+                }else{
+                    logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2401 erreur sur test en ligne "' + tab[j][1] + '"'});
+                }
+            }else if(tab[j+1][2] === 'f' && ( tab[j+1][1] === 'chainé') ){
+                var objTableau = js_traiteInstruction1(tab,niveau,j + 1);
+                if(objTableau.__xst === true){
+                    nomFonction=objTableau.__xva;
                 }else{
                     logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '2401 erreur sur test en ligne "' + tab[j][1] + '"'});
                 }
