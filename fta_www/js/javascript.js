@@ -945,7 +945,11 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     if(obj.__xva===''){
                         t+=debut+ terminateur;
                     }else{
-                        t+=debut+'='+obj.__xva + terminateur;
+                        if(obj.__xva.endsWith(';') && terminateur===';'){
+                            t+=debut+'='+obj.__xva ;
+                        }else{
+                            t+=debut+'='+obj.__xva + terminateur;
+                        }
                     }
                 }else{
                     logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '0937 js_tabTojavascript1 "' + tab[tabdeclare[1][0]][1] + '"'});
@@ -1027,7 +1031,12 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
             if(tab[i+1][8] === 0 && tab[i+1][2] === 'c'){
                 t+='delete ' + tab[i+1][1] + '' + terminateur;
             }else{
-                return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur dans supprimer 0955'}));
+                var objtestLi = js_traiteInstruction1(tab,niveau,i+1);
+                if(objtestLi.__xst === true){
+                    t+='delete ' + objtestLi.__xva + '' + terminateur;
+                }else{
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur dans supprimer 0955'}));
+                }
             }
         }else if(tab[i][1] === 'new' && tab[i][2] === 'f'){
             var obj = js_traite_new(tab,id,niveau);
@@ -1483,7 +1492,7 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
     for( j=i + 1 ; j < l01 ; j=tab[j][12] ){
         if(tab[j][1] === 'nomt' && tab[j][2] === 'f'){
             positionAppelTableau=j;
-            debugger
+
             if(tab[j][8]===0){
                 /* le nom tableau peut être vide dans le cas ou on a a ?. [b]*/
                 nomTableau='';
@@ -1597,6 +1606,7 @@ function js_traiteTableau1(tab,i,dansConditionOuDansFonction,niveau,recursif){
 function js_traite_new(tab,id,niveau){
     var valeur='';
     var props='';
+    var t='';
     var l01=tab.length;
     for( var i = id + 1 ; i < l01 ; i=tab[i][12] ){
         if(tab[i][2] === 'c'){
@@ -1641,7 +1651,12 @@ function js_traite_new(tab,id,niveau){
     if(valeur + props === '[]'){
         return({"__xst" : true ,"__xva" : '[]'});
     }else{
-        return({"__xst" : true ,"__xva" : 'new ' + valeur + props});
+        if(props!==''){
+         t='(new ' + valeur +')'+ props;
+        }else{
+         t='new ' + valeur;
+        }
+        return({"__xst" : true ,"__xva" : t });
     }
 }
 /*
@@ -2176,7 +2191,11 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     }else{
                         var objinst = js_traiteInstruction1(tab,niveau,j + 1);
                         if(objinst.__xst === true){
-                            nomElement='(' + objinst.__xva + ')';
+                            if(tab[j+1][2]==='f' && (tab[j+1][1]==='concat' || tab[j+1][1]==='plus' )){
+                                nomElement='('+objinst.__xva+')';
+                            }else{
+                                nomElement=objinst.__xva;
+                            }
                         }else{
                             debugger;
                             return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : 'element incorrecte dans appelf 1954 '}));
@@ -2386,6 +2405,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     'codePointAt',
                     'concat',
                     'endsWith',
+                    'forEach',
                     'fromCharCode',
                     'fromCodePoint',
                     'getAttribute',
@@ -2397,6 +2417,7 @@ function js_traiteAppelFonction(tab,id,dansConditionOuDansFonction,niveau,recurs
                     'isWellFormed',
                     'lastIndexOf',
                     'localeCompare',
+                    'map',
                     'match',
                     'matchAll',
                     'normalize',
@@ -2838,7 +2859,11 @@ function TraiteOperations2(tab,id,niveau,niveauOp){
                                     t+=operateur_principal + objOperation.__xva;
                                 }
                             }else{
-                                t+=operateur_principal + '(' + objOperation.__xva + ')';
+                                if(operateur_principal === 'typeof '){
+                                    t+=operateur_principal + objOperation.__xva ;
+                                }else{
+                                    t+=operateur_principal + '(' + objOperation.__xva + ')';
+                                }
                             }
                         }
                     }

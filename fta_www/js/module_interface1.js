@@ -618,7 +618,7 @@ class interface1{
         var lstb1 = refBody.getElementsByTagName('button');
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!(lstb1[i].onclick)){
-                if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
                     lstb1[i].style.visibility="";
                 }
@@ -627,9 +627,9 @@ class interface1{
         var lstb1 = refBody.getElementsByTagName('input');
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!(lstb1[i].onclick)){
-                if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if( lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
-                    if(lstb1[i].type === 'submit'){
+                    if( lstb1[i].type === 'submit'){
                         lstb1[i].style.visibility="";
                     }
                 }
@@ -637,7 +637,7 @@ class interface1{
         }
         var lsta1 = refBody.getElementsByTagName('a');
         for( i=0 ; i < lsta1.length ; i++ ){
-            if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+            if(lsta1[i].hasOwnProperty('className') && lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
             }else{
                 lsta1[i].classList.remove("yyunset_temporaire");
                 if(__gi1.reference_bouton_attendre === lsta1[i]){

@@ -5,9 +5,13 @@
  * @license MIT
 */
 (function(global,factory){
-        typeof exports === 'object' && typeof module !== 'undefined' ? ( module.exports=factory() ) : ( (typeof define === 'function' && define.amd ? ( define(factory) ) : ( global=global || self , global.Sortable=factory() )) );
+        typeof exports === 'object' && typeof module !== 'undefined' ? 
+          ( module.exports=factory() ) 
+        : ( 
+                typeof define === 'function' && define.amd ? ( define(factory) ) : ( global=global || self , global.Sortable=factory() ) 
+        );
 })(this,function(){
-    "use strict"
+        "use strict";
         function ownKeys(object,enumerableOnly){
             var keys = Object.keys(object);
             if(Object.getOwnPropertySymbols){
@@ -614,7 +618,7 @@
             rect.y=rect.top;
             return rect;
         }
-        var expando = 'Sortable' + (new Date().getTime());
+        var expando='Sortable' + new Date().getTime();
         function AnimationStateManager(){
             var animationStates=[];
             var animationCallbackId;
@@ -1208,7 +1212,11 @@
             
             } ,
             "_getDirection" : function _getDirection(evt,target){
-                return(typeof this.options.direction === 'function' ? ( this.options.direction.call(this,evt,target,dragEl) ) : ( this.options.direction ));
+                return(typeof this.options.direction === 'function' ? 
+                  ( 
+                        this.options.direction.call(this,evt,target,dragEl) ) 
+                : ( this.options.direction 
+                ));
             
             } ,
             "_onTapStart" : function _onTapStart( /*  Event|TouchEvent  */ evt){
@@ -1467,8 +1475,16 @@
                     var scaleX = ghostEl && ghostMatrix && ghostMatrix.a;
                     var scaleY = ghostEl && ghostMatrix && ghostMatrix.d;
                     var relativeScrollOffset = PositionGhostAbsolutely && ghostRelativeParent && getRelativeScrollOffset(ghostRelativeParent);
-                    var dx = (touch.clientX - tapEvt.clientX + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ? ( relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] ) : ( 0 )) / (scaleX || 1);
-                    var dy = (touch.clientY - tapEvt.clientY + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ? ( relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] ) : ( 0 )) / (scaleY || 1);
+                    var dx = (touch.clientX - tapEvt.clientX + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ? 
+                      ( 
+                            relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] ) 
+                    : ( 0 
+                      )) / (scaleX || 1);
+                    var dy = (touch.clientY - tapEvt.clientY + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ? 
+                      ( 
+                            relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] ) 
+                    : ( 0 
+                      )) / (scaleY || 1);
                     if(!(Sortable.active) && !(awaitingDragStarted)){
                         if(fallbackTolerance
                          && Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) < fallbackTolerance
@@ -1718,13 +1734,11 @@
                     return(completed(false));
                 }
                 ignoreNextClick=false;
-                if(activeSortable
-                 && !(options.disabled)
-                 && (isOwner ? ( canSort
-                 || (revert=parentEl !== rootEl) ) : ( putSortable === this
-                 || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt))
-                 && group.checkPut(this,activeSortable,dragEl,evt) ))
-                ){
+                if(activeSortable && !(options.disabled) && (isOwner ? 
+                   ( canSort || (revert=parentEl !== rootEl) ) 
+                 : ( 
+                         putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt) 
+                ))){
                     vertical=this._getDirection(evt,target) === 'vertical';
                     dragRect=getRect(dragEl);
                     dragOverEvent('dragOverValid');
@@ -2164,13 +2178,23 @@
             var firstElRect = getRect(getChild(sortable.el,0,sortable.options,true));
             var childContainingRect = getChildContainingRectFromElement(sortable.el,sortable.options,ghostEl);
             var spacer=10;
-            return(vertical ? ( evt.clientX < childContainingRect.left - spacer || evt.clientY < firstElRect.top && evt.clientX < firstElRect.right ) : ( evt.clientY < childContainingRect.top - spacer || evt.clientY < firstElRect.bottom && evt.clientX < firstElRect.left ));
+            return(vertical ? 
+              ( 
+                    evt.clientX < childContainingRect.left - spacer || evt.clientY < firstElRect.top && evt.clientX < firstElRect.right ) 
+            : (     
+                    evt.clientY < childContainingRect.top - spacer || evt.clientY < firstElRect.bottom && evt.clientX < firstElRect.left 
+            ));
         }
         function _ghostIsLast(evt,vertical,sortable){
             var lastElRect = getRect(lastChild(sortable.el,sortable.options.draggable));
             var childContainingRect = getChildContainingRectFromElement(sortable.el,sortable.options,ghostEl);
             var spacer=10;
-            return(vertical ? ( evt.clientX > childContainingRect.right + spacer || evt.clientY > lastElRect.bottom && evt.clientX > lastElRect.left ) : ( evt.clientY > childContainingRect.bottom + spacer || evt.clientX > lastElRect.right && evt.clientY > lastElRect.top ));
+            return(vertical ? 
+              ( 
+                    evt.clientX > childContainingRect.right + spacer || evt.clientY > lastElRect.bottom && evt.clientX > lastElRect.left ) 
+            : ( 
+                    evt.clientY > childContainingRect.bottom + spacer || evt.clientX > lastElRect.right && evt.clientY > lastElRect.top 
+            ));
         }
         function _getSwapDirection(evt,target,targetRect,vertical,swapThreshold,invertedSwapThreshold,invertSwap,isLastTarget){
             var mouseOnAxis = vertical ? ( evt.clientY ) : ( evt.clientX );
@@ -2180,9 +2204,11 @@
             var invert=false;
             if(!(invertSwap)){
                 if(isLastTarget && targetMoveDistance < targetLength * swapThreshold){
-                    if(!(pastFirstInvertThresh)
-                     && (lastDirection === 1 ? ( (mouseOnAxis > targetS1 + targetLength * invertedSwapThreshold / 2) ) : ( (mouseOnAxis < targetS2 - targetLength * invertedSwapThreshold / 2) ))
-                    ){
+                    if(!(pastFirstInvertThresh) && (lastDirection === 1 ? 
+                      ( 
+                               (mouseOnAxis > targetS1 + targetLength * invertedSwapThreshold / 2) ) 
+                    : (        (mouseOnAxis < targetS2 - targetLength * invertedSwapThreshold / 2) 
+                    ))){
                         pastFirstInvertThresh=true;
                     }
                     if(!(pastFirstInvertThresh)){
