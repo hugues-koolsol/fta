@@ -41,14 +41,14 @@ function convertSource(objMatSrc){
             if(objMatSrc.__xva[i][1] == ''){
                 for( var j=i ; j < objMatSrc.__xva.length ; j++ ){
                     if(objMatSrc.__xva[j][7] == objMatSrc.__xva[i][0] && objMatSrc.__xva[i][8] >= 2){
-                        if(objMatSrc.__xva[j][1] == 'file_name' && objMatSrc.__xva[j+1][1] != ''){
-                            file_name=objMatSrc.__xva[j+1][1];
+                        if(objMatSrc.__xva[j][1] == 'file_name' && objMatSrc.__xva[j + 1][1] != ''){
+                            file_name=objMatSrc.__xva[j + 1][1];
                         }
-                        if(objMatSrc.__xva[j][1] == 'file_extension' && objMatSrc.__xva[j+1][1] != ''){
-                            file_extension=objMatSrc.__xva[j+1][1];
+                        if(objMatSrc.__xva[j][1] == 'file_extension' && objMatSrc.__xva[j + 1][1] != ''){
+                            file_extension=objMatSrc.__xva[j + 1][1];
                         }
-                        if(objMatSrc.__xva[j][1] == 'file_path' && objMatSrc.__xva[j+1][1] != ''){
-                            file_path=objMatSrc.__xva[j+1][1];
+                        if(objMatSrc.__xva[j][1] == 'file_path' && objMatSrc.__xva[j + 1][1] != ''){
+                            file_path=objMatSrc.__xva[j + 1][1];
                         }
                     }
                 }
@@ -74,14 +74,14 @@ function convertSource(objMatSrc){
          && objMatSrc.__xva[i][1] == 'concatFichier'
          && objMatSrc.__xva[i][8] == 1
         ){
-            tabConcatFichier.push(objMatSrc.__xva[i+1][1]);
+            tabConcatFichier.push(objMatSrc.__xva[i + 1][1]);
         }
     }
     var t='';
     if(file_name != '' && file_path != '' && idJs > 0){
         if(type_source == 'src_php' && file_extension == 'php'){
             var baliseHtmlOuPhpTrouvee=false;
-            for( var i = idJs + 1 ; i < objMatSrc.__xva.length ; i++ ){
+            for( var i=idJs + 1 ; i < objMatSrc.__xva.length ; i++ ){
                 if(objMatSrc.__xva[i][7] == idJs && objMatSrc.__xva[i][1] == 'php'){
                     baliseHtmlOuPhpTrouvee=true;
                     php_contexte_commentaire_html=false;
@@ -195,7 +195,7 @@ function sauvegardeTexteSource(){
     var c='';
     var obj={};
     if(document.getElementById('sauvegarderLeNormalise').getAttribute('data-fichiertexte') != ''){
-        var nomDuSource = document.getElementById('nomDuSource').value;
+        var nomDuSource=document.getElementById('nomDuSource').value;
         for( i=0 ; i < nomDuSource.length ; i=i + 1 ){
             c=nomDuSource.substr(i,1);
             if(c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|'){
@@ -216,7 +216,7 @@ function sauvegardeTexteSource(){
                 if(donnees.__xst === true){
                     logerreur({"__xst" : true ,"__xme" : '👍 fichier sauvegardé'});
                 }
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource')
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
             });
         document.getElementById('sauvegarderLeNormalise').disabled=true;
         document.getElementById('nomDuSource').disabled=true;
@@ -240,8 +240,8 @@ function reprendreEtRecompiler(){
 */
 function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommentairesOK){
     var lienReprendre='<div class="yyinfo">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre</a> </div>';
-    var tab1 = (document.getElementById(zoneSource).value).split('\n');
-    var tab2 = (document.getElementById(zoneNormalisee).value).split('\n');
+    var tab1=document.getElementById(zoneSource).value.split('\n');
+    var tab2=document.getElementById(zoneNormalisee).value.split('\n');
     if(tab1.length == tab2.length){
         var i=0;
         for( i=0 ; i < tab1.length ; i=i + 1 ){
@@ -281,7 +281,7 @@ function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommen
   =====================================================================================================================
 */
 function memeHauteur(normalise,source){
-    var bou = document.getElementById(source).getBoundingClientRect();
+    var bou=document.getElementById(source).getBoundingClientRect();
     document.getElementById(normalise).style.height=bou.height + 'px';
 }
 /*
@@ -289,7 +289,7 @@ function memeHauteur(normalise,source){
 */
 function ajusteTailleTextareaContenantSource(normalise){
     try{
-        var tab = (document.getElementById(normalise).value).split('\n');
+        var tab=document.getElementById(normalise).value.split('\n');
         var largeur=0;
         var i=0;
         for( i=0 ; i < tab.length ; i=i + 1 ){
@@ -357,42 +357,42 @@ function enregistrer2(){
     document.getElementById('nomDuSource').disabled=true;
     __gi1.raz_des_messages();
     document.getElementById('arrayed').innerHTML='';
-    var zonedonneesComplementaires = document.getElementById('donneesComplementaires');
+    var zonedonneesComplementaires=document.getElementById('donneesComplementaires');
     zonedonneesComplementaires.innerHTML='';
-    var a = document.getElementById('zonesource');
-    var startMicro = performance.now();
-    var tableau1 = iterateCharacters2(a.value);
+    var a=document.getElementById('zonesource');
+    var startMicro=performance.now();
+    var tableau1=iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
-    var endMicro = performance.now();
+    var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-    var startMicro = performance.now();
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
-    var endMicro = performance.now();
+    var startMicro=performance.now();
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    var endMicro=performance.now();
     console.log('analyse syntaxique et mise en matrice endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     global_messages.data.matrice=matriceFonction;
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.__xst === true){
-        var startMicro = performance.now();
-        var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true);
-        var endMicro = performance.now();
+        var startMicro=performance.now();
+        var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.__xva,true);
+        var endMicro=performance.now();
         console.log('reconstitution du source endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-        var diResultatsCompactes = document.createElement('pre');
+        var diResultatsCompactes=document.createElement('pre');
         if(fonctionReecriteAvecRetour1.__xst === true){
             document.getElementById('normalise').value=fonctionReecriteAvecRetour1.__xva;
             ajusteTailleTextareaContenantSource('normalise');
             memeHauteur('normalise','zonesource');
-            var startMicro = performance.now();
-            var compacteOriginal = arrayToFunct1(matriceFonction.__xva,false,false);
-            var tableau2 = iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
-            var matriceDeLaFonctionReecrite = functionToArray2(tableau2.out,true,false,'');
-            var compacteReecrit = arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
-            var endMicro = performance.now();
+            var startMicro=performance.now();
+            var compacteOriginal=arrayToFunct1(matriceFonction.__xva,false,false);
+            var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
+            var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,'');
+            var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
+            var endMicro=performance.now();
             console.log('comparaison des compactés=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
             if(compacteOriginal.__xst == true && compacteReecrit.__xst === true){
                 if(compacteOriginal.__xva == compacteReecrit.__xva){
                     sourcesCompactesIdentiques=true;
                     logerreur({"__xst" : true ,"__xme" : '<b>👍 sources compactés Egaux</b>'});
-                    var conversion = convertSource(matriceFonction);
+                    var conversion=convertSource(matriceFonction);
                 }else{
                     logerreur({"__xst" : false ,"__xme" : 'sources compactés différents'});
                     diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
@@ -403,7 +403,7 @@ function enregistrer2(){
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
             }
-            var fonctionReecriteAvecRetour1 = arrayToFunct1(matriceFonction.__xva,true,false);
+            var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.__xva,true,false);
         }else{
             diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">Erreur de réécriture du source original</b>';
         }
@@ -430,7 +430,7 @@ function enregistrer2(){
                             }else{
                                 logerreur({"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'});
                             }
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource')
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
                         });
                 }
             }else{
@@ -441,38 +441,38 @@ function enregistrer2(){
             }
         }
     }
-    var lienVoitTableau = document.createElement('a');
+    var lienVoitTableau=document.createElement('a');
     lienVoitTableau.innerHTML='Voir tableau';
     lienVoitTableau.href='javascript:voirTableau1(0)';
     lienVoitTableau.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
     zonedonneesComplementaires.appendChild(lienVoitTableau);
-    var lienVoitMatrice = document.createElement('a');
+    var lienVoitMatrice=document.createElement('a');
     lienVoitMatrice.innerHTML='Voir matrice';
     lienVoitMatrice.href='javascript:voirMatrice1(0)';
     lienVoitMatrice.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
     zonedonneesComplementaires.appendChild(lienVoitMatrice);
     if(conversion.__xst == true){
-        var lienVoitSourceGenere = document.createElement('a');
+        var lienVoitSourceGenere=document.createElement('a');
         lienVoitSourceGenere.innerHTML='Voir source généré';
         lienVoitSourceGenere.href='javascript:voirSourceGenere(0)';
         lienVoitSourceGenere.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
         zonedonneesComplementaires.appendChild(lienVoitSourceGenere);
     }
-    var zoneContenantLeTableauCaracteres = document.createElement('div');
+    var zoneContenantLeTableauCaracteres=document.createElement('div');
     zoneContenantLeTableauCaracteres.style.display='none';
     zoneContenantLeTableauCaracteres.id='zoneContenantLeTableauCaracteres';
     zonedonneesComplementaires.appendChild(zoneContenantLeTableauCaracteres);
-    var zoneContenantLaMatrice = document.createElement('div');
+    var zoneContenantLaMatrice=document.createElement('div');
     zoneContenantLaMatrice.style.display='none';
     zoneContenantLaMatrice.id='zoneContenantLaMatrice';
     zoneContenantLaMatrice.className='tableau1';
     zonedonneesComplementaires.appendChild(zoneContenantLaMatrice);
     if(conversion.__xst == true){
-        var zoneContenantLeSourceGenere = document.createElement('div');
+        var zoneContenantLeSourceGenere=document.createElement('div');
         zoneContenantLeSourceGenere.style.display='none';
         zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
-        var zoneContenantLeSourceGenere2 = document.createElement('textarea');
+        var zoneContenantLeSourceGenere2=document.createElement('textarea');
         zoneContenantLeSourceGenere2.rows=30;
         zoneContenantLeSourceGenere2.cols=120;
         zoneContenantLeSourceGenere2.style.background='lightcyan';
@@ -487,9 +487,9 @@ function enregistrer2(){
   =====================================================================================================================
 */
 function voirSourceGenere(){
-    var zoneContenantLeSourceGenere = document.getElementById('zoneContenantLeSourceGenere');
+    var zoneContenantLeSourceGenere=document.getElementById('zoneContenantLeSourceGenere');
     if(zoneContenantLeSourceGenere && zoneContenantLeSourceGenere.innerHTML == ''){
-        var zoneSourceGenere = document.createElement('pre');
+        var zoneSourceGenere=document.createElement('pre');
         zoneSourceGenere.style.fontSize='0.8em';
         zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('<','&gt;').replaceAll('"','&quot;');
         zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
@@ -508,9 +508,9 @@ function voirSourceGenere(){
   =====================================================================================================================
 */
 function voirMatrice1(){
-    var zoneContenantLaMatrice = document.getElementById('zoneContenantLaMatrice');
+    var zoneContenantLaMatrice=document.getElementById('zoneContenantLaMatrice');
     if(zoneContenantLaMatrice && document.getElementById('zoneContenantLaMatrice').innerHTML == ''){
-        var zoneMatrice = document.createElement('table');
+        var zoneMatrice=document.createElement('table');
         ConstruitHtmlMatrice(zoneMatrice,global_messages.data.matrice);
         zoneContenantLaMatrice.appendChild(zoneMatrice);
         zoneContenantLaMatrice.style.display='';
@@ -526,9 +526,9 @@ function voirMatrice1(){
   =====================================================================================================================
 */
 function voirTableau1(){
-    var zoneContenantLeTableauCaracteres = document.getElementById('zoneContenantLeTableauCaracteres');
+    var zoneContenantLeTableauCaracteres=document.getElementById('zoneContenantLeTableauCaracteres');
     if(zoneContenantLeTableauCaracteres && document.getElementById('zoneContenantLeTableauCaracteres').innerHTML == ''){
-        var zoneTableauCaracteres = document.createElement('table');
+        var zoneTableauCaracteres=document.createElement('table');
         ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,'',global_messages.data.tableau);
         zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);
         zoneContenantLeTableauCaracteres.style.display='';
@@ -556,7 +556,7 @@ function chargerFichierRev(nomFichierSource){
     charger_fichier_rev1('za_ajax.php?charger_un_ficher_rev',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
                 localStorage.setItem("fta_dernier_fichier_charge",donnees.__entree.file_name);
-                var zoneSource = document.getElementById('zonesource');
+                var zoneSource=document.getElementById('zonesource');
                 zoneSource.value=donnees.__xva;
                 ajusteTailleTextareaContenantSource('zonesource');
                 document.getElementById('sauvegarderLeNormalise').disabled=true;
@@ -582,7 +582,7 @@ function initialisation_page_rev(par){
     var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
     charger_la_liste_des_sources1('za_ajax.php?getRevFiles',ajax_param).then((donnees) => {
             if(donnees.__xst == true){
-                var fta_dernier_fichier_charge = localStorage.getItem('fta_dernier_fichier_charge');
+                var fta_dernier_fichier_charge=localStorage.getItem('fta_dernier_fichier_charge');
                 var trouve='';
                 var t='';
                 var idFile={};

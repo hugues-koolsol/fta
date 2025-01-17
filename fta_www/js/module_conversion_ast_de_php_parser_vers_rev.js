@@ -36,6 +36,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         var obj=null;
         var nomFonction='';
         var les_parametres='';
+        let les_arguments_courts='';
         obj=this.#traite_commentaires_debut(element,niveau,parent,tab_comm);
         if(obj.__xst === true){
             t+=obj.__xva;
@@ -52,6 +53,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             obj=this.#traite_parametres(element,niveau,element,tab_comm);
             if(obj.__xst === true){
                 les_parametres+=obj.__xva;
+                les_arguments_courts=obj.les_arguments_courts;
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0051  #traite_call' ,"element" : element.what}));
             }
@@ -71,7 +73,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }else{
-            t+=this.#remplace_nom_fonction1(nomFonction,les_parametres);
+            if(nomFonction==='sql_inclure_reference'){
+                t+='sql_inclure_reference('+les_arguments_courts+')';
+            }else{
+                t+=this.#remplace_nom_fonction1(nomFonction,les_parametres);
+            }
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -80,13 +86,13 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     */
     #remplace_nom_fonction2(nomFonction,les_parametres){
         let t='';
-        var tableau1 = iterateCharacters2(nomFonction);
-        var o = functionToArray2(tableau1.out,false,true,'');
+        var tableau1=iterateCharacters2(nomFonction);
+        var o=functionToArray2(tableau1.out,false,true,'');
         if(o.__xst === true){
             if(o.__xva[0][8] === 1 && o.__xva[1][1] === 'propriete' && o.__xva[1][2] === 'f' && o.__xva[1][8] === 2){
                 var _l_element='';
                 for( var j=2 ; j < o.__xva.length ; j=o.__xva[j][12] ){
-                    var tt = a2F1(o.__xva,1,false,j,o.__xva[1][10],[],null,true);
+                    var tt=a2F1(o.__xva,1,false,j,o.__xva[1][10],[],null,true);
                     if(tt.__xst === true){
                         if(_l_element == ''){
                             _l_element=tt.__xva;
@@ -126,13 +132,13 @@ class module_conversion_ast_de_php_parser_vers_rev1{
               getAttributes)"
               
             */
-            var tableau1 = iterateCharacters2(nomFonction);
-            var o = functionToArray2(tableau1.out,false,true,'');
+            var tableau1=iterateCharacters2(nomFonction);
+            var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
                 if(o.__xva[0][8] === 1 && o.__xva[1][1] === 'propriete' && o.__xva[1][2] === 'f' && o.__xva[1][8] === 2){
                     var _l_element='';
                     for( var j=2 ; j < o.__xva.length ; j=o.__xva[j][12] ){
-                        var tt = a2F1(o.__xva,1,false,j,o.__xva[1][10],[],null,true);
+                        var tt=a2F1(o.__xva,1,false,j,o.__xva[1][10],[],null,true);
                         if(tt.__xst === true){
                             if(_l_element == ''){
                                 _l_element=tt.__xva;
@@ -198,7 +204,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let t='';
         var obj=null;
         var cible='';
-        var obj = this.#traite_element(element.target,niveau,element,tab_comm);
+        var obj=this.#traite_element(element.target,niveau,element,tab_comm);
         if(obj.__xst === true){
             cible=obj.__xva;
         }else{
@@ -223,8 +229,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     #traite_inline(element,niveau,parent,tab_comm){
         let t='';
         let tableau_de_html_dans_php_a_convertir=[];
-        const esp0 = ' '.repeat(NBESPACESREV * niveau);
-        const esp1 = ' '.repeat(NBESPACESREV);
+        const esp0=' '.repeat(NBESPACESREV * niveau);
+        const esp1=' '.repeat(NBESPACESREV);
         var contenu=element.raw;
         /*
           =====================================================================================================
@@ -236,15 +242,15 @@ class module_conversion_ast_de_php_parser_vers_rev1{
           =====================================================================================================
         */
         var estTraiteSansErreur=false;
-        var obj = isHTML(contenu);
+        var obj=isHTML(contenu);
         if(obj.__xst === true){
-            var nettoye = contenu.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim();
+            var nettoye=contenu.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim();
         }
         /* recherche d'au moins un tag dans le texte */
         var regex=/(<[a-zA-Z0-9\-_]+)/g;
-        var found = contenu.match(regex);
+        var found=contenu.match(regex);
         if(obj.__xst === true && (contenu.indexOf('<') >= 0 && found && found.length > 0 || nettoye === '')){
-            var cle = php_construit_cle(10);
+            var cle=php_construit_cle(10);
             tableau_de_html_dans_php_a_convertir.push({"cle" : cle ,"valeur" : contenu});
             t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,' + cle + '))';
             estTraiteSansErreur=true;
@@ -267,7 +273,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                     "element" : element
                 }));
             }
-            var cle = php_construit_cle(10);
+            var cle=php_construit_cle(10);
             logerreur({"__xst" : false ,"__xme" : 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "' + cle + '"'});
             if(contenu.indexOf('<?') >= 0){
                 /*
@@ -288,7 +294,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                   =====================================================================================
                   
                 */
-                var obj1 = __module_html1.mapDOM(contenu);
+                var obj1=__module_html1.mapDOM(contenu);
                 if(obj1.__xst === true && obj1.parfait === true && obj1.__xva.type.toLowerCase() === 'html'){
                     /*
                       si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
@@ -313,7 +319,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                             }
                                             if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
                                                 if(obj1.content[j].content[k].content){
-                                                    var objScr = convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
+                                                    var objScr=convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
                                                     if(objScr.__xst === true){
                                                         if(objScr.__xva === ''){
                                                             t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
@@ -329,7 +335,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                                     t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
                                                 }
                                             }else{
-                                                var obj = __module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'',tableau_de_javascripts_dans_php_a_convertir);
+                                                var obj=__module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'',tableau_de_javascripts_dans_php_a_convertir);
                                                 if(obj.__xst === true){
                                                     t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
                                                 }else{
@@ -373,10 +379,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         var zone_php=null;
         var en_ligne=null;
         var a_convertir=globale_tableau_des_php2[0];
-        for( var i = globale_tableau_des_php2.length - 1 ; i >= 0 ; i-- ){
-            var obj = this.#transforme_html_de_php_en_rev(globale_tableau_des_php2[i].valeur,0,options,globale_tableau_des_js2);
+        for( var i=globale_tableau_des_php2.length - 1 ; i >= 0 ; i-- ){
+            var obj=this.#transforme_html_de_php_en_rev(globale_tableau_des_php2[i].valeur,0,options,globale_tableau_des_js2);
             if(obj.__xst === true){
-                var chaine_a_remplacer = '#(cle_html_dans_php_a_remplacer,' + globale_tableau_des_php2[i].cle + ')';
+                var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,' + globale_tableau_des_php2[i].cle + ')';
                 globale_source_php2=globale_source_php2.replace(chaine_a_remplacer,obj.__xva);
                 globale_tableau_des_php2.splice(i);
             }else{
@@ -392,10 +398,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         function fin_traitement_php(zone_rev,globale_source_php2,globale_tableau_des_js2){
             globale_tableau_des_js2=[];
             if(zone_rev){
-                var tableau1 = iterateCharacters2(globale_source_php2);
-                var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                var tableau1=iterateCharacters2(globale_source_php2);
+                var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
                     if(obj2.__xst === true){
                         document.getElementById(zone_rev).value=obj2.__xva;
                         globale_source_php2='';
@@ -427,44 +433,37 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             for( var i=0 ; i < globale_tableau_des_js2.length ; i++ ){
                 try{
                     var tableau_des_commentaires_js=[];
-                    var obj = parseur_javascript.parse(globale_tableau_des_js2[i].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
+                    var obj=parseur_javascript.parse(globale_tableau_des_js2[i].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
                 }catch(e){
                     globale_tableau_des_js2=[];
                     return(logerreur({"__xst" : false ,"__xme" : '3770 il y a un problème dans un source javascript dans le php'}));
                 }
-                var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + globale_tableau_des_js2[i].cle + ')';
+                var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + globale_tableau_des_js2[i].cle + ')';
                 if(obj === '' || obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
                     globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'');
                 }else{
-                 
-                    if(tableau_des_commentaires_js.length>0){
-                         /* 
-                           il faut retirer le premier et le derniers commentaire si ce sont des CDATA ou des <source_javascript_rev> 
-                           car javascriptdanshtml les ajoute.
-                         */
-                         var commentaires_a_remplacer=[
-                             '<![CDATA[' , ']]>' , '<source_javascript_rev>' , '</source_javascript_rev>'  
-                         ]
-                         for(var nn=0;nn<commentaires_a_remplacer.length;nn++){
-                             for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
-                                 if(tableau_des_commentaires_js[indc].value.trim()===commentaires_a_remplacer[nn]){
-                                     tableau_des_commentaires_js.splice(indc,1);
-                                 }
-                             }
-                         }
-                         for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
-                             if(tableau_des_commentaires_js[indc].value.trim()==='' && tableau_des_commentaires_js[indc].type==='Line'){
-                                 tableau_des_commentaires_js.splice(indc,1);
-                             }
-                         }
-                         
-           
+                    if(tableau_des_commentaires_js.length > 0){
+                        /*
+                          il faut retirer le premier et le derniers commentaire si ce sont des CDATA ou des <source_javascript_rev> 
+                          car javascriptdanshtml les ajoute.
+                        */
+                        var commentaires_a_remplacer=['<![CDATA[',']]>','<source_javascript_rev>','</source_javascript_rev>'];
+                        for( var nn=0 ; nn < commentaires_a_remplacer.length ; nn++ ){
+                            for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
+                                if(tableau_des_commentaires_js[indc].value.trim() === commentaires_a_remplacer[nn]){
+                                    tableau_des_commentaires_js.splice(indc,1);
+                                }
+                            }
+                        }
+                        for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
+                            if(tableau_des_commentaires_js[indc].value.trim() === '' && tableau_des_commentaires_js[indc].type === 'Line'){
+                                tableau_des_commentaires_js.splice(indc,1);
+                            }
+                        }
                     }
                     /* on transforme le ast du js en rev */
-                    var obj0 = __module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
+                    var obj0=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                     if(obj0.__xst === true){
-                     
-                     
                         globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
                     }else{
                         globale_tableau_des_js2=[];
@@ -482,14 +481,14 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     */
     #transforme_html_de_php_en_rev(texteHtml,niveau,options,globale_tableau_des_js2){
         var t='';
-        var esp0 = ' '.repeat(NBESPACESREV * niveau);
-        var esp1 = ' '.repeat(NBESPACESREV);
+        var esp0=' '.repeat(NBESPACESREV * niveau);
+        var esp1=' '.repeat(NBESPACESREV);
         var supprimer_le_tag_html_et_head=true;
         var doctype='';
         var elementsJson={};
         var i=0;
         try{
-            var position_doctype = texteHtml.toUpperCase().indexOf('<!DOCTYPE');
+            var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
             if(position_doctype >= 0){
                 if(position_doctype === 0){
                     for( i=1 ; i < texteHtml.length && doctype == '' ; i++ ){
@@ -514,7 +513,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
                 try{
                     var tableau_de_javascripts_a_convertir=[];
-                    var obj = __module_html1.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
+                    var obj=__module_html1.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
                     if(obj.__xst === true){
                         if(obj.__xva.trim().indexOf('html(') == 0){
                             if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
@@ -1372,8 +1371,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1226 #traite_nowdoc string type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
             }
         }else{
-            let contenu = element.raw.replace('<<<\'' + element.label + '\'','').replace(/`/g,'\\`');
-            let pos1 = contenu.indexOf(element.label);
+            let contenu=element.raw.replace('<<<\'' + element.label + '\'','').replace(/`/g,'\\`');
+            let pos1=contenu.indexOf(element.label);
             contenu=contenu.substr(0,pos1);
             if(contenu.substr(contenu.length - 2,2) === '\r\n'){
                 contenu=contenu.substr(0,contenu.length - 2);
@@ -1449,8 +1448,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
               t='concat(' + t + ')';
             */
         }else{
-            let contenu = element.raw.replace('<<<' + element.label,'');
-            let pos1 = contenu.indexOf(element.label);
+            let contenu=element.raw.replace('<<<' + element.label,'');
+            let pos1=contenu.indexOf(element.label);
             contenu=contenu.substr(0,pos1);
             if(contenu.substr(contenu.length - 2,2) === '\r\n'){
                 contenu=contenu.substr(0,contenu.length - 2);
@@ -2065,7 +2064,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-        for( var i = commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
+        for( var i=commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
             tab_comm.splice(commentaires_a_retirer[i],1);
         }
         return t;
@@ -2102,7 +2101,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     */
     #simplifie_tableau(nom_variable,parametres){
         var t='';
-        var obj_nom_tableau = functionToArray(nom_variable,true,true,'');
+        var obj_nom_tableau=functionToArray(nom_variable,true,true,'');
         if(obj_nom_tableau.__xst === true){
             if(obj_nom_tableau.__xva.length === 2
              && obj_nom_tableau.__xva[1][2] === 'c'
@@ -2115,7 +2114,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 if(parametres.substr(0,1) === ','){
                     parametres=parametres.substr(1);
                 }
-                var obj_indice_tableau = functionToArray(parametres,true,true,'');
+                var obj_indice_tableau=functionToArray(parametres,true,true,'');
                 if(obj_indice_tableau.__xst === true
                  && obj_indice_tableau.__xva.length === 3
                  && obj_indice_tableau.__xva[1][1] === 'p'
@@ -2139,7 +2138,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 if(parametres.substr(0,1) === ','){
                     parametres=parametres.substr(1);
                 }
-                var obj_indice_tableau = functionToArray(parametres,true,true,'');
+                var obj_indice_tableau=functionToArray(parametres,true,true,'');
                 if(obj_indice_tableau.__xst === true
                  && obj_indice_tableau.__xva.length === 3
                  && obj_indice_tableau.__xva[1][1] === 'p'
@@ -2383,33 +2382,33 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 
         }
         if(t.substr(0,14) === 'concat(concat('){
-            var tableau1 = iterateCharacters2(t);
-            var o = functionToArray2(tableau1.out,false,true,'');
+            var tableau1=iterateCharacters2(t);
+            var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
-                var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-                var obj1 = a2F1(nouveauTableau,0,true,1);
+                var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
+                var obj1=a2F1(nouveauTableau,0,true,1);
                 if(obj1.__xst === true){
                     t=obj1.__xva;
                 }
             }
         }
         if(t.substr(0,6) === 'et(et('){
-            var tableau1 = iterateCharacters2(t);
-            var o = functionToArray2(tableau1.out,false,true,'');
+            var tableau1=iterateCharacters2(t);
+            var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
-                var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-                var obj1 = a2F1(nouveauTableau,0,true,1);
+                var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
+                var obj1=a2F1(nouveauTableau,0,true,1);
                 if(obj1.__xst === true){
                     t=obj1.__xva;
                 }
             }
         }
         if(t.substr(0,6) === 'ou(ou('){
-            var tableau1 = iterateCharacters2(t);
-            var o = functionToArray2(tableau1.out,false,true,'');
+            var tableau1=iterateCharacters2(t);
+            var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
-                var nouveauTableau = baisserNiveauEtSupprimer(o.__xva,2,0);
-                var obj1 = a2F1(nouveauTableau,0,true,1);
+                var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
+                var obj1=a2F1(nouveauTableau,0,true,1);
                 if(obj1.__xst === true){
                     t=obj1.__xva;
                 }
@@ -2423,7 +2422,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     #traite_chaine_raw(valeur_raw,element){
         let t='';
         var rv=valeur_raw;
-        var contenu = rv.substr(1,rv.length - 2);
+        var contenu=rv.substr(1,rv.length - 2);
         /*
           \\x     => ""   , ""    => '\\'   .'x'
           aa\\x   => "aa" , ""    => 'aa'.'\\' .'x'
@@ -2482,7 +2481,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
           return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
           }
         */
-        var probablement_dans_une_regex = contenu.substr(0,1) === '/' && contenu.substr(contenu.length - 1,1) === '/' ? ( true ) : ( false );
+        var probablement_dans_une_regex=contenu.substr(0,1) === '/' && contenu.substr(contenu.length - 1,1) === '/' ? ( true ) : ( false );
         if(rv.substr(0,1) === '\''
          && contenu.indexOf('\'') < 0
          && contenu.indexOf('\\') < 0
@@ -2497,7 +2496,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             /*
             */
-            var l01 = rv.length - 2;
+            var l01=rv.length - 2;
             /*
               la chaine reçue dans le "raw" inclue le " ou les ' en début et fin 
               on les retire pour l'analyse, donc on part de l'avant dernier caractère 
@@ -2588,7 +2587,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                               si on est au premier caractère;
                             */
                             if(rv.substr(i,1) === '\\'){
-                                var c = nouvelle_chaine.substr(0,1);
+                                var c=nouvelle_chaine.substr(0,1);
                                 if(c === '.'
                                  || c === '0'
                                  || c === '-'
@@ -2660,16 +2659,21 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let t='';
         let obj=null;
         let les_arguments='';
+        let les_arguments_courts='';
         for( let i=0 ; i < element.arguments.length ; i++ ){
             t+=',';
+            if(les_arguments_courts!==''){
+               les_arguments_courts+=',';
+            }
             obj=this.#traite_element(element.arguments[i],niveau,element,tab_comm);
             if(obj.__xst === true){
                 t+='p(' + obj.__xva + ')';
+                les_arguments_courts+=obj.__xva;
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element}));
             }
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : true ,"__xva" : t , "les_arguments_courts" : les_arguments_courts});
     }
     /*
       =============================================================================================================
@@ -3094,7 +3098,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-        for( var i = commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
+        for( var i=commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
             tab_comm.splice(commentaires_a_retirer[i],1);
         }
         return t;
@@ -3129,7 +3133,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                     }
                 }
             }
-            for( var i = commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
+            for( var i=commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
                 tab_comm.splice(commentaires_a_retirer[i],1);
             }
         }catch(e){
@@ -3174,7 +3178,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-        for( var i = commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
+        for( var i=commentaires_a_retirer.length - 1 ; i >= 0 ; i-- ){
             tab_comm.splice(commentaires_a_retirer[i],1);
         }
         return t;
@@ -3810,7 +3814,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     #traite_ast0(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        const espaces = CRLF + '   '.repeat(niveau);
+        const espaces=CRLF + '   '.repeat(niveau);
         switch (element.kind){
             case 'program' : 
             case 'body' : 
@@ -3880,7 +3884,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let t='';
         if(ast_de_php.kind === 'program'){
             let niveau=0;
-            var obj = this.#traite_ast0(ast_de_php,niveau,null,ast_de_php.comments);
+            var obj=this.#traite_ast0(ast_de_php,niveau,null,ast_de_php.comments);
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{

@@ -51,7 +51,7 @@ import('./module_requete_sql.js').then(function(Module){
   function recupérer_un_fetch
 */
 async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
-    var delais_admis = donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
+    var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
     var en_entree={
         "signal" : AbortSignal.timeout(delais_admis) ,
         "method" : "POST" ,
@@ -64,10 +64,10 @@ async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
         "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
     };
     try{
-        var response= await fetch(url,en_entree);
-        var t= await response.text();
+        var response=await fetch(url,en_entree);
+        var t=await response.text();
         try{
-            var le_json = JSON.parse(t);
+            var le_json=JSON.parse(t);
             if(le_json.hasOwnProperty('__xms')){
                 for(var i in le_json.__xms){
                     logerreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i]});
@@ -166,27 +166,27 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                 console.log('liste_des_taches_en_arriere_plan[' + j + ']',liste_des_taches_en_arriere_plan[j]);
                 var le_source=arg[id_source];
                 if(le_source.nom_source.lastIndexOf('.') >= 0){
-                    var extension = le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
+                    var extension=le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
                     var n=0;
                     var tab=[];
                     var k={};
                     for(k in le_source['tab']){
-                        var e = le_source['tab'][k];
+                        var e=le_source['tab'][k];
                         tab.push([
-                                e[n+0],
-                                e[n+1],
-                                e[n+2],
-                                e[n+3],
-                                e[n+4],
-                                e[n+5],
-                                e[n+6],
-                                e[n+7],
-                                e[n+8],
-                                e[n+9],
-                                e[n+10],
-                                e[n+11],
-                                e[n+12],
-                                e[n+13]
+                                e[n + 0],
+                                e[n + 1],
+                                e[n + 2],
+                                e[n + 3],
+                                e[n + 4],
+                                e[n + 5],
+                                e[n + 6],
+                                e[n + 7],
+                                e[n + 8],
+                                e[n + 9],
+                                e[n + 10],
+                                e[n + 11],
+                                e[n + 12],
+                                e[n + 13]
                             ]);
                     }
                     if(provenance === 'source'
@@ -198,11 +198,11 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                     ){
                         tache_en_cours=true;
                         if(provenance === 'sql'){
-                            var objSource = tabToSql1(tab,0,0,false);
+                            var objSource=tabToSql1(tab,0,0,false);
                             if(objSource.__xst === true){
-                                var obj1 = a2F1(tab,0,true,1);
+                                var obj1=a2F1(tab,0,true,1);
                                 if(obj1.__xst === true){
-                                    var obj2 = __module_requete_sql1.transform_source_rev_vers_sql(obj1.__xva,id_source);
+                                    var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.__xva,id_source);
                                     if(obj2.__xst === true){
                                         arg[id_source].tab=[];
                                         var params={
@@ -241,14 +241,14 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                             }
                         }else if(provenance === 'source'){
                             if(extension === '.html' || extension === '.htm'){
-                                var objSource = __module_html1.tabToHtml1(tab,0,false,0);
+                                var objSource=__module_html1.tabToHtml1(tab,0,false,0);
                             }else if(extension === '.js'){
-                                var objSource = parseJavascript0(tab,1,0);
+                                var objSource=parseJavascript0(tab,1,0);
                             }else if(extension === '.php'){
-                                var objSource = parsePhp0(tab,0,0);
+                                var objSource=parsePhp0(tab,0,0);
                             }
                             if(objSource.__xst === true){
-                                var obj = arrayToFunct1(tab,true);
+                                var obj=arrayToFunct1(tab,true);
                                 if(obj.__xst === true){
                                     arg[id_source].tab=[];
                                     var params={"arg" : arg ,"id_tache" : j ,"id_source" : id_source ,"source_rev" : obj.__xva ,"source_genere" : objSource.__xva};
@@ -307,44 +307,44 @@ function traite_une_suppression(id_tache,arg){
                 console.log('liste_des_taches_en_arriere_plan[' + j + ']',liste_des_taches_en_arriere_plan[j]);
                 var le_source=arg[id_source];
                 if(le_source.nom_source.lastIndexOf('.') >= 0){
-                    var extension = le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
+                    var extension=le_source.nom_source.substr(le_source.nom_source.lastIndexOf('.'));
                     var n=0;
                     var tab=[];
                     var k={};
                     for(k in le_source['tab']){
-                        var e = le_source['tab'][k];
+                        var e=le_source['tab'][k];
                         tab.push([
-                                e[n+0],
-                                e[n+1],
-                                e[n+2],
-                                e[n+3],
-                                e[n+4],
-                                e[n+5],
-                                e[n+6],
-                                e[n+7],
-                                e[n+8],
-                                e[n+9],
-                                e[n+10],
-                                e[n+11],
-                                e[n+12],
-                                e[n+13]
+                                e[n + 0],
+                                e[n + 1],
+                                e[n + 2],
+                                e[n + 3],
+                                e[n + 4],
+                                e[n + 5],
+                                e[n + 6],
+                                e[n + 7],
+                                e[n + 8],
+                                e[n + 9],
+                                e[n + 10],
+                                e[n + 11],
+                                e[n + 12],
+                                e[n + 13]
                             ]);
                     }
-                    var tab1 = reIndicerLeTableau(tab);
+                    var tab1=reIndicerLeTableau(tab);
                     if(extension === '.html' || extension === '.htm' || extension === '.php' || extension === '.js'){
                         tache_en_cours=true;
                         if(extension === '.html' || extension === '.htm'){
-                            var objSource = __module_html1.tabToHtml1(tab1,0,false,0);
+                            var objSource=__module_html1.tabToHtml1(tab1,0,false,0);
                             console.log('%c on traite un html ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.js'){
-                            var objSource = parseJavascript0(tab,1,0);
+                            var objSource=parseJavascript0(tab,1,0);
                             console.log('%c on traite un js ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.php'){
-                            var objSource = parsePhp0(tab1,0,0);
+                            var objSource=parsePhp0(tab1,0,0);
                             console.log('%c on traite un php ','color:red;background:yellow;',objSource.__xst);
                         }
                         if(objSource.__xst === true){
-                            var obj = arrayToFunct1(tab1,true);
+                            var obj=arrayToFunct1(tab1,true);
                             if(obj.__xst === true){
                                 arg[id_source].tab1=[];
                                 var params={
@@ -641,7 +641,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
                         console.error('donnees=',donnees);
                         return;
                     }
-                    return
+                    return;
                 });
             break;
         }
@@ -783,11 +783,11 @@ function recuperer_les_travaux_en_session(){
 */
 onmessage=function(message_recu){
     console.log('dans le worker, message_recu=',message_recu.data);
-    var donnees_recues_du_message = JSON.parse(JSON.stringify(message_recu.data));
+    var donnees_recues_du_message=JSON.parse(JSON.stringify(message_recu.data));
     if(donnees_recues_du_message.type_de_message === "déclencher_un_travail"){
-        var maintenant = new Date().getTime();
-        var ms = performance.now();
-        var cle = maintenant + ms;
+        var maintenant=new Date().getTime();
+        var ms=performance.now();
+        var cle=maintenant + ms;
         liste_des_travaux_en_arriere_plan.push({"clé" : cle ,"etat_du_travail" : 'travail_en_arriere_plan_reçu' ,"donnees_recues_du_message" : donnees_recues_du_message.parametres});
     }else if("integrer_les_travaux_en_session" === donnees_recues_du_message.type_de_message){
         var i={};

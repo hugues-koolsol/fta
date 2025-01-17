@@ -1,20 +1,18 @@
 <?php
 /*
-https://github.com/nikic/php-parser
+  https://github.com/nikic/php-parser
 */
-
 $a=realpath(dirname(dirname(dirname(__FILE__))));
-require(($a.'/phplib/vendor/autoload.php'));
+require($a . '/phplib/vendor/autoload.php');
 use PhpParser\Error;
 use PhpParser\NodeDumper;
 use PhpParser\ParserFactory;
 
 function recupererAstDePhp(&$data){
+
     $parser=(new ParserFactory())->createForNewestSupportedVersion();
     try{
-     
-        $contenu=preg_replace('/\\/\\*sql_'.'inclure_deb\\*\\/(.*?)\\/\\*sql_'.'inclure_fin\\*\\//us','', $data[__entree]['texteSource']);
-
+        $contenu=preg_replace('/\/\\*sql_' . 'inclure_deb\\*\/(.*?)\/\\*sql_' . 'inclure_fin\\*\//us','',$data[__entree]['texteSource']);
         $ast=$parser->parse($contenu);
         /*
           sans le JSON_INVALID_UTF8_IGNORE, le source
@@ -27,4 +25,5 @@ function recupererAstDePhp(&$data){
         $data[__xms][]=$error->getMessage();
         return;
     }
+
 }

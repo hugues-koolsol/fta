@@ -26,17 +26,17 @@
             function s(o,u){
                 if(!(n[o])){
                     if(!(t[o])){
-                        var a = typeof require == "function" && require;
+                        var a=typeof require == "function" && require;
                         if(!(u) && a){
                             return(a(o,!(0)));
                         }
                         if(i){
                             return(i(o,!(0)));
                         }
-                        var f = new Error("Cannot find module '" + o + "'");
+                        var f=new Error("Cannot find module '" + o + "'");
                         throw f.code="MODULE_NOT_FOUND" , f;
                     }
-                    var l = n[o]={"exports" : {}};
+                    var l=n[o]={"exports" : {}};
                     t[o][0].call(l.exports,function(e){
                             var n=t[o][1][e];
                             return(s(n ? ( n ) : ( e )));
@@ -44,7 +44,7 @@
                 }
                 return n[o].exports;
             }
-            var i = typeof require == "function" && require;
+            var i=typeof require == "function" && require;
             for( var o=0 ; o < r.length ; o++ ){
                 s(r[o]);
             }
@@ -57,11 +57,11 @@
                                 throw new TypeError("Cannot call a class as a function");
                             }
                         }
-                        var SqliteParserTransform = exports.SqliteParserTransform=function SqliteParserTransform(options){
+                        var SqliteParserTransform=exports.SqliteParserTransform=function SqliteParserTransform(options){
                             _classCallCheck(this,SqliteParserTransform);
                             throw new Error("SqliteParserTransform is not available in this environment");
                         };
-                        var SingleNodeTransform = exports.SingleNodeTransform=function SingleNodeTransform(options){
+                        var SingleNodeTransform=exports.SingleNodeTransform=function SingleNodeTransform(options){
                             _classCallCheck(this,SingleNodeTransform);
                             throw new Error("SingleNodeTransform is not available in this environment");
                         };
@@ -69,26 +69,26 @@
             "1" : [function(require,module,exports){
                         Object.defineProperty(exports,"__esModule",{"value" : true});
                         exports.default=sqliteParser;
-                        var _parser = require("./parser");
-                        var _tracer = require("./tracer");
-                        var _streaming = require("./streaming");
+                        var _parser=require("./parser");
+                        var _tracer=require("./tracer");
+                        var _streaming=require("./streaming");
                         function sqliteParser(source,options,callback){
-                            var t = (0 , _tracer.Tracer)();
+                            var t=(0 , _tracer.Tracer)();
                             if(arguments.length === 2){
                                 if(typeof options === "function"){
                                     callback=options;
                                     options={};
                                 }
                             }
-                            var isAsync = typeof callback === "function";
+                            var isAsync=typeof callback === "function";
                             var opts={"tracer" : t ,"startRule" : "start"};
                             if(options && options.streaming){
                                 opts["startRule"]="start_streaming";
                             }
                             if(isAsync){
                                 setTimeout(function(){
-                                        var result = void(0);
-                                        var err = void(0);
+                                        var result=void(0);
+                                        var err=void(0);
                                         try{
                                             result=(0 , _parser.parse)(source,opts);
                                         }catch(e){
@@ -115,14 +115,14 @@
                         module.exports=exports["default"];
                     },{"./parser" : 2 ,"./streaming" : "./streaming" ,"./tracer" : 3}] ,
             "2" : [function(require,module,exports){
-                        var _slicedToArray = (function(){
+                        var _slicedToArray=(function(){
                             function sliceIterator(arr,i){
                                 var _arr=[];
                                 var _n=true;
                                 var _d=false;
                                 var _e=undefined;
                                 try{
-                                    for( var _i = arr[Symbol.iterator](),_s ; !(_n=(_s=_i.next()).done) ; _n=true ){
+                                    for( var _i=arr[Symbol.iterator](),_s ; !(_n=(_s=_i.next()).done) ; _n=true ){
                                         _arr.push(_s.value);
                                         if(i && _arr.length === i){
                                             break;
@@ -144,11 +144,16 @@
                                 }
                             });
                     })();
-                        var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? ( function(obj){
-                                return(typeof obj);
-                            } ) : ( function(obj){
-                                return(obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : ( typeof obj ));
-                            } );
+                        var _typeof=typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ?
+                          ( 
+                                function(obj){
+                                        return(typeof obj);
+                                    } )
+                        : ( 
+                                function(obj){
+                                        return(obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : ( typeof obj ));
+                                    } 
+                        );
                         function peg$subclass(child,parent){
                             function ctor(){
                                 this.constructor=child;
@@ -174,7 +179,7 @@
                                 
                                 } ,
                                 "class" : function _class(expectation){
-                                    var escapedParts = expectation.parts.map(function(part){
+                                    var escapedParts=expectation.parts.map(function(part){
                                         return(Array.isArray(part) ? ( classEscape(part[0]) + "-" + classEscape(part[1]) ) : ( classEscape(part) ));
                                     });
                                     return("[" + (expectation.inverted ? ( "^" ) : ( "" )) + escapedParts + "]");
@@ -214,13 +219,13 @@
                                 return(DESCRIBE_EXPECTATION_FNS[expectation.type](expectation));
                             }
                             function describeExpected(expected){
-                                var descriptions = expected.map(describeExpectation);
+                                var descriptions=expected.map(describeExpectation);
                                 var i;
                                 var j;
                                 descriptions.sort();
                                 if(descriptions.length > 0){
                                     for( i=1 , j=1 ; i < descriptions.length ; i++ ){
-                                        if(descriptions[i-1] !== descriptions[i]){
+                                        if(descriptions[i - 1] !== descriptions[i]){
                                             descriptions[j]=descriptions[i];
                                             j++;
                                         }
@@ -231,7 +236,7 @@
                                     case 1 : return descriptions[0];
                                     case 2 : return(descriptions[0] + " or " + descriptions[1]);
                                     default:
-                                        return(descriptions.slice(0,-1).join(", ") + ", or " + descriptions[descriptions.length-1]);
+                                        return(descriptions.slice(0,-1).join(", ") + ", or " + (descriptions[descriptions.length - 1]));
                                         
                                 }
                             }
@@ -285,7 +290,7 @@
                             var peg$FAILED={};
                             var peg$startRuleIndices={"start" : 0 ,"start_streaming" : 1};
                             var peg$startRuleIndex=0;
-                            var peg$consts = [
+                            var peg$consts=[
                                 function(s){
                                         return s;
                                     },
@@ -304,7 +309,7 @@
                                     },
                                 peg$otherExpectation("Custom Datatype Name"),
                                 function(t,r){
-                                        var variant = foldStringKey([t,r]);
+                                        var variant=foldStringKey([t,r]);
                                         var affinity="numeric";
                                         if(/int/i.test(variant)){
                                             affinity="integer";
@@ -966,7 +971,7 @@
                                         return(Object.assign(c,n));
                                     },
                                 function(cl){
-                                        return cl[cl.length-1];
+                                        return(cl[cl.length - 1]);
                                     },
                                 peg$otherExpectation("CONSTRAINT Name"),
                                 function(n){
@@ -1032,20 +1037,20 @@
                                     },
                                 function(c){
                                         return(c.map(function(_ref){
-                                            var _ref2 = _slicedToArray(_ref,1);
+                                            var _ref2=_slicedToArray(_ref,1);
                                             var res=_ref2[0];
                                             return res;
                                         }));
                                     },
                                 function(c){
-                                        var auto = c.find(function(_ref3){
-                                            var _ref4 = _slicedToArray(_ref3,2);
+                                        var auto=c.find(function(_ref3){
+                                            var _ref4=_slicedToArray(_ref3,2);
                                             var res=_ref4[0];
                                             var a=_ref4[1];
                                             return(isOkay(a));
                                         });
                                         return([c.map(function(_ref5){
-                                                    var _ref6 = _slicedToArray(_ref5,2);
+                                                    var _ref6=_slicedToArray(_ref5,2);
                                                     var res=_ref6[0];
                                                     var a=_ref6[1];
                                                     return res;
@@ -1782,7 +1787,7 @@
                                 "__TODO__",
                                 peg$literalExpectation("__TODO__",false)
                             ];
-                            var peg$bytecode = [
+                            var peg$bytecode=[
                                 peg$decode("%;\u023f/H#;#/?$;\".\" &\"/1$;#/($8$: $!!)($'#(#'#(\"'#&'#"),
                                 peg$decode("%;\u023f/C#;#/:$;x/1$;#/($8$: $!!)($'#(#'#(\"'#&'#"),
                                 peg$decode("%;x/B#;\u023f/9$$;%0#*;%&/)$8#:!#\"\" )(#'#(\"'#&'#"),
@@ -2331,12 +2336,12 @@
                             ];
                             var peg$currPos=0;
                             var peg$savedPos=0;
-                            var peg$posDetailsCache = [{"line" : 1 ,"column" : 1}];
+                            var peg$posDetailsCache=[{"line" : 1 ,"column" : 1}];
                             var peg$maxFailPos=0;
                             var peg$maxFailExpected=[];
                             var peg$silentFails=0;
                             var peg$resultsCache={};
-                            var peg$ruleNames = [
+                            var peg$ruleNames=[
                                 /* tbel */"start","start_streaming","stmt_list","semi_optional","semi_required","stmt_list_tail","type_definition","type_definition_types","datatype_custom"                ,"datatype_word_tail","type_definition_args","definition_args_loop","literal_value","literal_null","literal_date","literal_string","literal_string_single","literal_string_schar","literal_blob"
                                 ,"literal_text","number_sign","literal_number_signed","literal_number","literal_number_decimal","number_decimal_node","number_decimal_full","number_decimal_fraction","number_decimal_exponent","literal_number_hex"                ,"number_hex","number_digit","bind_parameter","bind_parameter_numbered","bind_number_id","bind_parameter_named","bind_parameter_tcl","tcl_suffix","expression_exists","expression_exists_ne"
                                 ,"expression_raise","expression_raise_args","raise_args_ignore","raise_args_message","expression_root","expression_wrapped","expression_recur","expression_unary_collate","expression_unary","expression_unary_op"                ,"expression_collate","expression_concat","expression_multiply","expression_multiply_op","expression_add","expression_add_op","expression_shift","expression_shift_op","expression_compare","expression_compare_op"
@@ -2365,7 +2370,7 @@
                                 ,"REFERENCES","REGEXP","REINDEX","RELEASE","RENAME","REPLACE","RESTRICT","RIGHT","ROLLBACK","ROW"                ,"ROWID","SAVEPOINT","SELECT","SET","TABLE","TEMP","TEMPORARY","THEN","TO","TRANSACTION"
                                 ,"TRIGGER","UNION","UNIQUE","UPDATE","USING","VACUUM","VALUES","VIEW","VIRTUAL","WHEN"                ,"WHERE","WITH","WITHOUT","reserved_words","reserved_word_list","reserved_critical_list","comment","comment_line","comment_block","comment_block_start"
                                 ,"comment_block_end","comment_block_body","block_body_nodes","comment_block_feed","o","_TODO_"];
-                            var peg$descNames = [
+                            var peg$descNames=[
                                 /* tbel */null,null,null,null,null,null,"Type Definition",null,"Custom Datatype Name"                ,null,"Type Definition Arguments",null,null,"Null Literal","Date Literal","String Literal","Single-quoted String Literal",null,"Blob Literal"
                                 ,null,"Number Sign",null,null,null,"Decimal Literal",null,null,"Decimal Literal Exponent","Hexidecimal Literal"                ,null,null,"Bind Parameter","Numbered Bind Parameter",null,"Named Bind Parameter","TCL Bind Parameter",null,"EXISTS Expression","EXISTS Keyword"
                                 ,"RAISE Expression","RAISE Expression Arguments","IGNORE Keyword",null,null,null,null,null,null,null                ,"COLLATE Expression",null,null,null,null,null,null,null,null,null
@@ -2394,7 +2399,7 @@
                                 ,null,null,null,null,null,null,null,null,null,null                ,null,null,null,null,null,null,null,null,null,null
                                 ,null,null,null,null,null,null,null,null,null,null                ,null,null,null,null,null,null,null,"Line Comment","Block Comment",null
                                 ,null,null,null,null,"Whitespace",null];
-                            var peg$tracer = "tracer" in options ? ( options.tracer ) : ( new peg$DefaultTracer() );
+                            var peg$tracer="tracer" in options ? ( options.tracer ) : ( new peg$DefaultTracer() );
                             var peg$result;
                             if("startRule" in options){
                                 if(!(options.startRule in peg$startRuleIndices)){
@@ -2457,8 +2462,8 @@
                                 }
                             }
                             function peg$computeLocation(startPos,endPos){
-                                var startPosDetails = peg$computePosDetails(startPos);
-                                var endPosDetails = peg$computePosDetails(endPos);
+                                var startPosDetails=peg$computePosDetails(startPos);
+                                var endPosDetails=peg$computePosDetails(endPos);
                                 return({
                                     "start" : {"offset" : startPos ,"line" : startPosDetails.line ,"column" : startPosDetails.column} ,
                                     "end" : {"offset" : endPos ,"line" : endPosDetails.line ,"column" : endPosDetails.column}
@@ -2495,7 +2500,7 @@
                                 var startPos=peg$currPos;
                                 var params;
                                 peg$tracer.trace({"type" : "rule.enter" ,"rule" : peg$ruleNames[index] ,"description" : peg$descNames[index] ,"location" : peg$computeLocation(startPos,startPos)});
-                                var key = peg$currPos * 545 + index;
+                                var key=peg$currPos * 545 + index;
                                 var cached=peg$resultsCache[key];
                                 if(cached){
                                     peg$currPos=cached.nextPos;
@@ -2510,7 +2515,7 @@
                                     while(ip < end){
                                         switch (bc[ip]){
                                             case 0 :
-                                                stack.push(peg$consts[bc[ip+1]]);
+                                                stack.push(peg$consts[bc[ip + 1]]);
                                                 ip+=2;
                                                 break;
                                                 
@@ -2550,7 +2555,7 @@
                                                 break;
                                                 
                                             case 8 :
-                                                stack.length-=bc[ip+1];
+                                                stack.length-=bc[ip + 1];
                                                 ip+=2;
                                                 break;
                                                 
@@ -2560,12 +2565,12 @@
                                                 break;
                                                 
                                             case 10 :
-                                                stack[stack.length-2].push(stack.pop());
+                                                stack[stack.length - 2].push(stack.pop());
                                                 ip++;
                                                 break;
                                                 
                                             case 11 :
-                                                stack.push(stack.splice(stack.length - bc[ip+1],bc[ip+1]));
+                                                stack.push(stack.splice(stack.length - bc[ip + 1],bc[ip + 1]));
                                                 ip+=2;
                                                 break;
                                                 
@@ -2576,121 +2581,121 @@
                                                 
                                             case 13 :
                                                 ends.push(end);
-                                                ips.push(ip + 3 + bc[ip+1] + bc[ip+2]);
-                                                if(stack[stack.length-1]){
-                                                    end=ip + 3 + bc[ip+1];
+                                                ips.push(ip + 3 + bc[ip + 1] + bc[ip + 2]);
+                                                if(stack[stack.length - 1]){
+                                                    end=ip + 3 + bc[ip + 1];
                                                     ip+=3;
                                                 }else{
-                                                    end=ip + 3 + bc[ip+1] + bc[ip+2];
-                                                    ip+=3 + bc[ip+1];
+                                                    end=ip + 3 + bc[ip + 1] + bc[ip + 2];
+                                                    ip+=3 + bc[ip + 1];
                                                 }
                                                 break;
                                                 
                                             case 14 :
                                                 ends.push(end);
-                                                ips.push(ip + 3 + bc[ip+1] + bc[ip+2]);
-                                                if(stack[stack.length-1] === peg$FAILED){
-                                                    end=ip + 3 + bc[ip+1];
+                                                ips.push(ip + 3 + bc[ip + 1] + bc[ip + 2]);
+                                                if(stack[stack.length - 1] === peg$FAILED){
+                                                    end=ip + 3 + bc[ip + 1];
                                                     ip+=3;
                                                 }else{
-                                                    end=ip + 3 + bc[ip+1] + bc[ip+2];
-                                                    ip+=3 + bc[ip+1];
+                                                    end=ip + 3 + bc[ip + 1] + bc[ip + 2];
+                                                    ip+=3 + bc[ip + 1];
                                                 }
                                                 break;
                                                 
                                             case 15 :
                                                 ends.push(end);
-                                                ips.push(ip + 3 + bc[ip+1] + bc[ip+2]);
-                                                if(stack[stack.length-1] !== peg$FAILED){
-                                                    end=ip + 3 + bc[ip+1];
+                                                ips.push(ip + 3 + bc[ip + 1] + bc[ip + 2]);
+                                                if(stack[stack.length - 1] !== peg$FAILED){
+                                                    end=ip + 3 + bc[ip + 1];
                                                     ip+=3;
                                                 }else{
-                                                    end=ip + 3 + bc[ip+1] + bc[ip+2];
-                                                    ip+=3 + bc[ip+1];
+                                                    end=ip + 3 + bc[ip + 1] + bc[ip + 2];
+                                                    ip+=3 + bc[ip + 1];
                                                 }
                                                 break;
                                                 
                                             case 16 :
-                                                if(stack[stack.length-1] !== peg$FAILED){
+                                                if(stack[stack.length - 1] !== peg$FAILED){
                                                     ends.push(end);
                                                     ips.push(ip);
-                                                    end=ip + 2 + bc[ip+1];
+                                                    end=ip + 2 + bc[ip + 1];
                                                     ip+=2;
                                                 }else{
-                                                    ip+=2 + bc[ip+1];
+                                                    ip+=2 + bc[ip + 1];
                                                 }
                                                 break;
                                                 
                                             case 17 :
                                                 ends.push(end);
-                                                ips.push(ip + 3 + bc[ip+1] + bc[ip+2]);
+                                                ips.push(ip + 3 + bc[ip + 1] + bc[ip + 2]);
                                                 if(input.length > peg$currPos){
-                                                    end=ip + 3 + bc[ip+1];
+                                                    end=ip + 3 + bc[ip + 1];
                                                     ip+=3;
                                                 }else{
-                                                    end=ip + 3 + bc[ip+1] + bc[ip+2];
-                                                    ip+=3 + bc[ip+1];
+                                                    end=ip + 3 + bc[ip + 1] + bc[ip + 2];
+                                                    ip+=3 + bc[ip + 1];
                                                 }
                                                 break;
                                                 
                                             case 18 :
                                                 ends.push(end);
-                                                ips.push(ip + 4 + bc[ip+2] + bc[ip+3]);
-                                                if(input.substr(peg$currPos,peg$consts[bc[ip+1]].length) === peg$consts[bc[ip+1]]){
-                                                    end=ip + 4 + bc[ip+2];
+                                                ips.push(ip + 4 + bc[ip + 2] + bc[ip + 3]);
+                                                if(input.substr(peg$currPos,peg$consts[bc[ip + 1]].length) === peg$consts[bc[ip + 1]]){
+                                                    end=ip + 4 + bc[ip + 2];
                                                     ip+=4;
                                                 }else{
-                                                    end=ip + 4 + bc[ip+2] + bc[ip+3];
-                                                    ip+=4 + bc[ip+2];
+                                                    end=ip + 4 + bc[ip + 2] + bc[ip + 3];
+                                                    ip+=4 + bc[ip + 2];
                                                 }
                                                 break;
                                                 
                                             case 19 :
                                                 ends.push(end);
-                                                ips.push(ip + 4 + bc[ip+2] + bc[ip+3]);
-                                                if(input.substr(peg$currPos,peg$consts[bc[ip+1]].length).toLowerCase() === peg$consts[bc[ip+1]]){
-                                                    end=ip + 4 + bc[ip+2];
+                                                ips.push(ip + 4 + bc[ip + 2] + bc[ip + 3]);
+                                                if(input.substr(peg$currPos,peg$consts[bc[ip + 1]].length).toLowerCase() === peg$consts[bc[ip + 1]]){
+                                                    end=ip + 4 + bc[ip + 2];
                                                     ip+=4;
                                                 }else{
-                                                    end=ip + 4 + bc[ip+2] + bc[ip+3];
-                                                    ip+=4 + bc[ip+2];
+                                                    end=ip + 4 + bc[ip + 2] + bc[ip + 3];
+                                                    ip+=4 + bc[ip + 2];
                                                 }
                                                 break;
                                                 
                                             case 20 :
                                                 ends.push(end);
-                                                ips.push(ip + 4 + bc[ip+2] + bc[ip+3]);
-                                                if(peg$consts[bc[ip+1]].test(input.charAt(peg$currPos))){
-                                                    end=ip + 4 + bc[ip+2];
+                                                ips.push(ip + 4 + bc[ip + 2] + bc[ip + 3]);
+                                                if(peg$consts[bc[ip + 1]].test(input.charAt(peg$currPos))){
+                                                    end=ip + 4 + bc[ip + 2];
                                                     ip+=4;
                                                 }else{
-                                                    end=ip + 4 + bc[ip+2] + bc[ip+3];
-                                                    ip+=4 + bc[ip+2];
+                                                    end=ip + 4 + bc[ip + 2] + bc[ip + 3];
+                                                    ip+=4 + bc[ip + 2];
                                                 }
                                                 break;
                                                 
                                             case 21 :
-                                                stack.push(input.substr(peg$currPos,bc[ip+1]));
-                                                peg$currPos+=bc[ip+1];
+                                                stack.push(input.substr(peg$currPos,bc[ip + 1]));
+                                                peg$currPos+=bc[ip + 1];
                                                 ip+=2;
                                                 break;
                                                 
                                             case 22 :
-                                                stack.push(peg$consts[bc[ip+1]]);
-                                                peg$currPos+=peg$consts[bc[ip+1]].length;
+                                                stack.push(peg$consts[bc[ip + 1]]);
+                                                peg$currPos+=peg$consts[bc[ip + 1]].length;
                                                 ip+=2;
                                                 break;
                                                 
                                             case 23 :
                                                 stack.push(peg$FAILED);
                                                 if(peg$silentFails === 0){
-                                                    peg$fail(peg$consts[bc[ip+1]]);
+                                                    peg$fail(peg$consts[bc[ip + 1]]);
                                                 }
                                                 ip+=2;
                                                 break;
                                                 
                                             case 24 :
-                                                peg$savedPos=stack[stack.length - 1 - bc[ip+1]];
+                                                peg$savedPos=stack[stack.length - 1 - bc[ip + 1]];
                                                 ip+=2;
                                                 break;
                                                 
@@ -2700,15 +2705,15 @@
                                                 break;
                                                 
                                             case 26 :
-                                                params=bc.slice(ip + 4,ip + 4 + bc[ip+3]).map(function(p){
+                                                params=bc.slice(ip + 4,ip + 4 + bc[ip + 3]).map(function(p){
                                                     return(stack[stack.length - 1 - p]);
                                                 });
-                                                stack.splice(stack.length - bc[ip+2],bc[ip+2],peg$consts[bc[ip+1]].apply(null,params));
-                                                ip+=4 + bc[ip+3];
+                                                stack.splice(stack.length - bc[ip + 2],bc[ip + 2],peg$consts[bc[ip + 1]].apply(null,params));
+                                                ip+=4 + bc[ip + 3];
                                                 break;
                                                 
                                             case 27 :
-                                                stack.push(peg$parseRule(bc[ip+1]));
+                                                stack.push(peg$parseRule(bc[ip + 1]));
                                                 ip+=2;
                                                 break;
                                                 
@@ -2750,8 +2755,8 @@
                                 return(obj != null);
                             }
                             function foldString(parts){
-                                var glue = arguments.length > 1 && arguments[1] !== undefined ? ( arguments[1] ) : ( " " );
-                                var folded = parts.filter(function(part){
+                                var glue=arguments.length > 1 && arguments[1] !== undefined ? ( arguments[1] ) : ( " " );
+                                var folded=parts.filter(function(part){
                                     return(isOkay(part));
                                 }).reduce(function(prev,cur){
                                     return("" + prev + nodeToString(cur) + glue);
@@ -2772,12 +2777,12 @@
                                 },[]));
                             }
                             function unescape(str){
-                                var quoteChar = arguments.length > 1 && arguments[1] !== undefined ? ( arguments[1] ) : ( "'" );
-                                var re = new RegExp(quoteChar + "{2}","g");
+                                var quoteChar=arguments.length > 1 && arguments[1] !== undefined ? ( arguments[1] ) : ( "'" );
+                                var re=new RegExp(quoteChar + "{2}","g");
                                 return(nodeToString(str).replace(re,quoteChar));
                             }
                             function nodeToString(){
-                                var node = arguments.length > 0 && arguments[0] !== undefined ? ( arguments[0] ) : ( [] );
+                                var node=arguments.length > 0 && arguments[0] !== undefined ? ( arguments[0] ) : ( [] );
                                 return(makeArray(node).join(""));
                             }
                             function textNode(node){
@@ -2791,7 +2796,7 @@
                             }
                             function composeBinary(first,rest){
                                 return(rest.reduce(function(left,_ref7){
-                                    var _ref8 = _slicedToArray(_ref7,4);
+                                    var _ref8=_slicedToArray(_ref7,4);
                                     var x=_ref8[0];
                                     var operation=_ref8[1];
                                     var y=_ref8[2];
@@ -2813,7 +2818,11 @@
                                 if(peg$result !== peg$FAILED && peg$currPos < input.length){
                                     peg$fail(peg$endExpectation());
                                 }
-                                throw peg$buildStructuredError(peg$maxFailExpected,peg$maxFailPos < input.length ? ( input.charAt(peg$maxFailPos) ) : ( null ),peg$maxFailPos < input.length ? ( peg$computeLocation(peg$maxFailPos,peg$maxFailPos + 1) ) : ( peg$computeLocation(peg$maxFailPos,peg$maxFailPos) ));
+                                throw peg$buildStructuredError(peg$maxFailExpected,peg$maxFailPos < input.length ? ( input.charAt(peg$maxFailPos) ) : ( null ),peg$maxFailPos < input.length ?
+                                  ( 
+                                        peg$computeLocation(peg$maxFailPos,peg$maxFailPos + 1) )
+                                : ( peg$computeLocation(peg$maxFailPos,peg$maxFailPos) 
+                                ));
                             }
                         }
                         module.exports={"SyntaxError" : peg$SyntaxError ,"DefaultTracer" : peg$DefaultTracer ,"parse" : peg$parse};
@@ -2821,7 +2830,7 @@
             "3" : [function(require,module,exports){
                         Object.defineProperty(exports,"__esModule",{"value" : true});
                         function findLastIndex(arr,func){
-                            for( var i = arr.length - 1 ; i >= 0 ; i-=1 ){
+                            for( var i=arr.length - 1 ; i >= 0 ; i-=1 ){
                                 if(func(arr[i])){
                                     return i;
                                 }
@@ -2838,7 +2847,7 @@
                             }
                             return arr;
                         }
-                        var Tracer = exports.Tracer=(function(){
+                        var Tracer=exports.Tracer=(function(){
                             function Tracer(){
                                 if(!(this instanceof  Tracer)){
                                     return(new Tracer());
@@ -2888,7 +2897,7 @@
                                 var bestNode={"indentation" : -1};
                                 var deep=false;
                                 var stmts=0;
-                                var namedEvents = this.events.filter(function(e){
+                                var namedEvents=this.events.filter(function(e){
                                     return(e.description != null && !(that.whitespaceRule.test(e.rule)));
                                 }).reverse();
                                 chain=takeWhile(namedEvents,function(elem){

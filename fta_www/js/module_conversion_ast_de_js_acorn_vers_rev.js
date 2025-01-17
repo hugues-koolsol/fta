@@ -21,13 +21,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     */
     #astjs_logerreur(o){
         logerreur(o);
-        
-        if(o.hasOwnProperty('element') && o.element.hasOwnProperty('end') && o.element.hasOwnProperty('start') ){
-          if(global_messages['plages'].length<5){
-            global_messages['plages'].push([o.element.start , o.element.end]);
-          }
+        if(o.hasOwnProperty('element') && o.element.hasOwnProperty('end') && o.element.hasOwnProperty('start')){
+            if(global_messages['plages'].length < 5){
+                global_messages['plages'].push([o.element.start,o.element.end]);
+            }
         }
-
         return o;
     }
     /*
@@ -51,7 +49,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0047 #traite_FunctionExpression generator' ,"element" : element}));
         }
         if(element.id){
-            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
@@ -64,7 +62,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 for( let i=0 ; i < element.params.length ; i++ ){
                     le_commentaire=this.#comm_dans_arguments_appel_fonction(element.params[i],niveau,element,tab_comm);
-                    obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm);
+                    obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm,false);
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
@@ -90,7 +88,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     }
     /*
       =============================================================================================================
-      afr réécrire ce bord..
     */
     #traite_CallExpression(element,niveau,parent,tab_comm){
         let t='';
@@ -101,17 +98,24 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let nom_de_la_fonction='';
         let le_contenu='';
         let auto_appelee='';
-        // f(a) => appelf( nomf(f) , p(a)),
         
-        
+        if(element.callee && element.callee.params && element.arguments){
+            auto_appelee='auto_appelee(4),';
+            /*utile aussi pour selectionner les commentaires des arguments */
+            element['auto_appelee']=true;
+        }
         if(element.arguments){
             if(element.arguments.length > 0){
                 for( i=0 ; i < element.arguments.length ; i++ ){
-                    if(les_arguments!==''){
+                    if(les_arguments !== ''){
                         les_arguments+=',';
                     }
+
                     le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
-                    obj = this.#traite_element(element.arguments[i],niveau + 1,element.arguments,tab_comm);
+                    /*
+                      ici, on a le seul cas où ignorer_commentaires_avant est vrai
+                    */
+                    obj=this.#traite_element(element.arguments[i],niveau + 1,element.arguments,tab_comm,true);
                     if(obj.__xst === true){
                         les_arguments+='p(' + le_commentaire + obj.__xva + ')';
                     }else{
@@ -119,28 +123,24 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     }
                 }
             }else{
-              les_arguments='p()';
+                les_arguments='p()';
             }
         }
-        
         let type_callee=element.callee.type;
         if(element.callee){
-            obj = this.#traite_element(element.callee,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.callee,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 nom_de_la_fonction+=obj.__xva;
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
             }
-            if(element.callee.params && element.arguments){
-               auto_appelee='auto_appelee(4),';
-            }
+            
             
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : '0125 traiteCallExpression1' ,"element" : element}));
         }
-        
         if(element.body){
-            obj = this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
             if(obj.__xst === true){
                 if(obj.__xva !== ''){
                     le_contenu=',contenu(' + contenu + ')';
@@ -149,441 +149,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
             }
         }
-        
-        if(element.optional===true){
-            t+='chainé('+nom_de_la_fonction+' , appelf('+auto_appelee+'nomf()'+',' + les_arguments + le_contenu + '))';
+        if(element.optional === true){
+            t+='chainé(' + nom_de_la_fonction + ' , appelf(' + auto_appelee + 'nomf()' + ',' + les_arguments + le_contenu + '))';
         }else{
-            if(type_callee==='MemberExpression'){
-                if(nom_de_la_fonction.indexOf('nomf')<0){
-                    t+='appelf('+auto_appelee+'nomf('+nom_de_la_fonction+'),' + les_arguments + le_contenu + ')';
+            if(type_callee === 'MemberExpression'){
+                if(nom_de_la_fonction.indexOf('nomf') < 0){
+                    t+='appelf(' + auto_appelee + 'nomf(' + nom_de_la_fonction + '),' + les_arguments + le_contenu + ')';
                 }else{
-                    t+='appelf('+auto_appelee+nom_de_la_fonction+',' + les_arguments + le_contenu + ')';
+                    t+='appelf(' + auto_appelee + nom_de_la_fonction + ',' + les_arguments + le_contenu + ')';
                 }
             }else{
-                t+='appelf('+auto_appelee+'nomf('+nom_de_la_fonction+')'+',' + les_arguments + le_contenu + ')';
-            }
-        }
-//        debugger
-        
-        return({"__xst" : true ,"__xva" : t});
-    }
-    /*
-      =============================================================================================================
-      afr réécrire ce bord..
-    */
-    #traite_CallExpression_ancien(element,niveau,parent,tab_comm){
-        let t='';
-        let auto_appelee='';
-        let les_arguments='';
-        let nom_fonction='';
-        var i=0;
-        var j=0;
-        var k=0;
-        element.auto_appelee=false;
-        var parentProperty='';
-        if(element.callee){
-            if(element.callee.params && element.arguments && Array.isArray(element.callee.params) && Array.isArray(element.arguments)){
-                auto_appelee='auto_appelee(3),';
-                element.auto_appelee=true;
-            }
-        }
-        if(parent.property){
-            if(parent.computed && parent.computed === true){
-                /* le parent est un tableau => les propriétés sont les indices du tableau */
-            }else{
-                if(parent.property.type === 'Identifier'){
-                    parentProperty='prop(' + parent.property.name + ')';
-                    parent.property=null;
-                }else if(parent.property.type === 'Literal'){
-                    parentProperty='prop(' + parent.property.raw + ')';
-                    parent.property=null;
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0514 ' + parent.property.type ,"element" : element}));
-                }
-            }
-        }
-        var lesArguments='';
-        if(element.arguments && element.arguments.length > 0){
-            for( i=0 ; i < element.arguments.length ; i++ ){
-                lesArguments+=',';
-                var le_commentaire='';
-                if(auto_appelee !== ''){
-                    le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
-                }
-                if('CallExpression' === element.arguments[i].type){
-                    var obj1 = this.#traite_CallExpression(element.arguments[i],niveau + 1,element,tab_comm);
-                    if(obj1.__xst === true){
-                        if(obj1.__xva.substr(0,6) === 'defTab'){
-                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
-                        }else if(obj1.__xva.substr(0,6) === 'appelf'){
-                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
-                        }else{
-                            lesArguments+='p(' + le_commentaire + 'appelf(' + obj1.__xva + '))';
-                        }
-                    }else{
-                        console.error('Dans traiteCallExpression1 element=',element);
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteCallExpression1 479 ' ,"element" : element}));
-                    }
-                }else{
-                    var obj1 = this.#traite_element(element.arguments[i],niveau + 1,element,tab_comm);
-                    if(obj1.__xst === true){
-                        if('FunctionExpression' === element.arguments[i].type
-                         && parent
-                         && parent.callee
-                         && parent.callee.type
-                         && parent.callee.type === 'FunctionExpression'
-                        ){
-                            console.log('%c VERIFIER ajouter des parenthèses pour les arguments ','color:red;background:pink;');
-                            /* on ajoute une parenthèse */
-                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
-                        }else{
-                            lesArguments+='p(' + le_commentaire + obj1.__xva + ')';
-                        }
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0163' ,"element" : element}));
-                    }
-                }
-            }
-        }
-        if(lesArguments === ''){
-            lesArguments=parentProperty;
-        }else{
-            if(parentProperty !== ''){
-                lesArguments=lesArguments + ',' + parentProperty;
-            }
-        }
-        lesArguments=lesArguments + auto_appelee;
-        var contenu='';
-        var le_contenu='';
-        if(element.body){
-            var obj = this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
-            if(obj.__xst === true){
-                contenu=obj.__xva;
-                if(contenu !== ''){
-                    le_contenu=',contenu(' + contenu + ')';
-                }
-            }else{
-                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
-            }
-        }
-        var laPropriete='';
-        var prefixe='';
-        if(element.callee){
-            if(element.callee.property){
-                if(element.callee.property.type === 'Identifier'
-                 || element.callee.property.type === 'PrivateIdentifier'
-                 || element.callee.property.type === 'Literal'
-                ){
-                    var nom_de_la_fonction='';
-                    if(element.callee.property.type === 'Literal'){
-                        nom_de_la_fonction='cst(' + element.callee.property.raw + ')';
-                    }else{
-                        if(element.callee.property.type === 'PrivateIdentifier'){
-                            nom_de_la_fonction='#' + element.callee.property.name;
-                        }else{
-                            nom_de_la_fonction=element.callee.property.name;
-                        }
-                    }
-                    if(element.callee.object && element.callee.object.type === 'Identifier'){
-                        if(element.callee.property.type === 'Literal'){
-                            /* a['Symbol.iterator'](); => appelf(nomf(tableau(nomt(a),p('element.callee.property')))) */
-                            if(element.callee.object.type === 'Identifier'){
-                                if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
-                                    t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.raw + ')))' + lesArguments + ')';
-                                }else{
-                                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1411 ' ,"element" : element}));
-                                }
-                            }
-                        }else if(element.callee.property.type === 'Identifier'
-                         && element.callee.hasOwnProperty('computed')
-                         && element.callee.computed === true
-                        ){
-                            /* a[b](x) */
-                            t+='appelf(nomf(tableau(nomt(' + element.callee.object.name + '),p(' + element.callee.property.name + ')))' + lesArguments + le_contenu + ')';
-                        }else{
-                            debugger
-                            if(element.optional===true){
-                                if(lesArguments===''){
-                                  lesArguments=',p()'
-                                }
-                                t+='chainé(' + nom_de_la_fonction + ' , appelf( nomf()' + lesArguments + le_contenu + '))';
-                            }else{
-                                t+='appelf(element(' + element.callee.object.name + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
-                            }
-                        }
-                    }else if(element.callee.object && element.callee.object.type === 'Literal'){
-                        t+='appelf(element(' + element.callee.object.raw + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
-                    }else if(element.callee.object && 'ArrayExpression' === element.callee.object.type){
-                        if(element.callee.property.type === 'Identifier'){
-                            /* cas ([f(3160).forEach,f(1654)]).forEach(function(x){a=1;}); */
-                            element.callee.property=null;
-                        }
-                        var obj1 = this.#traite_ArrayExpression(element.callee.object,niveau,element.callee,tab_comm);
-                        if(obj1.__xst === true){
-                        }else{
-                            return(astjs_logerreur({"__xst" : false ,"__xme" : '1395 erreur dans traiteCallExpression1 ' ,"element" : element}));
-                        }
-                        t+='appelf(element(' + obj1.__xva + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
-                    }else{
-                        if(element.callee.object
-                         && element.callee.object.type === 'MemberExpression'
-                         && !(element.callee.object.object
-                         && element.callee.object.property
-                         && element.callee.object.object.type === 'Identifier'
-                         && element.callee.object.property.type === 'Identifier')
-                        ){
-                            var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm);
-                            if(obj1.__xst === true){
-                                t+='appelf(element(' + obj1.__xva + '),nomf(' + nom_de_la_fonction + ')' + lesArguments + le_contenu + ')';
-                            }else{
-                                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 485 ' ,"element" : element}));
-                            }
-                        }else{
-                            if(contenu === ''){
-                                if(element.callee.property.name){
-                                    if(element.optional===true){
-                                        if(lesArguments===''){
-                                         lesArguments=',p()';
-                                        }
-                                        laPropriete='chainé(' + nom_de_la_fonction + ' , appelf( nomf() ' + lesArguments + '))';
-                                    }else{
-                                        laPropriete='prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + '))';
-                                    }
-                                }else if(element.callee.property.type === 'ConditionalExpression'){
-                                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1235 ' ,"element" : element}));
-                                }
-                            }else{
-                                console.error('\n\nATTENTION VERIFIER CECI\n\n');
-                                laPropriete='#(to' + 'do verifier convertit_js_en-rev 1230 ),prop(appelf(nomf(' + nom_de_la_fonction + ')' + lesArguments + ',contenu(' + contenu + ')))';
-                            }
-                        }
-                    }
-                }else if(element.callee.property.type === 'MemberExpression'){
-                    /* ce sera traité plus bas dans le                     if(element.callee.object){ */
-                }else if(element.callee.property.type === 'Literal'){
-                    debugger;
-                }else if(element.callee.property.type === 'ConditionalExpression'){
-                    var obj1 = this.#traite_ConditionalExpression(element.callee.property,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === true){
-                        if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
-                            if(element.callee.object.type === 'MemberExpression'){
-                                var obj2 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm);
-                                if(obj2.__xst === true){
-                                    t+='appelf(nomf(tableau(nomt(' + obj2.__xva + '),p(' + obj1.__xva + ')))' + lesArguments + le_contenu + ')';
-                                }else{
-                                    return(astjs_logerreur({"__xst" : false ,"__xme" : '1494 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
-                                }
-                            }else{
-                                return(astjs_logerreur({"__xst" : false ,"__xme" : '0282 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
-                            }
-                        }else{
-                            return(astjs_logerreur({"__xst" : false ,"__xme" : '1500 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
-                        }
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : '1504 erreur dans traiteCallExpression1 pour "' + element.callee.property.type + '"' ,"element" : element}));
-                    }
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0887 pour "' + element.callee.property.type + '"' ,"element" : element}));
-                }
-            }
-            if(element.callee.object){
-                if(element.callee.object.type === 'CallExpression'){
-                    var obj1 = this.#traite_CallExpression(element.callee.object,niveau + 1,element,tab_comm);
-                    if(obj1.__xst === true){
-                        if(obj1.__xva.substr(0,6) === 'appelf' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
-                            t+='' + obj1.__xva.substr(0,obj1.__xva.length - 1) + ',' + laPropriete + ')';
-                        }else if(obj1.__xva.substr(0,3) === 'new' && obj1.__xva.substr(obj1.__xva.length - 1,1) === ')'){
-                            t+='' + obj1.__xva.substr(0,obj1.__xva.length - 1) + ',' + laPropriete + ')';
-                        }else{
-                            if(contenu === ''){
-                                t+='appelf(' + obj1.__xva + ',' + laPropriete + ')';
-                            }else{
-                                t+='appelf(' + obj1.__xva + ',' + laPropriete + ',contenu(' + contenu + '))';
-                            }
-                        }
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0900 ' ,"element" : element}));
-                    }
-                }else if(element.callee.object.type === 'ArrayExpression'){
-                    /*
-                      c'est traité plus haut 
-                    */
-                }else if(element.callee.object.type === 'MemberExpression'){
-                    var obj1 = this.#traite_MemberExpression(element.callee.object,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === false){
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 485 ' ,"element" : element}));
-                    }
-                    prefixe='';
-                    if(element.callee.property.type === 'PrivateIdentifier'){
-                        prefixe='#';
-                    }
-                    if(element.callee.object.object
-                     && element.callee.object.property
-                     && element.callee.object.object.type === 'Identifier'
-                     && element.callee.object.property.type === 'Identifier'
-                    ){
-                        if(element.optional===true){ // 
-                            t='chainé(' + obj1.__xva + ',' + laPropriete + ')';
-                        }else{
-                            t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                        }
-                    }else{
-                        /*
-                          Traité plus haut en repère xxx001    
-                        */
-                    }
-                }else if(element.callee.object.type === 'Identifier'){
-                    var nom_de_l_objet=element.callee.object.name;
-                    if(element.callee.property && element.callee.property.type === 'MemberExpression'){
-                        var obj = this.#traite_MemberExpression(element.callee.property,niveau,element.callee,tab_comm);
-                        if(obj.__xst === true){
-                            if(element.callee.hasOwnProperty('computed') && element.callee.computed === true){
-                                /* a[Symbol.iterator](); => appelf(nomf(a[Symbol.iterator])) */
-                                t+='appelf(nomf(' + nom_de_l_objet + '[' + obj.__xva + '])' + lesArguments + le_contenu + ')';
-                            }else{
-                                return(astjs_logerreur({"__xst" : false ,"__xme" : '1539 erreur dans traiteCallExpression1 ' + element.callee.property.type ,"element" : element}));
-                            }
-                        }else{
-                            return(astjs_logerreur({"__xst" : false ,"__xme" : '1538 erreur dans traiteCallExpression1 ' + element.callee.property.type ,"element" : element}));
-                        }
-                    }else{
-                        if(element.optional===true){
-                           t='chainé(' + nom_de_l_objet + ',' + t + ')';
-                           debugger
-                        }else{
-                           debugger
-                        }
-                    }
-                }else if(element.callee.object.type === 'Literal'){
-                    /* le traitement a été fait plus haut */
-                }else if(element.callee.object.type === 'ThisExpression'){
-                    prefixe='';
-                    if(element.callee.property.type === 'PrivateIdentifier'){
-                        prefixe='#';
-                    }
-                    t='appelf(element(this),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                }else if(element.callee.object.type === 'ImportExpression'){
-                    if(element.callee.object.source){
-                        if(element.callee.object.source.type === 'Literal'){
-                            lesArguments='p(' + element.callee.object.source.raw + ')';
-                        }else if(element.callee.object.source.type === 'Identifier'){
-                            lesArguments='p(' + element.callee.object.source.name + ')';
-                        }else{
-                            return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1230 type de source inconnu pour l\'import ' + element.callee.object.type ,"element" : element}));
-                        }
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1230 pas de source en import ' + element.callee.object.type ,"element" : element}));
-                    }
-                    t='appelf(nomf(import),' + lesArguments + ',' + laPropriete + le_contenu + ')';
-                }else if(element.callee.object.type === 'Super'){
-                    t='appelf(nomf(super),' + lesArguments + ',' + laPropriete + ')';
-                }else if(element.callee.object.type === 'NewExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === true){
-                        t=obj1.__xva.substr(0,obj1.__xva.length - 2) + ',' + lesArguments + ',' + laPropriete + '))';
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteAssignmentExpress1 1385' ,"element" : element}));
-                    }
-                }else if(element.callee.object.type === 'BinaryExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === true){
-                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1366 ' + element.callee.object.type ,"element" : element}));
-                    }
-                }else if(element.callee.object.type === 'FunctionExpression'){
-                    var obj1 = this.#traite_FunctionExpression(element.callee.object,niveau,element,tab_comm);
-                    if(obj1.__xst === true){
-                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
-                    }
-                }else if(element.callee.object.type === 'LogicalExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === true){
-                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
-                    }
-                }else if(element.callee.object.type === 'AssignmentExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === true){
-                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
-                    }
-                }else if(element.callee.object.type === 'ConditionalExpression'){
-                    var obj1 = this.#traite_element(element.callee.object,niveau,element.callee,tab_comm);
-                    if(obj1.__xst === true){
-                        t='appelf(element(' + obj1.__xva + '),nomf(' + prefixe + element.callee.property.name + ')' + lesArguments + le_contenu + ')';
-                    }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
-                    }
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 0618 ' + element.callee.object.type ,"element" : element}));
-                }
-            }else if(element.callee.type === 'Identifier'){
-                if(element.callee.name === 'Array' && laPropriete === '' && parent.type !== 'CallExpression'){
-                    if(lesArguments.length > 0 && lesArguments.substr(0,1) === ','){
-                        lesArguments=lesArguments.substr(1);
-                    }
-                    t+='defTab(' + lesArguments + ')';
-                }else{
-                    if(element.optional===true){
-                        if(lesArguments===''){
-                          lesArguments=',p()';
-                        }
-                        t+='chainé( ' + element.callee.name + ' , appelf(nomf()' + lesArguments + laPropriete + le_contenu + '))';
-                    }else{
-                        t+='appelf(nomf(' + element.callee.name + ')' + lesArguments + laPropriete + le_contenu + ')';
-                    }
-                }
-            }else if(element.callee.type === 'CallExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
-                if(obj1.__xst === true){
-                    t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
-                }
-            }else if(element.callee.type === 'SequenceExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
-                if(obj1.__xst === true){
-                    t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
-                }
-            }else if(element.callee.type === 'ConditionalExpression'){
-                var obj1 = this.#traite_ConditionalExpression(element.callee,niveau,element,tab_comm);
-                if(obj1.__xst === true){
-                    t='appelf(nomf(' + obj1.__xva + ')' + lesArguments + le_contenu + ')';
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0108 ' ,"element" : element}));
-                }
-            }else if(element.callee.type === 'FunctionExpression'){
-                var obj1 = this.#traite_FunctionExpression(element.callee,niveau,element,tab_comm);
-                if(obj1.__xst === true){
-                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + le_contenu + ')';
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteUneComposante 0147 ' ,"element" : element}));
-                }
-            }else if(element.callee.type === 'Super'){
-                t+='appelf(nomf(super)' + lesArguments + laPropriete + ')';
-            }else if(element.callee.type === 'ArrowFunctionExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
-                if(obj1.__xst === true){
-                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + le_contenu + ')';
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 1417 ' + element.callee.type ,"element" : element}));
-                }
-            }else if(element.callee.type === 'ThisExpression'){
-                var obj1 = this.#traite_element(element.callee,niveau,element,tab_comm);
-                if(obj1.__xst === true){
-                    t+='appelf(nomf(' + obj1.__xva + ')' + lesArguments + laPropriete + le_contenu + ')';
-                }else{
-                    return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur 0000 [ to' + 'do ajuster ] '}));
-                }
-            }else{
-                return(astjs_logerreur({"__xst" : false ,"__xme" : '1627 erreur dans traiteCallExpression1 "' + element.callee.type + '"' ,"element" : element}));
+                t+='appelf(' + auto_appelee + 'nomf(' + nom_de_la_fonction + ')' + ',' + les_arguments + le_contenu + ')';
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -608,7 +184,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0047 #traite_ArrowFunctionExpression generator' ,"element" : element}));
         }
         if(element.id){
-            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
@@ -617,7 +193,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
                 if(obj.__xst === true){
                     contenu+='retourner(' + obj.__xva + ')';
                 }else{
@@ -638,7 +214,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 for( let i=0 ; i < element.params.length ; i++ ){
                     le_commentaire=this.#comm_dans_arguments_appel_fonction(element.params[i],niveau,element,tab_comm);
-                    obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm);
+                    obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm,false);
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
@@ -658,7 +234,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let l_argument='';
         if(element.argument){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 if(obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
                     debugger;
@@ -683,13 +259,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let gauche='';
         let droite='';
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0134 #traite_AssignmentExpression' ,"element" : element}));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
@@ -712,13 +288,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let droite='';
         let nomDuTest='';
         let nouveauTableau=null;
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
@@ -786,7 +362,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             nomVariable='';
             if(element.declarations[decl].id){
-                obj=this.#traite_element(element.declarations[decl].id,niveau + 1,element,tab_comm);
+                obj=this.#traite_element(element.declarations[decl].id,niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     nomVariable=obj.__xva;
                 }else{
@@ -806,7 +382,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 debutDeclaration='declare(' + nomVariable + ' , ';
             }
             if(element.declarations[decl].init){
-                obj=this.#traite_element(element.declarations[decl].init,niveau + 1,element,tab_comm);
+                obj=this.#traite_element(element.declarations[decl].init,niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     t+=(debutDeclaration + obj.__xva) + ')';
                 }else{
@@ -818,8 +394,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
-    
     /*
       =============================================================================================================
       const str_ = i18n.createIcuMessageFn(import.meta.url, UIStrings);
@@ -830,19 +404,19 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let meta='';
         let propriete='';
         if(element.meta && element.property){
-            obj=this.#traite_element(element.meta,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.meta,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 meta+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0727 #traite_MetaProperty' ,"element" : element}));
             }
-            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                propriete+='.'+obj.__xva;
+                propriete+='.' + obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0727 #traite_MetaProperty' ,"element" : element}));
             }
-            t+=meta+propriete;
+            t+=meta + propriete;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0730 #traite_MetaProperty' ,"element" : element}));
         }
@@ -856,15 +430,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let source='';
         if(element.source){
-            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 source+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0726 #traite_ImportExpression' ,"element" : element}));
             }
         }
-        t+='appelf(nomf(import),p('+source+'))'
-//        debugger
+        t+='appelf(nomf(import),p(' + source + '))';
+        /* debugger */
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -874,8 +448,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         if(element.local){
-            if( element.local.type==='Identifier'){
-                  t+='espace_de_noms('+element.local.name+')'
+            if(element.local.type === 'Identifier'){
+                t+='espace_de_noms(' + element.local.name + ')';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0724 #traite_ImportDefaultSpecifier' ,"element" : element}));
             }
@@ -890,17 +464,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_ImportDefaultSpecifier(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-
         if(element.local){
-            if( element.local.type==='Identifier'){
-                  t+='bibliotheque_par_défaut('+element.local.name+')'
+            if(element.local.type === 'Identifier'){
+                t+='bibliotheque_par_défaut(' + element.local.name + ')';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0742 #traite_ImportDefaultSpecifier' ,"element" : element}));
             }
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0746 #traite_ImportDefaultSpecifier' ,"element" : element}));
         }
-    
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -909,13 +481,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_ImportSpecifier(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-
         if(element.imported && element.local){
-            if( element.imported.type==='Identifier' && element.local.type==='Identifier'){
+            if(element.imported.type === 'Identifier' && element.local.type === 'Identifier'){
                 if(element.imported.name === element.local.name){
-                  t+='bibliotheque_spécifiée('+element.imported.name+')'
+                    t+='bibliotheque_spécifiée(' + element.imported.name + ')';
                 }else{
-                  t+='bibliotheque_spécifiée('+element.imported.name+','+element.local.name+')'
+                    t+='bibliotheque_spécifiée(' + element.imported.name + ',' + element.local.name + ')';
                 }
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element}));
@@ -936,7 +507,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
           import "nom-module";
           import { toto , truc } from "nom-module/chemin/vers/fichier-non-exporte";
           let promesse = import("nom-module");
-        */        
+        */
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -948,21 +519,20 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let source='';
         let specifiers='';
         if(element.source){
-            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                 source+=obj.__xva;
+                source+=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0767 #traite_ImportDeclaration' ,"element" : element}));
             }
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0798 #traite_ImportDeclaration' ,"element" : element}));
         }
-        
         if(element.specifiers){
-            for(let i=0;i<element.specifiers.length;i++){
-                obj=this.#traite_element(element.specifiers[i],niveau + 1,element.specifiers,tab_comm);
+            for( let i=0 ; i < element.specifiers.length ; i++ ){
+                obj=this.#traite_element(element.specifiers[i],niveau + 1,element.specifiers,tab_comm,false);
                 if(obj.__xst === true){
-                     specifiers+=obj.__xva;
+                    specifiers+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0722 #traite_ImportDeclaration' ,"element" : element}));
                 }
@@ -970,11 +540,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0738 #traite_ImportDeclaration' ,"element" : element}));
         }
-        
-        t='importer('+specifiers+ (specifiers===''?'':',')+ 'provenance('+source+')'+')'
-        
-        
-
+        t='importer(' + specifiers + (specifiers === '' ? ( '' ) : ( ',' )) + 'provenance(' + source + ')' + ')';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -984,16 +550,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         if(element.argument){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                t+='...'+obj.__xva;
+                t+='...' + obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0740 #traite_SpreadElement' ,"element" : element}));
             }
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0721 #traite_RestElement' ,"element" : element}));
         }
-
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -1003,9 +568,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         if(element.argument){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                t+='...'+obj.__xva;
+                t+='...' + obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0759 #traite_RestElement' ,"element" : element}));
             }
@@ -1021,14 +586,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         for(let i in element.properties){
-            if(element.properties[i].computed!==false){
+            if(element.properties[i].computed !== false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1200 #traite_ObjectPattern' ,"element" : element}));
             }
-            if(element.properties[i].method!==false){
+            if(element.properties[i].method !== false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1204 #traite_ObjectPattern' ,"element" : element}));
             }
-            if(element.properties[i].shorthand!==false){
-                /* const {a, b} = c; =>  const {a:a, b:b} = c;  */
+            if(element.properties[i].shorthand !== false){
+                /* const {a, b} = c; =>  const {a:a, b:b} = c; */
                 /* debugger; */
                 /* return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1207 #traite_ObjectPattern' ,"element" : element})); */
             }
@@ -1044,18 +609,16 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0739 #traite_ObjectPattern "' + val.key.type + '"' ,"element" : element}));
             }
-            obj=this.#traite_element(val.value,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(val.value,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 t+=obj.__xva + ')';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0745 #traite_ObjectPattern'}));
             }
         }
-        
         t='obj(' + t + ')';
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
       =============================================================================================================
     */
@@ -1075,14 +638,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '280 #traite_ObjectExpression "' + val.key.type + '"' ,"element" : element}));
             }
-            obj=this.#traite_element(val.value,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(val.value,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 t+=obj.__xva + ')';
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0386 #traite_ObjectExpression'}));
             }
         }
-        
         t+=this.#comm_avant_fin1(element,niveau,element,tab_comm);
         t='obj(' + t + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -1120,7 +682,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 nombre_elements++;
             }else{
                 ne_contient_que_des_constantes=false;
-                obj=this.#traite_element(element.elements[i],niveau + 1,element,tab_comm);
+                obj=this.#traite_element(element.elements[i],niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     lesPar+=',p(' + obj.__xva + ')';
                 }else{
@@ -1131,8 +693,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(lesPar.length >= 0){
             lesPar=lesPar.substr(1);
         }
-        lesPar+=this.#comm_avant_fin1(element,niveau,parent,tab_comm);
-        t='defTab('+lesPar + ')';
+        lesPar+=this.#comm_avant_fin1(element,niveau,element,tab_comm);
+        t='defTab(' + lesPar + ')';
         if(t === 'appelf(nomf(Array))'){
             t='[]';
         }else{
@@ -1162,7 +724,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0461 #traite_FunctionDeclaration generator' ,"element" : element}));
         }
         if(element.id){
-            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 nom_fonction+=obj.__xva;
             }else{
@@ -1173,7 +735,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.params && Array.isArray(element.params)){
             for( let i=0 ; i < element.params.length ; i++ ){
-                obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm);
+                obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     les_arguments+=',argument(' + obj.__xva + ')';
                 }else{
@@ -1230,259 +792,155 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let prop='';
         let objet='';
         let propriete='';
-
-
-
-        
-        let type_parent=parent.type
-        let type_objet = element.object.type;
+        let type_objet='';
+        let type_parent=parent.type;
         let type_propriete=element.property.type;
-
-
-
-        obj=this.#traite_element(element.object,niveau + 1,element,tab_comm);
-        if(obj.__xst === true){
-            objet=obj.__xva;
-            type_objet = element.object.type;
+        if(element.object){
+            type_objet=element.object.type;
+            obj=this.#traite_element(element.object,niveau + 1,element,tab_comm,false);
+            if(obj.__xst === true){
+                objet=obj.__xva;
+                type_objet=element.object.type;
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+            }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
+            /* cas let  x7 = a ?. [42]; */
+            /* cas let x10 = a.b ?. c; */
+            debugger
+            type_objet=null;
         }
-        
-
-        obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             propriete=obj.__xva;
             type_propriete=element.property.type;
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
         }
         if(element.computed === false){
-            if(type_parent==='CallExpression'){
-                t='element('+objet+'),nomf('+propriete+')';
-                return({"__xst" : true ,"__xva" : t});
-            }else {
-                if(type_objet==='CallExpression'){
-                    // pour traiter le d de "a.b(c).d" 
-                    if(objet.substr(0,7)==='appelf('){
-                        // on retire la dernière parenthèse et on ajoute la propriété 
-                        t=objet.substr(0,objet.length-1)+'prop('+propriete+'))';
+            if(type_parent === 'CallExpression'){
+                if(parent.optional===true){
+                    if(element.property.type==='Identifier' && element.object.type==='Identifier'){
+                        t=objet + '.' + propriete;
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
-                    }
-                }else if(type_objet==='MemberExpression'){
-                    // pour traiter le d de "a.b(c).d" 
-                    if(objet.substr(0,8)==='tableau('){
-                        // on retire la dernière parenthèse et on ajoute la propriété 
-                        t=objet.substr(0,objet.length-1)+'prop('+propriete+'))';
-                    }else if(objet.substr(0,7)==='appelf('){
-                        // on retire la dernière parenthèse et on ajoute la propriété 
-                        t=objet.substr(0,objet.length-1)+'prop('+propriete+'))';
-                    }else{
-                        t=objet+'.'+propriete;
-                        element.type='Identifier';
-                    }
-                }else if(type_objet==='ObjectExpression'){
-                    // pour traiter le "{}.d" 
-                    if(objet.substr(0,4)==='obj('){
-                        // on retire la dernière parenthèse et on ajoute la propriété 
-                        t=objet.substr(0,objet.length-1)+'prop('+propriete+'))';
-                    }else{
-                        t=objet+'.'+propriete;
-                        element.type='Identifier';
-                    }
-                }else if(type_objet==='LogicalExpression' || type_objet==='AssignmentExpression' || type_objet==='NewExpression' ){
-                    t=objet.substr(0,objet.length-1)+',prop('+propriete+'))';
-                }else if(false && type_objet==='NewExpression'  ){
-                    if(objet.substr(0,11)==='new(appelf('){
-                        t=objet.substr(0,objet.length-2)+',prop('+propriete+')))';
-                    }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
                     }
                 }else{
-                    t=objet+'.'+propriete;
-                    //on force le type d'élément parent
+                    t='element(' + objet + '),nomf(' + propriete + ')';
+                }
+                return({"__xst" : true ,"__xva" : t});
+            }else if(type_parent === 'ChainExpression'){
+                /*
+                 cas a.b ?. c.d()
+                 objet=chainé(a.b,c)
+                 on doit retourner chainé(a.b,c.d)
+                */
+                if(objet.substr(0,7)==='chainé('){
+                    debugger
+                    if(type_propriete==='Identifier'){
+                        t=objet.substr(0,objet.length-1)+'.'+propriete+')';
+                        return({"__xst" : true ,"__xva" : t});
+                    }else{
+                        
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                    }
+                }else{
+                    debugger
+                    if(type_objet===null){
+                        /* 
+                           cas let x12 = b.c ?. d ?. e; 
+                           pour le e
+                        */
+                        t=propriete;
+                    }else{
+                        t='chainé('+objet+','+propriete+')';
+                    }
+                    return({"__xst" : true ,"__xva" : t});
+                    debugger
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                }
+            }else{
+                if(type_objet === 'CallExpression'){
+                    /* pour traiter le d de "a.b(c).d" */
+                    if(objet.substr(0,7) === 'appelf('){
+                        /* on retire la dernière parenthèse et on ajoute la propriété */
+                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                    }
+                }else if(type_objet === 'MemberExpression'){
+                    /* pour traiter le d de "a.b(c).d" */
+                    if(objet.substr(0,8) === 'tableau('){
+                        /* on retire la dernière parenthèse et on ajoute la propriété */
+                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                    }else if(objet.substr(0,7) === 'appelf('){
+                        /* on retire la dernière parenthèse et on ajoute la propriété */
+                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                    }else{
+                        t=objet + '.' + propriete;
+                        element.type='Identifier';
+                    }
+                }else if(type_objet === 'ObjectExpression'){
+                    /* pour traiter le "{}.d" */
+                    if(objet.substr(0,4) === 'obj('){
+                        /* on retire la dernière parenthèse et on ajoute la propriété */
+                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                    }else{
+                        t=objet + '.' + propriete;
+                        element.type='Identifier';
+                    }
+                }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression'){
+                    t=objet.substr(0,objet.length - 1) + ',prop(' + propriete + '))';
+                }else if(type_objet === null){
+                        /* cas let x10 = a.b ?. c; */
+                        t=propriete;
+                }else{
+                    if(element.optional===true){
+                        debugger
+                        t='chainé('+objet+','+propriete+')';
+                    }else{
+                        t=objet + '.' + propriete;
+                    }
+                    /* on force le type d'élément parent */
                     element.type='Identifier';
                 }
                 return({"__xst" : true ,"__xva" : t});
             }
         }else{
-            if(type_parent==='CallExpression'){
-                /* */
-                
-                if(true || (type_propriete==='Literal' && type_objet==='Identifier')){
-                    t='tableau( nomt('+objet+'),p('+propriete+'))';
+            if(type_parent === 'CallExpression'){
+                /*  */
+                if(true || type_propriete === 'Literal' && type_objet === 'Identifier'){
+                    t='tableau( nomt(' + objet + '),p(' + propriete + '))';
                 }else{
                     /* afr debugger; */
-                    t='element('+objet+'),nomf('+propriete+')';
+                    t='element(' + objet + '),nomf(' + propriete + ')';
                 }
                 return({"__xst" : true ,"__xva" : t});
-            }else {
-                if(type_propriete==='Identifier' && type_objet==='Identifier'){
-                    t=objet+'['+propriete+']';
+            }else{
+                if(type_propriete === 'Identifier' && type_objet === 'Identifier'){
+                    t=objet + '[' + propriete + ']';
                     return({"__xst" : true ,"__xva" : t});
                 }else{
                     if(objet.endsWith(']') && isNumeric(propriete)){
-                        t=objet+'['+propriete+']';
+                        t=objet + '[' + propriete + ']';
                     }else{
-                        if(type_objet==='Identifier' && isNumeric(propriete)){
-                            t=objet+'['+propriete+']';
+                        if((type_objet === 'Identifier' || type_objet === null ) && isNumeric(propriete)){
+                            t=objet + '[' + propriete + ']';
                         }else{
-                            t='tableau(nomt('+objet+'),p('+propriete+'))';
+                            t='tableau(nomt(' + objet + '),p(' + propriete + '))';
                         }
                     }
                     return({"__xst" : true ,"__xva" : t});
                 }
             }
         }
-        debugger
-
-
-
-
-        obj=this.#traite_element(element.object,niveau + 1,element,tab_comm);
-        if(obj.__xst === true){
-            objet=obj.__xva;
-        }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
-        }
-        if(element.computed === false){
-//            debugger
-            if(element.property){
-                obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
-                if(obj.__xst === true){
-                    prop=obj.__xva;
-                }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
-                }
-            }
-            if(prop !== ''){
-                if(objet.substr(0,8) === 'tableau('){
-                    t+=objet.substr(0,objet.length - 1) + ',prop(' + prop + '))';
-                }else if(objet.substr(0,6) === 'appelf'){
-                    if(objet.indexOf('prop(') >= 0){
-                        objet=objet.substr(0,objet.length - 2) + '.' + prop + '))';
-                        t=objet;
-                    }else{
-                        if(element.optional==true){
-                            objet='chainé(' + objet.substr(0,objet.length - 1) + '),' + prop + ')';
-                        }else{
-                            objet=objet.substr(0,objet.length - 1) + ',prop(' + prop + '))';
-                        }
-                        t=objet;
-                    }
-                }else{
-                    if(objet.substr(objet.length - 1,1) === ')'){
-                        if(objet.substr(objet.length - 2,1) === '('){
-                            t+=objet.substr(0,objet.length - 1) + 'prop(' + prop + ')' + ')';
-                        }else{
-                            if(element.optional===true){
-                                t+='chainé(' + objet + ', ' +  prop + ')' ;
-                                debugger
-                            }else{
-                                t+=objet.substr(0,objet.length - 1) + ',prop(' + prop + ')' + ')';
-                            }
-                        }
-                    }else{
-                        if(element.optional===true){
-                            t+='chainé('+objet + ',' + prop +')';
-                        }else{
-                            t+=objet + '.' + prop;
-                        }
-                    }
-                }
-            }else{
-                t+=objet;
-            }
-        }else{
-            if(element.property){
-                obj=this.#traite_element(element.property,niveau + 1,element,tab_comm);
-                if(obj.__xst === true){
-                    prop=obj.__xva;
-                }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
-                }
-            }
-            if(prop === ''){
-                if(element.optional===true){
-                   debugger ; 
-                   /* que faut-il faire ici  ? */
-                   t+=objet;
-                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_MemberExpression' ,"element" : element}));
-                }else{
-                   t+=objet;
-                }
-            }else{
-                /*  à priori c'est comme ça mais on va essayer de simplifier */
-                var tempo='tableau(nomt(' + objet + '),p(' + prop + '))';
-                if(element.optional===true){
-                  tempo='chainé( ' + objet + ' , tableau( nomt() , p(' + prop + ')))';
-                }
-                
-                if(element.object.type === 'Identifier' && element.property.type === 'Identifier'){
-                    if(element.optional===true){
-                        
-                        t+='chainé('+objet +','+ '[' + prop + '])';
-                        /* à verifier */
-                        debugger ;
-                    }else{
-                        t+=objet + '[' + prop + ']';
-                    }
-                }else if(element.object.type === 'Identifier' || element.object.type === 'MemberExpression'){
-                 
-                    
-                    
-                    if(prop.substr(0,5) === 'plus(' || prop.substr(0,6) === 'moins('){
-                        /*
-                          on essaie de mettre un arr(i+1)(j+1) à la place d'un                      
-                          tableau(nomt(tableau(nomt(arr) , p(plus(i , 1)))),p(plus(j , 1)))
-                        */
-                        var obj_nom_tableau = functionToArray(objet,true,true,'');
-                        if(obj_nom_tableau.__xst === true && obj_nom_tableau.__xva.length === 2 && obj_nom_tableau.__xva[1][2] === 'c'){
-                            /*
-                              le nom du tableau est une constante
-                            */
-                            var obj_indice_tableau = functionToArray(prop,true,true,'');
-                            if(obj_indice_tableau.__xst === true
-                             && obj_indice_tableau.__xva.length === 4
-                             && obj_indice_tableau.__xva[2][2] === 'c'
-                             && obj_indice_tableau.__xva[3][2] === 'c'
-                            ){
-                                if(prop.substr(0,5) === 'plus('){
-                                    if(element.optional===true){
-                                        t+='chainé(' + objet + ' , [' + obj_indice_tableau.__xva[2][1] + '+' + obj_indice_tableau.__xva[3][1] + '])';
-                                        debugger;
-                                        /* vérifier */
-                                        
-                                    }else{
-                                        t+='' + objet + '[' + obj_indice_tableau.__xva[2][1] + '+' + obj_indice_tableau.__xva[3][1] + ']';
-                                    }
-                                }else if(prop.substr(0,6) === 'moins('){
-                                    t+='' + objet + '[' + obj_indice_tableau.__xva[2][1] + '-' + obj_indice_tableau.__xva[3][1] + ']';
-                                }else{
-                                    /* 'tableau(nomt(' + objet + '),p(' + prop + '))'; */
-                                    t+=tempo ;
-                                }
-                            }else{
-                                /* 'tableau(nomt(' + objet + '),p(' + prop + '))'; */
-                                t+=tempo ;
-                            }
-                        }else{
-                            /* 'tableau(nomt(' + objet + '),p(' + prop + '))'; */
-                            t+=tempo ;
-                        }
-                    }else{
-                        /* 'tableau(nomt(' + objet + '),p(' + prop + '))'; */
-                        t+=tempo ;
-                    }
-                }else{
-                    /* 'tableau(nomt(' + objet + '),p(' + prop + '))'; */
-                    t+=tempo ;
-                }
-            }
-        }
-        
+        debugger;
+        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+        /*
+          a voir si on conserve le code suivant et dans quel cas
+        */
         if(t.substr(0,8) === 'tableau('){
-            var o = functionToArray(t,true,false,'');
+            var o=functionToArray(t,true,false,'');
             if(o.__xst === true){
                 if(o.__xva[2][1] === 'nomt' && o.__xva[2][8] === 1 && o.__xva[3][2] === 'c'){
                     var i=0;
@@ -1490,15 +948,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     var cumChaine='';
                     for( i=4 ; i < o.__xva.length && bcont === true ; i++ ){
                         if(o.__xva[i][7] === 1){
-                            if(o.__xva[i][1] === 'p' && o.__xva[i+1][2] === 'c'){
-                                if(o.__xva[i+1][4] !== 0){
+                            if(o.__xva[i][1] === 'p' && o.__xva[i + 1][2] === 'c'){
+                                if(o.__xva[i + 1][4] !== 0){
                                     bcont=false;
                                     break;
-                                }else if(o.__xva[i+1][4] === 2){
+                                }else if(o.__xva[i + 1][4] === 2){
                                     bcont=false;
                                     break;
                                 }else{
-                                    cumChaine+='[' + maConstante(o.__xva[i+1]) + ']';
+                                    cumChaine+='[' + maConstante(o.__xva[i + 1]) + ']';
                                 }
                             }else{
                                 bcont=false;
@@ -1526,7 +984,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let enfantDe2='';
         let enfantDe1='';
         let nouveau_tableau=null;
-        obj=this.#traite_element(element,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
@@ -1698,51 +1156,47 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 
         }
     }
-    
     /*
       =============================================================================================================
     */
-    #traite_chaineCallee( element , niveau , parent , tab_comm ){
+    #traite_chaineCallee(element,niveau,parent,tab_comm){
         let obj=null;
         let t='';
         let objet='';
         let optionnel='';
-        
         if(element.object){
-            obj=this.#traite_chaineCallee( element.object , niveau+1 , element , tab_comm );
+            obj=this.#traite_chaineCallee(element.object,niveau + 1,element,tab_comm);
             if(obj.__xst === true){
-                if(obj.optionnel!==''){
-                    optionnel=obj.optionnel
-                    objet=obj.objet
+                if(obj.optionnel !== ''){
+                    optionnel=obj.optionnel;
+                    objet=obj.objet;
                 }else{
-                    objet=obj.objet
+                    objet=obj.objet;
                 }
-                
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1444 #traite_chaineCallee' ,"element" : element}));
             }
         }else{
-            obj=this.#traite_element( element , niveau + 1 , element , tab_comm );
+            obj=this.#traite_element(element,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 objet=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1451 #traite_chaineCallee' ,"element" : element}));
             }
-            
         }
         if(element.property){
-            obj=this.#traite_element( element.property , niveau + 1 , element , tab_comm );
+            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                if(optionnel!==''){
-                    optionnel+='.'+obj.__xva;
+                if(optionnel !== ''){
+                    optionnel+='.' + obj.__xva;
                 }else{
-                    if(element.hasOwnProperty('optional') && element.optional===true){
+                    if(element.hasOwnProperty('optional') && element.optional === true){
                         optionnel=obj.__xva;
                     }else{
-                        if(element.property.type==='Identifier'){
-                            objet+='.'+obj.__xva;
-                        }else if(element.property.type==='Literal'){
-                            objet='tableau(nomt('+objet+'),p('+obj.__xva+'))';
+                        if(element.property.type === 'Identifier'){
+                            objet+='.' + obj.__xva;
+                        }else if(element.property.type === 'Literal'){
+                            objet='tableau(nomt(' + objet + '),p(' + obj.__xva + '))';
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1475 #traite_chaineCallee' ,"element" : element}));
                         }
@@ -1751,55 +1205,51 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1480 #traite_chaineCallee' ,"element" : element}));
             }
-            
         }
-        
-        return({__xst:true , objet:objet , optionnel:optionnel });      
+        return({"__xst" : true ,"objet" : objet ,"optionnel" : optionnel});
     }
     /*
       =============================================================================================================
     */
-    #traite_chaineObject( element , niveau , parent , tab_comm ){
+    #traite_chaineObject(element,niveau,parent,tab_comm){
         let obj=null;
         let t='';
         let objet='';
         let optionnel='';
-        debugger
+        debugger;
         if(element.object){
-            obj=this.#traite_chaineObject( element.object , niveau+1 , element , tab_comm );
+            obj=this.#traite_chaineObject(element.object,niveau + 1,element,tab_comm);
             if(obj.__xst === true){
-                if(obj.optionnel!==''){
-                    optionnel=obj.optionnel
-                    objet=obj.objet
+                if(obj.optionnel !== ''){
+                    optionnel=obj.optionnel;
+                    objet=obj.objet;
                 }else{
-                    objet=obj.objet
+                    objet=obj.objet;
                 }
-                
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1444 #traite_chaineCallee' ,"element" : element}));
             }
         }else{
-            obj=this.#traite_element( element , niveau + 1 , element , tab_comm );
+            obj=this.#traite_element(element,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 objet=obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1451 #traite_chaineCallee' ,"element" : element}));
             }
-            
         }
         if(element.property){
-            obj=this.#traite_element( element.property , niveau + 1 , element , tab_comm );
+            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                if(optionnel!==''){
-                    optionnel+='.'+obj.__xva;
+                if(optionnel !== ''){
+                    optionnel+='.' + obj.__xva;
                 }else{
-                    if(element.hasOwnProperty('optional') && element.optional===true){
+                    if(element.hasOwnProperty('optional') && element.optional === true){
                         optionnel=obj.__xva;
                     }else{
-                        if(element.property.type==='Identifier'){
-                            objet+='.'+obj.__xva;
-                        }else if(element.property.type==='Literal'){
-                            objet='tableau(nomt('+objet+'),p('+obj.__xva+'))';
+                        if(element.property.type === 'Identifier'){
+                            objet+='.' + obj.__xva;
+                        }else if(element.property.type === 'Literal'){
+                            objet='tableau(nomt(' + objet + '),p(' + obj.__xva + '))';
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1475 #traite_chaineCallee' ,"element" : element}));
                         }
@@ -1808,59 +1258,53 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1480 #traite_chaineCallee' ,"element" : element}));
             }
-            
         }
-        
-        return({__xst:true , objet:objet , optionnel:optionnel });      
+        return({"__xst" : true ,"objet" : objet ,"optionnel" : optionnel});
     }
     /*
       =============================================================================================================
     */
     #traite_ChainExpression(element,niveau,parent,tab_comm){
-        /*
-          https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Optional_chaining
-          https://github.com/GoogleChrome/lighthouse/blob/main/core/user-flow.js
+/*##
+https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Optional_chaining
+https://github.com/GoogleChrome/lighthouse/blob/main/core/user-flow.js
+
+let  x5 = b.c ?. e;
+let  x6 = b ?. e;
+let  x7 = a ?. [42];
+let  x8 = a ?. ["b"];
+let  x9 = a.b ?. ();
+let x10 = a.b ?. c;
+let x11 = a.b ?. c.d();
+let x12 = b.c ?. d ?. e;
+let x13 = a.b ?. c ?. ();
           
-          let  x0 = a.b?.();
-          let  x1 = a?. b();
-          let  x2 = a.b ?. c(d);
-          let  x3 = b.c("d") ?. e;
-          let  x4 = a ?. (b.c);
-          let  x5 = b.c ?. e;
-          let  x6 = b ?. e;
-          let  x7 = a ?. [42];
-          let  x8 = a ?. ["b"];
-          let  x9 = a.b ?. ();
-          let x10 = a.b ?. c;
-          let x11 = a.b ?. c.d();
-          let x12 = b.c ?. d ? .e;
-          let x13 = a.b ?. c ?. ();
-        */     
+let  x0 = a.b?.();
+let  x1 = a?. b();
+let  x2 = a.b ?. c(d);
+let  x3 = b.c("d") ?. e;
+let  x4 = a ?. (b.c);
+*/
         let t='';
         let obj=null;
         let gauche='';
         let droite='';
         let objet="";
         let propriete='';
-        
-        if(!element.expression){
+        if(!(element.expression)){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element}));
         }
-        
-        if(element.expression.type==='CallExpression'){
-
-
+        if(element.expression.type === 'CallExpression'){
             var les_arguments='';
             if(element.expression.hasOwnProperty('arguments')){
-             
                 if(element.expression.arguments.length === 0){
                     les_arguments='p()';
                 }else{
                     for( let i=0 ; i < element.expression.arguments.length ; i++ ){
                         var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                        var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm);
+                        var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm,false);
                         if(obj1.__xst === true){
-                            if(les_arguments!==''){
+                            if(les_arguments !== ''){
                                 les_arguments+=',';
                             }
                             les_arguments+='p(' + le_commentaire + obj1.__xva + ')';
@@ -1870,201 +1314,179 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     }
                 }
             }
-            debugger
 
-            obj=this.#traite_element( element.expression.callee , niveau + 1 , element , tab_comm );
-            if(obj.__xst===true){
+            obj=this.#traite_element(element.expression.callee,niveau + 1,element,tab_comm,false);
+            if(obj.__xst === true){
                 gauche=obj.__xva;
-                if(gauche.substr(0,7)==='chainé('){
-
+                if(gauche.substr(0,7) === 'chainé('){
                     obj=functionToArray(gauche,true,true,'');
                     if(obj.__xst === true){
                         var nouveauTableau=obj.__xva;
-                        
-                        /* le nom de l'élément*/
-                         
+                        /* le nom de l'élément */
                         var t1=a2F1(nouveauTableau,1,true,2,0,[],null,true);
-                        if(t1.__xst===true){
+                        if(t1.__xst === true){
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
                         }
-                         /* le reste */
+                        /* le reste */
                         var t2=a2F1(nouveauTableau,1,true,nouveauTableau[2][12],0,[],null,false);
-                        if(t2.__xst===true){
+                        if(t2.__xst === true){
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
                         }
-                        t+='chainé('+t1.__xva+',appelf(nomf('+t2.__xva+')'+les_arguments+'))';
-                        
-                        
+                        /* 
+                          ok pour let  x1 = a?. b();
+                          afr pour let x13 = a.b ?. c ?. (); 
+                        */
+                        debugger
+                        t+='chainé(' + t1.__xva + ',appelf(nomf(' + t2.__xva + ')' + les_arguments + '))';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
                     }
-
-                 
-                 
                 }else{
-                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1739 #traite_ChainExpression' ,"element" : element}));
+                    t+='chainé(' + gauche + ', appelf( nomf()' + les_arguments + '))';
                 }
             }else{
-              return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
             }
-        }else if(element.expression.type==='MemberExpression'){
-         
-            debugger
+        }else if(element.expression.type === 'MemberExpression'){
+            debugger;
             element.expression.optional=false;
-            
-            obj=this.#traite_element( element.expression.object , niveau + 1 , element , tab_comm );
-            if(obj.__xst===true){
+            obj=this.#traite_element(element.expression.object,niveau + 1,element,tab_comm,false);
+            if(obj.__xst === true){
                 gauche=obj.__xva;
             }else{
-              return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
             }
-            
-            obj=this.#traite_element( element.expression.property , niveau + 1 , element , tab_comm );
-            if(obj.__xst===true){
+            element.expression.object=null;
+            obj=this.#traite_element(element.expression,niveau + 1,element,tab_comm,false);
+            if(obj.__xst === true){
                 droite=obj.__xva;
             }else{
-              return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1752 #traite_ChainExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1752 #traite_ChainExpression' ,"element" : element}));
             }
-            t+='chainé('+gauche+','+droite+')';
-            debugger         
-          
+            t+='chainé(' + gauche + ',' + droite + ')';
+            debugger;
         }else{
-           return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "'+element.expression.type+'"' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "' + element.expression.type + '"' ,"element" : element}));
         }
-        
         return({"__xst" : true ,"__xva" : t});
-        
-        
-        
-        if(element.hasOwnProperty('optional') && element.optional!==false){
+        if(element.hasOwnProperty('optional') && element.optional !== false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1448 #traite_ChainExpression' ,"element" : element}));
         }
-        if(element.expression.object && element.expression.object!==false){
+        if(element.expression.object && element.expression.object !== false){
             obj=this.#traite_chaineObject(element.expression.object,niveau,element.expression,tab_comm);
             if(obj.__xst === true){
-                 if(obj.optionnel===''){
-                     objet=obj.objet;
-                 }else{
-                     objet='chainé('+obj.objet+', '+obj.optionnel+')';
-                 }
+                if(obj.optionnel === ''){
+                    objet=obj.objet;
+                }else{
+                    objet='chainé(' + obj.objet + ', ' + obj.optionnel + ')';
+                }
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1208 #traite_ChainExpression' ,"element" : element}));
             }
         }else if(element.expression.callee){
             if(element.expression.callee.object){
-
-                
                 obj=this.#traite_chaineCallee(element.expression.callee,niveau,element.expression,tab_comm);
-                if(obj.__xst===true){
-                     var les_arguments='';
-                     if(element.expression.hasOwnProperty('arguments')){
-                      
-                         if(element.expression.arguments.length === 0){
-                             les_arguments='p()';
-                         }else{
-                             for( let i=0 ; i < element.expression.arguments.length ; i++ ){
-                                 var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                                 var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm);
-                                 if(obj1.__xst === true){
-                                     if(les_arguments!==''){
-                                         les_arguments+=',';
-                                     }
-                                     les_arguments+='p(' + le_commentaire + obj1.__xva + ')';
-                                 }else{
-                                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
-                                 }
-                             }
-                         }
-                     }
-                     t+='chainé('+obj.objet+',appelf(nomf('+obj.optionnel+'),'+les_arguments+'))'
-                     return({"__xst" : true ,"__xva" : t});
-                 
+                if(obj.__xst === true){
+                    var les_arguments='';
+                    if(element.expression.hasOwnProperty('arguments')){
+                        if(element.expression.arguments.length === 0){
+                            les_arguments='p()';
+                        }else{
+                            for( let i=0 ; i < element.expression.arguments.length ; i++ ){
+                                var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
+                                var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm,false);
+                                if(obj1.__xst === true){
+                                    if(les_arguments !== ''){
+                                        les_arguments+=',';
+                                    }
+                                    les_arguments+='p(' + le_commentaire + obj1.__xva + ')';
+                                }else{
+                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
+                                }
+                            }
+                        }
+                    }
+                    t+='chainé(' + obj.objet + ',appelf(nomf(' + obj.optionnel + '),' + les_arguments + '))';
+                    return({"__xst" : true ,"__xva" : t});
                 }else{
-                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1554 #traite_ChainExpression' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1554 #traite_ChainExpression' ,"element" : element}));
                 }
-             
             }else{
-             
-                if(element.expression.callee.type==='Identifier'){
-                   objet=element.expression.callee.name;
-                    
-                   var les_arguments='';
-                   if(element.expression.hasOwnProperty('arguments')){
-                    
-                       if(element.expression.arguments.length === 0){
-                           les_arguments='p()';
-                       }else{
-                           for( let i=0 ; i < element.expression.arguments.length ; i++ ){
-                               var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                               obj=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm);
-                               if(obj.__xst === true){
-                                   if(les_arguments!==''){
-                                       les_arguments+=',';
-                                   }
-                                   les_arguments+='p(' + le_commentaire + obj.__xva + ')';
-                               }else{
-                                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
-                               }
-                           }
-                       }
-                   }
-                   t+='chainé('+objet+',appelf(nomf(),'+les_arguments+'))'
+                if(element.expression.callee.type === 'Identifier'){
+                    objet=element.expression.callee.name;
+                    var les_arguments='';
+                    if(element.expression.hasOwnProperty('arguments')){
+                        if(element.expression.arguments.length === 0){
+                            les_arguments='p()';
+                        }else{
+                            for( let i=0 ; i < element.expression.arguments.length ; i++ ){
+                                var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
+                                obj=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm,false);
+                                if(obj.__xst === true){
+                                    if(les_arguments !== ''){
+                                        les_arguments+=',';
+                                    }
+                                    les_arguments+='p(' + le_commentaire + obj.__xva + ')';
+                                }else{
+                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
+                                }
+                            }
+                        }
+                    }
+                    t+='chainé(' + objet + ',appelf(nomf(),' + les_arguments + '))';
                 }else{
-                   debugger;
-                   return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1497 #traite_ChainExpression' ,"element" : element}));
+                    debugger;
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1497 #traite_ChainExpression' ,"element" : element}));
                 }
-             
             }
         }else{
-            debugger
+            debugger;
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1212 #traite_ChainExpression' ,"element" : element}));
         }
-        if(element.expression.computed===false){
+        if(element.expression.computed === false){
             /*
               let x = b.c("d")?.e;
               let y = b.c?.e;
               let z = b?.e;
             */
-            if(element.expression.property!==false){
-                obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm);
+            if(element.expression.property !== false){
+                obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
-                     propriete=obj.__xva;
+                    propriete=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1221 #traite_ChainExpression' ,"element" : element}));
                 }
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1224 #traite_ChainExpression' ,"element" : element}));
             }
-            t+='chainé('+objet+','+propriete+')'
-
-         
-        }else if(element.expression.computed===true){
-            if(element.expression.property.type==="Identifier"){
-                if(element.expression.property!==false){
-                    obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm);
+            t+='chainé(' + objet + ',' + propriete + ')';
+        }else if(element.expression.computed === true){
+            if(element.expression.property.type === "Identifier"){
+                if(element.expression.property !== false){
+                    obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm,false);
                     if(obj.__xst === true){
-                         propriete=obj.__xva;
+                        propriete=obj.__xva;
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1483 #traite_ChainExpression' ,"element" : element}));
                     }
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1485 #traite_ChainExpression' ,"element" : element}));
                 }
-                t+='chainé('+objet+',['+propriete+'])'
+                t+='chainé(' + objet + ',[' + propriete + '])';
             }else{
-                if(element.expression.property!==false){
-                    obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm);
+                if(element.expression.property !== false){
+                    obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm,false);
                     if(obj.__xst === true){
-                         propriete=obj.__xva;
+                        propriete=obj.__xva;
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1221 #traite_ChainExpression' ,"element" : element}));
                     }
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1549 #traite_ChainExpression' ,"element" : element}));
                 }
-                t+='chainé('+objet+',defTab(p('+propriete+')))'
+                t+='chainé(' + objet + ',defTab(p(' + propriete + ')))';
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -2075,8 +1497,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_UnaryExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        let nomDuTestUnary = this.#recup_nom_operateur(element.operator);
-        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+        let nomDuTestUnary=this.#recup_nom_operateur(element.operator);
+        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             if((nomDuTestUnary === 'moins' || nomDuTestUnary === 'plus') && isNumeric(obj.__xva)){
                 if(nomDuTestUnary === 'moins'){
@@ -2100,7 +1522,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let obj=null;
         let i=0;
         t+='bascule(';
-        obj=this.#traite_element(element.discriminant,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.discriminant,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             t+='quand(' + obj.__xva + ')';
         }else{
@@ -2109,7 +1531,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         for( i=0 ; i < element.cases.length ; i++ ){
             t+='est(';
             if(element.cases[i].test !== null){
-                obj=this.#traite_element(element.cases[i].test,niveau + 1,false,false,element);
+                obj=this.#traite_element(element.cases[i].test,niveau + 1,false,false,element,false);
                 if(obj.__xst === true){
                     t+='valeur(' + obj.__xva + ')';
                 }else{
@@ -2142,13 +1564,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let gauche='';
         let droite='';
         let contenu='';
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
@@ -2156,7 +1578,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
@@ -2186,13 +1608,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let gauche='';
         let droite='';
         let contenu='';
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
@@ -2200,7 +1622,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
@@ -2232,7 +1654,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let contenu='';
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
@@ -2247,7 +1669,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
         if(obj.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_DoWhileStatement' ,"element" : element}));
         }
@@ -2267,14 +1689,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let i=0;
         let test='';
         let contenu='';
-        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
         if(obj.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_WhileStatement' ,"element" : element}));
         }
         test+=obj.__xva;
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
@@ -2309,7 +1731,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(element.init === null){
             pourInit='';
         }else{
-            obj=this.#traite_element(element.init,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.init,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 if(pourInit !== ''){
                     pourInit+=',';
@@ -2322,7 +1744,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(element.test === null){
             test+='()';
         }else{
-            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
             if(obj.__xst === false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
             }
@@ -2331,7 +1753,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(element.update === null){
             valeurIncrement='';
         }else{
-            obj=this.#traite_element(element.update,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.update,niveau + 1,element,tab_comm,false);
             if(obj.__xst === false){
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0907 #traite_ForStatement' ,"element" : element}));
             }
@@ -2339,7 +1761,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
@@ -2382,7 +1804,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             return({"__xst" : true ,"__xva" : t});
         }
-        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             elem=obj.__xva;
         }else{
@@ -2408,7 +1830,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(type === 'if'){
             t+='choix(';
             t+='si(';
-            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
+            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 t+='condition(' + obj.__xva + '),';
             }else{
@@ -2417,7 +1839,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             if(element.test){
                 t+='sinonsi(';
-                obj=this.#traite_element(element.test,niveau + 1,element,tab_comm);
+                obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     t+='condition(' + obj.__xva + '),';
                 }else{
@@ -2492,12 +1914,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.superClass){
             if('Identifier' === element.superClass.type){
-                etend=',étend('+element.superClass.name+')'
+                etend=',étend(' + element.superClass.name + ')';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1734 #traite_ClassDeclaration "'+element.superClass.type+'"' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1734 #traite_ClassDeclaration "' + element.superClass.type + '"' ,"element" : element}));
             }
         }
-        t+='definition_de_classe(nom_classe(' + nom_de_la_classe + ')'+etend+',contenu(' + corps_de_la_classe + '))';
+        t+='definition_de_classe(nom_classe(' + nom_de_la_classe + ')' + etend + ',contenu(' + corps_de_la_classe + '))';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2513,7 +1935,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 t+='variable_publique(' + element.key.name;
             }
             if(element.value){
-                obj=this.#traite_element(element.value,niveau + 1,element,tab_comm);
+                obj=this.#traite_element(element.value,niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     t+=',' + obj.__xva + '';
                 }else{
@@ -2565,7 +1987,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1193 #traite_MethodDefinition' ,"element" : element}));
                         }
-                    }else if(element.value.params[j].type === "RestElement" && element.value.params[j].argument && element.value.params[j].argument.type==='Identifier'){
+                    }else if(element.value.params[j].type === "RestElement"
+                     && element.value.params[j].argument
+                     && element.value.params[j].argument.type === 'Identifier'
+                    ){
                         t+='argument(...' + element.value.params[j].argument.name + ')';
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1196 #traite_MethodDefinition' ,"element" : element}));
@@ -2601,17 +2026,17 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     */
     #traite_ConditionalExpression(element,niveau,parent,tab_comm){
         let t='';
-        var objtest1 = this.#traite_element(element.test,niveau,element,tab_comm);
+        var objtest1=this.#traite_element(element.test,niveau,element,tab_comm,false);
         if(objtest1.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1733 #traite_ConditionalExpression' ,"element" : element}));
         }
         var objSiVrai={};
-        var objSiVrai = this.#traite_element(element.consequent,niveau,element,tab_comm);
+        var objSiVrai=this.#traite_element(element.consequent,niveau,element,tab_comm,false);
         if(objSiVrai.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1738 #traite_ConditionalExpression' ,"element" : element}));
         }
         var objSiFaux={};
-        var objSiFaux = this.#traite_element(element.alternate,niveau,element,tab_comm);
+        var objSiFaux=this.#traite_element(element.alternate,niveau,element,tab_comm,false);
         if(objSiFaux.__xst === false){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1743 #traite_ConditionalExpression' ,"element" : element}));
         }
@@ -2656,7 +2081,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_TemplateElement(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        t+='"'+element.value.raw.replace(/"/g,'\\"')+'"'
+        t+='"' + element.value.raw.replace(/"/g,'\\"') + '"';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2674,32 +2099,30 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         ){
             t='`' + element.quasis[0].value.raw + '`';
         }else{
-            for(let i=0;i<element.expressions.length;i++){
-                obj=this.#traite_element(element.expressions[i],niveau,element.expressions,tab_comm);
-                if(obj.__xst===true){
+            for( let i=0 ; i < element.expressions.length ; i++ ){
+                obj=this.#traite_element(element.expressions[i],niveau,element.expressions,tab_comm,false);
+                if(obj.__xst === true){
                     tableau_des_expressions.push(obj.__xva);
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1736 #traite_TemplateLiteral' ,"element" : element}));
                 }
             }
-            for(let i=0;i<element.quasis.length;i++){
+            for( let i=0 ; i < element.quasis.length ; i++ ){
                 t+=',';
-                
-                obj=this.#traite_element(element.quasis[i],niveau,element.quasis,tab_comm);
-                if(obj.__xst===true){
+                obj=this.#traite_element(element.quasis[i],niveau,element.quasis,tab_comm,false);
+                if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element}));
                 }
-                
-                if(i<tableau_des_expressions.length){
-                    t+=','+tableau_des_expressions[i];
+                if(i < tableau_des_expressions.length){
+                    t+=',' + tableau_des_expressions[i];
                 }
             }
-            if(t!==''){
+            if(t !== ''){
                 t=t.substr(1);
             }
-            t='concat('+t+')';
+            t='concat(' + t + ')';
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2724,7 +2147,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
          || element.callee
          && element.callee.type === 'ThisExpression'
         ){
-            var obj1 = this.#traite_CallExpression(element,niveau + 1,element,{});
+            var obj1=this.#traite_CallExpression(element,niveau + 1,element,{});
             if(obj1.__xst === true){
                 t+='new(' + obj1.__xva + ')';
             }else{
@@ -2777,8 +2200,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         if(element.left && element.right){
-            var objgauche = this.#traite_element(element.left,niveau + 1,element,tab_comm);
-            var objdroite = this.#traite_element(element.right,niveau + 1,element,tab_comm);
+            var objgauche=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
+            var objdroite=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
             if(objgauche.__xst === true && objdroite.__xst){
                 t+=objgauche.__xva + ',defaut(' + objdroite.__xva + ')';
             }else{
@@ -2796,7 +2219,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let t='';
         let obj=null;
         if(element.argument){
-            var objass = this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+            var objass=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
             if(objass.__xst === true){
                 t+='await(' + objass.__xva + ')';
             }else{
@@ -2805,7 +2228,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1927 #traite_AwaitExpression' ,"element" : element}));
         }
-
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2814,7 +2236,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_ThrowStatement(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm);
+        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
             t+='throw(' + obj.__xva + ')';
         }else{
@@ -2857,7 +2279,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             this.#astjs_logerreur({"__xst" : false ,"__xme" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element});
         }
         for( let i=0 ; i < element.expressions.length ; i++ ){
-            obj=this.#traite_element(element.expressions[i],niveau + 2,element,tab_comm);
+            obj=this.#traite_element(element.expressions[i],niveau + 2,element,tab_comm,false);
             if(obj.__xst === true){
                 if(t !== ''){
                     t+=',';
@@ -2879,14 +2301,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(element.body && Array.isArray(element.body)){
             for( let i=0 ; i < element.body.length ; i++ ){
                 if(element.body[i].type && element.body[i].type === 'ExpressionStatement'){
-                    obj=this.#traite_element(element.body[i].expression,niveau,element,tab_comm);
+                    obj=this.#traite_element(element.body[i].expression,niveau,element,tab_comm,false);
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2126 #traite_BlockStatement' ,"element" : element}));
                     }
                 }else{
-                    obj=this.#traite_element(element.body[i],niveau,element,tab_comm);
+                    obj=this.#traite_element(element.body[i],niveau,element,tab_comm,false);
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
@@ -2903,25 +2325,25 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_element(element,niveau,parent,tab_comm){
+    #traite_element(element,niveau,parent,tab_comm,ignorer_commentaires_avant){
         let t='';
         let obj=null;
-        t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
+        if(!(ignorer_commentaires_avant!==undefined && ignorer_commentaires_avant===true)){
+           t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
+        }
         switch (element.type){
             case 'Identifier' : t+=element.name;
                 break;
             case 'Literal' :
-                
-
                 if(element.regex){
-                    let leParam = '/' + element.regex.pattern + '/';
+                    let leParam='/' + element.regex.pattern + '/';
                     if(element.regex.flags){
                         leParam+=element.regex.flags;
                     }
                     t+=leParam;
                 }else{
                     let valeur='';
-                    if(parent && parent.type==='BlockStatement' && element.value==='use strict'){
+                    if(parent && parent.type === 'BlockStatement' && element.value === 'use strict'){
                         t+='useStrict()';
                     }else{
                         /* il faut traiter les valeurs entre quotes qui terminent par un \ */
@@ -3021,7 +2443,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1883 #traite_element NewExpression ' ,"element" : element}));
                 }
                 break;
-                
                 
             case 'TemplateLiteral' :
                 obj=this.#traite_TemplateLiteral(element,niveau,parent,tab_comm);
@@ -3347,7 +2768,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
                 break;
                 
-                
             case 'ImportNamespaceSpecifier' :
                 obj=this.#traite_ImportNamespaceSpecifier(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
@@ -3356,7 +2776,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2703 #traite_element ImportNamespaceSpecifier ' ,"element" : element}));
                 }
                 break;
-                
                 
             case 'ImportExpression' :
                 obj=this.#traite_ImportExpression(element,niveau,parent,tab_comm);
@@ -3414,14 +2833,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         var t='';
         let tab_com_a_supprimer=[];
         if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
-            var position_debut_parenthese = parent.callee.body.end + 1;
+            var position_debut_parenthese=parent.callee.body.end + 1;
             var position_fin_parenthese=parent.end;
             for( var i=0 ; i < tab_comm.length ; i++ ){
                 if(tab_comm[i].start > position_debut_parenthese
                  && tab_comm[i].end < position_fin_parenthese
                  && element.start >= tab_comm[i].end
                 ){
-                    var txtComment = tab_comm[i].value.trim();
+                    var txtComment=tab_comm[i].value.trim();
                     t='#( ' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ' )' + t;
                     tab_com_a_supprimer.push(i);
                 }else if(tab_comm[i].start > position_fin_parenthese){
@@ -3447,8 +2866,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
-            var c1 = nbre_caracteres2('(',txtComment);
-            var c2 = nbre_caracteres2(')',txtComment);
+            var c1=nbre_caracteres2('(',txtComment);
+            var c2=nbre_caracteres2(')',txtComment);
             if(c1 === c2){
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
                     t+='#(#' + txtComment.substr(1) + ')';
@@ -3484,7 +2903,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(Array.isArray(parent)){
             position_debut_bloc=parent[0].start;
-            position_fin_bloc=parent[parent.length-1].end;
+            position_fin_bloc=parent[parent.length - 1].end;
         }else{
             position_debut_bloc=parent.start;
             position_fin_bloc=parent.end;
@@ -3520,7 +2939,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             tab_com_a_supprimer.push(i);
         }
-        for( var j = tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
+        for( var j=tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
             tab_comm.splice(tab_com_a_supprimer[j],1);
         }
         return t;
@@ -3539,10 +2958,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let position_debut_bloc=0;
         let position_fin_bloc=0;
         let position_debut_element=null;
-        if(elem===null){
-           return t;
+        if(elem === null){
+            return t;
         }
-        
         if(elem.start === undefined){
             /* on a probablement un tableau */
             if(Array.isArray(elem)){
@@ -3569,7 +2987,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(Array.isArray(elem)){
                     if(elem.length > 0){
                         /* il y a au moins une ligne de code */
-                        position_fin_bloc=elem[elem.length-1].end;
+                        position_fin_bloc=elem[elem.length - 1].end;
                     }else{
                         return t;
                     }
@@ -3584,7 +3002,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(elem.start === parent[0].start){
                 position_debut_bloc=0;
             }
-            position_fin_bloc=parent[parent.length-1].end;
+            position_fin_bloc=parent[parent.length - 1].end;
             /*
               }else if(elem.body){
               position_debut_bloc=elem.start;
@@ -3605,15 +3023,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             return t;
         }
         /*
-         dans le cas ou on a [/ * 1 * / a , b ].forEach(/ *  2 * /)
-         le traitement de la fonction vient avant le traitement du tableau
+          dans le cas ou on a [/ * 1 * / a , b ].forEach(/ *  2 * /)
+          le traitement de la fonction vient avant le traitement du tableau
         */
         var decallage=-1;
-        if('FunctionExpression'===elem.type){
-         decallage=elem.start;
+        if('FunctionExpression' === elem.type){
+            decallage=elem.start;
         }
-        
-        for( i=0 ; i < tab_comm.length && tab_comm[i].start <= position_debut_element && tab_comm[i].end <= position_fin_bloc && tab_comm[i].start >= decallage  ; i++ ){
+        for( i=0 ; i < tab_comm.length && tab_comm[i].start <= position_debut_element && tab_comm[i].end <= position_fin_bloc && tab_comm[i].start >= decallage ; i++ ){
             if(tab_comm[i].start < position_debut_bloc){
                 /* dans le cas des fonctions auto_appelées , les commentaires peuvent être au milieu du tableau */
                 continue;
@@ -3638,12 +3055,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
             tab_com_a_supprimer.push(i);
         }
-        if(t.indexOf('044') >= 0){
-            debugger;
-        }
-        for( var j = tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
+        for( var j=tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
             tab_comm.splice(tab_com_a_supprimer[j],1);
         }
+        /*#
+          if(t !== ''){
+              debugger;
+          }
+        */
         return t;
     }
     /*
@@ -3652,12 +3071,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #traite_ast0(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        const espaces = CRLF + '   '.repeat(niveau);
+        const espaces=CRLF + '   '.repeat(niveau);
         if(Array.isArray(element)){
             for( let i=0 ; i < element.length ; i++ ){
                 switch (element[i].type){
                     case 'ExpressionStatement' :
-                        obj=this.#traite_element(element[i].expression,niveau,element,tab_comm);
+                        obj=this.#traite_element(element[i].expression,niveau,element,tab_comm,false);
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
@@ -3671,7 +3090,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                         break;
                         
                     default:
-                        obj=this.#traite_element(element[i],niveau,parent,tab_comm);
+                        obj=this.#traite_element(element[i],niveau,parent,tab_comm,false);
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
@@ -3685,14 +3104,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(element.body && Array.isArray(element.body)){
                 for( let i=0 ; i < element.body.length ; i++ ){
                     if(element.body[i].type && element.body[i].type === 'ExpressionStatement'){
-                        obj=this.#traite_element(element.body[i].expression,niveau,element,tab_comm);
+                        obj=this.#traite_element(element.body[i].expression,niveau,element,tab_comm,false);
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0187 #traite_ast0 BlockStatement ' ,"element" : element}));
                         }
                     }else{
-                        obj=this.#traite_element(element.body[i],niveau,element,tab_comm);
+                        obj=this.#traite_element(element.body[i],niveau,element,tab_comm,false);
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
@@ -3704,14 +3123,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0191 #traite_ast0 BlockStatement' ,"element" : element}));
             }
         }else if(element.type && element.type === 'ExpressionStatement'){
-            obj=this.#traite_element(element.expression,niveau,element,tab_comm);
+            obj=this.#traite_element(element.expression,niveau,element,tab_comm,false);
             if(obj.__xst === true){
                 t+=espaces + obj.__xva;
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
             }
         }else{
-            obj=this.#traite_element(element,niveau,element,tab_comm);
+            obj=this.#traite_element(element,niveau,element,tab_comm,false);
             if(obj.__xst === true){
                 t+=espaces + obj.__xva;
             }else{

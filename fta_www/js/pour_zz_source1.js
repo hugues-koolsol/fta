@@ -5,16 +5,16 @@
 */
 function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cible){
     __gi1.raz_des_messages();
-    var a = document.getElementById(chp_rev_source);
-    var startMicro = performance.now();
-    var tableau1 = iterateCharacters2(a.value);
+    var a=document.getElementById(chp_rev_source);
+    var startMicro=performance.now();
+    var tableau1=iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
-    var endMicro = performance.now();
-    var startMicro = performance.now();
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var endMicro=performance.now();
+    var startMicro=performance.now();
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     global_messages.data.matrice=matriceFonction;
     if(matriceFonction.__xst === true){
-        var objSql = tabToSql1(matriceFonction.__xva,0,0,false);
+        var objSql=tabToSql1(matriceFonction.__xva,0,0,false);
         if(objSql.__xst === true){
             document.getElementById(chp_genere_source).value=objSql.__xva;
         }
@@ -26,8 +26,8 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
   =====================================================================================================================
 */
 function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
-    var source_sqlite = document.getElementById(chp_genere_source).value;
-    var obj = convertion_texte_sql_en_rev(source_sqlite);
+    var source_sqlite=document.getElementById(chp_genere_source).value;
+    var obj=convertion_texte_sql_en_rev(source_sqlite);
     if(obj.__xst === true){
         document.getElementById(chp_rev_source).value=obj.__xva;
     }else{
@@ -52,10 +52,10 @@ async function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_so
     }
     sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant1('za_ajax.php?sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant1',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
-                var date_de_fin_traitement = new Date();
+                var date_de_fin_traitement=new Date();
                 date_de_fin_traitement=date_de_fin_traitement.getTime();
                 var date_de_debut_traitement=donnees.__entree.date_de_debut_traitement;
-                var nombre_de_secondes = (date_de_fin_traitement - date_de_debut_traitement) / 1000;
+                var nombre_de_secondes=(date_de_fin_traitement - date_de_debut_traitement) / 1000;
                 if(donnees.__entree.parametres_sauvegarde.nom_du_source){
                     logerreur({"__xst" : true ,"__xme" : 'la réécriture de ' + donnees.__entree.parametres_sauvegarde.nom_du_source + ' a été faite en ' + nombre_de_secondes + ' secondes'});
                 }else{
@@ -64,21 +64,21 @@ async function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_so
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages')
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
 }
 /*
   =====================================================================================================================
 */
 function traitement_apres_ajax_pour_conversion_fichier_sql(par){
-    var objRev = convertion_texte_sql_en_rev(par.contenu_du_fichier);
+    var objRev=convertion_texte_sql_en_rev(par.contenu_du_fichier);
     if(objRev.__xst === true){
-        var tableau1 = iterateCharacters2(objRev.__xva);
-        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        var tableau1=iterateCharacters2(objRev.__xva);
+        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var objSql = tabToSql1(matriceFonction.__xva,0,0,false);
+            var objSql=tabToSql1(matriceFonction.__xva,0,0,false);
             if(objSql.__xst === true){
-                var contenu = objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
                 sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(par.__entree.id_source,objRev.__xva,contenu,par.__entree.date_de_debut_traitement,matriceFonction.__xva);
             }
         }
@@ -89,30 +89,26 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
 */
 function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_source,chp_rev_source){
     __gi1.raz_des_messages();
-    var a = document.getElementById(chp_genere_source);
+    var a=document.getElementById(chp_genere_source);
     var parseur_javascript=window.acorn.Parser;
     try{
         tabComment=[];
         /* on transforme le javascript en ast */
-        var obj = parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+        var obj=parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
         /* on transforme le ast en rev */
-        var obj = __module_js_parseur1.traite_ast(obj.body,tabComment,{});
+        var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
         if(obj.__xst === true){
             document.getElementById(chp_rev_source).value=obj.__xva;
-            
-            
-            var tableau1 = iterateCharacters2(obj.__xva);
-            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            var tableau1=iterateCharacters2(obj.__xva);
+            var matriceFonction=functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
-                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+                var obj2=arrayToFunct1(matriceFonction.__xva,true);
                 if(obj2.__xst === true){
                     document.getElementById(chp_rev_source).value=obj2.__xva;
                 }
             }else{
                 logerreur({"__xst" : false ,"__xme" : 'erreur rev'});
             }
-            
-            
         }else{
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
         }
@@ -130,13 +126,13 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
   =====================================================================================================================
 */
 function sauvegarder_html_en_ligne(format_rev,donnees){
-    var tableau1 = iterateCharacters2(format_rev);
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var tableau1=iterateCharacters2(format_rev);
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     if(matriceFonction.__xst === false){
         logerreur({"__xst" : false ,"__xme" : '0128 erreur sauvegarder_html_en_ligne'});
         return({"__xst" : false ,"__xme" : '0129 erreur sauvegarder_html_en_ligne'});
     }
-    var obj2 = __module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
+    var obj2=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
     if(obj2.__xst === true){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,obj2.__xva,donnees.__entree.date_de_debut_traitement,matriceFonction.__xva);
         return({"__xst" : true});
@@ -149,13 +145,13 @@ function sauvegarder_html_en_ligne(format_rev,donnees){
   =====================================================================================================================
 */
 function sauvegarder_js_en_ligne(format_rev,donnees){
-    var tableau1 = iterateCharacters2(format_rev);
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var tableau1=iterateCharacters2(format_rev);
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     if(matriceFonction.__xst === false){
         logerreur({"__xst" : false ,"__xme" : '0180 erreur sauvegarder_js_en_ligne'});
         return({"__xst" : false ,"__xme" : '0181 erreur sauvegarder_js_en_ligne'});
     }
-    var objJs = parseJavascript0(matriceFonction.__xva,1,0);
+    var objJs=parseJavascript0(matriceFonction.__xva,1,0);
     if(objJs.__xst === true){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objJs.__xva,donnees.__entree.date_de_debut_traitement,matriceFonction.__xva);
         return({"__xst" : true});
@@ -168,12 +164,12 @@ function sauvegarder_js_en_ligne(format_rev,donnees){
   =====================================================================================================================
 */
 function sauvegarder_php_en_ligne(format_rev,donnees){
-    var tableau1 = iterateCharacters2(format_rev);
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var tableau1=iterateCharacters2(format_rev);
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     if(matriceFonction.__xst === false){
         return(logerreur({"__xst" : false ,"__xme" : 'erreur 167 traitement_apres_ajax_pour_conversion_fichier_php'}));
     }
-    var objPhp = parsePhp0(matriceFonction.__xva,0,0);
+    var objPhp=parsePhp0(matriceFonction.__xva,0,0);
     if(objPhp.__xst === true){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objPhp.__xva,donnees.__entree.date_de_debut_traitement,matriceFonction.__xva);
         return({"__xst" : true});
@@ -186,7 +182,7 @@ function sauvegarder_php_en_ligne(format_rev,donnees){
 */
 function zz_l1_convertir_un_source_js_sur_disque2(id_source){
     __gi1.raz_des_messages();
-    var date_de_debut_traitement = new Date();
+    var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
     var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
@@ -194,19 +190,19 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
     }
     charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
-                var nom_source = donnees.db['T0.chp_nom_source'];
-                var type_source = donnees.db['T0.chp_type_source'];
+                var nom_source=donnees.db['T0.chp_nom_source'];
+                var type_source=donnees.db['T0.chp_type_source'];
                 if(nom_source.substr(nom_source.length - 3) === '.js'){
                     var parseur_javascript=window.acorn.Parser;
                     try{
                         tabComment=[];
                         /* on transforme le javascript en ast */
-                        var obj = parseur_javascript.parse(donnees.contenu_du_fichier,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+                        var obj=parseur_javascript.parse(donnees.contenu_du_fichier,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
                         /* on transforme le ast en rev */
-                        var obj = __module_js_parseur1.traite_ast(obj.body,tabComment,{});
+                        var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
                         if(obj.__xst === true){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
-                            var obj2 = sauvegarder_js_en_ligne(obj.__xva,parametres);
+                            var obj2=sauvegarder_js_en_ligne(obj.__xva,parametres);
                         }else{
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
                         }
@@ -222,7 +218,7 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages')
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
 }
 /*
@@ -231,7 +227,7 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
 */
 function zz_l1_convertir_un_source_php_sur_disque2(id_source){
     __gi1.raz_des_messages();
-    var date_de_debut_traitement = new Date();
+    var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
     var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
@@ -239,20 +235,18 @@ function zz_l1_convertir_un_source_php_sur_disque2(id_source){
     }
     charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
-                var nom_source = donnees.db['T0.chp_nom_source'];
-                var type_source = donnees.db['T0.chp_type_source'];
+                var nom_source=donnees.db['T0.chp_nom_source'];
+                var type_source=donnees.db['T0.chp_type_source'];
                 if(nom_source.substr(nom_source.length - 4) === '.php'){
-                    /*
-                      ✍donnees.contenu_du_fichier
-                      ✍donnees['T0.chi_id_source']
-                    */
-                    var parseur = window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
+                    var parseur=window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
                     try{
-                        var ast_de_php = parseur.parseCode(donnees.contenu_du_fichier);
-                        var obj = __module_php_parseur1.traite_ast(ast_de_php,{"en_ligne" : true});
+                        let regex = /\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
+                        let php_moins_commentaires_sql = donnees.contenu_du_fichier.replace(regex, '');
+                        var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
+                        var obj=__module_php_parseur1.traite_ast(ast_de_php,{"en_ligne" : true});
                         if(obj.__xst === true){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
-                            var obj2 = sauvegarder_php_en_ligne(obj.__xva,parametres);
+                            var obj2=sauvegarder_php_en_ligne(obj.__xva,parametres);
                         }else{
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
                         }
@@ -267,7 +261,7 @@ function zz_l1_convertir_un_source_php_sur_disque2(id_source){
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages')
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
 }
 /*
@@ -276,7 +270,7 @@ function zz_l1_convertir_un_source_php_sur_disque2(id_source){
 */
 function zz_l1_convertir_un_source_php_sur_disque1(id_source){
     __gi1.raz_des_messages();
-    var date_de_debut_traitement = new Date();
+    var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
     var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
@@ -284,16 +278,16 @@ function zz_l1_convertir_un_source_php_sur_disque1(id_source){
     }
     charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
-                var nom_source = donnees.db['T0.chp_nom_source'];
-                var type_source = donnees.db['T0.chp_type_source'];
+                var nom_source=donnees.db['T0.chp_nom_source'];
+                var type_source=donnees.db['T0.chp_type_source'];
                 if(nom_source.substr(nom_source.length - 4) === '.php'){
-                    var ret = recupereAstDePhp2(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true},null);
+                    var ret=recupereAstDePhp2(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true},null);
                     /* le retour est toujours égal à true ( a-t-on fait l'appel ? ) */
                 }
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages')
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
 }
 /*
@@ -301,7 +295,7 @@ function zz_l1_convertir_un_source_php_sur_disque1(id_source){
 */
 function zz_l1_convertir_un_source_sur_disque(id_source){
     __gi1.raz_des_messages();
-    var date_de_debut_traitement = new Date();
+    var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
     var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
@@ -309,22 +303,22 @@ function zz_l1_convertir_un_source_sur_disque(id_source){
     }
     charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
-                var nom_source = donnees.db['T0.chp_nom_source'];
-                var type_source = donnees.db['T0.chp_type_source'];
+                var nom_source=donnees.db['T0.chp_nom_source'];
+                var type_source=donnees.db['T0.chp_type_source'];
                 if(nom_source.substr(nom_source.length - 4) === '.php'){
-                    var ret = recupereAstDePhp2(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true},null);
+                    var ret=recupereAstDePhp2(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true},null);
                 }else if(nom_source.substr(nom_source.length - 3) === '.js'){
-                    var obj = transform_source_js_en_rev_avec_acorn(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true});
+                    var obj=transform_source_js_en_rev_avec_acorn(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true});
                 }else if(nom_source.substr(nom_source.length - 5) === '.html' || nom_source.substr(nom_source.length - 4) === '.htm'){
                     /* ✍traitement_apres_ajax_pour_conversion_fichier_html(donnees); */
-                    var obj = __module_html1.TransformHtmlEnRev(donnees.contenu_du_fichier,0,{"en_ligne" : true ,"donnees" : donnees});
+                    var obj=__module_html1.TransformHtmlEnRev(donnees.contenu_du_fichier,0,{"en_ligne" : true ,"donnees" : donnees});
                 }else if(nom_source.substr(nom_source.length - 4) === '.sql'){
                     traitement_apres_ajax_pour_conversion_fichier_sql(donnees);
                 }
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages')
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
 }
 /*
@@ -332,16 +326,16 @@ function zz_l1_convertir_un_source_sur_disque(id_source){
 */
 function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible){
     __gi1.raz_des_messages();
-    var a = document.getElementById(chp_rev_source);
-    var startMicro = performance.now();
-    var tableau1 = iterateCharacters2(a.value);
+    var a=document.getElementById(chp_rev_source);
+    var startMicro=performance.now();
+    var tableau1=iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
-    var endMicro = performance.now();
-    var startMicro = performance.now();
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var endMicro=performance.now();
+    var startMicro=performance.now();
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     global_messages.data.matrice=matriceFonction;
     if(matriceFonction.__xst === true){
-        var objJs = parseJavascript0(matriceFonction.__xva,1,0);
+        var objJs=parseJavascript0(matriceFonction.__xva,1,0);
         if(objJs.__xst === true){
             document.getElementById(chp_genere_source).value=objJs.__xva;
         }
@@ -355,9 +349,9 @@ function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible
 */
 function convertir_texte_en_rev(nom_zone_genere,nom_zone_source){
     __gi1.raz_des_messages();
-    var a = document.getElementById(nom_zone_genere);
-    var startMicro = performance.now();
-    var obj_texte = js_texte_convertit_texte_en_rev_racine(a.value,0);
+    var a=document.getElementById(nom_zone_genere);
+    var startMicro=performance.now();
+    var obj_texte=js_texte_convertit_texte_en_rev_racine(a.value,0);
     if(obj_texte.__xst === true){
         document.getElementById(nom_zone_source).value=obj_texte.__xva;
     }
@@ -368,16 +362,16 @@ function convertir_texte_en_rev(nom_zone_genere,nom_zone_source){
 */
 function convertir_rev_en_texte(nom_zone_source,nom_zone_genere,id_source,id_cible){
     __gi1.raz_des_messages();
-    var a = document.getElementById(nom_zone_source);
-    var startMicro = performance.now();
-    var tableau1 = iterateCharacters2(a.value);
+    var a=document.getElementById(nom_zone_source);
+    var startMicro=performance.now();
+    var tableau1=iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
-    var endMicro = performance.now();
-    var startMicro = performance.now();
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var endMicro=performance.now();
+    var startMicro=performance.now();
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     if(matriceFonction.__xst === true){
-        var objTexte = convertir_tableau_rev_vers_texte_racine(matriceFonction.__xva,0,0);
+        var objTexte=convertir_tableau_rev_vers_texte_racine(matriceFonction.__xva,0,0);
         if(objTexte.__xst === true){
             document.getElementById(nom_zone_genere).value=objTexte.__xva;
         }else{
@@ -394,14 +388,14 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
     __gi1.raz_des_messages();
     console.log('ret=',ret.__entree.opt);
     try{
-        var startMicro = performance.now();
-        var ast = JSON.parse(ret.__xva);
-        var obj = TransformAstPhpEnRev(ast,0,null,false);
+        var startMicro=performance.now();
+        var ast=JSON.parse(ret.__xva);
+        var obj=TransformAstPhpEnRev(ast,0,null,false);
         if(obj.__xst === true){
-            var tableau1 = iterateCharacters2('php(' + obj.__xva + ')');
-            var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+            var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
+            var matriceFonction=functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
-                var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+                var obj2=arrayToFunct1(matriceFonction.__xva,true);
                 if(obj2.__xst === true){
                     document.getElementById(ret.__entree.opt.nom_zone_rev).value=obj2.__xva;
                 }else{
@@ -429,10 +423,10 @@ function convertir_php_en_rev(zone_php,zone_rev,options_traitement){
     }catch(e){
         return;
     }
-    var a = document.getElementById(zone_php);
-    var startMicro = performance.now();
+    var a=document.getElementById(zone_php);
+    var startMicro=performance.now();
     try{
-        var ret = recupereAstDePhp2(a.value,{"zone_php" : zone_php ,"zone_rev" : zone_rev ,"nettoyer_html" : options_traitement.nettoyer_html},traitement_apres_recuperation_ast_de_php2);
+        var ret=recupereAstDePhp2(a.value,{"zone_php" : zone_php ,"zone_rev" : zone_rev ,"nettoyer_html" : options_traitement.nettoyer_html},traitement_apres_recuperation_ast_de_php2);
         console.log(ret);
     }catch(e){
         /*
@@ -452,14 +446,14 @@ function convertir_php_en_rev(zone_php,zone_rev,options_traitement){
 */
 function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
     __gi1.raz_des_messages();
-    var a = document.getElementById(nom_zone_genere);
-    var startMicro = performance.now();
-    var objRev = __module_html1.TransformHtmlEnRev(a.value,0);
+    var a=document.getElementById(nom_zone_genere);
+    var startMicro=performance.now();
+    var objRev=__module_html1.TransformHtmlEnRev(a.value,0);
     if(objRev.__xst === true){
-        var tableau1 = iterateCharacters2(objRev.__xva);
-        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        var tableau1=iterateCharacters2(objRev.__xva);
+        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+            var obj2=arrayToFunct1(matriceFonction.__xva,true);
             if(obj2.__xst === true){
                 document.getElementById(nom_zone_source).value=obj2.__xva;
             }else{
@@ -476,16 +470,16 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
 */
 function convertir_rev_en_html(nom_zone_source,nom_zone_genere,id_source,id_cible){
     __gi1.raz_des_messages();
-    var a = document.getElementById(nom_zone_source);
-    var startMicro = performance.now();
-    var tableau1 = iterateCharacters2(a.value);
+    var a=document.getElementById(nom_zone_source);
+    var startMicro=performance.now();
+    var tableau1=iterateCharacters2(a.value);
     global_messages.data.tableau=tableau1;
-    var endMicro = performance.now();
+    var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-    var startMicro = performance.now();
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var startMicro=performance.now();
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     if(matriceFonction.__xst === true){
-        var objHtml = __module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
+        var objHtml=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
         if(objHtml.__xst === true){
             document.getElementById(nom_zone_genere).value=objHtml.__xva;
         }
@@ -501,7 +495,7 @@ function convertir_rev_en_html(nom_zone_source,nom_zone_genere,id_source,id_cibl
   =====================================================================================================================
 */
 function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev,nom_zone_genere_php,id_source,id_cible){
-    var obj = __gi1.convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php);
+    var obj=__gi1.convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php);
     if(obj.__xst === true){
         var parametres_sauvegarde={"matrice" : obj.__xva ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
         sauvegarder_format_rev_en_dbb(parametres_sauvegarde);

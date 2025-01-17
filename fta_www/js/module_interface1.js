@@ -26,7 +26,7 @@ class interface1{
     */
     #globale_timeout_serveur_lent=1500;
     #globale_timeout_reference_timer_serveur_lent=null;
-    #global_enteteTableau = [
+    #global_enteteTableau=[
         ['id','id',0],
         ['val','valeur',1],
         ['typ','type',2],
@@ -53,7 +53,7 @@ class interface1{
         this.global_modale2_contenu=document.getElementById('__contenu_modale');
         this.global_modale2_iframe=document.getElementById('iframe_modale_1');
         this.global_modale2.addEventListener('click',function(e){
-                var dim = e.target.getBoundingClientRect();
+                var dim=e.target.getBoundingClientRect();
                 if(e.clientX < dim.left || e.clientX > dim.right || e.clientY < dim.top || e.clientY > dim.bottom){
                     document.getElementById('__message_modale').innerHTML='';
                     e.target.close();
@@ -78,9 +78,9 @@ class interface1{
       on remplir_et_afficher_les_messages1
     */
     afficher_les_erreurs_masquees(){
-        var est_masque = parseInt(document.getElementById('bouton_voir_les_messages_masques').getAttribute('data-masque'),10);
-        var div_parent = document.getElementById(this.#nom_div_des_messages1);
-        var lst = div_parent.getElementsByTagName('div');
+        var est_masque=parseInt(document.getElementById('bouton_voir_les_messages_masques').getAttribute('data-masque'),10);
+        var div_parent=document.getElementById(this.#nom_div_des_messages1);
+        var lst=div_parent.getElementsByTagName('div');
         for( var i=0 ; i < lst.length ; i++ ){
             if(lst[i].parentElement === div_parent
              && lst[i].getAttribute('data-masquable')
@@ -110,7 +110,7 @@ class interface1{
     remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
         var i=0;
         var affichagesPresents=false;
-        var zon = document.getElementById(nomZone);
+        var zon=document.getElementById(nomZone);
         var temp='';
         var numLignePrecedente=-1;
         var nombre_de_boutons_affiches=0;
@@ -196,7 +196,7 @@ class interface1{
             affichagesPresents=true;
         }
         while(global_messages.plages.length > 0){
-            var zone_source = global_messages.plages[0].hasOwnProperty('zone_source') ? ( global_messages.plages[0].zone_source ) : ( nomDeLaTextAreaContenantLeTexteSource );
+            var zone_source=global_messages.plages[0].hasOwnProperty('zone_source') ? ( global_messages.plages[0].zone_source ) : ( nomDeLaTextAreaContenantLeTexteSource );
             zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + zone_source + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML;
             global_messages.plages.splice(0,1);
             affichagesPresents=true;
@@ -211,8 +211,8 @@ class interface1{
       function recupérer_un_fetch
     */
     async recupérer_un_fetch(url,donnees){
-        var delais_admis = donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur = donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
+        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
+        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
             "signal" : AbortSignal.timeout(delais_admis) ,
             "method" : "POST" ,
@@ -225,20 +225,20 @@ class interface1{
             "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
-            var response= await fetch(url,en_entree).catch((err) => {
-                console.error('err interface recupérer_un_fetch ',err)
+            var response=await fetch(url,en_entree).catch((err) => {
+                console.error('err interface recupérer_un_fetch ',err);
             }).finally(() => {
                 /* vide */
             });
             /* vide */
-            var t= await response.text().catch((err) => {
-                console.error('err text interface recupérer_un_fetch ',err)
+            var t=await response.text().catch((err) => {
+                console.error('err text interface recupérer_un_fetch ',err);
             }).finally(() => {
                 /* vide */
             });
             /* vide */
             try{
-                var le_json = JSON.parse(t);
+                var le_json=JSON.parse(t);
                 if(le_json.hasOwnProperty('__xms')){
                     for(var i in le_json.__xms){
                         logerreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur});
@@ -272,7 +272,7 @@ class interface1{
     }
     /* function afficherModale2 */
     afficherModale2(parametres){
-        var jsn1 = JSON.parse(parametres);
+        var jsn1=JSON.parse(parametres);
         if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
             var paramatresModale={"__champs_texte_a_rapatrier" : jsn1['__champs_texte_a_rapatrier'] ,"__nom_champ_dans_parent" : jsn1['__nom_champ_dans_parent']};
             this.global_modale2_iframe.src=(jsn1['__url']) + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale));
@@ -281,7 +281,7 @@ class interface1{
     }
     /* function annuler_champ_modale */
     annuler_champ_modale(parametres){
-        var jsn1 = JSON.parse(parametres);
+        var jsn1=JSON.parse(parametres);
         document.getElementById(jsn1['__nom_champ_dans_parent']).value='';
         try{
             if(jsn1.__champs_texte_a_rapatrier){
@@ -296,7 +296,7 @@ class interface1{
     }
     /* function choisir_de_iframe2 */
     choisir_de_iframe2(parametres){
-        var jsn1 = JSON.parse(parametres);
+        var jsn1=JSON.parse(parametres);
         window.parent.document.getElementById(jsn1['__nom_champ_rapatrie']).value=jsn1['__valeur_champ_id_rapatrie'];
         try{
             if(jsn1.__champs_texte_a_rapatrier){
@@ -326,8 +326,8 @@ class interface1{
       =============================================================================================================
     */
     reduire_la_text_area(nom_de_la_textarea){
-        var a = document.getElementById(nom_de_la_textarea);
-        var b = a.getBoundingClientRect();
+        var a=document.getElementById(nom_de_la_textarea);
+        var b=a.getBoundingClientRect();
         if(a){
             a.rows=5;
             a.style.height='5em';
@@ -340,7 +340,7 @@ class interface1{
       =============================================================================================================
     */
     raz_la_text_area(nom_de_la_textarea){
-        var a = document.getElementById(nom_de_la_textarea);
+        var a=document.getElementById(nom_de_la_textarea);
         if(a){
             a.value='';
         }
@@ -351,10 +351,10 @@ class interface1{
       =============================================================================================================
     */
     agrandir_la_text_area(nom_de_la_textarea){
-        var a = document.getElementById(nom_de_la_textarea);
+        var a=document.getElementById(nom_de_la_textarea);
         if(a){
-            var b = a.getBoundingClientRect();
-            var c = a.value.split('\n');
+            var b=a.getBoundingClientRect();
+            var c=a.value.split('\n');
             if(c.length < 100){
                 a.rows=c.length + 1;
                 /*
@@ -368,8 +368,8 @@ class interface1{
             /*
               on met la zone en haut
             */
-            var d = parseInt(b.top - 80 + window.pageYOffset,10);
-            var lst = document.getElementsByClassName('menuScroller');
+            var d=parseInt(b.top - 80 + window.pageYOffset,10);
+            var lst=document.getElementsByClassName('menuScroller');
             if(lst.length >= 2){
                 d=d - (lst.length - 1) * CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
             }
@@ -384,12 +384,12 @@ class interface1{
     */
     agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
         try{
-            var a = document.getElementById(nom_de_la_textarea);
-            var b = a.getBoundingClientRect();
+            var a=document.getElementById(nom_de_la_textarea);
+            var b=a.getBoundingClientRect();
             this.masquer_les_messages1('zone_global_messages');
             if(a){
                 if(a.rows <= 10){
-                    var c = a.value.split('\n');
+                    var c=a.value.split('\n');
                     if(c.length < 100){
                         a.rows=c.length + 1;
                         /*
@@ -403,8 +403,8 @@ class interface1{
                     /*
                       on met la zone en haut
                     */
-                    var d = parseInt(b.top - 80 + window.pageYOffset,10);
-                    var lst = document.getElementsByClassName('menuScroller');
+                    var d=parseInt(b.top - 80 + window.pageYOffset,10);
+                    var lst=document.getElementsByClassName('menuScroller');
                     console.log(lst.length);
                     console.log('d=',d);
                     if(lst.length >= 2){
@@ -427,17 +427,17 @@ class interface1{
       function remplacer_la_selection_par
     */
     remplacer_la_selection_par(nom_de_la_textarea){
-        var a = document.getElementById(nom_de_la_textarea);
+        var a=document.getElementById(nom_de_la_textarea);
         var x=a.selectionStart;
-        var b = a.value.substr(a.selectionStart,a.selectionEnd - a.selectionStart);
+        var b=a.value.substr(a.selectionStart,a.selectionEnd - a.selectionStart);
         if(b === ''){
             alert('veuillez sélectionner une chaine à remplacer');
             return;
         }
-        var remplacer_par = window.prompt('remplacer par','??');
+        var remplacer_par=window.prompt('remplacer par','??');
         if(remplacer_par){
-            var r1 = new RegExp(b,'g');
-            var c = a.value.replace(r1,remplacer_par);
+            var r1=new RegExp(b,'g');
+            var c=a.value.replace(r1,remplacer_par);
             a.value=c;
             this.agrandir_la_text_area(nom_de_la_textarea);
             a.focus();
@@ -449,9 +449,9 @@ class interface1{
       function aller_a_la_position
     */
     aller_a_la_position(nom_textarea){
-        var resultat = window.prompt('aller à la position',1);
+        var resultat=window.prompt('aller à la position',1);
         if(resultat && isNumeric(resultat)){
-            var a = document.getElementById(nom_textarea);
+            var a=document.getElementById(nom_textarea);
             if(a.rows < 10 || a.getBoundingClientRect().height < 160){
                 a.rows="100";
             }
@@ -468,18 +468,18 @@ class interface1{
         var i=0;
         var position_fin=0;
         var position_debut=0;
-        var numero_de_ligne = window.prompt('aller à la ligne n°?',1);
+        var numero_de_ligne=window.prompt('aller à la ligne n°?',1);
         if(numero_de_ligne && isNumeric(numero_de_ligne)){
             numero_de_ligne=parseInt(numero_de_ligne,10) + ajouter;
-            var a = document.getElementById(nom_textarea);
-            var lignes = a.value.split('\n');
+            var a=document.getElementById(nom_textarea);
+            var lignes=a.value.split('\n');
             if(lignes.length > numero_de_ligne){
                 lignes.splice(numero_de_ligne - 1,lignes.length - numero_de_ligne + 1);
                 position_fin=0;
                 for( i=lignes.length - 1 ; i >= 0 ; i-- ){
                     position_fin+=lignes[i].length + 1;
                 }
-                position_debut=position_fin - lignes[lignes.length-1].length - 1;
+                position_debut=position_fin - lignes[lignes.length - 1].length - 1;
                 a.focus();
                 a.selectionStart=position_debut;
                 a.selectionEnd=position_fin;
@@ -491,9 +491,9 @@ class interface1{
       function aller_au_caractere_de_la_textarea
     */
     aller_au_caractere_de_la_textarea(id_textarea){
-        var valeur = prompt('aller au caractère n° :');
+        var valeur=prompt('aller au caractère n° :');
         if(valeur !== null){
-            var elem = document.getElementById(id_textarea);
+            var elem=document.getElementById(id_textarea);
             elem.focus();
             elem.selectionStart=parseInt(valeur,10);
             elem.selectionEnd=parseInt(valeur,10) + 1;
@@ -541,8 +541,8 @@ class interface1{
       =============================================================================================================
     */
     masquer_les_boutons(){
-        var refBody = document.getElementsByTagName('body')[0];
-        var lsta1 = refBody.getElementsByTagName('a');
+        var refBody=document.getElementsByTagName('body')[0];
+        var lsta1=refBody.getElementsByTagName('a');
         for( var i=0 ; i < lsta1.length ; i++ ){
             if(lsta1[i].href){
                 try{
@@ -577,7 +577,7 @@ class interface1{
                       Normalement, l'affichage des messages supprime les yyunset_temporaire
                       mais on ne sait jamais
                     */
-                    var lstb1 = document.getElementsByClassName("yyunset_temporaire");
+                    var lstb1=document.getElementsByClassName("yyunset_temporaire");
                     var i=0;
                     for( i=0 ; i < lstb1.length ; i++ ){
                         lstb1[i].classList.remove('yyunset_temporaire');
@@ -593,7 +593,7 @@ class interface1{
         __gi1.class_list_avant=a.className;
         __gi1.element_a_reactiver=a;
         var a_une_erreur=false;
-        var lst = document.getElementById('zone_global_messages').getElementsByTagName('div');
+        var lst=document.getElementById('zone_global_messages').getElementsByTagName('div');
         for( var i=0 ; i < lst.length ; i++ ){
             if(lst[i].className.indexOf('yyerreur') >= 0){
                 a_une_erreur=true;
@@ -613,9 +613,9 @@ class interface1{
     */
     reactiver_les_boutons1(){
         var i=0;
-        var refBody = document.getElementsByTagName('body')[0];
+        var refBody=document.getElementsByTagName('body')[0];
         clearTimeout(this.#globale_timeout_reference_timer_serveur_lent);
-        var lstb1 = refBody.getElementsByTagName('button');
+        var lstb1=refBody.getElementsByTagName('button');
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!(lstb1[i].onclick)){
                 if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
@@ -624,18 +624,18 @@ class interface1{
                 }
             }
         }
-        var lstb1 = refBody.getElementsByTagName('input');
+        var lstb1=refBody.getElementsByTagName('input');
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!(lstb1[i].onclick)){
-                if( lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
-                    if( lstb1[i].type === 'submit'){
+                    if(lstb1[i].type === 'submit'){
                         lstb1[i].style.visibility="";
                     }
                 }
             }
         }
-        var lsta1 = refBody.getElementsByTagName('a');
+        var lsta1=refBody.getElementsByTagName('a');
         for( i=0 ; i < lsta1.length ; i++ ){
             if(lsta1[i].hasOwnProperty('className') && lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
             }else{
@@ -646,11 +646,11 @@ class interface1{
             }
         }
         try{
-            var elem = document.getElementById('sloserver1');
+            var elem=document.getElementById('sloserver1');
             elem.remove();
         }catch(e){
         }
-        var lstb1 = document.getElementsByClassName("yyunset_temporaire");
+        var lstb1=document.getElementsByClassName("yyunset_temporaire");
         for( i=0 ; i < lstb1.length ; i++ ){
             lstb1[i].classList.remove('yyunset_temporaire');
         }
@@ -661,11 +661,11 @@ class interface1{
     */
     #mise_a_jour_affichage_serveur_lent1(){
         try{
-            var elem = document.getElementById('sloserver1');
+            var elem=document.getElementById('sloserver1');
             if(elem){
-                var opa = parseInt(elem.style.opacity * 100,10);
+                var opa=parseInt(elem.style.opacity * 100,10);
                 if(opa < 100){
-                    var newOpa = opa / 100 + 0.1;
+                    var newOpa=opa / 100 + 0.1;
                     if(newOpa > 1){
                         newOpa=1;
                     }
@@ -682,7 +682,7 @@ class interface1{
       =============================================================================================================
     */
     #affichage_boite_serveur_lent1(){
-        var divId = document.createElement('div');
+        var divId=document.createElement('div');
         divId.id='sloserver1';
         divId.style.top='55px';
         divId.style.left='0px';
@@ -738,8 +738,8 @@ class interface1{
           fixMenu1();
         */
         var i=0;
-        var bod = document.getElementsByTagName('body')[0];
-        var lstb1 = bod.getElementsByTagName('button');
+        var bod=document.getElementsByTagName('body')[0];
+        var lstb1=bod.getElementsByTagName('button');
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!(lstb1[i].onclick)){
                 if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
@@ -748,7 +748,7 @@ class interface1{
                 }
             }
         }
-        var lstb1 = bod.getElementsByTagName('input');
+        var lstb1=bod.getElementsByTagName('input');
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!(lstb1[i].onclick)){
                 if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
@@ -759,7 +759,7 @@ class interface1{
                 }
             }
         }
-        var lsta1 = bod.getElementsByTagName('a');
+        var lsta1=bod.getElementsByTagName('a');
         for( i=0 ; i < lsta1.length ; i++ ){
             if(lsta1[i].href){
                 try{
@@ -774,7 +774,7 @@ class interface1{
                 /* pour les liens dans le svg */
             }
         }
-        var lsta1 = bod.getElementsByTagName('a');
+        var lsta1=bod.getElementsByTagName('a');
         for( i=0 ; i < lsta1.length ; i++ ){
             /*
               un try car pour les liens dans le svg, indexOf ne fonctionne pas ! 
@@ -794,7 +794,7 @@ class interface1{
           Mettre le bouton retour à la liste dans la barre des messages si elle est affichée
           =====================================================================================================
         */
-        var ref = document.getElementById('zone_global_messages');
+        var ref=document.getElementById('zone_global_messages');
         if(ref.style.visibility === 'visible'){
             /* à priori, un message est affiché */
             try{
@@ -803,7 +803,7 @@ class interface1{
                   si il y a un bouton __retour_a_la_liste, on l'ajoute à la zone message
                 */
                 if(document.getElementById('__retour_a_la_liste')){
-                    var a = document.createElement('a');
+                    var a=document.createElement('a');
                     a.className="__clone";
                     a.style.float='inline-end';
                     a.href=document.getElementById('__retour_a_la_liste').href;
@@ -818,14 +818,14 @@ class interface1{
       =============================================================================================================
     */
     calcul_la_largeur_des_ascenseurs(){
-        var body = document.getElementsByTagName('body')[0];
-        var div = document.createElement("div");
+        var body=document.getElementsByTagName('body')[0];
+        var div=document.createElement("div");
         div.style.width='100px';
         div.style.height='100px';
         div.style.overflow='auto';
         div.style.opacity=0.01;
         body.appendChild(div);
-        var bag = document.createElement("div");
+        var bag=document.createElement("div");
         var att1='width:101px;height:101px;overflow:auto;';
         bag.style.width='101px';
         bag.style.height='101px';
@@ -843,16 +843,16 @@ class interface1{
     */
     convertir_textearea_rev_vers_textarea_js(chp_rev_source,chp_genere_source){
         this.raz_des_messages();
-        var a = document.getElementById(chp_rev_source);
-        var startMicro = performance.now();
-        var tableau1 = iterateCharacters2(a.value);
+        var a=document.getElementById(chp_rev_source);
+        var startMicro=performance.now();
+        var tableau1=iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
-        var endMicro = performance.now();
-        var startMicro = performance.now();
-        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        var endMicro=performance.now();
+        var startMicro=performance.now();
+        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         global_messages.data.matrice=matriceFonction;
         if(matriceFonction.__xst === true){
-            var objJs = parseJavascript0(matriceFonction.__xva,1,0);
+            var objJs=parseJavascript0(matriceFonction.__xva,1,0);
             if(objJs.__xst === true){
                 document.getElementById(chp_genere_source).value=objJs.__xva;
             }else{
@@ -869,16 +869,16 @@ class interface1{
     */
     convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
         this.raz_des_messages();
-        var a = document.getElementById(nom_zone_source_rev);
-        var startMicro = performance.now();
-        var tableau1 = iterateCharacters2(a.value);
+        var a=document.getElementById(nom_zone_source_rev);
+        var startMicro=performance.now();
+        var tableau1=iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
-        var endMicro = performance.now();
+        var endMicro=performance.now();
         console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-        var startMicro = performance.now();
-        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        var startMicro=performance.now();
+        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var objPhp = parsePhp0(matriceFonction.__xva,0,0);
+            var objPhp=parsePhp0(matriceFonction.__xva,0,0);
             if(objPhp.__xst === true){
                 document.getElementById(nom_zone_genere_php).value=objPhp.__xva;
                 if(bouton_interface === true){
@@ -916,10 +916,10 @@ class interface1{
         if(elem !== null){
             var scrollDelta=20;
             if(event.deltaY > 0){
-                var current = parseInt(elem.scrollLeft,10);
+                var current=parseInt(elem.scrollLeft,10);
                 elem.scrollTo(current + scrollDelta,0);
             }else{
-                var current = parseInt(elem.scrollLeft,10);
+                var current=parseInt(elem.scrollLeft,10);
                 elem.scrollTo(current - scrollDelta,0);
             }
         }
@@ -929,10 +929,10 @@ class interface1{
       =============================================================================================================
     */
     ajouter_un_commentaire_vide_et_reformater(nom_de_la_textarea){
-        var a = document.getElementById(nom_de_la_textarea);
+        var a=document.getElementById(nom_de_la_textarea);
         a.focus();
         if(a.selectionStart === a.selectionEnd){
-            var nouveau_source = a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart);
+            var nouveau_source=a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart);
             a.value=nouveau_source;
             this.formatter_le_source_rev(nom_de_la_textarea);
         }
@@ -941,14 +941,14 @@ class interface1{
       =============================================================================================================
     */
     formatter_le_source_rev(nom_de_la_textarea){
-        var a = document.getElementById(nom_de_la_textarea);
-        var tableau1 = iterateCharacters2(a.value);
-        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+        var a=document.getElementById(nom_de_la_textarea);
+        var tableau1=iterateCharacters2(a.value);
+        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
             /*
               var startMicro = performance.now();
             */
-            var obj2 = arrayToFunct1(matriceFonction.__xva,true);
+            var obj2=arrayToFunct1(matriceFonction.__xva,true);
             if(obj2.__xst === true){
                 a.value=obj2.__xva;
             }
@@ -1186,13 +1186,13 @@ class interface1{
         var temp='';
         var tr1={};
         var td1={};
-        var r1 = new RegExp(' ','g');
-        var r2 = new RegExp('\n','g');
-        var r3 = new RegExp('&','g');
-        var r4 = new RegExp('<','g');
-        var r5 = new RegExp('>','g');
-        var r6 = new RegExp("\\\\'",'g');
-        var r7 = new RegExp('\r','g');
+        var r1=new RegExp(' ','g');
+        var r2=new RegExp('\n','g');
+        var r3=new RegExp('&','g');
+        var r4=new RegExp('<','g');
+        var r5=new RegExp('>','g');
+        var r6=new RegExp("\\\\'",'g');
+        var r7=new RegExp('\r','g');
         var largeurTable1EnPx='1000';
         var largeurColonne1EnPx='400';
         t1.className='yytableauMatrice1';
@@ -1270,13 +1270,13 @@ class interface1{
             return((-(c)) / 2 * (t * (t - 2) - 1) + b);
         };
         var element=document.scrollingElement;
-        var positionDeDepart = element && element.scrollTop || window.pageYOffset;
-        var change = destination - positionDeDepart;
+        var positionDeDepart=element && element.scrollTop || window.pageYOffset;
+        var change=destination - positionDeDepart;
         var increment=20;
         var tempsCourant=0;
-        var animerLeDecalage = function(){
+        var animerLeDecalage=function(){
             tempsCourant+=increment;
-            var val = Math.easeInOutQuad(tempsCourant,positionDeDepart,change,duree);
+            var val=Math.easeInOutQuad(tempsCourant,positionDeDepart,change,duree);
             window.scrollTo(0,val);
             if(tempsCourant < duree){
                 window.setTimeout(animerLeDecalage,increment);
@@ -1291,21 +1291,21 @@ class interface1{
     deplace_la_zone_de_message(){
         var i=0;
         var haut=0;
-        var bod = document.getElementsByTagName('body')[0];
+        var bod=document.getElementsByTagName('body')[0];
         var paddingTopBody=0;
-        var bodyComputed = getComputedStyle(bod);
+        var bodyComputed=getComputedStyle(bod);
         var elem={};
         for(elem in bodyComputed){
             if('paddingTop' === elem){
                 paddingTopBody=parseInt(bodyComputed[elem],10);
             }
         }
-        var contenuPrincipal = document.getElementById('contenuPrincipal');
-        var lesDivs = contenuPrincipal.getElementsByTagName('div');
+        var contenuPrincipal=document.getElementById('contenuPrincipal');
+        var lesDivs=contenuPrincipal.getElementsByTagName('div');
         for( i=0 ; i < lesDivs.length ; i++ ){
             if(lesDivs[i].className === 'menuScroller'){
-                var menuUtilisateurCalcule = getComputedStyle(lesDivs[i]);
-                var hauteurMenuUtilisateur = parseInt(menuUtilisateurCalcule['height'],10);
+                var menuUtilisateurCalcule=getComputedStyle(lesDivs[i]);
+                var hauteurMenuUtilisateur=parseInt(menuUtilisateurCalcule['height'],10);
                 lesDivs[i].style.top=paddingTopBody + 'px';
                 lesDivs[i].style.position='fixed';
                 lesDivs[i].style.width='100vw';
@@ -1330,9 +1330,9 @@ class interface1{
                 hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('?'));
             }
             var lienActuel=null;
-            var menuPrincipal = document.getElementById('menuPrincipal');
+            var menuPrincipal=document.getElementById('menuPrincipal');
             if(menuPrincipal){
-                var listeMenu = menuPrincipal.getElementsByTagName('a');
+                var listeMenu=menuPrincipal.getElementsByTagName('a');
                 for( i=0 ; i < listeMenu.length ; i++ ){
                     if(listeMenu[i].href && listeMenu[i].href.indexOf(hrefActuel) >= 0){
                         lienActuel=listeMenu[i];
@@ -1347,14 +1347,14 @@ class interface1{
                             listeMenu[i].classList.remove('yymenusel1');
                         }
                     }
-                    var positionDuLien = lienActuel.getBoundingClientRect();
-                    var boiteDesLiens = menuPrincipal.getBoundingClientRect();
-                    var positionDroiteDuLienDansLaBoite = parseInt(positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
-                    var largeurBoiteLiens = parseInt(boiteDesLiens.width,10);
+                    var positionDuLien=lienActuel.getBoundingClientRect();
+                    var boiteDesLiens=menuPrincipal.getBoundingClientRect();
+                    var positionDroiteDuLienDansLaBoite=parseInt(positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
+                    var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
                     if(positionDroiteDuLienDansLaBoite > largeurBoiteLiens){
-                        var calcul = parseInt(boiteDesLiens.width - positionDuLien.width - 60,10);
+                        var calcul=parseInt(boiteDesLiens.width - positionDuLien.width - 60,10);
                         if(parseInt(positionDuLien.x,10) > calcul){
-                            var nouveauScroll = positionDuLien.x - boiteDesLiens.width - positionDuLien.width - 60;
+                            var nouveauScroll=positionDuLien.x - boiteDesLiens.width - positionDuLien.width - 60;
                             menuPrincipal.scrollLeft=nouveauScroll;
                         }
                     }
@@ -1369,7 +1369,7 @@ class interface1{
     */
     parentheses1(nomDeLaTextAreaContenantLeSource){
         var i=0;
-        var zoneSource = document.getElementById(nomDeLaTextAreaContenantLeSource);
+        var zoneSource=document.getElementById(nomDeLaTextAreaContenantLeSource);
         var position_debut=zoneSource.selectionStart;
         var position_fin=zoneSource.selectionEnd;
         if(position_debut < 0){
@@ -1392,7 +1392,7 @@ class interface1{
                     for( i=position_debut - 2 ; i >= 1 ; i-- ){
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
-                            var arr = functionToArray(texte,false,false,'(');
+                            var arr=functionToArray(texte,false,false,'(');
                             if(arr.__xst === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
@@ -1409,7 +1409,7 @@ class interface1{
             }else{
                 texte=texte.substr(position_debut - 1);
                 console.log('texte="',texte + '"');
-                var arr = functionToArray(texte,false,false,'(');
+                var arr=functionToArray(texte,false,false,'(');
                 if(arr.__xst === true){
                     zoneSource.focus();
                     zoneSource.selectionStart=position_debut;
@@ -1422,7 +1422,7 @@ class interface1{
               on s'est placé juste avant une parenthèse fermante
             */
             texte=texte.substr(0,position_debut + 1);
-            var arr = functionToArray(texte,false,false,')');
+            var arr=functionToArray(texte,false,false,')');
             if(arr.__xst === true){
                 zoneSource.focus();
                 zoneSource.selectionStart=arr.posOuvPar + 1;
@@ -1437,7 +1437,7 @@ class interface1{
                 for( i=position_debut - 2 ; i >= 1 ; i-- ){
                     if(texte.substr(i,1) === '('){
                         texte=texte.substr(i);
-                        var arr = functionToArray(texte,false,false,'(');
+                        var arr=functionToArray(texte,false,false,'(');
                         if(arr.__xst === true){
                             zoneSource.focus();
                             zoneSource.selectionStart=i + 1;
@@ -1457,8 +1457,8 @@ class interface1{
                       la plage est contenue dans 2 parenthèses, on essaie de remonter d'un niveau
                       en allant chercher le parenthèse ouvrante précédente
                     */
-                    var tableau1 = iterateCharacters2(texte);
-                    var matriceFonction = functionToArray2(tableau1.out,false,true,'');
+                    var tableau1=iterateCharacters2(texte);
+                    var matriceFonction=functionToArray2(tableau1.out,false,true,'');
                     if(matriceFonction.__xst === true){
                         var l01=matriceFonction.__xva.length;
                         var fait=false;
@@ -1475,7 +1475,7 @@ class interface1{
                                     if(matriceFonction.__xva[i][7] > 0){
                                         var positionParentheseDuParent=matriceFonction.__xva[matriceFonction.__xva[i][7]][11];
                                         texte=texte.substr(positionParentheseDuParent);
-                                        var arr = functionToArray(texte,false,false,'(');
+                                        var arr=functionToArray(texte,false,false,'(');
                                         if(arr.__xst === true){
                                             zoneSource.focus();
                                             position_debut=tableau1.out[positionParentheseDuParent][2] + 1;
@@ -1500,7 +1500,7 @@ class interface1{
                     for( i=position_debut - 2 ; i >= 1 ; i-- ){
                         if(texte.substr(i,1) === '('){
                             texte=texte.substr(i);
-                            var arr = functionToArray(texte,false,false,'(');
+                            var arr=functionToArray(texte,false,false,'(');
                             if(arr.__xst === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
@@ -1520,7 +1520,7 @@ class interface1{
       =============================================================================================================
     */
     selectionner_ligne_de_text_area1(tarea,numero_de_ligne_qui_commence_par_1){
-        var lineNum = numero_de_ligne_qui_commence_par_1 <= 0 ? ( 1 ) : ( numero_de_ligne_qui_commence_par_1 );
+        var lineNum=numero_de_ligne_qui_commence_par_1 <= 0 ? ( 1 ) : ( numero_de_ligne_qui_commence_par_1 );
         lineNum=lineNum - 1;
         var numeroLigne=0;
         var startPos=0;
@@ -1557,8 +1557,8 @@ class interface1{
             tarea.select();
             tarea.selectionStart=debut;
             tarea.selectionEnd=fin;
-            var texteDebut = contenu.substr(0,debut);
-            var texteFin = contenu.substr(debut);
+            var texteDebut=contenu.substr(0,debut);
+            var texteFin=contenu.substr(debut);
             tarea.value=texteDebut;
             tarea.scrollTo(0,9999999);
             var nouveauScroll=tarea.scrollTop;
@@ -1575,7 +1575,7 @@ class interface1{
         if(document.selection && document.selection.createRange){
             tarea.focus();
             tarea.select();
-            var range = document.selection.createRange();
+            var range=document.selection.createRange();
             range.collapse(true);
             range.moveEnd('character',endPos);
             range.moveStart('character',startPos);
@@ -1603,17 +1603,17 @@ class interface1{
           la première feuille de style [0] contient les éléments :root
         */
         var ss=document.styleSheets[0];
-        var i = ss.cssRules.length - 1;
+        var i=ss.cssRules.length - 1;
         for( i=ss.cssRules.length - 1 ; i >= 0 ; i-- ){
             if(ss.cssRules[i]['selectorText'] && ss.cssRules[i].selectorText.indexOf(':root') >= 0){
-                var a = ss.cssRules[i].cssText.split('{');
+                var a=ss.cssRules[i].cssText.split('{');
                 try{
-                    var b = a[1].split('}');
-                    var c = b[0].split(';');
+                    var b=a[1].split('}');
+                    var c=b[0].split(';');
                     var t={};
                     var j=0;
                     for( j=0 ; j < c.length ; j++ ){
-                        var d = c[j].split(':');
+                        var d=c[j].split(':');
                         if(d.length === 2){
                             if('dimension_du_texte' === type_d_element && d[0].trim() === '--yyvtrt'){
                                 if(d[1].trim().indexOf('18') >= 0){
@@ -1663,13 +1663,13 @@ class interface1{
                         }
                     }
                     /* cookie avec une date d'expiration de 30 jours */
-                    var date_expiration_cookie = new Date(Date.now() + 86400000 * 30);
+                    var date_expiration_cookie=new Date(Date.now() + 86400000 * 30);
                     date_expiration_cookie=date_expiration_cookie.toUTCString();
                     /*
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString = APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
+                    var cookieString=APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;
@@ -1687,7 +1687,7 @@ class interface1{
     */
     masquer_ou_afficher_les_messages1(){
         var nomZone='zone_global_messages';
-        var zon = document.getElementById(nomZone);
+        var zon=document.getElementById(nomZone);
         if(zon.style.visibility === 'hidden'){
             zon.style.visibility='visible';
         }else{
@@ -1700,7 +1700,7 @@ class interface1{
       =============================================================================================================
     */
     masquer_les_messages1(nomZone){
-        var zon = document.getElementById(nomZone);
+        var zon=document.getElementById(nomZone);
         zon.style.visibility='hidden';
     }
     /*
@@ -1709,12 +1709,12 @@ class interface1{
     */
     selectionner_une_plage1(debut,fin,nomDeZoneSource){
         this.masquer_les_messages1('zone_global_messages');
-        var zoneSource = document.getElementById(nomDeZoneSource);
+        var zoneSource=document.getElementById(nomDeZoneSource);
         zoneSource.focus();
         zoneSource.selectionStart=debut;
         zoneSource.selectionEnd=fin;
-        var texteDebut = zoneSource.value.substr(0,debut);
-        var texteFin = zoneSource.value.substr(debut);
+        var texteDebut=zoneSource.value.substr(0,debut);
+        var texteFin=zoneSource.value.substr(debut);
         zoneSource.value=texteDebut;
         zoneSource.scrollTo(0,9999999);
         var nouveauScroll=zoneSource.scrollTop;
@@ -1767,9 +1767,9 @@ class interface1{
       =============================================================================================================
     */
     #mouse_up_sur_editeur1(e){
-        var zoneSource = document.getElementById(e.target.id);
+        var zoneSource=document.getElementById(e.target.id);
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
-        var ttt = zoneSource.getBoundingClientRect();
+        var ttt=zoneSource.getBoundingClientRect();
         this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10) + document.documentElement.scrollTop - 10) + 'px';
         this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         return false;
@@ -1796,9 +1796,9 @@ class interface1{
         var a_inserer='';
         var tabtext=[];
         var elem=this.#global_tableau_des_textareas[e.target.id];
-        var zoneSource = document.getElementById(e.target.id);
+        var zoneSource=document.getElementById(e.target.id);
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
-        var ttt = zoneSource.getBoundingClientRect();
+        var ttt=zoneSource.getBoundingClientRect();
         this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10) + document.documentElement.scrollTop - 10) + 'px';
         this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         if(e.keyCode === 36){
@@ -1810,7 +1810,7 @@ class interface1{
             var scroll_initial=zoneSource.scrollTop;
             var startPos=zoneSource.selectionStart;
             var endPos=zoneSource.selectionEnd;
-            var contenu = new String(zoneSource.value);
+            var contenu=new String(zoneSource.value);
             if(startPos > 2){
                 var ligne_precedente='';
                 for( i=startPos - 2 ; i >= 0 ; i-- ){
@@ -1844,7 +1844,7 @@ class interface1{
                         a_inserer=' '.repeat(j);
                     }
                 }
-                var nouveau_contenu = contenu.substring(0,startPos) + a_inserer + contenu.substring(endPos);
+                var nouveau_contenu=contenu.substring(0,startPos) + a_inserer + contenu.substring(endPos);
                 /* un point virgule est-il en trop ? */
                 zoneSource.value=nouveau_contenu;
                 zoneSource.selectionStart=startPos + a_inserer.length;
@@ -1892,15 +1892,15 @@ class interface1{
         var k=0;
         var toAdd='';
         var espaces='';
-        var zoneSource = document.getElementById(id_de_la_textarea);
+        var zoneSource=document.getElementById(id_de_la_textarea);
         if(nomFonction === 'choix' || nomFonction === 'boucle' || nomFonction === 'appelf' || nomFonction === 'affecte'){
             if(zoneSource.selectionStart !== zoneSource.selectionEnd){
                 alert('la sélection ne doit pas contenir un caractère');
                 return;
             }
             var position_selection=zoneSource.selectionStart;
-            var texte_debut = zoneSource.value.substr(0,zoneSource.selectionStart);
-            var texte_fin = zoneSource.value.substr(zoneSource.selectionStart);
+            var texte_debut=zoneSource.value.substr(0,zoneSource.selectionStart);
+            var texte_fin=zoneSource.value.substr(zoneSource.selectionStart);
             j=0;
             for( i=texte_debut.length - 1 ; i >= 0 ; i-- ){
                 j++;
@@ -1912,7 +1912,7 @@ class interface1{
             if(j > 0){
                 espaces=' '.repeat(j);
             }
-            var de1 = ' '.repeat(NBESPACESREV);
+            var de1=' '.repeat(NBESPACESREV);
             if(nomFonction === 'choix'){
                 toAdd='choix(';
                 toAdd+='\n' + espaces + de1 + 'si(';
@@ -1991,7 +1991,7 @@ class interface1{
                 that.traite_message_recupere_du_worker(message_recu_du_worker);
             };
         }
-        var json_param = JSON.parse(parametre);
+        var json_param=JSON.parse(parametre);
         if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
             var liste_des_id_des_sources='';
             var ob={};
@@ -2000,7 +2000,7 @@ class interface1{
             }
             if(liste_des_id_des_sources != ''){
                 liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
-                var remplacer_par = prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :');
+                var remplacer_par=prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :');
                 if(remplacer_par !== null){
                     json_param.remplacer_par=remplacer_par;
                     console.log(json_param);

@@ -51,7 +51,7 @@ function raz_messages(zone_message){
   =====================================================================================================================
 */
 function logerreur(o){
-    var masquee = o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false );
+    var masquee=o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false );
     if(o.hasOwnProperty(__xst)){
         if(o.__xst === false){
             if(o.hasOwnProperty('__xme')){
@@ -164,7 +164,7 @@ function isNumeric(str){
     if(typeof str !== 'string'){
         return false;
     }
-    var leTest = !(isNaN(str)) && !(isNaN(parseFloat(str)));
+    var leTest=!(isNaN(str)) && !(isNaN(parseFloat(str)));
     return leTest;
 }
 /*
@@ -191,7 +191,7 @@ function espacesnrev(optionCRLF,i){
 */
 function matrice_vers_texte(matrice,id){
     var t='';
-    var obj = a2F1(matrice,id,true,id + 1);
+    var obj=a2F1(matrice,id,true,id + 1);
     return obj;
 }
 /*
@@ -199,29 +199,29 @@ function matrice_vers_texte(matrice,id){
 */
 function arrayToFunct1(matrice,retourLigne){
     var t='';
-    var obj = a2F1(matrice,0,retourLigne,1);
+    var obj=a2F1(matrice,0,retourLigne,1);
     return obj;
 }
 /*
   =====================================================================================================================
 */
 function arrayToFunctNormalize(matrice,bAvecCommentaires){
-    var out = arrayToFunct1(matrice,bAvecCommentaires,false);
+    var out=arrayToFunct1(matrice,bAvecCommentaires,false);
     return out;
 }
 /*
   =====================================================================================================================
 */
 function arrayToFunctNoComment(matrice){
-    var out = arrayToFunct1(matrice,true,false);
+    var out=arrayToFunct1(matrice,true,false);
     return out;
 }
 /*
   =====================================================================================================================
 */
 function rev_texte_vers_matrice(texte_rev){
-    var tableau1 = iterateCharacters2(texte_rev);
-    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+    var tableau1=iterateCharacters2(texte_rev);
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     global_messages.data.matrice=matriceFonction;
     global_messages.data.tableau=tableau1;
     return matriceFonction;
@@ -230,8 +230,8 @@ function rev_texte_vers_matrice(texte_rev){
   =====================================================================================================================
 */
 function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante){
-    var tableau1 = iterateCharacters2(src);
-    var matriceFonction = functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
+    var tableau1=iterateCharacters2(src);
+    var matriceFonction=functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
     global_messages.data.matrice=matriceFonction;
     global_messages.data.tableau=tableau1;
     return matriceFonction;
@@ -242,7 +242,7 @@ function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacin
   =====================================================================================================================
 */
 function nbre_caracteres2(lettre,chaine){
-    var tt = chaine.split(lettre);
+    var tt=chaine.split(lettre);
     return(tt.length - 1);
 }
 /*
@@ -677,13 +677,13 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
     var c1='';
     var cm1='';
     const l01=tab.length;
-    var chCR = '¶' + 'CR' + '¶';
-    var chLF = '¶' + 'LF' + '¶';
+    var chCR='¶' + 'CR' + '¶';
+    var chLF='¶' + 'LF' + '¶';
     var chaine='';
     var obj={};
     var contient_en_commentaire_tbel=false;
     if(tab[debut][3] > 0){
-        var les_espaces = espacesnrev(true,tab[debut][3]);
+        var les_espaces=espacesnrev(true,tab[debut][3]);
     }else{
         var les_espaces='';
     }
@@ -711,7 +711,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
         */
         for( i=debut ; i < l01 && tab[i][3] >= tab[debut][3] ; i++ ){
             if(tab[i][8] >= nombreEnfantsLimite){
-                for( var j = i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+                for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
                     if(tab[j][7] === i){
                         if(tab[j][1] === '#' && tab[j][2] === 'f' && tab[j][13].indexOf('tbel') >= 0){
                             contient_un_defTab_tbel=true;
@@ -843,13 +843,13 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 if(contient_un_defTab_tbel === true && count % 10 === 0){
                     t+=les_espaces;
                 }
-            }else if(tab[i][2] === 'f' && tab[i][8] === 1 && tab[i+1][2] === 'c' && tab[i+1][4] === 0){
+            }else if(tab[i][2] === 'f' && tab[i][8] === 1 && tab[i + 1][2] === 'c' && tab[i + 1][4] === 0){
                 /*
                   =====================================================================================
                   fonction avec 1 argument constant ( permet d'éviter un appel car ce cas est très courant );
                   =====================================================================================
                 */
-                t+=tab[i][1] + '(' + tab[i+1][1] + ')';
+                t+=tab[i][1] + '(' + (tab[i + 1][1]) + ')';
                 count++;
                 if(contient_un_defTab_tbel === true && count % 10 === 0){
                     t+=les_espaces;
@@ -873,7 +873,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                   }
                 */
                 if(obj.__xst === true){
-                    var retour_ligne_stocke = tab_retour_ligne.pop();
+                    var retour_ligne_stocke=tab_retour_ligne.pop();
                     /*
                       =============================================================================
                       on ouvre la fonction
@@ -1044,8 +1044,8 @@ function formaterErreurRev(obj){
         }
         return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + ' ' + message_ajoute});
     }
-    var chaineTableau = '[' + obj.chaineTableau + ']';
-    var T = JSON.parse(chaineTableau);
+    var chaineTableau='[' + obj.chaineTableau + ']';
+    var T=JSON.parse(chaineTableau);
     if(obj.hasOwnProperty('tableauEntree')){
         if(obj.hasOwnProperty('ind')){
             if(obj.ind > 50){
@@ -1136,8 +1136,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var chaineTableau='';
     var typePrecedent='';
     var drapeauRegex='';
-    var chCR = '¶' + 'CR' + '¶';
-    var chLF = '¶' + 'LF' + '¶';
+    var chCR='¶' + 'CR' + '¶';
+    var chLF='¶' + 'LF' + '¶';
     /*
       =============================================================================================================
       les entiers
@@ -1171,7 +1171,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var dsBloc=false;
     var constanteQuotee=0;
     var constanteQuoteePrecedente=0;
-    var drapeauParenthese = rechercheParentheseCorrespondante === '' ? ( false ) : ( true );
+    var drapeauParenthese=rechercheParentheseCorrespondante === '' ? ( false ) : ( true );
     /* quand on fait une recherche de parenthèses correspondantes, on se sert de ce tableau */
     var tab_pour_recherche_parentheses=[];
     /*
@@ -1253,14 +1253,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                               alors c'est une recherche de parenthèse ouvrante correspondante
                               =============================================================
                             */
-                            return({"__xst" : true ,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length-1]][2]});
+                            return({"__xst" : true ,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
                         }
                         tab_pour_recherche_parentheses.pop();
                     }
                 }else{
                     if(drapeauParenthese){
                         if(i === l01 - 1){
-                            return({"__xst" : true ,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length-1]][2]});
+                            return({"__xst" : true ,"posOuvPar" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
                         }
                         tab_pour_recherche_parentheses.pop();
                     }
@@ -1313,7 +1313,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if(i + 1 < l01){
-                    c1=tableauEntree[i+1][0];
+                    c1=tableauEntree[i + 1][0];
                     if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
                         dernier=i - 1;
                     }else{
@@ -1384,7 +1384,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : 'un antislash ne doit pas terminer une constante en i=' + i}));
                 }
                 /*  */
-                c1=tableauEntree[i+1][0];
+                c1=tableauEntree[i + 1][0];
                 if(c1 === '\\'
                  || c1 === '"'
                  || c1 === 'n'
@@ -1448,7 +1448,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if(i + 1 < l01){
-                    c1=tableauEntree[i+1][0];
+                    c1=tableauEntree[i + 1][0];
                     if(c1 === '+' || c1 === '*'){
                         /*
                           cas des caractères gloutons , ça ne correspond pas à un drapeau de regex
@@ -1523,7 +1523,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : 'un antislash ne doit pas terminer une fonction'}));
                 }
                 /*  */
-                c1=tableauEntree[i+1][0];
+                c1=tableauEntree[i + 1][0];
                 if(texte === ''){
                     premier=i;
                 }
@@ -1573,14 +1573,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if(i + 1 < l01){
-                    c1=tableauEntree[i+1][0];
+                    c1=tableauEntree[i + 1][0];
                     if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
                         dernier=i - 1;
                     }else{
                         if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i - 100,i + 110);
+                            var presDe=reconstruitChaine(tableauEntree,i - 100,i + 110);
                         }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,i + 10);
+                            var presDe=reconstruitChaine(tableauEntree,0,i + 10);
                         }
                         return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1394 apres une constante, il doit y avoir un caractère d\'echappement près de ' + presDe}));
                     }
@@ -1615,7 +1615,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : 'un antislash ne doit pas terminer une fonction'}));
                 }
                 /*  */
-                c1=tableauEntree[i+1][0];
+                c1=tableauEntree[i + 1][0];
                 if(texte === ''){
                     premier=i;
                 }
@@ -1651,14 +1651,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }
                 if(i + 1 < l01){
-                    c1=tableauEntree[i+1][0];
+                    c1=tableauEntree[i + 1][0];
                     if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
                         dernier=i - 1;
                     }else{
                         if(i > 100){
-                            var presDe = reconstruitChaine(tableauEntree,i - 100,i + 110);
+                            var presDe=reconstruitChaine(tableauEntree,i - 100,i + 110);
                         }else{
-                            var presDe = reconstruitChaine(tableauEntree,0,i + 10);
+                            var presDe=reconstruitChaine(tableauEntree,0,i + 10);
                         }
                         return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe}));
                     }
@@ -1705,7 +1705,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : 'un antislash ne doit pas terminer une fonction'}));
                 }
                 /*  */
-                c1=tableauEntree[i+1][0];
+                c1=tableauEntree[i + 1][0];
                 if(false){
                     if(texte === ''){
                         premier=i;
@@ -1882,7 +1882,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             return({"__xst" : true ,"posFerPar" : tableauEntree[i][2]});
                         }else{
                             for( j=T.length - 1 ; j >= 0 ; j-- ){
-                                if(T[j][3] < T[T.length-1][3]){
+                                if(T[j][3] < T[T.length - 1][3]){
                                     return({"__xst" : true ,"posOuvPar" : tableauEntree[T[j][11]][2]});
                                     break;
                                 }

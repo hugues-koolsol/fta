@@ -39,7 +39,7 @@ class traitements_sur_html{
                 break;
             }
         }
-        var ob = this.tabToHtml0(tab,startId,false,false,false,noHead,false,false,niveau);
+        var ob=this.tabToHtml0(tab,startId,false,false,false,noHead,false,false,niveau);
         if(ob.__xst === true){
             if(ob.__xva.substr(0,2) === CRLF){
                 ob.__xva=ob.__xva.substr(2);
@@ -84,8 +84,8 @@ class traitements_sur_html{
         var j=0;
         var k=0;
         var t='';
-        var esp0 = ' '.repeat(NBESPACESREV * niveau);
-        var esp1 = ' '.repeat(NBESPACESREV);
+        var esp0=' '.repeat(NBESPACESREV * niveau);
+        var esp1=' '.repeat(NBESPACESREV);
         var dernierEstTexte=false;
         var attributs='';
         var contenu='';
@@ -163,12 +163,12 @@ class traitements_sur_html{
                 t+=')';
             }else if(type.toLowerCase() === 'ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 if(jsonDeHtml.content[0].content){
-                    var chaineJsEquivalente = 'var a=' + jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
+                    var chaineJsEquivalente='var a=' + jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
                 }else{
-                    var chaineJsEquivalente = 'var a=' + jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
+                    var chaineJsEquivalente='var a=' + jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
                 }
                 tableau_des_javascript_a_convertir.push({"type" : "ldplusjsondanshtml" ,"__xva" : chaineJsEquivalente ,"cas" : "ldjson"});
-                var obj = convertit_source_javascript_en_rev(chaineJsEquivalente);
+                var obj=convertit_source_javascript_en_rev(chaineJsEquivalente);
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
                 }else{
@@ -189,7 +189,7 @@ class traitements_sur_html{
                                 var source_js=jsonDeHtml.content[i].content;
                             }
                             if(!(source_js.trim() === '//' || source_js === '\n' || source_js === '')){
-                                var cle = this.#construit_cle(10);
+                                var cle=this.#construit_cle(10);
                                 tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js1" ,"cle" : cle});
                                 contenu+='#(cle_javascript_a_remplacer,' + cle + ')';
                             }
@@ -213,9 +213,9 @@ class traitements_sur_html{
                             /*
                               il n'y a pas la propriété type, on suppose que c'est un text/javascript
                             */
-                            var source_js = jsonDeHtml.content[i].replace(/&amp;/g,'&');
+                            var source_js=jsonDeHtml.content[i].replace(/&amp;/g,'&');
                             tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js2"});
-                            var obj = convertit_source_javascript_en_rev(source_js);
+                            var obj=convertit_source_javascript_en_rev(source_js);
                             if(obj.__xst === true){
                                 if(t.indexOf('text/javascript') >= 0){
                                     contenu+=obj.__xva;
@@ -231,7 +231,7 @@ class traitements_sur_html{
                     }
                 }else{
                     tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js3"});
-                    var obj = convertit_source_javascript_en_rev(jsonDeHtml.content);
+                    var obj=convertit_source_javascript_en_rev(jsonDeHtml.content);
                     if(obj.__xst === true){
                         contenu+='<![CDATA[' + obj.__xva + ']]>';
                     }else{
@@ -271,7 +271,7 @@ class traitements_sur_html{
                             /*
                               on supprime les espace en début de ligne
                             */
-                            var contenuTab = contenu.split('\n');
+                            var contenuTab=contenu.split('\n');
                             k=9999;
                             for( i=1 ; i < contenuTab.length ; i++ ){
                                 for( j=0 ; j < contenuTab[i].length ; j++ ){
@@ -349,7 +349,7 @@ class traitements_sur_html{
                 t+=contenu;
             }else if(typeParent === 'script'){
                 tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js4"});
-                var obj = convertit_source_javascript_en_rev(jsonDeHtml);
+                var obj=convertit_source_javascript_en_rev(jsonDeHtml);
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
                 }else{
@@ -398,8 +398,8 @@ class traitements_sur_html{
               le rev retourné inclut toujours une balise html et/ou body et/ou head
               Si ces balises ne contiennent pas d'éléments, on les retire 
             */
-            var tableau1 = iterateCharacters2(t);
-            var matriceFonction = functionToArray2(tableau1.out,false,true,'');
+            var tableau1=iterateCharacters2(t);
+            var matriceFonction=functionToArray2(tableau1.out,false,true,'');
             if(matriceFonction.__xst === true){
                 if(matriceFonction.__xva[1][1] === 'html' && matriceFonction.__xva[1][8] <= 2){
                     /*
@@ -416,12 +416,12 @@ class traitements_sur_html{
                         }
                     }
                     if(aDesProps === false){
-                        var nouveauTableau1 = baisserNiveauEtSupprimer(matriceFonction.__xva,1,0);
+                        var nouveauTableau1=baisserNiveauEtSupprimer(matriceFonction.__xva,1,0);
                         /*
                           si le head n'a aucun enfant
                         */
                         if(nouveauTableau1.length >= 2 && nouveauTableau1[1][1] === 'head' && nouveauTableau1[1][8] == 0){
-                            var nouveauTableau2 = baisserNiveauEtSupprimer(nouveauTableau1,1,0);
+                            var nouveauTableau2=baisserNiveauEtSupprimer(nouveauTableau1,1,0);
                             if(nouveauTableau2[1][1] === 'body'){
                                 var aDesProps=false;
                                 for( var i=0 ; i < nouveauTableau2.length && aDesProps === false ; i++ ){
@@ -436,10 +436,10 @@ class traitements_sur_html{
                                     /*
                                       si le body n'a aucune propriété
                                     */
-                                    var nouveauTableau3 = baisserNiveauEtSupprimer(nouveauTableau2,1,0);
-                                    var nouveauJsonDeHtml = this.mapMatriceVersJsonDeHtml(nouveauTableau3);
+                                    var nouveauTableau3=baisserNiveauEtSupprimer(nouveauTableau2,1,0);
+                                    var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
                                     if(nouveauJsonDeHtml.__xst === true){
-                                        var obj1 = this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                        var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
                                         if(obj1.__xst === true){
                                             t=obj1.__xva;
                                         }else{
@@ -449,9 +449,9 @@ class traitements_sur_html{
                                         return(logerreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '}));
                                     }
                                 }else{
-                                    var nouveauJsonDeHtml = this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                                    var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
                                     if(nouveauJsonDeHtml.__xst === true){
-                                        var obj1 = this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                        var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
                                         if(obj.__xst === true){
                                             t=obj.__xva;
                                         }else{
@@ -462,9 +462,9 @@ class traitements_sur_html{
                                     }
                                 }
                             }else{
-                                var nouveauJsonDeHtml = this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
                                 if(nouveauJsonDeHtml === true){
-                                    var obj1 = this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
                                     if(obj1.__xst === true){
                                         t=obj1.__xva;
                                     }else{
@@ -481,14 +481,14 @@ class traitements_sur_html{
                               si la balise body ne contient rien, 
                             */
                             var body_est_vide=false;
-                            for( var i = nouveauTableau1.length - 1 ; i >= 0 && body_est_vide === false ; i-- ){
+                            for( var i=nouveauTableau1.length - 1 ; i >= 0 && body_est_vide === false ; i-- ){
                                 if(nouveauTableau1[i][1].toLowerCase() === 'body' && nouveauTableau1[i][2] === 'f' && nouveauTableau1[i][3] === 0){
                                     body_est_vide=true;
                                     nouveauTableau1.splice(i,1);
                                     t='';
                                     for( var j=0 ; j < nouveauTableau1.length ; j++ ){
                                         if(nouveauTableau1[j][7] === 1){
-                                            var obj = a2F1(nouveauTableau1,1,true,j);
+                                            var obj=a2F1(nouveauTableau1,1,true,j);
                                             if(obj.__xst === true){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
@@ -507,8 +507,8 @@ class traitements_sur_html{
                                   on reconstruit le source à partir de matriceFonction.__xva
                                   avec des retours de lignes et sans coloration
                                 */
-                                var nouveauJsonDeHtml = this.mapMatriceVersJsonDeHtml(nouveauTableau1);
-                                var obj1 = this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
+                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
                                 if(obj1.__xst === true){
                                     t=obj1.__xva;
                                 }else{
@@ -546,23 +546,23 @@ class traitements_sur_html{
     mapDOM(element){
         var treeObject={};
         if(typeof element === 'string'){
-            var parser = new DOMParser();
+            var parser=new DOMParser();
             /*
               "application/xml"
               "image/svg+xml"
               "text/html"
             */
-            var element_a_traiter = element.replace(/&nbsp;/g,'__a_remplacer__&#160;__a_remplacer__');
+            var element_a_traiter=element.replace(/&nbsp;/g,'__a_remplacer__&#160;__a_remplacer__');
             /*
               j'aime les &nbsp;
             */
-            var docNode = parser.parseFromString('<aaaaa>' + element_a_traiter + '</aaaaa>','application/xml');
+            var docNode=parser.parseFromString('<aaaaa>' + element_a_traiter + '</aaaaa>','application/xml');
             var elementNoeud=docNode.firstChild;
             if(docNode.getElementsByTagName('parsererror').length || element.indexOf('<') < 0){
                 /*
                   ce n'est pas un xml parfait
                 */
-                var docNode = parser.parseFromString(element.replace(/&/g,'&amp;'),'text/html');
+                var docNode=parser.parseFromString(element.replace(/&/g,'&amp;'),'text/html');
                 elementNoeud=docNode.firstChild;
                 function treeHTML(element,object){
                     object['type']=element.nodeName;
@@ -699,13 +699,13 @@ class traitements_sur_html{
                     if(tab[indice][2] === 'f' && tab[indice][1] !== ''){
                         attrib={};
                         var a_des_attributs=false;
-                        for( var i = indice + 1 ; i < l01 ; i++ ){
+                        for( var i=indice + 1 ; i < l01 ; i++ ){
                             if(tab[i][7] === indice && tab[i][1] === '' && tab[i][2] === 'f'){
                                 if(tab[i][8] === 1){
-                                    attrib[tab[i+1][1]]=null;
+                                    attrib[tab[i + 1][1]]=null;
                                     a_des_attributs=true;
                                 }else if(tab[i][8] === 2){
-                                    attrib[tab[i+1][1]]=tab[i+2][1];
+                                    attrib[tab[i + 1][1]]=tab[i + 2][1];
                                     a_des_attributs=true;
                                 }else{
                                     return({"__xst" : false ,"message" : '0547 nombre incorrect pour les attributs'});
@@ -717,20 +717,20 @@ class traitements_sur_html{
                         }
                         un_element['type']=tab[indice][1];
                         var le_contenu=[];
-                        for( var i = indice + 1 ; i < l01 ; i++ ){
+                        for( var i=indice + 1 ; i < l01 ; i++ ){
                             if(tab[i][7] === indice && tab[i][1] !== ''){
                                 if(tab[i][2] === 'c'){
                                     le_contenu.push({"content" : tab[i][1]});
                                 }else{
                                     attrib={};
                                     var a_des_attributs=false;
-                                    for( var j = i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+                                    for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
                                         if(tab[j][7] === i && tab[j][1] === '' && tab[j][2] === 'f'){
                                             if(tab[j][8] === 1){
-                                                attrib[tab[j+1][1]]=null;
+                                                attrib[tab[j + 1][1]]=null;
                                                 a_des_attributs=true;
                                             }else if(tab[j][8] === 2){
-                                                attrib[tab[j+1][1]]=tab[j+2][1];
+                                                attrib[tab[j + 1][1]]=tab[j + 2][1];
                                                 a_des_attributs=true;
                                             }else{
                                                 return({"__xst" : false ,"message" : '0547 nombre incorrect pour les attributs'});
@@ -738,8 +738,8 @@ class traitements_sur_html{
                                         }
                                     }
                                     if(tab[tab[i][7]][1].toLowerCase() === 'javascriptdanshtml'){
-                                        var debut = indice + 1;
-                                        for( var j = indice + 1 ; j < l01 ; j++ ){
+                                        var debut=indice + 1;
+                                        for( var j=indice + 1 ; j < l01 ; j++ ){
                                             if(tab[j][7] === indice){
                                                 if(tab[j][1] === '' && tab[j][2] === 'f'){
                                                 }else{
@@ -748,15 +748,15 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        var objContenuJs = parseJavascript0(tab,debut,0);
+                                        var objContenuJs=parseJavascript0(tab,debut,0);
                                         if(objContenuJs.__xst === true){
                                             le_contenu.push(JSON.parse(JSON.stringify({"type" : 'javascriptdanshtml' ,"content" : objContenuJs.__xva ,"attributes" : attrib})));
                                         }else{
                                             return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0635 '}));
                                         }
                                     }else if(tab[parentId][1].toLowerCase() === 'ldplusjsondanshtml'){
-                                        var debut = indice + 1;
-                                        for( var j = indice + 1 ; j < l01 ; j++ ){
+                                        var debut=indice + 1;
+                                        for( var j=indice + 1 ; j < l01 ; j++ ){
                                             if(tab[j][7] === indice){
                                                 if(tab[j][1] === '' && tab[j][2] === 'f'){
                                                 }else{
@@ -765,9 +765,9 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        var objContenuJs = parseJavascript0(tab,debut,0);
+                                        var objContenuJs=parseJavascript0(tab,debut,0);
                                         if(objContenuJs.__xst === true){
-                                            var contenu = objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
+                                            var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
                                             if(contenu.substr(contenu.length - 1,1) === ';'){
                                                 contenu=contenu.substr(0,contenu.length - 1);
                                             }
@@ -777,7 +777,7 @@ class traitements_sur_html{
                                             return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0660 '}));
                                         }
                                     }else{
-                                        var obj = reconstruit(tab,i);
+                                        var obj=reconstruit(tab,i);
                                         if(obj.__xst === true){
                                             if(a_des_attributs === true){
                                                 le_contenu.push(JSON.parse(JSON.stringify({"type" : tab[i][1] ,"content" : obj.content ,"attributes" : attrib})));
@@ -825,8 +825,8 @@ class traitements_sur_html{
             */
             var leJson={};
             if(tab[parentId][1].toLowerCase() === 'ldplusjsondanshtml'){
-                var debut = parentId + 1;
-                for( var j = parentId + 1 ; j < l01 ; j++ ){
+                var debut=parentId + 1;
+                for( var j=parentId + 1 ; j < l01 ; j++ ){
                     if(tab[j][7] === parentId){
                         if(tab[j][1] === '' && tab[j][2] === 'f'){
                         }else{
@@ -835,9 +835,9 @@ class traitements_sur_html{
                         }
                     }
                 }
-                var objContenuJs = parseJavascript0(tab,debut,0);
+                var objContenuJs=parseJavascript0(tab,debut,0);
                 if(objContenuJs.__xst === true){
-                    var contenu = objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
+                    var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
                     if(contenu.substr(contenu.length - 1,1) === ';'){
                         contenu=contenu.substr(0,contenu.length - 1);
                     }
@@ -846,8 +846,8 @@ class traitements_sur_html{
                     return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0477 '}));
                 }
             }else if(tab[parentId][1].toLowerCase() === 'javascriptdanshtml'){
-                var debut = parentId + 1;
-                for( var j = parentId + 1 ; j < l01 ; j++ ){
+                var debut=parentId + 1;
+                for( var j=parentId + 1 ; j < l01 ; j++ ){
                     if(tab[j][7] === parentId){
                         if(tab[j][1] === '' && tab[j][2] === 'f'){
                         }else{
@@ -856,7 +856,7 @@ class traitements_sur_html{
                         }
                     }
                 }
-                var objContenuJs = parseJavascript0(tab,debut,0);
+                var objContenuJs=parseJavascript0(tab,debut,0);
                 if(objContenuJs.__xst === true){
                     content.push(objContenuJs.__xva);
                 }else{
@@ -868,7 +868,7 @@ class traitements_sur_html{
             }else if(tab[parentId][8] === 0 && parentId > 0){
                 content.push('');
             }else{
-                for( var indice = parentId + 1 ; indice < l01 ; indice++ ){
+                for( var indice=parentId + 1 ; indice < l01 ; indice++ ){
                     var element={"type" : '' ,"attributes" : null ,"content" : null};
                     if(tab[indice][7] === parentId){
                         /*
@@ -877,8 +877,8 @@ class traitements_sur_html{
                             if(tab[indice][2] === 'f'){
                                 if('@' === tab[indice][1]){
                                     content.push(tab[indice][13].replace(/\\\'/g,'\'').replace(/\\\\/g,'\\'));
-                                    var max = l01 - 1;
-                                    for( var j = indice + 1 ; j < l01 ; j++ ){
+                                    var max=l01 - 1;
+                                    for( var j=indice + 1 ; j < l01 ; j++ ){
                                         if(tab[j][3] <= tab[indice][3]){
                                             max=j - 1;
                                             break;
@@ -886,14 +886,14 @@ class traitements_sur_html{
                                     }
                                     indice=max;
                                 }else if('ldplusjsondanshtml' === tab[indice][1].toLowerCase()){
-                                    var obj = reconstruit(tab,indice);
+                                    var obj=reconstruit(tab,indice);
                                     if(obj.__xst === true){
                                         content.push(obj.__xva);
                                     }else{
                                         return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0541 '}));
                                     }
-                                    var max = l01 - 1;
-                                    for( var j = indice + 1 ; j < l01 ; j++ ){
+                                    var max=l01 - 1;
+                                    for( var j=indice + 1 ; j < l01 ; j++ ){
                                         if(tab[j][3] <= tab[indice][3]){
                                             max=j - 1;
                                             break;
@@ -901,14 +901,14 @@ class traitements_sur_html{
                                     }
                                     indice=max;
                                 }else if('javascriptdanshtml' === tab[indice][1].toLowerCase()){
-                                    var obj = reconstruit(tab,indice);
+                                    var obj=reconstruit(tab,indice);
                                     if(obj.__xst === true){
                                         content.push(obj.__xva);
                                     }else{
                                         return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
                                     }
-                                    var max = l01 - 1;
-                                    for( var j = indice + 1 ; j < l01 ; j++ ){
+                                    var max=l01 - 1;
+                                    for( var j=indice + 1 ; j < l01 ; j++ ){
                                         if(tab[j][3] <= tab[indice][3]){
                                             max=j - 1;
                                             break;
@@ -918,14 +918,14 @@ class traitements_sur_html{
                                     /*
                                     */
                                 }else{
-                                    var obj = reconstruit(tab,indice);
+                                    var obj=reconstruit(tab,indice);
                                     if(obj.__xst === true){
                                         content.push(obj.__xva);
                                     }else{
                                         return(asthtml_logerreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
                                     }
-                                    var max = l01 - 1;
-                                    for( var j = indice + 1 ; j < l01 ; j++ ){
+                                    var max=l01 - 1;
+                                    for( var j=indice + 1 ; j < l01 ; j++ ){
                                         if(tab[j][3] <= tab[indice][3]){
                                             max=j - 1;
                                             break;
@@ -934,7 +934,7 @@ class traitements_sur_html{
                                     indice=max;
                                 }
                             }else{
-                                var obj = reconstruit(tab,indice);
+                                var obj=reconstruit(tab,indice);
                                 if(obj.__xst === true){
                                     content.push(obj.__xva);
                                 }else{
@@ -957,10 +957,10 @@ class traitements_sur_html{
             leJson['type']=type;
             leJson['content']=content;
             var aDesAttributs=false;
-            for( var indice = parentId + 1 ; indice < l01 ; indice++ ){
+            for( var indice=parentId + 1 ; indice < l01 ; indice++ ){
                 if(tab[indice][7] === parentId){
                     if(tab[indice][1] === '' && tab[indice][2] === 'f' && tab[indice][8] === 2){
-                        attributes[tab[indice+1][1]]=tab[indice+2][1];
+                        attributes[tab[indice + 1][1]]=tab[indice + 2][1];
                         aDesAttributs=true;
                     }
                 }
@@ -975,7 +975,7 @@ class traitements_sur_html{
           L'appel récursif se fait ici
           =====================================================================================================
         */
-        var obj = reconstruit(matrice,0);
+        var obj=reconstruit(matrice,0);
         if(obj.__xst === true){
             return({"__xst" : true ,"__xva" : obj.content});
         }else{
@@ -987,8 +987,8 @@ class traitements_sur_html{
       function recupérer_un_fetch
     */
     async recupere_un_fetch(url,donnees){
-        var delais_admis = donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur = donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
+        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
+        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
             "signal" : AbortSignal.timeout(delais_admis) ,
             "method" : "POST" ,
@@ -1001,18 +1001,18 @@ class traitements_sur_html{
             "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
         };
         try{
-            var response= await fetch(url,en_entree).catch((dataerr) => {
-                console.error('fetch dataerr=',dataerr)
+            var response=await fetch(url,en_entree).catch((dataerr) => {
+                console.error('fetch dataerr=',dataerr);
             }).finally((datafinally) => {
                 /* vide */
             });
-            var t= await response.text().catch((dataerr) => {
-                console.error('text dataerr=',dataerr)
+            var t=await response.text().catch((dataerr) => {
+                console.error('text dataerr=',dataerr);
             }).finally((datafinally) => {
                 /* vide */
             });
             try{
-                var le_json = JSON.parse(t);
+                var le_json=JSON.parse(t);
                 if(le_json.hasOwnProperty('__xms')){
                     for(var i in le_json.__xms){
                         logerreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur});
@@ -1042,15 +1042,15 @@ class traitements_sur_html{
     */
     TransformHtmlEnRev(texteHtml,niveau,options){
         var t='';
-        var esp0 = ' '.repeat(NBESPACESREV * niveau);
-        var esp1 = ' '.repeat(NBESPACESREV);
+        var esp0=' '.repeat(NBESPACESREV * niveau);
+        var esp1=' '.repeat(NBESPACESREV);
         var supprimer_le_tag_html_et_head=true;
         var doctype='';
         var elementsJson={};
         var i=0;
         var tableau_des_commentaires_js=[];
         try{
-            var position_doctype = texteHtml.toUpperCase().indexOf('<!DOCTYPE');
+            var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
             if(position_doctype >= 0){
                 if(position_doctype === 0){
                     for( i=1 ; i < texteHtml.length && doctype == '' ; i++ ){
@@ -1073,7 +1073,7 @@ class traitements_sur_html{
                 }
                 try{
                     var tableau_de_javascripts_a_convertir=[];
-                    var obj = this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
+                    var obj=this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
                     if(obj.__xst === true){
                         if(obj.__xva.trim().indexOf('html(') == 0){
                             if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
@@ -1086,10 +1086,9 @@ class traitements_sur_html{
                             var parseur_javascript=window.acorn.Parser;
                             for( var indjs=0 ; indjs < tableau_de_javascripts_a_convertir.length ; indjs++ ){
                                 try{
-                                    /*tabComment*/
+                                    /* tabComment */
                                     tableau_des_commentaires_js=[];
-                                    
-                                    var obj0 = parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
+                                    var obj0=parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
                                 }catch(e){
                                     console.error('erreur de conversion js e=',e);
                                     if(e.pos){
@@ -1097,32 +1096,30 @@ class traitements_sur_html{
                                     }
                                     return(logerreur({"__xst" : false ,"__xme" : '1093 il y a un problème dans un source javascript'}));
                                 }
-                                if(tableau_des_commentaires_js.length>0){
-                                     /* 
-                                       il faut retirer les commentaires si ce sont des CDATA ou des <source_javascript_rev> 
-                                       car javascriptdanshtml les ajoute.
-                                     */
-                                     var commentaires_a_remplacer=[
-                                         '<![CDATA[' , ']]>' , '<source_javascript_rev>' , '</source_javascript_rev>'  
-                                     ]
-                                     for(var nn=0;nn<commentaires_a_remplacer.length;nn++){
-                                         for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
-                                             if(tableau_des_commentaires_js[indc].value.trim()===commentaires_a_remplacer[nn]){
-                                                 tableau_des_commentaires_js.splice(indc,1);
-                                             }
-                                         }
-                                     }
-                                     for(var indc=tableau_des_commentaires_js.length-1;indc>=0;indc--){
-                                         if(tableau_des_commentaires_js[indc].value.trim()==='' && tableau_des_commentaires_js[indc].type==='Line'){
-                                             tableau_des_commentaires_js.splice(indc,1);
-                                         }
-                                     }
+                                if(tableau_des_commentaires_js.length > 0){
+                                    /*
+                                      il faut retirer les commentaires si ce sont des CDATA ou des <source_javascript_rev> 
+                                      car javascriptdanshtml les ajoute.
+                                    */
+                                    var commentaires_a_remplacer=['<![CDATA[',']]>','<source_javascript_rev>','</source_javascript_rev>'];
+                                    for( var nn=0 ; nn < commentaires_a_remplacer.length ; nn++ ){
+                                        for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
+                                            if(tableau_des_commentaires_js[indc].value.trim() === commentaires_a_remplacer[nn]){
+                                                tableau_des_commentaires_js.splice(indc,1);
+                                            }
+                                        }
+                                    }
+                                    for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
+                                        if(tableau_des_commentaires_js[indc].value.trim() === '' && tableau_des_commentaires_js[indc].type === 'Line'){
+                                            tableau_des_commentaires_js.splice(indc,1);
+                                        }
+                                    }
                                 }
                                 /* on transforme le ast du js en rev */
-                                var obj1 = __module_js_parseur1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
+                                var obj1=__module_js_parseur1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
                                 if(obj1.__xst === true){
                                     /* puis on remplace la chaine */
-                                    var phrase_a_remplacer = '#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';
+                                    var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';
                                     obj.__xva=obj.__xva.replace(phrase_a_remplacer,obj1.__xva);
                                 }else{
                                     console.error('erreur de conversion de ast vers js e=',e);
@@ -1141,7 +1138,7 @@ class traitements_sur_html{
                                 return;
                             }else if(options.hasOwnProperty('source_php')){
                                 console.log('options=',options,'source_rev=',source_rev);
-                                var chaine_a_remplacer = '#(cle_html_dans_php_a_remplacer,' + options.a_convertir.cle + ')';
+                                var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,' + options.a_convertir.cle + ')';
                                 options.source_php=options.source_php.replace(chaine_a_remplacer,source_rev);
                                 var nouveau_source=options.source_php;
                                 console.log('nouveau_source=',nouveau_source);
@@ -1154,13 +1151,13 @@ class traitements_sur_html{
                                         if(document.getElementById(options.zone_html_rev)){
                                             document.getElementById(options.zone_html_rev).value=source_rev;
                                         }
-                                        var tableau1 = iterateCharacters2(source_rev);
-                                        var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                                        var tableau1=iterateCharacters2(source_rev);
+                                        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                                         if(matriceFonction.__xst === false){
                                             logerreur({"__xst" : false ,"__xme" : '1344 erreur module_html conversion en matrice'});
                                             return({"__xst" : false ,"__xme" : '1345 erreur module_html conversion en matrice'});
                                         }
-                                        var obj1 = a2F1(matriceFonction.__xva,0,true,1);
+                                        var obj1=a2F1(matriceFonction.__xva,0,true,1);
                                         if(obj1.__xst === true){
                                             document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                         }else{
@@ -1177,7 +1174,7 @@ class traitements_sur_html{
                             if(options.hasOwnProperty('html_dans_php')){
                                 for( var i=0 ; i < options.tableau_de_html_dans_php_a_convertir.length ; i++ ){
                                     if(options.cle === options.tableau_de_html_dans_php_a_convertir[i].cle){
-                                        var a_remplacer = '#(cle_html_dans_php_a_remplacer,' + options.cle + ')';
+                                        var a_remplacer='#(cle_html_dans_php_a_remplacer,' + options.cle + ')';
                                         options.html_dans_php=options.html_dans_php.replace(a_remplacer,obj.__xva);
                                     }
                                 }
@@ -1185,13 +1182,13 @@ class traitements_sur_html{
                             }else if(options.hasOwnProperty('zone_html_rev')){
                                 try{
                                     document.getElementById(options.zone_html_rev).value=obj.__xva.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\\\¶\\\\LF\\\\¶/g,'\n').replace(/\\\\¶\\\\CR\\\\¶/g,'\r');
-                                    var tableau1 = iterateCharacters2(obj.__xva);
-                                    var matriceFonction = functionToArray2(tableau1.out,true,false,'');
+                                    var tableau1=iterateCharacters2(obj.__xva);
+                                    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                                     if(matriceFonction.__xst === false){
                                         logerreur({"__xst" : false ,"__xme" : '1412 erreur module_html conversion en matrice'});
                                         return({"__xst" : false ,"__xme" : '1413 erreur module_html conversion en matrice'});
                                     }
-                                    var obj1 = a2F1(matriceFonction.__xva,0,true,1);
+                                    var obj1=a2F1(matriceFonction.__xva,0,true,1);
                                     if(obj1.__xst === true){
                                         document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                     }else{
@@ -1242,7 +1239,7 @@ class traitements_sur_html{
             if(tab[j][7] === ind){
                 if(tab[j][2] === 'f'){
                     if(tab[j][1] === ''){
-                        lesProprietes+=' ' + tab[j+1][1] + '="' + tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
+                        lesProprietes+=' ' + (tab[j + 1][1]) + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
                     }else{
                         if(indiceDebutJs === -1){
                             indiceDebutJs=j;
@@ -1265,7 +1262,7 @@ class traitements_sur_html{
             /*
               c'est un script dans un html
             */
-            var ob = parseJavascript0(tab,indiceDebutJs,0);
+            var ob=parseJavascript0(tab,indiceDebutJs,0);
             if(ob.__xst === true){
                 /*
                   =====================================================================================
@@ -1369,7 +1366,7 @@ class traitements_sur_html{
                 if(tab[id][13] === ''){
                     temp+='<!-- -->';
                 }else{
-                    var commentaire = traiteCommentaire2(tab[id][13],niveau,id);
+                    var commentaire=traiteCommentaire2(tab[id][13],niveau,id);
                     if(commentaire !== ''){
                         /* si le commentaire html n'est pas vide, on lui ajoute au besoin un espace avant et après */
                         if(commentaire.substr(0,1) !== ' '){
@@ -1394,21 +1391,21 @@ class traitements_sur_html{
                 if(tab[i][7] == id){
                     if(tab[i][2] == 'f' && tab[i][1] == ''){
                         if(tab[i][8] <= 2){
-                            if(tab[i][8] == 2 && tab[i+1][2] == 'c' && tab[i+2][2] == 'c'){
+                            if(tab[i][8] == 2 && tab[i + 1][2] == 'c' && tab[i + 2][2] == 'c'){
                                 /*
                                   =====================================================
                                   Ecriture de la propriété
                                   =====================================================
                                 */
-                                temp+=' ' + tab[i+1][1] + '="' + tab[i+2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
-                                if(tab[i+1][1] == 'data-lang' && (tab[i+2][1] == 'fr' || tab[i+2][1] == 'en')){
-                                    globale_LangueCourante=tab[i+2][1];
+                                temp+=' ' + (tab[i + 1][1]) + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
+                                if(tab[i + 1][1] == 'data-lang' && (tab[i + 2][1] == 'fr' || tab[i + 2][1] == 'en')){
+                                    globale_LangueCourante=tab[i + 2][1];
                                 }
-                            }else if(tab[i][8] == 1 && tab[i+1][2] == 'c'){
-                                if(tab[i+1][1] == 'doctype'){
+                            }else if(tab[i][8] == 1 && tab[i + 1][2] == 'c'){
+                                if(tab[i + 1][1] == 'doctype'){
                                     doctype='<!DOCTYPE html>';
                                 }else{
-                                    temp+=' ' + tab[i+1][1] + '';
+                                    temp+=' ' + (tab[i + 1][1]) + '';
                                 }
                             }else{
                                 return(logerreur({"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'}));
@@ -1455,11 +1452,11 @@ class traitements_sur_html{
                                 */
                                 var lesProprietes='';
                                 var indiceDebutJs=-1;
-                                for( var j = i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+                                for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
                                     if(tab[j][7] === i){
                                         if(tab[j][2] === 'f'){
                                             if(tab[j][1] === ''){
-                                                lesProprietes+=' ' + tab[j+1][1] + '="' + tab[j+2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
+                                                lesProprietes+=' ' + (tab[j + 1][1]) + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
                                             }else{
                                                 if(indiceDebutJs === -1){
                                                     indiceDebutJs=j;
@@ -1493,7 +1490,7 @@ class traitements_sur_html{
                                         */
                                         t+=CRLF;
                                         t+='<script' + lesProprietes + '>';
-                                        var contenu = ob.__xva.substr(ob.__xva.indexOf('=') + 1);
+                                        var contenu=ob.__xva.substr(ob.__xva.indexOf('=') + 1);
                                         if(contenu.substr(contenu.length - 1,1) === ';'){
                                             contenu=contenu.substr(0,contenu.length - 1);
                                         }
@@ -1503,7 +1500,7 @@ class traitements_sur_html{
                                     }
                                 }
                             }else if(tab[i][1].toLowerCase() === 'javascriptdanshtml'){
-                                var obj = this.insere_javascript_dans_html(tab,i,niveau);
+                                var obj=this.insere_javascript_dans_html(tab,i,niveau);
                                 if(obj.__xst === true){
                                     t+=obj.__xva;
                                 }else{
@@ -1562,10 +1559,10 @@ class traitements_sur_html{
                                             break;
                                         }
                                     }
-                                    var contenuCss = tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                                    var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
                                     /* on supprime les espaces de fin */
                                     if(contenuCss !== ''){
-                                        for( var indcss = contenuCss.length - 1 ; indcss >= 0 ; indcss-- ){
+                                        for( var indcss=contenuCss.length - 1 ; indcss >= 0 ; indcss-- ){
                                             if(!(contenuCss.substr(indcss,1) === ' ' || contenuCss.substr(indcss,1) === '\n' || contenuCss.substr(indcss,1) === '\r')){
                                                 contenuCss=contenuCss.substr(0,indcss + 1);
                                                 break;
@@ -1597,7 +1594,7 @@ class traitements_sur_html{
                     if(noHead && (tab[id][1] === 'html' || tab[id][1] === 'html_dans_php')){
                         t+=CRLF;
                     }else{
-                        if(tab[id][2] === 'f' && tab[id][8] === 1 && tab[id+1][2] === 'c'){
+                        if(tab[id][2] === 'f' && tab[id][8] === 1 && tab[id + 1][2] === 'c'){
                             /* aucune propriété et qu'une constante */
                         }else{
                             if(id === 0 || tab[id][2] === 'f' && (tab[id][1] === 'textarea' || tab[id][1] === 'pre')){
@@ -1620,11 +1617,11 @@ class traitements_sur_html{
                              && contenuNiveauPlus1.indexOf('<') < 0
                             ){
                                 var tag=tab[id][1];
-                                const re1 = new RegExp("\<" + tag + "(.*)\>\r\n[ \t]+","g");
-                                const rp1 = '<' + tag + '$1>';
+                                const re1=new RegExp("\<" + tag + "(.*)\>\r\n[ \t]+","g");
+                                const rp1='<' + tag + '$1>';
                                 t=t.replace(re1,rp1);
-                                const re2 = new RegExp("\r\n[ \t]+\<\/" + tag + "\>","g");
-                                const rp2 = '</' + tag + '>';
+                                const re2=new RegExp("\r\n[ \t]+\<\/" + tag + "\>","g");
+                                const rp2='</' + tag + '>';
                                 t=t.replace(re2,rp2);
                             }
                         }
