@@ -11,6 +11,7 @@ Les constantes sont sous deux formats :
 - sans délimiteurs : typiquement les noms de variables, les constantes des langages...   
 - avec délimiteurs : ' (apostrophe) , " (guillemet) , / (divisé pour les regex ) , ` ( apostrophe inversé ) 
 
+Les éléments sont séparés par des virgules.
 
 La syntaxe et les mots clés sont loin d'être complètement définis et en plus, ils sont en français.
 
@@ -27,7 +28,7 @@ Un exemple de fichier produisant du php contenant du html et du javascript à pa
 
 
 
-**Brève description** : un source est écrit sous ce format "rev" ( comme réversible )
+**Brève description** : un source est écrit sous ce format "rev" ( comme réversible ;-)
 ```
 #(😊ceci est un arbre),
 a(b((c , '/') , d(e , f))),
@@ -160,33 +161,74 @@ Ainsi, les programmes sources deviennent des données qu'on peut traiter informa
 
 **Les règles d'écriture** des programmes rev sont limitées.
 
-**1°) Racine**
-
-La racine d'un programme ne peut contenir que des fonctions séparées par des virgules et pas de constantes:
-Les fonctions peuvent être imbriquées
-```
-a(),
-b(
- c(ceci_est_une_constante,'ceci est une autre constante',123,456)
-)
-```
-est légal mais
-
-```
-a(),
-ceci_est_une_erreur,
-c(d())
-
-```
-Ne l'est pas à cause de la constante "ceci_est_une_erreur" qui est à la racine
-
-Cela dit, le programme qui traite ces sources rev peut accepter des constantes à la racine quand on veut 
-par exemple vérifier une suite d'éléments. mais cela doit être indiqué en paramètre.
-
-**2°) les constantes:**
-elles peuvent être  , entre guillemets,  entre apostrophes,  entre apostrophes inversées, entre signe division (/) dans le cas des regex  
-ou bien dans aucun des cas çi-dessus, typiquement pour les variables, des constantes ( NULL , vrai , faux ) ou bien les valeurs numériques  
+**2°) Les constantes:**
+Elles peuvent être  , entre guillemets,  entre apostrophes,  entre apostrophes inversées, entre signe division (/) dans le cas des regex  
+ou bien dans aucun des cas çi-dessus, typiquement pour les variables, des constantes ( null , vrai , faux ) ou bien les valeurs numériques  
 Dans le cas des regex, les éventuels indicateurs, par exemple i ou g sont placés dans la colonne des commentaires ( indice 13 )  
+
+On pourra avoir par exemple :  
+a,  
+'a',  
+"a",  
+`a`,  
+/a/gi  
+
+et on obtiendra le tableau suivant  
+```
+0id	1val	2typ	3niv	4coQ	5pre	6der	7pId	8nbE	9nuE	10pro	11pop	12efs	13com
+0		 INIT	 -1  0	   0	    0	   0	   5	   0	   0	   0	   0	
+1	  a	     c	 0	   0	    0	   0	   0   	0	   1	   0	   0	    2	
+2	  a	     c	 0	   1	    6	   6	   0	   0	   2	   0	   0	    3	
+3	  a	     c	 0	   3	   13	  13	   0	   0	   3	   0	   0	    4	
+4	  a	     c	 0	   2	   20	  20	   0	   0	   4	   0	   0	    5	
+5	  a	     c	 0	   4	   27	  31	   0	   0	   5	   0	   0	    6	    gi
+```
+
+Cela dit, on évitera d'écrire des constantes à la racine car ça ne sert généralement pas à grand chose et ce n'est pas autorisé par défaut.   
+Le programme qui traite ces sources rev peut accepter des constantes à la racine quand on veut 
+par exemple vérifier une suite d'arguments mais cela doit être indiqué en paramètre.
+
+
+Pour les cas spéciaux des les langages : 
+
+Javascript autorise un "use strict";  il est tranformé en 
+
+useStrict() 
+ou bien en 
+directive( "use strict"), 
+
+
+
+Php autorise un : declare(strict_types=1); il est tranformé en 
+
+directive( texte( 'strict_types=1' )) 
+
+
+**1°) Les Fonctions**
+
+Elle peuvent contenir 0 ou n arguments, ces arguments peuvent être des fonctions ou des constantes
+
+On pourra avoir par exemple :  
+a(),
+a( a , 'a'),
+a( "a" , a( `a` , /a/gi ))
+
+et on obtiendra le tableau suivant  
+
+```
+0id	1val	2typ	3niv	4coQ	5pre	6der	7pId	8nbE	9nuE	10pro	11pop	12efs	13com
+0		 INIT	 -1	 0	   0	    0	   0	   0   3	   0	   0	    0	    0	
+1	  a	     f	 0	   0	    0	   0	   0	  0	   1	   0	    1	    2	
+2	  a	     f	 0	   0	    5	   5	   0	  2	   2	   1	    6	    5	
+3	  a	     c	 1	   0	    8	   8	   2	  0	   1	   0	    0	    4	
+4	  a	     c	 1	   1	   13	  13	   2	  0	   2	   0	    6	   10	
+5	  a	     f	 0	   0	   18	  18	   0	  2	   3	   2	   19	   10	
+6	  a	     c	 1	   3	   22	  22	   5	  0	   1	   0	   19	    7	
+7	  a	     f	 1	   0	   27	  27	   5	  2	   2	   1	   28	   10	
+8	  a	     c	 2	   2	   31	  31	   7	  0	   1	   0	   28	    9	
+9	  a	     c	 2	   4	   37	  41	   7	  0	   2	   0	   28	   10	     gi
+```
+
 
 **3°) les commentaires:**
 
@@ -247,14 +289,18 @@ ne l'est pas.
 
 - sql
 
+Je prévois d'intégrer d'autres langages au fur et à mesure de l'avancée des développements mais pour l'instant  
+ça me suffit pour valider toute la chaîne de traitement.
+
 **5°) les programmes existants**  sont convertis.
 
 Le système permet de convertir les sources javascript, php, html, sql dans le format "rev" pour pouvoir reprendre l'existant.  
 A partir du format rev, le programme permet de produire un format tabulaire qui est inséré en base de donnée.  
-A partir du format tabulaire on peut regénérer le source original
+A partir du format tabulaire on peut regénérer le source original  
+La très grande majorité des sources présents dans ce git sont générés à partir du format rev.
 
 
-Les bibliothèques externes qui sont utilisées pour convertir les sources des programmes en AST ( abstract syntax tree ) sont en cours de conversion en format "rev".  
+Les bibliothèques externes qui sont utilisées pour convertir les sources des programmes en AST ( abstract syntax tree ) sont aussi converties en format "rev".  
 Ces "AST" sont ensuites traités pour produire les "rev".   
 
 L'objectif est d'avoir que des sources au format rev
