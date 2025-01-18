@@ -15,9 +15,8 @@ function transform_text_area_php_en_rev3(nom_de_la_text_area_php,nom_de_la_text_
         /* ✍ {parser:{extractDoc: true,php7: true,},ast:{withPositions: true}} */
         var startMicro=performance.now();
         var parseur=window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
-        
-        let regex = /\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
-        let php_moins_commentaires_sql = a.value.replace(regex, '');
+        let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
+        let php_moins_commentaires_sql=a.value.replace(regex,'');
         var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
         var obj=__module_php_parseur1.traite_ast(ast_de_php,options_traitement);
         if(obj.__xst === true){

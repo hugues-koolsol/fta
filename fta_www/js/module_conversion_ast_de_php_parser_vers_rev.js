@@ -73,8 +73,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }else{
-            if(nomFonction==='sql_inclure_reference'){
-                t+='sql_inclure_reference('+les_arguments_courts+')';
+            if(nomFonction === 'sql_inclure_reference'){
+                t+='sql_inclure_reference(' + les_arguments_courts + ')';
             }else{
                 t+=this.#remplace_nom_fonction1(nomFonction,les_parametres);
             }
@@ -365,7 +365,6 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 t=obj.__xva;
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0238 #traite_inline ' ,"element" : element}));
-                debugger;
             }
         }
         return({"__xst" : true ,"__xva" : t ,"tableau_de_html_dans_php_a_convertir" : tableau_de_html_dans_php_a_convertir});
@@ -2201,7 +2200,6 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             t+='affecte_reference(' + gauche + ',' + droite + ')';
             if(element.operator !== undefined){
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1455 #traite_assignref opérateur non traité : "' + element.operator + '"' ,"element" : element}));
-                t+='affecte_reference(' + gauche + ',' + droite + ')';
             }
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1470 #traite_assignref il manque un gauche ou un droite ' ,"element" : element}));
@@ -2662,8 +2660,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         let les_arguments_courts='';
         for( let i=0 ; i < element.arguments.length ; i++ ){
             t+=',';
-            if(les_arguments_courts!==''){
-               les_arguments_courts+=',';
+            if(les_arguments_courts !== ''){
+                les_arguments_courts+=',';
             }
             obj=this.#traite_element(element.arguments[i],niveau,element,tab_comm);
             if(obj.__xst === true){
@@ -2673,7 +2671,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element}));
             }
         }
-        return({"__xst" : true ,"__xva" : t , "les_arguments_courts" : les_arguments_courts});
+        return({"__xst" : true ,"__xva" : t ,"les_arguments_courts" : les_arguments_courts});
     }
     /*
       =============================================================================================================

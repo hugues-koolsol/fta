@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services(true,true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -12,18 +12,19 @@ if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
 
 /*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY]['cible_courante'] , true ) . '</pre>' ; exit(0);*/
 
-if((isset($_GET['supprimer_tout'])) && ($_GET['supprimer_tout'] === '1')){
+if(isset($_GET['supprimer_tout']) && $_GET['supprimer_tout'] === '1'){
 
     sql_inclure_reference(14);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_14.php');
+    require_once(INCLUDE_PATH.'/sql/sql_14.php');
     /*
-      
-      DELETE FROM b1.tbl_revs
-      WHERE `chx_cible_rev` = :chx_cible_rev ;
-      
+    
+    DELETE FROM b1.tbl_revs
+    WHERE `chx_cible_rev` = :chx_cible_rev ;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if($tt[__xst] === false){
@@ -171,36 +172,37 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(13);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_13.php');
+require_once(INCLUDE_PATH.'/sql/sql_13.php');
 /*
-  SELECT 
-  `T0`.`chi_id_rev` , `T0`.`chp_provenance_rev` , `T0`.`chx_source_rev` , `T1`.`chp_nom_source` , `T0`.`chp_valeur_rev` , 
-  `T0`.`chp_type_rev` , `T0`.`chp_niveau_rev` , `T0`.`chp_pos_premier_rev` , `T0`.`chp_commentaire_rev` , `T2`.`chp_type_requete`
-  FROM b1.tbl_revs T0
-  LEFT JOIN b1.tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
+SELECT 
+`T0`.`chi_id_rev` , `T0`.`chp_provenance_rev` , `T0`.`chx_source_rev` , `T1`.`chp_nom_source` , `T0`.`chp_valeur_rev` , 
+`T0`.`chp_type_rev` , `T0`.`chp_niveau_rev` , `T0`.`chp_pos_premier_rev` , `T0`.`chp_commentaire_rev` , `T2`.`chp_type_requete`
+ FROM b1.tbl_revs T0
+ LEFT JOIN b1.tbl_sources T1 ON T1.chi_id_source = T0.chx_source_rev
+
+ LEFT JOIN b1.tbl_requetes T2 ON T2.chi_id_requete = T0.chx_source_rev
+
+WHERE (`T0`.`chx_cible_rev` = :T0_chx_cible_rev
   
-  LEFT JOIN b1.tbl_requetes T2 ON T2.chi_id_requete = T0.chx_source_rev
+ AND `T0`.`chp_provenance_rev` LIKE :T0_chp_provenance_rev
   
-  WHERE (`T0`.`chx_cible_rev` = :T0_chx_cible_rev
+ AND `T0`.`chx_source_rev` = :T0_chx_source_rev
   
-  AND `T0`.`chp_provenance_rev` LIKE :T0_chp_provenance_rev
+ AND `T1`.`chp_nom_source` LIKE :T1_chp_nom_source1
   
-  AND `T0`.`chx_source_rev` = :T0_chx_source_rev
+ AND `T1`.`chp_nom_source` NOT LIKE :T1_chp_nom_source2
   
-  AND `T1`.`chp_nom_source` LIKE :T1_chp_nom_source1
+ AND `T0`.`chp_valeur_rev` LIKE :T0_chp_valeur_rev
   
-  AND `T1`.`chp_nom_source` NOT LIKE :T1_chp_nom_source2
+ AND `T0`.`chp_commentaire_rev` LIKE :T0_chp_commentaire_rev
   
-  AND `T0`.`chp_valeur_rev` LIKE :T0_chp_valeur_rev
-  
-  AND `T0`.`chp_commentaire_rev` LIKE :T0_chp_commentaire_rev
-  
-  AND `T0`.`chi_id_rev` = :T0_chi_id_rev) 
-  ORDER BY `T0`.`chp_provenance_rev` ASC, `T0`.`chx_source_rev` ASC  
-  LIMIT :quantitee OFFSET :debut ;
-  
+ AND `T0`.`chi_id_rev` = :T0_chi_id_rev) 
+ORDER BY `T0`.`chp_provenance_rev` ASC, `T0`.`chx_source_rev` ASC  
+LIMIT :quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_13(array(
     'T0_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chp_provenance_rev' => ($chp_provenance_rev === null ? $chp_provenance_rev : ($chp_provenance_rev === '' ? '' : '%' . $chp_provenance_rev . '%')),
@@ -263,7 +265,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl .= '<div class="yyflex1">';
     $__lsttbl .= ' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id=' . $v0['T0.chx_source_rev'] . '" target="_blank" title="modifier">⇒</a>';
 
-    if(($v0['T0.chp_valeur_rev'] === '#') && ($v0['T0.chp_type_rev'] === 'f')){
+    if($v0['T0.chp_valeur_rev'] === '#' && $v0['T0.chp_type_rev'] === 'f'){
 
         $__lsttbl .= ' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler(' . $v0['T0.chx_source_rev'] . ',' . $v0['T0.chi_id_rev'] . ',&quot;' . $v0['T0.chp_provenance_rev'] . '&quot;)"  title="supprimer ce commentaire et recompiler">⚙️</a>';
 
@@ -340,14 +342,14 @@ foreach($tt[__xva] as $k0 => $v0){
         if($v0['T0.chp_provenance_rev'] === 'source'){
 
 
-            if(!(isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']]))){
+            if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']])){
 
                 $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
             }else{
 
 
-                if(!(isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]))){
+                if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
                     $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
@@ -368,14 +370,14 @@ foreach($tt[__xva] as $k0 => $v0){
                 if('requete_manuelle' !== $v0['T2.chp_type_requete']){
 
 
-                    if(!(isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']]))){
+                    if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']])){
 
                         $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
                     }else{
 
 
-                        if(!(isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]))){
+                        if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
                             $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
@@ -413,7 +415,7 @@ foreach($tt[__xva] as $k0 => $v0){
 }
 $o1 .= '<div style="overflow-x:scroll;"><table class="yytableResult1">' . PHP_EOL . $__lsttbl . '</tbody></table></div>' . PHP_EOL;
 
-if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
+if(count($tableau_pour_webworker_sources) >= 1 && ($__nbEnregs <= $__nbMax || $chp_nom_source1 !== '')){
 
     $liste_des_taches=array();
     foreach($tableau_pour_webworker_sources as $k1 => $v1){
@@ -446,7 +448,7 @@ if((count($tableau_pour_webworker_sources) >= 1) && (($__nbEnregs <= $__nbMax) |
 }
 
 
-if((count($tableau_pour_webworker_sql) >= 1) && (($__nbEnregs <= $__nbMax) || ($chp_nom_source1 !== ''))){
+if(count($tableau_pour_webworker_sql) >= 1 && ($__nbEnregs <= $__nbMax || $chp_nom_source1 !== '')){
 
     $liste_des_taches=array();
     foreach($tableau_pour_webworker_sql as $k1 => $v1){

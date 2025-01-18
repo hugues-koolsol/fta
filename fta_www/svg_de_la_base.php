@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*sess*/ true, /*bdd*/ true);
 
-if(!(isset($_GET['__id_des_bases']))){
+if(!isset($_GET['__id_des_bases'])){
 
     ajouterMessage('erreur',__LINE__ . ' : veuillez sélectionner au moins une base ');
     recharger_la_page('zz_bdds_l1.php');
@@ -12,8 +12,17 @@ if(!(isset($_GET['__id_des_bases']))){
 
 sql_inclure_reference(49);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_49.php');
+require_once(INCLUDE_PATH.'/sql/sql_49.php');
+/*
+SELECT 
+count(*)
+ FROM b1.tbl_bdds T0
+WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+ AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+*/
 /*sql_inclure_fin*/
+
 $tt=sql_49(array( 'T0_chi_id_basedd' => $_GET['__id_des_bases'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 $tableau_en_entree=explode(',',$_GET['__id_des_bases']);
 $__nbEnregs=0;

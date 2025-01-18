@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux dossiers');
     recharger_la_page('zz_cibles_l1.php');
@@ -53,7 +53,7 @@ function erreur_dans_champs_saisis_dossiers(){
   =====================================================================================================================
 */
 
-if((isset($_POST)) && (sizeof($_POST) >= 1)){
+if(isset($_POST) && sizeof($_POST) >= 1){
 
     /* echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();*/
     $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']=$_POST['chp_nom_dossier']??'';
@@ -104,17 +104,30 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(54);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_54.php');
+        require_once(INCLUDE_PATH.'/sql/sql_54.php');
         /*
-          INSERT INTO b1.`tbl_sources`(
-          `chx_cible_id_source` ,     `chp_nom_source` ,     `chp_commentaire_source` ,     `chx_dossier_id_source` ,     `chp_rev_source` , 
-          `chp_genere_source`   ,     `chp_type_source`
-          ) VALUES (
-          :chx_cible_id_source  ,     :chp_nom_source ,      :chp_commentaire_source  ,     :chx_dossier_id_source  ,     :chp_rev_source , 
-          :chp_genere_source    ,     :chp_type_source
-          );
+        
+        INSERT INTO b1.`tbl_sources`(
+            `chx_cible_id_source` , 
+            `chp_nom_source` , 
+            `chp_commentaire_source` , 
+            `chx_dossier_id_source` , 
+            `chp_rev_source` , 
+            `chp_genere_source` , 
+            `chp_type_source`
+        ) VALUES (
+            :chx_cible_id_source , 
+            :chp_nom_source , 
+            :chp_commentaire_source , 
+            :chx_dossier_id_source , 
+            :chp_rev_source , 
+            :chp_genere_source , 
+            :chp_type_source
+        );
+
         */
         /*sql_inclure_fin*/
+        
         $a_inserer=array( array(
                     'chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
                     'chp_nom_source' => $nom_complet_source,
@@ -203,7 +216,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__modification')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
         /*
           =====================================================================================================
@@ -214,7 +227,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         if(erreur_dans_champs_saisis_dossiers()){
 
 
-            if((isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'])) && (is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']))){
+            if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
 
@@ -229,12 +242,16 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(55);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_55.php');
+        require_once(INCLUDE_PATH.'/sql/sql_55.php');
         /*
-          UPDATE b1.tbl_dossiers SET `chx_cible_dossier` = :n_chx_cible_dossier , `chp_nom_dossier` = :n_chp_nom_dossier
-          WHERE (`chi_id_dossier` = :c_chi_id_dossier AND `chx_cible_dossier` = :c_chx_cible_dossier) ;
+        
+        UPDATE b1.tbl_dossiers SET `chx_cible_dossier` = :n_chx_cible_dossier , `chp_nom_dossier` = :n_chp_nom_dossier
+        WHERE (`chi_id_dossier` = :c_chi_id_dossier
+         AND `chx_cible_dossier` = :c_chx_cible_dossier) ;
+
         */
         /*sql_inclure_fin*/
+        
         $a_modifier=array( 'n_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'n_chp_nom_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'], 'c_chi_id_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'], 'c_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']);
         $tt=sql_55($a_modifier);
 
@@ -271,7 +288,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__confirme_suppression')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__confirme_suppression'){
 
         /*
           =====================================================================================================
@@ -285,21 +302,24 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             sql_inclure_reference(50);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_50.php');
+            require_once(INCLUDE_PATH.'/sql/sql_50.php');
             /*
-              SELECT 
-              `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
-              `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible`
-              FROM b1.tbl_dossiers T0
-              LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
-              
-              WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+            SELECT 
+            `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+            `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible`
+             FROM b1.tbl_dossiers T0
+             LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
+            
+            WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+             AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_50(array( 'T0_chi_id_dossier' => $__id, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             /* echo __FILE__ . ' ' . __LINE__ . ' $tt = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);*/
 
-            if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+            if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
                 ajouterMessage('erreur',__LINE__ . ' : dossier non trouvé ',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
@@ -311,7 +331,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             if($__valeurs['T0.chp_nom_dossier'] == '/'){
 
 
-                if(($__valeurs['T1.chp_dossier_cible'] === 'fta') && (APP_KEY !== 'fta')){
+                if($__valeurs['T1.chp_dossier_cible'] === 'fta' && APP_KEY !== 'fta'){
 
 
                 }else{
@@ -325,15 +345,20 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             sql_inclure_reference(56);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_56.php');
+            require_once(INCLUDE_PATH.'/sql/sql_56.php');
             /*
-              SELECT        count(*)               FROM b1.tbl_sources T0
-              WHERE (`T0`.`chx_cible_id_source` = :T0_chx_cible_id_source AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source);
+            SELECT 
+            count(*)
+             FROM b1.tbl_sources T0
+            WHERE (`T0`.`chx_cible_id_source` = :T0_chx_cible_id_source
+             AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source);
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_56(array( 'T0_chx_dossier_id_source' => $__id, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-            if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+            if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
                 ajouterMessage('erreur',__LINE__ . ' : dossier non trouvé ',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
@@ -351,16 +376,20 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             sql_inclure_reference(57);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_57.php');
+            require_once(INCLUDE_PATH.'/sql/sql_57.php');
             /*
-              SELECT  count(*)
-              FROM b1.tbl_bdds T0
-              WHERE (`T0`.`chx_dossier_id_basedd` = :T0_chx_dossier_id_basedd AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);             
+            SELECT 
+            count(*)
+             FROM b1.tbl_bdds T0
+            WHERE (`T0`.`chx_dossier_id_basedd` = :T0_chx_dossier_id_basedd
+             AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_57(array( 'T0_chx_dossier_id_basedd' => $__id, 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-            if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+            if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
                 ajouterMessage('erreur',__LINE__ . ' : bdd non trouvé ',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
@@ -378,13 +407,17 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             sql_inclure_reference(58);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_58.php');
+            require_once(INCLUDE_PATH.'/sql/sql_58.php');
             /*
+            
+            DELETE FROM b1.tbl_dossiers
+            WHERE (`chi_id_dossier` = :chi_id_dossier
               
-              DELETE FROM b1.tbl_dossiers
-              WHERE (`chi_id_dossier` = :chi_id_dossier AND `chx_cible_dossier` = :chx_cible_dossier) ;
+             AND `chx_cible_dossier` = :chx_cible_dossier) ;
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_58(array( 'chi_id_dossier' => $__id, 'chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
             if($tt[__xst] === false){
@@ -406,7 +439,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__creation')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__creation'){
 
         /*
           =====================================================================================================
@@ -422,15 +455,20 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(37);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_37.php');
+        require_once(INCLUDE_PATH.'/sql/sql_37.php');
         /*
-          INSERT INTO b1.`tbl_dossiers`(
-          `chx_cible_dossier` ,     `chp_nom_dossier`
-          ) VALUES (
-          :chx_cible_dossier ,     :chp_nom_dossier
-          );
+        
+        INSERT INTO b1.`tbl_dossiers`(
+            `chx_cible_dossier` , 
+            `chp_nom_dossier`
+        ) VALUES (
+            :chx_cible_dossier , 
+            :chp_nom_dossier
+        );
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_37(array( array( 'chp_nom_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'], 'chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])));
 
         if($tt[__xst] === false){
@@ -476,7 +514,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_GET['__action'] == '__suppression'))){
+if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
     $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
 
@@ -489,19 +527,23 @@ if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_
 
         sql_inclure_reference(50);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_50.php');
+        require_once(INCLUDE_PATH.'/sql/sql_50.php');
         /*
-          SELECT 
-          `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
-          `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` 
-          FROM b1.tbl_dossiers T0 
-          LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier 
-          WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+        SELECT 
+        `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+        `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible`
+         FROM b1.tbl_dossiers T0
+         LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
+        
+        WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+         AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_50(array( 'T0_chi_id_dossier' => $__id, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
             recharger_la_page('zz_dossiers_l1.php');
@@ -525,7 +567,7 @@ print($o1);
 $o1='';
 $o1 .= '<h1>gestion de dossier ' . bouton_retour_a_la_liste('zz_dossiers_l1.php') . '</h1>';
 
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
+if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     /*
       =============================================================================================================
@@ -536,7 +578,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     if($__valeurs['T0.chp_nom_dossier'] === '/'){
 
 
-        if(($__valeurs['T1.chp_dossier_cible'] === 'fta') && (APP_KEY !== 'fta')){
+        if($__valeurs['T1.chp_dossier_cible'] === 'fta' && APP_KEY !== 'fta'){
 
             /*
               si on est dans un environnement ftx et que la cible courante est fta,
@@ -562,7 +604,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '' . PHP_EOL;
     $o1 .= ' </form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__creation')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__creation'){
 
     /*
       =============================================================================================================
@@ -587,7 +629,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__modification'){
 
     /*
       =============================================================================================================
@@ -618,7 +660,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= '</div>' . PHP_EOL;
 
-    if(($__valeurs['T1.chp_dossier_cible'] === 'fta') && (APP_KEY !== 'fta')){
+    if($__valeurs['T1.chp_dossier_cible'] === 'fta' && APP_KEY !== 'fta'){
 
         /*
           si on est dans un environnement ftx et que la cible courante est fta,
@@ -646,7 +688,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
                 $glob=array();
                 foreach($monscan as $k0 => $v0){
 
-                    if(($v0 !== '.') && ($v0 !== '..')){
+                    if($v0 !== '.' && $v0 !== '..'){
 
                         $glob[]=array( 'nom' => $chemin_du_repertoire . $v0, 'type_fichier' => @is_file($chemin_du_repertoire . $v0));
 
@@ -682,18 +724,18 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
                         $liste_des_fichiers=substr($liste_des_fichiers,1);
                         sql_inclure_reference(59);
                         /*sql_inclure_deb*/
-                        require_once(INCLUDE_PATH . '/sql/sql_59.php');
+                        require_once(INCLUDE_PATH.'/sql/sql_59.php');
                         /*
-                          // === sources d'un dossier par liste de nom ===
-                          SELECT `T0`.`chp_nom_source` , `T0`.`chi_id_source`
-                          FROM b1.tbl_sources T0
-                          WHERE (
-                          `T0`.`chp_nom_source` IN :T0_chp_nom_source 
-                          AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source 
-                          AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source);
-                          
+                        SELECT 
+                        `T0`.`chp_nom_source` , `T0`.`chi_id_source`
+                         FROM b1.tbl_sources T0
+                        WHERE (/ *  * / `T0`.`chp_nom_source` IN (:T0_chp_nom_source)
+                         AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source
+                         AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source);
+
                         */
                         /*sql_inclure_fin*/
+                        
                         $tt=sql_59(array( 'T0_chp_nom_source' => $liste_des_fichiers, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'T0_chx_dossier_id_source' => $__id));
 
                         if($tt[__xst] === false){
@@ -715,16 +757,17 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
                         $liste_des_dossiers=substr($liste_des_dossiers,1);
                         sql_inclure_reference(60);
                         /*sql_inclure_deb*/
-                        require_once(INCLUDE_PATH . '/sql/sql_60.php');
+                        require_once(INCLUDE_PATH.'/sql/sql_60.php');
                         /*
-                          // === dossiers de dossiers liste de nom ===
-                          SELECT 
-                          `T0`.`chp_nom_dossier` , `T0`.`chi_id_dossier`
-                          FROM b1.tbl_dossiers T0
-                          WHERE ( `T0`.`chp_nom_dossier` IN (:T0_chp_nom_dossier) AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
-                          
+                        SELECT 
+                        `T0`.`chp_nom_dossier` , `T0`.`chi_id_dossier`
+                         FROM b1.tbl_dossiers T0
+                        WHERE (/ *  * / `T0`.`chp_nom_dossier` IN (:T0_chp_nom_dossier)
+                         AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+
                         */
                         /*sql_inclure_fin*/
+                        
                         $tt=sql_60(array( 'T0_chp_nom_dossier' => $liste_des_dossiers, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
                         if($tt[__xst] === false){
@@ -778,7 +821,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
                                     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $extension , true ) . '</pre>' ; exit(0);*/
                                     /* les fichiers sqlite  binaire ne sont pas en base*/
 
-                                    if(($extension === '.db') || ($extension === '.exe')){
+                                    if($extension === '.db' || $extension === '.exe'){
 
 
                                     }else{
@@ -850,8 +893,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
             }
 
 
-            if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta')
-             && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
+            if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta'
+               && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta'
+            ){
 
                 $o1 .= '<hr /><div>Liste des éléments de ' . 'fta' . '</div>';
                 $chemin_relatif='../../' . 'fta' . $__valeurs['T0.chp_nom_dossier'];
@@ -871,7 +915,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
                         foreach($monscan as $k0 => $v0){
 
-                            if(($v0 !== '.') && ($v0 !== '..')){
+                            if($v0 !== '.' && $v0 !== '..'){
 
                                 $glob[]=$chemin_du_repertoire . $v0;
 
@@ -906,19 +950,20 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
                                     }
 
 
-                                    if(($extension === '.php')
-                                     || ($extension === '.js')
-                                     || ($extension === '.html')
-                                     || ($extension === '.htm')
-                                     || ($extension === '.htm')
-                                     || ($extension === '.json')
-                                     || ($extension === '.bat')
-                                     || ($extension === '.rev')
-                                     || ($extension === '.css')
-                                     || ($extension === '.sql')
-                                     || ($extension === '.txt')
-                                     || ($extension === '.db')
-                                     || ($extension === '.htaccess')){
+                                    if($extension === '.php'
+                                       || $extension === '.js'
+                                       || $extension === '.html'
+                                       || $extension === '.htm'
+                                       || $extension === '.htm'
+                                       || $extension === '.json'
+                                       || $extension === '.bat'
+                                       || $extension === '.rev'
+                                       || $extension === '.css'
+                                       || $extension === '.sql'
+                                       || $extension === '.txt'
+                                       || $extension === '.db'
+                                       || $extension === '.htaccess'
+                                    ){
 
                                         $o1 .= '<div><button name="__importer_ce_fichier_de_' . 'fta' . '" value="' . $chemin_relatif . str_replace($chemin_reel,'',$v1) . '" >importer le fichier ' . $nom_fichier . '</button></div>';
 

@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 require_once('../fta_inc/phplib/sqlite.php');
 $__page_liste_de_reference='zz_bdds_l1.php';
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -46,8 +46,9 @@ function erreur_dans_champs_saisis_basesdd(){
     if($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === 'sqlite'){
 
 
-        if(($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] === '')
-         || ($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] === false)){
+        if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] === ''
+           || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] === false
+        ){
 
             ajouterMessage('erreur',__LINE__ . ' : le dossier doit être indiqué pour une base sqlite',BNF);
             $uneErreur=true;
@@ -58,9 +59,10 @@ function erreur_dans_champs_saisis_basesdd(){
     }
 
 
-    if(!(($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === 'sqlite')
-         || ($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === 'mysql')
-         || ($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === ''))){
+    if(!($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === 'sqlite'
+           || $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === 'mysql'
+           || $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === '')
+    ){
 
         ajouterMessage('erreur',__LINE__ . ' : le fournisseur de la bdd doit être "sqlite" ou "mysql" ou bien ne doit pas être renseigné ',BNF);
         $uneErreur=true;
@@ -109,7 +111,7 @@ function erreur_dans_champs_saisis_basesdd(){
   =====================================================================================================================
 */
 
-if((isset($_POST)) && (sizeof($_POST) >= 1)){
+if(isset($_POST) && sizeof($_POST) >= 1){
 
     /* echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();*/
     $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']=$_POST['chp_nom_basedd']??'';
@@ -132,11 +134,27 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(26);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_26.php');
+        require_once(INCLUDE_PATH.'/sql/sql_26.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_basedd` , `T0`.`chx_dossier_id_basedd` , `T0`.`chx_cible_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_basedd` , 
+        `T0`.`chp_commentaire_basedd` , `T0`.`chp_genere_basedd` , `T0`.`chp_rev_travail_basedd` , `T0`.`chp_fournisseur_basedd` , `T1`.`chi_id_dossier` , 
+        `T1`.`chx_cible_dossier` , `T1`.`chp_nom_dossier` , `T2`.`chi_id_cible` , `T2`.`chp_nom_cible` , `T2`.`chp_dossier_cible` , 
+        `T2`.`chp_commentaire_cible`
+         FROM b1.tbl_bdds T0
+         LEFT JOIN b1.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_basedd
+        
+         LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
+        
+        WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+         AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_26(array( 'T0_chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -145,14 +163,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         $__valeurs=$tt[__xva][0];
 
-        if(($__valeurs['T2.chp_dossier_cible'] !== null) && ($__valeurs['T1.chp_nom_dossier'] !== null)){
+        if($__valeurs['T2.chp_dossier_cible'] !== null && $__valeurs['T1.chp_nom_dossier'] !== null){
 
             $nomCompletSource='../../' . $__valeurs['T2.chp_dossier_cible'] . $__valeurs['T1.chp_nom_dossier'] . '/' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '_structure.' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] . '.sql';
 
             if(is_file($nomCompletSource)){
 
 
-                if(!(sauvegarder_et_supprimer_fichier($nomCompletSource))){
+                if(!sauvegarder_et_supprimer_fichier($nomCompletSource)){
 
                     ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
                     recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -194,9 +212,10 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
     }else if(isset($_POST['__importer_le_system_de_fta'])){
 
 
-        if((APP_KEY === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'])
-         && (APP_KEY !== $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'])
-         && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] === 'ftb')){
+        if(APP_KEY === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']
+           && APP_KEY !== $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']
+           && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] === 'ftb'
+        ){
 
             $nom_de_la_base_source='../../' . APP_KEY . '/fta_inc/db/sqlite/system.db';
             $nom_de_la_base_cible='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '/fta_inc/db/sqlite/system.db';
@@ -225,10 +244,10 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         $chemin_base_temporaire=RACINE_FICHIERS_PROVISOIRES . DIRECTORY_SEPARATOR . date('Y/m/d');
         $continuer=true;
 
-        if(!(is_dir($chemin_base_temporaire))){
+        if(!is_dir($chemin_base_temporaire)){
 
 
-            if(!(mkdir($chemin_base_temporaire,0777,true))){
+            if(!mkdir($chemin_base_temporaire,0777,true)){
 
                 ajouterMessage('erreur',__LINE__ . ' : impossible de créer le répertoire temporaire ');
                 $continuer=false;
@@ -294,11 +313,27 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(26);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_26.php');
+        require_once(INCLUDE_PATH.'/sql/sql_26.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_basedd` , `T0`.`chx_dossier_id_basedd` , `T0`.`chx_cible_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_basedd` , 
+        `T0`.`chp_commentaire_basedd` , `T0`.`chp_genere_basedd` , `T0`.`chp_rev_travail_basedd` , `T0`.`chp_fournisseur_basedd` , `T1`.`chi_id_dossier` , 
+        `T1`.`chx_cible_dossier` , `T1`.`chp_nom_dossier` , `T2`.`chi_id_cible` , `T2`.`chp_nom_cible` , `T2`.`chp_dossier_cible` , 
+        `T2`.`chp_commentaire_cible`
+         FROM b1.tbl_bdds T0
+         LEFT JOIN b1.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_basedd
+        
+         LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
+        
+        WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+         AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_26(array( 'T0_chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -308,9 +343,10 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         $__valeurs=$tt[__xva][0];
         $chemin_fichier='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . $__valeurs['T1.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_basedd'];
 
-        if((is_file($chemin_fichier))
-         && (strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false)
-         && (strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false)){
+        if(is_file($chemin_fichier)
+           && strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false
+           && strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false
+        ){
 
             $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
 
@@ -365,11 +401,27 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(26);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_26.php');
+        require_once(INCLUDE_PATH.'/sql/sql_26.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_basedd` , `T0`.`chx_dossier_id_basedd` , `T0`.`chx_cible_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_basedd` , 
+        `T0`.`chp_commentaire_basedd` , `T0`.`chp_genere_basedd` , `T0`.`chp_rev_travail_basedd` , `T0`.`chp_fournisseur_basedd` , `T1`.`chi_id_dossier` , 
+        `T1`.`chx_cible_dossier` , `T1`.`chp_nom_dossier` , `T2`.`chi_id_cible` , `T2`.`chp_nom_cible` , `T2`.`chp_dossier_cible` , 
+        `T2`.`chp_commentaire_cible`
+         FROM b1.tbl_bdds T0
+         LEFT JOIN b1.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_basedd
+        
+         LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
+        
+        WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+         AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_26(array( 'T0_chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -379,9 +431,10 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         $__valeurs=$tt[__xva][0];
         $chemin_fichier='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . $__valeurs['T1.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_basedd'];
 
-        if((is_file($chemin_fichier))
-         && (strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false)
-         && (strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false)){
+        if(is_file($chemin_fichier)
+           && strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false
+           && strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false
+        ){
 
             $ret=obtenir_la_structure_de_la_base_sqlite_v2($chemin_fichier,true);
 
@@ -411,13 +464,13 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
           =====================================================================================================
         */
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__modification')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
 
         if(erreur_dans_champs_saisis_basesdd()){
 
 
-            if((isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'])) && (is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']))){
+            if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
@@ -432,8 +485,16 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(16);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_16.php');
+        require_once(INCLUDE_PATH.'/sql/sql_16.php');
+        /*
+        
+        UPDATE b1.tbl_bdds SET `chx_dossier_id_basedd` = :n_chx_dossier_id_basedd , `chp_nom_basedd` = :n_chp_nom_basedd , `chp_rev_basedd` = :n_chp_rev_basedd , `chp_commentaire_basedd` = :n_chp_commentaire_basedd , `chp_genere_basedd` = :n_chp_genere_basedd , `chp_rev_travail_basedd` = :n_chp_rev_travail_basedd , `chp_fournisseur_basedd` = :n_chp_fournisseur_basedd
+        WHERE (`chi_id_basedd` = :c_chi_id_basedd
+         AND `chx_cible_id_basedd` = :c_chx_cible_id_basedd) ;
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_16(array(
             'n_chx_dossier_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'],
             'n_chp_nom_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'],
@@ -480,7 +541,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__confirme_suppression')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__confirme_suppression'){
 
         /*
           =====================================================================================================
@@ -490,11 +551,27 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         $__id=(isset($_POST['__id1']) ? (is_numeric($_POST['__id1']) ? $_POST['__id1'] : 0) : 0);
         sql_inclure_reference(26);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_26.php');
+        require_once(INCLUDE_PATH.'/sql/sql_26.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_basedd` , `T0`.`chx_dossier_id_basedd` , `T0`.`chx_cible_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_basedd` , 
+        `T0`.`chp_commentaire_basedd` , `T0`.`chp_genere_basedd` , `T0`.`chp_rev_travail_basedd` , `T0`.`chp_fournisseur_basedd` , `T1`.`chi_id_dossier` , 
+        `T1`.`chx_cible_dossier` , `T1`.`chp_nom_dossier` , `T2`.`chi_id_cible` , `T2`.`chp_nom_cible` , `T2`.`chp_dossier_cible` , 
+        `T2`.`chp_commentaire_cible`
+         FROM b1.tbl_bdds T0
+         LEFT JOIN b1.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_basedd
+        
+         LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
+        
+        WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+         AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_26(array( 'T0_chi_id_basedd' => $__id, 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
@@ -503,8 +580,17 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(18);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_18.php');
+        require_once(INCLUDE_PATH.'/sql/sql_18.php');
+        /*
+        
+        DELETE FROM b1.tbl_bdds
+        WHERE (`chi_id_basedd` = :chi_id_basedd
+          
+         AND `chx_cible_id_basedd` = :chx_cible_id_basedd) ;
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_18(array( 'chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
         if($tt[__xst] === false){
@@ -519,7 +605,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__creation')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__creation'){
 
         /*
           =====================================================================================================
@@ -535,8 +621,26 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(17);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_17.php');
+        require_once(INCLUDE_PATH.'/sql/sql_17.php');
+        /*
+        
+        INSERT INTO b1.`tbl_bdds`(
+            `chx_dossier_id_basedd` , 
+            `chx_cible_id_basedd` , 
+            `chp_nom_basedd` , 
+            `chp_commentaire_basedd` , 
+            `chp_fournisseur_basedd`
+        ) VALUES (
+            :chx_dossier_id_basedd , 
+            :chx_cible_id_basedd , 
+            :chp_nom_basedd , 
+            :chp_commentaire_basedd , 
+            :chp_fournisseur_basedd
+        );
+
+        */
         /*sql_inclure_fin*/
+        
         /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] , true ) . '</pre>' ; exit(0);*/
         $tt=sql_17(array( array(
                     'chx_dossier_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'],
@@ -590,7 +694,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 */
 $__id='0';
 
-if((isset($_GET['__action'])) && (($_GET['__action'] == '__suppression') || ($_GET['__action'] == '__modification'))){
+if(isset($_GET['__action']) && ($_GET['__action'] == '__suppression' || $_GET['__action'] == '__modification')){
 
     $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
 
@@ -603,11 +707,27 @@ if((isset($_GET['__action'])) && (($_GET['__action'] == '__suppression') || ($_G
 
         sql_inclure_reference(26);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_26.php');
+        require_once(INCLUDE_PATH.'/sql/sql_26.php');
+        /*
+        SELECT 
+        `T0`.`chi_id_basedd` , `T0`.`chx_dossier_id_basedd` , `T0`.`chx_cible_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_basedd` , 
+        `T0`.`chp_commentaire_basedd` , `T0`.`chp_genere_basedd` , `T0`.`chp_rev_travail_basedd` , `T0`.`chp_fournisseur_basedd` , `T1`.`chi_id_dossier` , 
+        `T1`.`chx_cible_dossier` , `T1`.`chp_nom_dossier` , `T2`.`chi_id_cible` , `T2`.`chp_nom_cible` , `T2`.`chp_dossier_cible` , 
+        `T2`.`chp_commentaire_cible`
+         FROM b1.tbl_bdds T0
+         LEFT JOIN b1.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_basedd
+        
+         LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
+        
+        WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+         AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_26(array( 'T0_chi_id_basedd' => $__id, 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cette base');
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
@@ -631,7 +751,7 @@ print($o1);
 $o1='';
 $o1 .= '<h1>gestion de base de donnée ( dossier ' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . ') ' . bouton_retour_a_la_liste($__page_liste_de_reference) . '</h1>';
 
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
+if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     /*
       =============================================================================================================
@@ -639,7 +759,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
       =============================================================================================================
     */
 
-    if(($__valeurs['T0.chi_id_basedd'] === 1) && (APP_KEY === 'fta')){
+    if($__valeurs['T0.chi_id_basedd'] === 1 && APP_KEY === 'fta'){
 
         ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cette base');
         recharger_la_page($__page_liste_de_reference);
@@ -658,7 +778,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '' . PHP_EOL;
     $o1 .= ' </form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__creation')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__creation'){
 
     /*
       =============================================================================================================
@@ -696,7 +816,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
     $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
 
-    if(($chx_dossier_id_basedd === '') || ($chx_dossier_id_basedd === false) || ($chx_dossier_id_basedd === null)){
+    if($chx_dossier_id_basedd === '' || $chx_dossier_id_basedd === false || $chx_dossier_id_basedd === null){
 
         $o1 .= '<span id="T0.chp_nom_dossier">base non rattaché à un dossier</span> ' . PHP_EOL;
 
@@ -704,18 +824,24 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
 
         sql_inclure_reference(50);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_50.php');
+        require_once(INCLUDE_PATH.'/sql/sql_50.php');
         /*
-          SELECT 
-          `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
-          FROM b1.tbl_dossiers T0
-          WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+        SELECT 
+        `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+        `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible`
+         FROM b1.tbl_dossiers T0
+         LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
+        
+        WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+         AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_50(array( 'T0_chi_id_basedd' => $chx_dossier_id_basedd, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         $nom_dossier='';
 
-        if(($tt[__xst] === true) && (count($tt[__xva]) === 1)){
+        if($tt[__xst] === true && count($tt[__xva]) === 1){
 
             $nom_dossier=$tt[__xva][0]['T0.chp_nom_dossier'];
 
@@ -745,7 +871,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__modification'){
 
     /*
       =============================================================================================================
@@ -783,9 +909,10 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
 
-    if(($__valeurs['T0.chx_dossier_id_basedd'] === '')
-     || ($__valeurs['T0.chx_dossier_id_basedd'] === false)
-     || ($__valeurs['T0.chx_dossier_id_basedd'] === null)){
+    if($__valeurs['T0.chx_dossier_id_basedd'] === ''
+       || $__valeurs['T0.chx_dossier_id_basedd'] === false
+       || $__valeurs['T0.chx_dossier_id_basedd'] === null
+    ){
 
         $o1 .= '<span id="T0.chp_nom_dossier">base non rattaché à un dossier</span> ' . PHP_EOL;
 
@@ -804,9 +931,10 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
     $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
 
-    if(($__valeurs['T0.chx_dossier_id_basedd'] === '')
-     || ($__valeurs['T0.chx_dossier_id_basedd'] === false)
-     || ($__valeurs['T0.chx_dossier_id_basedd'] === null)){
+    if($__valeurs['T0.chx_dossier_id_basedd'] === ''
+       || $__valeurs['T0.chx_dossier_id_basedd'] === false
+       || $__valeurs['T0.chx_dossier_id_basedd'] === null
+    ){
 
 
     }else{
@@ -814,9 +942,10 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
         $o1 .= '<br />';
         $chemin_fichier='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . $__valeurs['T1.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_basedd'];
 
-        if((is_file($chemin_fichier))
-         && (strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false)
-         && (strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false)){
+        if(is_file($chemin_fichier)
+           && strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false
+           && strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false
+        ){
 
             $o1 .= '&nbsp <button name="___produire_le_rev_v2" >produire le rev V2</button>';
             $o1 .= '&nbsp <button name="___produire_le_dump_des_donnees" >produire le dump des données</button>';
@@ -847,9 +976,10 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
         }
 
 
-        if((APP_KEY === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'])
-         && (APP_KEY !== $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'])
-         && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] === 'ftb')){
+        if(APP_KEY === $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible']
+           && APP_KEY !== $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible']
+           && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] === 'ftb'
+        ){
 
             /*
               cas spécial car on développe un clone de fta sur ftb
@@ -934,8 +1064,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'chp_rev_basedd', 'mode' => 'rev'));
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
 
-    if((isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']))
-     && (count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) > 0)){
+    if(isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) && count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) > 0){
 
 
         if($_SESSION[APP_KEY][NAV][BNF]['__contexte_tableauDesTables'] === '___produire_le_rev_v2'){
@@ -949,8 +1078,9 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     }
 
 
-    if((isset($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']))
-     && (count($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']) > 0)){
+    if(isset($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'])
+       && count($_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']) > 0
+    ){
 
         /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);*/
         $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'comparer_deux_tableaux_de_bases_sqlite', 'parametre' => array( 'donnees' => $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux'], 'zone_resultat' => 'chp_commentaire_basedd'));

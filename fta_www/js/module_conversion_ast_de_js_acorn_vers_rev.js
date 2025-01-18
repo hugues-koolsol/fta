@@ -98,10 +98,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         let nom_de_la_fonction='';
         let le_contenu='';
         let auto_appelee='';
-        
         if(element.callee && element.callee.params && element.arguments){
             auto_appelee='auto_appelee(4),';
-            /*utile aussi pour selectionner les commentaires des arguments */
+            /* utile aussi pour selectionner les commentaires des arguments */
             element['auto_appelee']=true;
         }
         if(element.arguments){
@@ -110,7 +109,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     if(les_arguments !== ''){
                         les_arguments+=',';
                     }
-
                     le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
                     /*
                       ici, on a le seul cas où ignorer_commentaires_avant est vrai
@@ -134,8 +132,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }else{
                 return(astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
             }
-            
-            
         }else{
             return(astjs_logerreur({"__xst" : false ,"__xme" : '0125 traiteCallExpression1' ,"element" : element}));
         }
@@ -807,7 +803,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             /* cas let  x7 = a ?. [42]; */
             /* cas let x10 = a.b ?. c; */
-            debugger
             type_objet=null;
         }
         obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
@@ -819,8 +814,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         if(element.computed === false){
             if(type_parent === 'CallExpression'){
-                if(parent.optional===true){
-                    if(element.property.type==='Identifier' && element.object.type==='Identifier'){
+                if(parent.optional === true){
+                    if(element.property.type === 'Identifier' && element.object.type === 'Identifier'){
                         t=objet + '.' + propriete;
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
@@ -831,33 +826,33 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return({"__xst" : true ,"__xva" : t});
             }else if(type_parent === 'ChainExpression'){
                 /*
-                 cas a.b ?. c.d()
-                 objet=chainé(a.b,c)
-                 on doit retourner chainé(a.b,c.d)
+                  cas a.b ?. c.d()
+                  objet=chainé(a.b,c)
+                  on doit retourner chainé(a.b,c.d)
                 */
-                if(objet.substr(0,7)==='chainé('){
-                    debugger
-                    if(type_propriete==='Identifier'){
-                        t=objet.substr(0,objet.length-1)+'.'+propriete+')';
+                if(objet.substr(0,7) === 'chainé('){
+                    debugger;
+                    if(type_propriete === 'Identifier'){
+                        t=objet.substr(0,objet.length - 1) + '.' + propriete + ')';
                         return({"__xst" : true ,"__xva" : t});
                     }else{
-                        
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
                     }
                 }else{
-                    debugger
-                    if(type_objet===null){
-                        /* 
-                           cas let x12 = b.c ?. d ?. e; 
-                           pour le e
+                    if(type_objet === null){
+                        /*
+                          cas let x12 = b.c ?. d ?. e; 
+                          pour le e
                         */
                         t=propriete;
                     }else{
-                        t='chainé('+objet+','+propriete+')';
+                        if(element.optional === true){
+                            t='chainé(' + objet + ',' + propriete + ')';
+                        }else{
+                            t=objet + '.' + propriete;
+                        }
                     }
                     return({"__xst" : true ,"__xva" : t});
-                    debugger
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
                 }
             }else{
                 if(type_objet === 'CallExpression'){
@@ -892,12 +887,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression'){
                     t=objet.substr(0,objet.length - 1) + ',prop(' + propriete + '))';
                 }else if(type_objet === null){
-                        /* cas let x10 = a.b ?. c; */
-                        t=propriete;
+                    /* cas let x10 = a.b ?. c; */
+                    t=propriete;
                 }else{
-                    if(element.optional===true){
-                        debugger
-                        t='chainé('+objet+','+propriete+')';
+                    if(element.optional === true){
+                        debugger;
+                        t='chainé(' + objet + ',' + propriete + ')';
                     }else{
                         t=objet + '.' + propriete;
                     }
@@ -924,7 +919,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     if(objet.endsWith(']') && isNumeric(propriete)){
                         t=objet + '[' + propriete + ']';
                     }else{
-                        if((type_objet === 'Identifier' || type_objet === null ) && isNumeric(propriete)){
+                        if((type_objet === 'Identifier' || type_objet === null) && isNumeric(propriete)){
                             t=objet + '[' + propriete + ']';
                         }else{
                             t='tableau(nomt(' + objet + '),p(' + propriete + '))';
@@ -934,11 +929,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 }
             }
         }
-        debugger;
         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
-        /*
+        /*#
           a voir si on conserve le code suivant et dans quel cas
-        */
         if(t.substr(0,8) === 'tableau('){
             var o=functionToArray(t,true,false,'');
             if(o.__xst === true){
@@ -971,6 +964,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }
         return({"__xst" : true ,"__xva" : t});
+        */
     }
     /*
       =============================================================================================================
@@ -1265,10 +1259,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
       =============================================================================================================
     */
     #traite_ChainExpression(element,niveau,parent,tab_comm){
-/*##
+        /*##
 https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Optional_chaining
 https://github.com/GoogleChrome/lighthouse/blob/main/core/user-flow.js
 
+let  x4 = a ?. (b.c);
 let  x5 = b.c ?. e;
 let  x6 = b ?. e;
 let  x7 = a ?. [42];
@@ -1278,13 +1273,28 @@ let x10 = a.b ?. c;
 let x11 = a.b ?. c.d();
 let x12 = b.c ?. d ?. e;
 let x13 = a.b ?. c ?. ();
-          
-let  x0 = a.b?.();
-let  x1 = a?. b();
-let  x2 = a.b ?. c(d);
-let  x3 = b.c("d") ?. e;
-let  x4 = a ?. (b.c);
-*/
+let x14 = a.b ?. c ?. (a,b);
+let x15 = a.b ?. c(a,b) ;
+let x16 = a.b ?. c(a.b) ;
+
+let x0=a.b ?. ();
+let x1=a ?. b();
+let x2=a.b ?. c(d);
+let x3=b.c("d") ?. e;
+let x4=a ?. (b.c);
+let x5=b.c ?. e;
+let x6=b ?. e;
+let x7=a ?. [42];
+let x8=a ?. ["b"];
+let x9=a.b ?. ();
+let x10=a.b ?. c;
+let x11=a.b ?. c.d();
+let x12=b.c ?. d ?. e;
+let x13=a.b ?. c ?. ();
+let x14=a.b ?. c ?. (a,b);
+let x15=a.b ?. c(a,b);
+let x16=a.b ?. c(a.b);
+        */
         let t='';
         let obj=null;
         let gauche='';
@@ -1302,7 +1312,7 @@ let  x4 = a ?. (b.c);
                 }else{
                     for( let i=0 ; i < element.expression.arguments.length ; i++ ){
                         var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                        var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm,false);
+                        var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression.arguments,tab_comm,false);
                         if(obj1.__xst === true){
                             if(les_arguments !== ''){
                                 les_arguments+=',';
@@ -1314,7 +1324,6 @@ let  x4 = a ?. (b.c);
                     }
                 }
             }
-
             obj=this.#traite_element(element.expression.callee,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 gauche=obj.__xva;
@@ -1334,12 +1343,15 @@ let  x4 = a ?. (b.c);
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
                         }
-                        /* 
+                        /*
                           ok pour let  x1 = a?. b();
                           afr pour let x13 = a.b ?. c ?. (); 
                         */
-                        debugger
-                        t+='chainé(' + t1.__xva + ',appelf(nomf(' + t2.__xva + ')' + les_arguments + '))';
+                        if(element.expression.optional === true){
+                            t+='chainé(' + t1.__xva + ',chainé(' + t2.__xva + ',appelf(nomf()' + les_arguments + ')))';
+                        }else{
+                            t+='chainé(' + t1.__xva + ',appelf(nomf(' + t2.__xva + ')' + les_arguments + '))';
+                        }
                     }else{
                         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
                     }
@@ -1350,7 +1362,6 @@ let  x4 = a ?. (b.c);
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
             }
         }else if(element.expression.type === 'MemberExpression'){
-            debugger;
             element.expression.optional=false;
             obj=this.#traite_element(element.expression.object,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
@@ -1366,130 +1377,12 @@ let  x4 = a ?. (b.c);
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1752 #traite_ChainExpression' ,"element" : element}));
             }
             t+='chainé(' + gauche + ',' + droite + ')';
-            debugger;
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "' + element.expression.type + '"' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
-        if(element.hasOwnProperty('optional') && element.optional !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1448 #traite_ChainExpression' ,"element" : element}));
-        }
-        if(element.expression.object && element.expression.object !== false){
-            obj=this.#traite_chaineObject(element.expression.object,niveau,element.expression,tab_comm);
-            if(obj.__xst === true){
-                if(obj.optionnel === ''){
-                    objet=obj.objet;
-                }else{
-                    objet='chainé(' + obj.objet + ', ' + obj.optionnel + ')';
-                }
-            }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1208 #traite_ChainExpression' ,"element" : element}));
-            }
-        }else if(element.expression.callee){
-            if(element.expression.callee.object){
-                obj=this.#traite_chaineCallee(element.expression.callee,niveau,element.expression,tab_comm);
-                if(obj.__xst === true){
-                    var les_arguments='';
-                    if(element.expression.hasOwnProperty('arguments')){
-                        if(element.expression.arguments.length === 0){
-                            les_arguments='p()';
-                        }else{
-                            for( let i=0 ; i < element.expression.arguments.length ; i++ ){
-                                var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                                var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm,false);
-                                if(obj1.__xst === true){
-                                    if(les_arguments !== ''){
-                                        les_arguments+=',';
-                                    }
-                                    les_arguments+='p(' + le_commentaire + obj1.__xva + ')';
-                                }else{
-                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
-                                }
-                            }
-                        }
-                    }
-                    t+='chainé(' + obj.objet + ',appelf(nomf(' + obj.optionnel + '),' + les_arguments + '))';
-                    return({"__xst" : true ,"__xva" : t});
-                }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1554 #traite_ChainExpression' ,"element" : element}));
-                }
-            }else{
-                if(element.expression.callee.type === 'Identifier'){
-                    objet=element.expression.callee.name;
-                    var les_arguments='';
-                    if(element.expression.hasOwnProperty('arguments')){
-                        if(element.expression.arguments.length === 0){
-                            les_arguments='p()';
-                        }else{
-                            for( let i=0 ; i < element.expression.arguments.length ; i++ ){
-                                var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                                obj=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression,tab_comm,false);
-                                if(obj.__xst === true){
-                                    if(les_arguments !== ''){
-                                        les_arguments+=',';
-                                    }
-                                    les_arguments+='p(' + le_commentaire + obj.__xva + ')';
-                                }else{
-                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
-                                }
-                            }
-                        }
-                    }
-                    t+='chainé(' + objet + ',appelf(nomf(),' + les_arguments + '))';
-                }else{
-                    debugger;
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1497 #traite_ChainExpression' ,"element" : element}));
-                }
-            }
-        }else{
-            debugger;
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1212 #traite_ChainExpression' ,"element" : element}));
-        }
-        if(element.expression.computed === false){
-            /*
-              let x = b.c("d")?.e;
-              let y = b.c?.e;
-              let z = b?.e;
-            */
-            if(element.expression.property !== false){
-                obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm,false);
-                if(obj.__xst === true){
-                    propriete=obj.__xva;
-                }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1221 #traite_ChainExpression' ,"element" : element}));
-                }
-            }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1224 #traite_ChainExpression' ,"element" : element}));
-            }
-            t+='chainé(' + objet + ',' + propriete + ')';
-        }else if(element.expression.computed === true){
-            if(element.expression.property.type === "Identifier"){
-                if(element.expression.property !== false){
-                    obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm,false);
-                    if(obj.__xst === true){
-                        propriete=obj.__xva;
-                    }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1483 #traite_ChainExpression' ,"element" : element}));
-                    }
-                }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1485 #traite_ChainExpression' ,"element" : element}));
-                }
-                t+='chainé(' + objet + ',[' + propriete + '])';
-            }else{
-                if(element.expression.property !== false){
-                    obj=this.#traite_element(element.expression.property,niveau + 1,element,tab_comm,false);
-                    if(obj.__xst === true){
-                        propriete=obj.__xva;
-                    }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1221 #traite_ChainExpression' ,"element" : element}));
-                    }
-                }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1549 #traite_ChainExpression' ,"element" : element}));
-                }
-                t+='chainé(' + objet + ',defTab(p(' + propriete + ')))';
-            }
-        }
-        return({"__xst" : true ,"__xva" : t});
+        
+        
     }
     /*
       =============================================================================================================
@@ -2328,10 +2221,12 @@ let  x4 = a ?. (b.c);
     #traite_element(element,niveau,parent,tab_comm,ignorer_commentaires_avant){
         let t='';
         let obj=null;
-        if(!(ignorer_commentaires_avant!==undefined && ignorer_commentaires_avant===true)){
-           t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
+        if(!(ignorer_commentaires_avant !== undefined && ignorer_commentaires_avant === true)){
+            t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
         }
         switch (element.type){
+            case 'Super' : t='Super';
+                break;
             case 'Identifier' : t+=element.name;
                 break;
             case 'Literal' :
@@ -2910,7 +2805,6 @@ let  x4 = a ?. (b.c);
         }
         if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
             return t;
-            position_fin_bloc=parent.callee.body.end;
         }
         for( i=0 ; i < tab_comm.length && tab_comm[i].start <= position_fin_bloc && tab_comm[i].end <= position_fin_bloc ; i++ ){
             if(tab_comm[i].start < position_debut_bloc){

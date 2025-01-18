@@ -25,10 +25,10 @@ function supprimerLesValeursDeSession(){
   =====================================================================================================================
 */
 
-if((isset($_POST)) && (count($_POST) > 0)){
+if(isset($_POST) && count($_POST) > 0){
 
 
-    if((isset($_POST['nom_de_connexion'])) && (isset($_POST['mot_de_passe']))){
+    if(isset($_POST['nom_de_connexion']) && isset($_POST['mot_de_passe'])){
 
         initialiser_les_services( /*session*/ true, /*bdd*/ true);
         /*#
@@ -55,17 +55,18 @@ if((isset($_POST)) && (count($_POST) > 0)){
         */
         sql_inclure_reference(1);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_1.php');
+        require_once(INCLUDE_PATH.'/sql/sql_1.php');
         /*
-          SELECT 
-          `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
-          FROM b1.tbl_utilisateurs T0
-          WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion  
-          
-          LIMIT 1 OFFSET 0 ;
-          
+        SELECT 
+        `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
+         FROM b1.tbl_utilisateurs T0
+        WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion  
+       
+         LIMIT 1 OFFSET 0 ;
+
         */
         /*sql_inclure_fin*/
+        
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
 
         if($sql1[__xst] !== true){
@@ -126,10 +127,10 @@ if((isset($_POST)) && (count($_POST) > 0)){
   =====================================================================================================================
 */
 
-if((isset($_GET)) && (count($_GET) > 0)){
+if(isset($_GET) && count($_GET) > 0){
 
 
-    if((isset($_GET['a'])) && ($_GET['a'] == 'logout')){
+    if(isset($_GET['a']) && $_GET['a'] == 'logout'){
 
         supprimerLesValeursDeSession();
         recharger_la_page(BNF);
@@ -162,7 +163,7 @@ $o1='';
   =====================================================================================================================
 */
 
-if((isset($_SESSION[APP_KEY]['sess_id_utilisateur'])) && (0 != $_SESSION[APP_KEY]['sess_id_utilisateur'])){
+if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
     /*
       =============================================================================================================

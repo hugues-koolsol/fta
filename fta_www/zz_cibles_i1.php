@@ -125,7 +125,7 @@ foreach($tab as $k1 => $v1){
     }else{
 
 
-        if(!(isset($tableau_des_dossiers[$dossier_cible]))){
+        if(!isset($tableau_des_dossiers[$dossier_cible])){
 
             $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
             $indice_du_dossier++;
@@ -205,7 +205,7 @@ foreach($tab as $k1 => $v1){
     }else{
 
 
-        if(!(mkdir($dossier_cible,0777,true))){
+        if(!mkdir($dossier_cible,0777,true)){
 
             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export(__LINE__,true) . ' impossible de créer le répertoire "' . $dossier_cible . '" </pre>' ;
             exit(0);
@@ -244,7 +244,7 @@ foreach($tab as $k1 => $v1){
         $files=glob($repertoire_source . '/*',GLOB_MARK);
         foreach($files as $file){
 
-            if(!(is_dir($file))){
+            if(!is_dir($file)){
 
                 $contenu=file_get_contents($file);
                 $fichier_cible=$dossier_cible . substr($file,strrpos($file,'/'));
@@ -293,7 +293,7 @@ $chemin_base_systeme=realpath($dossier_racine . '/fta_inc/db/sqlite/system.db');
 if(is_file($chemin_base_systeme)){
 
 
-    if(!(unlink($chemin_base_systeme))){
+    if(!unlink($chemin_base_systeme)){
 
         echo __FILE__ . ' ' . __LINE__ . ' unlink base system impossible = <pre>' . var_export(__LINE__,true) . '</pre>' ;
         exit(0);
@@ -321,12 +321,27 @@ if(false === $base_ftb->exec($contenu_fichier_structure)){
 /* on récupère le contenu du champ chp_rev_travail_basedd de la base de fta pour le mettre dans la base ftb pour le dessin de la base */
 sql_inclure_reference(26);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_26.php');
-/* UPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible WHERE `chi_id_cible` = 1 ; */
+require_once(INCLUDE_PATH.'/sql/sql_26.php');
+/*
+SELECT 
+`T0`.`chi_id_basedd` , `T0`.`chx_dossier_id_basedd` , `T0`.`chx_cible_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_basedd` , 
+`T0`.`chp_commentaire_basedd` , `T0`.`chp_genere_basedd` , `T0`.`chp_rev_travail_basedd` , `T0`.`chp_fournisseur_basedd` , `T1`.`chi_id_dossier` , 
+`T1`.`chx_cible_dossier` , `T1`.`chp_nom_dossier` , `T2`.`chi_id_cible` , `T2`.`chp_nom_cible` , `T2`.`chp_dossier_cible` , 
+`T2`.`chp_commentaire_cible`
+ FROM b1.tbl_bdds T0
+ LEFT JOIN b1.tbl_dossiers T1 ON T1.chi_id_dossier = T0.chx_dossier_id_basedd
+
+ LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
+
+WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+ AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
+
+*/
 /*sql_inclure_fin*/
+
 $tt=sql_26(array( 'T0_chi_id_basedd' => 1, 'T0_chx_cible_id_basedd' => 1));
 
-if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
     echo __FILE__ . ' ' . __LINE__ . ' erreur de récupération du rev de la base = <pre>' . $tt[__xme] . '</pre>' ;
     exit(0);

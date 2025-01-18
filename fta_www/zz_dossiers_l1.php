@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -16,7 +16,7 @@ $dossier_racine='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cib
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action'])){
+if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
 
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_GET , true ) . '</pre>' ; exit(0);*/
     $le_dossier_a_recuperer='../../' . $_GET['__racine'];
@@ -29,15 +29,16 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
     */
     sql_inclure_reference(51);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_51.php');
+    require_once(INCLUDE_PATH.'/sql/sql_51.php');
     /*
-      SELECT 
-      `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
-      FROM b1.tbl_dossiers T0
-      WHERE (`T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
-      
+    SELECT 
+    `T0`.`chi_id_dossier` , `T0`.`chx_cible_dossier` , `T0`.`chp_nom_dossier`
+     FROM b1.tbl_dossiers T0
+    WHERE (`T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_51(array( 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if($tt[__xst] === false){
@@ -65,7 +66,12 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
 
             /* dossier déjà existant */
 
-        }else if(((substr($nom_du_dossier_a_creer,0,strlen('/fta_backup')) === '/fta_backup') && (strlen($nom_du_dossier_a_creer) > strlen('/fta_backup'))) || ((substr($nom_du_dossier_a_creer,0,strlen('/fta_temp')) === '/fta_temp') && (strlen($nom_du_dossier_a_creer) > strlen('/fta_temp'))) || (substr($nom_du_dossier_a_creer,0,strlen('/ftb_temp')) === '/ftb_temp')){
+        }else if(substr($nom_du_dossier_a_creer,0,strlen('/fta_backup')) === '/fta_backup'
+               && strlen($nom_du_dossier_a_creer) > strlen('/fta_backup')
+           || substr($nom_du_dossier_a_creer,0,strlen('/fta_temp')) === '/fta_temp'
+               && strlen($nom_du_dossier_a_creer) > strlen('/fta_temp')
+           || substr($nom_du_dossier_a_creer,0,strlen('/ftb_temp')) === '/ftb_temp'
+        ){
 
             /*
               on ne copie pas les sous dossiers de fta backup et de fta_temp
@@ -82,19 +88,20 @@ if((isset($_GET['__action'])) && ('__recuperer_dossiers' === $_GET['__action']))
 
         sql_inclure_reference(52);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_52.php');
+        require_once(INCLUDE_PATH.'/sql/sql_52.php');
         /*
-          
-          INSERT  OR IGNORE INTO b1.`tbl_dossiers`(
-          `chx_cible_dossier` , 
-          `chp_nom_dossier`
-          ) VALUES (
-          :chx_cible_dossier , 
-          :chp_nom_dossier
-          );
-          
+        
+        INSERT  OR IGNORE INTO b1.`tbl_dossiers`(
+            `chx_cible_dossier` , 
+            `chp_nom_dossier`
+        ) VALUES (
+            :chx_cible_dossier , 
+            :chp_nom_dossier
+        );
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_52($tableau_a_inserer);
 
         if($tt[__xst] === true){
@@ -279,17 +286,22 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(53);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_53.php');
+require_once(INCLUDE_PATH.'/sql/sql_53.php');
 /*
-  SELECT 
-  `T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
-  FROM b1.tbl_dossiers T0
-  WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier 
-  AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier 
-  AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
-  ORDER BY  `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;
+SELECT 
+`T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
+ FROM b1.tbl_dossiers T0
+WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+  
+ AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier
+  
+ AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
+ORDER BY `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC 
+LIMIT:quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_53(array(
     'T0_chi_id_dossier' => $chi_id_dossier,
     'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
@@ -351,8 +363,9 @@ foreach($tt[__xva] as $k0 => $v0){
 }
 $o1 .= '<div style="overflow-x:scroll;">' . PHP_EOL . ' <table class="yytableResult1">' . PHP_EOL . $__lsttbl . '  </tbody>' . PHP_EOL . ' </table>' . PHP_EOL . '</div>' . PHP_EOL;
 
-if(($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta')
- && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta')){
+if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta'
+   && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta'
+){
 
     $o1 .= '<a class="yyinfo" href="zz_dossiers_l1.php?__action=__recuperer_dossiers&amp;__racine=' . rawurlencode(APP_KEY) . '">recupérer les dossiers de ' . APP_KEY . '</a>' . PHP_EOL;
 

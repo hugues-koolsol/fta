@@ -15,18 +15,17 @@ function enregistrer_les_sql_en_base(&$data){
     */
     sql_inclure_reference(66);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_66.php');
+    require_once(INCLUDE_PATH.'/sql/sql_66.php');
     /*
-      UPDATE b1.tbl_requetes SET 
-      `cht_rev_requete` = :n_cht_rev_requete , 
-      `cht_sql_requete` = :n_cht_sql_requete , 
-      `cht_php_requete` = :n_cht_php_requete 
-      WHERE (
-      `chi_id_requete` = :c_chi_id_requete 
-      AND `chx_cible_requete` = :c_chx_cible_requete
-      ) ;
-      /*sql_inclure_fin
+    
+    UPDATE b1.tbl_requetes SET `cht_rev_requete` = :n_cht_rev_requete , `cht_sql_requete` = :n_cht_sql_requete , `cht_php_requete` = :n_cht_php_requete
+    WHERE (`chi_id_requete` = :c_chi_id_requete
+      
+     AND `chx_cible_requete` = :c_chx_cible_requete) ;
+
     */
+    /*sql_inclure_fin*/
+    
     $tt=sql_66(array(
         'c_chi_id_requete' => $data[__entree]['params']['id_source'],
         'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
@@ -74,12 +73,23 @@ function enregistrer_les_sources_en_base(&$data){
     $retour_sql=$db->querySingle($sql0);
     sql_inclure_reference(62);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_62.php');
+    require_once(INCLUDE_PATH.'/sql/sql_62.php');
     /*
-      === ATTENTION === 
-      Le fichier des requêtes sql js est à regénérer et/ou à intégrer 
+    SELECT 
+    `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+    `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+    `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+     FROM b1.tbl_sources T0
+     LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+    
+     LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+    
+    WHERE (`T0`.`chi_id_source` = :T0_chi_id_source
+     AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_62(array( 'T0_chi_id_source' => $data[__entree]['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){

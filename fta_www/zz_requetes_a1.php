@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -16,10 +16,7 @@ print($o1);
 $o1='';
 $requete_en_cours=array();
 
-if((isset($_GET['__action']))
- && ($_GET['__action'] == '__modification')
- && (isset($_GET['__id']))
- && (is_numeric($_GET['__id']))){
+if(isset($_GET['__action']) && $_GET['__action'] == '__modification' && isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
     $id_requete=(int)($_GET['__id']);
 
@@ -30,9 +27,19 @@ if((isset($_GET['__action']))
     }
 
     sql_inclure_reference(32);
-    /*sql_inclure_deb */
-    require_once(INCLUDE_PATH . '/sql/sql_32.php');
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_32.php');
+    /*
+    SELECT 
+    `T0`.`chi_id_requete` , `T0`.`chx_cible_requete` , `T0`.`chp_type_requete` , `T0`.`cht_rev_requete` , `T0`.`cht_sql_requete` , 
+    `T0`.`cht_php_requete` , `T0`.`cht_commentaire_requete` , `T0`.`cht_matrice_requete`
+     FROM b1.tbl_requetes T0
+    WHERE (`T0`.`chi_id_requete` = :T0_chi_id_requete
+     AND `T0`.`chx_cible_requete` = :T0_chx_cible_requete);
+
+    */
     /*sql_inclure_fin*/
+    
     $tt=sql_32(array( 'T0_chi_id_requete' => $id_requete, 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
     if($tt[__xst] === true){

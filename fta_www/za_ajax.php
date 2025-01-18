@@ -94,21 +94,22 @@ initialiser_les_services(false,true);
   sleep(1);
 */
 
-if((isset($_POST)) && (sizeof($_POST) > 0) && (isset($_POST['ajax_param']))){
+if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
 
     $ret=array( __xst => false, __xms => array());
     /* les messages sont mis en tableau */
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
     $GLOBALS[__entree]=$ret[__entree];
 
-    if((isset($ret[__entree]['call']['funct']))
-     && ($ret[__entree]['call']['lib'] !== '')
-     && ($ret[__entree]['call']['file'] !== '')
-     && ($ret[__entree]['call']['funct'] !== '')){
+    if(isset($ret[__entree]['call']['funct'])
+       && $ret[__entree]['call']['lib'] !== ''
+       && $ret[__entree]['call']['file'] !== ''
+       && $ret[__entree]['call']['funct'] !== ''
+    ){
 
         define('BNF','/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php');
 
-        if(!(is_file(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php'))){
+        if(!is_file(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php')){
 
             $ret[__xst]=false;
             $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'programme ajan non trouvé : "' . INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/ajax_' . $ret[__entree]['call']['funct'] . '.php"';

@@ -8,17 +8,19 @@ function recupere_une_donnees_des_cibles($id){
 
     sql_inclure_reference(34);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_34.php');
+    require_once(INCLUDE_PATH.'/sql/sql_34.php');
     /*
-      SELECT `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible` 
-      FROM b1.tbl_cibles T0 
-      WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
-      
+    SELECT 
+    `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
+     FROM b1.tbl_cibles T0
+    WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_34(array( 'T0_chi_id_cible' => $id));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         return false;
 
@@ -32,9 +34,10 @@ function recupere_une_donnees_des_cibles($id){
   =====================================================================================================================
 */
 
-if((APP_KEY === 'fta')
- && (isset($_POST['__copier_les_fichiers_de_base_dans_ftb']))
- && ($_POST['__copier_les_fichiers_de_base_dans_ftb'] === 'ftb')){
+if(APP_KEY === 'fta'
+   && isset($_POST['__copier_les_fichiers_de_base_dans_ftb'])
+   && $_POST['__copier_les_fichiers_de_base_dans_ftb'] === 'ftb'
+){
 
     include('zz_cibles_i1.php');
 
@@ -108,7 +111,7 @@ function erreur_dans_champs_saisis_cibles(){
   =====================================================================================================================
 */
 
-if((isset($_POST)) && (sizeof($_POST) >= 1)){
+if(isset($_POST) && sizeof($_POST) >= 1){
 
     $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']=$_POST['chp_nom_cible']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']=$_POST['chp_dossier_cible']??'';
@@ -121,13 +124,13 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
       =============================================================================================================
     */
 
-    if((isset($_POST['__action'])) && ($_POST['__action'] == '__modification')){
+    if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
 
         if(erreur_dans_champs_saisis_cibles()){
 
 
-            if((isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])) && (is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']))){
+            if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
@@ -145,24 +148,30 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             sql_inclure_reference(47);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_47.php');
-            /* UPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible WHERE `chi_id_cible` = 1 ; */
+            require_once(INCLUDE_PATH.'/sql/sql_47.php');
+            /*
+            
+            UPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible
+            WHERE `chi_id_cible` = 1 ;
+
+            */
             /*sql_inclure_fin*/
+            
             $tt=sql_47(array( 'n_chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']));
 
         }else{
 
             sql_inclure_reference(48);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_48.php');
+            require_once(INCLUDE_PATH.'/sql/sql_48.php');
             /*
-              UPDATE b1.tbl_cibles SET 
-              `chp_nom_cible` = :n_chp_nom_cible , 
-              `chp_dossier_cible` = :n_chp_dossier_cible , 
-              `chp_commentaire_cible` = :n_chp_commentaire_cible
-              WHERE (`chi_id_cible` = :c_chi_id_cible) ;
+            
+            UPDATE b1.tbl_cibles SET `chp_nom_cible` = :n_chp_nom_cible , `chp_dossier_cible` = :n_chp_dossier_cible , `chp_commentaire_cible` = :n_chp_commentaire_cible
+            WHERE (`chi_id_cible` = :c_chi_id_cible) ;
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_48(array(
                 /**/
                 'n_chp_nom_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'],
@@ -195,7 +204,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__confirme_suppression')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__confirme_suppression'){
 
         /*
           =====================================================================================================
@@ -213,7 +222,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-        if(($__valeurs['T0.chp_nom_cible'] === 'fta') && ($__valeurs['T0.chp_dossier_cible'] === 'fta')){
+        if($__valeurs['T0.chp_nom_cible'] === 'fta' && $__valeurs['T0.chp_dossier_cible'] === 'fta'){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer "fta"');
             recharger_la_page('zz_cibles_l1.php');
@@ -222,13 +231,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(38);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_38.php');
+        require_once(INCLUDE_PATH.'/sql/sql_38.php');
         /*
-          
-          BEGIN TRANSACTION
-          
+        
+        BEGIN TRANSACTION;
+        
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_38(array());
 
         if($tt[__xst] === false){
@@ -243,13 +254,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(14);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_14.php');
+        require_once(INCLUDE_PATH.'/sql/sql_14.php');
         /*
-          
-          DELETE FROM b1.tbl_revs WHERE `chx_cible_rev` = :chx_cible_rev ;
-          
+        
+        DELETE FROM b1.tbl_revs
+        WHERE `chx_cible_rev` = :chx_cible_rev ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_14(array( 'chx_cible_rev' => $__id));
 
         if($tt[__xst] === false){
@@ -257,13 +270,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             ajouterMessage('erreur',$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_40.php');
+            require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-              
-              ROLLBACK
-              
+            
+            ROLLBACK;
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_40(array());
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
@@ -275,12 +289,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(41);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_41.php');
+        require_once(INCLUDE_PATH.'/sql/sql_41.php');
         /*
-          
-          DELETE FROM b1.tbl_sources WHERE `chx_cible_id_source` = :chx_cible_id_source ;    
+        
+        DELETE FROM b1.tbl_sources
+        WHERE `chx_cible_id_source` = :chx_cible_id_source ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_41(array( 'chx_cible_id_source' => $__id));
 
         if($tt[__xst] === false){
@@ -288,13 +305,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             ajouterMessage('erreur',$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_40.php');
+            require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-              
-              ROLLBACK
-              
+            
+            ROLLBACK;
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_40(array());
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
@@ -306,11 +324,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(42);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_42.php');
+        require_once(INCLUDE_PATH.'/sql/sql_42.php');
         /*
-          DELETE FROM b1.tbl_requetes WHERE (`chx_cible_requete` = :chx_cible_requete) ;    
+        
+        DELETE FROM b1.tbl_requetes
+        WHERE (`chx_cible_requete` = :chx_cible_requete) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_42(array( 'chx_cible_requete' => $__id));
 
         if($tt[__xst] === false){
@@ -318,9 +340,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             ajouterMessage('erreur',$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_40.php');
-            /* ROLLBACK */
+            require_once(INCLUDE_PATH.'/sql/sql_40.php');
+            /*
+            
+            ROLLBACK;
+
+            */
             /*sql_inclure_fin*/
+            
             $tt=sql_40(array());
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
@@ -332,11 +359,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(43);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_43.php');
+        require_once(INCLUDE_PATH.'/sql/sql_43.php');
         /*
-          DELETE FROM b1.tbl_bdds WHERE (`chx_cible_id_basedd` = :chx_cible_id_basedd) ;
-          /*sql_inclure_fin
+        
+        DELETE FROM b1.tbl_bdds
+        WHERE (`chx_cible_id_basedd` = :chx_cible_id_basedd) ;
+
         */
+        /*sql_inclure_fin*/
+        
         $tt=sql_43(array( 'chx_cible_id_basedd' => $__id));
 
         if($tt[__xst] === false){
@@ -344,9 +375,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             ajouterMessage('erreur',$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_40.php');
-            /* ROLLBACK */
+            require_once(INCLUDE_PATH.'/sql/sql_40.php');
+            /*
+            
+            ROLLBACK;
+
+            */
             /*sql_inclure_fin*/
+            
             $tt=sql_40(array());
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
@@ -358,11 +394,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(44);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_44.php');
+        require_once(INCLUDE_PATH.'/sql/sql_44.php');
         /*
-          DELETE FROM b1.tbl_dossiers WHERE (`chx_cible_dossier` = :chx_cible_dossier) ;
-          /*sql_inclure_fin
+        
+        DELETE FROM b1.tbl_dossiers
+        WHERE (`chx_cible_dossier` = :chx_cible_dossier) ;
+
         */
+        /*sql_inclure_fin*/
+        
         $tt=sql_44(array( 'chx_cible_dossier' => $__id));
 
         if($tt[__xst] === false){
@@ -370,9 +410,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             ajouterMessage('erreur',$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_40.php');
-            /* ROLLBACK */
+            require_once(INCLUDE_PATH.'/sql/sql_40.php');
+            /*
+            
+            ROLLBACK;
+
+            */
             /*sql_inclure_fin*/
+            
             $tt=sql_40(array());
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
@@ -384,11 +429,15 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(45);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_45.php');
+        require_once(INCLUDE_PATH.'/sql/sql_45.php');
         /*
-          DELETE FROM b1.tbl_cibles WHERE (`chi_id_cible` = :chi_id_cible) ;
-          /*sql_inclure_fin
+        
+        DELETE FROM b1.tbl_cibles
+        WHERE (`chi_id_cible` = :chi_id_cible) ;
+
         */
+        /*sql_inclure_fin*/
+        
         $tt=sql_45(array( 'chi_id_cible' => $__id));
 
         if($tt[__xst] === false){
@@ -396,9 +445,14 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             ajouterMessage('erreur',$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_40.php');
-            /* ROLLBACK */
+            require_once(INCLUDE_PATH.'/sql/sql_40.php');
+            /*
+            
+            ROLLBACK;
+
+            */
             /*sql_inclure_fin*/
+            
             $tt=sql_40(array());
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
@@ -410,16 +464,21 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         sql_inclure_reference(46);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_46.php');
-        /* COMMIT */
+        require_once(INCLUDE_PATH.'/sql/sql_46.php');
+        /*
+        
+        COMMIT;
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_46(array());
         recharger_la_page('zz_cibles_l1.php');
         /*
           =====================================================================================================
         */
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__creation')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__creation'){
 
         /*
           =====================================================================================================
@@ -434,8 +493,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-        if(($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] === 'fta')
-         && ($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] === 'fta')){
+        if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] === 'fta' && $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] === 'fta'){
 
             ajouterMessage('erreur',__LINE__ . ' : le projet fta est la racine et est déjà créé',BNF);
             recharger_la_page(BNF . '?__action=__creation');
@@ -444,20 +502,22 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(36);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_36.php');
+        require_once(INCLUDE_PATH.'/sql/sql_36.php');
         /*
-          
-          INSERT INTO b1.`tbl_cibles`(
-          `chp_nom_cible` , 
-          `chp_dossier_cible` , 
-          `chp_commentaire_cible`
-          ) VALUES (
-          :chp_nom_cible , 
-          :chp_dossier_cible , 
-          :chp_commentaire_cible
-          );
+        
+        INSERT INTO b1.`tbl_cibles`(
+            `chp_nom_cible` , 
+            `chp_dossier_cible` , 
+            `chp_commentaire_cible`
+        ) VALUES (
+            :chp_nom_cible , 
+            :chp_dossier_cible , 
+            :chp_commentaire_cible
+        );
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_36(array( array( 'chp_nom_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'], 'chp_dossier_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'], 'chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'])));
 
         if($tt[__xst] === false){
@@ -470,17 +530,20 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
             /* création du dossier racine */
             sql_inclure_reference(37);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_37.php');
+            require_once(INCLUDE_PATH.'/sql/sql_37.php');
             /*
-              INSERT INTO b1.`tbl_dossiers`(
-              `chx_cible_dossier` , 
-              `chp_nom_dossier`
-              ) VALUES (
-              :chx_cible_dossier , 
-              :chp_nom_dossier
-              );         
+            
+            INSERT INTO b1.`tbl_dossiers`(
+                `chx_cible_dossier` , 
+                `chp_nom_dossier`
+            ) VALUES (
+                :chx_cible_dossier , 
+                :chp_nom_dossier
+            );
+
             */
             /*sql_inclure_fin*/
+            
             $tt37=sql_37(array( array( 'chx_cible_dossier' => $tt['nouvel_id'], 'chp_nom_dossier' => '/')));
 
             if($tt37[__xst] === false){
@@ -499,7 +562,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__creation_du_dossier')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__creation_du_dossier'){
 
         /*
           =====================================================================================================
@@ -556,7 +619,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         recharger_la_page($_SERVER['REQUEST_URI']);
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__suppression_du_dossier')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__suppression_du_dossier'){
 
         /*
           =====================================================================================================
@@ -565,7 +628,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         */
         $__id=(int)($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
-        if(($__id !== 0) && ($__id !== 1)){
+        if($__id !== 0 && $__id !== 1){
 
             $__valeurs=recupere_une_donnees_des_cibles($__id);
 
@@ -647,11 +710,11 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 */
 $__id=0;
 
-if((isset($_GET['__action'])) && (($_GET['__action'] === '__suppression') || ($_GET['__action'] === '__modification'))){
+if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['__action'] === '__modification')){
 
     $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
 
-    if(($__id === 1) && ($_GET['__action'] === '__suppression')){
+    if($__id === 1 && $_GET['__action'] === '__suppression'){
 
         ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer la cible 1');
         recharger_la_page('zz_cibles_l1.php');
@@ -691,7 +754,7 @@ print($o1);
 $o1='';
 $o1 .= '<h1>gestion de cible ' . bouton_retour_a_la_liste('zz_cibles_l1.php') . '</h1>';
 
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
+if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     /*
       =============================================================================================================
@@ -713,7 +776,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '' . PHP_EOL;
     $o1 .= ' </form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__creation')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__creation'){
 
     /*
       =============================================================================================================
@@ -752,7 +815,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__modification'){
 
     /*
       =============================================================================================================
@@ -817,10 +880,11 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '</div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
 
-    if((APP_KEY === 'fta')
-     && (basename(dirname(__FILE__,2)) === 'fta')
-     && ($__valeurs['T0.chp_nom_cible'] === 'fta')
-     && ($__valeurs['T0.chp_dossier_cible'] === 'fta')){
+    if(APP_KEY === 'fta'
+       && basename(dirname(__FILE__,2)) === 'fta'
+       && $__valeurs['T0.chp_nom_cible'] === 'fta'
+       && $__valeurs['T0.chp_dossier_cible'] === 'fta'
+    ){
 
         $o1 .= '<form method="post" enctype="multipart/form-data">' . PHP_EOL;
         $o1 .= '   <button name="__copier_les_fichiers_de_base_dans_ftb" value="ftb" class="">copier les fichiers de base dans ftb</button>' . PHP_EOL;

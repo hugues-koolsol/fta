@@ -6,7 +6,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && ('__selectionner_cette_cible' === $_GET['__action'])){
+if(isset($_GET['__action']) && '__selectionner_cette_cible' === $_GET['__action']){
 
 
     if(isset($_SESSION[APP_KEY]['cible_courante'])){
@@ -21,18 +21,19 @@ if((isset($_GET['__action'])) && ('__selectionner_cette_cible' === $_GET['__acti
 
         sql_inclure_reference(34);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_34.php');
+        require_once(INCLUDE_PATH.'/sql/sql_34.php');
         /*
-          SELECT 
-          `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
-          FROM b1.tbl_cibles T0
-          WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
-          
+        SELECT 
+        `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
+         FROM b1.tbl_cibles T0
+        WHERE `T0`.`chi_id_cible` = :T0_chi_id_cible;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_34(array( 'T0_chi_id_cible' => $__id));
 
-        if(($tt[__xst] === true) && (count($tt[__xva]) === 1)){
+        if($tt[__xst] === true && count($tt[__xva]) === 1){
 
             $_SESSION[APP_KEY]['cible_courante']=array( 'chi_id_cible' => $tt[__xva][0]['T0.chi_id_cible'], 'chp_nom_cible' => $tt[__xva][0]['T0.chp_nom_cible'], 'chp_dossier_cible' => $tt[__xva][0]['T0.chp_dossier_cible']);
             ajouterMessage('info',__LINE__ . ' : une nouvelle cible a été sélectionnée ' . date('H:i:s'),BNF);
@@ -119,20 +120,24 @@ $o1 .= ' </form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(33);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_33.php');
+require_once(INCLUDE_PATH.'/sql/sql_33.php');
 /*
-  SELECT 
-  `T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
-  FROM b1.tbl_cibles T0
-  WHERE (`T0`.`chi_id_cible` = :T0_chi_id_cible
-  AND `T0`.`chp_nom_cible` LIKE :T0_chp_nom_cible
-  AND `T0`.`chp_dossier_cible` LIKE :T0_chp_dossier_cible
-  AND `T0`.`chp_commentaire_cible` LIKE :T0_chp_commentaire_cible)
-  ORDER BY  `T0`.`chi_id_cible` ASC
-  LIMIT :quantitee OFFSET :debut ;
+SELECT 
+`T0`.`chi_id_cible` , `T0`.`chp_nom_cible` , `T0`.`chp_dossier_cible` , `T0`.`chp_commentaire_cible`
+ FROM b1.tbl_cibles T0
+WHERE (`T0`.`chi_id_cible` = :T0_chi_id_cible
   
+ AND `T0`.`chp_nom_cible` LIKE :T0_chp_nom_cible
+  
+ AND `T0`.`chp_dossier_cible` LIKE :T0_chp_dossier_cible
+  
+ AND `T0`.`chp_commentaire_cible` LIKE :T0_chp_commentaire_cible) 
+ORDER BY `T0`.`chi_id_cible` ASC 
+LIMIT:quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_33(array(
     'T0_chi_id_cible' => $chi_id_cible,
     'T0_chp_nom_cible' => ($chp_nom_cible === null ? $chp_nom_cible : ($chp_nom_cible === '' ? '' : '%' . $chp_nom_cible . '%')),
@@ -185,10 +190,11 @@ foreach($tt[__xva] as $k0 => $v0){
 
         /* si on est sur fta ou bien que le cible est "1" ou bien qu'on est en train de travailler sur la cible courante, alors on ne peut pas supprimer la cible */
 
-        if((($v0['T0.chp_nom_cible'] === 'fta')
-             && ($v0['T0.chp_dossier_cible'] === 'fta'))
-         || ($v0['T0.chi_id_cible'] === 1)
-         || ($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === $v0['T0.chi_id_cible'])){
+        if($v0['T0.chp_nom_cible'] === 'fta'
+               && $v0['T0.chp_dossier_cible'] === 'fta'
+           || $v0['T0.chi_id_cible'] === 1
+           || $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === $v0['T0.chi_id_cible']
+        ){
 
             $lsttbl .= '<a class="yyunset" title="supprimer">🗑</a>';
 
@@ -204,8 +210,9 @@ foreach($tt[__xva] as $k0 => $v0){
     }
 
 
-    if((isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']))
-     && ($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === $v0['T0.chi_id_cible'])){
+    if(isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])
+       && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === $v0['T0.chi_id_cible']
+    ){
 
         $lsttbl .= '<a class="yyunset"  title="selectionner cette cible">⇒</a>';
         $lsttbl .= ' <a class="yysucces" href="zz_dossiers_l1.php" title="aller aux dossiers">📁</a>';
@@ -221,7 +228,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '<td data-label="etat" style="text-align:center;">';
     $listeDesEtats='';
 
-    if(!(is_dir($dossier))){
+    if(!is_dir($dossier)){
 
         $listeDesEtats .= 'Le dossier n\'existe pas ';
 

@@ -3,7 +3,7 @@ define("BNF",basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
@@ -47,16 +47,19 @@ function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
 
     sql_inclure_reference(5);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_5.php');
+    require_once(INCLUDE_PATH.'/sql/sql_5.php');
     /*
-      DELETE FROM b1.tbl_revs
-      WHERE (
-      `chx_cible_rev` = :chx_cible_rev
-      AND `chp_provenance_rev` = :chp_provenance_rev
-      AND `chx_source_rev` = :chx_source_rev
-      ) ;
+    
+    DELETE FROM b1.tbl_revs
+    WHERE (`chx_cible_rev` = :chx_cible_rev
+      
+     AND `chp_provenance_rev` = :chp_provenance_rev
+      
+     AND `chx_source_rev` = :chx_source_rev) ;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' => $id_requete));
     $matrice=json_decode($matrice_requete,false);
     /* echo __FILE__ . ' ' . __LINE__ . ' $id_requete =  ' . $id_requete . '<pre> ' . var_export(  $matrice , true ) . '</pre>' ; exit(0);*/
@@ -86,6 +89,51 @@ function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
         );
     }
     sql_inclure_reference(12);
+    /*sql_inclure_deb*/
+    require_once(INCLUDE_PATH.'/sql/sql_12.php');
+    /*
+    
+    INSERT INTO b1.`tbl_revs`(
+        `chx_cible_rev` , 
+        `chp_provenance_rev` , 
+        `chx_source_rev` , 
+        `chp_id_rev` , 
+        `chp_valeur_rev` , 
+        `chp_type_rev` , 
+        `chp_niveau_rev` , 
+        `chp_quotee_rev` , 
+        `chp_pos_premier_rev` , 
+        `chp_pos_dernier_rev` , 
+        `chp_parent_rev` , 
+        `chp_nbr_enfants_rev` , 
+        `chp_num_enfant_rev` , 
+        `chp_profondeur_rev` , 
+        `chp_pos_ouver_parenthese_rev` , 
+        `chp_pos_fermer_parenthese_rev` , 
+        `chp_commentaire_rev`
+    ) VALUES (
+        :chx_cible_rev , 
+        :chp_provenance_rev , 
+        :chx_source_rev , 
+        :chp_id_rev , 
+        :chp_valeur_rev , 
+        :chp_type_rev , 
+        :chp_niveau_rev , 
+        :chp_quotee_rev , 
+        :chp_pos_premier_rev , 
+        :chp_pos_dernier_rev , 
+        :chp_parent_rev , 
+        :chp_nbr_enfants_rev , 
+        :chp_num_enfant_rev , 
+        :chp_profondeur_rev , 
+        :chp_pos_ouver_parenthese_rev , 
+        :chp_pos_fermer_parenthese_rev , 
+        :chp_commentaire_rev
+    );
+
+    */
+    /*sql_inclure_fin*/
+    
     /* sql_inclure_deb*/
     require_once(INCLUDE_PATH . '/sql/sql_12.php');
     /* sql_inclure_fin*/
@@ -98,16 +146,17 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
     sql_inclure_reference(6);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_6.php');
+    require_once(INCLUDE_PATH.'/sql/sql_6.php');
     /*
-      SELECT 
-      `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , `T0`.`cht_matrice_requete`
-      FROM b1.tbl_requetes T0
-      WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
-      ORDER BY  `T0`.`chi_id_requete`  ASC;
-      
+    SELECT 
+    `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , `T0`.`cht_matrice_requete`
+     FROM b1.tbl_requetes T0
+    WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
+     ORDER BY  `T0`.`chi_id_requete`  ASC;
+
     */
     /*sql_inclure_fin*/
+    
     $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $chi_id_cible));
     /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
 
@@ -124,7 +173,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         }
 
 
-        if(!(mkdir($repertoire_destination,511))){
+        if(!mkdir($repertoire_destination,511)){
 
             return array( __xst => false, __xme => __LINE__ . ' erreur création du répertoire inc/sql');
 
@@ -198,7 +247,8 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
         $zip=new ZipArchive();
 
-        if($zip->open($repertoire_destination . DIRECTORY_SEPARATOR . 'sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.zip',ZIPARCHIVE::CREATE) !== true){
+        if($zip->open($repertoire_destination . DIRECTORY_SEPARATOR . 'sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.zip',ZIPARCHIVE::CREATE) !== true
+        ){
 
             return array( __xst => false, __xme => __LINE__ . ' erreur ouverture fichier zip');
 
@@ -208,7 +258,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
             $chemin_fichier=realpath($repertoire_destination . DIRECTORY_SEPARATOR . 'sql_' . $v1['T0.chi_id_requete'] . '.php');
             $nom_fichier='sql_' . $v1['T0.chi_id_requete'] . '.php';
 
-            if(!($zip->addFile($chemin_fichier,$nom_fichier))){
+            if(!$zip->addFile($chemin_fichier,$nom_fichier)){
 
                 $zip->close();
                 return array( __xst => false, __xme => __LINE__ . ' ajout du fichier "' . $nom_fichier . '" au zip impossible ');
@@ -246,10 +296,10 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
   =====================================================================================================================
 */
 
-if((isset($_POST)) && (count($_POST) > 0)){
+if(isset($_POST) && count($_POST) > 0){
 
 
-    if((isset($_POST['__action'])) && ($_POST['__action'] === '__gererer_les_fichiers_des_requetes')){
+    if(isset($_POST['__action']) && $_POST['__action'] === '__gererer_les_fichiers_des_requetes'){
 
         $time_start=microtime(true);
         $gen=gererer_le_fichier_des_requetes($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']);
@@ -271,19 +321,20 @@ if((isset($_POST)) && (count($_POST) > 0)){
     }
 
 
-    if((isset($_POST['supprimer_une_requete'])) && (is_numeric($_POST['supprimer_une_requete']))){
+    if(isset($_POST['supprimer_une_requete']) && is_numeric($_POST['supprimer_une_requete'])){
 
         sql_inclure_reference(4);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_4.php');
+        require_once(INCLUDE_PATH.'/sql/sql_4.php');
         /*
-          
-          DELETE FROM b1.tbl_requetes
-          WHERE (`chi_id_requete` = :chi_id_requete
-          AND `chx_cible_requete` = :chx_cible_requete) ;
-          
+        
+        DELETE FROM b1.tbl_requetes
+        WHERE (`chi_id_requete` = :chi_id_requete
+         AND `chx_cible_requete` = :chx_cible_requete) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_4(array( 'chi_id_requete' => $_POST['supprimer_une_requete'], 'chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
         if($tt[__xst] !== true){
@@ -295,16 +346,19 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
         sql_inclure_reference(5);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_5.php');
+        require_once(INCLUDE_PATH.'/sql/sql_5.php');
         /*
+        
+        DELETE FROM b1.tbl_revs
+        WHERE (`chx_cible_rev` = :chx_cible_rev
           
-          DELETE FROM b1.tbl_revs
-          WHERE (`chx_cible_rev` = :chx_cible_rev
-          AND `chp_provenance_rev` = :chp_provenance_rev
-          AND `chx_source_rev` = :chx_source_rev) ;
+         AND `chp_provenance_rev` = :chp_provenance_rev
           
+         AND `chx_source_rev` = :chx_source_rev) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' => $_POST['supprimer_une_requete']));
 
         if($tt[__xst] !== true){
@@ -323,22 +377,25 @@ if((isset($_POST)) && (count($_POST) > 0)){
     }
 
 
-    if((isset($_POST['renuméroter_une_requete']))
-     && (is_numeric($_POST['renuméroter_une_requete']))
-     && (isset($_POST['__nouveau_numéro']))
-     && (is_numeric($_POST['__nouveau_numéro']))){
+    if(isset($_POST['renuméroter_une_requete'])
+       && is_numeric($_POST['renuméroter_une_requete'])
+       && isset($_POST['__nouveau_numéro'])
+       && is_numeric($_POST['__nouveau_numéro'])
+    ){
 
         /*        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);*/
         sql_inclure_reference(3);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_3.php');
+        require_once(INCLUDE_PATH.'/sql/sql_3.php');
         /*
-          
-          UPDATE b1.tbl_requetes SET `chi_id_requete` = :n_chi_id_requete
-          WHERE (`chi_id_requete` = :c_chi_id_requete) ;
-          
+        
+        UPDATE b1.tbl_requetes SET `chi_id_requete` = :n_chi_id_requete
+        WHERE (/ *  * / `chi_id_requete` = :c_chi_id_requete
+         AND `chx_cible_requete` = :c_chx_cible_requete) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_3(array( 'c_chi_id_requete' => $_POST['renuméroter_une_requete'], 'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'n_chi_id_requete' => $_POST['__nouveau_numéro']));
 
         if($tt[__xst] === true){
@@ -353,16 +410,17 @@ if((isset($_POST)) && (count($_POST) > 0)){
 
         sql_inclure_reference(8);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_8.php');
+        require_once(INCLUDE_PATH.'/sql/sql_8.php');
         /*
-          
-          UPDATE b1.tbl_revs SET `chx_source_rev` = :n_chx_source_rev
-          WHERE (`chx_cible_rev` = :c_chx_cible_rev
-          AND `chp_provenance_rev` = :c_chp_provenance_rev
-          AND `chx_source_rev` = :c_chx_source_rev) ;
-          
+        
+        UPDATE b1.tbl_revs SET `chx_source_rev` = :n_chx_source_rev
+        WHERE (`chx_cible_rev` = :c_chx_cible_rev
+         AND `chp_provenance_rev` = :c_chp_provenance_rev
+         AND `chx_source_rev` = :c_chx_source_rev) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_8(array( 'n_chx_source_rev' => $_POST['__nouveau_numéro'], 'c_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'c_chp_provenance_rev' => 'sql', 'c_chx_source_rev' => $_POST['renuméroter_une_requete']));
 
         if($tt[__xst] !== true){
@@ -403,10 +461,7 @@ function obtenir_entete_de_la_page(){
 $o1=obtenir_entete_de_la_page();
 print($o1['value']);
 
-if((isset($_GET['__action']))
- && ($_GET['__action'] == '__suppression')
- && (isset($_GET['__id']))
- && (is_numeric($_GET['__id']))){
+if(isset($_GET['__action']) && $_GET['__action'] == '__suppression' && isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);*/
     $o1='<form method="post" style="text-align:center;">';
@@ -419,10 +474,7 @@ if((isset($_GET['__action']))
 }
 
 
-if((isset($_GET['__action']))
- && ($_GET['__action'] == '__renuméroter')
- && (isset($_GET['__id']))
- && (is_numeric($_GET['__id']))){
+if(isset($_GET['__action']) && $_GET['__action'] == '__renuméroter' && isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( __LINE__ , true ) . '</pre>' ; exit(0);*/
     $o1='<form method="post" style="text-align:center;">';
@@ -486,21 +538,25 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(2);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_2.php');
+require_once(INCLUDE_PATH.'/sql/sql_2.php');
 /*
-  SELECT 
-  `T0`.`chi_id_requete` , `T0`.`chp_type_requete` , `T0`.`cht_rev_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , 
-  `T0`.`cht_commentaire_requete`
-  FROM b1.tbl_requetes T0
-  WHERE (/ *  * / `T0`.`chx_cible_requete` = :T0_chx_cible_requete
-  AND `T0`.`chi_id_requete` = :T0_chi_id_requete
-  AND `T0`.`chp_type_requete` LIKE :T0_chp_type_requete
-  AND `T0`.`cht_rev_requete` LIKE :T0_cht_rev_requete)
-  ORDER BY  `T0`.`chi_id_requete` DESC
-  LIMIT :quantitee OFFSET :debut ;
+SELECT 
+`T0`.`chi_id_requete` , `T0`.`chp_type_requete` , `T0`.`cht_rev_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , 
+`T0`.`cht_commentaire_requete`
+ FROM b1.tbl_requetes T0
+WHERE (/ *  * / `T0`.`chx_cible_requete` = :T0_chx_cible_requete
   
+ AND `T0`.`chi_id_requete` = :T0_chi_id_requete
+  
+ AND `T0`.`chp_type_requete` LIKE :T0_chp_type_requete
+  
+ AND `T0`.`cht_rev_requete` LIKE :T0_cht_rev_requete) 
+ORDER BY `T0`.`chi_id_requete` DESC  
+LIMIT :quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_2(array(
     'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_requete' => $chi_id_requete,

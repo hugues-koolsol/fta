@@ -271,7 +271,7 @@ function nl1(){
     do{
         var frame=stack.shift();
     }while(!(frameRE.exec(frame)) && stack.length);
-    return('^G' + (frameRE.exec(stack.shift())[1]));
+    return('^G ' + (frameRE.exec(stack.shift())[1]) + ' ');
 }
 /*
   =====================================================================================================================
@@ -1470,6 +1470,9 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 break;
                             }else{
                                 drapeauRegex+=c1;
+                                if(j === l01 - 1){
+                                    i=j;
+                                }
                             }
                         }
                     }
@@ -1681,7 +1684,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
                         })));
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : '1345 la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 dansCstSimple=false;

@@ -240,8 +240,8 @@ function zz_l1_convertir_un_source_php_sur_disque2(id_source){
                 if(nom_source.substr(nom_source.length - 4) === '.php'){
                     var parseur=window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
                     try{
-                        let regex = /\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
-                        let php_moins_commentaires_sql = donnees.contenu_du_fichier.replace(regex, '');
+                        let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
+                        let php_moins_commentaires_sql=donnees.contenu_du_fichier.replace(regex,'');
                         var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
                         var obj=__module_php_parseur1.traite_ast(ast_de_php,{"en_ligne" : true});
                         if(obj.__xst === true){

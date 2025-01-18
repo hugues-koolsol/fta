@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux dossiers');
     recharger_la_page('zz_cibles_l1.php');
@@ -73,17 +73,22 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(53);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_53.php');
+require_once(INCLUDE_PATH.'/sql/sql_53.php');
 /*
-  SELECT 
-  `T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
-  FROM b1.tbl_dossiers T0
-  WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier 
-  AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier 
-  AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
-  ORDER BY  `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC LIMIT :quantitee OFFSET :debut ;
+SELECT 
+`T0`.`chi_id_dossier` , `T0`.`chp_nom_dossier`
+ FROM b1.tbl_dossiers T0
+WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+  
+ AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier
+  
+ AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
+ORDER BY `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC 
+LIMIT:quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_53(array(
     'T0_chi_id_dossier' => $chi_id_dossier,
     'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],

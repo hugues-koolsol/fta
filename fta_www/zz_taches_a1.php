@@ -29,14 +29,14 @@ function erreur_dans_champs_saisis_taches(){
   =====================================================================================================================
 */
 
-if((isset($_POST)) && (sizeof($_POST) >= 1)){
+if(isset($_POST) && sizeof($_POST) >= 1){
 
     $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']=$_POST['chp_texte_tache']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']=$_POST['chp_priorite_tache']??'0';
     $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']=(isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : '');
     verifie_id_envoye('chi_id_tache','zz_taches_l1.php',BNF,$_POST);
 
-    if((isset($_POST['__action'])) && ($_POST['__action'] == '__modification')){
+    if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
         /*
           =====================================================================================================
@@ -47,7 +47,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         if(erreur_dans_champs_saisis_taches()){
 
 
-            if((isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'])) && (is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']))){
+            if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
 
@@ -62,15 +62,17 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(29);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_29.php');
+        require_once(INCLUDE_PATH.'/sql/sql_29.php');
         /*
+        
+        UPDATE b1.tbl_taches SET `chp_texte_tache` = :n_chp_texte_tache , `chp_priorite_tache` = :n_chp_priorite_tache
+        WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache
           
-          UPDATE b1.tbl_taches SET `chp_texte_tache` = :n_chp_texte_tache , `chp_priorite_tache` = :n_chp_priorite_tache
-          WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache
-          AND `chi_id_tache` = :c_chi_id_tache) ;
-          
+         AND `chi_id_tache` = :c_chi_id_tache) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_29(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'c_chi_id_tache' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'], 'n_chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'n_chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']));
 
         if($tt[__xst] === false){
@@ -100,7 +102,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__confirme_suppression')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__confirme_suppression'){
 
         /*
           =====================================================================================================
@@ -114,15 +116,17 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
             sql_inclure_reference(31);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_31.php');
+            require_once(INCLUDE_PATH.'/sql/sql_31.php');
             /*
+            
+            DELETE FROM b1.tbl_taches
+            WHERE (`chi_id_tache` = :chi_id_tache
               
-              DELETE FROM b1.tbl_taches
-              WHERE (`chi_id_tache` = :chi_id_tache
-              AND `chx_utilisateur_tache` = :chx_utilisateur_tache) ;
-              
+             AND `chx_utilisateur_tache` = :chx_utilisateur_tache) ;
+
             */
             /*sql_inclure_fin*/
+            
             $tt=sql_31(array( 'chi_id_tache' => $__id, 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
             if($tt[__xst] === false){
@@ -144,7 +148,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }
 
 
-    }else if((isset($_POST['__action'])) && ($_POST['__action'] == '__creation')){
+    }else if(isset($_POST['__action']) && $_POST['__action'] == '__creation'){
 
         /*
           =====================================================================================================
@@ -160,21 +164,22 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 
         sql_inclure_reference(30);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_30.php');
+        require_once(INCLUDE_PATH.'/sql/sql_30.php');
         /*
-          
-          INSERT INTO b1.`tbl_taches`(
-          `chx_utilisateur_tache` , 
-          `chp_texte_tache` , 
-          `chp_priorite_tache`
-          ) VALUES (
-          :chx_utilisateur_tache , 
-          :chp_texte_tache , 
-          :chp_priorite_tache
-          );
-          
+        
+        INSERT INTO b1.`tbl_taches`(
+            `chx_utilisateur_tache` , 
+            `chp_texte_tache` , 
+            `chp_priorite_tache`
+        ) VALUES (
+            :chx_utilisateur_tache , 
+            :chp_texte_tache , 
+            :chp_priorite_tache
+        );
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_30(array( array( 'chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'], 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'])));
 
         if($tt[__xst] === false){
@@ -185,7 +190,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
         }else{
 
 
-            if((isset($_POST['option'])) && ($_POST['option'] === 'enregistrer_et_revenir_a_la_liste')){
+            if(isset($_POST['option']) && $_POST['option'] === 'enregistrer_et_revenir_a_la_liste'){
 
                 ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé');
                 recharger_la_page('zz_taches_l1.php');
@@ -225,7 +230,7 @@ if((isset($_POST)) && (sizeof($_POST) >= 1)){
 */
 $__id=0;
 
-if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_GET['__action'] == '__suppression'))){
+if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
     $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
 
@@ -238,19 +243,20 @@ if((isset($_GET['__action'])) && (($_GET['__action'] == '__modification') || ($_
 
         sql_inclure_reference(28);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_28.php');
+        require_once(INCLUDE_PATH.'/sql/sql_28.php');
         /*
-          SELECT 
-          `T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
-          FROM b1.tbl_taches T0
-          WHERE (`T0`.`chi_id_tache` = :T0_chi_id_tache
-          AND `T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache);
-          
+        SELECT 
+        `T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
+         FROM b1.tbl_taches T0
+        WHERE (`T0`.`chi_id_tache` = :T0_chi_id_tache
+         AND `T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache);
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_28(array( 'T0_chi_id_tache' => $__id, 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -274,7 +280,7 @@ print($o1);
 $o1='';
 $o1 .= '<h1>gestion de tache ' . bouton_retour_a_la_liste('zz_taches_l1.php') . '</h1>';
 
-if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
+if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     /*
       =============================================================================================================
@@ -292,7 +298,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= '' . PHP_EOL;
     $o1 .= ' </form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__creation')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__creation'){
 
     /*
       =============================================================================================================
@@ -325,7 +331,7 @@ if((isset($_GET['__action'])) && ($_GET['__action'] == '__suppression')){
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
 
-}else if((isset($_GET['__action'])) && ($_GET['__action'] == '__modification')){
+}else if(isset($_GET['__action']) && $_GET['__action'] == '__modification'){
 
     /*
       =============================================================================================================

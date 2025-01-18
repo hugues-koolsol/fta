@@ -3,7 +3,7 @@ define("BNF",basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux sources');
     recharger_la_page('zz_cibles_l1.php');
@@ -98,27 +98,34 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(61);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_61.php');
+require_once(INCLUDE_PATH.'/sql/sql_61.php');
 /*
-  SELECT 
-  `T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
-  `T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
-  `T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
-  FROM b1.tbl_sources T0
-  LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+SELECT 
+`T0`.`chi_id_source` , `T0`.`chx_cible_id_source` , `T0`.`chp_nom_source` , `T0`.`chp_commentaire_source` , `T0`.`chx_dossier_id_source` , 
+`T0`.`chp_rev_source` , `T0`.`chp_genere_source` , `T0`.`chp_type_source` , `T1`.`chi_id_cible` , `T1`.`chp_nom_cible` , 
+`T1`.`chp_dossier_cible` , `T1`.`chp_commentaire_cible` , `T2`.`chi_id_dossier` , `T2`.`chx_cible_dossier` , `T2`.`chp_nom_dossier`
+ FROM b1.tbl_sources T0
+ LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_id_source
+
+ LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+
+WHERE (`T0`.`chx_cible_id_source` = :T0_chx_cible_id_source
   
-  LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
+ AND `T0`.`chi_id_source` = :T0_chi_id_source
   
-  WHERE (`T0`.`chx_cible_id_source` = :T0_chx_cible_id_source 
-  AND `T0`.`chi_id_source` = :T0_chi_id_source 
-  AND `T0`.`chp_nom_source` LIKE :T0_chp_nom_source 
-  AND `T0`.`chp_type_source` LIKE :T0_chp_type_source 
-  AND `T2`.`chp_nom_dossier` LIKE :T2_chp_nom_dossier 
-  AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source) 
-  ORDER BY  `T0`.`chp_nom_source` ASC LIMIT :quantitee OFFSET :debut ;
+ AND `T0`.`chp_nom_source` LIKE :T0_chp_nom_source
   
+ AND `T0`.`chp_type_source` LIKE :T0_chp_type_source
+  
+ AND `T2`.`chp_nom_dossier` LIKE :T2_chp_nom_dossier
+  
+ AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source) 
+ORDER BY `T0`.`chp_nom_source` ASC  
+LIMIT :quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_61(array(
     'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_source' => $chi_id_source,
@@ -170,9 +177,10 @@ foreach($tt[__xva] as $k0 => $v0){
     if($v0['T0.chp_type_source'] === 'normal'){
 
 
-        if((substr($v0['T0.chp_nom_source'],-5) === '.html')
-         || (substr($v0['T0.chp_nom_source'],-4) === '.htm')
-         || (substr($v0['T0.chp_nom_source'],-4) === '.sql')){
+        if(substr($v0['T0.chp_nom_source'],-5) === '.html'
+           || substr($v0['T0.chp_nom_source'],-4) === '.htm'
+           || substr($v0['T0.chp_nom_source'],-4) === '.sql'
+        ){
 
             $lsttbl .= ' <a class="yyavertissement" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_sur_disque(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 

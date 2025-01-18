@@ -22,16 +22,20 @@ if(isset($_POST['__ordonner_les_taches'])){
 
     sql_inclure_reference(64);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_64.php');
+    require_once(INCLUDE_PATH.'/sql/sql_64.php');
     /*
-      SELECT 
-      `T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
-      FROM b1.tbl_taches T0
-      WHERE (`T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache
-      AND `T0`.`chp_priorite_tache` < :T0_chp_priorite_tache) 
-      ORDER BY `T0`.`chi_id_tache` ASC;
+    SELECT 
+    `T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
+     FROM b1.tbl_taches T0
+    WHERE (`T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache
+      
+     AND `T0`.`chp_priorite_tache` < :T0_chp_priorite_tache) 
+   
+     ORDER BY `T0`.`chp_priorite_tache` ASC;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_64(array( 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'T0_chp_priorite_tache' => 50));
 
     if($tt[__xst] === false){
@@ -49,13 +53,17 @@ if(isset($_POST['__ordonner_les_taches'])){
 
             sql_inclure_reference(65);
             /*sql_inclure_deb*/
-            require_once(INCLUDE_PATH . '/sql/sql_65.php');
+            require_once(INCLUDE_PATH.'/sql/sql_65.php');
             /*
-              UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
-              WHERE (`chi_id_tache` = :c_chi_id_tache
-              AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
+            
+            UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
+            WHERE (`chi_id_tache` = :c_chi_id_tache
+              
+             AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
+
             */
             /*sql_inclure_fin*/
+            
             /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ; exit(0);*/
             $tt2=sql_65(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'c_chi_id_tache' => $v1['T0.chi_id_tache'], 'n_chp_priorite_tache' => $nouvelle_priorite));
 
@@ -82,11 +90,16 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
 
     sql_inclure_reference(23);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_23.php');
+    require_once(INCLUDE_PATH.'/sql/sql_23.php');
     /*
-      UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '') AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
+    
+    UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
+    WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '')
+     AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_23(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 50));
 
     if($tt[__xst] === false){
@@ -98,11 +111,17 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
 
     sql_inclure_reference(25);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_25.php');
+    require_once(INCLUDE_PATH.'/sql/sql_25.php');
     /*
-      UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1) WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache AND `chp_priorite_tache` < 50) ;
+    
+    UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1)
+    WHERE (/ *  * / `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+     AND `chp_priorite_tache` < 50
+     AND `chp_priorite_tache` > 0) ;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_25(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
     if($tt[__xst] === false){
@@ -127,11 +146,16 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
 
     sql_inclure_reference(23);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_23.php');
+    require_once(INCLUDE_PATH.'/sql/sql_23.php');
     /*
-      UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '') AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
+    
+    UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
+    WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '')
+     AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_23(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 50));
 
     if($tt[__xst] === false){
@@ -143,11 +167,16 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
 
     sql_inclure_reference(24);
     /*sql_inclure_deb*/
-    require_once(INCLUDE_PATH . '/sql/sql_24.php');
+    require_once(INCLUDE_PATH.'/sql/sql_24.php');
     /*
-      UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1) WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache AND `chp_priorite_tache` < 50) ;
+    
+    UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1)
+    WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache
+     AND `chp_priorite_tache` < 50) ;
+
     */
     /*sql_inclure_fin*/
+    
     $tt=sql_24(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
     if($tt[__xst] === false){
@@ -168,15 +197,23 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && ('__mettre_a_99' === $_GET['__action'])){
+if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
 
 
-    if((isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
+    if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(22);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_22.php');
+        require_once(INCLUDE_PATH.'/sql/sql_22.php');
+        /*
+        
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
+        WHERE (`chi_id_tache` = :c_chi_id_tache
+         AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_22(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 99));
 
         if($tt[__xst] === false){
@@ -199,15 +236,23 @@ if((isset($_GET['__action'])) && ('__mettre_a_99' === $_GET['__action'])){
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && ('__mettre_a_0' === $_GET['__action'])){
+if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
 
 
-    if((isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
+    if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(22);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_22.php');
+        require_once(INCLUDE_PATH.'/sql/sql_22.php');
+        /*
+        
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
+        WHERE (`chi_id_tache` = :c_chi_id_tache
+         AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
+
+        */
         /*sql_inclure_fin*/
+        
         $tt=sql_22(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 0));
 
         if($tt[__xst] === false){
@@ -230,23 +275,24 @@ if((isset($_GET['__action'])) && ('__mettre_a_0' === $_GET['__action'])){
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && ('__mettre_a_plus_1' === $_GET['__action'])){
+if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
 
 
-    if((isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
+    if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(21);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_21.php');
+        require_once(INCLUDE_PATH.'/sql/sql_21.php');
         /*
-          
-          UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1)
-          WHERE (`chi_id_tache` = :c_chi_id_tache
-          AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
-          AND `chp_priorite_tache` < 50) ;
-          
+        
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1)
+        WHERE (`chi_id_tache` = :c_chi_id_tache
+         AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+         AND `chp_priorite_tache` < 50) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_21(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
         if($tt[__xst] === false){
@@ -269,23 +315,24 @@ if((isset($_GET['__action'])) && ('__mettre_a_plus_1' === $_GET['__action'])){
   =====================================================================================================================
 */
 
-if((isset($_GET['__action'])) && ('__mettre_a_moins_1' === $_GET['__action'])){
+if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
 
 
-    if((isset($_GET['__id'])) && (is_numeric($_GET['__id']))){
+    if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(20);
         /*sql_inclure_deb*/
-        require_once(INCLUDE_PATH . '/sql/sql_20.php');
+        require_once(INCLUDE_PATH.'/sql/sql_20.php');
         /*
-          
-          UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1)
-          WHERE (/ *  * / `chi_id_tache` = :c_chi_id_tache
-          AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
-          AND `chp_priorite_tache` >= 1) ;
-          
+        
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1)
+        WHERE (/ *  * / `chi_id_tache` = :c_chi_id_tache
+         AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+         AND `chp_priorite_tache` >= 1) ;
+
         */
         /*sql_inclure_fin*/
+        
         $tt=sql_20(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
 
         if($tt[__xst] === false){
@@ -373,8 +420,26 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(19);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_19.php');
+require_once(INCLUDE_PATH.'/sql/sql_19.php');
+/*
+SELECT 
+`T0`.`chi_id_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
+ FROM b1.tbl_taches T0
+WHERE (/ *  * / `T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache
+  
+ AND `T0`.`chi_id_tache` = :T0_chi_id_tache
+  
+ AND `T0`.`chp_texte_tache` LIKE :T0_chp_texte_tache
+  
+ AND `T0`.`chp_priorite_tache` = :T0_chp_priorite_tache
+  
+ AND `T0`.`chp_priorite_tache` < :T0_chp_priorite_tache2) 
+ORDER BY `T0`.`chp_priorite_tache` ASC  
+LIMIT :quantitee OFFSET :debut ;
+
+*/
 /*sql_inclure_fin*/
+
 $tt=sql_19(array(
     'T0_chi_id_tache' => $chi_id_tache,
     'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],

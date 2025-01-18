@@ -3,7 +3,7 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
-if(!(isset($_SESSION[APP_KEY]['cible_courante']))){
+if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
     ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avec le bouton ⇒ ');
     recharger_la_page('zz_cibles_l1.php');
@@ -61,19 +61,22 @@ $o1 .= '</form>' . PHP_EOL;
 $__debut=$__xpage * $__nbMax;
 sql_inclure_reference(15);
 /*sql_inclure_deb*/
-require_once(INCLUDE_PATH . '/sql/sql_15.php');
+require_once(INCLUDE_PATH.'/sql/sql_15.php');
 /*
-  SELECT 
-  `T0`.`chi_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_commentaire_basedd`
-  FROM b1.tbl_bdds T0
-  WHERE (/ *  * / `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd
-  AND `T0`.`chi_id_basedd` = :T0_chi_id_basedd
-  AND `T0`.`chp_nom_basedd` LIKE :T0_chp_nom_basedd)
-  ORDER BY  `T0`.`chi_id_basedd` ASC
-  LIMIT :quantitee OFFSET :debut ;
+SELECT 
+`T0`.`chi_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_commentaire_basedd`
+ FROM b1.tbl_bdds T0
+WHERE (/ *  * / `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd
   
+ AND `T0`.`chi_id_basedd` = :T0_chi_id_basedd
+  
+ AND `T0`.`chp_nom_basedd` LIKE :T0_chp_nom_basedd) 
+ORDER BY `T0`.`chi_id_basedd` ASC 
+LIMIT:quantitee OFFSET :debut ;
+
 */
 /*sql_inclure_fin*/
+
 $tt=sql_15(array(
     'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_basedd' => $chi_id_basedd,
@@ -116,7 +119,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= ' <a class="yyinfo" href="zz_bdds_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_basedd'] . '" title="modifier">✎</a>';
     $lsttbl .= ' <a class="yyinfo"  href="svg_de_la_base.php?__id_des_bases=' . $v0['T0.chi_id_basedd'] . '" title="svg">🍥</a>';
 
-    if(('fta' === APP_KEY) && ($v0['T0.chi_id_basedd'] == 1)){
+    if('fta' === APP_KEY && $v0['T0.chi_id_basedd'] == 1){
 
         $lsttbl .= ' <a class="yyunset"  title="supprimer">🗑</a>';
 
