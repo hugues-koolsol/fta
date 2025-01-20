@@ -60,7 +60,7 @@ function erreur_dans_champs_saisis_sources(){
 if(isset($_POST) && sizeof($_POST) >= 1){
 
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);*/
-    $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']=(isset($_POST['chi_id_source']) ? decrypter($_POST['chi_id_source']) : '');
+    $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']=isset($_POST['chi_id_source']) ? decrypter($_POST['chi_id_source']) : '';
     $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']=$_POST['chp_nom_source']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_type_source']=$_POST['chp_type_source']??'normal';
     $_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_source']=$_POST['chx_cible_id_source']??$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
@@ -68,7 +68,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']=$_POST['chp_rev_source']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']=$_POST['chp_genere_source']??'';
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);*/
-    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=(isset($_POST['chx_dossier_id_source']) ? ($_POST['chx_dossier_id_source'] === '' ? null : decrypter($_POST['chx_dossier_id_source'])) : '');
+    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=isset($_POST['chx_dossier_id_source']) ? ($_POST['chx_dossier_id_source'] === '' ? null : decrypter($_POST['chx_dossier_id_source'])) : '';
 
     if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === ''){
 
@@ -477,7 +477,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 if($nom_complet_de_l_ancien_fichier !== $nom_complet_du_nouveau_fichier){
 
 
-                    if(@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier)){
+                    if((@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier))){
 
                         $deja_renomme=true;
 
@@ -514,10 +514,10 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             'c_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'],
             'c_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
             'n_chp_nom_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'],
-            'n_chp_commentaire_source' => ($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']),
-            'n_chx_dossier_id_source' => ($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']),
-            'n_chp_rev_source' => ($_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']),
-            'n_chp_genere_source' => ($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']),
+            'n_chp_commentaire_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'],
+            'n_chx_dossier_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'],
+            'n_chp_rev_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_rev_source'],
+            'n_chp_genere_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'],
             'n_chp_type_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_type_source']
         ));
 
@@ -531,7 +531,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 /* si on a précédemment renommé le fichier sur disque,*/
                 /* on recrée l'ancien non en espérant qu'un autre utilisateur ne l'a pas renommé entre-temps*/
 
-                if($deja_renomme === false && !@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier)){
+                if($deja_renomme === false && !(@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier))){
 
                     ajouterMessage('erreur',__LINE__ . ' :  ATTENTION, le nom du fichier original sur disque n\'a pas pu $etre rétabli');
 
@@ -802,7 +802,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
 if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
-    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
+    $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
 
     if($__id === 0){
 
@@ -889,14 +889,14 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= '<h2>ajouter un source</h2>' . PHP_EOL;
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
-    $chp_nom_source=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'] : '');
+    $chp_nom_source=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_nom_source) . '" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="max-width:64em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_type_source=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_type_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_type_source'] : 'normal');
+    $chp_type_source=isset($_SESSION[APP_KEY][NAV][BNF]['chp_type_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_type_source'] : 'normal';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">type</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
@@ -905,7 +905,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '   <button onclick="document.getElementById(\'chp_type_source\').value=&quot;normal&quot;;return false;">normal</button>' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chx_dossier_id_source=(isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] : '');
+    $chx_dossier_id_source=isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
@@ -958,7 +958,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_commentaire_source=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] : '');
+    $chp_commentaire_source=isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;

@@ -78,7 +78,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(&$data){
     /* on calme le jeu pendant 100ms */
     usleep(100000);
     $data[__xst]=true;
-    $data['nombre_de_travaux_restants_fin']=(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) ? count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) : 0);
+    $data['nombre_de_travaux_restants_fin']=isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) ? count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) : 0;
 
 }
 /*
@@ -91,7 +91,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(&$data){
       if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data[__entree],true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);} 
     */
 
-    if(!(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']))){
+    if(!isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])){
 
         $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
 

@@ -80,7 +80,7 @@ LIMIT:quantitee OFFSET :debut ;
 $tt=sql_15(array(
     'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_basedd' => $chi_id_basedd,
-    'T0_chp_nom_basedd' => ($chp_nom_basedd === null ? $chp_nom_basedd : ($chp_nom_basedd === '' ? '' : '%' . $chp_nom_basedd . '%')),
+    'T0_chp_nom_basedd' => $chp_nom_basedd === null ? $chp_nom_basedd : ($chp_nom_basedd === '' ? '' : '%' . $chp_nom_basedd . '%'),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF
@@ -102,8 +102,8 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_basedd !== '' ? '&amp;chi_id_basedd=' . rawurlencode($chi_id_basedd) : '');
-$consUrlRedir .= ($chp_nom_basedd !== '' ? '&amp;chp_nom_basedd=' . rawurlencode($chp_nom_basedd) : '');
+$consUrlRedir .= $chi_id_basedd !== '' ? '&amp;chi_id_basedd=' . rawurlencode($chi_id_basedd) : '';
+$consUrlRedir .= $chp_nom_basedd !== '' ? '&amp;chp_nom_basedd=' . rawurlencode($chp_nom_basedd) : '';
 $o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_bdds_a1.php?__action=__creation">Créer une base</a>');
 $lsttbl='';
 $lsttbl .= '<thead><tr>';

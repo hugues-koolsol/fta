@@ -1330,9 +1330,7 @@ class traitements_sur_html{
                 "dansCss" : dansCss
             });
         }else if(dansJs && tab[id][1] === 'source'){
-            php_contexte_commentaire_html=false;
             ob=parseJavascript0(tab,id + 1,0);
-            php_contexte_commentaire_html=true;
             if(ob.__xst === true){
                 t+=CRLF;
                 t+='//<![CDATA[' + CRLF;

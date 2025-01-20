@@ -40,7 +40,7 @@ function parseJavascript0(tab,id,niveau){
         }
         return({"__xst" : true ,"__xva" : retJS.__xva});
     }else{
-        console.error(retJS);
+        /* console.error(retJS); */
         return retJS;
     }
 }
@@ -1135,18 +1135,21 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     }
                     break;
                     
-                case "definition_de_classe" : 
+                case "definition_de_classe" :
+                    var objtestLi=js_traiteInstruction1(tab,niveau,i);
+                    if(objtestLi.__xst === true){
+                        t+='' + objtestLi.__xva;
+                    }else{
+                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : nl1()}));
+                    }
+                    break;
+                    
                 case "exporter" :
-                    if(tab[i][8] === 1 && "exporter" === tab[i][1] && tab[i + 1][8] === 1){
+                    if(tab[i][8] === 1 && "nom_de_classe" === tab[i + 1][1] && tab[i + 1][8] === 1){
                         t+=espcLigne;
                         t+='export{' + (tab[i + 2][1]) + '}' + terminateur;
                     }else{
-                        var objtestLi=js_traiteInstruction1(tab,niveau,i);
-                        if(objtestLi.__xst === true){
-                            t+='' + objtestLi.__xva;
-                        }else{
-                            return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur js_tabTojavascript1 1233'}));
-                        }
+                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : (nl1() + tab[i][1]) + '  le format doit être "exporter(nom_de_classe(xxx))"'}));
                     }
                     break;
                     
@@ -1154,7 +1157,7 @@ function js_tabTojavascript1(tab,id,dansFonction,dansInitialisation,niveau,dansC
                     if(tab[i][8] === 1 && tab[i + 1][2] === 'c'){
                         t+=ma_cst_pour_javascript(tab[i + 1]) + ';' + espcLigne;
                     }else{
-                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : nl1() + ' js_tabTojavascript1 '}));
+                        return(logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : nl1() + ' un seul argument pour directive '}));
                     }
                     break;
                     
@@ -1907,7 +1910,7 @@ function js_traiteInstruction1(tab,niveau,id){
                     }
                     t+='' + obj.__xva;
                 }else{
-                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : '1412 js_traiteInstruction1 "' + tab[id][1] + '"'}));
+                    return(logerreur({"__xst" : false ,"__xva" : t ,"id" : id ,"tab" : tab ,"__xme" : nl1() + ' "' + tab[id][1] + '"'}));
                 }
                 
         }

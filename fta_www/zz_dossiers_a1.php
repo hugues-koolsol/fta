@@ -58,7 +58,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     /* echo __LINE__ . '$_POST=<pre>' . var_export($_POST,true) . '</pre>'; exit();*/
     $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']=$_POST['chp_nom_dossier']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chx_cible_dossier']=$_POST['chx_cible_dossier']??$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
-    $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']=(isset($_POST['chi_id_dossier']) ? decrypter($_POST['chi_id_dossier']) : '');
+    $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']=isset($_POST['chi_id_dossier']) ? decrypter($_POST['chi_id_dossier']) : '';
     verifie_id_envoye('chi_id_dossier','zz_cibles_l1.php',BNF,$_POST);
 
     if(isset($_POST['__effacer_du_disque'])){
@@ -296,7 +296,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =====================================================================================================
         */
         /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);*/
-        $__id=(isset($_POST['chi_id_dossier']) ? decrypter($_POST['chi_id_dossier']) : 0);
+        $__id=isset($_POST['chi_id_dossier']) ? decrypter($_POST['chi_id_dossier']) : 0;
 
         if($__id !== false){
 
@@ -516,7 +516,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
 if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
-    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
+    $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
 
     if($__id === 0){
 
@@ -613,7 +613,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= '<h2>ajouter un dossier</h2>' . PHP_EOL;
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
-    $chp_nom_dossier=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'] : '');
+    $chp_nom_dossier=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;

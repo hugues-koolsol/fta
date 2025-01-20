@@ -66,7 +66,6 @@ function parsePhp0(tab,id,niveau){
     var t='';
     var obj={};
     const l01=tab.length;
-    php_contexte_commentaire_html=false;
     if(l01 === 2 && tab[1][1] === 'php' && tab[1][2] === 'f'){
         return({"__xst" : true ,"__xva" : '<?' + 'php'});
     }
@@ -132,7 +131,9 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
     const un_espace=espacesn(true,niveau);
     for( i=id ; i < l01 ; i=tab[i][12] ){
         if(tab[i][2] === 'c'){
-            console.log('%c pourquoi une constante en ligne','background:yellow;color:red;');
+            if(!(tab[i][1].indexOf('++') >= 0 || tab[i][1].indexOf('--') >= 0)){
+                console.log('%c pourquoi une constante en ligne','background:yellow;color:red;');
+            }
             t+=un_espace;
             t+=ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r') + ';';
         }else if(tab[i][2] === 'f'){
@@ -279,7 +280,7 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                     return({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'le nom de la fonction doit être sous la forme  n(xxx) '});
                                 }
                             }else if(tab[j][1] === 'type_retour'){
-                                type_retour=':' + (tab[j + 1][1]);
+                                type_retour=':' + tab[j + 1][1].replace(/\\\\/g,'\\');
                             }
                         }
                         argumentsFonction='';
@@ -888,7 +889,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     break;
                     
                 case 'php' :
-                    php_contexte_commentaire_html=false;
                     obj=php_tabToPhp1(tab,i + 1,false,false,niveau);
                     /* ✍ tab,id,dansFonction,dansInitialisation,niveau]{ */
                     if(obj.__xst === true){
@@ -914,7 +914,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                                 t+='<?' + 'php' + obj.__xva;
                             }
                         }
-                        php_contexte_commentaire_html=true;
                     }else{
                         return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js erreur 621'}));
                     }
@@ -955,7 +954,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                         }else{
                             tag_de_fin=CRLF + '<?' + 'php';
                         }
-                        php_contexte_commentaire_html=true;
                         obj=__module_html1.tabToHtml1(tab,i,true,niveau);
                         if(obj.__xst === true){
                             if(obj.__xva.substr(obj.__xva.length - 2,2) === '\r\n'){
@@ -968,7 +966,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                             return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'erreur ( php.js ) dans un html en 643'}));
                         }
                     }
-                    php_contexte_commentaire_html=false;
                     break;
                     
                 case 'bascule' :
@@ -1162,15 +1159,8 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     }
                     break;
                     
-                case '#' :
-                    if(php_contexte_commentaire_html === true){
-                        t+=un_espace + '<!-- ' + traiteCommentaire2(tab[i][13],niveau,i) + ' -->';
-                        php_logerr({"__xst" : true ,"id" : i ,"tab" : tab ,"__xav" : 'Attention, danger, un commentaire est directement dans la racine de source <pre>' + tab[i][13] + '</pre>'});
-                    }else{
-                        t+=un_espace + '/*' + traiteCommentaire2(tab[i][13],niveau,i) + '*/';
-                    }
+                case '#' : t+=un_espace + '/*' + traiteCommentaire2(tab[i][13],niveau,i) + '*/';
                     break;
-                    
                 case 'interface' : 
                 case 'definition_de_classe' : 
                 case 'méthode' :
@@ -1684,14 +1674,12 @@ function php_traiteElement(tab,ind,niveau,options={}){
             break;
             
         case 'html_dans_php' :
-            php_contexte_commentaire_html=true;
             obj=__module_html1.tabToHtml1(tab,ind,true,0);
             if(obj.__xst === true){
                 t='html_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
             }else{
                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : ind ,"tab" : tab ,"__xme" : 'erreur php_traiteElement dans un html 1195 définit dans un php'}));
             }
-            php_contexte_commentaire_html=false;
             break;
             
         case 'sql' :
@@ -1872,10 +1860,16 @@ function php_traiteElement(tab,ind,niveau,options={}){
                     }
                 }
             }
+            var par_gauche='';
+            var par_droite='';
+            if(tab[tab[ind][7]][1] === 'siVrai' || tab[tab[ind][7]][1] === 'siFaux'){
+                par_gauche='(';
+                par_droite=')';
+            }
             if(options.hasOwnProperty('retour_de_ligne') && options.retour_de_ligne === true){
-                t='(' + objCondition.__xva + ' ?' + (si_vrai === '' ? ( '' ) : ( espacesn(true,niveau) + ' ' + si_vrai + ' ' )) + ': ' + espacesn(true,niveau) + objSiFaux.__xva + ')';
+                t=(par_gauche + objCondition.__xva) + ' ?' + (si_vrai === '' ? ( '' ) : ( espacesn(true,niveau) + ' ' + si_vrai + ' ' )) + ': ' + espacesn(true,niveau) + objSiFaux.__xva + par_droite;
             }else{
-                t='(' + objCondition.__xva + ' ?' + (si_vrai === '' ? ( '' ) : ( ' ' + si_vrai + ' ' )) + ': ' + objSiFaux.__xva + ')';
+                t=(par_gauche + objCondition.__xva) + ' ?' + (si_vrai === '' ? ( '' ) : ( ' ' + si_vrai + ' ' )) + ': ' + objSiFaux.__xva + par_droite;
             }
             break;
             
@@ -2170,7 +2164,7 @@ function php_traiteListe1(tab,ind,niveau){
 */
 var tableau_precedences={
     "" : {"priorite" : 0 ,"operateur" : '' ,"operandes" : '1' ,"commentaire" : 'parenthèse !'} ,
-    "nouveau" : {"priorite" : 5 ,"operateur" : 'new ' ,"operandes" : '1' ,"commentaire" : ''} ,
+    "nouveau" : {"priorite" : 3 ,"operateur" : 'new ' ,"operandes" : '1' ,"commentaire" : ''} ,
     "clone" : {"priorite" : 5 ,"operateur" : 'clone ' ,"operandes" : '1' ,"commentaire" : ''} ,
      /*  */
     "puissance" : {"priorite" : 10 ,"operateur" : '**' ,"operandes" : '2' ,"commentaire" : ''} ,
@@ -2230,7 +2224,11 @@ function php_traiteOperation(tab,id,niveau,ajouter_des_sauts_de_lignes){
     for( i=id + 1 ; i < l01 ; i=tab[i][12] ){
         if(tab[i][1] === '#' && tab[i][2] === 'f'){
         }else if(tab[i][2] === 'c'){
-            operandes.push({"valeur" : ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r')});
+            if(tab[id][1] === 'instance_de'){
+                operandes.push({"valeur" : tab[i][1].replace(/\\\\/g,'\\')});
+            }else{
+                operandes.push({"valeur" : ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r')});
+            }
         }else{
             if(tableau_precedences.hasOwnProperty(tab[i][1])){
                 var sous_operateur=tableau_precedences[tab[i][1]];
@@ -2242,7 +2240,11 @@ function php_traiteOperation(tab,id,niveau,ajouter_des_sauts_de_lignes){
                     ){
                         operandes.push({"valeur" : '(' + objOperation.__xva + ')'});
                     }else{
-                        operandes.push({"valeur" : objOperation.__xva});
+                        if(operateur_courant.operateur === ''){
+                            operandes.push({"valeur" : objOperation.__xva});
+                        }else{
+                            operandes.push({"valeur" : objOperation.__xva});
+                        }
                     }
                 }else{
                     return(php_logerr({"__xst" : false ,"id" : i ,"tab" : tab ,"__xme" : '2282 php_traiteOperation'}));
@@ -2250,7 +2252,28 @@ function php_traiteOperation(tab,id,niveau,ajouter_des_sauts_de_lignes){
             }else{
                 var obj1=php_traiteElement(tab,i,niveau,{});
                 if(obj1.__xst === true){
-                    operandes.push({"valeur" : obj1.__xva});
+                    if(tab[i][2] === 'c'
+                     || tab[i][2] === 'f'
+                     && (tab[i][1] === 'appelf'
+                     || tab[i][1] === 'tableau'
+                     || tab[i][1] === 'defTab'
+                     || tab[i][1] === 'valeur_constante'
+                     || tab[i][1] === 'preinc'
+                     || tab[i][1] === 'postinc'
+                     || tab[i][1] === 'predec'
+                     || tab[i][1] === 'postdec')
+                    ){
+                        operandes.push({"valeur" : obj1.__xva});
+                    }else if(tab[i][2] === 'f' && tab[i][1] === 'affecte'){
+                        /* il vaut mieux mettre un affectation dans une parenthèse sauf quand elle est à la racine d'une condition */
+                        if(tab[tab[i][7]][1] === 'condition'){
+                            operandes.push({"valeur" : obj1.__xva});
+                        }else{
+                            operandes.push({"valeur" : '(' + obj1.__xva + ')'});
+                        }
+                    }else{
+                        operandes.push({"valeur" : '(' + obj1.__xva + ')'});
+                    }
                 }else{
                     return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2291 php_traiteOperation '}));
                 }
@@ -2494,7 +2517,7 @@ function php_traiteAppelCloturee(tab,i,dansConditionOuDansFonction,niveau){
             statique='static ';
         }else if(tab[j][1] === 'type_retour'){
             if(tab[j][8] === 1 && tab[j + 1][2] === 'c'){
-                type_retour=':' + (tab[j + 1][1]);
+                type_retour=':' + tab[j + 1][1].replace(/\\\\/g,'\\');
             }else{
                 return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : '2491 php_traiteAppelCloturee'}));
             }

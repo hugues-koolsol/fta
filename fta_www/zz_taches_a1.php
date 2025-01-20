@@ -33,7 +33,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
     $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']=$_POST['chp_texte_tache']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']=$_POST['chp_priorite_tache']??'0';
-    $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']=(isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : '');
+    $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']=isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : '';
     verifie_id_envoye('chi_id_tache','zz_taches_l1.php',BNF,$_POST);
 
     if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
@@ -110,7 +110,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =====================================================================================================
         */
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);*/
-        $__id=(isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : 0);
+        $__id=isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : 0;
 
         if($__id !== false){
 
@@ -232,7 +232,7 @@ $__id=0;
 
 if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
-    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
+    $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
 
     if($__id === 0){
 
@@ -307,14 +307,14 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= '<h2>ajouter une tâche</h2>' . PHP_EOL;
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
-    $chp_texte_tache=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'] : '');
+    $chp_texte_tache=isset($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache" autocorrect="off" autocapitalize="off" spellcheck="false">' . enti1($chp_texte_tache) . '</textarea>' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_priorite_tache=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'] : '0');
+    $chp_priorite_tache=isset($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'] : '0';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">priorité</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;

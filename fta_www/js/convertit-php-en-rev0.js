@@ -2119,7 +2119,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 
             case "Expr_PostInc" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
-                    t+='postinc($' + element.var.name + ')';
+                    t+='$' + element.var.name + '++';
                 }else{
                     var obj=php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -2133,7 +2133,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 
             case "Expr_PostDec" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
-                    t+='postdec($' + element.var.name + ')';
+                    t+='$' + element.var.name + '--';
                 }else{
                     var obj=php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -2147,7 +2147,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 
             case "Expr_PreDec" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
-                    t+='predec($' + element.var.name + ')';
+                    t+='--$' + element.var.name;
                 }else{
                     var obj=php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -2161,7 +2161,7 @@ function php_traite_Stmt_Expression(element,niveau,dansFor,parent,options_traite
                 
             case "Expr_PreInc" :
                 if(element.var && element.var.nodeType === "Expr_Variable"){
-                    t+='preinc($' + element.var.name + ')';
+                    t+='++$' + element.var.name;
                 }else{
                     var obj=php_traite_Stmt_Expression(element.var,niveau,dansFor,element,options_traitement);
                     if(obj.__xst === true){
@@ -3065,9 +3065,9 @@ function ajouteCommentairesAvant(element,niveau){
                     var c1=nbre_caracteres2('(',txtComment);
                     var c2=nbre_caracteres2(')',txtComment);
                     if(c1 === c2){
-                        t+='\n' + esp0 + '#( ' + txtComment.trim() + ')';
+                        t+='\n' + esp0 + '#( ' + txtComment.trim().replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                     }else{
-                        t+='\n' + esp0 + '#( ' + txtComment.trim().replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                        t+='\n' + esp0 + '#( ' + txtComment.trim().replace(/\(/g,'[').replace(/\)/g,']').replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                     }
                     element.attributes.comments[j].text='';
                 }

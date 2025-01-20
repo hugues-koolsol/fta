@@ -251,7 +251,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
@@ -332,7 +332,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
@@ -344,7 +344,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     $repertoire=realpath(dirname($chemin_bdd));
     $chemin_bdd=$repertoire . DIRECTORY_SEPARATOR . $ret0['T0.chp_nom_basedd'];
 
-    if(!(is_file($chemin_bdd))){
+    if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
         return;
@@ -418,7 +418,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     if(sauvegarder_et_supprimer_fichier($chemin_bdd,false)){
 
 
-        if(@rename($chemin_bdd_base_temporaire,$chemin_bdd)){
+        if((@rename($chemin_bdd_base_temporaire,$chemin_bdd))){
 
             $data[__xst]=true;
 
@@ -565,7 +565,7 @@ function operation_sur_base(&$data,$nom_operation){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
@@ -576,7 +576,7 @@ function operation_sur_base(&$data,$nom_operation){
     $chemin_bdd='../../' . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . '/' . $ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
 
-    if(!(is_file($chemin_bdd))){
+    if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' fichier de bdd non trouvé';
         return;
@@ -653,7 +653,7 @@ function creer_table_dans_base(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base bdd non trouvée';
         return;
@@ -664,7 +664,7 @@ function creer_table_dans_base(&$data){
     $chemin_bdd='../../' . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . '/' . $ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
 
-    if(!(is_file($chemin_bdd))){
+    if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base fichier de bdd non trouvé';
         return;
@@ -738,7 +738,7 @@ function ordonner_les_champs_de_table(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table bdd non trouvée';
         return;
@@ -749,7 +749,7 @@ function ordonner_les_champs_de_table(&$data){
     $chemin_bdd='../../' . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . '/' . $ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
 
-    if(!(is_file($chemin_bdd))){
+    if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table fichier de bdd non trouvé';
         return;

@@ -120,8 +120,8 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     $_SESSION[APP_KEY][NAV][BNF]['chp_rev_travail_basedd']=$_POST['chp_rev_travail_basedd']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_rev_basedd']=$_POST['chp_rev_basedd']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']=$_POST['chp_genere_basedd']??'';
-    $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']=(isset($_POST['chi_id_basedd']) ? decrypter($_POST['chi_id_basedd']) : '');
-    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']=(isset($_POST['chx_dossier_id_basedd']) ? decrypter($_POST['chx_dossier_id_basedd']) : '');
+    $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']=isset($_POST['chi_id_basedd']) ? decrypter($_POST['chi_id_basedd']) : '';
+    $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']=isset($_POST['chx_dossier_id_basedd']) ? decrypter($_POST['chx_dossier_id_basedd']) : '';
     $_SESSION[APP_KEY][NAV][BNF]['chx_cible_id_basedd']=$_SESSION[APP_KEY]['cible_courante']['chi_id_cible'];
     verifie_id_envoye('chi_id_basedd',$__page_liste_de_reference,BNF,$_POST);
 
@@ -548,7 +548,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =============================== CONFIRMATION DE LA SUPPRESSION ======================================
           =====================================================================================================
         */
-        $__id=(isset($_POST['__id1']) ? (is_numeric($_POST['__id1']) ? $_POST['__id1'] : 0) : 0);
+        $__id=isset($_POST['__id1']) ? (is_numeric($_POST['__id1']) ? $_POST['__id1'] : 0) : 0;
         sql_inclure_reference(26);
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_26.php');
@@ -696,7 +696,7 @@ $__id='0';
 
 if(isset($_GET['__action']) && ($_GET['__action'] == '__suppression' || $_GET['__action'] == '__modification')){
 
-    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
+    $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
 
     if($__id === 0){
 
@@ -787,14 +787,14 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= '<h2>ajouter une base de donnée</h2>' . PHP_EOL;
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
-    $chp_nom_basedd=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] : '');
+    $chp_nom_basedd=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_nom_basedd) . '" name="chp_nom_basedd" id="chp_nom_basedd" maxlength="64" style="max-width:16em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_fournisseur_basedd=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] : '');
+    $chp_fournisseur_basedd=isset($_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">fournisseur</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
@@ -802,7 +802,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '   laisser videe ou biet mettre soit sqlite, soit mysql' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chx_dossier_id_basedd=(isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] : '');
+    $chx_dossier_id_basedd=isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
@@ -855,7 +855,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_commentaire_basedd=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] : '');
+    $chp_commentaire_basedd=isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_basedd'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;

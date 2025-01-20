@@ -170,7 +170,7 @@ On pourra avoir par exemple :
 a,  
 'a',  
 "a",  
-`a`,  
+\`a\`,  
 /a/gi  
 
 et on obtiendra le tableau suivant  
@@ -209,9 +209,9 @@ directive( texte( 'strict_types=1' ))
 Elle peuvent contenir 0 ou n arguments, ces arguments peuvent être des fonctions ou des constantes
 
 On pourra avoir par exemple :  
-a(),
-a( a , 'a'),
-a( "a" , a( `a` , /a/gi ))
+a(),  
+a( a , 'a'),  
+a( "a" , a( `a` , /a/gi ) )  
 
 et on obtiendra le tableau suivant  
 

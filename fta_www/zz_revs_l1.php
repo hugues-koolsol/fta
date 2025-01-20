@@ -205,12 +205,12 @@ LIMIT :quantitee OFFSET :debut ;
 
 $tt=sql_13(array(
     'T0_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_provenance_rev' => ($chp_provenance_rev === null ? $chp_provenance_rev : ($chp_provenance_rev === '' ? '' : '%' . $chp_provenance_rev . '%')),
+    'T0_chp_provenance_rev' => $chp_provenance_rev === null ? $chp_provenance_rev : ($chp_provenance_rev === '' ? '' : '%' . $chp_provenance_rev . '%'),
     'T0_chx_source_rev' => $chx_source_rev,
-    'T1_chp_nom_source1' => ($chp_nom_source1 === null ? $chp_nom_source1 : ($chp_nom_source1 === '' ? '' : '%' . $chp_nom_source1 . '%')),
-    'T1_chp_nom_source2' => ($chp_nom_source2 === null ? $chp_nom_source2 : ($chp_nom_source2 === '' ? '' : '%' . $chp_nom_source2 . '%')),
-    'T0_chp_valeur_rev' => ($chp_valeur_rev === null ? $chp_valeur_rev : ($chp_valeur_rev === '' ? '' : '%' . $chp_valeur_rev . '%')),
-    'T0_chp_commentaire_rev' => ($chp_commentaire_rev === null ? $chp_commentaire_rev : ($chp_commentaire_rev === '' ? '' : '%' . $chp_commentaire_rev . '%')),
+    'T1_chp_nom_source1' => $chp_nom_source1 === null ? $chp_nom_source1 : ($chp_nom_source1 === '' ? '' : '%' . $chp_nom_source1 . '%'),
+    'T1_chp_nom_source2' => $chp_nom_source2 === null ? $chp_nom_source2 : ($chp_nom_source2 === '' ? '' : '%' . $chp_nom_source2 . '%'),
+    'T0_chp_valeur_rev' => $chp_valeur_rev === null ? $chp_valeur_rev : ($chp_valeur_rev === '' ? '' : '%' . $chp_valeur_rev . '%'),
+    'T0_chp_commentaire_rev' => $chp_commentaire_rev === null ? $chp_commentaire_rev : ($chp_commentaire_rev === '' ? '' : '%' . $chp_commentaire_rev . '%'),
     'T0_chi_id_rev' => $chi_id_rev,
     'quantitee' => $__nbMax,
     'debut' => $__debut,
@@ -233,13 +233,13 @@ if($tt[__xst] === false){
 }
 
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_rev !== '' ? '&amp;chi_id_rev=' . rawurlencode($chi_id_rev) : '');
-$consUrlRedir .= ($chp_provenance_rev !== '' ? '&amp;chp_provenance_rev=' . rawurlencode($chp_provenance_rev) : '');
-$consUrlRedir .= ($chx_source_rev !== '' ? '&amp;chx_source_rev=' . rawurlencode($chx_source_rev) : '');
-$consUrlRedir .= ($chp_nom_source1 !== '' ? '&amp;chp_nom_source1=' . rawurlencode($chp_nom_source1) : '');
-$consUrlRedir .= ($chp_nom_source2 !== '' ? '&amp;chp_nom_source2=' . rawurlencode($chp_nom_source2) : '');
-$consUrlRedir .= ($chp_valeur_rev !== '' ? '&amp;chp_valeur_rev=' . rawurlencode($chp_valeur_rev) : '');
-$consUrlRedir .= ($chp_commentaire_rev !== '' ? '&amp;chp_commentaire_rev=' . rawurlencode($chp_commentaire_rev) : '');
+$consUrlRedir .= $chi_id_rev !== '' ? '&amp;chi_id_rev=' . rawurlencode($chi_id_rev) : '';
+$consUrlRedir .= $chp_provenance_rev !== '' ? '&amp;chp_provenance_rev=' . rawurlencode($chp_provenance_rev) : '';
+$consUrlRedir .= $chx_source_rev !== '' ? '&amp;chx_source_rev=' . rawurlencode($chx_source_rev) : '';
+$consUrlRedir .= $chp_nom_source1 !== '' ? '&amp;chp_nom_source1=' . rawurlencode($chp_nom_source1) : '';
+$consUrlRedir .= $chp_nom_source2 !== '' ? '&amp;chp_nom_source2=' . rawurlencode($chp_nom_source2) : '';
+$consUrlRedir .= $chp_valeur_rev !== '' ? '&amp;chp_valeur_rev=' . rawurlencode($chp_valeur_rev) : '';
+$consUrlRedir .= $chp_commentaire_rev !== '' ? '&amp;chp_commentaire_rev=' . rawurlencode($chp_commentaire_rev) : '';
 $boutons_avant='';
 $boutons_avant='<a class="yydanger" href="' . BNF . '?supprimer_tout=1">supprimer tout</a>';
 $__nbEnregs=$tt['nombre'];

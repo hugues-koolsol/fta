@@ -2325,7 +2325,7 @@ class Php8 extends \PhpParser\ParserAbstract {
             413 => static function($self,$stackPos){
                         $self->semValue=new Expr\AssignRef($self->semStack[$stackPos - (4 - 1)],$self->semStack[$stackPos - (4 - 4)],$self->getAttributes($self->tokenStartStack[$stackPos - (4 - 1)],$self->tokenEndStack[$stackPos]));
 
-                        if(!($self->phpVersion->allowsAssignNewByReference())){
+                        if(!$self->phpVersion->allowsAssignNewByReference()){
 
                             $self->emitError(new Error('Cannot assign new by reference',$self->getAttributes($self->tokenStartStack[$stackPos - (4 - 1)],$self->tokenEndStack[$stackPos])));
 
@@ -2909,7 +2909,7 @@ class Php8 extends \PhpParser\ParserAbstract {
                     },
             590 => static function($self,$stackPos){
                         $var=$self->semStack[$stackPos - (1 - 1)]->name;
-                        $self->semValue=(\is_string($var) ? new Node\VarLikeIdentifier($var,$self->getAttributes($self->tokenStartStack[$stackPos - (1 - 1)],$self->tokenEndStack[$stackPos])) : $var);
+                        $self->semValue=\is_string($var) ? new Node\VarLikeIdentifier($var,$self->getAttributes($self->tokenStartStack[$stackPos - (1 - 1)],$self->tokenEndStack[$stackPos])) : $var;
                     },
             591 => static function($self,$stackPos){
                         $self->semValue=new Expr\StaticPropertyFetch($self->semStack[$stackPos - (3 - 1)],$self->semStack[$stackPos - (3 - 3)],$self->getAttributes($self->tokenStartStack[$stackPos - (3 - 1)],$self->tokenEndStack[$stackPos]));
@@ -2953,7 +2953,7 @@ class Php8 extends \PhpParser\ParserAbstract {
                         $self->semValue=$self->semStack[$stackPos - (1 - 1)];
                         $end=count($self->semValue) - 1;
 
-                        if($self->semValue[$end]->value instanceof Expr\Error){
+                        if(($self->semValue[$end]->value) instanceof Expr\Error){
 
                             array_pop($self->semValue);
 

@@ -129,9 +129,9 @@ LIMIT :quantitee OFFSET :debut ;
 $tt=sql_61(array(
     'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_source' => $chi_id_source,
-    'T0_chp_nom_source' => ($chp_nom_source === null ? $chp_nom_source : ($chp_nom_source === '' ? '' : '%' . $chp_nom_source . '%')),
-    'T0_chp_type_source' => ($chp_type_source === null ? $chp_type_source : ($chp_type_source === '' ? '' : '%' . $chp_type_source . '%')),
-    'T2_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%')),
+    'T0_chp_nom_source' => $chp_nom_source === null ? $chp_nom_source : ($chp_nom_source === '' ? '' : '%' . $chp_nom_source . '%'),
+    'T0_chp_type_source' => $chp_type_source === null ? $chp_type_source : ($chp_type_source === '' ? '' : '%' . $chp_type_source . '%'),
+    'T2_chp_nom_dossier' => $chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%'),
     'T0_chx_dossier_id_source' => $chi_id_dossier,
     'quantitee' => $__nbMax,
     'debut' => $__debut,
@@ -154,9 +154,9 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_source !== '' ? '&amp;chi_id_source=' . rawurlencode($chi_id_source) : '');
-$consUrlRedir .= ($chp_nom_source !== '' ? '&amp;chp_nom_source=' . rawurlencode($chp_nom_source) : '');
-$consUrlRedir .= ($chp_nom_dossier !== '' ? '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) : '');
+$consUrlRedir .= $chi_id_source !== '' ? '&amp;chi_id_source=' . rawurlencode($chi_id_source) : '';
+$consUrlRedir .= $chp_nom_source !== '' ? '&amp;chp_nom_source=' . rawurlencode($chp_nom_source) : '';
+$consUrlRedir .= $chp_nom_dossier !== '' ? '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) : '';
 $o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_sources_a1.php?__action=__creation">Créer un nouveau source</a>');
 $lsttbl='';
 $lsttbl .= '<thead><tr>';

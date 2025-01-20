@@ -92,7 +92,7 @@ LIMIT:quantitee OFFSET :debut ;
 $tt=sql_53(array(
     'T0_chi_id_dossier' => $chi_id_dossier,
     'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%')),
+    'T0_chp_nom_dossier' => $chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%'),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF
@@ -115,8 +115,8 @@ if($tt[__xst] === false){
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='&amp;chi_id_dossier=' . rawurlencode($chi_id_dossier) . '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) . '';
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_dossier !== '' ? '&amp;chi_id_dossier=' . rawurlencode($chi_id_dossier) : '');
-$consUrlRedir .= ($chp_nom_dossier !== '' ? '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) : '');
+$consUrlRedir .= $chi_id_dossier !== '' ? '&amp;chi_id_dossier=' . rawurlencode($chi_id_dossier) : '';
+$consUrlRedir .= $chp_nom_dossier !== '' ? '&amp;chp_nom_dossier=' . rawurlencode($chp_nom_dossier) : '';
 $o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'');
 $__lsttbl='';
 $__lsttbl .= '  <thead><tr>';

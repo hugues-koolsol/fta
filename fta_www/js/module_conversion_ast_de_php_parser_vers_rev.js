@@ -1474,9 +1474,17 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0745 #traite_pre quoi' ,"element" : element}));
         }
         if(element.type === '+'){
-            t+='preinc(' + quoi + ')';
+            if(element.what.kind === 'variable'){
+                t+='++' + quoi;
+            }else{
+                t+='preinc(' + quoi + ')';
+            }
         }else if(element.type === '-'){
-            t+='predec(' + quoi + ')';
+            if(element.what.kind === 'variable'){
+                t+='--' + quoi;
+            }else{
+                t+='predec(' + quoi + ')';
+            }
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0712 #traite_pre' ,"element" : element}));
         }
@@ -1497,9 +1505,17 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0726 #traite_post quoi' ,"element" : element}));
         }
         if(element.type === '+'){
-            t+='postinc(' + quoi + ')';
+            if(element.what.kind === 'variable'){
+                t+=quoi + '++';
+            }else{
+                t+='postinc(' + quoi + ')';
+            }
         }else if(element.type === '-'){
-            t+='postdec(' + quoi + ')';
+            if(element.what.kind === 'variable'){
+                t+=quoi + '--';
+            }else{
+                t+='postdec(' + quoi + ')';
+            }
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0734 #traite_post' ,"element" : element}));
         }
@@ -2372,8 +2388,29 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
             case '|' : t+='ou_binaire(' + gauche + ',' + droite + ')';
                 break;
-            case 'instanceof' : t+='instance_de(' + gauche + ',' + droite + ')';
+            case 'instanceof' :
+                if(gauche.substr(0,4) === 'non('){
+                    /*
+                      cas if(!$a instanceof $b){
+                      il y a un bug dans ce parseur car instance a une priorité supérieure à !
+                    */
+                    var valeur_non='';
+                    var tableau1=iterateCharacters2(gauche);
+                    var o=functionToArray2(tableau1.out,false,true,'');
+                    if(o.__xst === true){
+                        var obj1=a2F1(o.__xva,1,false,2);
+                        if(obj1.__xst === true){
+                            valeur_non=obj1.__xva;
+                        }else{
+                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        }
+                    }
+                    t+='non(instance_de(' + valeur_non + ',' + droite + '))';
+                }else{
+                    t+='instance_de(' + gauche + ',' + droite + ')';
+                }
                 break;
+                
             default:
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0346 #traite_bin non traité : "' + element.type + '"' ,"element" : element}));
                 break;
@@ -3053,8 +3090,16 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         if(element.type){
             if(element.type.kind === 'typereference'){
                 type_retour='type_retour(\'' + element.type.name.replace(/\\/g,'\\\\') + '\')';
+            }else if(element.type.kind === 'name'){
+                type_retour='type_retour(\'' + element.type.name.replace(/\\/g,'\\\\') + '\')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2979 #traite_closure ' ,"element" : element}));
+                debugger;
+                obj=this.#traite_element(element.type,niveau,element,tab_comm);
+                if(obj.__xst === true){
+                    type_retour='type_retour(' + obj.__xva + ')';
+                }else{
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                }
             }
         }
         t+='fonction(';
@@ -3087,7 +3132,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 commentaires_a_retirer.push(i);
                 var valeur=tab_comm[i].value;
                 if(tab_comm[i].kind === 'commentline'){
-                    t+='#( ' + valeur.trim().substr(2).trim() + ')';
+                    t+='#( ' + valeur.trim().substr(2).trim().replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                 }else{
                     if(valeur.substr(0,3) === '/**'){
                         valeur='/*#' + valeur.substr(3);
@@ -3115,9 +3160,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                     var valeur=tab_comm[i].value;
                     if(tab_comm[i].kind === 'commentline'){
                         if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
-                            t+='#( ' + valeur.trim().substr(2).trim() + ')';
+                            t+='#( ' + valeur.trim().substr(2).trim().replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                         }else{
-                            t+='#(' + valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim() + ')';
+                            t+='#(' + valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim().replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                         }
                     }else{
                         if(valeur.substr(0,3) === '/**'){
@@ -3160,9 +3205,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 var valeur=tab_comm[i].value;
                 if(tab_comm[i].kind === 'commentline'){
                     if(((valeur.match(/\(/g) || []).length) === ((valeur.match(/\)/g) || []).length)){
-                        t+='#( ' + valeur.trim().substr(2).trim() + ')';
+                        t+='#( ' + valeur.trim().substr(2).trim().replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                     }else{
-                        t+='#(' + valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim() + ')';
+                        t+='#(' + valeur.replace(/\(/g,'[').replace(/\)/g,']').trim().substr(2).trim().replace(/\/\*/,'/_*').replace(/\*\//,'*_/') + ')';
                     }
                 }else{
                     if(valeur.substr(0,3) === '/**'){

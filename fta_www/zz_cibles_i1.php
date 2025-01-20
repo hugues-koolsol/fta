@@ -520,6 +520,6 @@ if($fd=fopen($chemin_fichier_acces_pour_bdd,'w')){
 }
 
 $time_end=microtime(true);
-$time=(int)((($time_end - $time_start) * 1000) * 1000) / 1000;
+$time=((int)((($time_end - $time_start) * 1000) * 1000)) / 1000;
 ajouterMessage('succes',__LINE__ . ' 👍 les fichiers ont été copiés (' . $time . ' ms)',BNF);
 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);

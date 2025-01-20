@@ -84,7 +84,6 @@ function convertSource(objMatSrc){
             for( var i=idJs + 1 ; i < objMatSrc.__xva.length ; i++ ){
                 if(objMatSrc.__xva[i][7] == idJs && objMatSrc.__xva[i][1] == 'php'){
                     baliseHtmlOuPhpTrouvee=true;
-                    php_contexte_commentaire_html=false;
                     retProgrammeSource=parsePhp0(objMatSrc.__xva,i,0);
                     if(retProgrammeSource.__xst === true){
                         t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
@@ -93,7 +92,6 @@ function convertSource(objMatSrc){
                     }
                 }else if(objMatSrc.__xva[i][7] == idJs && objMatSrc.__xva[i][1] == 'html'){
                     baliseHtmlOuPhpTrouvee=true;
-                    php_contexte_commentaire_html=true;
                     retProgrammeSource=__module_html1.tabToHtml1(objMatSrc.__xva,i,true,0);
                     if(retProgrammeSource.__xst === true){
                         t+='\n' + retProgrammeSource.__xva + '\n';
@@ -107,7 +105,6 @@ function convertSource(objMatSrc){
                   on a oubblié la balise php ou html, on suppose que c'est du php !
                   
                 */
-                php_contexte_commentaire_html=false;
                 retProgrammeSource=parsePhp0(objMatSrc.__xva,position_de_la_balise_source,0);
                 if(retProgrammeSource.__xst === true){
                     t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';

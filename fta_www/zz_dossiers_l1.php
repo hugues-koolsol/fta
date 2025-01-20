@@ -305,7 +305,7 @@ LIMIT:quantitee OFFSET :debut ;
 $tt=sql_53(array(
     'T0_chi_id_dossier' => $chi_id_dossier,
     'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
-    'T0_chp_nom_dossier' => ($chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%')),
+    'T0_chp_nom_dossier' => $chp_nom_dossier === null ? $chp_nom_dossier : ($chp_nom_dossier === '' ? '' : '%' . $chp_nom_dossier . '%'),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF

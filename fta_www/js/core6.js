@@ -22,7 +22,6 @@ var global_messages={
     "calls" : '' ,
     "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
 };
-var php_contexte_commentaire_html=false;
 /*
   =====================================================================================================================
 */
@@ -254,24 +253,28 @@ function nl1(){
     var e=new Error();
     if(!(e.stack)){
         try{
-            /* IE requires the Error to actually be throw or else the Error's 'stack' */
-            /* property is undefined. */
+            /* IE ?? */
             throw e;
         }catch(e){
             if(!(e.stack)){
+                /* IE < 10 ? */
                 return 0;
-                /* IE < 10, likely */
             }
         }
     }
     var stack=e.stack.toString().split(/\r\n|\n/);
     /* We want our caller's frame. It's index into |stack| depends on the */
     /* browser and browser version, so we need to search for the second frame: */
-    var frameRE=/:(\d+):(?:\d+)[^\d]*$/;
+    var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
     do{
-        var frame=stack.shift();
-    }while(!(frameRE.exec(frame)) && stack.length);
-    return('^G ' + (frameRE.exec(stack.shift())[1]) + ' ');
+        var ligne_erreur=stack.shift();
+    }while(!(modele_champ_erreur.exec(ligne_erreur)) && stack.length);
+    /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
+    var texte_erreur=stack.shift();
+    var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
+    var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+    var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+    return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
 }
 /*
   =====================================================================================================================

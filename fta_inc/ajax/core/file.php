@@ -30,7 +30,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
             'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
             $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
@@ -61,7 +61,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
                 $CHAINE_CR=$alea1 . 'CR' . $alea1;
                 $CHAINE_LF=$alea1 . 'LF' . $alea1;
 
-                if((strpos($texte_source,"\n") !== false) && (strpos($texte_source,"\r") !== false)){
+                if(strpos($texte_source,"\n") !== false && strpos($texte_source,"\r") !== false){
 
                     /*
                       si il y a des \r et de \n
@@ -70,15 +70,15 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
                     $texte_source=str_replace("\r",'',$texte_source);
                     $texte_source=str_replace($CHAINE_LF,"\r\n",$texte_source);
 
-                }else if((strpos($texte_source,"\n") === false) && (strpos($texte_source,"\r") !== false)){
+                }else if(strpos($texte_source,"\n") === false && strpos($texte_source,"\r") !== false){
 
                     $texte_source=str_replace("\r","\r\n",$texte_source);
 
-                }else if((strpos($texte_source,"\n") !== false) && (strpos($texte_source,"\r") === false)){
+                }else if(strpos($texte_source,"\n") !== false && strpos($texte_source,"\r") === false){
 
                     $texte_source=str_replace("\n","\r\n",$texte_source);
 
-                }else if((strpos($texte_source,"\n") === false) && (strpos($texte_source,"\r") === false)){
+                }else if(strpos($texte_source,"\n") === false && strpos($texte_source,"\r") === false){
 
                     /* on ne remplace rien */
 
@@ -144,7 +144,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
             'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
-        if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+        if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
             $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
@@ -319,15 +319,7 @@ function sauvegarger_un_fichier_rev(&$data){
     for($i=0;$i < strlen($data[__entree]['file_name']);$i++){
         $c=substr($data[__entree]['file_name'],$i,1);
 
-        if(($c == '/')
-         || ($c == '\\')
-         || ($c == ':')
-         || ($c == '*')
-         || ($c == '?')
-         || ($c == '"')
-         || ($c == '<')
-         || ($c == '>')
-         || ($c == '|')){
+        if($c == '/' || $c == '\\' || $c == ':' || $c == '*' || $c == '?' || $c == '"' || $c == '<' || $c == '>' || $c == '|'){
 
             $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "' . $c . '"';
             return;
@@ -335,7 +327,7 @@ function sauvegarger_un_fichier_rev(&$data){
         }else{
 
 
-            if(!((ord($c) >= 32) && (ord($c) < 127))){
+            if(!(ord($c) >= 32 && ord($c) < 127)){
 
                 $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "' . $c . '"';
                 return;
@@ -392,10 +384,11 @@ function ecrire_fichier1(&$data){
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}*/
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_SESSION[APP_KEY]='.var_export($_SESSION[APP_KEY],true)."\r\n"); fclose($fd);}*/
 
-    if(((strpos($data[__entree]['file_path'],'..') !== false)
-         || (strpos($data[__entree]['file_name'],'..'))
-         || (strpos($data[__entree]['file_extension'],'..') !== false))
-     && (1 !== $_SESSION[APP_KEY]["user"])){
+    if((strpos($data[__entree]['file_path'],'..') !== false
+           || strpos($data[__entree]['file_name'],'..')
+           || strpos($data[__entree]['file_extension'],'..') !== false)
+       && 1 !== $_SESSION[APP_KEY]["user"]
+    ){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . '1 cannot open the file';
 
@@ -449,9 +442,10 @@ function concatener_des_fichiers1(&$data){
     /* ancien concatFile */
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}*/
 
-    if((strpos($data[__entree]['file_path'],'..') !== false)
-     || (strpos($data[__entree]['file_name'],'..'))
-     || (strpos($data[__entree]['file_extension'],'..') !== false)){
+    if(strpos($data[__entree]['file_path'],'..') !== false
+       || strpos($data[__entree]['file_name'],'..')
+       || strpos($data[__entree]['file_extension'],'..') !== false
+    ){
 
         $data[__xms][]='cannot open the file';
 

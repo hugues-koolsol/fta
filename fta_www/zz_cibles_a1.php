@@ -116,7 +116,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']=$_POST['chp_nom_cible']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']=$_POST['chp_dossier_cible']??'';
     $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']=$_POST['chp_commentaire_cible']??'';
-    $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']=(isset($_POST['chi_id_cible']) ? decrypter($_POST['chi_id_cible']) : '');
+    $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']=isset($_POST['chi_id_cible']) ? decrypter($_POST['chi_id_cible']) : '';
     verifie_id_envoye('chi_id_cible','zz_cibles_l1.php',BNF,$_POST);
     /*
       =============================================================================================================
@@ -211,7 +211,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =============================== CONFIRMATION DE LA SUPPRESSION DE CIBLE =============================
           =====================================================================================================
         */
-        $__id=(isset($_POST['__id1']) ? (is_numeric($_POST['__id1']) ? $_POST['__id1'] : 0) : 0);
+        $__id=isset($_POST['__id1']) ? (is_numeric($_POST['__id1']) ? $_POST['__id1'] : 0) : 0;
         $__valeurs=recupere_une_donnees_des_cibles($__id);
 
         if($__valeurs === false){
@@ -712,7 +712,7 @@ $__id=0;
 
 if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['__action'] === '__modification')){
 
-    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
+    $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
 
     if($__id === 1 && $_GET['__action'] === '__suppression'){
 
@@ -785,21 +785,21 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= '<h2>ajouter une cible</h2>' . PHP_EOL;
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
-    $chp_nom_cible=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] : '');
+    $chp_nom_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_nom_cible) . '" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="max-width:3em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_dossier_cible=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] : '');
+    $chp_dossier_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_dossier_cible) . '" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="max-width:3em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    $chp_commentaire_cible=(isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] : '');
+    $chp_commentaire_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;

@@ -27,7 +27,7 @@ function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
 
-    if(($tt[__xst] === false) || (count($tt[__xva]) !== 1)){
+    if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         ajouterMessage('erreur',__LINE__ . ' erreur de récupération de la base ',BNF);
         return array( __xst => false);
@@ -37,9 +37,10 @@ function comparer_une_base_physique_et_une_base_virtuelle($id_base,$source_base_
     $__valeurs=$tt[__xva][0];
     $chemin_bdd='../../' . $__valeurs['T2.chp_dossier_cible'] . '/' . $__valeurs['T1.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_basedd'];
 
-    if((is_file($chemin_bdd))
-     && (strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false)
-     && (strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false)){
+    if(is_file($chemin_bdd)
+       && strpos($__valeurs['T0.chp_nom_basedd'],'.db') !== false
+       && strpos($__valeurs['T1.chp_nom_dossier'],'sqlite') !== false
+    ){
 
         $ret=obtenir_la_structure_de_la_base_sqlite($chemin_bdd,true);
 
@@ -114,7 +115,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
                       pour fta, on n'extrait pas certaines valeurs 
                     */
 
-                    if(($k0 === 'tbl_revs') || ($k0 === 'tbl_taches')){
+                    if($k0 === 'tbl_revs' || $k0 === 'tbl_taches'){
 
                         $extraire_les_donnees=false;
 
@@ -144,7 +145,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
             }
 
 
-            if(($listeDesChamps !== '') && ($extraire_les_donnees === true)){
+            if($listeDesChamps !== '' && $extraire_les_donnees === true){
 
                 $listeDesChamps=substr($listeDesChamps,0,-1);
                 $__nbEnregs=$db0->querySingle('SELECT COUNT(*) FROM `' . $k0 . '`');
@@ -158,12 +159,13 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
                     fwrite($fd,'  =========================================================================' . PHP_EOL);
                     fwrite($fd,'*/' . PHP_EOL);
 
-                    if((APP_KEY === 'fta')
-                     && ($_SESSION[APP_KEY]['sess_id_utilisateur'] === 1)
-                     && ($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === 1)
-                     && ($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta')
-                     && ($_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] === 'fta')
-                     && ($_SESSION[APP_KEY][NAV]['zz_bdds_a1.php']['chi_id_basedd'] === '1')){
+                    if(APP_KEY === 'fta'
+                       && $_SESSION[APP_KEY]['sess_id_utilisateur'] === 1
+                       && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === 1
+                       && $_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta'
+                       && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] === 'fta'
+                       && $_SESSION[APP_KEY][NAV]['zz_bdds_a1.php']['chi_id_basedd'] === '1'
+                    ){
 
 
                         if($k0 === 'tbl_bdds'){
@@ -200,7 +202,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
                         $res0=$stmt0->execute();
                         while($tab0=$res0->fetchArray(SQLITE3_NUM)){
 
-                            if(($indice_actuel !== 0) && ($indice_actuel% $nombre_de_values_par_insert === 0)){
+                            if($indice_actuel !== 0 && $indice_actuel% $nombre_de_values_par_insert === 0){
 
                                 $sql=substr($sql,0,-1) . ';';
                                 fwrite($fd,PHP_EOL . 'INSERT INTO `' . $k0 . '`(' . $listeDesChamps . ') VALUES');
@@ -273,7 +275,7 @@ function ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier_sqlite,$nom
     $chemin_fichier=realpath($nom_du_fichier_dump);
     $nom_fichier=basename($nom_du_fichier_dump);
 
-    if(!($zip->addFile($chemin_fichier,$nom_fichier))){
+    if(!$zip->addFile($chemin_fichier,$nom_fichier)){
 
         $zip->close();
         return array( __xst => true, __xme => __LINE__ . ' ajout du fichier au zip impossible');
@@ -294,10 +296,10 @@ function produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_stru
     $chemin_fichier_temporaire=RACINE_FICHIERS_PROVISOIRES . DIRECTORY_SEPARATOR . date('Y/m/d');
     $continuer=true;
 
-    if(!(is_dir($chemin_fichier_temporaire))){
+    if(!is_dir($chemin_fichier_temporaire)){
 
 
-        if(!(mkdir($chemin_fichier_temporaire,0777,true))){
+        if(!mkdir($chemin_fichier_temporaire,0777,true)){
 
             return array( __xst => false, __xme => 'impossible de créer le répertoire temporaire');
             $continuer=false;
@@ -402,7 +404,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table,$db,$essayer_auto_i
                 'cle_etrangere' => array()
             );
 
-            if(($arr[2] === 'INTEGER') && ($arr[5] === 1)){
+            if($arr[2] === 'INTEGER' && $arr[5] === 1){
 
                 /* INTEGER PRIMARY KEY*/
 
@@ -431,7 +433,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table,$db,$essayer_auto_i
         }
         $stmt->close();
 
-        if(($essayer_auto_increment === true) && ($auto_increment === false) && ($a_des_champs_index !== '')){
+        if($essayer_auto_increment === true && $auto_increment === false && $a_des_champs_index !== ''){
 
             /*
               si la base sqlite vient d'être crée, les tables sont vides et 
@@ -637,7 +639,7 @@ function obtenir_la_structure_de_la_base_sqlite_v2($chemin_base){
 
                 $tableauDesTables[$v1]['create_index']=array();
 
-                if((isset($obj['value']['liste_des_indexes'])) && (count($obj['value']['liste_des_indexes']) > 0)){
+                if(isset($obj['value']['liste_des_indexes']) && count($obj['value']['liste_des_indexes']) > 0){
 
                     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $obj['value']['liste_des_indexes'] , true ) . '</pre>' ; exit(0);*/
                     foreach($obj['value']['liste_des_indexes'] as $k2 => $v2){

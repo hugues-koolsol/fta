@@ -15,7 +15,7 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible' === $_GET['__action'
 
     }
 
-    $__id=(isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0);
+    $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
 
     if($__id !== 0){
 
@@ -140,9 +140,9 @@ LIMIT:quantitee OFFSET :debut ;
 
 $tt=sql_33(array(
     'T0_chi_id_cible' => $chi_id_cible,
-    'T0_chp_nom_cible' => ($chp_nom_cible === null ? $chp_nom_cible : ($chp_nom_cible === '' ? '' : '%' . $chp_nom_cible . '%')),
-    'T0_chp_dossier_cible' => ($chp_dossier_cible === null ? $chp_dossier_cible : ($chp_dossier_cible === '' ? '' : '%' . $chp_dossier_cible . '%')),
-    'T0_chp_commentaire_cible' => ($chp_commentaire_cible === null ? $chp_commentaire_cible : ($chp_commentaire_cible === '' ? '' : '%' . $chp_commentaire_cible . '%')),
+    'T0_chp_nom_cible' => $chp_nom_cible === null ? $chp_nom_cible : ($chp_nom_cible === '' ? '' : '%' . $chp_nom_cible . '%'),
+    'T0_chp_dossier_cible' => $chp_dossier_cible === null ? $chp_dossier_cible : ($chp_dossier_cible === '' ? '' : '%' . $chp_dossier_cible . '%'),
+    'T0_chp_commentaire_cible' => $chp_commentaire_cible === null ? $chp_commentaire_cible : ($chp_commentaire_cible === '' ? '' : '%' . $chp_commentaire_cible . '%'),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF
@@ -165,10 +165,10 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_cible !== '' ? '&amp;chi_id_cible=' . rawurlencode($chi_id_cible) : '');
-$consUrlRedir .= ($chp_nom_cible !== '' ? '&amp;chp_nom_cible=' . rawurlencode($chp_nom_cible) : '');
-$consUrlRedir .= ($chp_dossier_cible !== '' ? '&amp;chp_dossier_cible=' . rawurlencode($chp_dossier_cible) : '');
-$consUrlRedir .= ($chp_commentaire_cible !== '' ? '&amp;chp_nom_source=' . rawurlencode($chp_commentaire_cible) : '');
+$consUrlRedir .= $chi_id_cible !== '' ? '&amp;chi_id_cible=' . rawurlencode($chi_id_cible) : '';
+$consUrlRedir .= $chp_nom_cible !== '' ? '&amp;chp_nom_cible=' . rawurlencode($chp_nom_cible) : '';
+$consUrlRedir .= $chp_dossier_cible !== '' ? '&amp;chp_dossier_cible=' . rawurlencode($chp_dossier_cible) : '';
+$consUrlRedir .= $chp_commentaire_cible !== '' ? '&amp;chp_nom_source=' . rawurlencode($chp_commentaire_cible) : '';
 $o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,'<a class="yyinfo" href="zz_cibles_a1.php?__action=__creation">Créer une nouvelle cible</a>');
 $lsttbl='';
 $lsttbl .= '<thead><tr>';

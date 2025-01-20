@@ -108,7 +108,14 @@ html(
                                                    affecte( decompte , appelf( nomf(parseInt) , p(temps_en_secondes) , p(10) )),
                                                    affecte(
                                                       appelf( element(document) , nomf(getElementById) , p( 'phrase' ) , prop(innerHTML)),
-                                                      concat( concat( concat( 'Dans <b><span id="decompte">' , temps_en_secondes , '</span></b> secondes, vous serez ' ) , '<b>redirigé automatiquement</b> ' , '<br />' ) , 'vers la la page principale de l\'application')
+                                                      concat(
+                                                         'Dans <b><span id="decompte">',
+                                                         temps_en_secondes,
+                                                         '</span></b> secondes, vous serez ',
+                                                         '<b>redirigé automatiquement</b> ',
+                                                         '<br />',
+                                                         'vers la la page principale de l\'application'
+                                                      )
                                                    ),
                                                    break()
                                                 )

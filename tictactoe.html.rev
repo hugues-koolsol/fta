@@ -183,10 +183,9 @@ tbody tr:nth-child(2n) {
                declare(
                   lst,
                   appelf(
-                     element(document),
-                     nomf(getElementById),
-                     p( 't1'),
-                     prop( appelf( nomf(getElementsByTagName) , p( 'td' ) ))
+                     element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
+                     nomf(getElementsByTagName),
+                     p( 'td')
                   )
                ),
                declare( i , 0),
@@ -220,10 +219,9 @@ tbody tr:nth-child(2n) {
                declare(
                   lst,
                   appelf(
-                     element(document),
-                     nomf(getElementById),
-                     p( 't1'),
-                     prop( appelf( nomf(getElementsByTagName) , p( 'td' ) ))
+                     element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
+                     nomf(getElementsByTagName),
+                     p( 'td')
                   )
                ),
                declare( i , 0),
@@ -342,10 +340,9 @@ tbody tr:nth-child(2n) {
                declare(
                   lst,
                   appelf(
-                     element(document),
-                     nomf(getElementById),
-                     p( 't1'),
-                     prop( appelf( nomf(getElementsByTagName) , p( 'td' ) ))
+                     element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
+                     nomf(getElementsByTagName),
+                     p( 'td')
                   )
                ),
                declare( i , 0),
@@ -382,7 +379,7 @@ tbody tr:nth-child(2n) {
                   nomf(function),
                   contenu(
                      #( quand tout est chargé, on initialise le jeu ),
-                     appelf( nomf(init))
+                     appelf( nomf(init) , p())
                   ),
                   p()
                )

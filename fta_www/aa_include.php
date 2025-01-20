@@ -134,7 +134,7 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
         if(is_file($chemin_du_fichier)){
 
 
-            if(@unlink($chemin_du_fichier)){
+            if((@unlink($chemin_du_fichier))){
 
                 return true;
 
@@ -152,7 +152,7 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
             $chemin_fichier_copie=$repertoire . DIRECTORY_SEPARATOR . uniqid() . str_replace('\\','_',str_replace('/','_',str_replace(':','_',$chemin_du_fichier)));
 
-            if(@rename($chemin_du_fichier,$chemin_fichier_copie)){
+            if((@rename($chemin_du_fichier,$chemin_fichier_copie))){
 
                 return true;
 
@@ -668,7 +668,7 @@ function decrypter($entree){
     $donnee=@openssl_decrypt($first_encrypted,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
     $second_encrypted_new=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,true);
 
-    if(@hash_equals($second_encrypted,$second_encrypted_new)){
+    if((@hash_equals($second_encrypted,$second_encrypted_new))){
 
         return substr($donnee,strlen(ENCRYPTION_DONNEES_EN_PLUS));
 
@@ -835,16 +835,16 @@ function html_header1($parametres){
 
         if($le_biscuit !== null){
 
-            $css_taille_reference_generale=(isset($le_biscuit['--yyvtrg']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrg'])) : $css_taille_reference_generale);
-            $css_taille_reference_textes=(isset($le_biscuit['--yyvtrt']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrt'])) : $css_taille_reference_textes);
-            $css_taille_reference_padding=(isset($le_biscuit['--yyvtrp']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrp'])) : $css_taille_reference_padding);
-            $css_taille_reference_border=(isset($le_biscuit['--yyvtrb']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrb'])) : $css_taille_reference_border);
-            $css_taille_reference_margin=(isset($le_biscuit['--yyvtrm']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrm'])) : $css_taille_reference_margin);
-            $css_hauteur_ligne=(isset($le_biscuit['--yyvhal']) ? (int)(str_replace('px','',$le_biscuit['--yyvhal'])) : $css_hauteur_ligne);
-            $css_hauteur_mini_bouton=(isset($le_biscuit['--yyvhmb']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmb'])) : $css_hauteur_mini_bouton);
-            $css_hauteur_menu_defilement=(isset($le_biscuit['--yyvhmd']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmd'])) : $css_hauteur_menu_defilement);
-            $css_hauteur_grands_boutons=(isset($le_biscuit['--yyvhgb']) ? (int)(str_replace('px','',$le_biscuit['--yyvhgb'])) : $css_hauteur_grands_boutons);
-            $css_hauteur_mini_conteneur=(isset($le_biscuit['--yyvhmc']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmc'])) : $css_hauteur_mini_conteneur);
+            $css_taille_reference_generale=isset($le_biscuit['--yyvtrg']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrg'])) : $css_taille_reference_generale;
+            $css_taille_reference_textes=isset($le_biscuit['--yyvtrt']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrt'])) : $css_taille_reference_textes;
+            $css_taille_reference_padding=isset($le_biscuit['--yyvtrp']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrp'])) : $css_taille_reference_padding;
+            $css_taille_reference_border=isset($le_biscuit['--yyvtrb']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrb'])) : $css_taille_reference_border;
+            $css_taille_reference_margin=isset($le_biscuit['--yyvtrm']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrm'])) : $css_taille_reference_margin;
+            $css_hauteur_ligne=isset($le_biscuit['--yyvhal']) ? (int)(str_replace('px','',$le_biscuit['--yyvhal'])) : $css_hauteur_ligne;
+            $css_hauteur_mini_bouton=isset($le_biscuit['--yyvhmb']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmb'])) : $css_hauteur_mini_bouton;
+            $css_hauteur_menu_defilement=isset($le_biscuit['--yyvhmd']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmd'])) : $css_hauteur_menu_defilement;
+            $css_hauteur_grands_boutons=isset($le_biscuit['--yyvhgb']) ? (int)(str_replace('px','',$le_biscuit['--yyvhgb'])) : $css_hauteur_grands_boutons;
+            $css_hauteur_mini_conteneur=isset($le_biscuit['--yyvhmc']) ? (int)(str_replace('px','',$le_biscuit['--yyvhmc'])) : $css_hauteur_mini_conteneur;
 
         }else{
 

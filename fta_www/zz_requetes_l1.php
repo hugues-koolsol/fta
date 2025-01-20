@@ -307,7 +307,7 @@ if(isset($_POST) && count($_POST) > 0){
         if($gen[__xst] === true){
 
             $time_end=microtime(true);
-            $time=(int)((($time_end - $time_start) * 1000) * 1000) / 1000;
+            $time=((int)((($time_end - $time_start) * 1000) * 1000)) / 1000;
             ajouterMessage('succes',__LINE__ . ' les fichiers sql ont bien été générés (' . $time . ' ms)',BNF);
             recharger_la_page(BNF);
 
@@ -560,8 +560,8 @@ LIMIT :quantitee OFFSET :debut ;
 $tt=sql_2(array(
     'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
     'T0_chi_id_requete' => $chi_id_requete,
-    'T0_cht_rev_requete' => ($cht_rev_requete === null ? $cht_rev_requete : ($cht_rev_requete === '' ? '' : '%' . $cht_rev_requete . '%')),
-    'T0_chp_type_requete' => ($chp_type_requete === null ? $chp_type_requete : ($chp_type_requete === '' ? '' : '%' . $chp_type_requete . '%')),
+    'T0_cht_rev_requete' => $cht_rev_requete === null ? $cht_rev_requete : ($cht_rev_requete === '' ? '' : '%' . $cht_rev_requete . '%'),
+    'T0_chp_type_requete' => $chp_type_requete === null ? $chp_type_requete : ($chp_type_requete === '' ? '' : '%' . $chp_type_requete . '%'),
     'quantitee' => $__nbMax,
     'debut' => $__debut,
     'page_courante' => BNF
@@ -584,9 +584,9 @@ if($tt[__xst] === false){
 
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_requete !== '' ? '&amp;chi_id_requete=' . rawurlencode($chi_id_requete) : '');
-$consUrlRedir .= ($cht_rev_requete !== '' ? '&amp;cht_rev_requete=' . rawurlencode($cht_rev_requete) : '');
-$consUrlRedir .= ($chp_type_requete !== '' ? '&amp;chp_type_requete=' . rawurlencode($chp_type_requete) : '');
+$consUrlRedir .= $chi_id_requete !== '' ? '&amp;chi_id_requete=' . rawurlencode($chi_id_requete) : '';
+$consUrlRedir .= $cht_rev_requete !== '' ? '&amp;cht_rev_requete=' . rawurlencode($cht_rev_requete) : '';
+$consUrlRedir .= $chp_type_requete !== '' ? '&amp;chp_type_requete=' . rawurlencode($chp_type_requete) : '';
 $boutons_avant='<a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>';
 $boutons_avant .= ' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>' . PHP_EOL;
 $o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);

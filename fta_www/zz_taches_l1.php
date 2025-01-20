@@ -443,7 +443,7 @@ LIMIT :quantitee OFFSET :debut ;
 $tt=sql_19(array(
     'T0_chi_id_tache' => $chi_id_tache,
     'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
-    'T0_chp_texte_tache' => ($chp_texte_tache === null ? $chp_texte_tache : ($chp_texte_tache === '' ? '' : '%' . $chp_texte_tache . '%')),
+    'T0_chp_texte_tache' => $chp_texte_tache === null ? $chp_texte_tache : ($chp_texte_tache === '' ? '' : '%' . $chp_texte_tache . '%'),
     'T0_chp_priorite_tache' => $chp_priorite_tache,
     'T0_chp_priorite_tache2' => $chp_priorite_tache2,
     'quantitee' => $__nbMax,
@@ -468,10 +468,10 @@ if($tt[__xst] === false){
 $__nbEnregs=$tt['nombre'];
 $consUrlRedir='' . '&amp;chi_id_tache=' . rawurlencode($chi_id_tache) . '&amp;chp_texte_tache=' . rawurlencode($chp_texte_tache) . '&amp;chp_priorite_tache=' . rawurlencode($chp_priorite_tache) . '';
 $consUrlRedir='';
-$consUrlRedir .= ($chi_id_tache !== '' ? '&amp;chi_id_tache=' . rawurlencode($chi_id_tache) : '');
-$consUrlRedir .= ($chp_texte_tache !== '' ? '&amp;chp_texte_tache=' . rawurlencode($chp_texte_tache) : '');
-$consUrlRedir .= ($chp_priorite_tache !== '' ? '&amp;chp_priorite_tache=' . rawurlencode($chp_priorite_tache) : '');
-$consUrlRedir .= ($chp_priorite_tache2 !== '' ? '&amp;chp_priorite_tache2=' . rawurlencode($chp_priorite_tache2) : '');
+$consUrlRedir .= $chi_id_tache !== '' ? '&amp;chi_id_tache=' . rawurlencode($chi_id_tache) : '';
+$consUrlRedir .= $chp_texte_tache !== '' ? '&amp;chp_texte_tache=' . rawurlencode($chp_texte_tache) : '';
+$consUrlRedir .= $chp_priorite_tache !== '' ? '&amp;chp_priorite_tache=' . rawurlencode($chp_priorite_tache) : '';
+$consUrlRedir .= $chp_priorite_tache2 !== '' ? '&amp;chp_priorite_tache2=' . rawurlencode($chp_priorite_tache2) : '';
 $boutons_haut=' <a class="yyinfo" href="zz_taches_a1.php?__action=__creation">Créer une nouvelle tâche</a>' . PHP_EOL;
 $boutons_haut .= ' <button type="submit" name="__ajouter_1_aux_priorites" id="__ajouter_1_aux_priorites" class="yyinfo">+1*</button>' . PHP_EOL;
 $boutons_haut .= ' <button type="submit" name="__soustraire_1_aux_priorites" id="__soustraire_1_aux_priorites" class="yyinfo">-1*</button>' . PHP_EOL;

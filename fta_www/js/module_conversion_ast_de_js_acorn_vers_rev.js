@@ -930,41 +930,6 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             }
         }
         return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
-        /*#
-          a voir si on conserve le code suivant et dans quel cas
-        if(t.substr(0,8) === 'tableau('){
-            var o=functionToArray(t,true,false,'');
-            if(o.__xst === true){
-                if(o.__xva[2][1] === 'nomt' && o.__xva[2][8] === 1 && o.__xva[3][2] === 'c'){
-                    var i=0;
-                    var bcont=true;
-                    var cumChaine='';
-                    for( i=4 ; i < o.__xva.length && bcont === true ; i++ ){
-                        if(o.__xva[i][7] === 1){
-                            if(o.__xva[i][1] === 'p' && o.__xva[i + 1][2] === 'c'){
-                                if(o.__xva[i + 1][4] !== 0){
-                                    bcont=false;
-                                    break;
-                                }else if(o.__xva[i + 1][4] === 2){
-                                    bcont=false;
-                                    break;
-                                }else{
-                                    cumChaine+='[' + maConstante(o.__xva[i + 1]) + ']';
-                                }
-                            }else{
-                                bcont=false;
-                                break;
-                            }
-                        }
-                    }
-                    if(bcont){
-                        t=o.__xva[3][1] + cumChaine;
-                    }
-                }
-            }
-        }
-        return({"__xst" : true ,"__xva" : t});
-        */
     }
     /*
       =============================================================================================================
@@ -1381,8 +1346,6 @@ let x16=a.b ?. c(a.b);
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "' + element.expression.type + '"' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
-        
-        
     }
     /*
       =============================================================================================================
@@ -2761,6 +2724,9 @@ let x16=a.b ?. c(a.b);
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
+            if(tab_comm[i].type === 'Line'){
+                txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
+            }
             var c1=nbre_caracteres2('(',txtComment);
             var c2=nbre_caracteres2(')',txtComment);
             if(c1 === c2){
@@ -2815,6 +2781,9 @@ let x16=a.b ?. c(a.b);
             if(txtComment.indexOf('\n') < 0){
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
+            }
+            if(tab_comm[i].type === 'Line'){
+                txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
             }
             c1=nbre_caracteres2('(',txtComment);
             c2=nbre_caracteres2(')',txtComment);
@@ -2934,6 +2903,9 @@ let x16=a.b ?. c(a.b);
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
+            if(tab_comm[i].type === 'Line'){
+                txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
+            }
             if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
                     t+='#(#' + txtComment.substr(1) + ')';
@@ -2949,14 +2921,14 @@ let x16=a.b ?. c(a.b);
             }
             tab_com_a_supprimer.push(i);
         }
-        for( var j=tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
-            tab_comm.splice(tab_com_a_supprimer[j],1);
-        }
         /*#
           if(t !== ''){
               debugger;
           }
         */
+        for( var j=tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
+            tab_comm.splice(tab_com_a_supprimer[j],1);
+        }
         return t;
     }
     /*
