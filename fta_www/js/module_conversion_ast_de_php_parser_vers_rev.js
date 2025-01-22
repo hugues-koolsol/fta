@@ -2343,6 +2343,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1148 #traite_bin droite' ,"element" : element}));
         }
+
         switch (element.type){
             case '&&' : t+='et(' + gauche + ',' + droite + ')';
                 break;
@@ -2416,7 +2417,35 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
                 
         }
-        if(t.substr(0,14) === 'concat(concat('){
+        if(gauche.substr(0,7)==='concat(' && element.type!=='.'){
+            /* 
+              afr
+              cas $b.$c+$d : ça donne avec ce parseur : 
+              plus( concat( $b , $c ) , $d), 
+              mais il faudrait que ça donne 
+              concat( $b , plus( $c , $d )), 
+              En attendant, on considère que la vraie façon d'écrire ceci en php est 
+              $b.($c+$d)
+              et dans ce dernier cas, ce parseur fonctionne
+            */
+            var tableau1=iterateCharacters2(t);
+            var o=functionToArray2(tableau1.out,false,true,'');
+            if(o.__xst === true){
+                 debugger
+            }else{
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            }
+
+        }
+        
+        
+        if(   t.substr(0,14) === 'concat(concat('
+           || t.substr(0,6) === 'et(et('
+           || t.substr(0,6) === 'ou(ou('
+           || t.substr(0,10) === 'plus(plus('
+           || t.substr(0,12) === 'moins(moins('
+           || t.substr(0,22) === 'ou_binaire(ou_binaire('
+        ){
             var tableau1=iterateCharacters2(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
@@ -2427,7 +2456,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-        if(t.substr(0,6) === 'et(et('){
+/*        
+        if(){
             var tableau1=iterateCharacters2(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
@@ -2438,7 +2468,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-        if(t.substr(0,6) === 'ou(ou('){
+        if(){
             var tableau1=iterateCharacters2(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
@@ -2449,6 +2479,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
+*/        
         return({"__xst" : true ,"__xva" : t});
     }
     /*

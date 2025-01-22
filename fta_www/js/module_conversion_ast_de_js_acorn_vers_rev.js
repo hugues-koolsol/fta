@@ -328,10 +328,15 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
             }
         }
-        if(t.substr(0,10) === 'plus(plus('
+        if(
+            t.substr(0,10) === 'plus(plus('
          || t.substr(0,12) === 'moins(moins('
          || t.substr(0,10) === 'mult(mult('
          || t.substr(0,10) === 'divi(divi('
+         || t.substr(0,11) === 'plus( plus('
+         || t.substr(0,13) === 'moins( moins('
+         || t.substr(0,11) === 'mult( mult('
+         || t.substr(0,11) === 'divi( divi('
         ){
             obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
@@ -1059,7 +1064,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0778 #traite_LogicalExpression ' ,"element" : element}));
         }
-        if(t.substr(0,6) === 'ou(ou(' || t.substr(0,6) === 'et(et('){
+        if(t.substr(0,6) === 'ou(ou(' || t.substr(0,6) === 'et(et(' || t.substr(0,7) === 'ou( ou(' || t.substr(0,7) === 'et( et('){
             obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
                 nouveau_tableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
@@ -1099,13 +1104,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             case '!' : return 'non';
             case '&&' : return 'et';
             case '||' : return 'ou';
-            case '|' : return 'ou_bin';
-            case '&' : return 'etBin';
+            case '|' : return 'ou_binaire';
+            case '&' : return 'et_binaire';
             case '~' : return 'oppose_binaire';
-            case '^' : return 'ou_ex_bin';
-            case '>>' : return 'decalDroite';
+            case '^' : return 'xou_binaire';
+            case '>>' : return 'decal_droite';
             case '>>>' : return 'decal_droite_non_signe';
-            case '<<' : return 'decalGauche';
+            case '<<' : return 'decal_gauche';
             case 'in' : return 'cle_dans_objet';
             case 'delete' : return 'supprimer';
             case 'void' : return 'void';
@@ -1363,7 +1368,11 @@ let x16=a.b ?. c(a.b);
                     t+='+' + obj.__xva;
                 }
             }else{
-                t+=nomDuTestUnary + '(' + obj.__xva + ')';
+                if(nomDuTestUnary==='void'){
+                    t+='appelf(nomf(void),p(' + obj.__xva + '))';
+                }else{
+                    t+=nomDuTestUnary + '(' + obj.__xva + ')';
+                }
             }
         }else{
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0860 #traite_UnaryExpression' ,"element" : element}));
@@ -1598,7 +1607,7 @@ let x16=a.b ?. c(a.b);
             }
         }
         if(element.test === null){
-            test+='()';
+            test+='';
         }else{
             obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
             if(obj.__xst === false){

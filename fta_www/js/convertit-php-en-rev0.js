@@ -2608,7 +2608,13 @@ function php_traite_Expr_BinaryOp_General(element,niveau,parent,options_traiteme
     }else{
         return(astphp_logerreur({"__xst" : false ,"__xme" : '1918  non prévu ' + element.nodeType + ' dans php_traite_Expr_BinaryOp_General "' + element.nodeType + '"' ,"element" : element}));
     }
-    if(t.substr(0,14) === 'concat(concat('){
+    if(   t.substr(0,14) === 'concat(concat('
+           || t.substr(0,6) === 'et(et('
+           || t.substr(0,6) === 'ou(ou('
+           || t.substr(0,10) === 'plus(plus('
+           || t.substr(0,12) === 'moins(moins('
+           || t.substr(0,22) === 'ou_binaire(ou_binaire('
+    ){
         var tableau1=iterateCharacters2(t);
         var o=functionToArray2(tableau1.out,false,true,'');
         if(o.__xst === true){
