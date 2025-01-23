@@ -823,10 +823,10 @@ function html_header1($parametres){
     $css_taille_reference_border=1;
     $css_taille_reference_margin=1;
     $css_hauteur_ligne=$css_taille_reference_textes + $css_taille_reference_padding;
-    $css_hauteur_mini_bouton=($css_taille_reference_textes + 4 * $css_taille_reference_padding) + 2 * $css_taille_reference_border;
+    $css_hauteur_mini_bouton=$css_taille_reference_textes + 4 * $css_taille_reference_padding + 2 * $css_taille_reference_border;
     $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin;
-    $css_hauteur_menu_defilement=($css_hauteur_mini_bouton + 2 * $css_taille_reference_margin) + 11;
-    $css_hauteur_grands_boutons=($css_hauteur_menu_defilement - 2 * $css_taille_reference_margin) - 1;
+    $css_hauteur_menu_defilement=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin + 11;
+    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement - 2 * $css_taille_reference_margin - 1;
 
     if(isset($_COOKIE[APP_KEY . '_biscuit'])){
 
@@ -890,10 +890,10 @@ function html_header1($parametres){
     }
 
     $css_hauteur_ligne=$css_taille_reference_textes + $css_taille_reference_padding;
-    $css_hauteur_mini_bouton=($css_taille_reference_textes + 4 * $css_taille_reference_padding) + 2 * $css_taille_reference_border;
+    $css_hauteur_mini_bouton=$css_taille_reference_textes + 4 * $css_taille_reference_padding + 2 * $css_taille_reference_border;
     $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin;
-    $css_hauteur_menu_defilement=($css_hauteur_mini_bouton + 2 * $css_taille_reference_margin) + 11;
-    $css_hauteur_grands_boutons=($css_hauteur_menu_defilement - 2 * $css_taille_reference_margin) - 1;
+    $css_hauteur_menu_defilement=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin + 11;
+    $css_hauteur_grands_boutons=$css_hauteur_menu_defilement - 2 * $css_taille_reference_margin - 1;
     $le_biscuit['--yyvhmb']=$css_hauteur_mini_bouton . 'px';
     $le_biscuit['--yyvhal']=$css_hauteur_ligne . 'px';
     $le_biscuit['--yyvhmd']=$css_hauteur_menu_defilement . 'px';

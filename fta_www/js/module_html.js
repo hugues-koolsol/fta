@@ -106,7 +106,7 @@ class traitements_sur_html{
                             */
                             t+='\n' + esp0 + 'javascriptDansHtml(';
                             type='javascriptDansHtml';
-                        }else if(jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' && !(jsonDeHtml.hasOwnProperty('content'))){
+                        }else if(jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
                             /*
                               c'est un tag script avec src=""
                             */
@@ -178,12 +178,12 @@ class traitements_sur_html{
             }else if(type.toLowerCase() === 'javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 if(Array.isArray(jsonDeHtml.content)){
                     for( var i=0 ; i < jsonDeHtml.content.length ; i++ ){
-                        if(typeof jsonDeHtml.content[i] === 'string'
-                         || jsonDeHtml.content[i].type
-                         && (jsonDeHtml.content[i].type === '#text'
-                         || jsonDeHtml.content[i].type === '#cdata-section')
+                        if( typeof jsonDeHtml.content[i] === 'string'
+                               || jsonDeHtml.content[i].type
+                                   && (jsonDeHtml.content[i].type === '#text'
+                                       || jsonDeHtml.content[i].type === '#cdata-section')
                         ){
-                            if(typeof jsonDeHtml.content[i] === 'string'){
+                            if( typeof jsonDeHtml.content[i] === 'string'){
                                 var source_js=jsonDeHtml.content[i];
                             }else{
                                 var source_js=jsonDeHtml.content[i].content;
@@ -209,7 +209,7 @@ class traitements_sur_html{
                               
                               bloc à commenter fin
                             */
-                        }else if(!(jsonDeHtml.content[i].hasOwnProperty('type'))){
+                        }else if(!jsonDeHtml.content[i].hasOwnProperty('type')){
                             /*
                               il n'y a pas la propriété type, on suppose que c'est un text/javascript
                             */
@@ -358,7 +358,7 @@ class traitements_sur_html{
             }else{
                 try{
                     if(jsonDeHtml.hasOwnProperty('content')){
-                        if(typeof jsonDeHtml.content === 'string'){
+                        if( typeof jsonDeHtml.content === 'string'){
                             if(typeParent === 'style'){
                                 contenu=jsonDeHtml.content;
                             }else{
@@ -545,7 +545,7 @@ class traitements_sur_html{
     */
     mapDOM(element){
         var treeObject={};
-        if(typeof element === 'string'){
+        if( typeof element === 'string'){
             var parser=new DOMParser();
             /*
               "application/xml"
@@ -1024,12 +1024,19 @@ class traitements_sur_html{
                 logerreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
-                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
+                return({
+                    "__xst" : false ,
+                    "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
+                    "masquee" : masquer_les_messages_du_serveur
+                });
             }
         }catch(e){
             console.log(e);
             if(e.message === 'signal timed out'){
-                logerreur({"__xst" : false ,"__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt(delais_admis / 1000 * 10,10) / 10) + ' secondes '});
+                logerreur({
+                        "__xst" : false ,
+                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes '
+                    });
             }else{
                 logerreur({"__xst" : false ,"__xme" : e.message});
             }
@@ -1142,7 +1149,12 @@ class traitements_sur_html{
                                 options.source_php=options.source_php.replace(chaine_a_remplacer,source_rev);
                                 var nouveau_source=options.source_php;
                                 console.log('nouveau_source=',nouveau_source);
-                                var param={"nouveau_source" : options.source_php ,"fonction_a_appeler" : options.fonction_a_appeler ,"cle_convertie" : options.a_convertir.cle ,"convertion_php" : true};
+                                var param={
+                                    "nouveau_source" : options.source_php ,
+                                    "fonction_a_appeler" : options.fonction_a_appeler ,
+                                    "cle_convertie" : options.a_convertir.cle ,
+                                    "convertion_php" : true
+                                };
                                 document.getElementById('txtar2').value=nouveau_source;
                                 return;
                             }else{
@@ -1239,7 +1251,7 @@ class traitements_sur_html{
             if(tab[j][7] === ind){
                 if(tab[j][2] === 'f'){
                     if(tab[j][1] === ''){
-                        lesProprietes+=' ' + (tab[j + 1][1]) + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
+                        lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
                     }else{
                         if(indiceDebutJs === -1){
                             indiceDebutJs=j;
@@ -1395,7 +1407,7 @@ class traitements_sur_html{
                                   Ecriture de la propriété
                                   =====================================================
                                 */
-                                temp+=' ' + (tab[i + 1][1]) + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
+                                temp+=' ' + tab[i + 1][1] + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
                                 if(tab[i + 1][1] == 'data-lang' && (tab[i + 2][1] == 'fr' || tab[i + 2][1] == 'en')){
                                     globale_LangueCourante=tab[i + 2][1];
                                 }
@@ -1403,7 +1415,7 @@ class traitements_sur_html{
                                 if(tab[i + 1][1] == 'doctype'){
                                     doctype='<!DOCTYPE html>';
                                 }else{
-                                    temp+=' ' + (tab[i + 1][1]) + '';
+                                    temp+=' ' + tab[i + 1][1] + '';
                                 }
                             }else{
                                 return(logerreur({"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'}));
@@ -1454,7 +1466,7 @@ class traitements_sur_html{
                                     if(tab[j][7] === i){
                                         if(tab[j][2] === 'f'){
                                             if(tab[j][1] === ''){
-                                                lesProprietes+=' ' + (tab[j + 1][1]) + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
+                                                lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
                                             }else{
                                                 if(indiceDebutJs === -1){
                                                     indiceDebutJs=j;
@@ -1604,15 +1616,15 @@ class traitements_sur_html{
                         }else{
                             t+='</' + tab[id][1] + '>';
                             if((tab[id][1] == 'td'
-                             || tab[id][1] == 'a'
-                             || tab[id][1] == 'span'
-                             || tab[id][1] == 'button'
-                             || tab[id][1] == 'title'
-                             || tab[id][1] == 'h1'
-                             || tab[id][1] == 'h2'
-                             || tab[id][1] == 'h3')
-                             && contenuNiveauPlus1 != ''
-                             && contenuNiveauPlus1.indexOf('<') < 0
+                                       || tab[id][1] == 'a'
+                                       || tab[id][1] == 'span'
+                                       || tab[id][1] == 'button'
+                                       || tab[id][1] == 'title'
+                                       || tab[id][1] == 'h1'
+                                       || tab[id][1] == 'h2'
+                                       || tab[id][1] == 'h3')
+                                   && contenuNiveauPlus1 != ''
+                                   && contenuNiveauPlus1.indexOf('<') < 0
                             ){
                                 var tag=tab[id][1];
                                 const re1=new RegExp("\<" + tag + "(.*)\>\r\n[ \t]+","g");
@@ -1649,7 +1661,12 @@ class traitements_sur_html{
                             }else{
                                 t+='-->';
                             }
-                        }else if(tab[id][1] == 'br' || tab[id][1] == 'hr' || tab[id][1] == 'meta' || tab[id][1] == 'link' || tab[id][1] == 'input'){
+                        }else if(tab[id][1] == 'br'
+                               || tab[id][1] == 'hr'
+                               || tab[id][1] == 'meta'
+                               || tab[id][1] == 'link'
+                               || tab[id][1] == 'input'
+                        ){
                             t+=' />';
                         }else{
                             t+='></' + tab[id][1] + '>';

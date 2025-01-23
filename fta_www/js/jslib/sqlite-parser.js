@@ -1,17 +1,17 @@
 "use strict";
 
 (function(f){
-        if(typeof exports === "object" && typeof module !== "undefined"){
+        if( typeof exports === "object" &&  typeof module !== "undefined"){
             module.exports=f();
-        }else if(typeof define === "function" && define.amd){
+        }else if( typeof define === "function" && define.amd){
             define([],f);
         }else{
             var g;
-            if(typeof window !== "undefined"){
+            if( typeof window !== "undefined"){
                 g=window;
-            }else if(typeof global !== "undefined"){
+            }else if( typeof global !== "undefined"){
                 g=global;
-            }else if(typeof self !== "undefined"){
+            }else if( typeof self !== "undefined"){
                 g=self;
             }else{
                 g=this;
@@ -24,17 +24,17 @@
         var exports;
         return((function e(t,n,r){
             function s(o,u){
-                if(!(n[o])){
-                    if(!(t[o])){
-                        var a=typeof require == "function" && require;
-                        if(!(u) && a){
-                            return(a(o,!(0)));
+                if(!n[o]){
+                    if(!t[o]){
+                        var a= typeof require == "function" && require;
+                        if(!u && a){
+                            return(a(o,!0));
                         }
                         if(i){
-                            return(i(o,!(0)));
+                            return(i(o,!0));
                         }
                         var f=new Error("Cannot find module '" + o + "'");
-                        throw f.code="MODULE_NOT_FOUND" , f;
+                        throw (f.code="MODULE_NOT_FOUND"),f;
                     }
                     var l=n[o]={"exports" : {}};
                     t[o][0].call(l.exports,function(e){
@@ -44,7 +44,7 @@
                 }
                 return n[o].exports;
             }
-            var i=typeof require == "function" && require;
+            var i= typeof require == "function" && require;
             for( var o=0 ; o < r.length ; o++ ){
                 s(r[o]);
             }
@@ -53,7 +53,7 @@
             "./streaming" : [function(require,module,exports){
                         Object.defineProperty(exports,"__esModule",{"value" : true});
                         function _classCallCheck(instance,Constructor){
-                            if(!(instance instanceof  Constructor)){
+                            if(!(instance instanceof Constructor)){
                                 throw new TypeError("Cannot call a class as a function");
                             }
                         }
@@ -73,14 +73,14 @@
                         var _tracer=require("./tracer");
                         var _streaming=require("./streaming");
                         function sqliteParser(source,options,callback){
-                            var t=(0 , _tracer.Tracer)();
+                            var t=(0,_tracer.Tracer)();
                             if(arguments.length === 2){
-                                if(typeof options === "function"){
+                                if( typeof options === "function"){
                                     callback=options;
                                     options={};
                                 }
                             }
-                            var isAsync=typeof callback === "function";
+                            var isAsync= typeof callback === "function";
                             var opts={"tracer" : t ,"startRule" : "start"};
                             if(options && options.streaming){
                                 opts["startRule"]="start_streaming";
@@ -90,17 +90,17 @@
                                         var result=void(0);
                                         var err=void(0);
                                         try{
-                                            result=(0 , _parser.parse)(source,opts);
+                                            result=(0,_parser.parse)(source,opts);
                                         }catch(e){
-                                            err=e instanceof  _parser.SyntaxError ? ( t.smartError(e) ) : ( e );
+                                            err=e instanceof _parser.SyntaxError ? ( t.smartError(e) ) : ( e );
                                         }
                                         callback(err,result);
                                     },0);
                             }else{
                                 try{
-                                    return((0 , _parser.parse)(source,opts));
+                                    return((0,_parser.parse)(source,opts));
                                 }catch(e){
-                                    throw e instanceof  _parser.SyntaxError ? ( t.smartError(e) ) : ( e );
+                                    throw e instanceof _parser.SyntaxError ? ( t.smartError(e) ) : ( e );
                                 }
                             }
                         }
@@ -144,14 +144,14 @@
                                 }
                             });
                     })();
-                        var _typeof=typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ?
+                        var _typeof= typeof Symbol === "function" &&  typeof Symbol.iterator === "symbol" ?
                           ( 
                                 function(obj){
-                                        return(typeof obj);
+                                        return( typeof obj);
                                     } )
                         : ( 
                                 function(obj){
-                                        return(obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : ( typeof obj ));
+                                        return(obj &&  typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : (  typeof obj ));
                                     } 
                         );
                         function peg$subclass(child,parent){
@@ -167,7 +167,7 @@
                             this.found=found;
                             this.location=location;
                             this.name="SyntaxError";
-                            if(typeof Error.captureStackTrace === "function"){
+                            if( typeof Error.captureStackTrace === "function"){
                                 Error.captureStackTrace(this,peg$SyntaxError);
                             }
                         }
@@ -176,26 +176,21 @@
                             var DESCRIBE_EXPECTATION_FNS={
                                 "literal" : function literal(expectation){
                                     return('"' + literalEscape(expectation.text) + '"');
-                                
                                 } ,
                                 "class" : function _class(expectation){
                                     var escapedParts=expectation.parts.map(function(part){
                                         return(Array.isArray(part) ? ( classEscape(part[0]) + "-" + classEscape(part[1]) ) : ( classEscape(part) ));
                                     });
                                     return("[" + (expectation.inverted ? ( "^" ) : ( "" )) + escapedParts + "]");
-                                
                                 } ,
                                 "any" : function any(expectation){
                                     return "any character";
-                                
                                 } ,
                                 "end" : function end(expectation){
                                     return "end of input";
-                                
                                 } ,
                                 "other" : function other(expectation){
                                     return expectation.description;
-                                
                                 }
                             };
                             function hex(ch){
@@ -224,7 +219,7 @@
                                 var j;
                                 descriptions.sort();
                                 if(descriptions.length > 0){
-                                    for( i=1 , j=1 ; i < descriptions.length ; i++ ){
+                                    for( (i=1),(j=1) ; i < descriptions.length ; i++ ){
                                         if(descriptions[i - 1] !== descriptions[i]){
                                             descriptions[j]=descriptions[i];
                                             j++;
@@ -236,7 +231,7 @@
                                     case 1 : return descriptions[0];
                                     case 2 : return(descriptions[0] + " or " + descriptions[1]);
                                     default:
-                                        return(descriptions.slice(0,-1).join(", ") + ", or " + (descriptions[descriptions.length - 1]));
+                                        return(descriptions.slice(0,-1).join(", ") + ", or " + descriptions[descriptions.length - 1]);
                                         
                                 }
                             }
@@ -262,7 +257,7 @@
                                 function pad(string,length){
                                     return(string + repeat(" ",length - string.length));
                                 }
-                                if((typeof console === "undefined" ? ( "undefined" ) : ( _typeof(console) )) === "object"){
+                                if(( typeof console === "undefined" ? ( "undefined" ) : ( _typeof(console) )) === "object"){
                                     console.log(event.location.start.line + ":" + event.location.start.column + "-" + event.location.end.line + ":" + event.location.end.column + " " + pad(event.type,10) + " " + repeat("  ",that.indentLevel) + event.rule);
                                 }
                             }
@@ -550,7 +545,7 @@
                                         return({"args" : {"type" : "identifier" ,"variant" : "star" ,"name" : s}});
                                     },
                                 function(d,e){
-                                        return(!(isOkay(d)) || e["expression"].length > 0);
+                                        return(!isOkay(d) || e["expression"].length > 0);
                                     },
                                 function(d,e){
                                         return({"args" : Object.assign(e,d)});
@@ -945,7 +940,11 @@
                                 peg$otherExpectation("IF NOT EXISTS Modifier"),
                                 function(i,n,e){
                                         return({
-                                            "condition" : makeArray({"type" : "condition" ,"variant" : keyNode(i) ,"condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : foldStringKey([n,e])}})
+                                            "condition" : makeArray({
+                                                "type" : "condition" ,
+                                                "variant" : keyNode(i) ,
+                                                "condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : foldStringKey([n,e])}
+                                            })
                                         });
                                     },
                                 peg$otherExpectation("Table Definition"),
@@ -1233,7 +1232,9 @@
                                 peg$otherExpectation("DROP Type"),
                                 peg$otherExpectation("IF EXISTS Keyword"),
                                 function(i,e){
-                                        return({"condition" : [{"type" : "condition" ,"variant" : keyNode(i) ,"condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : keyNode(e)}}]});
+                                        return({
+                                            "condition" : [{"type" : "condition" ,"variant" : keyNode(i) ,"condition" : {"type" : "expression" ,"variant" : keyNode(e) ,"operator" : keyNode(e)}}]
+                                        });
                                     },
                                 peg$otherExpectation("Or"),
                                 peg$otherExpectation("Add"),
@@ -2443,7 +2444,7 @@
                                     return details;
                                 }else{
                                     p=pos - 1;
-                                    while(!(peg$posDetailsCache[p])){
+                                    while(!peg$posDetailsCache[p]){
                                         p--;
                                     }
                                     details=peg$posDetailsCache[p];
@@ -2505,7 +2506,13 @@
                                 if(cached){
                                     peg$currPos=cached.nextPos;
                                     if(cached.result !== peg$FAILED){
-                                        peg$tracer.trace({"type" : "rule.match" ,"rule" : peg$ruleNames[index] ,"description" : peg$descNames[index] ,"result" : cached.result ,"location" : peg$computeLocation(startPos,peg$currPos)});
+                                        peg$tracer.trace({
+                                                "type" : "rule.match" ,
+                                                "rule" : peg$ruleNames[index] ,
+                                                "description" : peg$descNames[index] ,
+                                                "result" : cached.result ,
+                                                "location" : peg$computeLocation(startPos,peg$currPos)
+                                            });
                                     }else{
                                         peg$tracer.trace({"type" : "rule.fail" ,"rule" : peg$ruleNames[index] ,"description" : peg$descNames[index] ,"location" : peg$computeLocation(startPos,startPos)});
                                     }
@@ -2739,17 +2746,23 @@
                                 }
                                 peg$resultsCache[key]={"nextPos" : peg$currPos ,"result" : stack[0]};
                                 if(stack[0] !== peg$FAILED){
-                                    peg$tracer.trace({"type" : "rule.match" ,"rule" : peg$ruleNames[index] ,"description" : peg$descNames[index] ,"result" : stack[0] ,"location" : peg$computeLocation(startPos,peg$currPos)});
+                                    peg$tracer.trace({
+                                            "type" : "rule.match" ,
+                                            "rule" : peg$ruleNames[index] ,
+                                            "description" : peg$descNames[index] ,
+                                            "result" : stack[0] ,
+                                            "location" : peg$computeLocation(startPos,peg$currPos)
+                                        });
                                 }else{
                                     peg$tracer.trace({"type" : "rule.fail" ,"rule" : peg$ruleNames[index] ,"description" : peg$descNames[index] ,"location" : peg$computeLocation(startPos,startPos)});
                                 }
                                 return stack[0];
                             }
                             function makeArray(arr){
-                                if(!(isOkay(arr))){
+                                if(!isOkay(arr)){
                                     return [];
                                 }
-                                return(!(Array.isArray(arr)) ? ( [arr] ) : ( arr ));
+                                return(!Array.isArray(arr) ? ( [arr] ) : ( arr ));
                             }
                             function isOkay(obj){
                                 return(obj != null);
@@ -2841,7 +2854,7 @@
                             var len=arr.length;
                             var i=0;
                             for(  ; i < len ; i+=1 ){
-                                if(!(func(arr[i]))){
+                                if(!func(arr[i])){
                                     return(arr.slice(0,i));
                                 }
                             }
@@ -2849,7 +2862,7 @@
                         }
                         var Tracer=exports.Tracer=(function(){
                             function Tracer(){
-                                if(!(this instanceof  Tracer)){
+                                if(!(this instanceof Tracer)){
                                     return(new Tracer());
                                 }
                                 this.events=[];
@@ -2877,7 +2890,7 @@
                                             return(rule === event.rule);
                                         });
                                         lastWsIndex=findLastIndex(this.events,function(e){
-                                            return(!(that.whitespaceRule.test(e.rule)));
+                                            return(!that.whitespaceRule.test(e.rule));
                                         });
                                         if(that.whitespaceRule.test(event.rule) || lastIndex === lastWsIndex){
                                             this.events.splice(lastIndex,1);
@@ -2898,7 +2911,7 @@
                                 var deep=false;
                                 var stmts=0;
                                 var namedEvents=this.events.filter(function(e){
-                                    return(e.description != null && !(that.whitespaceRule.test(e.rule)));
+                                    return(e.description != null && !that.whitespaceRule.test(e.rule));
                                 }).reverse();
                                 chain=takeWhile(namedEvents,function(elem){
                                     if(/^(sym_semi)$/i.test(elem.rule)){
@@ -2907,7 +2920,7 @@
                                     if(stmts > 1){
                                         return false;
                                     }
-                                    if(!(deep)){
+                                    if(!deep){
                                         if(elem.indentation > bestNode.indentation){
                                             bestNode=elem;
                                         }else{

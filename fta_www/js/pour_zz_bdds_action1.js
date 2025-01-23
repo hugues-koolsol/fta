@@ -40,7 +40,10 @@ function bdd_convertir_rev_en_sql(nom_zone_source,nom_zone_genere,id_bdd,id_cibl
   =====================================================================================================================
 */
 function sauvegarder_format_rev_en_dbb(parametres_sauvegarde){
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'sauvegarder_format_rev_en_dbb'} ,"parametres_sauvegarde" : parametres_sauvegarde};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'sauvegarder_format_rev_en_dbb'} ,
+        "parametres_sauvegarde" : parametres_sauvegarde
+    };
     async function sauvegarder_format_rev_en_dbb1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }

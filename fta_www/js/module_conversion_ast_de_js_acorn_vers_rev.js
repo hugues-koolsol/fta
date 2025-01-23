@@ -298,13 +298,13 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         }
         nomDuTest=this.#recup_nom_operateur(element.operator);
         if(element.right.type === 'Literal'
-         && (element.right.raw.substr(0,1) === "'"
-         || element.right.raw.substr(0,1) === '"')
-         && nomDuTest === 'plus'
-         || element.left.type === 'Literal'
-         && (element.left.raw.substr(0,1) === "'"
-         || element.left.raw.substr(0,1) === '"')
-         && nomDuTest === 'plus'
+                   && (element.right.raw.substr(0,1) === "'"
+                       || element.right.raw.substr(0,1) === '"')
+                   && nomDuTest === 'plus'
+               || element.left.type === 'Literal'
+                   && (element.left.raw.substr(0,1) === "'"
+                       || element.left.raw.substr(0,1) === '"')
+                   && nomDuTest === 'plus'
         ){
             t+='concat(' + gauche + ',' + droite + ')';
         }else{
@@ -328,15 +328,14 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
             }
         }
-        if(
-            t.substr(0,10) === 'plus(plus('
-         || t.substr(0,12) === 'moins(moins('
-         || t.substr(0,10) === 'mult(mult('
-         || t.substr(0,10) === 'divi(divi('
-         || t.substr(0,11) === 'plus( plus('
-         || t.substr(0,13) === 'moins( moins('
-         || t.substr(0,11) === 'mult( mult('
-         || t.substr(0,11) === 'divi( divi('
+        if(t.substr(0,10) === 'plus(plus('
+               || t.substr(0,12) === 'moins(moins('
+               || t.substr(0,10) === 'mult(mult('
+               || t.substr(0,10) === 'divi(divi('
+               || t.substr(0,11) === 'plus( plus('
+               || t.substr(0,13) === 'moins( moins('
+               || t.substr(0,11) === 'mult( mult('
+               || t.substr(0,11) === 'divi( divi('
         ){
             obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
@@ -670,8 +669,8 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
                 if(element.elements[i].raw.substr(0,1) === '\''
-                 || element.elements[i].raw.substr(0,1) === '"'
-                 || element.elements[i].raw.substr(0,1) === '/'
+                       || element.elements[i].raw.substr(0,1) === '"'
+                       || element.elements[i].raw.substr(0,1) === '/'
                 ){
                     ne_contient_que_des_constantes=false;
                 }
@@ -963,12 +962,12 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         obj=functionToArray(t,true,true,'');
         if(obj.__xst === true){
             if(obj.__xva.length > 3
-             && obj.__xva[1][1] === ''
-             && obj.__xva[1][2] === 'f'
-             && obj.__xva[2][1] === ''
-             && obj.__xva[2][2] === 'f'
-             && obj.__xva[3][1] === ''
-             && obj.__xva[3][2] === 'f'
+                   && obj.__xva[1][1] === ''
+                   && obj.__xva[1][2] === 'f'
+                   && obj.__xva[2][1] === ''
+                   && obj.__xva[2][2] === 'f'
+                   && obj.__xva[3][1] === ''
+                   && obj.__xva[3][2] === 'f'
             ){
                 enfantDe2='';
                 onContinue=true;
@@ -1084,7 +1083,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
     #recup_nom_operateur(s){
         switch (s){
             case 'typeof' : return 'Typeof';
-            case 'instanceof' : return 'Instanceof';
+            case 'instanceof' : return 'instance_de';
             case '++' : return 'incr1';
             case '--' : return 'decr1';
             case '+' : return 'plus';
@@ -1271,7 +1270,7 @@ let x16=a.b ?. c(a.b);
         let droite='';
         let objet="";
         let propriete='';
-        if(!(element.expression)){
+        if(!element.expression){
             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element}));
         }
         if(element.expression.type === 'CallExpression'){
@@ -1368,7 +1367,7 @@ let x16=a.b ?. c(a.b);
                     t+='+' + obj.__xva;
                 }
             }else{
-                if(nomDuTestUnary==='void'){
+                if(nomDuTestUnary === 'void'){
                     t+='appelf(nomf(void),p(' + obj.__xva + '))';
                 }else{
                     t+=nomDuTestUnary + '(' + obj.__xva + ')';
@@ -1821,12 +1820,12 @@ let x16=a.b ?. c(a.b);
         let obj=null;
         let j=0;
         if((element.kind === "method"
-         || element.kind === "constructor"
-         || element.kind === "get"
-         || element.kind === "set")
-         && element.value
-         && element.value.type === "FunctionExpression"
-         && element.value.body
+                   || element.kind === "constructor"
+                   || element.kind === "get"
+                   || element.kind === "set")
+               && element.value
+               && element.value.type === "FunctionExpression"
+               && element.value.body
         ){
             t+='méthode(';
             t+='definition(';
@@ -1853,8 +1852,8 @@ let x16=a.b ?. c(a.b);
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1193 #traite_MethodDefinition' ,"element" : element}));
                         }
                     }else if(element.value.params[j].type === "RestElement"
-                     && element.value.params[j].argument
-                     && element.value.params[j].argument.type === 'Identifier'
+                           && element.value.params[j].argument
+                           && element.value.params[j].argument.type === 'Identifier'
                     ){
                         t+='argument(...' + element.value.params[j].argument.name + ')';
                     }else{
@@ -1957,10 +1956,10 @@ let x16=a.b ?. c(a.b);
         let obj=null;
         let tableau_des_expressions=[];
         if(element.quasis
-         && element.quasis.length === 1
-         && 'TemplateElement' === element.quasis[0].type
-         && element.quasis[0].value
-         && element.quasis[0].value.raw
+               && element.quasis.length === 1
+               && 'TemplateElement' === element.quasis[0].type
+               && element.quasis[0].value
+               && element.quasis[0].value.raw
         ){
             t='`' + element.quasis[0].value.raw + '`';
         }else{
@@ -2005,12 +2004,12 @@ let x16=a.b ?. c(a.b);
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element}));
             }
         }else if(element.callee
-         && element.callee.type === 'MemberExpression'
-         && element.arguments.length > 0
-         || element.callee
-         && element.callee.type === 'Identifier'
-         || element.callee
-         && element.callee.type === 'ThisExpression'
+                   && element.callee.type === 'MemberExpression'
+                   && element.arguments.length > 0
+               || element.callee
+                   && element.callee.type === 'Identifier'
+               || element.callee
+                   && element.callee.type === 'ThisExpression'
         ){
             var obj1=this.#traite_CallExpression(element,niveau + 1,element,{});
             if(obj1.__xst === true){
@@ -2039,22 +2038,38 @@ let x16=a.b ?. c(a.b);
         }
         t+='),';
         t+='sierreur(';
-        if(element.handler && element.handler.type === 'CatchClause'){
-            if(element.handler.param && element.handler.param.type === 'Identifier'){
-                t+=element.handler.param.name + ',';
-            }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1863 #traite_TryStatement' ,"element" : element}));
-            }
-            if(element.handler.body && element.handler.body.type === 'BlockStatement'){
-                obj=this.#traite_ast0(element.handler.body,niveau + 2,element.handler,tab_comm);
-                if(obj.__xst === true){
-                    t+='faire(' + obj.__xva + ')';
+        if(element.handler){
+            if(element.handler.type === 'CatchClause'){
+                if(element.handler.param && element.handler.param.type === 'Identifier'){
+                    t+=element.handler.param.name + ',';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1870 #traite_TryStatement' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1863 #traite_TryStatement' ,"element" : element}));
                 }
+                if(element.handler.body && element.handler.body.type === 'BlockStatement'){
+                    obj=this.#traite_ast0(element.handler.body,niveau + 2,element.handler,tab_comm);
+                    if(obj.__xst === true){
+                        t+='faire(' + obj.__xva + ')';
+                    }else{
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1870 #traite_TryStatement' ,"element" : element}));
+                    }
+                }
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
             }
         }
         t+=')';
+        if(element.finalizer){
+            if(element.finalizer.type === "BlockStatement"){
+                obj=this.#traite_ast0(element.finalizer,niveau + 2,element,tab_comm);
+                if(obj.__xst === true){
+                    t+='finalement(' + obj.__xva + ')';
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element}));
+                }
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            }
+        }
         t+=')';
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2704,8 +2719,8 @@ let x16=a.b ?. c(a.b);
             var position_fin_parenthese=parent.end;
             for( var i=0 ; i < tab_comm.length ; i++ ){
                 if(tab_comm[i].start > position_debut_parenthese
-                 && tab_comm[i].end < position_fin_parenthese
-                 && element.start >= tab_comm[i].end
+                       && tab_comm[i].end < position_fin_parenthese
+                       && element.start >= tab_comm[i].end
                 ){
                     var txtComment=tab_comm[i].value.trim();
                     t='#( ' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ' )' + t;

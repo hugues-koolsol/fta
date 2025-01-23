@@ -5,10 +5,14 @@
  * @license MIT
 */
 (function(global,factory){
-        typeof exports === 'object' && typeof module !== 'undefined' ?
+         typeof exports === 'object' &&  typeof module !== 'undefined' ?
           ( module.exports=factory() )
         : ( 
-                typeof define === 'function' && define.amd ? ( define(factory) ) : ( global=global || self , global.Sortable=factory() ) 
+                 typeof define === 'function' && define.amd ?
+                  ( define(factory) )
+                : ( 
+                        (global=global || self),(global.Sortable=factory()) 
+                ) 
         );
 })(this,function(){
         "use strict";
@@ -28,7 +32,7 @@
         function _objectSpread2(target){
             for( var i=1 ; i < arguments.length ; i++ ){
                 var source=arguments[i] != null ? ( arguments[i] ) : ( {} );
-                if(i % 2){
+                if(i% 2){
                     ownKeys(Object(source),true).forEach(function(key){
                             _defineProperty(target,key,source[key]);
                         });
@@ -43,13 +47,13 @@
             return target;
         }
         function _typeof(obj){"@babel/helpers - typeof"
-            if(typeof Symbol === "function" && typeof Symbol.iterator === "symbol"){
+            if( typeof Symbol === "function" &&  typeof Symbol.iterator === "symbol"){
                 _typeof=function(obj){
-                    return(typeof obj);
+                    return( typeof obj);
                 };
             }else{
                 _typeof=function(obj){
-                    return(obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : ( typeof obj ));
+                    return(obj &&  typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : (  typeof obj ));
                 };
             }
             return(_typeof(obj));
@@ -107,7 +111,7 @@
                     if(excluded.indexOf(key) >= 0){
                         continue;
                     }
-                    if(!(Object.prototype.propertyIsEnumerable.call(source,key))){
+                    if(!Object.prototype.propertyIsEnumerable.call(source,key)){
                         continue;
                     }
                     target[key]=source[key];
@@ -124,15 +128,15 @@
             }
         }
         function _iterableToArray(iter){
-            if(typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null){
+            if( typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null){
                 return(Array.from(iter));
             }
         }
         function _unsupportedIterableToArray(o,minLen){
-            if(!(o)){
+            if(!o){
                 return;
             }
-            if(typeof o === "string"){
+            if( typeof o === "string"){
                 return(_arrayLikeToArray(o,minLen));
             }
             var n=Object.prototype.toString.call(o).slice(8,-1);
@@ -160,25 +164,25 @@
         }
         var version="1.15.2";
         function userAgent(pattern){
-            if(typeof window !== 'undefined' && window.navigator){
-                return(!(!(navigator.userAgent.match( /*  @__PURE__  */ pattern))));
+            if( typeof window !== 'undefined' && window.navigator){
+                return(!!navigator.userAgent.match( /*  @__PURE__  */ pattern));
             }
         }
         var IE11OrLess=userAgent(/(?:Trident.*rv[ :]?11\.|msie|iemobile|Windows Phone)/i);
         var Edge=userAgent(/Edge/i);
         var FireFox=userAgent(/firefox/i);
-        var Safari=userAgent(/safari/i) && !(userAgent(/chrome/i)) && !(userAgent(/android/i));
+        var Safari=userAgent(/safari/i) && !userAgent(/chrome/i) && !userAgent(/android/i);
         var IOS=userAgent(/iP(ad|od|hone)/i);
         var ChromeForAndroid=userAgent(/chrome/i) && userAgent(/android/i);
         var captureMode={"capture" : false ,"passive" : false};
         function on(el,event,fn){
-            el.addEventListener(event,fn,!(IE11OrLess) && captureMode);
+            el.addEventListener(event,fn,!IE11OrLess && captureMode);
         }
         function off(el,event,fn){
-            el.removeEventListener(event,fn,!(IE11OrLess) && captureMode);
+            el.removeEventListener(event,fn,!IE11OrLess && captureMode);
         }
         function matches(/* #HTMLElement */el,/* #String */selector){
-            if(!(selector)){
+            if(!selector){
                 return;
             }
             selector[0] === '>' && (selector=selector.substring(1));
@@ -205,10 +209,9 @@
                 ctx=ctx || document;
                 do{
                     if(selector != null
-                     && (selector[0] === '>' ? ( el.parentNode === ctx
-                     && matches(el,selector) ) : ( matches(el,selector) ))
-                     || includeCTX
-                     && el === ctx
+                               && (selector[0] === '>' ? ( el.parentNode === ctx && matches(el,selector) ) : ( matches(el,selector) ))
+                           || includeCTX
+                               && el === ctx
                     ){
                         return el;
                     }
@@ -252,13 +255,13 @@
                     if(!(prop in style) && prop.indexOf('webkit') === -1){
                         prop='-webkit-' + prop;
                     }
-                    style[prop]=val + (typeof val === 'string' ? ( '' ) : ( 'px' ));
+                    style[prop]=val + ( typeof val === 'string' ? ( '' ) : ( 'px' ));
                 }
             }
         }
         function matrix(el,selfOnly){
             var appliedTransforms='';
-            if(typeof el === 'string'){
+            if( typeof el === 'string'){
                 appliedTransforms=el;
             }else{
                 do{
@@ -267,11 +270,11 @@
                         appliedTransforms=transform + ' ' + appliedTransforms;
                     }
                     /* jshint boss:true */
-                }while(!(selfOnly) && (el=el.parentNode));
+                }while(!selfOnly && (el=el.parentNode));
             }
             var matrixFn=window.DOMMatrix || window.WebKitCSSMatrix || window.CSSMatrix || window.MSCSSMatrix;
             /* jshint -W056 */
-            return(matrixFn && new matrixFn(appliedTransforms));
+            return(matrixFn && (new matrixFn(appliedTransforms)));
         }
         function find(ctx,tagName,iterator){
             if(ctx){
@@ -305,7 +308,7 @@
           * @return {Object}                               The boundingClientRect of el, with specified adjustments
         */
         function getRect(el,relativeToContainingBlock,relativeToNonStaticParent,undoScale,container){
-            if(!(el.getBoundingClientRect) && el !== window){
+            if(!el.getBoundingClientRect && el !== window){
                 return;
             }
             var elRect;
@@ -333,13 +336,13 @@
             }
             if((relativeToContainingBlock || relativeToNonStaticParent) && el !== window){
                 container=container || el.parentNode;
-                if(!(IE11OrLess)){
+                if(!IE11OrLess){
                     do{
                         if(container
-                         && container.getBoundingClientRect
-                         && (css(container,'transform') !== 'none'
-                         || relativeToNonStaticParent
-                         && css(container,'position') !== 'static')
+                               && container.getBoundingClientRect
+                               && (css(container,'transform') !== 'none'
+                                   || relativeToNonStaticParent
+                                       && css(container,'position') !== 'static')
                         ){
                             var containerRect=container.getBoundingClientRect();
                             top-=containerRect.top + parseInt(css(container,'border-top-width'));
@@ -393,7 +396,7 @@
                 }else{
                     visible=elSideVal <= parentSideVal;
                 }
-                if(!(visible)){
+                if(!visible){
                     return parent;
                 }
                 if(parent === getWindowScrollingElement()){
@@ -417,10 +420,10 @@
             var children=el.children;
             while(i < children.length){
                 if(children[i].style.display !== 'none'
-                 && children[i] !== Sortable.ghost
-                 && (includeDragEl
-                 || children[i] !== Sortable.dragged)
-                 && closest(children[i],options.draggable,el,false)
+                       && children[i] !== Sortable.ghost
+                       && (includeDragEl
+                           || children[i] !== Sortable.dragged)
+                       && closest(children[i],options.draggable,el,false)
                 ){
                     if(currentChild === childNum){
                         return children[i];
@@ -439,7 +442,7 @@
         */
         function lastChild(el,selector){
             var last=el.lastElementChild;
-            while(last && (last === Sortable.ghost || css(last,'display') === 'none' || selector && !(matches(last,selector)))){
+            while(last && (last === Sortable.ghost || css(last,'display') === 'none' || selector && !matches(last,selector))){
                 last=last.previousElementSibling;
             }
             return(last || null);
@@ -453,12 +456,12 @@
         */
         function index(el,selector){
             var index=0;
-            if(!(el) || !(el.parentNode)){
+            if(!el || !el.parentNode){
                 return -1;
             }
             /* jshint boss:true */
             while(el=el.previousElementSibling){
-                if(el.nodeName.toUpperCase() !== 'TEMPLATE' && el !== Sortable.clone && (!(selector) || matches(el,selector))){
+                if(el.nodeName.toUpperCase() !== 'TEMPLATE' && el !== Sortable.clone && (!selector || matches(el,selector))){
                     index++;
                 }
             }
@@ -493,7 +496,7 @@
         */
         function indexOfObject(arr,obj){
             for(var i in arr){
-                if(!(arr.hasOwnProperty(i))){
+                if(!arr.hasOwnProperty(i)){
                     continue;
                 }
                 for(var key in obj){
@@ -505,7 +508,7 @@
             return -1;
         }
         function getParentAutoScrollElement(el,includeSelf){
-            if(!(el) || !(el.getBoundingClientRect)){
+            if(!el || !el.getBoundingClientRect){
                 return(getWindowScrollingElement());
             }
             var elem=el;
@@ -514,13 +517,13 @@
                 if(elem.clientWidth < elem.scrollWidth || elem.clientHeight < elem.scrollHeight){
                     var elemCSS=css(elem);
                     if(elem.clientWidth < elem.scrollWidth
-                     && (elemCSS.overflowX == 'auto'
-                     || elemCSS.overflowX == 'scroll')
-                     || elem.clientHeight < elem.scrollHeight
-                     && (elemCSS.overflowY == 'auto'
-                     || elemCSS.overflowY == 'scroll')
+                               && (elemCSS.overflowX == 'auto'
+                                   || elemCSS.overflowX == 'scroll')
+                           || elem.clientHeight < elem.scrollHeight
+                               && (elemCSS.overflowY == 'auto'
+                                   || elemCSS.overflowY == 'scroll')
                     ){
-                        if(!(elem.getBoundingClientRect) || elem === document.body){
+                        if(!elem.getBoundingClientRect || elem === document.body){
                             return(getWindowScrollingElement());
                         }
                         if(gotSelf || includeSelf){
@@ -549,7 +552,7 @@
         var _throttleTimeout;
         function throttle(callback,ms){
             return(function(){
-                if(!(_throttleTimeout)){
+                if(!_throttleTimeout){
                     var args=arguments;
                     var _this=this;
                     if(args.length === 1){
@@ -603,7 +606,7 @@
                     var _rect$top;
                     var _rect$right;
                     var _rect$bottom;
-                    if(!(closest(child,options.draggable,container,false)) || child.animated || child === ghostEl){
+                    if(!closest(child,options.draggable,container,false) || child.animated || child === ghostEl){
                         return;
                     }
                     var childRect=getRect(child);
@@ -625,7 +628,7 @@
             return({
                 "captureAnimationState" : function captureAnimationState(){
                     animationStates=[];
-                    if(!(this.options.animation)){
+                    if(!this.options.animation){
                         return;
                     }
                     var children=[].slice.call(this.el.children);
@@ -644,21 +647,18 @@
                             }
                             child.fromRect=fromRect;
                         });
-                
                 } ,
                 "addAnimationState" : function addAnimationState(state){
                     animationStates.push(state);
-                
                 } ,
                 "removeAnimationState" : function removeAnimationState(target){
                     animationStates.splice(indexOfObject(animationStates,{"target" : target}),1);
-                
                 } ,
                 "animateAll" : function animateAll(callback){
                     var _this=this;
-                    if(!(this.options.animation)){
+                    if(!this.options.animation){
                         clearTimeout(animationCallbackId);
-                        if(typeof callback === 'function'){
+                        if( typeof callback === 'function'){
                             callback();
                         }
                         return;
@@ -681,16 +681,16 @@
                             target.toRect=toRect;
                             if(target.thisAnimationDuration){
                                 if(isRectEqual(prevFromRect,toRect)
-                                 && !(isRectEqual(fromRect,toRect))
-                                 && (animatingRect.top - toRect.top) / (animatingRect.left - toRect.left) === (fromRect.top - toRect.top) / (fromRect.left - toRect.left)
+                                       && !isRectEqual(fromRect,toRect)
+                                       && (animatingRect.top - toRect.top) / (animatingRect.left - toRect.left) === (fromRect.top - toRect.top) / (fromRect.left - toRect.left)
                                 ){
                                     time=calculateRealTime(animatingRect,prevFromRect,prevToRect,_this.options);
                                 }
                             }
-                            if(!(isRectEqual(toRect,fromRect))){
+                            if(!isRectEqual(toRect,fromRect)){
                                 target.prevFromRect=fromRect;
                                 target.prevToRect=toRect;
-                                if(!(time)){
+                                if(!time){
                                     time=_this.options.animation;
                                 }
                                 _this.animate(target,animatingRect,toRect,time);
@@ -710,19 +710,18 @@
                             }
                         });
                     clearTimeout(animationCallbackId);
-                    if(!(animating)){
-                        if(typeof callback === 'function'){
+                    if(!animating){
+                        if( typeof callback === 'function'){
                             callback();
                         }
                     }else{
                         animationCallbackId=setTimeout(function(){
-                            if(typeof callback === 'function'){
+                            if( typeof callback === 'function'){
                                 callback();
                             }
                         },animationTime);
                     }
                     animationStates=[];
-                
                 } ,
                 "animate" : function animate(target,currentRect,toRect,duration){
                     if(duration){
@@ -733,13 +732,13 @@
                         var scaleY=elMatrix && elMatrix.d;
                         var translateX=(currentRect.left - toRect.left) / (scaleX || 1);
                         var translateY=(currentRect.top - toRect.top) / (scaleY || 1);
-                        target.animatingX=!(!(translateX));
-                        target.animatingY=!(!(translateY));
+                        target.animatingX=!!translateX;
+                        target.animatingY=!!translateY;
                         css(target,'transform','translate3d(' + translateX + 'px,' + translateY + 'px,0)');
                         this.forRepaintDummy=repaint(target);
                         css(target,'transition','transform ' + duration + 'ms' + (this.options.easing ? ( ' ' + this.options.easing ) : ( '' )));
                         css(target,'transform','translate3d(0,0,0)');
-                        typeof target.animated === 'number' && clearTimeout(target.animated);
+                         typeof target.animated === 'number' && clearTimeout(target.animated);
                         target.animated=setTimeout(function(){
                             css(target,'transition','');
                             css(target,'transform','');
@@ -748,7 +747,6 @@
                             target.animatingY=false;
                         },duration);
                     }
-                
                 }
             });
         }
@@ -756,7 +754,7 @@
             return target.offsetWidth;
         }
         function calculateRealTime(animatingRect,fromRect,toRect,options){
-            return(Math.sqrt(Math.pow(fromRect.top - animatingRect.top,2) + Math.pow(fromRect.left - animatingRect.left,2)) / Math.sqrt(Math.pow(fromRect.top - toRect.top,2) + Math.pow(fromRect.left - toRect.left,2)) * options.animation);
+            return((Math.sqrt(Math.pow(fromRect.top - animatingRect.top,2) + Math.pow(fromRect.left - animatingRect.left,2)) / Math.sqrt(Math.pow(fromRect.top - toRect.top,2) + Math.pow(fromRect.left - toRect.left,2))) * options.animation);
         }
         var plugins=[];
         var defaults={"initializeByDefault" : true};
@@ -773,7 +771,6 @@
                         }
                     });
                 plugins.push(plugin);
-            
             } ,
             "pluginEvent" : function pluginEvent(eventName,sortable,evt){
                 var _this=this;
@@ -784,7 +781,7 @@
                 var eventNameGlobal=eventName + 'Global';
                 /* console.log('hugues eventNameGlobal=',eventNameGlobal , 'eventName="' + eventName+'"'); */
                 plugins.forEach(function(plugin){
-                        if(!(sortable[plugin.pluginName])){
+                        if(!sortable[plugin.pluginName]){
                             return;
                         }
                         if(sortable[plugin.pluginName][eventNameGlobal]){
@@ -794,12 +791,11 @@
                             sortable[plugin.pluginName][eventName](_objectSpread2({"sortable" : sortable},evt));
                         }
                     });
-            
             } ,
             "initializePlugins" : function initializePlugins(sortable,el,defaults,options){
                 plugins.forEach(function(plugin){
                         var pluginName=plugin.pluginName;
-                        if(!(sortable.options[pluginName]) && !(plugin.initializeByDefault)){
+                        if(!sortable.options[pluginName] && !plugin.initializeByDefault){
                             return;
                         }
                         var initialized=new plugin(sortable,el,sortable.options);
@@ -809,39 +805,36 @@
                         _extends(defaults,initialized.defaults);
                     });
                 for(var option in sortable.options){
-                    if(!(sortable.options.hasOwnProperty(option))){
+                    if(!sortable.options.hasOwnProperty(option)){
                         continue;
                     }
                     var modified=this.modifyOption(sortable,option,sortable.options[option]);
-                    if(typeof modified !== 'undefined'){
+                    if( typeof modified !== 'undefined'){
                         sortable.options[option]=modified;
                     }
                 }
-            
             } ,
             "getEventProperties" : function getEventProperties(name,sortable){
                 var eventProperties={};
                 plugins.forEach(function(plugin){
-                        if(typeof plugin.eventProperties !== 'function'){
+                        if( typeof plugin.eventProperties !== 'function'){
                             return;
                         }
                         _extends(eventProperties,plugin.eventProperties.call(sortable[plugin.pluginName],name));
                     });
                 return eventProperties;
-            
             } ,
             "modifyOption" : function modifyOption(sortable,name,value){
                 var modifiedValue;
                 plugins.forEach(function(plugin){
-                        if(!(sortable[plugin.pluginName])){
+                        if(!sortable[plugin.pluginName]){
                             return;
                         }
-                        if(plugin.optionListeners && typeof plugin.optionListeners[name] === 'function'){
+                        if(plugin.optionListeners &&  typeof plugin.optionListeners[name] === 'function'){
                             modifiedValue=plugin.optionListeners[name].call(sortable[plugin.pluginName],value);
                         }
                     });
                 return modifiedValue;
-            
             }
         };
         function dispatchEvent(_ref){
@@ -860,13 +853,13 @@
             var putSortable=_ref.putSortable;
             var extraEventProperties=_ref.extraEventProperties;
             sortable=sortable || rootEl && rootEl[expando];
-            if(!(sortable)){
+            if(!sortable){
                 return;
             }
             var evt;
             var options=sortable.options;
             var onName='on' + name.charAt(0).toUpperCase() + name.substr(1);
-            if(window.CustomEvent && !(IE11OrLess) && !(Edge)){
+            if(window.CustomEvent && !IE11OrLess && !Edge){
                 evt=new CustomEvent(name,{"bubbles" : true ,"cancelable" : true});
             }else{
                 evt=document.createEvent('Event');
@@ -919,15 +912,12 @@
                     "unhideGhostForTarget" : _unhideGhostForTarget ,
                     "cloneNowHidden" : function cloneNowHidden(){
                         cloneHidden=true;
-                    
                     } ,
                     "cloneNowShown" : function cloneNowShown(){
                         cloneHidden=false;
-                    
                     } ,
                     "dispatchSortableEvent" : function dispatchSortableEvent(name){
                         _dispatchEvent({"sortable" : sortable ,"name" : name ,"originalEvent" : originalEvent});
-                    
                     }
                 },data));
         };
@@ -977,12 +967,12 @@
         var _silent=false;
         var savedInputChecked=[];
         /* # @const */
-        var documentExists=typeof document !== 'undefined';
+        var documentExists= typeof document !== 'undefined';
         var PositionGhostAbsolutely=IOS;
         var CSSFloatProperty=Edge || IE11OrLess ? ( 'cssFloat' ) : ( 'float' );
-        var supportDraggable=documentExists && !(ChromeForAndroid) && !(IOS) && 'draggable' in document.createElement('div');
+        var supportDraggable=documentExists && !ChromeForAndroid && !IOS && 'draggable' in document.createElement('div');
         var supportCssPointerEvents=(function(){
-            if(!(documentExists)){
+            if(!documentExists){
                 return;
             }
             if(IE11OrLess){
@@ -1032,7 +1022,7 @@
             var ret;
             sortables.some(function(sortable){
                     var threshold=sortable[expando].options.emptyInsertThreshold;
-                    if(!(threshold) || lastChild(sortable)){
+                    if(!threshold || lastChild(sortable)){
                         return;
                     }
                     var rect=getRect(sortable);
@@ -1054,17 +1044,17 @@
                         return false;
                     }else if(pull && value === 'clone'){
                         return value;
-                    }else if(typeof value === 'function'){
+                    }else if( typeof value === 'function'){
                         return(toFn(value(to,from,dragEl,evt),pull)(to,from,dragEl,evt));
                     }else{
                         var otherGroup=pull ? ( to.options.group.name ) : ( from.options.group.name );
-                        return(value === true || typeof value === 'string' && value === otherGroup || value.join && value.indexOf(otherGroup) > -1);
+                        return(value === true ||  typeof value === 'string' && value === otherGroup || value.join && value.indexOf(otherGroup) > -1);
                     }
                 });
             }
             var group={};
             var originalGroup=options.group;
-            if(!(originalGroup) || _typeof(originalGroup) != 'object'){
+            if(!originalGroup || _typeof(originalGroup) != 'object'){
                 originalGroup={"name" : originalGroup};
             }
             group.name=originalGroup.name;
@@ -1074,16 +1064,16 @@
             options.group=group;
         };
         var _hideGhostForTarget=function _hideGhostForTarget(){
-            if(!(supportCssPointerEvents) && ghostEl){
+            if(!supportCssPointerEvents && ghostEl){
                 css(ghostEl,'display','none');
             }
         };
         var _unhideGhostForTarget=function _unhideGhostForTarget(){
-            if(!(supportCssPointerEvents) && ghostEl){
+            if(!supportCssPointerEvents && ghostEl){
                 css(ghostEl,'display','');
             }
         };
-        if(documentExists && !(ChromeForAndroid)){
+        if(documentExists && !ChromeForAndroid){
             document.addEventListener('click',function(evt){
                     if(ignoreNextClick){
                         evt.preventDefault();
@@ -1116,8 +1106,7 @@
             if(dragEl){
                 try{
                     dragEl.parentNode[expando][_isOutsideThisEl](evt.target);
-                }catch(e){
-                }
+                }catch(e){}
                 /* un point virgule est-il en trop ? */
             }
         };
@@ -1146,7 +1135,6 @@
                 "removeCloneOnHide" : true ,
                 "direction" : function direction(){
                     return(_detectDirection(el,this.options));
-                
                 } ,
                 "ghostClass" : 'sortable-ghost' ,
                 "chosenClass" : 'sortable-chosen' ,
@@ -1158,7 +1146,6 @@
                 "easing" : null ,
                 "setData" : function setData(dataTransfer,dragEl){
                     dataTransfer.setData('Text',dragEl.textContent);
-                
                 } ,
                 "dropBubble" : false ,
                 "dragoverBubble" : false ,
@@ -1171,7 +1158,7 @@
                 "fallbackOnBody" : false ,
                 "fallbackTolerance" : 0 ,
                 "fallbackOffset" : {"x" : 0 ,"y" : 0} ,
-                "supportPointer" : Sortable.supportPointer !== false && 'PointerEvent' in window && !(Safari) ,
+                "supportPointer" : Sortable.supportPointer !== false && 'PointerEvent' in window && !Safari ,
                 "emptyInsertThreshold" : 5
             };
             PluginManager.initializePlugins(this,el,defaults);
@@ -1180,7 +1167,7 @@
             }
             _prepareGroup(options);
             for(var fn in this){
-                if(fn.charAt(0) === '_' && typeof this[fn] === 'function'){
+                if(fn.charAt(0) === '_' &&  typeof this[fn] === 'function'){
                     this[fn]=this[fn].bind(this);
                 }
             }
@@ -1206,21 +1193,19 @@
              /* # @lends Sortable.prototype */
             "constructor" : Sortable ,
             "_isOutsideThisEl" : function _isOutsideThisEl(target){
-                if(!(this.el.contains(target)) && target !== this.el){
+                if(!this.el.contains(target) && target !== this.el){
                     lastTarget=null;
                 }
-            
             } ,
             "_getDirection" : function _getDirection(evt,target){
-                return(typeof this.options.direction === 'function' ?
+                return( typeof this.options.direction === 'function' ?
                   ( 
                         this.options.direction.call(this,evt,target,dragEl) )
                 : ( this.options.direction 
                 ));
-            
             } ,
             "_onTapStart" : function _onTapStart( /*  Event|TouchEvent  */ evt){
-                if(!(evt.cancelable)){
+                if(!evt.cancelable){
                     return;
                 }
                 var _this=this;
@@ -1242,7 +1227,7 @@
                 if(originalTarget.isContentEditable){
                     return;
                 }
-                if(!(this.nativeDraggable) && Safari && target && target.tagName.toUpperCase() === 'SELECT'){
+                if(!this.nativeDraggable && Safari && target && target.tagName.toUpperCase() === 'SELECT'){
                     return;
                 }
                 target=closest(target,options.draggable,el,false);
@@ -1254,8 +1239,9 @@
                 }
                 oldIndex=index(target);
                 oldDraggableIndex=index(target,options.draggable);
-                if(typeof filter === 'function'){
-                    if(filter.call(this,evt,target,this)){
+                if( typeof filter === 'function'){
+                    if(filter.call(this,evt,target,this)
+                    ){
                         _dispatchEvent({
                                 "sortable" : _this ,
                                 "rootEl" : originalTarget ,
@@ -1289,11 +1275,10 @@
                         return;
                     }
                 }
-                if(options.handle && !(closest(originalTarget,options.handle,el,false))){
+                if(options.handle && !closest(originalTarget,options.handle,el,false)){
                     return;
                 }
                 this._prepareDragStart(evt,touch,target);
-            
             } ,
             "_prepareDragStart" : function _prepareDragStart( /*  Event  */ evt, /*  Touch  */ touch, /*  # HTMLElement  */ target){
                 var _this=this;
@@ -1301,7 +1286,7 @@
                 var options=_this.options;
                 var ownerDocument=el.ownerDocument;
                 var dragStartFn;
-                if(target && !(dragEl) && target.parentNode === el){
+                if(target && !dragEl && target.parentNode === el){
                     var dragRect=getRect(target);
                     rootEl=el;
                     dragEl=target;
@@ -1323,7 +1308,7 @@
                             return;
                         }
                         _this._disableDelayedDragEvents();
-                        if(!(FireFox) && _this.nativeDraggable){
+                        if(!FireFox && _this.nativeDraggable){
                             dragEl.draggable=true;
                         }
                         _this._triggerDragStart(evt,touch);
@@ -1344,7 +1329,7 @@
                         dragEl.draggable=true;
                     }
                     pluginEvent('delayStart',this,{"evt" : evt});
-                    if(options.delay && (!(options.delayOnTouchOnly) || touch) && (!(this.nativeDraggable) || !(Edge || IE11OrLess))){
+                    if(options.delay && (!options.delayOnTouchOnly || touch) && (!this.nativeDraggable || !(Edge || IE11OrLess))){
                         if(Sortable.eventCanceled){
                             this._onDrop();
                             return;
@@ -1360,24 +1345,19 @@
                         dragStartFn();
                     }
                 }
-            
             } ,
             "_delayedDragTouchMoveHandler" : function _delayedDragTouchMoveHandler( /*  TouchEvent|PointerEvent  */ e){
                 var touch=e.touches ? ( e.touches[0] ) : ( e );
                 /* console.log('hugues formule à vérifier') */
-                if(Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) >= Math.floor(this.options.touchStartThreshold / (this.nativeDraggable
-                 && window.devicePixelRatio
-                 || 1))
+                if(Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) >= Math.floor(this.options.touchStartThreshold / (this.nativeDraggable && window.devicePixelRatio || 1))
                 ){
                     this._disableDelayedDrag();
                 }
-            
             } ,
             "_disableDelayedDrag" : function _disableDelayedDrag(){
                 dragEl && _disableDraggable(dragEl);
                 clearTimeout(this._dragStartTimer);
                 this._disableDelayedDragEvents();
-            
             } ,
             "_disableDelayedDragEvents" : function _disableDelayedDragEvents(){
                 var ownerDocument=this.el.ownerDocument;
@@ -1387,11 +1367,10 @@
                 off(ownerDocument,'mousemove',this._delayedDragTouchMoveHandler);
                 off(ownerDocument,'touchmove',this._delayedDragTouchMoveHandler);
                 off(ownerDocument,'pointermove',this._delayedDragTouchMoveHandler);
-            
             } ,
             "_triggerDragStart" : function _triggerDragStart( /*  Event  */ evt, /*  Touch  */ touch){
                 touch=touch || evt.pointerType == 'touch' && evt;
-                if(!(this.nativeDraggable) || touch){
+                if(!this.nativeDraggable || touch){
                     if(this.options.supportPointer){
                         on(document,'pointermove',this._onTouchMove);
                     }else if(touch){
@@ -1411,9 +1390,7 @@
                     }else{
                         window.getSelection().removeAllRanges();
                     }
-                }catch(err){
-                }
-            
+                }catch(err){}
             } ,
             "_dragStarted" : function _dragStarted(fallback,evt){
                 awaitingDragStarted=false;
@@ -1423,7 +1400,7 @@
                         on(document,'dragover',_checkOutsideTargetEl);
                     }
                     var options=this.options;
-                    !(fallback) && toggleClass(dragEl,options.dragClass,false);
+                    !fallback && toggleClass(dragEl,options.dragClass,false);
                     toggleClass(dragEl,options.ghostClass,true);
                     Sortable.active=this;
                     fallback && this._appendGhost();
@@ -1431,7 +1408,6 @@
                 }else{
                     this._nulling();
                 }
-            
             } ,
             "_emulateDragOver" : function _emulateDragOver(){
                 if(touchEvt){
@@ -1453,7 +1429,7 @@
                             if(parent[expando]){
                                 var inserted=void(0);
                                 inserted=parent[expando][_onDragOver]({"clientX" : touchEvt.clientX ,"clientY" : touchEvt.clientY ,"target" : target ,"rootEl" : parent});
-                                if(inserted && !(this.options.dragoverBubble)){
+                                if(inserted && !this.options.dragoverBubble){
                                     break;
                                 }
                             }
@@ -1463,7 +1439,6 @@
                     }
                     _unhideGhostForTarget();
                 }
-            
             } ,
             "_onTouchMove" : function _onTouchMove( /*  TouchEvent  */ evt){
                 if(tapEvt){
@@ -1475,19 +1450,19 @@
                     var scaleX=ghostEl && ghostMatrix && ghostMatrix.a;
                     var scaleY=ghostEl && ghostMatrix && ghostMatrix.d;
                     var relativeScrollOffset=PositionGhostAbsolutely && ghostRelativeParent && getRelativeScrollOffset(ghostRelativeParent);
-                    var dx=(touch.clientX - tapEvt.clientX + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ?
-                      ( 
-                            relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] )
-                    : ( 0 
-                    )) / (scaleX || 1);
-                    var dy=(touch.clientY - tapEvt.clientY + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ?
-                      ( 
-                            relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] )
-                    : ( 0 
-                    )) / (scaleY || 1);
-                    if(!(Sortable.active) && !(awaitingDragStarted)){
+                    var dx=((touch.clientX - tapEvt.clientX) + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ?
+                          ( 
+                                relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] )
+                        : ( 0 
+                        )) / (scaleX || 1);
+                    var dy=((touch.clientY - tapEvt.clientY) + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ?
+                          ( 
+                                relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] )
+                        : ( 0 
+                        )) / (scaleY || 1);
+                    if(!Sortable.active && !awaitingDragStarted){
                         if(fallbackTolerance
-                         && Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) < fallbackTolerance
+                               && Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) < fallbackTolerance
                         ){
                             return;
                         }
@@ -1518,16 +1493,18 @@
                     }
                     evt.cancelable && evt.preventDefault();
                 }
-            
             } ,
             "_appendGhost" : function _appendGhost(){
-                if(!(ghostEl)){
+                if(!ghostEl){
                     var container=this.options.fallbackOnBody ? ( document.body ) : ( rootEl );
                     var rect=getRect(dragEl,true,PositionGhostAbsolutely,true,container);
                     var options=this.options;
                     if(PositionGhostAbsolutely){
                         ghostRelativeParent=container;
-                        while(css(ghostRelativeParent,'position') === 'static' && css(ghostRelativeParent,'transform') === 'none' && ghostRelativeParent !== document){
+                        while(css(ghostRelativeParent,'position') === 'static'
+                               && css(ghostRelativeParent,'transform') === 'none'
+                               && ghostRelativeParent !== document
+                        ){
                             ghostRelativeParent=ghostRelativeParent.parentNode;
                         }
                         if(ghostRelativeParent !== document.body && ghostRelativeParent !== document.documentElement){
@@ -1559,9 +1536,8 @@
                     css(ghostEl,'pointerEvents','none');
                     Sortable.ghost=ghostEl;
                     container.appendChild(ghostEl);
-                    css(ghostEl,'transform-origin',(tapDistanceLeft / parseInt(ghostEl.style.width) * 100) + '% ' + (tapDistanceTop / parseInt(ghostEl.style.height) * 100) + '%');
+                    css(ghostEl,'transform-origin',((tapDistanceLeft / parseInt(ghostEl.style.width)) * 100) + '% ' + ((tapDistanceTop / parseInt(ghostEl.style.height)) * 100) + '%');
                 }
-            
             } ,
             "_onDragStart" : function _onDragStart( /*  Event  */ evt, /*  boolean  */ fallback){
                 var _this=this;
@@ -1573,7 +1549,7 @@
                     return;
                 }
                 pluginEvent('setupClone',this);
-                if(!(Sortable.eventCanceled)){
+                if(!Sortable.eventCanceled){
                     cloneEl=clone(dragEl);
                     cloneEl.removeAttribute("id");
                     cloneEl.draggable=false;
@@ -1587,13 +1563,13 @@
                     if(Sortable.eventCanceled){
                         return;
                     }
-                    if(!(_this.options.removeCloneOnHide)){
+                    if(!_this.options.removeCloneOnHide){
                         rootEl.insertBefore(cloneEl,dragEl);
                     }
                     _this._hideClone();
                     _dispatchEvent({"sortable" : _this ,"name" : 'clone'});
                 });
-                !(fallback) && toggleClass(dragEl,options.dragClass,true);
+                !fallback && toggleClass(dragEl,options.dragClass,true);
                 if(fallback){
                     ignoreNextClick=true;
                     _this._loopId=setInterval(_this._emulateDragOver,50);
@@ -1615,7 +1591,6 @@
                 if(Safari){
                     css(document.body,'user-select','none');
                 }
-            
             } ,
             "_onDragOver" : function _onDragOver( /*  Event  */ evt){
                 var el=this.el;
@@ -1649,7 +1624,6 @@
                             "completed" : completed ,
                             "onMove" : function onMove(target,after){
                                 return(_onMove(rootEl,el,dragEl,dragRect,target,getRect(target),evt,after));
-                            
                             } ,
                             "changed" : changed
                         },extra));
@@ -1690,18 +1664,17 @@
                             fromSortable._ignoreWhileAnimating=null;
                         }
                     }
-                    if(target === dragEl && !(dragEl.animated) || target === el && !(target.animated)){
+                    if(target === dragEl && !dragEl.animated || target === el && !target.animated){
                         lastTarget=null;
                     }
-                    if(!(options.dragoverBubble) && !(evt.rootEl) && target !== document){
+                    if(!options.dragoverBubble && !evt.rootEl && target !== document){
                         try{
                             dragEl.parentNode[expando][_isOutsideThisEl](evt.target);
-                        }catch(e){
-                        }
+                        }catch(e){}
                         /* un point virgule est-il en trop ? */
-                        !(insertion) && nearestEmptyInsertDetectEvent(evt);
+                        !insertion && nearestEmptyInsertDetectEvent(evt);
                     }
-                    !(options.dragoverBubble) && evt.stopPropagation && evt.stopPropagation();
+                    !options.dragoverBubble && evt.stopPropagation && evt.stopPropagation();
                     return(completedFired=true);
                 }
                 function changed(){
@@ -1726,19 +1699,22 @@
                 }
                 /* console.log('hugues dragEl=',dragEl); */
                 if(dragEl.contains(evt.target)
-                 || target.animated
-                 && target.animatingX
-                 && target.animatingY
-                 || _this._ignoreWhileAnimating === target
+                       || target.animated
+                           && target.animatingX
+                           && target.animatingY
+                       || _this._ignoreWhileAnimating === target
                 ){
                     return(completed(false));
                 }
                 ignoreNextClick=false;
-                if(activeSortable && !(options.disabled) && (isOwner ?
-                      ( canSort || (revert=parentEl !== rootEl) )
-                    : ( 
-                            putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt) 
-                    ))){
+                if(activeSortable
+                       && !options.disabled
+                       && (isOwner ?
+                          ( canSort || (revert=parentEl !== rootEl) )
+                        : ( 
+                                putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt) 
+                        ))
+                ){
                     vertical=this._getDirection(evt,target) === 'vertical';
                     dragRect=getRect(dragEl);
                     dragOverEvent('dragOverValid');
@@ -1750,7 +1726,7 @@
                         capture();
                         this._hideClone();
                         dragOverEvent('revert');
-                        if(!(Sortable.eventCanceled)){
+                        if(!Sortable.eventCanceled){
                             if(nextEl){
                                 rootEl.insertBefore(dragEl,nextEl);
                             }else{
@@ -1760,7 +1736,7 @@
                         return(completed(true));
                     }
                     var elLastChild=lastChild(el,options.draggable);
-                    if(!(elLastChild) || _ghostIsLast(evt,vertical,this) && !(elLastChild.animated)){
+                    if(!elLastChild || _ghostIsLast(evt,vertical,this) && !elLastChild.animated){
                         if(elLastChild === dragEl){
                             return(completed(false));
                         }
@@ -1770,7 +1746,7 @@
                         if(target){
                             targetRect=getRect(target);
                         }
-                        if(_onMove(rootEl,el,dragEl,dragRect,target,targetRect,evt,!(!(target))) !== false){
+                        if(_onMove(rootEl,el,dragEl,dragRect,target,targetRect,evt,!!target) !== false){
                             capture();
                             if(elLastChild && elLastChild.nextSibling){
                                 el.insertBefore(dragEl,elLastChild.nextSibling);
@@ -1800,14 +1776,14 @@
                         var direction=0;
                         var targetBeforeFirstSwap;
                         var differentLevel=dragEl.parentNode !== el;
-                        var differentRowCol=!(_dragElInRowColumn(dragEl.animated && dragEl.toRect || dragRect,target.animated && target.toRect || targetRect,vertical));
+                        var differentRowCol=!_dragElInRowColumn(dragEl.animated && dragEl.toRect || dragRect,target.animated && target.toRect || targetRect,vertical);
                         var side1=vertical ? ( 'top' ) : ( 'left' );
                         var scrolledPastTop=isScrolledPast(target,'top','top') || isScrolledPast(dragEl,'top','top');
                         var scrollBefore=scrolledPastTop ? ( scrolledPastTop.scrollTop ) : ( void(0) );
                         if(lastTarget !== target){
                             targetBeforeFirstSwap=targetRect[side1];
                             pastFirstInvertThresh=false;
-                            isCircumstantialInvert=!(differentRowCol) && options.invertSwap || differentLevel;
+                            isCircumstantialInvert=!differentRowCol && options.invertSwap || differentLevel;
                         }
                         direction=_getSwapDirection(evt,target,targetRect,vertical,differentRowCol ? ( 1 ) : ( options.swapThreshold ),options.invertedSwapThreshold == null ? ( options.swapThreshold ) : ( options.invertedSwapThreshold ),isCircumstantialInvert,lastTarget === target);
                         var sibling;
@@ -1834,7 +1810,7 @@
                             _silent=true;
                             setTimeout(_unsilent,30);
                             capture();
-                            if(after && !(nextSibling)){
+                            if(after && !nextSibling){
                                 el.appendChild(dragEl);
                             }else{
                                 target.parentNode.insertBefore(dragEl,after ? ( nextSibling ) : ( target ));
@@ -1843,7 +1819,7 @@
                                 scrollBy(scrolledPastTop,0,scrollBefore - scrolledPastTop.scrollTop);
                             }
                             parentEl=dragEl.parentNode;
-                            if(targetBeforeFirstSwap !== undefined && !(isCircumstantialInvert)){
+                            if(targetBeforeFirstSwap !== undefined && !isCircumstantialInvert){
                                 targetMoveDistance=Math.abs(targetBeforeFirstSwap - getRect(target)[side1]);
                             }
                             changed();
@@ -1855,7 +1831,6 @@
                     }
                 }
                 return false;
-            
             } ,
             "_ignoreWhileAnimating" : null ,
             "_offMoveEvents" : function _offMoveEvents(){
@@ -1865,7 +1840,6 @@
                 off(document,'dragover',nearestEmptyInsertDetectEvent);
                 off(document,'mousemove',nearestEmptyInsertDetectEvent);
                 off(document,'touchmove',nearestEmptyInsertDetectEvent);
-            
             } ,
             "_offUpEvents" : function _offUpEvents(){
                 var ownerDocument=this.el.ownerDocument;
@@ -1874,7 +1848,6 @@
                 off(ownerDocument,'pointerup',this._onDrop);
                 off(ownerDocument,'touchcancel',this._onDrop);
                 off(document,'selectstart',this);
-            
             } ,
             "_onDrop" : function _onDrop( /*  Event  */ evt){
                 var el=this.el;
@@ -1909,7 +1882,7 @@
                 if(evt){
                     if(moved){
                         evt.cancelable && evt.preventDefault();
-                        !(options.dropBubble) && evt.stopPropagation();
+                        !options.dropBubble && evt.stopPropagation();
                     }
                     ghostEl && ghostEl.parentNode && ghostEl.parentNode.removeChild(ghostEl);
                     if(rootEl === parentEl || putSortable && putSortable.lastPutMode !== 'clone'){
@@ -1921,7 +1894,7 @@
                         }
                         _disableDraggable(dragEl);
                         dragEl.style['will-change']='';
-                        if(moved && !(awaitingDragStarted)){
+                        if(moved && !awaitingDragStarted){
                             toggleClass(dragEl,putSortable ? ( putSortable.options.ghostClass ) : ( this.options.ghostClass ),false);
                         }
                         toggleClass(dragEl,this.options.chosenClass,false);
@@ -1961,7 +1934,6 @@
                     }
                 }
                 this._nulling();
-            
             } ,
             "_nulling" : function _nulling(){
                 pluginEvent('nulling',this);
@@ -1970,7 +1942,6 @@
                         el.checked=true;
                     });
                 savedInputChecked.length=lastDx=lastDy=0;
-            
             } ,
             "handleEvent" : function handleEvent( /*  Event  */ evt){
                 switch (evt.type){
@@ -1988,7 +1959,6 @@
                     case 'selectstart' : evt.preventDefault();
                         break;
                 }
-            
             } ,
              /*#
               * Serializes the item into an array of string.
@@ -2003,12 +1973,12 @@
                 var options=this.options;
                 for(  ; i < n ; i++ ){
                     el=children[i];
-                    if(closest(el,options.draggable,this.el,false)){
+                    if(closest(el,options.draggable,this.el,false)
+                    ){
                         order.push(el.getAttribute(options.dataIdAttr) || _generateId(el));
                     }
                 }
                 return order;
-            
             } ,
              /*#
               * Sorts the elements according to the array.
@@ -2019,7 +1989,8 @@
                 var rootEl=this.el;
                 this.toArray().forEach(function(id,i){
                         var el=rootEl.children[i];
-                        if(closest(el,this.options.draggable,rootEl,false)){
+                        if(closest(el,this.options.draggable,rootEl,false)
+                        ){
                             items[id]=el;
                         }
                     },this);
@@ -2031,7 +2002,6 @@
                         }
                     });
                 useAnimation && this.animateAll();
-            
             } ,
              /*#
               * Save the current sorting
@@ -2039,7 +2009,6 @@
             "save" : function save(){
                 var store=this.options.store;
                 store && store.set && store.set(this);
-            
             } ,
              /*#
               * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
@@ -2049,7 +2018,6 @@
              */
             "closest" : function closest$1(el,selector){
                 return(closest(el,selector || this.options.draggable,this.el,false));
-            
             } ,
              /*#
               * Set/get option
@@ -2063,7 +2031,7 @@
                     return options[name];
                 }else{
                     var modifiedValue=PluginManager.modifyOption(this,name,value);
-                    if(typeof modifiedValue !== 'undefined'){
+                    if( typeof modifiedValue !== 'undefined'){
                         options[name]=modifiedValue;
                     }else{
                         options[name]=value;
@@ -2072,7 +2040,6 @@
                         _prepareGroup(options);
                     }
                 }
-            
             } ,
              /*#
               * Destroy
@@ -2095,10 +2062,9 @@
                 this._disableDelayedDragEvents();
                 sortables.splice(sortables.indexOf(this.el),1);
                 this.el=el=null;
-            
             } ,
             "_hideClone" : function _hideClone(){
-                if(!(cloneHidden)){
+                if(!cloneHidden){
                     pluginEvent('hideClone',this);
                     if(Sortable.eventCanceled){
                         return;
@@ -2109,7 +2075,6 @@
                     }
                     cloneHidden=true;
                 }
-            
             } ,
             "_showClone" : function _showClone(putSortable){
                 if(putSortable.lastPutMode !== 'clone'){
@@ -2121,7 +2086,7 @@
                     if(Sortable.eventCanceled){
                         return;
                     }
-                    if(dragEl.parentNode == rootEl && !(this.options.group.revertClone)){
+                    if(dragEl.parentNode == rootEl && !this.options.group.revertClone){
                         rootEl.insertBefore(cloneEl,dragEl);
                     }else if(nextEl){
                         rootEl.insertBefore(cloneEl,nextEl);
@@ -2134,7 +2099,6 @@
                     css(cloneEl,'display','');
                     cloneHidden=false;
                 }
-            
             }
         };
         function _globalDragOver(/* #Event */evt){
@@ -2148,7 +2112,7 @@
             var sortable=fromEl[expando];
             var onMoveFn=sortable.options.onMove;
             var retVal;
-            if(window.CustomEvent && !(IE11OrLess) && !(Edge)){
+            if(window.CustomEvent && !IE11OrLess && !Edge){
                 evt=new CustomEvent('move',{"bubbles" : true ,"cancelable" : true});
             }else{
                 evt=document.createEvent('Event');
@@ -2202,27 +2166,29 @@
             var targetS1=vertical ? ( targetRect.top ) : ( targetRect.left );
             var targetS2=vertical ? ( targetRect.bottom ) : ( targetRect.right );
             var invert=false;
-            if(!(invertSwap)){
+            if(!invertSwap){
                 if(isLastTarget && targetMoveDistance < targetLength * swapThreshold){
-                    if(!(pastFirstInvertThresh) && (lastDirection === 1 ?
-                          ( 
-                                mouseOnAxis > targetS1 + targetLength * invertedSwapThreshold / 2 )
-                        : ( 
-                                mouseOnAxis < targetS2 - targetLength * invertedSwapThreshold / 2 
-                        ))){
+                    if(!pastFirstInvertThresh
+                           && (lastDirection === 1 ?
+                              ( 
+                                    mouseOnAxis > targetS1 + (targetLength * invertedSwapThreshold) / 2 )
+                            : ( 
+                                    mouseOnAxis < targetS2 - (targetLength * invertedSwapThreshold) / 2 
+                            ))
+                    ){
                         pastFirstInvertThresh=true;
                     }
-                    if(!(pastFirstInvertThresh)){
-                        if(lastDirection === 1 ? ( (mouseOnAxis < targetS1 + targetMoveDistance) ) : ( (mouseOnAxis > targetS2 - targetMoveDistance) )
+                    if(!pastFirstInvertThresh){
+                        if((lastDirection === 1 ? ( (mouseOnAxis < targetS1 + targetMoveDistance) ) : ( (mouseOnAxis > targetS2 - targetMoveDistance) ))
                         ){
-                            return(-(lastDirection));
+                            return(-lastDirection);
                         }
                     }else{
                         invert=true;
                     }
                 }else{
-                    if(mouseOnAxis > targetS1 + targetLength * (1 - swapThreshold) / 2
-                     && mouseOnAxis < targetS2 - targetLength * (1 - swapThreshold) / 2
+                    if(mouseOnAxis > targetS1 + (targetLength * (1 - swapThreshold)) / 2
+                           && mouseOnAxis < targetS2 - (targetLength * (1 - swapThreshold)) / 2
                     ){
                         return(_getInsertDirection(target));
                     }
@@ -2230,8 +2196,8 @@
             }
             invert=invert || invertSwap;
             if(invert){
-                if(mouseOnAxis < targetS1 + targetLength * invertedSwapThreshold / 2
-                 || mouseOnAxis > targetS2 - targetLength * invertedSwapThreshold / 2
+                if(mouseOnAxis < targetS1 + (targetLength * invertedSwapThreshold) / 2
+                       || mouseOnAxis > targetS2 - (targetLength * invertedSwapThreshold) / 2
                 ){
                     return(mouseOnAxis > targetS1 + targetLength / 2 ? ( 1 ) : ( -1 ));
                 }
@@ -2294,8 +2260,7 @@
             "css" : css ,
             "find" : find ,
             "is" : function is(el,selector){
-                return(!(!(closest(el,selector,el,false))));
-            
+                return(!!closest(el,selector,el,false));
             } ,
             "extend" : extend ,
             "throttle" : throttle ,
@@ -2328,7 +2293,7 @@
                 plugins=plugins[0];
             }
             plugins.forEach(function(plugin){
-                    if(!(plugin.prototype) || !(plugin.prototype.constructor)){
+                    if(!plugin.prototype || !plugin.prototype.constructor){
                         throw "Sortable: Mounted plugin must be a constructor function, not ".concat({}.toString.call(plugin));
                     }
                     if(plugin.utils){
@@ -2358,7 +2323,7 @@
             function AutoScroll(){
                 this.defaults={"scroll" : true ,"forceAutoScrollFallback" : false ,"scrollSensitivity" : 30 ,"scrollSpeed" : 10 ,"bubbleScroll" : true};
                 for(var fn in this){
-                    if(fn.charAt(0) === '_' && typeof this[fn] === 'function'){
+                    if(fn.charAt(0) === '_' &&  typeof this[fn] === 'function'){
                         this[fn]=this[fn].bind(this);
                     }
                 }
@@ -2377,14 +2342,12 @@
                             on(document,'mousemove',this._handleFallbackAutoScroll);
                         }
                     }
-                
                 } ,
                 "dragOverCompleted" : function dragOverCompleted(_ref2){
                     var originalEvent=_ref2.originalEvent;
-                    if(!(this.options.dragOverBubble) && !(originalEvent.rootEl)){
+                    if(!this.options.dragOverBubble && !originalEvent.rootEl){
                         this._handleAutoScroll(originalEvent);
                     }
-                
                 } ,
                 "drop" : function drop(){
                     if(this.sortable.nativeDraggable){
@@ -2397,16 +2360,13 @@
                     clearPointerElemChangedInterval();
                     clearAutoScrolls();
                     cancelThrottle();
-                
                 } ,
                 "nulling" : function nulling(){
                     touchEvt$1=scrollRootEl=scrollEl=scrolling=pointerElemChangedInterval=lastAutoScrollX=lastAutoScrollY=null;
                     autoScrolls.length=0;
-                
                 } ,
                 "_handleFallbackAutoScroll" : function _handleFallbackAutoScroll(evt){
                     this._handleAutoScroll(evt,true);
-                
                 } ,
                 "_handleAutoScroll" : function _handleAutoScroll(evt,fallback){
                     var _this=this;
@@ -2414,10 +2374,15 @@
                     var y=evt.touches ? ( evt.touches[0].clientY ) : ( evt.clientY );
                     var elem=document.elementFromPoint(x,y);
                     touchEvt$1=evt;
-                    if(fallback || this.options.forceAutoScrollFallback || Edge || IE11OrLess || Safari){
+                    if(fallback
+                           || this.options.forceAutoScrollFallback
+                           || Edge
+                           || IE11OrLess
+                           || Safari
+                    ){
                         autoScroll(evt,this.options,elem,fallback);
                         var ogElemScroller=getParentAutoScrollElement(elem,true);
-                        if(scrolling && (!(pointerElemChangedInterval) || x !== lastAutoScrollX || y !== lastAutoScrollY)){
+                        if(scrolling && (!pointerElemChangedInterval || x !== lastAutoScrollX || y !== lastAutoScrollY)){
                             pointerElemChangedInterval && clearPointerElemChangedInterval();
                             pointerElemChangedInterval=setInterval(function(){
                                 var newElem=getParentAutoScrollElement(document.elementFromPoint(x,y),true);
@@ -2431,13 +2396,12 @@
                             lastAutoScrollY=y;
                         }
                     }else{
-                        if(!(this.options.bubbleScroll) || getParentAutoScrollElement(elem,true) === getWindowScrollingElement()){
+                        if(!this.options.bubbleScroll || getParentAutoScrollElement(elem,true) === getWindowScrollingElement()){
                             clearAutoScrolls();
                             return;
                         }
                         autoScroll(evt,this.options,getParentAutoScrollElement(elem,false),false);
                     }
-                
                 }
             };
             return(_extends(AutoScroll,{"pluginName" : 'scroll' ,"initializeByDefault" : true}));
@@ -2452,7 +2416,7 @@
             clearInterval(pointerElemChangedInterval);
         }
         var autoScroll=throttle(function(evt,options,rootEl,isFallback){
-            if(!(options.scroll)){
+            if(!options.scroll){
                 return;
             }
             var x=evt.touches ? ( evt.touches[0].clientX ) : ( evt.clientX );
@@ -2496,11 +2460,11 @@
                     canScrollX=width < scrollWidth && (elCSS.overflowX === 'auto' || elCSS.overflowX === 'scroll');
                     canScrollY=height < scrollHeight && (elCSS.overflowY === 'auto' || elCSS.overflowY === 'scroll');
                 }
-                var vx=canScrollX && (Math.abs(right - x) <= sens && scrollPosX + width < scrollWidth) - (Math.abs(left - x) <= sens && !(!(scrollPosX)));
-                var vy=canScrollY && (Math.abs(bottom - y) <= sens && scrollPosY + height < scrollHeight) - (Math.abs(top - y) <= sens && !(!(scrollPosY)));
-                if(!(autoScrolls[layersOut])){
+                var vx=canScrollX && (Math.abs(right - x) <= sens && scrollPosX + width < scrollWidth) - (Math.abs(left - x) <= sens && !!scrollPosX);
+                var vy=canScrollY && (Math.abs(bottom - y) <= sens && scrollPosY + height < scrollHeight) - (Math.abs(top - y) <= sens && !!scrollPosY);
+                if(!autoScrolls[layersOut]){
                     for( var i=0 ; i <= layersOut ; i++ ){
-                        if(!(autoScrolls[i])){
+                        if(!autoScrolls[i]){
                             autoScrolls[i]={};
                         }
                     }
@@ -2519,7 +2483,7 @@
                             }
                             var scrollOffsetY=autoScrolls[this.layer].vy ? ( autoScrolls[this.layer].vy * speed ) : ( 0 );
                             var scrollOffsetX=autoScrolls[this.layer].vx ? ( autoScrolls[this.layer].vx * speed ) : ( 0 );
-                            if(typeof scrollCustomFn === 'function'){
+                            if( typeof scrollCustomFn === 'function'){
                                 if(scrollCustomFn.call(Sortable.dragged.parentNode[expando],scrollOffsetX,scrollOffsetY,evt,touchEvt$1,autoScrolls[this.layer].el) !== 'continue'
                                 ){
                                     return;
@@ -2530,7 +2494,10 @@
                     }
                 }
                 layersOut++;
-            }while(options.bubbleScroll && currentParent !== winScroller && (currentParent=getParentAutoScrollElement(currentParent,false)));
+            }while(options.bubbleScroll
+                   && currentParent !== winScroller
+                   && (currentParent=getParentAutoScrollElement(currentParent,false))
+            );
             scrolling=scrollThisInstance;
         },30);
         var drop=function drop(_ref){
@@ -2541,7 +2508,7 @@
             var dispatchSortableEvent=_ref.dispatchSortableEvent;
             var hideGhostForTarget=_ref.hideGhostForTarget;
             var unhideGhostForTarget=_ref.unhideGhostForTarget;
-            if(!(originalEvent)){
+            if(!originalEvent){
                 return;
             }
             var toSortable=putSortable || activeSortable;
@@ -2549,7 +2516,7 @@
             var touch=originalEvent.changedTouches && originalEvent.changedTouches.length ? ( originalEvent.changedTouches[0] ) : ( originalEvent );
             var target=document.elementFromPoint(touch.clientX,touch.clientY);
             unhideGhostForTarget();
-            if(toSortable && !(toSortable.el.contains(target))){
+            if(toSortable && !toSortable.el.contains(target)){
                 dispatchSortableEvent('spill');
                 this.onSpill({"dragEl" : dragEl ,"putSortable" : putSortable});
             }
@@ -2562,7 +2529,6 @@
             "dragStart" : function dragStart(_ref2){
                 var oldDraggableIndex=_ref2.oldDraggableIndex;
                 this.startIndex=oldDraggableIndex;
-            
             } ,
             "onSpill" : function onSpill(_ref3){
                 var dragEl=_ref3.dragEl;
@@ -2581,7 +2547,6 @@
                 if(putSortable){
                     putSortable.animateAll();
                 }
-            
             } ,
             "drop" : drop
         };
@@ -2597,7 +2562,6 @@
                 parentSortable.captureAnimationState();
                 dragEl.parentNode && dragEl.parentNode.removeChild(dragEl);
                 parentSortable.animateAll();
-            
             } ,
             "drop" : drop
         };
@@ -2611,7 +2575,6 @@
                 "dragStart" : function dragStart(_ref){
                     var dragEl=_ref.dragEl;
                     lastSwapEl=dragEl;
-                
                 } ,
                 "dragOverValid" : function dragOverValid(_ref2){
                     var completed=_ref2.completed;
@@ -2620,7 +2583,7 @@
                     var activeSortable=_ref2.activeSortable;
                     var changed=_ref2.changed;
                     var cancel=_ref2.cancel;
-                    if(!(activeSortable.options.swap)){
+                    if(!activeSortable.options.swap){
                         return;
                     }
                     var el=this.sortable.el;
@@ -2640,7 +2603,6 @@
                     changed();
                     completed(true);
                     cancel();
-                
                 } ,
                 "drop" : function drop(_ref3){
                     var activeSortable=_ref3.activeSortable;
@@ -2662,24 +2624,24 @@
                             }
                         }
                     }
-                
                 } ,
                 "nulling" : function nulling(){
                     lastSwapEl=null;
-                
                 }
             };
-            return(_extends(Swap,{"pluginName" : 'swap' ,"eventProperties" : function eventProperties(){
+            return(_extends(Swap,{
+                "pluginName" : 'swap' ,
+                "eventProperties" : function eventProperties(){
                     return({"swapItem" : lastSwapEl});
-                
-                }}));
+                }
+            }));
         }
         function swapNodes(n1,n2){
             var p1=n1.parentNode;
             var p2=n2.parentNode;
             var i1;
             var i2;
-            if(!(p1) || !(p2) || p1.isEqualNode(n2) || p2.isEqualNode(n1)){
+            if(!p1 || !p2 || p1.isEqualNode(n2) || p2.isEqualNode(n1)){
                 return;
             }
             i1=index(n1);
@@ -2703,11 +2665,11 @@
         function MultiDragPlugin(){
             function MultiDrag(sortable){
                 for(var fn in this){
-                    if(fn.charAt(0) === '_' && typeof this[fn] === 'function'){
+                    if(fn.charAt(0) === '_' &&  typeof this[fn] === 'function'){
                         this[fn]=this[fn].bind(this);
                     }
                 }
-                if(!(sortable.options.avoidImplicitDeselect)){
+                if(!sortable.options.avoidImplicitDeselect){
                     if(sortable.options.supportPointer){
                         on(document,'pointerup',this._deselectMultiDrag);
                     }else{
@@ -2725,13 +2687,12 @@
                         var data='';
                         if(multiDragElements.length && multiDragSortable === sortable){
                             multiDragElements.forEach(function(multiDragElement,i){
-                                    data+=(!(i) ? ( '' ) : ( ', ' )) + multiDragElement.textContent;
+                                    data+=(!i ? ( '' ) : ( ', ' )) + multiDragElement.textContent;
                                 });
                         }else{
                             data=dragEl.textContent;
                         }
                         dataTransfer.setData('Text',data);
-                    
                     }
                 };
             }
@@ -2741,16 +2702,14 @@
                 "delayStartGlobal" : function delayStartGlobal(_ref){
                     var dragged=_ref.dragEl;
                     dragEl$1=dragged;
-                
                 } ,
                 "delayEnded" : function delayEnded(){
-                    this.isMultiDrag=~(multiDragElements.indexOf(dragEl$1));
-                
+                    this.isMultiDrag= ~multiDragElements.indexOf(dragEl$1);
                 } ,
                 "setupClone" : function setupClone(_ref2){
                     var sortable=_ref2.sortable;
                     var cancel=_ref2.cancel;
-                    if(!(this.isMultiDrag)){
+                    if(!this.isMultiDrag){
                         return;
                     }
                     for( var i=0 ; i < multiDragElements.length ; i++ ){
@@ -2763,30 +2722,28 @@
                     }
                     sortable._hideClone();
                     cancel();
-                
                 } ,
                 "clone" : function clone(_ref3){
                     var sortable=_ref3.sortable;
                     var rootEl=_ref3.rootEl;
                     var dispatchSortableEvent=_ref3.dispatchSortableEvent;
                     var cancel=_ref3.cancel;
-                    if(!(this.isMultiDrag)){
+                    if(!this.isMultiDrag){
                         return;
                     }
-                    if(!(this.options.removeCloneOnHide)){
+                    if(!this.options.removeCloneOnHide){
                         if(multiDragElements.length && multiDragSortable === sortable){
                             insertMultiDragClones(true,rootEl);
                             dispatchSortableEvent('clone');
                             cancel();
                         }
                     }
-                
                 } ,
                 "showClone" : function showClone(_ref4){
                     var cloneNowShown=_ref4.cloneNowShown;
                     var rootEl=_ref4.rootEl;
                     var cancel=_ref4.cancel;
-                    if(!(this.isMultiDrag)){
+                    if(!this.isMultiDrag){
                         return;
                     }
                     insertMultiDragClones(false,rootEl);
@@ -2796,14 +2753,13 @@
                     cloneNowShown();
                     clonesHidden=false;
                     cancel();
-                
                 } ,
                 "hideClone" : function hideClone(_ref5){
                     var _this=this;
                     var sortable=_ref5.sortable;
                     var cloneNowHidden=_ref5.cloneNowHidden;
                     var cancel=_ref5.cancel;
-                    if(!(this.isMultiDrag)){
+                    if(!this.isMultiDrag){
                         return;
                     }
                     multiDragClones.forEach(function(clone){
@@ -2815,11 +2771,10 @@
                     cloneNowHidden();
                     clonesHidden=true;
                     cancel();
-                
                 } ,
                 "dragStartGlobal" : function dragStartGlobal(_ref6){
                     var sortable=_ref6.sortable;
-                    if(!(this.isMultiDrag) && multiDragSortable){
+                    if(!this.isMultiDrag && multiDragSortable){
                         multiDragSortable.multiDrag._deselectMultiDrag();
                     }
                     multiDragElements.forEach(function(multiDragElement){
@@ -2829,12 +2784,11 @@
                         return(a.sortableIndex - b.sortableIndex);
                     });
                     dragStarted=true;
-                
                 } ,
                 "dragStarted" : function dragStarted(_ref7){
                     var _this2=this;
                     var sortable=_ref7.sortable;
-                    if(!(this.isMultiDrag)){
+                    if(!this.isMultiDrag){
                         return;
                     }
                     if(this.options.sort){
@@ -2869,17 +2823,15 @@
                                 removeMultiDragElements();
                             }
                         });
-                
                 } ,
                 "dragOver" : function dragOver(_ref8){
                     var target=_ref8.target;
                     var completed=_ref8.completed;
                     var cancel=_ref8.cancel;
-                    if(folding && ~(multiDragElements.indexOf(target))){
+                    if(folding &&  ~multiDragElements.indexOf(target)){
                         completed(false);
                         cancel();
                     }
-                
                 } ,
                 "revert" : function revert(_ref9){
                     var fromSortable=_ref9.fromSortable;
@@ -2894,9 +2846,8 @@
                                 fromSortable.removeAnimationState(multiDragElement);
                             });
                         folding=false;
-                        insertMultiDragElements(!(this.options.removeCloneOnHide),rootEl);
+                        insertMultiDragElements(!this.options.removeCloneOnHide,rootEl);
                     }
-                
                 } ,
                 "dragOverCompleted" : function dragOverCompleted(_ref10){
                     var sortable=_ref10.sortable;
@@ -2912,11 +2863,11 @@
                         }
                         initialFolding=false;
                         if(options.animation
-                         && multiDragElements.length > 1
-                         && (folding
-                         || !(isOwner)
-                         && !(activeSortable.options.sort)
-                         && !(putSortable))
+                               && multiDragElements.length > 1
+                               && (folding
+                                   || !isOwner
+                                       && !activeSortable.options.sort
+                                       && !putSortable)
                         ){
                             var dragRectAbsolute=getRect(dragEl$1,false,true,true);
                             multiDragElements.forEach(function(multiDragElement){
@@ -2928,14 +2879,14 @@
                                 });
                             folding=true;
                         }
-                        if(!(isOwner)){
-                            if(!(folding)){
+                        if(!isOwner){
+                            if(!folding){
                                 removeMultiDragElements();
                             }
                             if(multiDragElements.length > 1){
                                 var clonesHiddenBefore=clonesHidden;
                                 activeSortable._showClone(sortable);
-                                if(activeSortable.options.animation && !(clonesHidden) && clonesHiddenBefore){
+                                if(activeSortable.options.animation && !clonesHidden && clonesHiddenBefore){
                                     multiDragClones.forEach(function(clone){
                                             activeSortable.addAnimationState({"target" : clone ,"rect" : clonesFromRect});
                                             clone.fromRect=clonesFromRect;
@@ -2947,7 +2898,6 @@
                             }
                         }
                     }
-                
                 } ,
                 "dragOverAnimationCapture" : function dragOverAnimationCapture(_ref11){
                     var dragRect=_ref11.dragRect;
@@ -2956,20 +2906,18 @@
                     multiDragElements.forEach(function(multiDragElement){
                             multiDragElement.thisAnimationDuration=null;
                         });
-                    if(activeSortable.options.animation && !(isOwner) && activeSortable.multiDrag.isMultiDrag){
+                    if(activeSortable.options.animation && !isOwner && activeSortable.multiDrag.isMultiDrag){
                         clonesFromRect=_extends({},dragRect);
                         var dragMatrix=matrix(dragEl$1,true);
                         clonesFromRect.top-=dragMatrix.f;
                         clonesFromRect.left-=dragMatrix.e;
                     }
-                
                 } ,
                 "dragOverAnimationComplete" : function dragOverAnimationComplete(){
                     if(folding){
                         folding=false;
                         removeMultiDragElements();
                     }
-                
                 } ,
                 "drop" : function drop(_ref12){
                     var evt=_ref12.originalEvent;
@@ -2980,23 +2928,23 @@
                     var oldIndex=_ref12.oldIndex;
                     var putSortable=_ref12.putSortable;
                     var toSortable=putSortable || this.sortable;
-                    if(!(evt)){
+                    if(!evt){
                         return;
                     }
                     var options=this.options;
                     var children=parentEl.children;
-                    if(!(dragStarted)){
-                        if(options.multiDragKey && !(this.multiDragKeyDown)){
+                    if(!dragStarted){
+                        if(options.multiDragKey && !this.multiDragKeyDown){
                             this._deselectMultiDrag();
                         }
-                        toggleClass(dragEl$1,options.selectedClass,!(~(multiDragElements.indexOf(dragEl$1))));
-                        if(!(~(multiDragElements.indexOf(dragEl$1)))){
+                        toggleClass(dragEl$1,options.selectedClass,!( ~multiDragElements.indexOf(dragEl$1)));
+                        if(!( ~multiDragElements.indexOf(dragEl$1))){
                             multiDragElements.push(dragEl$1);
                             dispatchEvent({"sortable" : sortable ,"rootEl" : rootEl ,"name" : 'select' ,"targetEl" : dragEl$1 ,"originalEvent" : evt});
                             if(evt.shiftKey && lastMultiDragSelect && sortable.el.contains(lastMultiDragSelect)){
                                 var lastIndex=index(lastMultiDragSelect);
                                 var currentIndex=index(dragEl$1);
-                                if(~(lastIndex) && ~(currentIndex) && lastIndex !== currentIndex){
+                                if( ~lastIndex &&  ~currentIndex && lastIndex !== currentIndex){
                                     var n;
                                     var i;
                                     if(currentIndex > lastIndex){
@@ -3007,7 +2955,7 @@
                                         n=lastIndex + 1;
                                     }
                                     for(  ; i < n ; i++ ){
-                                        if(~(multiDragElements.indexOf(children[i]))){
+                                        if( ~multiDragElements.indexOf(children[i])){
                                             continue;
                                         }
                                         toggleClass(children[i],options.selectedClass,true);
@@ -3030,11 +2978,11 @@
                         if((parentEl[expando].options.sort || parentEl !== rootEl) && multiDragElements.length > 1){
                             var dragRect=getRect(dragEl$1);
                             var multiDragIndex=index(dragEl$1,':not(.' + this.options.selectedClass + ')');
-                            if(!(initialFolding) && options.animation){
+                            if(!initialFolding && options.animation){
                                 dragEl$1.thisAnimationDuration=null;
                             }
                             toSortable.captureAnimationState();
-                            if(!(initialFolding)){
+                            if(!initialFolding){
                                 if(options.animation){
                                     dragEl$1.fromRect=dragRect;
                                     multiDragElements.forEach(function(multiDragElement){
@@ -3081,12 +3029,10 @@
                                 clone.parentNode && clone.parentNode.removeChild(clone);
                             });
                     }
-                
                 } ,
                 "nullingGlobal" : function nullingGlobal(){
                     this.isMultiDrag=dragStarted=false;
                     multiDragClones.length=0;
-                
                 } ,
                 "destroyGlobal" : function destroyGlobal(){
                     this._deselectMultiDrag();
@@ -3095,10 +3041,9 @@
                     off(document,'touchend',this._deselectMultiDrag);
                     off(document,'keydown',this._checkKeyDown);
                     off(document,'keyup',this._checkKeyUp);
-                
                 } ,
                 "_deselectMultiDrag" : function _deselectMultiDrag(evt){
-                    if(typeof dragStarted !== "undefined" && dragStarted){
+                    if( typeof dragStarted !== "undefined" && dragStarted){
                         return;
                     }
                     if(multiDragSortable !== this.sortable){
@@ -3116,19 +3061,16 @@
                         multiDragElements.shift();
                         dispatchEvent({"sortable" : this.sortable ,"rootEl" : this.sortable.el ,"name" : 'deselect' ,"targetEl" : el ,"originalEvent" : evt});
                     }
-                
                 } ,
                 "_checkKeyDown" : function _checkKeyDown(evt){
                     if(evt.key === this.options.multiDragKey){
                         this.multiDragKeyDown=true;
                     }
-                
                 } ,
                 "_checkKeyUp" : function _checkKeyUp(evt){
                     if(evt.key === this.options.multiDragKey){
                         this.multiDragKeyDown=false;
                     }
-                
                 }
             };
             return(_extends(MultiDrag,{
@@ -3140,7 +3082,7 @@
                      */
                     "select" : function select(el){
                         var sortable=el.parentNode[expando];
-                        if(!(sortable) || !(sortable.options.multiDrag) || ~(multiDragElements.indexOf(el))){
+                        if(!sortable || !sortable.options.multiDrag ||  ~multiDragElements.indexOf(el)){
                             return;
                         }
                         if(multiDragSortable && multiDragSortable !== sortable){
@@ -3149,7 +3091,6 @@
                         }
                         toggleClass(el,sortable.options.selectedClass,true);
                         multiDragElements.push(el);
-                    
                     } ,
                      /*#
                       * Deselects the provided multi-drag item
@@ -3158,12 +3099,11 @@
                     "deselect" : function deselect(el){
                         var sortable=el.parentNode[expando];
                         var index=multiDragElements.indexOf(el);
-                        if(!(sortable) || !(sortable.options.multiDrag) || !(~(index))){
+                        if(!sortable || !sortable.options.multiDrag || !( ~index)){
                             return;
                         }
                         toggleClass(el,sortable.options.selectedClass,false);
                         multiDragElements.splice(index,1);
-                    
                     }
                 } ,
                 "eventProperties" : function eventProperties(){
@@ -3183,7 +3123,6 @@
                             newIndicies.push({"multiDragElement" : multiDragElement ,"index" : newIndex});
                         });
                     return({"items" : _toConsumableArray(multiDragElements) ,"clones" : [].concat(multiDragClones) ,"oldIndicies" : oldIndicies ,"newIndicies" : newIndicies});
-                
                 } ,
                 "optionListeners" : {
                     "multiDragKey" : function multiDragKey(key){
@@ -3194,7 +3133,6 @@
                             key=key.charAt(0).toUpperCase() + key.substr(1);
                         }
                         return key;
-                    
                     }
                 }
             }));

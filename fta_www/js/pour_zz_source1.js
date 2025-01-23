@@ -57,7 +57,10 @@ async function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_so
                 var date_de_debut_traitement=donnees.__entree.date_de_debut_traitement;
                 var nombre_de_secondes=(date_de_fin_traitement - date_de_debut_traitement) / 1000;
                 if(donnees.__entree.parametres_sauvegarde.nom_du_source){
-                    logerreur({"__xst" : true ,"__xme" : 'la réécriture de ' + donnees.__entree.parametres_sauvegarde.nom_du_source + ' a été faite en ' + nombre_de_secondes + ' secondes'});
+                    logerreur({
+                            "__xst" : true ,
+                            "__xme" : 'la réécriture de ' + donnees.__entree.parametres_sauvegarde.nom_du_source + ' a été faite en ' + nombre_de_secondes + ' secondes'
+                        });
                 }else{
                     logerreur({"__xst" : true ,"__xme" : 'la réécriture du fichier a été faite en ' + nombre_de_secondes + ' secondes'});
                 }
@@ -184,7 +187,11 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
     __gi1.raz_des_messages();
     var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,
+        "id_source" : id_source ,
+        "date_de_debut_traitement" : date_de_debut_traitement
+    };
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
@@ -229,7 +236,11 @@ function zz_l1_convertir_un_source_php_sur_disque2(id_source){
     __gi1.raz_des_messages();
     var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,
+        "id_source" : id_source ,
+        "date_de_debut_traitement" : date_de_debut_traitement
+    };
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
@@ -272,7 +283,11 @@ function zz_l1_convertir_un_source_php_sur_disque1(id_source){
     __gi1.raz_des_messages();
     var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,
+        "id_source" : id_source ,
+        "date_de_debut_traitement" : date_de_debut_traitement
+    };
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
@@ -297,7 +312,11 @@ function zz_l1_convertir_un_source_sur_disque(id_source){
     __gi1.raz_des_messages();
     var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,"id_source" : id_source ,"date_de_debut_traitement" : date_de_debut_traitement};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,
+        "id_source" : id_source ,
+        "date_de_debut_traitement" : date_de_debut_traitement
+    };
     async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
@@ -408,7 +427,10 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
         }
     }catch(e){
-        astphp_logerreur({"__xst" : false ,"__xme" : 'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')});
+        astphp_logerreur({
+                "__xst" : false ,
+                "__xme" : 'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')
+            });
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
 }
@@ -509,7 +531,10 @@ function convertir_rev_en_php_et_sauvegarde_rev(nom_zone_source_rev,nom_zone_gen
 */
 function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
     __gi1.raz_des_messages();
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'supprimer_un_fichier_avec_un_nom_encrypte'} ,"file_name" : nom_de_fichier_encrypte};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'supprimer_un_fichier_avec_un_nom_encrypte'} ,
+        "file_name" : nom_de_fichier_encrypte
+    };
     async function supprimer_un_fichier_avec_un_nom_encrypte1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }
@@ -527,7 +552,10 @@ function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
 */
 function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
     __gi1.raz_des_messages();
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_avec_un_nom_encrypte'} ,"file_name" : nom_de_fichier_encrypte};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_avec_un_nom_encrypte'} ,
+        "file_name" : nom_de_fichier_encrypte
+    };
     async function charger_un_fichier_avec_un_nom_encrypte1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }

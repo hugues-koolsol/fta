@@ -34,7 +34,10 @@ function convertSource(objMatSrc){
         }
     }
     if(type_source == ''){
-        return(logerreur({"__xst" : false ,"__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '}));
+        return(logerreur({
+            "__xst" : false ,
+            "__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
+        }));
     }
     for( var i=0 ; i < l01 ; i++ ){
         if(objMatSrc.__xva[i][2] == 'f' && objMatSrc.__xva[i][3] == 1){
@@ -58,7 +61,11 @@ function convertSource(objMatSrc){
                     position_de_la_balise_source=i;
                 }else if(objMatSrc.__xva[i][1] == 'concatFichier'){
                 }else{
-                    return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[i])}));
+                    return(logerreur({
+                        "__xst" : false ,
+                        "id" : i ,
+                        "__xme" : 'file core , fonction convertSource : l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[i])
+                    }));
                 }
             }
         }
@@ -70,9 +77,9 @@ function convertSource(objMatSrc){
             }
         }
         if(objMatSrc.__xva[i][2] == 'f'
-         && objMatSrc.__xva[i][3] == 1
-         && objMatSrc.__xva[i][1] == 'concatFichier'
-         && objMatSrc.__xva[i][8] == 1
+               && objMatSrc.__xva[i][3] == 1
+               && objMatSrc.__xva[i][1] == 'concatFichier'
+               && objMatSrc.__xva[i][8] == 1
         ){
             tabConcatFichier.push(objMatSrc.__xva[i + 1][1]);
         }
@@ -195,7 +202,16 @@ function sauvegardeTexteSource(){
         var nomDuSource=document.getElementById('nomDuSource').value;
         for( i=0 ; i < nomDuSource.length ; i=i + 1 ){
             c=nomDuSource.substr(i,1);
-            if(c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|'){
+            if(c == '/'
+                   || c == '\\'
+                   || c == ':'
+                   || c == '*'
+                   || c == '?'
+                   || c == '"'
+                   || c == '<'
+                   || c == '>'
+                   || c == '|'
+            ){
                 alert('Le caractère "' + c + '" n\'est pas autorisé ( tout comme /\\:*?"<>|');
                 return;
             }else{
@@ -205,7 +221,11 @@ function sauvegardeTexteSource(){
                 }
             }
         }
-        var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'sauvegarger_un_fichier_rev'} ,"contenu_du_fichier" : document.getElementById('normalise').value ,"file_name" : nomDuSource};
+        var ajax_param={
+            "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'sauvegarger_un_fichier_rev'} ,
+            "contenu_du_fichier" : document.getElementById('normalise').value ,
+            "file_name" : nomDuSource
+        };
         async function sauvegarger_un_fichier_rev(url="",ajax_param){
             return(__gi1.recupérer_un_fetch(url,ajax_param));
         }
@@ -298,8 +318,7 @@ function ajusteTailleTextareaContenantSource(normalise){
         if(largeur > 150 || largeur <= 0){
             largeur=150;
         }
-    }catch(e){
-    }
+    }catch(e){}
 }
 /*
   =====================================================================================================================
@@ -412,7 +431,13 @@ function enregistrer2(){
                 document.getElementById('nomDuSource').disabled=false;
                 if(conversion.__xst == true){
                     global_messages.data.sourceGenere=conversion.__xva;
-                    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'ecrire_fichier1'} ,"contenu_du_fichier" : conversion.__xva ,"file_name" : conversion.file_name ,"file_extension" : conversion.file_extension ,"file_path" : conversion.file_path};
+                    var ajax_param={
+                        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'ecrire_fichier1'} ,
+                        "contenu_du_fichier" : conversion.__xva ,
+                        "file_name" : conversion.file_name ,
+                        "file_extension" : conversion.file_extension ,
+                        "file_path" : conversion.file_path
+                    };
                     async function ecrire_fichier1(url="",ajax_param){
                         return(__gi1.recupérer_un_fetch(url,ajax_param));
                     }
@@ -546,7 +571,10 @@ function chargerFichierRev(nomFichierSource){
     document.getElementById('nomDuSource').disabled=true;
     document.getElementById('normalise').value='';
     document.getElementById('zonesource').value='';
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_ficher_rev' ,"opt" : {"delais_admis" : 1500}} ,"file_name" : nomFichierSource};
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_ficher_rev' ,"opt" : {"delais_admis" : 1500}} ,
+        "file_name" : nomFichierSource
+    };
     async function charger_fichier_rev1(url="",ajax_param){
         return(__gi1.recupérer_un_fetch(url,ajax_param));
     }

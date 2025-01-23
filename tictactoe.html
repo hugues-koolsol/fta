@@ -94,8 +94,8 @@ function verifie_gagnant1(nj){
     var i=0;
     for( i=0 ; i < 3 ; i++ ){
         if(document.getElementById(i * 3 + 0).innerHTML === nj
-         && document.getElementById(i * 3 + 1).innerHTML === nj
-         && document.getElementById(i * 3 + 2).innerHTML === nj
+               && document.getElementById(i * 3 + 1).innerHTML === nj
+               && document.getElementById(i * 3 + 2).innerHTML === nj
         ){
             return 1;
         }
@@ -103,21 +103,21 @@ function verifie_gagnant1(nj){
     var i=0;
     for( i=0 ; i < 3 ; i++ ){
         if(document.getElementById(i + 0).innerHTML === nj
-         && document.getElementById(i + 3).innerHTML === nj
-         && document.getElementById(i + 6).innerHTML === nj
+               && document.getElementById(i + 3).innerHTML === nj
+               && document.getElementById(i + 6).innerHTML === nj
         ){
             return 1;
         }
     }
     if(document.getElementById(0).innerHTML === nj
-     && document.getElementById(4).innerHTML === nj
-     && document.getElementById(8).innerHTML === nj
+           && document.getElementById(4).innerHTML === nj
+           && document.getElementById(8).innerHTML === nj
     ){
         return 1;
     }
     if(document.getElementById(6).innerHTML === nj
-     && document.getElementById(4).innerHTML === nj
-     && document.getElementById(2).innerHTML === nj
+           && document.getElementById(4).innerHTML === nj
+           && document.getElementById(2).innerHTML === nj
     ){
         return 1;
     }

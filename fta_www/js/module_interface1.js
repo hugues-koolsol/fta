@@ -83,8 +83,8 @@ class interface1{
         var lst=div_parent.getElementsByTagName('div');
         for( var i=0 ; i < lst.length ; i++ ){
             if(lst[i].parentElement === div_parent
-             && lst[i].getAttribute('data-masquable')
-             && lst[i].getAttribute('data-masquable') === '1'
+                   && lst[i].getAttribute('data-masquable')
+                   && lst[i].getAttribute('data-masquable') === '1'
             ){
                 if(est_masque === 1){
                     lst[i].style.display='';
@@ -255,7 +255,7 @@ class interface1{
         }catch(e){
             console.log(e);
             if(e.message === 'signal timed out'){
-                logerreur({"__xst" : false ,"__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt(delais_admis / 1000 * 10,10) / 10) + ' secondes '});
+                logerreur({"__xst" : false ,"__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes '});
             }else{
                 logerreur({"__xst" : false ,"__xme" : e.message});
             }
@@ -275,7 +275,7 @@ class interface1{
         var jsn1=JSON.parse(parametres);
         if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
             var paramatresModale={"__champs_texte_a_rapatrier" : jsn1['__champs_texte_a_rapatrier'] ,"__nom_champ_dans_parent" : jsn1['__nom_champ_dans_parent']};
-            this.global_modale2_iframe.src=(jsn1['__url']) + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale));
+            this.global_modale2_iframe.src=jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale));
             this.global_modale2.showModal();
         }
     }
@@ -368,7 +368,7 @@ class interface1{
             /*
               on met la zone en haut
             */
-            var d=parseInt(b.top - 80 + window.pageYOffset,10);
+            var d=parseInt((b.top - 80) + window.pageYOffset,10);
             var lst=document.getElementsByClassName('menuScroller');
             if(lst.length >= 2){
                 d=d - (lst.length - 1) * CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
@@ -403,7 +403,7 @@ class interface1{
                     /*
                       on met la zone en haut
                     */
-                    var d=parseInt(b.top - 80 + window.pageYOffset,10);
+                    var d=parseInt((b.top - 80) + window.pageYOffset,10);
                     var lst=document.getElementsByClassName('menuScroller');
                     console.log(lst.length);
                     console.log('d=',d);
@@ -474,7 +474,7 @@ class interface1{
             var a=document.getElementById(nom_textarea);
             var lignes=a.value.split('\n');
             if(lignes.length > numero_de_ligne){
-                lignes.splice(numero_de_ligne - 1,lignes.length - numero_de_ligne + 1);
+                lignes.splice(numero_de_ligne - 1,(lignes.length - numero_de_ligne) + 1);
                 position_fin=0;
                 for( i=lignes.length - 1 ; i >= 0 ; i-- ){
                     position_fin+=lignes[i].length + 1;
@@ -617,7 +617,7 @@ class interface1{
         clearTimeout(this.#globale_timeout_reference_timer_serveur_lent);
         var lstb1=refBody.getElementsByTagName('button');
         for( i=0 ; i < lstb1.length ; i++ ){
-            if(!(lstb1[i].onclick)){
+            if(!lstb1[i].onclick){
                 if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
                     lstb1[i].style.visibility="";
@@ -626,7 +626,7 @@ class interface1{
         }
         var lstb1=refBody.getElementsByTagName('input');
         for( i=0 ; i < lstb1.length ; i++ ){
-            if(!(lstb1[i].onclick)){
+            if(!lstb1[i].onclick){
                 if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
                     if(lstb1[i].type === 'submit'){
@@ -741,7 +741,7 @@ class interface1{
         var bod=document.getElementsByTagName('body')[0];
         var lstb1=bod.getElementsByTagName('button');
         for( i=0 ; i < lstb1.length ; i++ ){
-            if(!(lstb1[i].onclick)){
+            if(!lstb1[i].onclick){
                 if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
                     lstb1[i].addEventListener("click",this.click_sur_bouton1.bind(this),false);
@@ -750,7 +750,7 @@ class interface1{
         }
         var lstb1=bod.getElementsByTagName('input');
         for( i=0 ; i < lstb1.length ; i++ ){
-            if(!(lstb1[i].onclick)){
+            if(!lstb1[i].onclick){
                 if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
                 }else{
                     if(lstb1[i].type === 'submit'){
@@ -1263,11 +1263,11 @@ class interface1{
         Math.easeInOutQuad=function(t,b,c,d){
             t/=d / 2;
             if(t < 1){
-                return(c / 2 * t * t + b);
+                return((c / 2) * t * t + b);
             }
             /* un point virgule est-il en trop ? */
             t--;
-            return((-(c)) / 2 * (t * (t - 2) - 1) + b);
+            return(((-c) / 2) * (t * (t - 2) - 1) + b);
         };
         var element=document.scrollingElement;
         var positionDeDepart=element && element.scrollTop || window.pageYOffset;
@@ -1349,7 +1349,7 @@ class interface1{
                     }
                     var positionDuLien=lienActuel.getBoundingClientRect();
                     var boiteDesLiens=menuPrincipal.getBoundingClientRect();
-                    var positionDroiteDuLienDansLaBoite=parseInt(positionDuLien.left - boiteDesLiens.left + positionDuLien.width,10);
+                    var positionDroiteDuLienDansLaBoite=parseInt((positionDuLien.left - boiteDesLiens.left) + positionDuLien.width,10);
                     var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
                     if(positionDroiteDuLienDansLaBoite > largeurBoiteLiens){
                         var calcul=parseInt(boiteDesLiens.width - positionDuLien.width - 60,10);
@@ -1397,7 +1397,7 @@ class interface1{
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
                                 position_debut=i + 1;
-                                zoneSource.selectionEnd=position_debut + arr.posFerPar - 1;
+                                zoneSource.selectionEnd=(position_debut + arr.posFerPar) - 1;
                                 return;
                             }
                         }
@@ -1413,7 +1413,7 @@ class interface1{
                 if(arr.__xst === true){
                     zoneSource.focus();
                     zoneSource.selectionStart=position_debut;
-                    zoneSource.selectionEnd=position_debut + arr.posFerPar - 1;
+                    zoneSource.selectionEnd=(position_debut + arr.posFerPar) - 1;
                     return;
                 }
             }
@@ -1442,7 +1442,7 @@ class interface1{
                             zoneSource.focus();
                             zoneSource.selectionStart=i + 1;
                             position_debut=i + 1;
-                            zoneSource.selectionEnd=position_debut + arr.posFerPar - 1;
+                            zoneSource.selectionEnd=(position_debut + arr.posFerPar) - 1;
                             return;
                         }
                     }
@@ -1505,7 +1505,7 @@ class interface1{
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
                                 position_debut=i + 1;
-                                zoneSource.selectionEnd=position_debut + arr.posFerPar - 1;
+                                zoneSource.selectionEnd=(position_debut + arr.posFerPar) - 1;
                                 return;
                             }
                         }
@@ -1548,7 +1548,7 @@ class interface1{
             /* c'est la dernière ligne */
             endPos=l01;
         }
-        if(typeof tarea.selectionStart !== 'undefined'){
+        if( typeof tarea.selectionStart !== 'undefined'){
             tarea.select();
             tarea.selectionStart=startPos;
             tarea.selectionEnd=endPos;
@@ -1770,7 +1770,7 @@ class interface1{
         var zoneSource=document.getElementById(e.target.id);
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10) + document.documentElement.scrollTop - 10) + 'px';
+        this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 10) + 'px';
         this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         return false;
     }
@@ -1799,7 +1799,7 @@ class interface1{
         var zoneSource=document.getElementById(e.target.id);
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=(parseInt(ttt.bottom,10) + document.documentElement.scrollTop - 10) + 'px';
+        this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 10) + 'px';
         this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         if(e.keyCode === 36){
             /* touche home : on décale le scroll au début et toute la page aussi */
@@ -1975,7 +1975,7 @@ class interface1{
       =============================================================================================================
     */
     lancer_un_travail_en_arriere_plan(parametre){
-        if(!(window.Worker)){
+        if(!window.Worker){
             return;
         }
         if(this.#programme_en_arriere_plan === null){
@@ -2041,7 +2041,7 @@ class interface1{
       =============================================================================================================
     */
     #charger_le_module_des_taches_en_arrière_plan(par){
-        if(!(window.Worker)){
+        if(!window.Worker){
             return;
         }
         setTimeout(function(){

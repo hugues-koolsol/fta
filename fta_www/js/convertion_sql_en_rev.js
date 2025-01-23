@@ -4,7 +4,7 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
     var t='';
     var esp0=' '.repeat(NBESPACESREV * niveau);
     var esp1=' '.repeat(NBESPACESREV);
-    if(!(element)){
+    if(!element){
         /* .hasOwnProperty['type']]{ */
         debugger;
     }
@@ -36,7 +36,10 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
                 return(logerreur({"__xst" : false ,"__xme" : '0034 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.source)) + '"'}));
             }
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : '0030 recupere_element_de_ast_sql variant non traite : "' + JSON.stringify(json_partiel(element.source)) + '"'}));
+            return(logerreur({
+                "__xst" : false ,
+                "__xme" : '0030 recupere_element_de_ast_sql variant non traite : "' + JSON.stringify(json_partiel(element.source)) + '"'
+            }));
         }
         if(element.constraint){
             if(element.constraint.format && element.constraint.format === "on" && element.constraint.on){
@@ -47,7 +50,10 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
                     return(logerreur({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "' + JSON.stringify(json_partiel(element.constraint)) + '"'}));
                 }
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0025 recupere_element_de_ast_sql variant non traite : "' + JSON.stringify(json_partiel(element.constraint)) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0025 recupere_element_de_ast_sql variant non traite : "' + JSON.stringify(json_partiel(element.constraint)) + '"'
+                }));
             }
         }
         t+=')';
@@ -104,10 +110,16 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
                     }
                     t+=')';
                 }else{
-                    return(logerreur({"__xst" : false ,"__xme" : '0092 recupere_element_de_ast_sql pas de columns dans expression table : "' + JSON.stringify(json_partiel(element)) + '"'}));
+                    return(logerreur({
+                        "__xst" : false ,
+                        "__xme" : '0092 recupere_element_de_ast_sql pas de columns dans expression table : "' + JSON.stringify(json_partiel(element)) + '"'
+                    }));
                 }
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0088 recupere_element_de_ast_sql expression format non traite : "' + JSON.stringify(json_partiel(element)) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0088 recupere_element_de_ast_sql expression format non traite : "' + JSON.stringify(json_partiel(element)) + '"'
+                }));
             }
         }else{
             return(logerreur({"__xst" : false ,"__xme" : '0016 recupere_element_de_ast_sql variant non traite : "' + JSON.stringify(json_partiel(element)) + '"'}));
@@ -211,7 +223,10 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
             return(logerreur({"__xst" : false ,"__xme" : '0237 convertion_sql "' + JSON.stringify(json_partiel(element)) + '"'}));
         }
     }else{
-        return(logerreur({"__xst" : false ,"__xme" : '0240 convertion_sql recupere_element_de_ast_sql type non traite : "' + JSON.stringify(json_partiel(element)) + '"'}));
+        return(logerreur({
+            "__xst" : false ,
+            "__xme" : '0240 convertion_sql recupere_element_de_ast_sql type non traite : "' + JSON.stringify(json_partiel(element)) + '"'
+        }));
     }
     return({"__xst" : true ,"__xva" : t});
 }
@@ -272,7 +287,10 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
             return(logerreur({"__xst" : false ,"__xme" : '0069 traite_fonction_dans_ast_sql nom de fonction : "' + JSON.stringify(json_partiel(element)) + '"'}));
         }
     }else{
-        return(logerreur({"__xst" : false ,"__xme" : '0060 traite_fonction_dans_ast_sql pas de nom de fonction trouvé : "' + JSON.stringify(json_partiel(element)) + '"'}));
+        return(logerreur({
+            "__xst" : false ,
+            "__xme" : '0060 traite_fonction_dans_ast_sql pas de nom de fonction trouvé : "' + JSON.stringify(json_partiel(element)) + '"'
+        }));
     }
     if(element.args){
         if(element.args.type === 'expression' && element.args.variant === 'list'){
@@ -281,7 +299,10 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
                 if(obj1.__xst === true){
                     les_arguments+=',' + obj1.__xva;
                 }else{
-                    return(logerreur({"__xst" : false ,"__xme" : '0075 traite_fonction_dans_ast_sql type argument non traité : "' + JSON.stringify(json_partiel(element.args)) + '"'}));
+                    return(logerreur({
+                        "__xst" : false ,
+                        "__xme" : '0075 traite_fonction_dans_ast_sql type argument non traité : "' + JSON.stringify(json_partiel(element.args)) + '"'
+                    }));
                 }
             }
         }else if(element.args.type === 'function'){
@@ -299,7 +320,10 @@ function traite_fonction_dans_ast_sql(element,niveau,parent,options){
                 return(logerreur({"__xst" : false ,"__xme" : '0109 traite_fonction_dans_ast_sql  : "' + JSON.stringify(json_partiel(element.args)) + '"'}));
             }
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : '0098 traite_fonction_dans_ast_sql type argument non traité : "' + JSON.stringify(json_partiel(element.args)) + '"'}));
+            return(logerreur({
+                "__xst" : false ,
+                "__xme" : '0098 traite_fonction_dans_ast_sql type argument non traité : "' + JSON.stringify(json_partiel(element.args)) + '"'
+            }));
         }
         if(les_arguments.length > 0){
             les_arguments=les_arguments.substr(1);
@@ -334,7 +358,10 @@ function traite_operation_dans_ast_sql(element,niveau,parent,options){
             var obj_droite=recupere_element_de_ast_sql(element.right,niveau,parent,options);
             if(obj_droite.__xst === true){
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0034 traite_operation_dans_ast_sql recuperation element right : ' + JSON.stringify(json_partiel(element))}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0034 traite_operation_dans_ast_sql recuperation element right : ' + JSON.stringify(json_partiel(element))
+                }));
             }
         }else{
             return(logerreur({"__xst" : false ,"__xme" : '0032 pas de right trouve : ' + JSON.stringify(json_partiel(element))}));
@@ -359,10 +386,16 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
         if(obj1.__xst === true){
             t+='\n' + esp0 + esp1 + esp1 + obj1.__xva + '';
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : '0279 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.into)) + '"'}));
+            return(logerreur({
+                "__xst" : false ,
+                "__xme" : '0279 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.into)) + '"'
+            }));
         }
     }else{
-        return(logerreur({"__xst" : false ,"__xme" : '0333 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de into : ' + JSON.stringify(json_partiel(element))}));
+        return(logerreur({
+            "__xst" : false ,
+            "__xme" : '0333 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de into : ' + JSON.stringify(json_partiel(element))
+        }));
     }
     if(element.set && element.set.length > 0){
         t+='\n' + esp0 + esp1 + esp1 + ',valeurs(';
@@ -374,12 +407,18 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + esp1 + obj1.__xva + '';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0347 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.set[i])) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0347 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.set[i])) + '"'
+                }));
             }
         }
         t+='\n' + esp0 + esp1 + esp1 + ')';
     }else{
-        return(logerreur({"__xst" : false ,"__xme" : '0338 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de set : ' + JSON.stringify(json_partiel(element))}));
+        return(logerreur({
+            "__xst" : false ,
+            "__xme" : '0338 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de set : ' + JSON.stringify(json_partiel(element))
+        }));
     }
     if(element.where && element.where.length > 0){
         t+='\n' + esp0 + esp1 + ',conditions(';
@@ -388,7 +427,10 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.where[i])) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.where[i])) + '"'
+                }));
             }
         }
         t+='\n' + esp0 + esp1 + ')';
@@ -411,7 +453,10 @@ function convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,parent,optio
                 t+=CRLF + '    nom_de_la_table(' + element.from.name + ')';
             }
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + JSON.stringify(json_partiel(element)) + '"'}));
+            return(logerreur({
+                "__xst" : false ,
+                "__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + JSON.stringify(json_partiel(element)) + '"'
+            }));
         }
     }else{
         return(logerreur({"__xst" : false ,"__xme" : '0472 dans delete pas de from : ' + JSON.stringify(json_partiel(element))}));
@@ -423,7 +468,10 @@ function convertit_sql_delete_sqlite_de_ast_vers_rev(element,niveau,parent,optio
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.where[i])) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.where[i])) + '"'
+                }));
             }
         }
         t+='\n' + esp0 + esp1 + ')';
@@ -450,7 +498,10 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
                         tableau_des_champs.push(element.into.columns[i].name);
                     }
                 }else{
-                    return(logerreur({"__xst" : false ,"__xme" : '0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "' + JSON.stringify(json_partiel(element)) + '"'}));
+                    return(logerreur({
+                        "__xst" : false ,
+                        "__xme" : '0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "' + JSON.stringify(json_partiel(element)) + '"'
+                    }));
                 }
             }else if(element.into.variant === 'table' && element.into.type === 'identifier'){
                 t+='nom_de_la_table(' + element.into.name + ')';
@@ -458,7 +509,10 @@ function convertit_sql_insert_sqlite_de_ast_vers_rev(element,niveau,parent,optio
                 return(logerreur({"__xst" : false ,"__xme" : '0559 convertit_sql_insert_sqlite_de_ast_vers_rev : "' + JSON.stringify(json_partiel(element)) + '"'}));
             }
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + JSON.stringify(json_partiel(element)) + '"'}));
+            return(logerreur({
+                "__xst" : false ,
+                "__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + JSON.stringify(json_partiel(element)) + '"'
+            }));
         }
     }else{
         return(logerreur({"__xst" : false ,"__xme" : '0275 dans pas de into : ' + JSON.stringify(json_partiel(element))}));
@@ -545,14 +599,20 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + 'table_reference(source(' + obj1.__xva + ')),';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0669 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.from.source)) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0669 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.from.source)) + '"'
+                }));
             }
         }else{
             var obj1=recupere_element_de_ast_sql(element.from,niveau,parent,options);
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + 'table_reference(source(' + obj1.__xva + ')),';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0677 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.from.source)) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0677 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.from.source)) + '"'
+                }));
             }
         }
         if(element.from.map && element.from.map.length > 0){
@@ -561,7 +621,10 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
                 }else{
-                    return(logerreur({"__xst" : false ,"__xme" : '0257 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.from.map[i])) + '"'}));
+                    return(logerreur({
+                        "__xst" : false ,
+                        "__xme" : '0257 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.from.map[i])) + '"'
+                    }));
                 }
             }
         }
@@ -598,7 +661,10 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
             if(obj1.__xst === true){
                 t+='quantité(' + obj1.__xva + '),';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0340 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.limit.start)) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0340 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.limit.start)) + '"'
+                }));
             }
         }
         if(element.limit.offset){
@@ -606,7 +672,10 @@ function convertit_sql_select_sqlite_de_ast_vers_rev(element,niveau,parent,optio
             if(obj1.__xst === true){
                 t+='début(' + obj1.__xva + ')';
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : '0349 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.limit.offset)) + '"'}));
+                return(logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0349 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.limit.offset)) + '"'
+                }));
             }
         }
         t+=')';
@@ -695,7 +764,10 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
         if(element.on && element.on.name){
             t+='sur_table(`' + element.on.name + '`)';
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : '0048 conversion_de_ast_vers_sql nom de la table de l\'index nn trouvé : ' + JSON.stringify(json_partiel(element))}));
+            return(logerreur({
+                "__xst" : false ,
+                "__xme" : '0048 conversion_de_ast_vers_sql nom de la table de l\'index nn trouvé : ' + JSON.stringify(json_partiel(element))
+            }));
         }
         if(element.unique && element.unique === true){
             t+=',unique()';
@@ -742,10 +814,16 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                     if(element.definition[i].type === 'definition' && element.definition[i].variant === "column"){
                         t+='nom_du_champ(`' + element.definition[i].name + '`)';
                     }else{
-                        return(logerreur({"__xst" : false ,"__xme" : '0062 pas définition de champ trouvé dans create_table field : ' + JSON.stringify(json_partiel(element.definition[i]))}));
+                        return(logerreur({
+                            "__xst" : false ,
+                            "__xme" : '0062 pas définition de champ trouvé dans create_table field : ' + JSON.stringify(json_partiel(element.definition[i]))
+                        }));
                     }
                 }else{
-                    return(logerreur({"__xst" : false ,"__xme" : '0060 pas définition de champ trouvé dans create_table field : ' + JSON.stringify(json_partiel(element.definition[i]))}));
+                    return(logerreur({
+                        "__xst" : false ,
+                        "__xme" : '0060 pas définition de champ trouvé dans create_table field : ' + JSON.stringify(json_partiel(element.definition[i]))
+                    }));
                 }
                 if(element.definition[i].datatype){
                     t+=' , type(' + element.definition[i].datatype.variant;
@@ -770,13 +848,13 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                 if(element.definition[i].definition && element.definition[i].definition.length >= 1){
                     for( var j=0 ; j < element.definition[i].definition.length ; j++ ){
                         if(element.definition[i].definition[j].type === "constraint"
-                         && element.definition[i].definition[j].variant === "primary key"
+                               && element.definition[i].definition[j].variant === "primary key"
                         ){
                             t+=' , primary_key()';
                         }
                         if(element.definition[i].definition[j].type === "constraint"
-                         && element.definition[i].definition[j].hasOwnProperty('autoIncrement')
-                         && element.definition[i].definition[j].autoIncrement === true
+                               && element.definition[i].definition[j].hasOwnProperty('autoIncrement')
+                               && element.definition[i].definition[j].autoIncrement === true
                         ){
                             t+=' , auto_increment()';
                         }
@@ -784,8 +862,8 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                             t+=' , not_null()';
                         }
                         if(element.definition[i].definition[j].type === "constraint"
-                         && element.definition[i].definition[j].variant === "default"
-                         && element.definition[i].definition[j].value
+                               && element.definition[i].definition[j].variant === "default"
+                               && element.definition[i].definition[j].value
                         ){
                             if(element.definition[i].definition[j].value.type === 'literal'){
                                 t+=' , default(\'' + element.definition[i].definition[j].value.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
@@ -794,18 +872,21 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                             }
                         }
                         if(element.definition[i].definition[j].type === "constraint"
-                         && element.definition[i].definition[j].variant === "foreign key"
-                         && element.definition[i].definition[j].references
+                               && element.definition[i].definition[j].variant === "foreign key"
+                               && element.definition[i].definition[j].references
                         ){
                             t+=' , references(';
                             if(element.definition[i].definition[j].references.name){
                                 t+='`' + element.definition[i].definition[j].references.name + '`,';
                                 if(element.definition[i].definition[j].references.columns
-                                 && element.definition[i].definition[j].references.columns.length === 1
+                                       && element.definition[i].definition[j].references.columns.length === 1
                                 ){
                                     t+='`' + element.definition[i].definition[j].references.columns[0].name + '`';
                                 }else{
-                                    return(logerreur({"__xst" : false ,"__xme" : '0109 contrainte non traitée trouvé field : ' + JSON.stringify(json_partiel(element.definition[i].definition[j].references))}));
+                                    return(logerreur({
+                                        "__xst" : false ,
+                                        "__xme" : '0109 contrainte non traitée trouvé field : ' + JSON.stringify(json_partiel(element.definition[i].definition[j].references))
+                                    }));
                                 }
                             }else{
                             }
@@ -841,8 +922,8 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                 }else if(parent.statement[i].traite && parent.statement[i].traite === true){
                     continue;
                 }else if(parent.statement[i].type === 'statement'
-                 && parent.statement[i].variant === 'transaction'
-                 && parent.statement[i].action === 'commit'
+                       && parent.statement[i].variant === 'transaction'
+                       && parent.statement[i].action === 'commit'
                 ){
                     /*
                       fin de transaction par un commit
@@ -853,8 +934,8 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
                     parent.statement[i].traite=true;
                     return({"__xst" : true ,"__xva" : t});
                 }else if(parent.statement[i].type === 'statement'
-                 && parent.statement[i].variant === 'transaction'
-                 && parent.statement[i].action === 'rollback'
+                       && parent.statement[i].variant === 'transaction'
+                       && parent.statement[i].action === 'rollback'
                 ){
                     /*
                       fin de transaction par un rollback
@@ -881,7 +962,10 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
         }
         t+='\n' + esp0 + ')';
     }else{
-        return(logerreur({"__xst" : false ,"__xme" : '0733 erreur de conversion de ast vers rev type/variant non prévu : ' + JSON.stringify(json_partiel(element))}));
+        return(logerreur({
+            "__xst" : false ,
+            "__xme" : '0733 erreur de conversion de ast vers rev type/variant non prévu : ' + JSON.stringify(json_partiel(element))
+        }));
     }
     element.en_cours_de_traitement=false;
     element.traite=true;
@@ -894,10 +978,10 @@ function json_partiel(json_obj){
     var a={};
     for(var i in json_obj){
         /* console.log( 'i=' ,  typeof json_obj[i] ) */
-        if(typeof json_obj[i] === 'string'){
+        if( typeof json_obj[i] === 'string'){
             a[i]=json_obj[i];
-        }else if(typeof json_obj[i] === 'object'){
-            if(json_obj[i] instanceof  Array){
+        }else if( typeof json_obj[i] === 'object'){
+            if(json_obj[i] instanceof Array){
                 a[i]=[];
             }else if(json_obj[i] === true){
                 a[i]='true';
@@ -906,7 +990,7 @@ function json_partiel(json_obj){
             }else{
                 a[i]={};
                 for(var j in json_obj[i]){
-                    if(typeof json_obj[i][j] === 'string'){
+                    if( typeof json_obj[i][j] === 'string'){
                         a[i][j]=json_obj[i][j];
                     }else{
                         a[i][j]='...';
@@ -1058,9 +1142,9 @@ function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql,nom_de_la_texta
         console.error('e=',e);
         logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql'});
         if(e.hasOwnProperty('location')
-         && e.location.hasOwnProperty('start')
-         && e.location.start.hasOwnProperty('line')
-         && e.location.start.line > 0
+               && e.location.hasOwnProperty('start')
+               && e.location.start.hasOwnProperty('line')
+               && e.location.start.line > 0
         ){
             logerreur({"__xst" : false ,"line" : e.location.start.line});
         }

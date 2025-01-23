@@ -263,8 +263,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }
         if(estTraiteSansErreur === false){
             if(this.#options_traitement
-             && this.#options_traitement.hasOwnProperty('nettoyer_html')
-             && this.#options_traitement.nettoyer_html === true
+                   && this.#options_traitement.hasOwnProperty('nettoyer_html')
+                   && this.#options_traitement.nettoyer_html === true
             ){
             }else{
                 return(this.#astphp_logerreur({
@@ -274,7 +274,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }));
             }
             var cle=php_construit_cle(10);
-            logerreur({"__xst" : false ,"__xme" : 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "' + cle + '"'});
+            logerreur({
+                    "__xst" : false ,
+                    "__xme" : 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "' + cle + '"'
+                });
             if(contenu.indexOf('<?') >= 0){
                 /*
                   il semble qu'il y a une erreur dans ce parseur contrairement à celui de nikki
@@ -536,8 +539,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else{
                 debugger;
             }
-        }catch(e){
-        }
+        }catch(e){}
         return({"__xst" : false ,"__xms" : 'le html dans php n\'est pas convertible'});
     }
     /*
@@ -1110,10 +1112,18 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }else if(element.visibility === 'protected'){
                 visibility='constante(protégée(),';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0895 #traite_classconstant visibilitée non traitée non traité "' + element.visibility + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({
+                    "__xst" : false ,
+                    "__xme" : '0895 #traite_classconstant visibilitée non traitée non traité "' + element.visibility + '"' ,
+                    "element" : element
+                }));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0888 #traite_classconstant visibilitée non traitée non traité "' + element.visibility + '"' ,"element" : element}));
+            return(this.#astphp_logerreur({
+                "__xst" : false ,
+                "__xme" : '0888 #traite_classconstant visibilitée non traitée non traité "' + element.visibility + '"' ,
+                "element" : element
+            }));
         }
         for( let i=0 ; i < element.constants.length ; i++ ){
             obj=this.#traite_element(element.constants[i],niveau,element,tab_comm);
@@ -2119,9 +2129,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         var obj_nom_tableau=functionToArray(nom_variable,true,true,'');
         if(obj_nom_tableau.__xst === true){
             if(obj_nom_tableau.__xva.length === 2
-             && obj_nom_tableau.__xva[1][2] === 'c'
-             && obj_nom_tableau.__xva[1][4] === 0
-             && obj_nom_tableau.__xva[1][1].substr(0,1) === '$'
+                   && obj_nom_tableau.__xva[1][2] === 'c'
+                   && obj_nom_tableau.__xva[1][4] === 0
+                   && obj_nom_tableau.__xva[1][1].substr(0,1) === '$'
             ){
                 /*
                   cas $xxx
@@ -2131,21 +2141,21 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
                 var obj_indice_tableau=functionToArray(parametres,true,true,'');
                 if(obj_indice_tableau.__xst === true
-                 && obj_indice_tableau.__xva.length === 3
-                 && obj_indice_tableau.__xva[1][1] === 'p'
-                 && obj_indice_tableau.__xva[1][2] === 'f'
-                 && obj_indice_tableau.__xva[1][8] === 1
-                 && obj_indice_tableau.__xva[2][2] === 'c'
-                 && obj_indice_tableau.__xva[2][4] === 0
+                       && obj_indice_tableau.__xva.length === 3
+                       && obj_indice_tableau.__xva[1][1] === 'p'
+                       && obj_indice_tableau.__xva[1][2] === 'f'
+                       && obj_indice_tableau.__xva[1][8] === 1
+                       && obj_indice_tableau.__xva[2][2] === 'c'
+                       && obj_indice_tableau.__xva[2][4] === 0
                 ){
                     t=obj_nom_tableau.__xva[1][1] + '[' + obj_indice_tableau.__xva[2][1] + ']';
                 }else{
                     t='tableau(nomt(' + nom_variable + ')' + parametres + ')';
                 }
             }else if(obj_nom_tableau.__xva.length === 3
-             && obj_nom_tableau.__xva[2][2] === 'c'
-             && obj_nom_tableau.__xva[1][8] === 1
-             && obj_nom_tableau.__xva[1][1] === 'nomt'
+                   && obj_nom_tableau.__xva[2][2] === 'c'
+                   && obj_nom_tableau.__xva[1][8] === 1
+                   && obj_nom_tableau.__xva[1][1] === 'nomt'
             ){
                 /*
                   cas nomt($xxx)
@@ -2155,12 +2165,12 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
                 var obj_indice_tableau=functionToArray(parametres,true,true,'');
                 if(obj_indice_tableau.__xst === true
-                 && obj_indice_tableau.__xva.length === 3
-                 && obj_indice_tableau.__xva[1][1] === 'p'
-                 && obj_indice_tableau.__xva[1][2] === 'f'
-                 && obj_indice_tableau.__xva[1][8] === 1
-                 && obj_indice_tableau.__xva[2][2] === 'c'
-                 && obj_indice_tableau.__xva[2][4] === 0
+                       && obj_indice_tableau.__xva.length === 3
+                       && obj_indice_tableau.__xva[1][1] === 'p'
+                       && obj_indice_tableau.__xva[1][2] === 'f'
+                       && obj_indice_tableau.__xva[1][8] === 1
+                       && obj_indice_tableau.__xva[2][2] === 'c'
+                       && obj_indice_tableau.__xva[2][4] === 0
                 ){
                     t=obj_nom_tableau.__xva[2][1] + '[' + obj_indice_tableau.__xva[2][1] + ']';
                 }else{
@@ -2343,7 +2353,6 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1148 #traite_bin droite' ,"element" : element}));
         }
-
         switch (element.type){
             case '&&' : t+='et(' + gauche + ',' + droite + ')';
                 break;
@@ -2417,8 +2426,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 break;
                 
         }
-        if(gauche.substr(0,7)==='concat(' && element.type!=='.'){
-            /* 
+        if(gauche.substr(0,7) === 'concat(' && element.type !== '.'){
+            /*
               afr
               cas $b.$c+$d : ça donne avec ce parseur : 
               plus( concat( $b , $c ) , $d), 
@@ -2431,20 +2440,17 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             var tableau1=iterateCharacters2(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
-                 debugger
+                debugger;
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
             }
-
         }
-        
-        
-        if(   t.substr(0,14) === 'concat(concat('
-           || t.substr(0,6) === 'et(et('
-           || t.substr(0,6) === 'ou(ou('
-           || t.substr(0,10) === 'plus(plus('
-           || t.substr(0,12) === 'moins(moins('
-           || t.substr(0,22) === 'ou_binaire(ou_binaire('
+        if(t.substr(0,14) === 'concat(concat('
+               || t.substr(0,6) === 'et(et('
+               || t.substr(0,6) === 'ou(ou('
+               || t.substr(0,10) === 'plus(plus('
+               || t.substr(0,12) === 'moins(moins('
+               || t.substr(0,22) === 'ou_binaire(ou_binaire('
         ){
             var tableau1=iterateCharacters2(t);
             var o=functionToArray2(tableau1.out,false,true,'');
@@ -2456,30 +2462,30 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                 }
             }
         }
-/*        
-        if(){
-            var tableau1=iterateCharacters2(t);
-            var o=functionToArray2(tableau1.out,false,true,'');
-            if(o.__xst === true){
-                var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
-                var obj1=a2F1(nouveauTableau,0,true,1);
-                if(obj1.__xst === true){
-                    t=obj1.__xva;
-                }
-            }
-        }
-        if(){
-            var tableau1=iterateCharacters2(t);
-            var o=functionToArray2(tableau1.out,false,true,'');
-            if(o.__xst === true){
-                var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
-                var obj1=a2F1(nouveauTableau,0,true,1);
-                if(obj1.__xst === true){
-                    t=obj1.__xva;
-                }
-            }
-        }
-*/        
+        /*
+          if(){
+          var tableau1=iterateCharacters2(t);
+          var o=functionToArray2(tableau1.out,false,true,'');
+          if(o.__xst === true){
+          var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
+          var obj1=a2F1(nouveauTableau,0,true,1);
+          if(obj1.__xst === true){
+          t=obj1.__xva;
+          }
+          }
+          }
+          if(){
+          var tableau1=iterateCharacters2(t);
+          var o=functionToArray2(tableau1.out,false,true,'');
+          if(o.__xst === true){
+          var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
+          var obj1=a2F1(nouveauTableau,0,true,1);
+          if(obj1.__xst === true){
+          t=obj1.__xva;
+          }
+          }
+          }
+        */
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2549,11 +2555,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         */
         var probablement_dans_une_regex=contenu.substr(0,1) === '/' && contenu.substr(contenu.length - 1,1) === '/' ? ( true ) : ( false );
         if(rv.substr(0,1) === '\''
-         && contenu.indexOf('\'') < 0
-         && contenu.indexOf('\\') < 0
-         || rv.substr(0,1) === '"'
-         && contenu.indexOf('"') < 0
-         && contenu.indexOf('\\') < 0
+                   && contenu.indexOf('\'') < 0
+                   && contenu.indexOf('\\') < 0
+               || rv.substr(0,1) === '"'
+                   && contenu.indexOf('"') < 0
+                   && contenu.indexOf('\\') < 0
         ){
             /*
               si c'est une chaine "simple" cad ne contenant ni terminateur ni antislash
@@ -2592,37 +2598,37 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                 i--;
                             }else{
                                 if(rv.substr(i + 1,1) === 'r'
-                                 || rv.substr(i + 1,1) === 'n'
-                                 || rv.substr(i + 1,1) === 't'
-                                 || rv.substr(i + 1,1) === '\''
-                                 || rv.substr(i + 1,1) === '.'
-                                 || rv.substr(i + 1,1) === '-'
-                                 || rv.substr(i + 1,1) === 'A'
-                                 || rv.substr(i + 1,1) === '?'
-                                 || rv.substr(i + 1,1) === 'd'
-                                 || rv.substr(i + 1,1) === '/'
-                                 || rv.substr(i + 1,1) === 'x'
-                                 || rv.substr(i + 1,1) === 'o'
-                                 || rv.substr(i + 1,1) === 'b'
-                                 || rv.substr(i + 1,1) === 'B'
-                                 || rv.substr(i + 1,1) === '"'
-                                 || rv.substr(i + 1,1) === '$'
-                                 || rv.substr(i + 1,1) === 'w'
-                                 || rv.substr(i + 1,1) === 's'
-                                 || rv.substr(i + 1,1) === 'z'
-                                 || rv.substr(i + 1,1) === 'Z'
-                                 || rv.substr(i + 1,1) === '('
-                                 || rv.substr(i + 1,1) === ')'
-                                 || rv.substr(i + 1,1) === '['
-                                 || rv.substr(i + 1,1) === ']'
+                                       || rv.substr(i + 1,1) === 'n'
+                                       || rv.substr(i + 1,1) === 't'
+                                       || rv.substr(i + 1,1) === '\''
+                                       || rv.substr(i + 1,1) === '.'
+                                       || rv.substr(i + 1,1) === '-'
+                                       || rv.substr(i + 1,1) === 'A'
+                                       || rv.substr(i + 1,1) === '?'
+                                       || rv.substr(i + 1,1) === 'd'
+                                       || rv.substr(i + 1,1) === '/'
+                                       || rv.substr(i + 1,1) === 'x'
+                                       || rv.substr(i + 1,1) === 'o'
+                                       || rv.substr(i + 1,1) === 'b'
+                                       || rv.substr(i + 1,1) === 'B'
+                                       || rv.substr(i + 1,1) === '"'
+                                       || rv.substr(i + 1,1) === '$'
+                                       || rv.substr(i + 1,1) === 'w'
+                                       || rv.substr(i + 1,1) === 's'
+                                       || rv.substr(i + 1,1) === 'z'
+                                       || rv.substr(i + 1,1) === 'Z'
+                                       || rv.substr(i + 1,1) === '('
+                                       || rv.substr(i + 1,1) === ')'
+                                       || rv.substr(i + 1,1) === '['
+                                       || rv.substr(i + 1,1) === ']'
                                 ){
                                     if(rv.substr(i + 1,1) === 'r'
-                                     || rv.substr(i + 1,1) === 't'
-                                     || rv.substr(i + 1,1) === 'n'
-                                     || rv.substr(i + 1,1) === '\''
-                                     && rv.substr(0,1) === "'"
-                                     || rv.substr(i + 1,1) === '"'
-                                     && rv.substr(0,1) === '"'
+                                           || rv.substr(i + 1,1) === 't'
+                                           || rv.substr(i + 1,1) === 'n'
+                                           || rv.substr(i + 1,1) === '\''
+                                               && rv.substr(0,1) === "'"
+                                           || rv.substr(i + 1,1) === '"'
+                                               && rv.substr(0,1) === '"'
                                     ){
                                         nouvelle_chaine='\\' + nouvelle_chaine;
                                     }else{
@@ -2633,7 +2639,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                         if(i > 0 && rv.substr(i - 1,1) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
-                                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,"element" : element}));
+                                            return(this.#astphp_logerreur({
+                                                "__xst" : false ,
+                                                "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,
+                                                "element" : element
+                                            }));
                                         }
                                     }else{
                                         /*
@@ -2643,7 +2653,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                         if(i > 0 && rv.substr(i - 1,1) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
-                                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,"element" : element}));
+                                            return(this.#astphp_logerreur({
+                                                "__xst" : false ,
+                                                "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,
+                                                "element" : element
+                                            }));
                                         }
                                     }
                                 }
@@ -2655,30 +2669,41 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                             if(rv.substr(i,1) === '\\'){
                                 var c=nouvelle_chaine.substr(0,1);
                                 if(c === '.'
-                                 || c === '0'
-                                 || c === '-'
-                                 || c === 'd'
-                                 || c === 'f'
-                                 || c === '/'
-                                 || c === 'x'
-                                 || c === 'o'
-                                 || c === 'b'
-                                 || c === 's'
-                                 || c === 'v'
-                                 || c === '\\'
-                                 || c === ']'
-                                 || c === '['
-                                 || c === '$'
-                                 || c === '"'
-                                 || c === 'N'
-                                 || c === '{'
-                                 && rv.substr(0,1) === '\''
+                                       || c === '0'
+                                       || c === '-'
+                                       || c === 'd'
+                                       || c === 'f'
+                                       || c === '/'
+                                       || c === 'x'
+                                       || c === 'o'
+                                       || c === 'b'
+                                       || c === 's'
+                                       || c === 'v'
+                                       || c === '\\'
+                                       || c === ']'
+                                       || c === '['
+                                       || c === '$'
+                                       || c === '"'
+                                       || c === 'N'
+                                       || c === '{'
+                                           && rv.substr(0,1) === '\''
                                 ){
                                     nouvelle_chaine='\\\\' + nouvelle_chaine;
-                                }else if(c === 'r' || c === 'n' || c === 't' || c === '\'' && rv.substr(0,1) === '\'' || c === '"' && rv.substr(0,1) === '"'){
+                                }else if(c === 'r'
+                                       || c === 'n'
+                                       || c === 't'
+                                       || c === '\''
+                                           && rv.substr(0,1) === '\''
+                                       || c === '"'
+                                           && rv.substr(0,1) === '"'
+                                ){
                                     nouvelle_chaine='\\' + nouvelle_chaine;
                                 }else{
-                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1315 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,"element" : element}));
+                                    return(this.#astphp_logerreur({
+                                        "__xst" : false ,
+                                        "__xme" : '1315 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,
+                                        "element" : element
+                                    }));
                                 }
                             }else{
                                 nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
@@ -3150,10 +3175,10 @@ class module_conversion_ast_de_php_parser_vers_rev1{
     */
     #traite_commentaires_fin(element,niveau,parent,tab_comm){
         var t='';
-        if(!(element.hasOwnProperty('loc'))){
+        if(!element.hasOwnProperty('loc')){
             return t;
         }
-        if(!(element.loc.hasOwnProperty('end'))){
+        if(!element.loc.hasOwnProperty('end')){
             return t;
         }
         var position_de_fin=element.loc.end.offset;
@@ -3212,7 +3237,11 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }
         }catch(e){
             if(parent){
-                return({"__xst" : false ,"__xme" : '2770 #traite_commentaires_debut cas non prévu pour enfant de "' + JSON.stringify(parent) + '"' ,"element" : parent});
+                return({
+                    "__xst" : false ,
+                    "__xme" : '2770 #traite_commentaires_debut cas non prévu pour enfant de "' + JSON.stringify(parent) + '"' ,
+                    "element" : parent
+                });
             }
             return({"__xst" : false ,"__xme" : '2776 #traite_commentaires_debut cas non prévu'});
         }
@@ -3229,8 +3258,8 @@ class module_conversion_ast_de_php_parser_vers_rev1{
         var commentaires_a_retirer=[];
         for( var i=0 ; i < tab_comm.length ; i++ ){
             if(tab_comm[i].loc.start.offset >= position_de_debut_bloc
-             && tab_comm[i].loc.end.offset <= position_de_fin_bloc
-             && tab_comm[i].loc.end.offset < position_de_debut_elem
+                   && tab_comm[i].loc.end.offset <= position_de_fin_bloc
+                   && tab_comm[i].loc.end.offset < position_de_debut_elem
             ){
                 commentaires_a_retirer.push(i);
                 var valeur=tab_comm[i].value;
@@ -3295,12 +3324,12 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             case 'name' :
                 /* console.log('pour name, parent.kind='+parent.kind) */
                 if(parent.kind === 'array'
-                 || parent.kind === 'bin'
-                 || parent.kind === 'assign'
-                 || parent.kind === 'unary'
-                 || parent.kind === 'retif'
-                 || parent.kind === 'constant'
-                 || parent.kind === 'call'
+                       || parent.kind === 'bin'
+                       || parent.kind === 'assign'
+                       || parent.kind === 'unary'
+                       || parent.kind === 'retif'
+                       || parent.kind === 'constant'
+                       || parent.kind === 'call'
                 ){
                     if(parent.type === 'instanceof'){
                         t+='\'' + element.name.replace(/\\/g,'\\\\') + '\'';

@@ -84,7 +84,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
     }catch(e){
         console.log(e);
         if(e.message === 'signal timed out'){
-            console.log('les données n\'ont pas pu être récupérées  en moins de ' + (parseInt(delais_admis / 1000 * 10,10) / 10) + ' secondes ');
+            console.log('les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes ');
         }else{
             console.log(e.message);
         }
@@ -161,7 +161,7 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
               attention ci dessous, la clé est une chaine
             */
             if(String(id_source) === String(liste_des_taches_en_arriere_plan[j].id_source)
-             && liste_des_taches_en_arriere_plan[j].etat !== 'terminée'
+                   && liste_des_taches_en_arriere_plan[j].etat !== 'terminée'
             ){
                 console.log('liste_des_taches_en_arriere_plan[' + j + ']',liste_des_taches_en_arriere_plan[j]);
                 var le_source=arg[id_source];
@@ -190,11 +190,11 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                             ]);
                     }
                     if(provenance === 'source'
-                     && (extension === '.html'
-                     || extension === '.htm'
-                     || extension === '.php'
-                     || extension === '.js')
-                     || provenance === 'sql'
+                               && (extension === '.html'
+                                   || extension === '.htm'
+                                   || extension === '.php'
+                                   || extension === '.js')
+                           || provenance === 'sql'
                     ){
                         tache_en_cours=true;
                         if(provenance === 'sql'){
@@ -302,7 +302,7 @@ function traite_une_suppression(id_tache,arg){
               attention ci dessous, la clé est une chaine
             */
             if(String(id_source) === String(liste_des_taches_en_arriere_plan[j].id_source)
-             && liste_des_taches_en_arriere_plan[j].etat !== 'terminée'
+                   && liste_des_taches_en_arriere_plan[j].etat !== 'terminée'
             ){
                 console.log('liste_des_taches_en_arriere_plan[' + j + ']',liste_des_taches_en_arriere_plan[j]);
                 var le_source=arg[id_source];
@@ -438,10 +438,10 @@ function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
                 liste_des_taches_en_arriere_plan[i].etat='en_cours';
                 tache_en_cours=true;
                 if(jsonRet
-                 && jsonRet.hasOwnProperty(__entree)
-                 && jsonRet
-                 && jsonRet.__entree.hasOwnProperty('parametre')
-                 && jsonRet.__entree.parametre.hasOwnProperty('provenance')
+                       && jsonRet.hasOwnProperty(__entree)
+                       && jsonRet
+                       && jsonRet.__entree.hasOwnProperty('parametre')
+                       && jsonRet.__entree.parametre.hasOwnProperty('provenance')
                 ){
                     apres_traite_un_remplacement(i,arg,jsonRet.__entree.parametre.provenance);
                 }else{
@@ -458,10 +458,10 @@ function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
                 liste_des_taches_en_arriere_plan[i].etat='en_cours';
                 une_tache_en_cours=true;
                 if(jsonRet
-                 && jsonRet.hasOwnProperty('__entree')
-                 && jsonRet
-                 && jsonRet.__entree.hasOwnProperty('parametre')
-                 && jsonRet.__entree.parametre.hasOwnProperty('provenance')
+                       && jsonRet.hasOwnProperty('__entree')
+                       && jsonRet
+                       && jsonRet.__entree.hasOwnProperty('parametre')
+                       && jsonRet.__entree.parametre.hasOwnProperty('provenance')
                 ){
                     apres_traite_un_remplacement(i,arg,jsonRet.__entree.parametre.provenance);
                 }else{
@@ -483,7 +483,11 @@ function traitement_apres_remplacement_chaine_en_bdd(arg,jsonRet){
   =====================================================================================================================
 */
 function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_en_cours,traitement_a_lancer_si_succes){
-    var ajax_param={"call" : {"lib" : 'php' ,"file" : 'travail_en_arriere_plan1' ,"funct" : 'supprimer_un_commentaire1'} ,"parametre" : parametre_supprimer_un_commentaire1 ,"tache_en_cours" : la_tache_en_cours};
+    var ajax_param={
+        "call" : {"lib" : 'php' ,"file" : 'travail_en_arriere_plan1' ,"funct" : 'supprimer_un_commentaire1'} ,
+        "parametre" : parametre_supprimer_un_commentaire1 ,
+        "tache_en_cours" : la_tache_en_cours
+    };
     async function supprimer_un_commentaire2(url="",ajax_param){
         return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
     }
@@ -508,7 +512,11 @@ function supprimer_un_commentaire1(parametre_supprimer_un_commentaire1,la_tache_
   =====================================================================================================================
 */
 function remplacer_des_chaine1(parametre_remplacer_des_chaines1,la_tache_en_cours,traitement_a_lancer_si_succes){
-    var ajax_param={"call" : {"lib" : 'php' ,"file" : 'travail_en_arriere_plan1' ,"funct" : 'remplacer_des_chaine1'} ,"parametre" : parametre_remplacer_des_chaines1 ,"tache_en_cours" : la_tache_en_cours};
+    var ajax_param={
+        "call" : {"lib" : 'php' ,"file" : 'travail_en_arriere_plan1' ,"funct" : 'remplacer_des_chaine1'} ,
+        "parametre" : parametre_remplacer_des_chaines1 ,
+        "tache_en_cours" : la_tache_en_cours
+    };
     async function remplacer_des_chaine2(url="",ajax_param){
         return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
     }
@@ -615,9 +623,12 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
     var i={};
     for(i in liste_des_travaux_en_arriere_plan){
         if('travail_en_arriere_plan_terminé' === liste_des_travaux_en_arriere_plan[i].etat_du_travail
-         || 'travail_en_arriere_plan_en_erreur' === liste_des_travaux_en_arriere_plan[i].etat_du_travail
+               || 'travail_en_arriere_plan_en_erreur' === liste_des_travaux_en_arriere_plan[i].etat_du_travail
         ){
-            var ajax_param={"call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'supprimer_un_travail_en_arriere_plan_en_session'} ,"travail_en_arriere_plan" : liste_des_travaux_en_arriere_plan[i]};
+            var ajax_param={
+                "call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'supprimer_un_travail_en_arriere_plan_en_session'} ,
+                "travail_en_arriere_plan" : liste_des_travaux_en_arriere_plan[i]
+            };
             async function supprimer_un_travail_en_arriere_plan_en_session1(url="",ajax_param){
                 return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
             }
@@ -656,7 +667,10 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
     var i={};
     for(i in liste_des_travaux_en_arriere_plan){
         if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
-            var ajax_param={"call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'enregistrer_un_travail_en_arriere_plan_en_session'} ,"travail_en_arriere_plan" : liste_des_travaux_en_arriere_plan[i]};
+            var ajax_param={
+                "call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'enregistrer_un_travail_en_arriere_plan_en_session'} ,
+                "travail_en_arriere_plan" : liste_des_travaux_en_arriere_plan[i]
+            };
             async function enregistrer_un_travail_en_arriere_plan_en_session1(url="",ajax_param){
                 return(recuperer_un_fetch_dans_module_travail_en_ap(url,ajax_param));
             }

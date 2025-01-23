@@ -160,10 +160,10 @@ function espacesn(optionCRLF,i){
   =====================================================================================================================
 */
 function isNumeric(str){
-    if(typeof str !== 'string'){
+    if( typeof str !== 'string'){
         return false;
     }
-    var leTest=!(isNaN(str)) && !(isNaN(parseFloat(str)));
+    var leTest=!isNaN(str) && !isNaN(parseFloat(str));
     return leTest;
 }
 /*
@@ -251,12 +251,12 @@ function nbre_caracteres2(lettre,chaine){
 */
 function nl1(){
     var e=new Error();
-    if(!(e.stack)){
+    if(!e.stack){
         try{
             /* IE ?? */
             throw e;
         }catch(e){
-            if(!(e.stack)){
+            if(!e.stack){
                 /* IE < 10 ? */
                 return 0;
             }
@@ -268,7 +268,7 @@ function nl1(){
     var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
     do{
         var ligne_erreur=stack.shift();
-    }while(!(modele_champ_erreur.exec(ligne_erreur)) && stack.length);
+    }while(!modele_champ_erreur.exec(ligne_erreur) && stack.length);
     /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
     var texte_erreur=stack.shift();
     var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
@@ -699,10 +699,10 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
       }
     */
     if(retourLigne === true
-     && tab_retour_ligne[indice_tab][2] === false
-     && parentId > 0
-     && tab[parentId][10] <= profondeurLimite
-     && tab[parentId][8] < nombreEnfantsLimite
+           && tab_retour_ligne[indice_tab][2] === false
+           && parentId > 0
+           && tab[parentId][10] <= profondeurLimite
+           && tab[parentId][8] < nombreEnfantsLimite
     ){
         /*
           à priori on supprime le retour de ligne
@@ -806,7 +806,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                         break;
                 }
                 count++;
-                if(contient_un_defTab_tbel === true && count % 10 === 0){
+                if(contient_un_defTab_tbel === true && count% 10 === 0){
                     t+=les_espaces;
                 }
             }else if(tab[i][2] === 'f' && tab[i][1] === DEBUTCOMMENTAIRE){
@@ -819,7 +819,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 /* pas de mise en forme en HTML */
                 t+=tab[i][1] + '(' + commentaire + ')';
                 count++;
-                if(contient_un_defTab_tbel === true && count % 10 === 0){
+                if(contient_un_defTab_tbel === true && count% 10 === 0){
                     t+=les_espaces;
                 }
             }else if(tab[i][2] === 'f' && tab[i][1] === DEBUTBLOC){
@@ -832,7 +832,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 /* pas de mise en forme en HTML */
                 t+=tab[i][1] + '(' + commentaire + ')';
                 count++;
-                if(contient_un_defTab_tbel === true && count % 10 === 0){
+                if(contient_un_defTab_tbel === true && count% 10 === 0){
                     t+=les_espaces;
                 }
             }else if(tab[i][2] === 'f' && tab[i][8] === 0){
@@ -843,7 +843,7 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                 */
                 t+=tab[i][1] + '()';
                 count++;
-                if(contient_un_defTab_tbel === true && count % 10 === 0){
+                if(contient_un_defTab_tbel === true && count% 10 === 0){
                     t+=les_espaces;
                 }
             }else if(tab[i][2] === 'f' && tab[i][8] === 1 && tab[i + 1][2] === 'c' && tab[i + 1][4] === 0){
@@ -852,9 +852,9 @@ function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_lign
                   fonction avec 1 argument constant ( permet d'éviter un appel car ce cas est très courant );
                   =====================================================================================
                 */
-                t+=tab[i][1] + '(' + (tab[i + 1][1]) + ')';
+                t+=tab[i][1] + '(' + tab[i + 1][1] + ')';
                 count++;
-                if(contient_un_defTab_tbel === true && count % 10 === 0){
+                if(contient_un_defTab_tbel === true && count% 10 === 0){
                     t+=les_espaces;
                 }
             }else{
@@ -1037,7 +1037,7 @@ function formaterErreurRev(obj){
                     if(obj.chaineTableau.substr(i,1) === '['){
                         for( j=i ; j < obj.chaineTableau.length && message_ajoute === '' ; j++ ){
                             if(obj.chaineTableau.substr(j,1) === ']'){
-                                message_ajoute='près de `' + obj.chaineTableau.substr(i,j - i + 1) + '`';
+                                message_ajoute='près de `' + obj.chaineTableau.substr(i,(j - i) + 1) + '`';
                                 break;
                             }
                         }
@@ -1062,7 +1062,7 @@ function formaterErreurRev(obj){
                         finGrasFait=true;
                     }
                 }
-                if(!(finGrasFait)){
+                if(!finGrasFait){
                     presDe+='</b>';
                 }
             }else{
@@ -1074,7 +1074,7 @@ function formaterErreurRev(obj){
                         finGrasFait=true;
                     }
                 }
-                if(!(finGrasFait)){
+                if(!finGrasFait){
                     presDe+='</b>';
                 }
             }
@@ -1317,7 +1317,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if(i + 1 < l01){
                     c1=tableauEntree[i + 1][0];
-                    if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
+                    if(c1 === ','
+                           || c1 === '\t'
+                           || c1 === '\n'
+                           || c1 === '\r'
+                           || c1 === '/'
+                           || c1 === ' '
+                           || c1 === ')'
+                    ){
                         dernier=i - 1;
                     }else{
                         /* cas d'erreur = f(""") */
@@ -1389,21 +1396,21 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 /*  */
                 c1=tableauEntree[i + 1][0];
                 if(c1 === '\\'
-                 || c1 === '"'
-                 || c1 === 'n'
-                 || c1 === 't'
-                 || c1 === 'r'
-                 || c1 === 'u'
-                 || c1 === 'b'
-                 || c1 === 'f'
-                 || c1 === 'x'
-                 || c1 === 'v'
-                 || c1 === '0'
-                 || c1 === '>'
-                 || c1 === '<'
-                 || c1 === '/'
-                 || c1 === '&'
-                 || c1 === '$'
+                       || c1 === '"'
+                       || c1 === 'n'
+                       || c1 === 't'
+                       || c1 === 'r'
+                       || c1 === 'u'
+                       || c1 === 'b'
+                       || c1 === 'f'
+                       || c1 === 'x'
+                       || c1 === 'v'
+                       || c1 === '0'
+                       || c1 === '>'
+                       || c1 === '<'
+                       || c1 === '/'
+                       || c1 === '&'
+                       || c1 === '$'
                 ){
                     if(texte === ''){
                         premier=i;
@@ -1462,12 +1469,26 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         continue;
                     }
                     drapeauRegex='';
-                    if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
+                    if(c1 === ','
+                           || c1 === '\t'
+                           || c1 === '\n'
+                           || c1 === '\r'
+                           || c1 === '/'
+                           || c1 === ' '
+                           || c1 === ')'
+                    ){
                         dernier=i - 1;
                     }else{
                         for( j=i + 1 ; j < l01 ; j++ ){
                             c1=tableauEntree[j][0];
-                            if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
+                            if(c1 === ','
+                                   || c1 === '\t'
+                                   || c1 === '\n'
+                                   || c1 === '\r'
+                                   || c1 === '/'
+                                   || c1 === ' '
+                                   || c1 === ')'
+                            ){
                                 dernier=j;
                                 i=j - 1;
                                 break;
@@ -1580,7 +1601,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if(i + 1 < l01){
                     c1=tableauEntree[i + 1][0];
-                    if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
+                    if(c1 === ','
+                           || c1 === '\t'
+                           || c1 === '\n'
+                           || c1 === '\r'
+                           || c1 === '/'
+                           || c1 === ' '
+                           || c1 === ')'
+                    ){
                         dernier=i - 1;
                     }else{
                         if(i > 100){
@@ -1658,7 +1686,14 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if(i + 1 < l01){
                     c1=tableauEntree[i + 1][0];
-                    if(c1 === ',' || c1 === '\t' || c1 === '\n' || c1 === '\r' || c1 === '/' || c1 === ' ' || c1 === ')'){
+                    if(c1 === ','
+                           || c1 === '\t'
+                           || c1 === '\n'
+                           || c1 === '\r'
+                           || c1 === '/'
+                           || c1 === ' '
+                           || c1 === ')'
+                    ){
                         dernier=i - 1;
                     }else{
                         if(i > 100){
@@ -1666,7 +1701,12 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }else{
                             var presDe=reconstruitChaine(tableauEntree,0,i + 10);
                         }
-                        return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe}));
+                        return(logerreur({
+                            "__xst" : false ,
+                            "__xva" : T ,
+                            "id" : i ,
+                            "__xme" : '1472 apres une constante, il doit y avoir un caractère d\'echappement,i=' + i + ' c1="' + c1 + '" près de ' + presDe
+                        }));
                     }
                 }else{
                     if(!(autoriserCstDansRacine === true)){
@@ -1718,19 +1758,19 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte+=c1;
                     i++;
                 }else if(c1 === '\\'
-                 || c1 === '\''
-                 || c1 === '/'
-                 || c1 === 'n'
-                 || c1 === 't'
-                 || c1 === 'r'
-                 || c1 === 'u'
-                 || c1 === 'b'
-                 || c1 === 'f'
-                 || c1 === 'x'
-                 || c1 === 'v'
-                 || c1 === '0'
-                 || c1 === '&'
-                 || c1 === '$'
+                       || c1 === '\''
+                       || c1 === '/'
+                       || c1 === 'n'
+                       || c1 === 't'
+                       || c1 === 'r'
+                       || c1 === 'u'
+                       || c1 === 'b'
+                       || c1 === 'f'
+                       || c1 === 'x'
+                       || c1 === 'v'
+                       || c1 === '0'
+                       || c1 === '&'
+                       || c1 === '$'
                 ){
                     if(texte === ''){
                         premier=i;
@@ -1923,16 +1963,16 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   anti slash 
                   =====================================================================================
                 */
-                if(!(dansCstSimple)){
+                if(!dansCstSimple){
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1474 un antislash doit être dans une constante en i=' + i}));
                 }
-                if(!(dansCstDouble)){
+                if(!dansCstDouble){
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1478 un antislash doit être dans une constante en i=' + i}));
                 }
-                if(!(dansCstModele)){
+                if(!dansCstModele){
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1482 un antislash doit être dans une constante en i=' + i}));
                 }
-                if(!(dansCstRegex)){
+                if(!dansCstRegex){
                     return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : '1482 un antislash doit être dans une constante en i=' + i}));
                 }
                 /*
