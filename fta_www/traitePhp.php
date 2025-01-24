@@ -9,24 +9,19 @@ $o1='';?>
 <div class="menuScroller">
     <ul>
         <li>
-            <a href="javascript:chargerSourceDeTestPhp()">source de test</a>
-            &nbsp;
+            <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_php(&quot;txtar1&quot;)">source de test</a>
         </li>
         <li>
-            <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky htm strict</a>
-            &nbsp;
+            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky conv htm</a>
         </li>
         <li>
-            <a href="javascript:transform_text_area_php_en_rev2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky conv htm</a>
-            &nbsp;
+            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky conv htm</a>
         </li>
         <li>
-            <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yysucces">php htm strict</a>
-            &nbsp;
+            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yyinfo">php conv htm</a>
         </li>
         <li>
-            <a href="javascript:transform_text_area_php_en_rev3(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">php conv htm</a>
-            &nbsp;
+            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yyinfo">php conv htm</a>
         </li>
     </ul>
 </div>
@@ -63,19 +58,17 @@ $js_a_executer_apres_chargement=array(/* fonctions js à éxécuter un fois que 
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev')),
     array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'))
 );
-$par=array(/* éléments à passer au pied de page */
+$par=array(/* éléments à passer au pied de page : le php peut contenir du html et du js, donc on importe tout */
     'js_a_inclure' => array(
             'js/javascript.js',
             'js/convertit-php-en-rev0.js',
             'js/convertit-html-en-rev1.js',
             'js/convertit-js-en-rev1.js',
             'js/php.js',
-            'js/sql.js',
-            'js/convertion_sql_en_rev.js',
-            'js/jslib/sqlite_parser_from_demo.js',
+//            'js/sql.js',
+//            'js/convertion_sql_en_rev.js',
             'js/jslib/acorn.js',
-            'js/jslib/php-parser.js',
-            'js/pour_traite_php.js'
+            'js/jslib/php-parser.js'
         ),
     'module_a_inclure' => array(
             /* */
@@ -88,8 +81,10 @@ $par=array(/* éléments à passer au pied de page */
 );
 $o1 .= '<script type="text/javascript">
 window.addEventListener(\'load\',function(){
-  chargerLeDernierSourcePhp();
-//  transformPhpEnRev();
+  var fta_indexhtml_php_dernier_fichier_charge=localStorage.getItem("fta_indexhtml_php_dernier_fichier_charge");
+  if(fta_indexhtml_php_dernier_fichier_charge !== null){
+      document.getElementById(\'txtar1\').value=fta_indexhtml_php_dernier_fichier_charge;
+  }  
  }
 );
 </script>' . PHP_EOL;

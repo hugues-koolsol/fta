@@ -895,7 +895,296 @@ class interface1{
         }
         return({"__xst" : true});
     }
-    /* function mouseWheelOnMenu */
+    /*
+      =============================================================================================================
+      convertir le contenu d'une textearea php et le mettre le résultat rev dans une textarea
+      =============================================================================================================
+    */
+    convertir_text_area_php_en_rev_avec_php_parseur_js(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
+        var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
+        document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
+        this.raz_des_messages();
+        var a=document.getElementById(nom_de_la_text_area_php);
+        localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+        var lines=a.value.split(/\r|\r\n|\n/);
+        var count=lines.length;
+        try{
+            /* ✍ {parser:{extractDoc: true,php7: true,},ast:{withPositions: true}} */
+            /* var startMicro=performance.now(); */
+            var parseur=window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
+            /* on retire les sources compris entre  sql_inclure_deb et sql_inclure_fin */
+            let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
+            let php_moins_commentaires_sql=a.value.replace(regex,'');
+            var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
+            var obj=__module_php_parseur1.traite_ast(ast_de_php,options_traitement);
+            if(obj.__xst === true){
+                document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
+                var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
+                var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+                if(matriceFonction.__xst === true){
+                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    if(obj2.__xst === true){
+                        document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
+                    }else{
+                        this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_rev);
+                    }
+                }else{
+                    this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_rev);
+                }
+            }else{
+                this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
+            }
+            /*
+              var endMicro=performance.now();
+              console.log(endMicro - startMicro); 
+            */
+        }catch(e){
+            /*  console.error(e); */
+            if(e.lineNumber){
+                logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message ,"line" : e.lineNumber});
+            }else{
+                logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message});
+            }
+            this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
+        }
+        this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
+    }
+    /*
+      =============================================================================================================
+    */
+    convertir_text_area_php_en_rev_avec_nikic(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
+        var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
+        document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
+        this.raz_des_messages();
+        var a=document.getElementById(nom_de_la_text_area_php);
+        localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+        var lines=a.value.split(/\r|\r\n|\n/);
+        var count=lines.length;
+        try{
+            var ret=recupereAstDePhp2(a.value,{"zone_php" : nom_de_la_text_area_php ,"zone_rev" : nom_de_la_text_area_rev ,"options_traitement" : options_traitement},traitement_apres_recuperation_ast_de_php2);
+            if(ret.__xst === false){
+                return(astphp_logerreur({"__xst" : false ,"__xme" : 'il y a une erreur d\'envoie du source php à convertir'}));
+            }
+            this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_rev);
+        }catch(e){
+            console.log('erreur transform 0178',e);
+            ret=false;
+        }
+    }
+    /*
+      =============================================================================================================
+    */
+    lire_un_rev_et_le_transformer_en_tableau(nom_de_la_textarea,autoriser_constante_dans_la_racine=false){
+        this.raz_des_messages();
+        console.log('\n=========================\ndébut de transforme');
+        document.getElementById('resultat1').innerHTML='';
+        var a=document.getElementById(nom_de_la_textarea);
+        localStorage.setItem("fta_indexhtml_dernier_fichier_charge",a.value);
+        var lines=a.value.split(/\r|\r\n|\n/);
+        var count=lines.length;
+        a.setAttribute('rows',count + 1);
+        var beginMicro=performance.now();
+        var startMicro=performance.now();
+        var tableau1=iterateCharacters2(a.value);
+        var endMicro=performance.now();
+        console.log('mise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+        /* ✍  console.log(a.value.substr(4,1),a.value.length) */
+        var startMicro=performance.now();
+        var matriceFonction1=functionToArray2(tableau1.out,true,autoriser_constante_dans_la_racine,'');
+        var endMicro=performance.now();
+        console.log('analyse syntaxique endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+        var tempsTraitement=(parseInt((endMicro - beginMicro) * 1000,10) / 1000) + ' ms';
+        console.log(matriceFonction1);
+        /* ✍  console.log(JSON.stringify(matriceFonction1.value)); */
+        document.getElementById('resultat1').innerHTML='';
+        if(matriceFonction1.__xst === true){
+            var parent=document.getElementById('resultat1');
+            var startMicro=performance.now();
+            var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.__xva,true);
+            var diResultatsCompactes=document.createElement('pre');
+            if(fonctionReecriteAvecRetour1.__xst === true){
+                var compacteOriginal=arrayToFunct1(matriceFonction1.__xva,false);
+                var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
+                var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
+                var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false);
+                if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
+                    if(compacteOriginal.__xva == compacteReecrit.__xva){
+                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
+                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>';
+                        logerreur({"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement});
+                    }else{
+                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
+                        logerreur({"__xst" : false ,"__xme" : '💥sources compactés différents'});
+                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />o=' + compacteOriginal.__xva;
+                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
+                    }
+                }else{
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
+                }
+            }
+            var endMicro=performance.now();
+            console.log('tests compactes=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+            document.getElementById('resultat1').appendChild(diResultatsCompactes);
+            var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true);
+            var difonctionReecriteAvecRetour1=document.createElement('pre');
+            difonctionReecriteAvecRetour1.style.fontSize='0.9em';
+            if(fonctionReecriteAvecEtColoration1.__xst === true){
+                difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr /><textarea class="txtar1" rows="10">' + strToHtml(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
+            }else{
+                difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:<textarea class="txtar1" rows="10">' + strToHtml(fonctionReecriteAvecRetour1.message) + '</textarea>';
+            }
+            document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
+            var t0=document.createElement('div');
+            t0.style.overflowX='scroll';
+            var t1=document.createElement('table');
+            this.construit_tableau_html_de_le_matrice_rev(t1,matriceFonction1);
+            t0.appendChild(t1);
+            document.getElementById('resultat1').appendChild(t0);
+            var t0=document.createElement('div');
+            t0.style.overflowX='scroll';
+            var t2=document.createElement('table');
+            this.construit_un_html_du_tableau_des_caracteres(t2,a.value,tableau1);
+            t0.appendChild(t2);
+            document.getElementById('resultat1').appendChild(t0);
+        }else{
+            var t2=document.createElement('table');
+            this.construit_un_html_du_tableau_des_caracteres(t2,a.value,tableau1);
+            document.getElementById('resultat1').appendChild(t2);
+        }
+        this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea);
+    }    
+    /*
+      =============================================================================================================
+    */
+    remplir_une_textarea_avex_un_source_de_test_php(nom_de_la_text_area_php){
+        var t=`<?php
+$a=realpath(dirname(dirname(dirname(__FILE__))));
+require($a.'/phplib/vendor/autoload.php');
+/*
+https://github.com/nikic/php-parser
+*/
+use PhpParser\\Error;
+use PhpParser\\NodeDumper;
+use PhpParser\\ParserFactory;
+
+function recupererAstDePhp(&$data){
+    $parser = (new ParserFactory())->createForNewestSupportedVersion();
+    try {
+        $ast = $parser->parse($data[__entree]['texteSource']);
+        $data[__xva]=json_encode($ast);
+        $data[__xst]=true;
+    } catch (Error $error) {
+       $data[__xms][]=$error->getMessage();
+       return;
+    }
+}
+/* si vous devez intégrer du javascript dans du html dans du php, mettez la partie javascript dans des CDATA */
+$i=0;
+while($i<5){
+  if(1===1){
+    for($i=0;$i<10;$i++){
+      ?>hello<?php echo ' world';?> and others
+<script type="text/javascript">
+//<![CDATA[
+  for(var i=0;i<10;i++){
+      console.log('on est dans du javascript dans du html dans du php :-]');
+  }
+//]]>  
+</script>
+<?php
+    }
+  }
+}
+?>
+<script type="text/javascript">
+//<![CDATA[
+  var b=2;
+//]]>  
+</script>
+<script type="text/javascript">
+//<![CDATA[
+  var c=2;
+//]]>  
+</script>
+    `;
+        document.getElementById(nom_de_la_text_area_php).value=t;
+    }        
+    /*
+      =============================================================================================================
+    */
+    remplir_une_textarea_avex_un_source_de_test_rev(nom_de_la_text_area_rev){
+        /*
+          "àà" <- dans l'excellent notepad++ de windows, ces deux a avec un accent grave 
+          n'ont pas le même aspect car ils ont un encodage différent.
+          J'aimerais bien que les navigateurs fassent la même chose.
+        */
+     
+        var t=`#( début aaaa  debut),
+a(
+  #(test , 👍,𤭢,àà),
+  b(
+    xx(
+      y(
+        #(dedans
+          commentaire bloc
+        ),
+        t,
+        v),
+      #(aa),
+      xx(
+        #(dedans
+          commentaire bloc
+        )),
+      #( bb),
+      5,
+      #(cc
+      )
+    ),
+    #(comment 1),
+    y(
+      ' dd&nbsp;',
+      #( bla
+blu),
+      ee,
+      2,
+      #( @ )
+    ),
+    #( comment 2 ),
+    a(b())
+  ),
+  #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
+  f(g),
+  #(👍😁💥💪👎☀🌞🟥🟩"àà")
+)
+a( p(/ " \\' \\" \\n \\r \\\\r \\\\n \\\\\\\\ /g) , p(" \\\\ \\" \\\\\\" \\n \\r '") , p(' \\\\ \\' \\n \\r "  ') ),
+#(
+p('\\\\\\' \\' \\r \\n ')
+
+
+        a( p(/ " \\' \\" \\n \\r \\\\r \\\\n \\\\\\\\ /g) , p(" \\\\ \\" \\n \\r '") , p(' \\\\ \\n \\r "  ') ),
+
+appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
+      affecte(sql , "\\r\\n \\" \\\\\\\\
+      select * from toto
+      "),
+
+      affecte(sql , '\\n \\r \\\\r \\\\n 
+      select * from toto
+      '),
+
+\
+)`;
+        document.getElementById(nom_de_la_text_area_rev).value=t;
+        var lines=t.split(/\r|\r\n|\n/);
+        var count=lines.length;
+        document.getElementById(nom_de_la_text_area_rev).setAttribute('rows',count + 1);
+    }    
+    /*
+      =============================================================================================================
+      function mouseWheelOnMenu
+      =============================================================================================================
+    */
     mouseWheelOnMenu(event){
         event.preventDefault();
         var elem=event.target;
@@ -962,8 +1251,6 @@ class interface1{
         }
     }
     /*
-      
-      
       =============================================================================================================
       =============================================================================================================
       =============================================================================================================

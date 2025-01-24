@@ -211,7 +211,7 @@ Elle peuvent contenir 0 ou n arguments, ces arguments peuvent être des fonction
 On pourra avoir par exemple :  
 a(),  
 a( a , 'a'),  
-a( "a" , a( `a` , /a/gi ) )  
+a( "a" , a( \`a\` , /a/gi ) )  
 
 et on obtiendra le tableau suivant  
 
@@ -304,6 +304,91 @@ Les bibliothèques externes qui sont utilisées pour convertir les sources des p
 Ces "AST" sont ensuites traités pour produire les "rev".   
 
 L'objectif est d'avoir que des sources au format rev
+
+
+**6°) un exemple :**
+
+ce source php: 
+
+```
+<?php
+<?php
+/* ceci est un commentaire dans php */
+print('<html><body>');
+$mon_nombre=4/2;
+echo "salut php" .", ceci est ".($mon_nombre-1)." exemple de programme" /**/;
+?>
+<a href="https://github.com/hugues-koolsol/fta"><!-- ceci est un commentaire dans html -->allez voir github.com/hugues-koolsol/fta</a>
+<script type="text/javascript">
+/* ceci est un commentaire dans javascript */
+let zz=6-4;
+console.log('salut javascript,'+' ceci est '+(zz-1)+' exemple');
+</script>
+<?php
+print('</body></html>');
+```
+
+est transformé en format rev qui est :  
+```
+php(
+   #( ceci est un commentaire dans php ),
+   appelf( nomf(print) , p( '<html><body>' )),
+   affecte( $mon_nombre , divi( 4 , 2 )),
+   appelf(
+      nomf(echo),
+      p( concat( "salut php" , ", ceci est " , moins( $mon_nombre , 1 ) , " exemple de programme" ))
+   ),
+   #(),
+   html_dans_php(
+      a(
+         ( 'href' , "https://github.com/hugues-koolsol/fta"),
+         #( ceci est un commentaire dans html ),
+         'allez voir github.com/hugues-koolsol/fta'
+      ),
+      javascriptDansHtml(
+         ( 'type' , "text/javascript"),
+         #( ceci est un commentaire dans javascript ),
+         declare_variable( zz , moins( 6 , 4 )),
+         appelf(
+            element(console),
+            nomf(log),
+            p( concat( 'salut javascript,' , ' ceci est ' , moins( zz , 1 ) , ' exemple' ))
+         )
+      )
+   ),
+   appelf( nomf(print) , p( '</body></html>' ))
+)
+```
+
+et à partir du format rev on obtiendra :  
+
+```
+<?php
+/* ceci est un commentaire dans php */
+print('<html><body>');
+$mon_nombre=4 / 2;
+echo "salut php" . ", ceci est " . ($mon_nombre - 1) . " exemple de programme" ;
+/**/?>
+<a href="https://github.com/hugues-koolsol/fta"><!-- ceci est un commentaire dans html -->
+    allez voir github.com/hugues-koolsol/fta
+</a>
+<script type="text/javascript">
+//<![CDATA[
+//<source_javascript_rev>
+/* ceci est un commentaire dans javascript */
+let zz=6 - 4;
+console.log('salut javascript,' + ' ceci est ' + (zz - 1) + ' exemple');
+//</source_javascript_rev>
+//]]>
+</script>
+
+<?php
+print('</body></html>');
+```
+
+Les sources javascript, php, html, sql contenus dans ce github sont quasiment tous passés par le format rev
+
+
 
 
 
