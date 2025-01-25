@@ -717,7 +717,7 @@ class interface1{
       =============================================================================================================
     */
     click_sur_lien1(e){
-        console.log('click_sur_lien1');
+        /* console.log('click_sur_lien1'); */
         if(e.target.target && e.target.target.toLowerCase() === '_blank'){
         }else{
             try{

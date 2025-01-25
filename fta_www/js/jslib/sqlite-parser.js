@@ -3,6 +3,7 @@
   * sqlite-parser - v1.0.1
   * @copyright 2015-2017 Code School (http://codeschool.com)
   * @author Nick Wronski <nick@javascript.com>
+  * https://github.com/codeschool/sqlite-parser
 */
 (function(f){
         if( typeof exports === "object" &&  typeof module !== "undefined"){

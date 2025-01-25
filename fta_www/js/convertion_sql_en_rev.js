@@ -1014,7 +1014,7 @@ function convertion_texte_sql_en_rev(texte_du_sql){
     */
     texte_du_sql=texte_du_sql.replace(/\/\*\*\//g,'');
     /* var sqliteParser = require('sqlite-parser'); */
-    var ast=window.sqliteParser(texte_du_sql);
+    var ast=window.sqliteParser(texte_du_sql,{});
     console.log('ast=',ast);
     var obj1=conversion_de_ast_vers_sql(ast,0,null,{});
     if(obj1.__xst === true){
@@ -1112,7 +1112,7 @@ function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql,nom_de_la_texta
     var texte=document.getElementById(nom_de_la_textarea_sql).value;
     localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
     try{
-        var obj=convertion_texte_sql_en_rev(texte);
+        var obj=convertion_texte_sql_en_rev(texte); // 
         if(obj.__xst === true){
             document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
             var tableau1=iterateCharacters2(obj.__xva);

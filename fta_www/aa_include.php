@@ -913,6 +913,7 @@ function html_header1($parametres){
     $texte_base_css .= '--yyvhgb:' . $le_biscuit['--yyvhgb'] . '; /* hauteur des grands boutons ( quitter et index ) */' . PHP_EOL;
     $texte_base_css .= '--yyvhmc:' . $le_biscuit['--yyvhmc'] . '; /* hauteur minimale de conteneur ( div ) */' . PHP_EOL;
     $texte_base_css .= '}' . PHP_EOL;
+    $texte_base_css .= '</style>' . PHP_EOL;
     /* on met en ligne le root car il est dynamique */
     $o1 .= $texte_base_css;
     /*
@@ -922,14 +923,13 @@ function html_header1($parametres){
     if(false){
 
         /* dans le cas ou on met tout dans le html reçu */
+        $o1 .= '<style type="text/css">' . PHP_EOL;
         $o1 .= file_get_contents('6.css');
         $o1 .= '</style>' . PHP_EOL;
 
     }else{
 
         /* dans le cas ou ou on met le css en lien externe */
-        $o1 .= $texte_base_css;
-        $o1 .= '</style>' . PHP_EOL;
         $o1 .= '  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />' . PHP_EOL;
     }
 
